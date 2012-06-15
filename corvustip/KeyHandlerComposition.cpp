@@ -18,13 +18,13 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 	if(showentry &&
 		(	(fixed && showcandlist) || 
-			(untilcandlist == 0) || 
-			(candidx + 1 < untilcandlist) || 
-			(candidates.size() + 1 == untilcandlist)	))
+			(c_untilcandlist == 0) || 
+			(candidx + 1 < c_untilcandlist) || 
+			(candidates.size() + 1 == c_untilcandlist)	))
 	{
 		if(!candidates.empty() && candidx < candidates.size())
 		{
-			if(!fixed && !nomodemark)
+			if(!fixed && !c_nomodemark)
 			{
 				composition.append(markHenkan);
 			}
@@ -37,13 +37,13 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				useraddmode = REQ_USER_ADD_0;
 			}
 
-			if(!fixed && annotation &&
+			if(!fixed && c_annotation && !c_annotatlst &&
 				!candidates[candidx].first.second.empty())
 			{
 				composition.append(markAnnotation + candidates[candidx].first.second);
 			}
 
-			if(!fixed && untilcandlist == 0 && dispcandnum)
+			if(!fixed && c_untilcandlist == 0 && c_dispcandnum)
 			{
 				composition.append(L" (");
 				_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
@@ -54,7 +54,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				composition.append(L")");
 			}
 
-			if(!fixed && nomodemark && composition.empty())
+			if(!fixed && c_nomodemark && composition.empty())
 			{
 				composition.append(markSP);
 			}
@@ -82,7 +82,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			//候補なし or 候補が尽きた
 			if(!fixed)
 			{
-				if(nomodemark)
+				if(c_nomodemark)
 				{
 					if(kana.empty())
 					{
@@ -102,7 +102,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			else
 			{
 				composition.append(kana.substr(0, accompidx));
-				if(!fixed && !nomodemark)
+				if(!fixed && !c_nomodemark)
 				{
 					composition.append(markOkuri);
 				}
@@ -116,7 +116,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				//ただし候補無しなら１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)
 				if(!candidates.empty())
 				{
-					if(delokuricncl && accompidx != 0)
+					if(c_delokuricncl && accompidx != 0)
 					{
 						kana = kana.substr(0, accompidx);
 						accompidx = 0;
@@ -135,7 +135,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		{
 			if(!fixed)
 			{
-				if(nomodemark)
+				if(c_nomodemark)
 				{
 					if(kana.empty() && roman.empty())
 					{
@@ -144,7 +144,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				}
 				else
 				{
-					if(showentry && (candidx + 1 == untilcandlist))
+					if(showentry && (candidx + 1 == c_untilcandlist))
 					{
 						composition.append(markHenkan);
 					}
@@ -164,7 +164,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				else
 				{
 					composition.append(kana.substr(0, accompidx));
-					if(!fixed && !nomodemark)
+					if(!fixed && !c_nomodemark)
 					{
 						composition.append(markOkuri);
 					}
@@ -195,7 +195,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		}
 	}
 
-	if(fixed && back && backincenter && !composition.empty())
+	if(fixed && back && c_backincenter && !composition.empty())
 	{
 		//結合文字は考慮しない
 		if(composition.size() >= 2 &&
@@ -211,8 +211,8 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	}
 
 	if(inputkey && !fixed && !showcandlist && showentry &&
-		(((untilcandlist != 1) && (candidx + 1 == untilcandlist)) || (untilcandlist == 1)) &&
-		(candidates.size() + 1 != untilcandlist))
+		(((c_untilcandlist != 1) && (candidx + 1 == c_untilcandlist)) || (c_untilcandlist == 1)) &&
+		(candidates.size() + 1 != c_untilcandlist))
 	{
 		if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 		{

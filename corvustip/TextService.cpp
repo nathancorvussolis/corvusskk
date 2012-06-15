@@ -25,15 +25,16 @@ CTextService::CTextService()
 
 	_ResetStatus();
 
-	visualstyle = FALSE;
-	untilcandlist = 4;
-	dispcandnum = FALSE;
-	nomodemark = FALSE;
-	annotation = FALSE;
-	nookuriconv = FALSE;
-	delokuricncl = FALSE;
-	backincenter = FALSE;
-	addcandktkn = FALSE;
+	c_visualstyle = FALSE;
+	c_untilcandlist = 4;
+	c_dispcandnum = FALSE;
+	c_nomodemark = FALSE;
+	c_annotation = FALSE;
+	c_annotatlst = FALSE;
+	c_nookuriconv = FALSE;
+	c_delokuricncl = FALSE;
+	c_backincenter = FALSE;
+	c_addcandktkn = FALSE;
 }
 
 CTextService::~CTextService()

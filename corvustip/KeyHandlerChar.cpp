@@ -66,7 +66,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 				}
 				else
 				{
-					if(!kana.empty() && accompidx != 0 && !rkc.soku && !nookuriconv)
+					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv)
 					{
 						showentry = TRUE;
 						_StartConv();

@@ -160,71 +160,78 @@ void CTextService::_LoadBehavior()
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, VisualStyle, strxmlval);
-	visualstyle = _wtoi(strxmlval.c_str());
-	if(visualstyle != TRUE && visualstyle != FALSE)
+	c_visualstyle = _wtoi(strxmlval.c_str());
+	if(c_visualstyle != TRUE && c_visualstyle != FALSE)
 	{
-		visualstyle = FALSE;
+		c_visualstyle = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
-	untilcandlist = _wtoi(strxmlval.c_str());
-	if(untilcandlist > 8 || (untilcandlist < 0))
+	c_untilcandlist = _wtoi(strxmlval.c_str());
+	if(c_untilcandlist > 8 || (c_untilcandlist < 0))
 	{
-		untilcandlist = 4;
+		c_untilcandlist = 4;
 	}
 
 	if(bAppContainer)
 	{
-		untilcandlist = 0;
+		c_untilcandlist = 0;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, DispCandNo, strxmlval);
-	dispcandnum = _wtoi(strxmlval.c_str());
-	if(dispcandnum != TRUE && dispcandnum != FALSE)
+	c_dispcandnum = _wtoi(strxmlval.c_str());
+	if(c_dispcandnum != TRUE && c_dispcandnum != FALSE)
 	{
-		dispcandnum = FALSE;
+		c_dispcandnum = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, Annotation, strxmlval);
-	annotation = _wtoi(strxmlval.c_str());
-	if(annotation != TRUE && annotation != FALSE)
+	c_annotation = _wtoi(strxmlval.c_str());
+	if(c_annotation != TRUE && c_annotation != FALSE)
 	{
-		annotation = FALSE;
+		c_annotation = FALSE;
+	}
+
+	ReadValue(pathconfigxml, SectionBehavior, AnnotatLst, strxmlval);
+	c_annotatlst = _wtoi(strxmlval.c_str());
+	if(c_annotatlst != TRUE && c_annotatlst != FALSE)
+	{
+		c_annotatlst = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, NoModeMark, strxmlval);
-	nomodemark = _wtoi(strxmlval.c_str());
-	if(nomodemark != TRUE && nomodemark != FALSE)
+	c_nomodemark = _wtoi(strxmlval.c_str());
+	if(c_nomodemark != TRUE && c_nomodemark != FALSE)
 	{
-		nomodemark = FALSE;
+		c_nomodemark = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, NoOkuriConv, strxmlval);
-	nookuriconv = _wtoi(strxmlval.c_str());
-	if(nookuriconv != TRUE && nookuriconv != FALSE)
+	c_nookuriconv = _wtoi(strxmlval.c_str());
+	if(c_nookuriconv != TRUE && c_nookuriconv != FALSE)
 	{
-		nookuriconv = FALSE;
+		c_nookuriconv = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, DelOkuriCncl, strxmlval);
-	delokuricncl = _wtoi(strxmlval.c_str());
-	if(delokuricncl != TRUE && delokuricncl != FALSE)
+	c_delokuricncl = _wtoi(strxmlval.c_str());
+	if(c_delokuricncl != TRUE && c_delokuricncl != FALSE)
 	{
-		delokuricncl = FALSE;
+		c_delokuricncl = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, BackIncEnter, strxmlval);
-	backincenter = _wtoi(strxmlval.c_str());
-	if(backincenter != TRUE && backincenter != FALSE)
+	c_backincenter = _wtoi(strxmlval.c_str());
+	if(c_backincenter != TRUE && c_backincenter != FALSE)
 	{
-		backincenter = FALSE;
+		c_backincenter = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, AddCandKtkn, strxmlval);
-	addcandktkn = _wtoi(strxmlval.c_str());
-	if(addcandktkn != TRUE && addcandktkn != FALSE)
+	c_addcandktkn = _wtoi(strxmlval.c_str());
+	if(c_addcandktkn != TRUE && c_addcandktkn != FALSE)
 	{
-		addcandktkn = FALSE;
+		c_addcandktkn = FALSE;
 	}
 }
 
@@ -411,6 +418,8 @@ void CTextService::_LoadKana()
 	int i = 0;
 	WCHAR *pszb;
 	size_t blen;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");;
 
 	ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
 
@@ -449,7 +458,7 @@ void CTextService::_LoadKana()
 
 				if(pszb != NULL)
 				{
-					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, re, fmt).c_str(), _TRUNCATE);
 				}
 			}
 
@@ -466,6 +475,8 @@ void CTextService::_LoadJLatin()
 	int i = 0;
 	WCHAR *pszb;
 	size_t blen;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");;
 
 	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
 
@@ -490,7 +501,7 @@ void CTextService::_LoadJLatin()
 
 				if(pszb != NULL)
 				{
-					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, re, fmt).c_str(), _TRUNCATE);
 				}
 			}
 

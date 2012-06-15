@@ -43,6 +43,7 @@ LPCWSTR VisualStyle = L"visualstyle";
 LPCWSTR UntilCandList = L"untilcandlist";
 LPCWSTR DispCandNo = L"dispcandno";
 LPCWSTR Annotation = L"annotation";
+LPCWSTR AnnotatLst = L"annotatlst";
 LPCWSTR NoModeMark = L"nomodemark";
 LPCWSTR NoOkuriConv = L"nookuriconv";
 LPCWSTR DelOkuriCncl = L"delokuricncl";

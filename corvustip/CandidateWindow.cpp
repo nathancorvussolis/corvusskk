@@ -150,17 +150,17 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	{
 		if(_hwnd != NULL)
 		{
-			SendMessage(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
+			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
 		}
 	}
 	else
 	{
 		if(_hwnd != NULL)
 		{
-			SendMessage(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
 		}
-		_UpdateUIElement();
 	}
+
 	return S_OK;
 }
 
@@ -323,7 +323,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
 			_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCount + k ].first.first);
 			
-			if(_pTextService->annotation &&
+			if(_pTextService->c_annotation &&
 				!_pTextService->candidates[ _uShowedCount + k ].first.second.empty())
 			{
 				_CandStr[k].append(markAnnotation +
@@ -441,12 +441,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 	ti.hinst = g_hInst;
 	ti.lpszText = L"";
 
-	if(SendMessage(_hwnd, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFOW) &ti) == FALSE)
+	if(SendMessageW(_hwnd, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFOW) &ti) == FALSE)
 	{
 		return FALSE;
 	}
 
-	if(!_pTextService->visualstyle)
+	if(!_pTextService->c_visualstyle)
 	{
 		SetWindowTheme(_hwnd, L" ", L" ");
 	}
@@ -457,24 +457,24 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 		_pTextService->fontweight, _pTextService->fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 		_pTextService->fontname);
-	SendMessage(_hwnd, WM_SETFONT, (WPARAM)hFont, 0);
+	SendMessageW(_hwnd, WM_SETFONT, (WPARAM)hFont, 0);
 	ReleaseDC(_hwnd, hdcTT);
 	//DeleteObject(hFont);	// -> _End()
 
 	//set color
-	SendMessage(_hwnd, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(0,0,0), 0);
-	SendMessage(_hwnd, TTM_SETTIPBKCOLOR, (WPARAM)RGB(255,255,255), 0);
+	SendMessageW(_hwnd, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(0,0,0), 0);
+	SendMessageW(_hwnd, TTM_SETTIPBKCOLOR, (WPARAM)RGB(255,255,255), 0);
 
 	//set max width
-	SendMessage(_hwnd, TTM_SETMAXTIPWIDTH, 0, _pTextService->maxwidth);
+	SendMessageW(_hwnd, TTM_SETMAXTIPWIDTH, 0, _pTextService->maxwidth);
 
 	//set initial duration
-	SendMessage(_hwnd, TTM_SETDELAYTIME, TTDT_INITIAL, 0);
+	SendMessageW(_hwnd, TTM_SETDELAYTIME, TTDT_INITIAL, 0);
 
 	//set mergin
 	#define MERGIN 2
 	RECT rect = {MERGIN,MERGIN,MERGIN,MERGIN};
-	SendMessage(_hwnd, TTM_SETMARGIN, 0, (LPARAM)&rect);
+	SendMessageW(_hwnd, TTM_SETMARGIN, 0, (LPARAM)&rect);
 
 	//set window procedure
 	ToolTipWndProcDef = (WNDPROC)GetWindowLongPtr(_hwnd, GWLP_WNDPROC);
@@ -515,7 +515,7 @@ void CCandidateWindow::_Move(int x, int y)
 {
 	if(_hwnd != NULL)
 	{
-		SendMessage(_hwnd, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(x, y));
+		SendMessageW(_hwnd, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(x, y));
 	}
 }
 
@@ -528,55 +528,48 @@ void CCandidateWindow::_BeginUIElement()
 	{
 		_InitList();
 	}
-	else
-	{
-		_UpdateTT();
-	}
 
-	if(!_bShow)
+	_UpdateTT();
+
+	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
 	{
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
+		if(!bShow)
 		{
-			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
-			if(!bShow)
-			{
-				pUIElementMgr->UpdateUIElement(_dwUIElementId);
-			}
-			pUIElementMgr->Release();
-
-			_bShow = TRUE;
+			pUIElementMgr->UpdateUIElement(_dwUIElementId);
 		}
+		pUIElementMgr->Release();
 	}
+
+	_bShow = bShow;
 
 	if(!IsVersion6AndOver(g_ovi))
 	{
 		_bShow = TRUE;
 	}
 
-	if(bShow)
+	if(_bShow)
 	{
 		if(_hwnd != NULL)
 		{
-			SendMessage(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
+			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
 		}
 	}
 }
 
 void CCandidateWindow::_EndUIElement()
 {
-	if(_bShow)
+	ITfUIElementMgr *pUIElementMgr;
+
+	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
 	{
-		ITfUIElementMgr *pUIElementMgr;
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
-		{
-			pUIElementMgr->EndUIElement(_dwUIElementId);
-			pUIElementMgr->Release();
-		}
+		pUIElementMgr->EndUIElement(_dwUIElementId);
+		pUIElementMgr->Release();
 	}
 
 	if(_hwnd != NULL)
 	{
-		SendMessage(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+		SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
 	}
 
 	if(hFont != NULL)
@@ -638,7 +631,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 				GetCurrentPage(&page);
 				if(i < _CandCount[page])
 				{
-					index = (UINT)(_pTextService->untilcandlist - 1) + _PageInex[page] + i;
+					index = (UINT)(_pTextService->c_untilcandlist - 1) + _PageInex[page] + i;
 					if(index < _pTextService->candidates.size())
 					{
 						if(!regword)
@@ -719,7 +712,7 @@ void CCandidateWindow::_InitList()
 {
 	UINT i;
 
-	_uShowedCount = (UINT)_pTextService->untilcandlist - 1;
+	_uShowedCount = (UINT)_pTextService->c_untilcandlist - 1;
 	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCount;
 
 	_CandStr.clear();
@@ -728,7 +721,7 @@ void CCandidateWindow::_InitList()
 		_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
 		_CandStr[i].append(markNo + _pTextService->candidates[ _uShowedCount + i ].first.first);
 
-		if(_pTextService->annotation &&
+		if(_pTextService->c_annotation &&
 			!_pTextService->candidates[ _uShowedCount + i ].first.second.empty())
 		{
 			_CandStr[i].append(markAnnotation +
@@ -751,13 +744,11 @@ void CCandidateWindow::_InitList()
 
 	_dwFlags = TF_CLUIE_DOCUMENTMGR | TF_CLUIE_COUNT | TF_CLUIE_SELECTION |
 		TF_CLUIE_STRING | TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;
-
-	_UpdateTT();
 }
 
 void CCandidateWindow::_UpdateUIElement()
 {
-	if(_bShow && !IsWindowVisible(_hwnd))
+	if(!_bShow)
 	{
 		ITfUIElementMgr *pUIElementMgr;
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
@@ -838,27 +829,27 @@ void CCandidateWindow::_PrevPage()
 		{
 			if(!regword)
 			{
-				if(_pTextService->untilcandlist == 1)
+				if(_pTextService->c_untilcandlist == 1)
 				{
 					_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
 					_pCandidateList->_EndCandidateList();
 				}
 				else
 				{
-					_pTextService->candidx = _pTextService->untilcandlist - 1;
+					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
 					_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
 					_pCandidateList->_EndCandidateList();
 				}
 			}
 			else
 			{
-				if(_pTextService->untilcandlist == 1)
+				if(_pTextService->c_untilcandlist == 1)
 				{
 					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
 				}
 				else
 				{
-					_pTextService->candidx = _pTextService->untilcandlist - 1;
+					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
 					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
 				_UpdateTT();
@@ -1153,7 +1144,7 @@ void CCandidateWindow::_UpdateTT()
 			strTT.append(markNoTT +
 				_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.first));
 
-			if(_pTextService->annotation &&
+			if(_pTextService->c_annotation &&
 				!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
 			{
 				strTT.append(markAnnotation +
@@ -1168,7 +1159,7 @@ void CCandidateWindow::_UpdateTT()
 	}
 
 	ti.lpszText = (LPWSTR)strTT.c_str();
-	SendMessage(_hwnd, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+	SendMessageW(_hwnd, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
 }
 
 void CCandidateWindow::_BackUpStatus()

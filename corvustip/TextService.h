@@ -160,8 +160,8 @@ public:
 	void _ConvDic(WCHAR command);
 	void _ConnectDic();
 	void _DisconnectDic();
-	void _AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command);
-	void _DelUserDic(const std::wstring &searchkey, const std::wstring &candidate);
+	void _AddUserDic(const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation, WCHAR command);
+	void _DelUserDic(const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
 	void _ConvDicNum();
 	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
@@ -267,15 +267,16 @@ public:
 	int fontweight;					//候補一覧のフォント設定
 	BOOL fontitalic;				//候補一覧のフォント設定
 	LONG maxwidth;			//候補一覧の最大幅
-	BOOL visualstyle;		//VisualStyleを使用する
-	size_t untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
-	BOOL dispcandnum;		//候補一覧表示なしのとき候補数を表示する
-	BOOL annotation;		//注釈を表示する
-	BOOL nomodemark;		//▽▼*マークを表示しない
-	BOOL nookuriconv;		//送り仮名が決定したとき変換を開始しない
-	BOOL delokuricncl;		//取消のとき送り仮名を削除する
-	BOOL backincenter;		//後退に確定を含める
-	BOOL addcandktkn;		//候補に片仮名変換を追加する
+	BOOL c_visualstyle;		//VisualStyleを使用する
+	size_t c_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
+	BOOL c_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
+	BOOL c_annotation;		//注釈を表示する
+	BOOL c_annotatlst;		//（候補一覧のみ）
+	BOOL c_nomodemark;		//▽▼*マークを表示しない
+	BOOL c_nookuriconv;		//送り仮名が決定したとき変換を開始しない
+	BOOL c_delokuricncl;	//取消のとき送り仮名を削除する
+	BOOL c_backincenter;	//後退に確定を含める
+	BOOL c_addcandktkn;		//候補に片仮名変換を追加する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

@@ -86,6 +86,11 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
+		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, AnnotatLst);
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_ANNOTATLST))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_ANNOTATALL, BST_CHECKED);
+		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);
@@ -150,6 +155,8 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_VISUALSTYLE:
 		case IDC_CHECKBOX_DISPCANDNO:
 		case IDC_CHECKBOX_ANNOTATION:
+		case IDC_RADIO_ANNOTATALL:
+		case IDC_RADIO_ANNOTATLST:
 		case IDC_CHECKBOX_NOMODEMARK:
 		case IDC_CHECKBOX_NOOKURICONV:
 		case IDC_CHECKBOX_DELOKURICNCL:
@@ -214,6 +221,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
+			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, AnnotatLst);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);

@@ -238,7 +238,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			ch = L'>';
 			roman.clear();
 			kana.push_back(ch);
-			if(!nookuriconv)
+			if(!c_nookuriconv)
 			{
 				//辞書検索開始(接頭辞)
 				showentry = TRUE;
@@ -261,7 +261,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_CANCEL:
 		if(showentry)
 		{
-			if(delokuricncl && accompidx != 0)
+			if(c_delokuricncl && accompidx != 0)
 			{
 				kana = kana.substr(0, accompidx);
 				accompidx = 0;
@@ -347,7 +347,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_BACK:
 		if(showentry)
 		{
-			if(_HandleControl(ec, pContext, (backincenter ? SKK_ENTER : SKK_PREV_CAND), ch) == S_OK)
+			if(_HandleControl(ec, pContext, (c_backincenter ? SKK_ENTER : SKK_PREV_CAND), ch) == S_OK)
 			{
 				return S_OK;
 			}

@@ -23,11 +23,13 @@
 #define IDC_COMBO_UNTILCANDLIST                 1106
 #define IDC_CHECKBOX_DISPCANDNO                 1107
 #define IDC_CHECKBOX_ANNOTATION                 1108
-#define IDC_CHECKBOX_NOMODEMARK                 1109
-#define IDC_CHECKBOX_NOOKURICONV                1110
-#define IDC_CHECKBOX_DELOKURICNCL               1111
-#define IDC_CHECKBOX_BACKINCENTER               1112
-#define IDC_CHECKBOX_ADDCANDKTKN                1113
+#define IDC_RADIO_ANNOTATALL                    1109
+#define IDC_RADIO_ANNOTATLST                    1110
+#define IDC_CHECKBOX_NOMODEMARK                 1111
+#define IDC_CHECKBOX_NOOKURICONV                1112
+#define IDC_CHECKBOX_DELOKURICNCL               1113
+#define IDC_CHECKBOX_BACKINCENTER               1114
+#define IDC_CHECKBOX_ADDCANDKTKN                1115
 
 #define IDC_LIST_SKK_DIC                        1301
 #define IDC_BUTTON_SKK_DIC_ADD                  1302

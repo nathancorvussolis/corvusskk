@@ -83,6 +83,7 @@ extern LPCWSTR VisualStyle;
 extern LPCWSTR UntilCandList;
 extern LPCWSTR DispCandNo;
 extern LPCWSTR Annotation;
+extern LPCWSTR AnnotatLst;
 extern LPCWSTR NoModeMark;
 extern LPCWSTR NoOkuriConv;
 extern LPCWSTR DelOkuriCncl;

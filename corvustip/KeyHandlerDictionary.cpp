@@ -11,7 +11,7 @@ void CTextService::_ConnectDic()
 
 	if(WaitNamedPipeW(pipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
 	{
-		_StartDicSrv();
+		return;
 	}
 
 	hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -42,6 +42,8 @@ void CTextService::_ConvDic(WCHAR command)
 	const WCHAR nl = L'\n';
 	size_t i, ic, ia;
 	std::wstring s, sc, sa;
+
+	_StartDicSrv();
 
 	_ConnectDic();
 
@@ -91,7 +93,7 @@ exit:
 	_DisconnectDic();
 }
 
-void CTextService::_AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command)
+void CTextService::_AddUserDic(const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation, WCHAR command)
 {
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
@@ -101,7 +103,7 @@ void CTextService::_AddUserDic(const std::wstring &searchkey, const std::wstring
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
-		command, searchkey.c_str(), candidate.c_str(), annotation.c_str());
+		command, key.c_str(), candidate.c_str(), annotation.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
@@ -119,7 +121,7 @@ exit:
 	_DisconnectDic();
 }
 
-void CTextService::_DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
+void CTextService::_DelUserDic(const std::wstring &key, const std::wstring &candidate)
 {
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
@@ -129,7 +131,7 @@ void CTextService::_DelUserDic(const std::wstring &searchkey, const std::wstring
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
-		REQ_USER_DEL, searchkey.c_str(), candidate.c_str());
+		REQ_USER_DEL, key.c_str(), candidate.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{

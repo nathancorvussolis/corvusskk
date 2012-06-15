@@ -175,7 +175,7 @@ void CTextService::_StartConv()
 	_ConvDic(REQ_SEARCH);
 
 	//片仮名変換
-	if(addcandktkn && !abbrevmode)
+	if(c_addcandktkn && !abbrevmode)
 	{
 		switch(inputmode)
 		{
@@ -251,7 +251,7 @@ void CTextService::_NextConv()
 	}
 	else
 	{
-		if(delokuricncl && accompidx != 0)
+		if(c_delokuricncl && accompidx != 0)
 		{
 			kana = kana.substr(0, accompidx);
 			accompidx = 0;

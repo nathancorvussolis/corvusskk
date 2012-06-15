@@ -253,6 +253,12 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			hr = S_OK;
 			goto exit;
 		}
+		
+		_hwndParent = hwnd;
+		if(_hwndParent)
+		{
+			SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_OPENCANDIDATE, 1);
+		}
 
 		if(pContextView->GetTextExt(ec, pRangeComposition, &rc, &fClipped) != S_OK)
 		{
@@ -291,6 +297,12 @@ void CCandidateList::_InvokeSfHandler(BYTE sf)
 
 void CCandidateList::_EndCandidateList()
 {
+	if(_hwndParent)
+	{
+		SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_CLOSECANDIDATE, 1);
+		_hwndParent = NULL;
+	}
+
 	if(_pCandidateWindow)
 	{
 		_pCandidateWindow->_EndUIElement();

@@ -89,6 +89,8 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	APPDATAXMLROW::iterator r_itr;
 	std::wstring candidate;
 	std::wstring annotation;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");;
 
 	_wfopen_s(&fpidx, pathskkcvdicidx, L"rb");
 	if(fpidx == NULL)
@@ -106,7 +108,6 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 		fseek(fpidx, mid*sizeof(pos), SEEK_SET);
 		fread(&pos, sizeof(pos), 1, fpidx);
 
-		xmldic.clear();
 		if(ReadDicList(pathskkcvdicxml, SectionDictionary, xmldic, pos) != S_OK)
 		{
 			break;
@@ -133,18 +134,20 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 				{
 					if(r_itr->first == AttributeCandidate)
 					{
-						candidate = r_itr->second;
+						candidate = std::regex_replace(r_itr->second, re, fmt);
 					}
 					else if(r_itr->first == AttributeAnnotation)
 					{
-						annotation = r_itr->second;
+						annotation = std::regex_replace(r_itr->second, re, fmt);
 					}
 				}
 
-				if(!candidate.empty())
+				if(candidate.empty())
 				{
-					candidates.push_back(CANDIDATE(candidate, annotation));
+					continue;
 				}
+
+				candidates.push_back(CANDIDATE(candidate, annotation));
 			}
 			break;
 		}
@@ -186,6 +189,7 @@ void AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, co
 		}
 		userdics_itr->second.insert(userdics_itr->second.begin(), CANDIDATE(candidate, annotation));
 	}
+
 	if(command == REQ_USER_ADD_1)
 	{
 		AddComplement(searchkey);
@@ -210,6 +214,7 @@ void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
 				break;
 			}
 		}
+
 		if(userdics_itr->second.empty())	//候補が空になった
 		{
 			userdics.erase(userdics_itr);
@@ -226,13 +231,14 @@ void LoadUserDic()
 	USERDICS::iterator userdics_itr;
 	CANDIDATES::iterator candidates_itrs;
 	USERDICSPAIR userdic;
-	CANDIDATES::iterator candidates_itrp;
-	std::wstring candidate;
-	std::wstring annotation;
 	APPDATAXMLDIC xmldic;
 	APPDATAXMLDIC::iterator d_itr;;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
+	std::wstring candidate;
+	std::wstring annotation;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");;
 
 	userdics.clear();
 
@@ -242,7 +248,6 @@ void LoadUserDic()
 	for(d_itr = xmldic.begin(); d_itr != xmldic.end(); d_itr++)
 	{
 		userdic.first = d_itr->first;
-		userdic.second.clear();
 
 		for(l_itr = d_itr->second.begin(); l_itr != d_itr->second.end(); l_itr++)
 		{
@@ -253,46 +258,41 @@ void LoadUserDic()
 			{
 				if(r_itr->first == AttributeCandidate)
 				{
-					candidate = r_itr->second;
+					candidate = std::regex_replace(r_itr->second, re, fmt);
 				}
-				else if(r_itr->first == AttributeCandidate)
+				else if(r_itr->first == AttributeAnnotation)
 				{
-					annotation = r_itr->second;
+					annotation = std::regex_replace(r_itr->second, re, fmt);
 				}
 			}
 
-			if(!candidate.empty())
+			if(candidate.empty())
 			{
-				userdic.second.push_back(CANDIDATE(candidate, annotation));
+				continue;
 			}
-		}
 
-		if(userdic.second.size() != 0)
-		{
 			userdics_itr = userdics.find(userdic.first);
 			if(userdics_itr == userdics.end())
 			{
+				userdic.second.clear();
+				userdic.second.push_back(CANDIDATE(candidate, annotation));
 				userdics.insert(userdic);
 			}
 			else
 			{
-				for(candidates_itrp = userdic.second.begin(); candidates_itrp != userdic.second.end(); candidates_itrp++)
+				for(candidates_itrs = userdics_itr->second.begin(); candidates_itrs != userdics_itr->second.end(); candidates_itrs++)
 				{
-					for(candidates_itrs = userdics_itr->second.begin(); candidates_itrs != userdics_itr->second.end(); candidates_itrs++)
+					if(candidates_itrs->first == candidate)
 					{
-						if(candidates_itrp->first == candidates_itrs->first)
-						{
-							break;
-						}
+						break;
 					}
-					if(candidates_itrs == userdics_itr->second.end())
-					{
-						userdics_itr->second.push_back(*candidates_itrp);
-					}
+				}
+				if(candidates_itrs == userdics_itr->second.end())
+				{
+					userdics_itr->second.push_back(CANDIDATE(candidate, annotation));
 				}
 			}
 		}
-
 	}
 	
 NOT_S_OK:
@@ -507,6 +507,8 @@ void LoadComplement()
 	APPDATAXMLLIST xmllist;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");;
 
 	complements.clear();
 
@@ -530,7 +532,7 @@ void LoadComplement()
 				}
 				if(complements_itr == complements.end())
 				{
-					complements.push_back(r_itr->second);
+					complements.push_back(std::regex_replace(r_itr->second, re, fmt));
 				}
 			}
 		}
