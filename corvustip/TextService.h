@@ -167,30 +167,16 @@ public:
 	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
 	void _StartDicSrv();
 	void _StartConfigure();
-	void _StartProcess(const WCHAR *fname);
+	void _StartProcess(LPCWSTR fname);
 
 	// FnConfigure
 	void _CreateConfigPath();
-	BOOL _GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 	void _LoadBehavior();
 	void _LoadSelKey();
 	void _LoadKeyMap();
 	void _LoadConvPoint();
 	void _LoadKana();
 	void _LoadJLatin();
-
-#ifdef _DEBUG
-	void debugout(LPCWSTR format, ...)
-	{
-		va_list argptr;
-		va_start(argptr, format);
-		INT len = _vscwprintf(format, argptr) + 1;
-		WCHAR* str = (WCHAR*)alloca(len * sizeof(WCHAR));
-		vswprintf_s(str, len, format, argptr);
-		va_end(argptr);
-		OutputDebugStringW(str);
-	}
-#endif
 
 private:
 	LONG _cRef;
@@ -243,10 +229,7 @@ private:
 
 private:
 	//ファイルパス
-	WCHAR pathconfig[MAX_PATH];		//設定
-	WCHAR pathconfcvpt[MAX_PATH];	//変換位置指定
-	WCHAR pathconfkana[MAX_PATH];	//ローマ字仮名変換表
-	WCHAR pathconfjlat[MAX_PATH];	//ASCII全英変換表
+	WCHAR pathconfigxml[MAX_PATH];	//設定
 
 	//corvussrv.exe との名前付きパイプ
 	WCHAR pipename[MAX_KRNLOBJNAME];
@@ -292,6 +275,7 @@ public:
 	BOOL nookuriconv;		//送り仮名が決定したとき変換を開始しない
 	BOOL delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL backincenter;		//後退に確定を含める
+	BOOL addcandktkn;		//候補に片仮名変換を追加する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

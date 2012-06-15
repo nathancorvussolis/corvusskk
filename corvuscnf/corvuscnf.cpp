@@ -1,6 +1,9 @@
 ﻿
+#include "common.h"
 #include "corvuscnf.h"
 #include "resource.h"
+
+OSVERSIONINFOW ovi;
 
 // static dialog procedure
 INT_PTR CALLBACK DlgProcBehavior(HWND, UINT, WPARAM, LPARAM);
@@ -17,7 +20,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	HANDLE hMutex;
 	INITCOMMONCONTROLSEX icex;
 
-	setlocale(LC_ALL, "japanese");
+	_wsetlocale(LC_ALL, L"japanese");
+
+	ZeroMemory(&ovi, sizeof(ovi));
+	ovi.dwOSVersionInfoSize = sizeof(ovi);
+	GetVersionEx(&ovi);
 
 	CreateConfigPath();
 

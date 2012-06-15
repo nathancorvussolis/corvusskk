@@ -1,19 +1,20 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
 
 static const KEYMAP KeyMap2[] =
 {
-	{IDC_EDIT_ENTER,	L"Enter",	L"\\cm|\\cj"},
-	{IDC_EDIT_CANCEL,	L"Cancel",	L"\\cg|\\x1B"},
-	{IDC_EDIT_BACK,		L"Back",	L"\\ch"},
-	{IDC_EDIT_DELETE,	L"Delete",	L"\\x7F"},
-	{IDC_EDIT_VOID,		L"Void",	L""},
-	{IDC_EDIT_LEFT,		L"Left",	L"\\cb"},
-	{IDC_EDIT_UP,		L"Up",		L"\\ca"},
-	{IDC_EDIT_RIGHT,	L"Right",	L"\\cf"},
-	{IDC_EDIT_DOWN,		L"Down",	L"\\ce"},
-	{IDC_EDIT_PASTE,	L"Paste",	L"\\cy|\\cv"}
+	{IDC_EDIT_ENTER,	KeyMapEnter,	L"\\cm|\\cj"},
+	{IDC_EDIT_CANCEL,	KeyMapCancel,	L"\\cg|\\x1B"},
+	{IDC_EDIT_BACK,		KeyMapBack,		L"\\ch"},
+	{IDC_EDIT_DELETE,	KeyMapDelete,	L"\\x7F"},
+	{IDC_EDIT_VOID,		KeyMapVoid,		L""},
+	{IDC_EDIT_LEFT,		KeyMapLeft,		L"\\cb"},
+	{IDC_EDIT_UP,		KeyMapUp,		L"\\ca"},
+	{IDC_EDIT_RIGHT,	KeyMapRight,	L"\\cf"},
+	{IDC_EDIT_DOWN,		KeyMapDown,		L"\\ce"},
+	{IDC_EDIT_PASTE,	KeyMapPaste,	L"\\cy|\\cv"}
 };
 
 INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -64,6 +65,9 @@ INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			{
 				SaveKeyMap(hDlg, KeyMap2[i].idd, KeyMap2[i].keyName);
 			}
+
+			WriterEndSection(pXmlWriter);
+
 			return (INT_PTR)TRUE;
 
 		default:

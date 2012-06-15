@@ -153,11 +153,7 @@ void CTextService::_StartConv()
 	CANDIDATES::iterator candidates_itr;
 	CANDIDATES candidates_bak;
 	CANDIDATES candidates_num;
-	std::wstring ascii;
-	std::wstring jlatin;
-	std::wstring hiragana;
-	std::wstring katakana;
-	std::wstring katakana_ank;
+	std::wstring kanaconv;
 
 	searchkey.clear();
 	searchkeyorg.clear();
@@ -177,6 +173,27 @@ void CTextService::_StartConv()
 
 	//通常検索
 	_ConvDic(REQ_SEARCH);
+
+	//片仮名変換
+	if(addcandktkn && !abbrevmode)
+	{
+		switch(inputmode)
+		{
+		case im_hiragana:
+		case im_katakana:
+			if(accompidx != 0)
+			{
+				_ConvKanaToKana(kanaconv, im_katakana, kana.substr(0, accompidx), inputmode);
+			}
+			else
+			{
+				_ConvKanaToKana(kanaconv, im_katakana, kana, inputmode);
+			}
+			break;
+		default:
+			break;
+		}
+	}
 
 	searchkeyorg = searchkey;	//オリジナルバックアップ
 
@@ -203,6 +220,21 @@ void CTextService::_StartConv()
 		for(candidates_itr = candidates_num.begin(); candidates_itr != candidates_num.end(); candidates_itr++)
 		{
 			candidates.push_back(*candidates_itr);
+		}
+	}
+	if(!kanaconv.empty())
+	{
+		for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
+		{
+			if(candidates_itr->first.first == kanaconv)
+			{
+				kanaconv.clear();
+				break;
+			}
+		}
+		if(!kanaconv.empty())
+		{
+			candidates.push_back(CANDIDATE(CANDIDATEBASE(kanaconv, L""), CANDIDATEBASE(kanaconv, L"")));
 		}
 	}
 

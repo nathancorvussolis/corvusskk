@@ -1,5 +1,6 @@
 ﻿
 #include "corvuscnf.h"
+#include "configxml.h"
 #include "resource.h"
 
 INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

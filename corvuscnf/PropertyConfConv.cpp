@@ -1,10 +1,8 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "convtable.h"
 #include "resource.h"
-
-//セクション
-static const WCHAR *IniSecKeyMap = L"KeyMap";
 
 #define BUFSIZE 0x100
 
@@ -14,10 +12,10 @@ ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName)
 {
-	WCHAR num[2];
+	std::wstring strxmlval;
 
-	GetPrivateProfileStringW(lpAppName, lpKeyName, L"0", num, _countof(num), pathconfig);
-	CheckDlgButton(hDlg, nIDDlgItem, (_wtoi(num) == TRUE ? BST_CHECKED : BST_UNCHECKED));
+	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval);
+	CheckDlgButton(hDlg, nIDDlgItem, (_wtoi(strxmlval.c_str()) == TRUE ? BST_CHECKED : BST_UNCHECKED));
 }
 
 void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName)
@@ -26,15 +24,16 @@ void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKey
 
 	num[0] = L'0' + IsDlgButtonChecked(hDlg, nIDDlgItem);
 	num[1] = L'\0';
-	WritePrivateProfileStringW(lpAppName, lpKeyName, num, pathconfig);
+	WriterKey(pXmlWriter, lpKeyName, num);
 }
 
 void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName, LPCWSTR lpDefault)
 {
-	WCHAR keyre[KEYRELEN];
+	std::wstring strxmlval;
 
-	GetPrivateProfileStringW(IniSecKeyMap, lpKeyName, lpDefault, keyre, _countof(keyre), pathconfig);
-	SetDlgItemTextW(hDlg, nIDDlgItem, keyre);
+	ReadValue(pathconfigxml, SectionKeyMap, lpKeyName, strxmlval);
+	if(strxmlval.empty()) strxmlval = lpDefault;
+	SetDlgItemTextW(hDlg, nIDDlgItem, strxmlval.c_str());
 }
 
 void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
@@ -42,76 +41,50 @@ void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 	WCHAR keyre[KEYRELEN];
 
 	GetDlgItemTextW(hDlg, nIDDlgItem, keyre, _countof(keyre));
-	WritePrivateProfileStringW(IniSecKeyMap, lpKeyName, keyre, pathconfig);
+	WriterKey(pXmlWriter, lpKeyName, keyre);
 }
 
 void LoadConfigConvPoint()
 {
-	FILE *fp;
-	size_t t;
-	wchar_t b[BUFSIZE];
-	const wchar_t seps[] = L"\t\n\0";
-	size_t sidx, eidx;
-	wchar_t key[3][2];
+	APPDATAXMLLIST list;
+	APPDATAXMLLIST::iterator l_itr;
+	APPDATAXMLROW::iterator r_itr;
+	int i = 0;
 
 	ZeroMemory(conv_point, sizeof(conv_point));
-	for(t=0; t<26; t++)
-	{
-		conv_point[t][0][0] = L'A' + (WCHAR)t;
-		conv_point[t][1][0] = L'a' + (WCHAR)t;
-		conv_point[t][2][0] = L'a' + (WCHAR)t;
-	}
 
-	_wfopen_s(&fp, pathconfcvpt, RccsUNICODE);
-	if(fp == NULL)
+	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK)
 	{
-		return;
-	}
-	
-	ZeroMemory(b, sizeof(b));
-	t = 0;
-	while(fgetws(b, BUFSIZE, fp) != NULL)
-	{
-		if(t >= CONV_POINT_NUM)
+		for(l_itr = list.begin(); l_itr != list.end() && i < CONV_POINT_NUM; l_itr++)
 		{
-			break;
+			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			{
+				if(r_itr->first == AttributeCPStart)
+				{
+					conv_point[i][0][0] = r_itr->second.c_str()[0];
+				}
+				else if(r_itr->first == AttributeCPAlter)
+				{
+					conv_point[i][1][0] = r_itr->second.c_str()[0];
+				}
+				else if(r_itr->first == AttributeCPOkuri)
+				{
+					conv_point[i][2][0] = r_itr->second.c_str()[0];
+				}
+			}
+
+			i++;
 		}
-
-		ZeroMemory(key, sizeof(key));
-
-		sidx = 0;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(key[0], _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(key[1], _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(key[2], _TRUNCATE, L"%s", &b[sidx]);
-
-		ZeroMemory(b, sizeof(b));
-
-		if(key[0][0] == L'\0' &&
-			key[1][0] == L'\0' &&
-			key[2][0] == L'\0')
-		{
-			continue;
-		}
-
-		memcpy_s(conv_point[t], sizeof(conv_point[t]), key, sizeof(key));
-		++t;
 	}
-	if(t < CONV_POINT_NUM)
+	else
 	{
-		conv_point[t][0][0] = L'\0';
-		conv_point[t][1][0] = L'\0';
-		conv_point[t][2][0] = L'\0';
+		for(i=0; i<26; i++)
+		{
+			conv_point[i][0][0] = L'A' + (WCHAR)i;
+			conv_point[i][1][0] = L'a' + (WCHAR)i;
+			conv_point[i][2][0] = L'a' + (WCHAR)i;
+		}
 	}
-
-	fclose(fp);
 }
 
 void LoadConvPoint(HWND hwnd)
@@ -132,6 +105,7 @@ void LoadConvPoint(HWND hwnd)
 		{
 			break;
 		}
+
 		item.mask = LVIF_TEXT;
 		item.pszText = conv_point[i][0];
 		item.iItem = i;
@@ -153,7 +127,9 @@ void SaveConvPoint(HWND hwnd)
 	int i, count;
 	HWND hWndListView;
 	WCHAR key[2];
-	FILE *fp;
+	APPDATAXMLATTR attr;
+	APPDATAXMLROW row;
+	APPDATAXMLLIST list;
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 	count = ListView_GetItemCount(hWndListView);
@@ -173,104 +149,96 @@ void SaveConvPoint(HWND hwnd)
 		conv_point[count][2][0] = L'\0';
 	}
 
-	_wfopen_s(&fp, pathconfcvpt, WccsUNICODE);
-	if(fp != NULL)
+	WriterStartSection(pXmlWriter, SectionConvPoint);
+
+	for(int i=0; i<CONV_POINT_NUM; i++)
 	{
-		for(i=0; i<count && i<CONV_POINT_NUM; i++)
-		{
-			if(conv_point[i][0][0] == L'\0' &&
-				conv_point[i][1][0] == L'\0' &&
-				conv_point[i][2][0] == L'\0')
-			{
-				continue;
-			}
-			fwprintf(fp, L"%s\t%s\t%s\n",
-					 conv_point[i][0], conv_point[i][1], conv_point[i][2]);
-		}
-
-		fclose(fp);
-	}
-}
-
-void LoadConfigKana()
-{
-	FILE *fp;
-	size_t t;
-	wchar_t b[BUFSIZE];
-	const wchar_t seps[] = L"\t\n\0";
-	size_t sidx, eidx;
-	ROMAN_KANA_CONV conv;
-	wchar_t soku[2];
-
-	memcpy_s(roman_kana_conv, sizeof(roman_kana_conv),
-		roman_kana_conv_default, sizeof(roman_kana_conv_default));
-
-	_wfopen_s(&fp, pathconfkana, RccsUNICODE);
-	if(fp == NULL)
-	{
-		return;
-	}
-	
-	ZeroMemory(b, sizeof(b));
-	t = 0;
-	while(fgetws(b, BUFSIZE, fp) != NULL)
-	{
-		if(t >= ROMAN_KANA_TBL_NUM)
+		if(conv_point[i][0][0] == L'\0' &&
+			conv_point[i][1][0] == L'\0' &&
+			conv_point[i][2][0] == L'\0')
 		{
 			break;
 		}
 
-		ZeroMemory(&conv, sizeof(conv));
+		attr.first = AttributeCPStart;
+		attr.second = conv_point[i][0];
+		row.push_back(attr);
 
-		sidx = 0;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.roman, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.hiragana, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.katakana, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
-		conv.soku = _wtoi(soku);
-		if(conv.soku != TRUE && conv.soku != FALSE)
-		{
-			conv.soku = FALSE;
-		}
+		attr.first = AttributeCPAlter;
+		attr.second = conv_point[i][1];
+		row.push_back(attr);
 
-		ZeroMemory(b, sizeof(b));
+		attr.first = AttributeCPOkuri;
+		attr.second = conv_point[i][2];
+		row.push_back(attr);
 
-		if(conv.roman[0] == L'\0' &&
-			conv.hiragana[0] == L'\0' &&
-			conv.katakana[0] == L'\0' &&
-			conv.katakana_ank[0] == L'\0')
-		{
-			continue;
-		}
-
-		roman_kana_conv[t] = conv;
-		++t;
+		list.push_back(row);
+		row.clear();
 	}
-	if(t < ROMAN_KANA_TBL_NUM)
+
+	WriterList(pXmlWriter, list);
+
+	WriterEndSection(pXmlWriter);
+}
+
+void LoadConfigKana()
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLLIST::iterator l_itr;
+	APPDATAXMLROW::iterator r_itr;
+	int i = 0;
+	WCHAR *pszb;
+	size_t blen;
+
+	if(ReadList(pathconfigxml, SectionKana, list) == S_OK)
 	{
-		roman_kana_conv[t].roman[0] = L'\0';
-		roman_kana_conv[t].hiragana[0] = L'\0';
-		roman_kana_conv[t].katakana[0] = L'\0';
-		roman_kana_conv[t].katakana_ank[0] = L'\0';
-		roman_kana_conv[t].soku = 0;
-	}
+		ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
 
-	fclose(fp);
+		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_NUM; l_itr++)
+		{
+			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			{
+				pszb = NULL;
+
+				if(r_itr->first == AttributeRoman)
+				{
+					pszb = roman_kana_conv[i].roman;
+					blen = _countof(roman_kana_conv[i].roman);
+				}
+				else if(r_itr->first == AttributeHiragana)
+				{
+					pszb = roman_kana_conv[i].hiragana;
+					blen = _countof(roman_kana_conv[i].hiragana);
+				}
+				else if(r_itr->first == AttributeKatakana)
+				{
+					pszb = roman_kana_conv[i].katakana;
+					blen = _countof(roman_kana_conv[i].katakana);
+				}
+				else if(r_itr->first == AttributeKatakanaAnk)
+				{
+					pszb = roman_kana_conv[i].katakana_ank;
+					blen = _countof(roman_kana_conv[i].katakana_ank);
+				}
+				else if(r_itr->first == AttributeSoku)
+				{
+					roman_kana_conv[i].soku = _wtoi(r_itr->second.c_str());
+				}
+
+				if(pszb != NULL)
+				{
+					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
+				}
+			}
+
+			i++;
+		}
+	}
+	else
+	{
+		memcpy_s(roman_kana_conv, sizeof(roman_kana_conv),
+			roman_kana_conv_default, sizeof(roman_kana_conv_default));
+	}
 }
 
 void LoadKana(HWND hwnd)
@@ -292,6 +260,7 @@ void LoadKana(HWND hwnd)
 		{
 			break;
 		}
+
 		item.mask = LVIF_TEXT;
 		item.pszText = roman_kana_conv[i].roman;
 		item.iItem = i;
@@ -321,8 +290,10 @@ void SaveKana(HWND hwnd)
 	int i, count;
 	HWND hWndListView;
 	ROMAN_KANA_CONV rkc;
-	WCHAR soku[8];
-	FILE *fp;
+	WCHAR soku[2];
+	APPDATAXMLATTR attr;
+	APPDATAXMLROW row;
+	APPDATAXMLLIST list;
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_KANATBL);
 	count = ListView_GetItemCount(hWndListView);
@@ -345,86 +316,91 @@ void SaveKana(HWND hwnd)
 		roman_kana_conv[count].soku = FALSE;
 	}
 
-	_wfopen_s(&fp, pathconfkana, WccsUNICODE);
-	if(fp != NULL)
+	WriterStartSection(pXmlWriter, SectionKana);
+
+	for(i=0; i<ROMAN_KANA_TBL_NUM; i++)
 	{
-		for(i=0; i<count && i<ROMAN_KANA_TBL_NUM; i++)
-		{
-			if(roman_kana_conv[i].roman[0] == L'\0' &&
-				roman_kana_conv[i].hiragana[0] == L'\0' &&
-				roman_kana_conv[i].katakana[0] == L'\0' &&
-				roman_kana_conv[i].katakana_ank[0] == L'\0')
-			{
-				continue;
-			}
-			fwprintf(fp, L"%s\t%s\t%s\t%s\t%d\n",
-					 roman_kana_conv[i].roman,
-					 roman_kana_conv[i].hiragana,
-					 roman_kana_conv[i].katakana,
-					 roman_kana_conv[i].katakana_ank,
-					 roman_kana_conv[i].soku);
-		}
-
-		fclose(fp);
-	}
-}
-
-void LoadConfigJLatin()
-{
-	FILE *fp;
-	size_t t;
-	wchar_t b[BUFSIZE];
-	const wchar_t seps[] = L"\t\n\0";
-	size_t sidx, eidx;
-	ASCII_JLATIN_CONV conv;
-
-	memcpy_s(ascii_jlatin_conv, sizeof(ascii_jlatin_conv),
-		ascii_jlatin_conv_default, sizeof(ascii_jlatin_conv_default));
-
-	_wfopen_s(&fp, pathconfjlat, RccsUNICODE);
-	if(fp == NULL)
-	{
-		return;
-	}
-
-	ZeroMemory(b, sizeof(b));
-	t = 0;
-	while(fgetws(b, BUFSIZE, fp) != NULL)
-	{
-		if(t >= ASCII_JLATIN_TBL_NUM)
+		if(roman_kana_conv[i].roman[0] == L'\0' &&
+			roman_kana_conv[i].hiragana[0] == L'\0' &&
+			roman_kana_conv[i].katakana[0] == L'\0' &&
+			roman_kana_conv[i].katakana_ank[0] == L'\0')
 		{
 			break;
 		}
 
-		ZeroMemory(&conv, sizeof(conv));
+		attr.first = AttributeRoman;
+		attr.second = roman_kana_conv[i].roman;
+		row.push_back(attr);
 
-		sidx = 0;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.ascii, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.jlatin, _TRUNCATE, L"%s", &b[sidx]);
+		attr.first = AttributeHiragana;
+		attr.second = roman_kana_conv[i].hiragana;
+		row.push_back(attr);
 
-		ZeroMemory(b, sizeof(b));
+		attr.first = AttributeKatakana;
+		attr.second = roman_kana_conv[i].katakana;
+		row.push_back(attr);
 
-		if(conv.ascii[0] == L'\0' &&
-			conv.jlatin[0] == L'\0')
-		{
-			continue;
-		}
+		attr.first = AttributeKatakanaAnk;
+		attr.second = roman_kana_conv[i].katakana_ank;
+		row.push_back(attr);
 
-		ascii_jlatin_conv[t] = conv;
-		++t;
+		attr.first = AttributeSoku;
+		attr.second = (roman_kana_conv[i].soku == TRUE ? L"1" : L"0");
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
 	}
-	if(t < ASCII_JLATIN_TBL_NUM)
+
+	WriterList(pXmlWriter, list);
+
+	WriterEndSection(pXmlWriter);
+}
+
+void LoadConfigJLatin()
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLLIST::iterator l_itr;
+	APPDATAXMLROW::iterator r_itr;
+	int i = 0;
+	WCHAR *pszb;
+	size_t blen;
+
+	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK)
 	{
-		ascii_jlatin_conv[t].ascii[0] = L'\0';
-		ascii_jlatin_conv[t].jlatin[0] = L'\0';
-	}
+		ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
 
-	fclose(fp);
+		for(l_itr = list.begin(); l_itr != list.end() && i < ASCII_JLATIN_TBL_NUM; l_itr++)
+		{
+			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			{
+				pszb = NULL;
+
+				if(r_itr->first == AttributeLatin)
+				{
+					pszb = ascii_jlatin_conv[i].ascii;
+					blen = _countof(ascii_jlatin_conv[i].ascii);
+				}
+				else if(r_itr->first == AttributeJLatin)
+				{
+					pszb = ascii_jlatin_conv[i].jlatin;
+					blen = _countof(ascii_jlatin_conv[i].jlatin);
+				}
+
+				if(pszb != NULL)
+				{
+					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
+				}
+			}
+
+			i++;
+		}
+	}
+	else
+	{
+		memcpy_s(ascii_jlatin_conv, sizeof(ascii_jlatin_conv),
+			ascii_jlatin_conv_default, sizeof(ascii_jlatin_conv_default));
+	}
 }
 
 void LoadJLatin(HWND hwnd)
@@ -444,6 +420,7 @@ void LoadJLatin(HWND hwnd)
 		{
 			break;
 		}
+
 		item.mask = LVIF_TEXT;
 		item.pszText = ascii_jlatin_conv[i].ascii;
 		item.iItem = i;
@@ -461,7 +438,9 @@ void SaveJLatin(HWND hwnd)
 	int i, count;
 	HWND hWndListView;
 	ASCII_JLATIN_CONV ajc;
-	FILE *fp;
+	APPDATAXMLATTR attr;
+	APPDATAXMLROW row;
+	APPDATAXMLLIST list;
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_JLATTBL);
 	count = ListView_GetItemCount(hWndListView);
@@ -477,21 +456,29 @@ void SaveJLatin(HWND hwnd)
 		ascii_jlatin_conv[count].jlatin[0] = L'\0';
 	}
 
-	_wfopen_s(&fp, pathconfjlat, WccsUNICODE);
-	if(fp != NULL)
+	WriterStartSection(pXmlWriter, SectionJLatin);
+
+	for(i=0; ; i++)
 	{
-		for(i=0; i<count && i<ASCII_JLATIN_TBL_NUM; i++)
+		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
+			ascii_jlatin_conv[i].jlatin[0] == L'\0')
 		{
-			if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
-				ascii_jlatin_conv[i].jlatin[0] == L'\0')
-			{
-				continue;
-			}
-			fwprintf(fp, L"%s\t%s\n",
-					 ascii_jlatin_conv[i].ascii,
-					 ascii_jlatin_conv[i].jlatin);
+			break;
 		}
 
-		fclose(fp);
+		attr.first = AttributeLatin;
+		attr.second = ascii_jlatin_conv[i].ascii;
+		row.push_back(attr);
+
+		attr.first = AttributeJLatin;
+		attr.second = ascii_jlatin_conv[i].jlatin;
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
 	}
+
+	WriterList(pXmlWriter, list);
+
+	WriterEndSection(pXmlWriter);
 }

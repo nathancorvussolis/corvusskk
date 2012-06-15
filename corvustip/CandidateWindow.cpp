@@ -1,4 +1,5 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 #include "TextService.h"
 #include "CandidateWindow.h"
@@ -7,16 +8,16 @@
 static WNDPROC ToolTipWndProcDef = NULL;
 static HWND _hwndParent = NULL;
 
-static const WCHAR *markZWSP = L"\u200B";	//U+200B ZERO WIDTH SPACE
-static const WCHAR *markAnnotation = L";";
+static LPCWSTR markZWSP = L"\u200B";	//U+200B ZERO WIDTH SPACE
+static LPCWSTR markAnnotation = L";";
 
-static const WCHAR *markNo = L":";
-static const WCHAR *markNoTT = L" ";
-static const WCHAR *markCandEnd = L"　";
-static const WCHAR *markCursor = L"|";
-static const WCHAR *markRegKeyEnd = L"：";
-static const WCHAR *markLinkS = L"<a>";
-static const WCHAR *markLinkE = L"</a>";
+static LPCWSTR markNo = L":";
+static LPCWSTR markNoTT = L" ";
+static LPCWSTR markCandEnd = L"　";
+static LPCWSTR markCursor = L"|";
+static LPCWSTR markRegKeyEnd = L"：";
+static LPCWSTR markLinkS = L"<a>";
+static LPCWSTR markLinkE = L"</a>";
 
 CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 {
@@ -547,7 +548,7 @@ void CCandidateWindow::_BeginUIElement()
 		}
 	}
 
-	if(g_ovi.dwMajorVersion < 6)
+	if(!IsVersion6AndOver(g_ovi))
 	{
 		_bShow = TRUE;
 	}

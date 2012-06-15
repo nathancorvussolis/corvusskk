@@ -1,21 +1,8 @@
 ﻿
+#include "common.h"
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
-
-//セクション
-static const WCHAR *IniSecBehavior = L"Behavior";
-//キー
-static const WCHAR *FontName = L"FontName";
-static const WCHAR *FontStyle = L"FontStyle";
-static const WCHAR *MaxWidth = L"MaxWidth";
-static const WCHAR *VisualStyle = L"VisualStyle";
-static const WCHAR *UntilCandList = L"UntilCandList";
-static const WCHAR *DispCandNo = L"DispCandNo";
-static const WCHAR *Annotation = L"Annotation";
-static const WCHAR *NoModeMark = L"NoModeMark";
-static const WCHAR *NoOkuriConv = L"NoOkuriConv";
-static const WCHAR *DelOkuriCncl = L"DelOkuriCncl";
-static const WCHAR *BackIncEnter = L"BackIncEnter";
 
 INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -26,26 +13,27 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	int fontpoint;
 	int fontweight;
 	BOOL fontitalic;
-	CHOOSEFONT cf;
+	CHOOSEFONTW cf;
 	LOGFONT lf;
 	HDC hdcDlg;
 	HFONT hFont;
 	RECT rect;
 	LONG w;
-	FILE *fp;
+	std::wstring strxmlval;
 
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		GetPrivateProfileStringW(IniSecBehavior, FontName, L"", fontname, _countof(fontname), pathconfig);
-		
-		GetPrivateProfileStringW(IniSecBehavior, FontStyle, L"12,400,0", num, _countof(num), pathconfig);
-		if(swscanf_s(num, L"%d,%d,%d", &fontpoint, &fontweight, &fontitalic) != 3)
-		{
-			fontpoint = 12;
-			fontweight = FW_NORMAL;
-			fontitalic = FALSE;
-		}
+		ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);
+		wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
+
+		ReadValue(pathconfigxml, SectionFont, FontSize, strxmlval);
+		fontpoint = _wtoi(strxmlval.c_str());
+		ReadValue(pathconfigxml, SectionFont, FontWeight, strxmlval);
+		fontweight = _wtoi(strxmlval.c_str());
+		ReadValue(pathconfigxml, SectionFont, FontItalic, strxmlval);
+		fontitalic = _wtoi(strxmlval.c_str());
+
 		if(fontpoint < 8 || fontpoint > 72)
 		{
 			fontpoint = 12;
@@ -69,8 +57,8 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, fontpoint, FALSE);
 
-		GetPrivateProfileStringW(IniSecBehavior, MaxWidth, L"-1", num, _countof(num), pathconfig);
-		w = _wtol(num);
+		ReadValue(pathconfigxml, SectionFont, MaxWidth, strxmlval);
+		w = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 		if(w < 0 || w > rect.right)
 		{
@@ -79,7 +67,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		_snwprintf_s(num, _TRUNCATE, L"%d", w);
 		SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, IniSecBehavior, VisualStyle);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, SectionBehavior, VisualStyle);
 
 		cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
@@ -88,20 +76,21 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			num[0] = L'0' + (WCHAR)i;
 			SendMessage(cmbUntilCandList, CB_ADDSTRING, 0, (LPARAM)num);
 		}
-		GetPrivateProfileStringW(IniSecBehavior, UntilCandList, L"4", num, 2, pathconfig);
-		i = _wtoi(num);
+		ReadValue(pathconfigxml, SectionFont, UntilCandList, strxmlval);
+		i = strxmlval.empty() ? 4 : _wtoi(strxmlval.c_str());
 		if(i > 8 || (i == 0 && num[0] != L'0'))
 		{
 			i = 4;
 		}
 		SendMessage(cmbUntilCandList, CB_SETCURSEL, (WPARAM)i, 0);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, IniSecBehavior, DispCandNo);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, IniSecBehavior, Annotation);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, IniSecBehavior, NoModeMark);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, IniSecBehavior, NoOkuriConv);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, IniSecBehavior, DelOkuriCncl);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, IniSecBehavior, BackIncEnter);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, BackIncEnter);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, AddCandKtkn);
 
 		return (INT_PTR)TRUE;
 
@@ -117,12 +106,12 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			lf.lfCharSet = SHIFTJIS_CHARSET;
 
 			ZeroMemory(&cf, sizeof(cf));
-			cf.lStructSize = sizeof(CHOOSEFONT);
+			cf.lStructSize = sizeof(CHOOSEFONTW);
 			cf.hwndOwner = hDlg;
 			cf.lpLogFont = &lf;
 			cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOVERTFONTS | CF_SCREENFONTS | CF_SELECTSCRIPT;
 
-			if(ChooseFont(&cf) == TRUE)
+			if(ChooseFontW(&cf) == TRUE)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -165,6 +154,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_NOOKURICONV:
 		case IDC_CHECKBOX_DELOKURICNCL:
 		case IDC_CHECKBOX_BACKINCENTER:
+		case IDC_CHECKBOX_ADDCANDKTKN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return (INT_PTR)TRUE;
 
@@ -177,21 +167,30 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
-			_wfopen_s(&fp, pathconfig, L"wb");
-			if(fp != NULL)
+			if(IsVersion62AndOver(ovi))
 			{
-				fwrite("\xFF\xFE", 2, 1, fp);
-				fclose(fp);
+				SetFileDaclAC(pathconfigxml);
 			}
 
+			WriterInit(pathconfigxml, &pXmlWriter, &pXmlFileStream);
+
+			WriterStartSection(pXmlWriter, SectionFont);
+
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));
-			WritePrivateProfileStringW(IniSecBehavior, FontName, fontname, pathconfig);
+			WriterKey(pXmlWriter, FontName, fontname);
 
 			hFont = (HFONT)SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
 			GetObject(hFont, sizeof(LOGFONT), &lf);
-			_snwprintf_s(num, _TRUNCATE, L"%d,%d,%d", GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE),
-				lf.lfWeight, ((lf.lfItalic == FALSE) ? FALSE : TRUE));
-			WritePrivateProfileStringW(IniSecBehavior, FontStyle, num, pathconfig);
+			GetDlgItemTextW(hDlg, IDC_EDIT_FONTPOINT, num, _countof(num));
+			WriterKey(pXmlWriter, FontSize, num);
+			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfWeight);
+			WriterKey(pXmlWriter, FontWeight, num);
+			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfItalic);
+			WriterKey(pXmlWriter, FontItalic, num);
+
+			WriterEndSection(pXmlWriter);
+
+			WriterStartSection(pXmlWriter, SectionBehavior);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num, _countof(num));
 			w = _wtol(num);
@@ -202,21 +201,24 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			_snwprintf_s(num, _TRUNCATE, L"%d", w);
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
-			WritePrivateProfileStringW(IniSecBehavior, MaxWidth, num, pathconfig);
+			WriterKey(pXmlWriter, MaxWidth, num);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, IniSecBehavior, VisualStyle);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, SectionBehavior, VisualStyle);
 
 			cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 			num[0] = L'0' + (WCHAR)SendMessage(cmbUntilCandList, CB_GETCURSEL, 0, 0);
 			num[1] = L'\0';
-			WritePrivateProfileStringW(IniSecBehavior, UntilCandList, num, pathconfig);
+			WriterKey(pXmlWriter, UntilCandList, num);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, IniSecBehavior, DispCandNo);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, IniSecBehavior, Annotation);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, IniSecBehavior, NoModeMark);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, IniSecBehavior, NoOkuriConv);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, IniSecBehavior, DelOkuriCncl);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, IniSecBehavior, BackIncEnter);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, BackIncEnter);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, AddCandKtkn);
+
+			WriterEndSection(pXmlWriter);
 
 			return (INT_PTR)TRUE;
 

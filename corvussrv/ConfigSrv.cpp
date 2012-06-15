@@ -1,37 +1,19 @@
 ﻿
+#include "common.h"
+#include "configxml.h"
 #include "corvussrv.h"
 
-const WCHAR *TextServiceDesc = TEXTSERVICE_DESC;
-
-#define CCSUNICODE L",ccs=UNICODE"
-const WCHAR *RccsUNICODE = L"r" CCSUNICODE;
-const WCHAR *WccsUNICODE = L"w" CCSUNICODE;
+LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 
 // ファイルパス
-WCHAR pathconf[MAX_PATH];		//設定
-WCHAR pathskkcvdic[MAX_PATH];	//取込SKK辞書
-WCHAR pathskkcvidx[MAX_PATH];	//取込SKK辞書インデックス
-WCHAR pathuserdic[MAX_PATH];	//ユーザ辞書
-WCHAR pathusercmp[MAX_PATH];	//補完見出し語
-// ファイル名
-const WCHAR *fnconfig = L"config.ini";
-const WCHAR *fnskkcvdic = L"skkcv.dic";
-const WCHAR *fnskkcvidx = L"skkcv.idx";
-const WCHAR *fnuserdic = L"userdic.txt";
-const WCHAR *fnusercmp = L"usercmp.txt";
+WCHAR pathconfigxml[MAX_PATH];		//設定
+WCHAR pathuserdicxml[MAX_PATH];		//ユーザ辞書
+WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
+WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
 
-WCHAR pipename[MAX_KRNLOBJNAME];	//名前付きパイプ
-WCHAR pipesddl[MAX_KRNLOBJNAME];	//名前付きパイプSDDL
+WCHAR krnlobjsddl[MAX_KRNLOBJNAME];		//SDDL
+WCHAR pipename[MAX_KRNLOBJNAME];		//名前付きパイプ
 WCHAR srvmutexname[MAX_KRNLOBJNAME];	//ミューテックス
-
-// config.ini セクション
-const WCHAR * IniSecServer = L"Server";
-
-// config.ini キー 辞書サーバ
-const WCHAR *Serv = L"Serv";
-const WCHAR *Host = L"Host";
-const WCHAR *Port = L"Port";
-const WCHAR *TimeOut = L"TimeOut";
 
 // 辞書サーバ設定
 BOOL serv;		//SKK辞書サーバを使用する
@@ -43,11 +25,10 @@ void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
 
-	pathconf[0] = L'\0';
-	pathskkcvdic[0] = L'\0';
-	pathskkcvidx[0] = L'\0';
-	pathuserdic[0] = L'\0';
-	pathusercmp[0] = L'\0';
+	pathconfigxml[0] = L'\0';
+	pathuserdicxml[0] = L'\0';
+	pathskkcvdicxml[0] = L'\0';
+	pathskkcvdicidx[0] = L'\0';
 
 	if(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, NULL, appdata) != S_OK)
 	{
@@ -61,20 +42,17 @@ void CreateConfigPath()
 
 	_wmkdir(appdata);
 
-	wcsncpy_s(pathconf, appdata, _TRUNCATE);
-	wcsncat_s(pathconf, fnconfig, _TRUNCATE);
+	wcsncpy_s(pathconfigxml, appdata, _TRUNCATE);
+	wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
 
-	wcsncpy_s(pathskkcvdic, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvdic, fnskkcvdic, _TRUNCATE);
+	wcsncpy_s(pathuserdicxml, appdata, _TRUNCATE);
+	wcsncat_s(pathuserdicxml, fnuserdicxml, _TRUNCATE);
 
-	wcsncpy_s(pathskkcvidx, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvidx, fnskkcvidx, _TRUNCATE);
+	wcsncpy_s(pathskkcvdicxml, appdata, _TRUNCATE);
+	wcsncat_s(pathskkcvdicxml, fnskkcvdicxml, _TRUNCATE);
 
-	wcsncpy_s(pathuserdic, appdata, _TRUNCATE);
-	wcsncat_s(pathuserdic, fnuserdic, _TRUNCATE);
-
-	wcsncpy_s(pathusercmp, appdata, _TRUNCATE);
-	wcsncat_s(pathusercmp, fnusercmp, _TRUNCATE);
+	wcsncpy_s(pathskkcvdicidx, appdata, _TRUNCATE);
+	wcsncat_s(pathskkcvdicidx, fnskkcvdicidx, _TRUNCATE);
 
 	HANDLE hToken;
 	PTOKEN_USER pTokenUser;
@@ -83,8 +61,8 @@ void CreateConfigPath()
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
 
+	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
 	ZeroMemory(pipename, sizeof(pipename));
-	ZeroMemory(pipesddl, sizeof(pipesddl));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
@@ -101,7 +79,18 @@ void CreateConfigPath()
 		CloseHandle(hToken);
 	}
 
-	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", pszUserSid);
+	_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)", pszUserSid);
+
+	if(IsVersion62AndOver(ovi))
+	{
+		// for Windows 8 SDDL_ALL_APP_PACKAGES
+		wcsncat_s(krnlobjsddl, L"(A;;GA;;;AC)", _TRUNCATE);
+	}
+	if(IsVersion6AndOver(ovi))
+	{
+		// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
+		wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
+	}
 
 	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 	{
@@ -117,50 +106,14 @@ void CreateConfigPath()
 	LocalFree(pszUserSid);
 }
 
-BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
-{
-	BOOL bRet = FALSE;
-	HCRYPTPROV hProv = NULL;
-	HCRYPTHASH hHash = NULL;
-	BYTE *pbData;
-	DWORD dwDataLen;
-
-	if(digest == NULL)
-	{
-		return FALSE;
-	}
-
-	ZeroMemory(digest, sizeof(digest));
-	pbData = digest->digest;
-	dwDataLen = sizeof(digest->digest);
-
-	if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
-	{
-		if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
-		{
-			if(CryptHashData(hHash, data, datalen, 0))
-			{
-				if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
-				{
-					bRet = TRUE;
-				}
-			}
-			CryptDestroyHash(hHash);
-		}
-		CryptReleaseContext(hProv, 0);
-	}
-
-	return bRet;
-}
-
 void LoadConfig()
 {
-	WCHAR num[2];
 	WCHAR hosttmp[MAX_SKKSERVER_HOST];	//ホスト
 	WCHAR porttmp[MAX_SKKSERVER_PORT];	//ポート
+	std::wstring strxmlval;
 
-	GetPrivateProfileStringW(IniSecServer, Serv, L"0", num, 2, pathconf);
-	serv = _wtoi(num);
+	ReadValue(pathconfigxml, SectionServer, Serv, strxmlval);
+	serv = _wtoi(strxmlval.c_str());
 	if(serv != TRUE && serv != FALSE)
 	{
 		serv = FALSE;
@@ -172,11 +125,15 @@ void LoadConfig()
 		DisconnectSKKServer();
 	}
 
-	GetPrivateProfileStringW(IniSecServer, Host, L"", hosttmp, _countof(hosttmp), pathconf);
+	ReadValue(pathconfigxml, SectionServer, Host, strxmlval);
+	wcsncpy_s(hosttmp, strxmlval.c_str(), _TRUNCATE);
 
-	GetPrivateProfileStringW(IniSecServer, Port, L"", porttmp, _countof(porttmp), pathconf);
+	ReadValue(pathconfigxml, SectionServer, Port, strxmlval);
+	wcsncpy_s(porttmp, strxmlval.c_str(), _TRUNCATE);
 
-	timeout = GetPrivateProfileInt(IniSecServer, TimeOut, 1000, pathconf);
+	ReadValue(pathconfigxml, SectionServer, TimeOut, strxmlval);
+	timeout = _wtoi(strxmlval.c_str());
+	if(timeout > 60000) timeout = 1000;
 
 	//変更があったら接続し直す
 	if(wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0)

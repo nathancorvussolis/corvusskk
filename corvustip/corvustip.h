@@ -2,36 +2,12 @@
 #ifndef CORVUSTIP_H
 #define CORVUSTIP_H
 
-#define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.4"
-
 //for resource
-#define RC_AUTHOR			"Corvus Solis"
-#define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvustip"
-#define RC_VERSION			"0.6.4"
-#define RC_VERSION_D		0,6,4,0
 
-#ifndef _DEBUG
-#define TEXTSERVICE_DESC	TEXTSERVICE_NAME
-#else
-#define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
-#endif
-
-#define LANGBAR_ITEM_DESC   L"ver. " TEXTSERVICE_VER
-#define LANGBAR_FUNC_DESC	TEXTSERVICE_DESC L" " TEXTSERVICE_VER
-
-#define MAX_KRNLOBJNAME 256
-#define CORVUSSRVEXE	L"corvussrv.exe"
-#define CORVUSCNFEXE	L"corvuscnf.exe"
-#ifndef _DEBUG
-#define CORVUSKRNLOBJ	L"corvus-skk-"
-#else
-#define CORVUSKRNLOBJ	L"corvus-skk-debug-"
-#endif
-#define CORVUSSRVMUTEX	CORVUSKRNLOBJ L"srv-"
-#define CORVUSCNFMUTEX	CORVUSKRNLOBJ L"cnf-"
-#define CORVUSSRVPIPE	L"\\\\.\\pipe\\" CORVUSKRNLOBJ
+#define MAX_KRNLOBJNAME		256
+#define CONV_POINT_NUM		32
+#define KEYRELEN			256
 
 //request to corvussrv
 #define REQ_SEARCH		L'1'	//辞書検索
@@ -62,9 +38,6 @@ typedef std::pair< std::wstring, std::wstring > CANDIDATEBASE;
 typedef std::pair< CANDIDATEBASE, CANDIDATEBASE > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
 
-#define CONV_POINT_NUM	32
-
-#define KEYRELEN		256
 #define KEYMAPNUM		0x80
 
 //skk function code
@@ -102,13 +75,13 @@ typedef std::vector< CANDIDATE > CANDIDATES;
 #define MAX_SELKEY		7
 #define MAX_SELKEY_C	9
 
-extern const WCHAR *TextServiceDesc;
-extern const WCHAR *LangbarItemDesc;
-extern const WCHAR *LangbarFuncDesc;
+extern LPCWSTR TextServiceDesc;
+extern LPCWSTR LangbarItemDesc;
+extern LPCWSTR LangbarFuncDesc;
 
 extern HINSTANCE g_hInst;
 
-extern OSVERSIONINFO g_ovi;
+extern OSVERSIONINFOW g_ovi;
 
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInput;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConverted;
@@ -120,10 +93,6 @@ extern const GUID c_guidLangBarItemButton;
 extern const GUID c_guidDisplayAttributeInput;
 extern const GUID c_guidDisplayAttributeConverted;
 extern const GUID c_guidCandidateListUIElement;
-
-typedef struct {
-	BYTE digest[16];
-} MD5_DIGEST;
 
 LONG DllAddRef();
 LONG DllRelease();

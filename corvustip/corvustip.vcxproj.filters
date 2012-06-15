@@ -36,9 +36,6 @@
     <ClInclude Include="TextService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="convtype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="corvustip.h">
       <Filter>Header Files</Filter>
     </ClInclude>

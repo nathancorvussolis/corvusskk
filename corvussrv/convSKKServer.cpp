@@ -4,7 +4,7 @@
 
 void GetSKKServerVersion();
 void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
-size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, const WCHAR *src, const size_t srcsize);
+size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, LPCWSTR src, const size_t srcsize);
 
 #define BUFSIZE		0x2000
 #define RBUFSIZE	0x800
@@ -249,7 +249,7 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 	}
 }
 
-size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, const WCHAR *src, const size_t srcsize)
+size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, LPCWSTR src, const size_t srcsize)
 {
 	CHAR key[KEYSIZE - 2];
 	size_t size;

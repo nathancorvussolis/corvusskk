@@ -17,4 +17,3 @@
 #include <Windowsx.h>
 #include <Shlobj.h>
 #include <Sddl.h>
-#include <WinCrypt.h>

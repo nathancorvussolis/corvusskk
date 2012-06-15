@@ -1,4 +1,5 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "convtable.h"
 #include "resource.h"
@@ -154,6 +155,9 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 		case PSN_APPLY:
 			SaveJLatin(hDlg);
+
+			WriterFinal(&pXmlWriter, &pXmlFileStream);
+
 			return (INT_PTR)TRUE;
 
 		default:

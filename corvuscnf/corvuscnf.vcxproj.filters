@@ -29,16 +29,7 @@
     <ClInclude Include="convtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="convtype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="corvuscnf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="eucjis2004.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="eucjis2004table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -53,12 +44,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="corvuscnf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="eucjis2004.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="eucjis2004table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcBehavior.cpp">

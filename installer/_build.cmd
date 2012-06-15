@@ -2,6 +2,8 @@
 
 pushd %~dp0
 
+call _clean.cmd
+
 "%WIX%bin\candle.exe" "corvusskk-x64.wxs" -ext WixUIExtension
 "%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension
 rem "%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension -cultures:ja-jp

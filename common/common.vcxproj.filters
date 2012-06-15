@@ -18,7 +18,19 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="corvussrv.h">
+    <ClInclude Include="configxml.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="convtype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eucjis2004.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="eucjis2004table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -26,25 +38,17 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConvCharacter.cpp">
+    <ClCompile Include="configxml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConvDictionary.cpp">
+    <ClCompile Include="eucjis2004.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConvSKKServer.cpp">
+    <ClCompile Include="eucjis2004table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="corvussrv.cpp">
+    <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigSrv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="corvussrv.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
 </Project>

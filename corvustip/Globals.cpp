@@ -1,13 +1,14 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 
 HINSTANCE g_hInst;
 
-const WCHAR *TextServiceDesc = TEXTSERVICE_DESC;
-const WCHAR *LangbarItemDesc = LANGBAR_ITEM_DESC;
-const WCHAR *LangbarFuncDesc = LANGBAR_FUNC_DESC;
+LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
+LPCWSTR LangbarItemDesc = L"ver. " TEXTSERVICE_VER;
+LPCWSTR LangbarFuncDesc = TEXTSERVICE_DESC L" " TEXTSERVICE_VER;
 
-OSVERSIONINFO g_ovi;
+OSVERSIONINFOW g_ovi;
 
 #ifndef _DEBUG
 

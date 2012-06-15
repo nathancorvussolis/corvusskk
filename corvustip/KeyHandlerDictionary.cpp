@@ -1,4 +1,5 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 #include "TextService.h"
 
@@ -195,10 +196,10 @@ void CTextService::_ConvDicNum()
 
 void CTextService::_ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate)
 {
-	const WCHAR *keyint[] = {L"#0", L"#1", L"#2", L"#3"};
-	const WCHAR *kannum[] = {L"〇", L"一", L"二", L"三", L"四", L"五", L"六", L"七", L"八", L"九"};
-	const WCHAR *kancl1[] = {L"",   L"十", L"百", L"千"};
-	const WCHAR *kancl2[] = {L"",   L"万", L"億", L"兆", L"京"};
+	LPCWSTR keyint[] = {L"#0", L"#1", L"#2", L"#3"};
+	LPCWSTR kannum[] = {L"〇", L"一", L"二", L"三", L"四", L"五", L"六", L"七", L"八", L"九"};
+	LPCWSTR kancl1[] = {L"",   L"十", L"百", L"千"};
+	LPCWSTR kancl2[] = {L"",   L"万", L"億", L"兆", L"京"};
 	size_t j, k, m, n, p, q, r;
 	bool kancl2flg;
 	std::wregex rxnum(L"[0-9]+");
@@ -317,7 +318,7 @@ void CTextService::_StartConfigure()
 	_StartProcess(CORVUSCNFEXE);
 }
 
-void CTextService::_StartProcess(const WCHAR *fname)
+void CTextService::_StartProcess(LPCWSTR fname)
 {
 	WCHAR path[MAX_PATH];
 	WCHAR drive[_MAX_DRIVE];
@@ -328,7 +329,14 @@ void CTextService::_StartProcess(const WCHAR *fname)
 	GetModuleFileNameW(g_hInst, path, _countof(path));
 	_wsplitpath_s(path, drive, _countof(drive), dir, _countof(dir), NULL, 0, NULL, 0);
 	_snwprintf_s(path, _TRUNCATE, L"%s%s%s", drive, dir, fname);
-	ZeroMemory(&si,sizeof(si));
+
+	ZeroMemory(&pi, sizeof(pi));
+	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
-	CreateProcessW(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+
+	if(CreateProcessW(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
+	{
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
 }

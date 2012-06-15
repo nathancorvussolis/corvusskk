@@ -1,22 +1,23 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
 
 static const KEYMAP KeyMap1[] =
 {
-	{IDC_EDIT_KANA,			L"Kana",		L"q"},
-	{IDC_EDIT_CONV_CHAR,	L"ConvChar",	L"\\cq"},
-	{IDC_EDIT_JLATIN,		L"JLatin",		L"L"},
-	{IDC_EDIT_ASCII,		L"Ascii",		L"l"},
-	{IDC_EDIT_JMODE,		L"JMode",		L"\\cj|\\cq"},
-	{IDC_EDIT_ABBREV,		L"Abbrev",		L"/"},
-	{IDC_EDIT_AFFIX,		L"Affix",		L"<|>"},
-	{IDC_EDIT_DIRECT,		L"Direct",		L"[0-9]"},
-	{IDC_EDIT_NEXT_CAND,	L"NextCand",	L"\\x20|\\cn"},
-	{IDC_EDIT_PREV_CAND,	L"PrevCand",	L"x|\\cp"},
-	{IDC_EDIT_PURGE_DIC,	L"PurgeDic",	L"X|\\cx"},
-	{IDC_EDIT_NEXT_COMP,	L"NextComp",	L"\\ci"},
-	{IDC_EDIT_PREV_COMP,	L"PrevComp",	L"\\cu"}
+	{IDC_EDIT_KANA,			KeyMapKana,		L"q"},
+	{IDC_EDIT_CONV_CHAR,	KeyMapConvChar,	L"\\cq"},
+	{IDC_EDIT_JLATIN,		KeyMapJLatin,	L"L"},
+	{IDC_EDIT_ASCII,		KeyMapAscii,	L"l"},
+	{IDC_EDIT_JMODE,		KeyMapJMode,	L"\\cj|\\cq"},
+	{IDC_EDIT_ABBREV,		KeyMapAbbrev,	L"/"},
+	{IDC_EDIT_AFFIX,		KeyMapAffix,	L"<|>"},
+	{IDC_EDIT_DIRECT,		KeyMapDirect,	L"[0-9]"},
+	{IDC_EDIT_NEXT_CAND,	KeyMapNextCand,	L"\\x20|\\cn"},
+	{IDC_EDIT_PREV_CAND,	KeyMapPrevCand,	L"x|\\cp"},
+	{IDC_EDIT_PURGE_DIC,	KeyMapPurgeDic,	L"X|\\cx"},
+	{IDC_EDIT_NEXT_COMP,	KeyMapNextComp,	L"\\ci"},
+	{IDC_EDIT_PREV_COMP,	KeyMapPrevComp,	L"\\cu"}
 };
 
 INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -66,6 +67,8 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
+			WriterStartSection(pXmlWriter, SectionKeyMap);
+
 			for(i=0; i<_countof(KeyMap1) ;i++)
 			{
 				SaveKeyMap(hDlg, KeyMap1[i].idd, KeyMap1[i].keyName);

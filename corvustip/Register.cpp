@@ -1,4 +1,5 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 
 #define CLSID_STRLEN 38
@@ -13,6 +14,14 @@
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";
 static const WCHAR c_szInProcSvr32[] = L"InProcServer32";
 static const WCHAR c_szModelName[] = L"ThreadingModel";
+
+// for Windows 8
+// GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT {13A016DF-560B-46CD-947A-4C3AF1E0E35D}
+static const GUID GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT =
+{ 0x13A016DF, 0x560B, 0x46CD, { 0x94, 0x7A, 0x4C, 0x3A, 0xF1, 0xE0, 0xE3, 0x5D } };
+//// GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT {25504FB4-7BAB-4BC1-9C69-CF81890F0EF5}
+//static const GUID GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT =
+//{ 0x25504FB4, 0x7BAB, 0x4BC1, { 0x9C, 0x69, 0xCF, 0x81, 0x89, 0x0F, 0x0E, 0xF5 } };
 
 BOOL RegisterProfiles()
 {
@@ -36,7 +45,7 @@ BOOL RegisterProfiles()
 	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
 
-	if(g_ovi.dwMajorVersion < 6)
+	if(!IsVersion6AndOver(g_ovi))
 	{
 		//XPで既定の言語に設定する為、デフォルトで存在するという仮定で
 		//MS-IME2002の入力ロケール識別子「E0010411」をとりあえず使用。
@@ -75,10 +84,17 @@ BOOL RegisterCategories()
 	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
 	{
 		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIP_KEYBOARD, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
 		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SECUREMODE, c_clsidTextService);
 		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_UIELEMENTENABLED, c_clsidTextService);
+		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT, c_clsidTextService);
 		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_COMLESS, c_clsidTextService);
+		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
+		// for Windows 8
+		if(IsVersion62AndOver(g_ovi))
+		{
+			pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT, c_clsidTextService);
+			//pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT, c_clsidTextService);
+		}
 
 		pCategoryMgr->Release();
 	}
@@ -98,10 +114,17 @@ void UnregisterCategories()
 	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
 	{
 		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIP_KEYBOARD, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
 		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SECUREMODE, c_clsidTextService);
 		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_UIELEMENTENABLED, c_clsidTextService);
+		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT, c_clsidTextService);
 		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_COMLESS, c_clsidTextService);
+		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
+		// for Windows 8
+		if(IsVersion62AndOver(g_ovi))
+		{
+			pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT, c_clsidTextService);
+			//pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT, c_clsidTextService);
+		}
 
 		pCategoryMgr->Release();
 	}

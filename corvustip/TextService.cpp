@@ -33,6 +33,7 @@ CTextService::CTextService()
 	nookuriconv = FALSE;
 	delokuricncl = FALSE;
 	backincenter = FALSE;
+	addcandktkn = FALSE;
 }
 
 CTextService::~CTextService()
@@ -131,7 +132,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	ex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
 	InitCommonControlsEx(&ex);
 
-	setlocale(LC_ALL, "japanese");
+	_wsetlocale(LC_ALL, L"japanese");
 
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();

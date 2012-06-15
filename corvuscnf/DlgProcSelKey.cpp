@@ -1,13 +1,12 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
 
 #define MAX_SELKEY_C	9
 
-//セクション
-const WCHAR *IniSecSelKey = L"SelKey";
 //デフォルト
-static const WCHAR *listSelKey[MAX_SELKEY_C] = {L"Aa",L"Ss",L"Dd",L"Ff",L"Jj",L"Kk",L"Ll",L"Gg",L"Hh"};
+static LPCWSTR listSelKey[MAX_SELKEY_C] = {L"Aa",L"Ss",L"Dd",L"Ff",L"Jj",L"Kk",L"Ll",L"Gg",L"Hh"};
 
 INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -18,6 +17,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	int index;
 	WCHAR num[2];
 	WCHAR key[4];
+	std::wstring strxmlval;
 
 	switch(message)
 	{
@@ -56,7 +56,9 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			ListView_InsertItem(hWndListView, &item);
 
 			ZeroMemory(key, sizeof(key));
-			GetPrivateProfileStringW(IniSecSelKey, num, listSelKey[index], key, _countof(key), pathconfig);
+			ReadValue(pathconfigxml, SectionSelKey, num, strxmlval);
+			if(strxmlval.empty()) strxmlval = listSelKey[index];
+			wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
 
 			num[0] = key[0];
 			item.pszText = num;
@@ -127,6 +129,8 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			break;
 
 		case PSN_APPLY:
+			WriterStartSection(pXmlWriter, SectionSelKey);
+
 			hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 			for(index=0; index<MAX_SELKEY_C; index++)
 			{
@@ -136,8 +140,11 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				key[1] = num[0];
 				key[2] = L'\0';
 				_snwprintf_s(num, _TRUNCATE, L"%d", index+1);
-				WritePrivateProfileStringW(IniSecSelKey, num, key, pathconfig);
+				WriterKey(pXmlWriter, num, key);
 			}
+
+			WriterEndSection(pXmlWriter);
+
 			return (INT_PTR)TRUE;
 
 		default:

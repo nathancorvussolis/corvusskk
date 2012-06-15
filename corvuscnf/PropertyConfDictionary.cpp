@@ -1,43 +1,41 @@
 ﻿
+#include "common.h"
+#include "configxml.h"
 #include "corvuscnf.h"
-#include "convtable.h"
 #include "resource.h"
 #include "eucjis2004.h"
 
 #define BUFSIZE 0x1000
 
+typedef std::pair<std::wstring, std::wstring> ENTRY;
+typedef std::map<std::wstring, std::wstring> ENTRYS;
+
 void LoadDictionary(HWND hwnd)
 {
-	WCHAR path[MAX_PATH];
 	HWND hWndList;
-	int i, j;
+	int i;
 	LVITEMW item;
-	FILE *fp;
+	APPDATAXMLLIST list;
+	APPDATAXMLLIST::iterator l_itr;
 
-	_wfopen_s(&fp, pathconfdic, RccsUNICODE);
-	if(fp != NULL)
+	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK)
 	{
 		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-		j = 0;
-		while(fgetws(path, _countof(path), fp) != NULL)
+		i = 0;
+		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
 		{
-			for(i=0; i<_countof(path); i++)
+			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
 			{
-				if(path[i] == L'\r' || path[i] == L'\n')
-				{
-					path[i] = L'\0';
-					break;
-				}
+				continue;
 			}
 			item.mask = LVIF_TEXT;
-			item.pszText = path;
-			item.iItem = j;
+			item.pszText = (LPWSTR)(*l_itr)[0].second.c_str();
+			item.iItem = i;
 			item.iSubItem = 0;
 			ListView_InsertItem(hWndList, &item);
-			++j;
+			++i;
 		}
 		ListView_SetColumnWidth(hWndList, 0, LVSCW_AUTOSIZE);
-		fclose(fp);
 	}
 }
 
@@ -46,57 +44,57 @@ void SaveDictionary(HWND hwnd)
 	WCHAR path[MAX_PATH];
 	HWND hWndList;
 	int i, count;
-	FILE *fp;
+	APPDATAXMLATTR attr;
+	APPDATAXMLROW row;
+	APPDATAXMLLIST list;
 
-	_wfopen_s(&fp, pathconfdic, WccsUNICODE);
-	if(fp != NULL)
+	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	count = ListView_GetItemCount(hWndList);
+
+	for(i=0; i<count; i++)
 	{
-		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-		count = ListView_GetItemCount(hWndList);
-		for(i=0; i<count; i++)
-		{
-			ListView_GetItemText(hWndList, i, 0, path, _countof(path));
-			fwprintf(fp, L"%s\n", path);
-		}
-		fclose(fp);
+		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
+
+		attr.first = AttributePath;
+		attr.second = path;
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
 	}
+
+	WriterList(pXmlWriter, list);
 }
 
-void MakeSKKDic(void)
+void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 {
-	typedef std::pair<std::wstring, std::wstring> ENTRY;
-	typedef std::map<std::wstring, std::wstring> ENTRYS;
-	ENTRY entry;
-	ENTRYS entrys;
-	ENTRYS::iterator entrys_itr;
+	HWND hWndList;
+	WCHAR path[MAX_PATH];
+	std::vector<std::wstring> apath;
+	size_t size, i;
+	FILE *fpskkdic;
+	WCHAR bom;
 	CHAR buf[BUFSIZE];
 	WCHAR wbuf[BUFSIZE];
-	size_t size;
-	WCHAR path[MAX_PATH];
-	FILE *fpdiclist, *fpskkdic, *fpcdictxt, *fpcdicidx;
-	WCHAR bom;
 	void *rp;
-	long cpf;
-	size_t i, is, ie;
-	std::vector<std::wstring> es;
-	std::wstring s, line;
+	std::wstring s;
 	std::wregex re;
 	std::wstring fmt;
+	ENTRY entry;
+	ENTRYS::iterator entrys_itr;
 
-	_wfopen_s(&fpdiclist, pathconfdic, RccsUNICODE);
-	if(fpdiclist == NULL)
+	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	size = ListView_GetItemCount(hWndList);
+
+	for(i=0; i<size; i++)
 	{
-		return;
+		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
+		apath.push_back(path);
 	}
 
-	while(fgetws(path, _countof(path), fpdiclist) != NULL)
+	for(i=0; i<apath.size(); i++)
 	{
-		if(path[0] != L'\0')
-		{
-			path[wcslen(path) - 1] = L'\0';
-		}
-
-		_wfopen_s(&fpskkdic, path, L"rb");
+		_wfopen_s(&fpskkdic, apath[i].c_str(), L"rb");
 		if(fpskkdic == NULL)
 		{
 			continue;
@@ -121,7 +119,7 @@ void MakeSKKDic(void)
 				rp = fgetws(wbuf, _countof(wbuf), fpskkdic);
 				break;
 			default:
-				rp = fgets((char*)buf, _countof(buf), fpskkdic);
+				rp = fgets(buf, _countof(buf), fpskkdic);
 				break;
 			}
 			if(rp == NULL)
@@ -184,27 +182,36 @@ void MakeSKKDic(void)
 
 		fclose(fpskkdic);
 	}
+}
 
-	fclose(fpdiclist);
+void WriteSKKDicXml(ENTRYS &entrys)
+{
+	FILE *fpidx;
+	IXmlWriter *pWriter;
+	IStream *pFileStream;
+	ENTRYS::iterator entrys_itr;
+	std::vector<std::wstring> es;
+	size_t i, is, ie;
+	std::wstring s;
+	std::wregex re;
+	std::wstring fmt;
+	APPDATAXMLATTR attr;
+	APPDATAXMLROW::iterator r_itr;;
+	APPDATAXMLROW row;
+	APPDATAXMLLIST list;
+	ULARGE_INTEGER uli1;
+	LARGE_INTEGER li0 = {0};
 
-	if(entrys.empty()) return;
+	_wfopen_s(&fpidx, pathskkcvdicidx, L"wb");
 
-	_wfopen_s(&fpcdictxt, pathskkcvdic, WccsUNICODE);
-	if(fpcdictxt == NULL)
-	{
-		return;
-	}
-	_wfopen_s(&fpcdicidx, pathskkcvidx, L"wb");
-	if(fpcdicidx == NULL)
-	{
-		fclose(fpcdictxt);
-		return;
-	}
+	WriterInit(pathskkcvdicxml, &pWriter, &pFileStream);
+
+	WriterStartSection(pWriter, SectionDictionary);
 
 	for(entrys_itr = entrys.begin(); entrys_itr != entrys.end(); entrys_itr++)
 	{
 		//見出し
-		line = entrys_itr->first;
+		//line = entrys_itr->first;
 
 		//エントリを「/」で分割
 		es.clear();
@@ -220,36 +227,49 @@ void MakeSKKDic(void)
 			}
 			es.push_back(s.substr(i + 1, ie - is - 1));
 			i = ie;
+
 		}
 
-		// 「;」→「\t」、concatを置換
+		// concatを置換
+		list.clear();
 		for(i=0; i<es.size(); i++)
 		{
+			row.clear();
 			s = es[i];
+			ie = s.find_first_of(L';');
 
-			if(s.find_first_of(L';') == std::wstring::npos)
+			if(ie == std::wstring::npos)
 			{
-				s += L"\t";
+				attr.first = AttributeCandidate;
+				attr.second = s;
+				row.push_back(attr);
+				attr.first = AttributeAnnotation;
+				attr.second = L"";
+				row.push_back(attr);
 			}
 			else
 			{
-				re.assign(L";");
-				fmt.assign(L"\t");
-				s = std::regex_replace(s, re, fmt);
+				attr.first = AttributeCandidate;
+				attr.second = s.substr(0, ie);
+				row.push_back(attr);
+				attr.first = AttributeAnnotation;
+				attr.second = s.substr(ie + 1);
+				row.push_back(attr);
 			}
 
-			if(s.find_first_of(L'\t') == 0)
-			{
-				continue;
-			}
+			list.push_back(row);
+		}
+
+		for(r_itr = row.begin(); r_itr != row.end(); r_itr++)
+		{
+			s = r_itr->second;
 
 			re.assign(L".*\\(concat \".*\"\\).*");
 			if(std::regex_match(s, re))
 			{
 				re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
 				fmt.assign(L"$1$2$3");
-				s = std::regex_replace(s, re, fmt);	//annotation if annotation has / candidate if annotaion doesnot has
-				s = std::regex_replace(s, re, fmt);	//candidate if annotaion has
+				s = std::regex_replace(s, re, fmt);
 
 				re.assign(L"\\\\057");
 				fmt.assign(L"/");
@@ -260,19 +280,42 @@ void MakeSKKDic(void)
 				s = std::regex_replace(s, re, fmt);
 			}
 
-			//候補、注釈
-			line += L"\t" + s;
+			r_itr->second = s;
 		}
 
 		//インデックスファイル書き込み
-		fseek(fpcdictxt, 0, SEEK_END);
-		cpf = ftell(fpcdictxt);
-		fwrite(&cpf, sizeof(cpf), 1, fpcdicidx);
+		if(fpidx != NULL)
+		{
+			pWriter->Flush();
+
+			pFileStream->Seek(li0, STREAM_SEEK_CUR, &uli1);
+
+			uli1.QuadPart += 1;
+			fwrite(&uli1.QuadPart, sizeof(uli1.QuadPart), 1, fpidx);
+		}
 
 		//辞書ファイル書き込み
-		fwprintf(fpcdictxt, L"%s\n", line.c_str());
+		WriterStartElement(pWriter, L"entry");
+
+		WriterAttribute(pWriter, L"key", entrys_itr->first.c_str());
+
+		WriterList(pWriter, list);
+
+		WriterEndElement(pWriter);
 	}
 
-	fclose(fpcdicidx);
-	fclose(fpcdictxt);
+	WriterEndSection(pWriter);
+
+	WriterFinal(&pWriter, &pFileStream);
+
+	fclose(fpidx);
+}
+
+void MakeSKKDic(HWND hwnd)
+{
+	ENTRYS entrys;
+
+	LoadSKKDic(hwnd, entrys);
+
+	WriteSKKDicXml(entrys);
 }

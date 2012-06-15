@@ -1,18 +1,12 @@
 ﻿
+#include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
 
-//セクション
-static const WCHAR *IniSecServer = L"Server";
-//キー
-static const WCHAR *Serv = L"Serv";
-static const WCHAR *Host = L"Host";
-static const WCHAR *Port = L"Port";
-static const WCHAR *TimeOut = L"TimeOut";
 //デフォルト
-static const WCHAR *defaultHost = L"localhost";
-static const WCHAR *defaultPort = L"1178";
-static const DWORD defaultTimeOut = 1000;
+static LPCWSTR defaultHost = L"localhost";
+static LPCWSTR defaultPort = L"1178";
+static LPCWSTR defaultTimeOut = L"1000";
 
 INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -26,7 +20,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR num[16];
 	WCHAR host[MAX_SKKSERVER_HOST];
 	WCHAR port[MAX_SKKSERVER_PORT];
-	DWORD timeout;
+	std::wstring strxmlval;
 
 	switch(message)
 	{
@@ -43,16 +37,19 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		LoadDictionary(hDlg);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, IniSecServer, Serv);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, Serv);
 
-		GetPrivateProfileStringW(IniSecServer, Host, defaultHost, host, _countof(host), pathconfig);
-		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, host);
+		ReadValue(pathconfigxml, SectionServer, Host, strxmlval);
+		if(strxmlval.empty()) strxmlval = defaultHost;
+		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, strxmlval.c_str());
 
-		GetPrivateProfileStringW(IniSecServer, Port, defaultPort, port, _countof(port), pathconfig);
-		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port);
+		ReadValue(pathconfigxml, SectionServer, Port, strxmlval);
+		if(strxmlval.empty()) strxmlval = defaultPort;
+		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, strxmlval.c_str());
 
-		timeout = GetPrivateProfileInt(IniSecServer, TimeOut, defaultTimeOut, pathconfig);
-		SetDlgItemInt(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, timeout, FALSE);
+		ReadValue(pathconfigxml, SectionServer, TimeOut, strxmlval);
+		if(strxmlval.empty()) strxmlval = defaultTimeOut;
+		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, strxmlval.c_str());
 
 		return (INT_PTR)TRUE;
 
@@ -141,8 +138,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				L"SKK辞書を読み込み、独自形式辞書を作成します。\nよろしいですか？",
 				TextServiceDesc, MB_OKCANCEL))
 			{
-				SaveDictionary(hDlg);
-				MakeSKKDic();
+				MakeSKKDic(hDlg);
 				MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK);
 			}
 			return (INT_PTR)TRUE;
@@ -173,21 +169,26 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
-			//skk dic
+			WriterStartSection(pXmlWriter, SectionDictionary);
+
 			SaveDictionary(hDlg);
 
-			//server
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, IniSecServer, Serv);
+			WriterEndSection(pXmlWriter);
+
+			WriterStartSection(pXmlWriter, SectionServer);
+
+			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, Serv);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, host, _countof(host));
-			WritePrivateProfileStringW(IniSecServer, Host, host, pathconfig);
+			WriterKey(pXmlWriter, Host, host);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port, _countof(port));
-			WritePrivateProfileStringW(IniSecServer, Port, port, pathconfig);
+			WriterKey(pXmlWriter, Port, port);
 
-			timeout = GetDlgItemInt(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, NULL, FALSE);
-			_snwprintf_s(num, _TRUNCATE, L"%u", timeout);
-			WritePrivateProfileStringW(IniSecServer, TimeOut, num, pathconfig);
+			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
+			WriterKey(pXmlWriter, TimeOut, num);
+
+			WriterEndSection(pXmlWriter);
 
 			return (INT_PTR)TRUE;
 		default:

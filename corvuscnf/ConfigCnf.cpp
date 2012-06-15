@@ -1,43 +1,27 @@
 ﻿
+#include "common.h"
+#include "configxml.h"
 #include "corvuscnf.h"
-#include "convtable.h"
 
-const WCHAR *TextServiceDesc = TEXTSERVICE_DESC;
+LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 
-#define CCSUNICODE L",ccs=UNICODE"
-const WCHAR *RccsUNICODE = L"r" CCSUNICODE;
-const WCHAR *WccsUNICODE = L"w" CCSUNICODE;
+IXmlWriter *pXmlWriter;
+IStream *pXmlFileStream;
 
 WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // ファイルパス
-WCHAR pathconfig[MAX_PATH];		//設定
-WCHAR pathconfdic[MAX_PATH];	//SKK辞書リスト
-WCHAR pathconfcvpt[MAX_PATH];	//変換位置指定
-WCHAR pathconfkana[MAX_PATH];	//ローマ字仮名変換表
-WCHAR pathconfjlat[MAX_PATH];	//ASCII全英変換表
-WCHAR pathskkcvdic[MAX_PATH];	//取込SKK辞書
-WCHAR pathskkcvidx[MAX_PATH];	//取込SKK辞書インデックス
-// ファイル名
-const WCHAR *fnconfig = L"config.ini";
-const WCHAR *fnconfdic = L"confdic.txt";
-const WCHAR *fnconfcvpt = L"confcvpt.txt";
-const WCHAR *fnconfkana = L"confkana.txt";
-const WCHAR *fnconfjlat = L"confjlat.txt";
-const WCHAR *fnskkcvdic = L"skkcv.dic";
-const WCHAR *fnskkcvidx = L"skkcv.idx";
+WCHAR pathconfigxml[MAX_PATH];		//設定
+WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
+WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
 
 void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
 
-	pathconfig[0] = L'\0';
-	pathconfdic[0] = L'\0';
-	pathconfcvpt[0] = L'\0';
-	pathconfkana[0] = L'\0';
-	pathconfjlat[0] = L'\0';
-	pathskkcvdic[0] = L'\0';
-	pathskkcvidx[0] = L'\0';
+	pathconfigxml[0] = L'\0';
+	pathskkcvdicxml[0] = L'\0';
+	pathskkcvdicidx[0] = L'\0';
 
 	if(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, NULL, appdata) != S_OK)
 	{
@@ -51,26 +35,14 @@ void CreateConfigPath()
 
 	_wmkdir(appdata);
 
-	wcsncpy_s(pathconfig, appdata, _TRUNCATE);
-	wcsncat_s(pathconfig, fnconfig, _TRUNCATE);
+	wcsncpy_s(pathconfigxml, appdata, _TRUNCATE);
+	wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
 
-	wcsncpy_s(pathconfdic, appdata, _TRUNCATE);
-	wcsncat_s(pathconfdic, fnconfdic, _TRUNCATE);
+	wcsncpy_s(pathskkcvdicxml, appdata, _TRUNCATE);
+	wcsncat_s(pathskkcvdicxml, fnskkcvdicxml, _TRUNCATE);
 
-	wcsncpy_s(pathconfcvpt, appdata, _TRUNCATE);
-	wcsncat_s(pathconfcvpt, fnconfcvpt, _TRUNCATE);
-
-	wcsncpy_s(pathconfkana, appdata, _TRUNCATE);
-	wcsncat_s(pathconfkana, fnconfkana, _TRUNCATE);
-
-	wcsncpy_s(pathconfjlat, appdata, _TRUNCATE);
-	wcsncat_s(pathconfjlat, fnconfjlat, _TRUNCATE);
-
-	wcsncpy_s(pathskkcvdic, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvdic, fnskkcvdic, _TRUNCATE);
-
-	wcsncpy_s(pathskkcvidx, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvidx, fnskkcvidx, _TRUNCATE);
+	wcsncpy_s(pathskkcvdicidx, appdata, _TRUNCATE);
+	wcsncat_s(pathskkcvdicidx, fnskkcvdicidx, _TRUNCATE);
 
 	HANDLE hToken;
 	PTOKEN_USER pTokenUser;
@@ -107,40 +79,4 @@ void CreateConfigPath()
 	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
 
 	LocalFree(pszUserSid);
-}
-
-BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
-{
-	BOOL bRet = FALSE;
-	HCRYPTPROV hProv = NULL;
-	HCRYPTHASH hHash = NULL;
-	BYTE *pbData;
-	DWORD dwDataLen;
-
-	if(digest == NULL)
-	{
-		return FALSE;
-	}
-
-	ZeroMemory(digest, sizeof(digest));
-	pbData = digest->digest;
-	dwDataLen = sizeof(digest->digest);
-
-	if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
-	{
-		if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
-		{
-			if(CryptHashData(hHash, data, datalen, 0))
-			{
-				if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
-				{
-					bRet = TRUE;
-				}
-			}
-			CryptDestroyHash(hHash);
-		}
-		CryptReleaseContext(hProv, 0);
-	}
-
-	return bRet;
 }

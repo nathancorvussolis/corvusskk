@@ -5,7 +5,10 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HANDLE SrvStart();
-void RegisterRun();
+
+CRITICAL_SECTION csUserDataSave;
+BOOL bUserDicChg;
+OSVERSIONINFOW ovi;
 
 #ifdef _DEBUG
 HWND hwndEdit;
@@ -15,8 +18,6 @@ HINSTANCE hInst;
 HANDLE hMutex;
 HANDLE hThreadSrv;
 BOOL bSrvThreadExit;
-BOOL bUserDicChg;
-CRITICAL_SECTION csUserDataSave;
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -24,16 +25,30 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	WNDCLASSEX wcex;
 	HWND hWnd;
 	WSADATA wsaData;
+	PSECURITY_DESCRIPTOR psd;
+	SECURITY_ATTRIBUTES sa;
 
-	setlocale(LC_ALL, "japanese");
+	_wsetlocale(LC_ALL, L"japanese");
+
+	ZeroMemory(&ovi, sizeof(ovi));
+	ovi.dwOSVersionInfoSize = sizeof(ovi);
+	GetVersionEx(&ovi);
 
 	CreateConfigPath();
 
-	hMutex = CreateMutexW(NULL, FALSE, srvmutexname);
+	ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL);
+	sa.nLength = sizeof(sa);
+	sa.lpSecurityDescriptor = psd;
+	sa.bInheritHandle = FALSE;
+
+	hMutex = CreateMutexW(&sa, FALSE, srvmutexname);
 	if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
+		LocalFree(psd);
 		return 0;
 	}
+
+	LocalFree(psd);
 
 	LoadConfig();
 
@@ -62,7 +77,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	if(!hWnd)
 	{
-		return FALSE;
+		return 0;
 	}
 
 #ifdef _DEBUG
@@ -116,8 +131,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
-
-		RegisterRun();
+		if(hThreadSrv == NULL)
+		{
+			DestroyWindow(hWnd);
+		}
 		break;
 
 	case WM_DESTROY:
@@ -127,6 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif
 		hThreadSave = StartSaveUserDicEx();
 		WaitForSingleObject(hThreadSave, INFINITE);
+		CloseHandle(hThreadSave);
 
 		bSrvThreadExit = TRUE;
 		hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
@@ -288,9 +306,7 @@ void SrvProc(WCHAR *wbuf, size_t size)
 
 unsigned int __stdcall SrvThread(void *p)
 {
-	HANDLE hPipe;
-	PSECURITY_DESCRIPTOR psd;
-	SECURITY_ATTRIBUTES sa;
+	HANDLE hPipe = (HANDLE)p;
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
@@ -302,33 +318,10 @@ unsigned int __stdcall SrvThread(void *p)
 
 	while(true)
 	{
-		psd = NULL;
-		ConvertStringSecurityDescriptorToSecurityDescriptorW(pipesddl, SDDL_REVISION_1, &psd, NULL);
-		sa.nLength = sizeof(sa);
-		sa.lpSecurityDescriptor = psd;
-		sa.bInheritHandle = FALSE;
-
-		hPipe = CreateNamedPipeW(pipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
-			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 1,
-			BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 0, &sa);
-
-		LocalFree(psd);
-		
-		if(hPipe != INVALID_HANDLE_VALUE)
-		{
-			break;
-		}
-
-		Sleep(100);
-	}
-
-	while(true)
-	{
 		if(ConnectNamedPipe(hPipe, NULL) == FALSE)
 		{
 			DisconnectNamedPipe(hPipe);
-			Sleep(100);
-			continue;
+			break;
 		}
 
 		if(bSrvThreadExit)
@@ -382,46 +375,31 @@ unsigned int __stdcall SrvThread(void *p)
 
 HANDLE SrvStart()
 {
-	return (HANDLE)_beginthreadex(NULL, 0, SrvThread, NULL, 0, NULL);
-}
+	PSECURITY_DESCRIPTOR psd;
+	SECURITY_ATTRIBUTES sa;
+	HANDLE hPipe;
+	HANDLE hThread = NULL;
 
-void RegisterRun()
-{
-	// HKCU\..\Run  %SystemRoot%\System32\IME\CorvusSKK\corvussrv.exe
-	WCHAR path[MAX_PATH];
-	WCHAR szval[_MAX_FNAME];
-	WCHAR szext[_MAX_EXT];
-	HKEY hkResult;
-	LONG ret;
+	ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL);
+	sa.nLength = sizeof(sa);
+	sa.lpSecurityDescriptor = psd;
+	sa.bInheritHandle = FALSE;
 
-	if(GetModuleFileNameW(NULL, path, _countof(path)) == 0)
-	{
-		return;
-	}
-	if(_wsplitpath_s(path, NULL, 0, NULL, 0, szval, _countof(szval), szext, _countof(szext)) != 0)
-	{
-		return;
-	}
-	if(GetSystemDirectoryW(path, _countof(path)) == 0)
-	{
-		return;
-	}
-	wcsncat_s(path, _countof(path), L"\\IME\\", _TRUNCATE);
-	wcsncat_s(path, _countof(path), TextServiceDesc, _TRUNCATE);
-	wcsncat_s(path, _countof(path), L"\\", _TRUNCATE);
-	
-	wcsncat_s(path, _countof(path), szval, _TRUNCATE);
-	wcsncat_s(path, _countof(path), szext, _TRUNCATE);
+	hPipe = CreateNamedPipeW(pipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 1,
+		BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 0, &sa);
 
-	ret = RegOpenKeyEx(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
-		REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, &hkResult);
-	if(ret == ERROR_SUCCESS)
+	LocalFree(psd);
+
+	if(hPipe != INVALID_HANDLE_VALUE)
 	{
-		ret = RegQueryValueEx(hkResult, szval, 0, NULL, NULL, NULL);
-		if(ret != ERROR_SUCCESS)
-		{
-			RegSetValueExW(hkResult, szval, 0, REG_SZ, (BYTE*)path, (DWORD)wcslen(path)*sizeof(WCHAR));
-		}
-		RegCloseKey(hkResult);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, SrvThread, hPipe, 0, NULL);
 	}
+
+	if(hThread == NULL)
+	{
+		CloseHandle(hPipe);
+	}
+
+	return hThread;
 }

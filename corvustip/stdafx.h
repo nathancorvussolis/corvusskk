@@ -23,4 +23,6 @@
 #include <Uxtheme.h>
 #include <CommCtrl.h>
 #include <Sddl.h>
+#include <AclAPI.h>
 #include <WinCrypt.h>
+#include <xmllite.h>

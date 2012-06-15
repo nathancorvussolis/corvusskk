@@ -11,8 +11,8 @@
 
 #include <Windows.h>
 #include <Windowsx.h>
-#include <Shlobj.h>
+#include <ShlObj.h>
 #include <CommCtrl.h>
 #include <CommDlg.h>
 #include <Sddl.h>
-#include <WinCrypt.h>
+#include <xmllite.h>

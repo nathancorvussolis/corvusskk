@@ -3,12 +3,12 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-static const WCHAR *markMidashi = L"▽";
-static const WCHAR *markHenkan = L"▼";
-static const WCHAR *markOkuri = L"*";
+static LPCWSTR markMidashi = L"▽";
+static LPCWSTR markHenkan = L"▼";
+static LPCWSTR markOkuri = L"*";
 
-static const WCHAR *markSP = L" ";
-static const WCHAR *markAnnotation = L";";
+static LPCWSTR markSP = L" ";
+static LPCWSTR markAnnotation = L";";
 
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
