@@ -47,7 +47,7 @@ public:
 	HRESULT _OnKeyUp(UINT uVKey);
 
 	void _SetTextRegword(const std::wstring &text, BOOL fixed, BOOL showcandlist);
-	BOOL _CanShowUI();
+	BOOL _CanShowUIElement();
 
 private:
 	LONG _cRef;
@@ -67,7 +67,7 @@ private:
 	DWORD _dwUIElementId;
 	BOOL _bShow;
 	DWORD _dwFlags;
-	UINT _uShowedCandList;
+	UINT _uShowedCount;
 	UINT _uCount;
 	UINT _uIndex;
 	UINT _uPageCnt;

@@ -371,7 +371,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			if(!kana.empty())
 			{
-				//TODO とりあえず結合文字は考慮しない
+				//結合文字は考慮しない
 				if(kana.size() >= 2 && _IsSurrogatePair(kana[kana.size() - 2], kana[kana.size() - 1]))
 				{
 					kana.pop_back();

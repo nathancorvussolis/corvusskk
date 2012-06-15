@@ -121,6 +121,11 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 
 STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 {
+	if(pMenu == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	return S_OK;
 }
 

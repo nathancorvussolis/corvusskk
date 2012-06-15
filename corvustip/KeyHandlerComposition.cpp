@@ -7,8 +7,8 @@ static const WCHAR *markMidashi = L"▽";
 static const WCHAR *markHenkan = L"▼";
 static const WCHAR *markOkuri = L"*";
 
-const WCHAR *markZWSP = L"\u200B";	//U+200B ZERO WIDTH SPACE
-const WCHAR *markAnnotation = L";";
+static const WCHAR *markSP = L" ";
+static const WCHAR *markAnnotation = L";";
 
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
@@ -56,7 +56,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 			if(!fixed && nomodemark && composition.empty())
 			{
-				composition.append(markZWSP);
+				composition.append(markSP);
 			}
 
 			//ユーザ辞書登録
@@ -86,7 +86,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				{
 					if(kana.empty())
 					{
-						composition.append(markZWSP);
+						composition.append(markSP);
 					}
 				}
 				else
@@ -139,7 +139,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				{
 					if(kana.empty() && roman.empty())
 					{
-						composition.append(markZWSP);
+						composition.append(markSP);
 					}
 				}
 				else
@@ -197,7 +197,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 	if(fixed && back && backincenter && !composition.empty())
 	{
-		//TODO とりあえず結合文字は考慮しない
+		//結合文字は考慮しない
 		if(composition.size() >= 2 &&
 			_IsSurrogatePair(composition[composition.size() - 2], composition[composition.size() - 1]))
 		{

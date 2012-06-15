@@ -10,9 +10,6 @@ void UnregisterCategories();
 BOOL RegisterServer();
 void UnregisterServer();
 
-LONG DllAddRef(void);
-LONG DllRelease(void);
-
 static LONG g_cRefDll = 0;
 
 class CClassFactory : public IClassFactory

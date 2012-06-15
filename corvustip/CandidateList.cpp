@@ -235,7 +235,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	_pCandidateWindow = new CCandidateWindow(_pTextService);
 	if(_pCandidateWindow != NULL)
 	{
-		if(reg && _pCandidateWindow->_CanShowUI() == FALSE)
+		if(reg && _pCandidateWindow->_CanShowUIElement() == FALSE)
 		{
 			goto exit;
 		}

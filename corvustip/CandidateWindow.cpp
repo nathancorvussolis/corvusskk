@@ -7,9 +7,8 @@
 static WNDPROC ToolTipWndProcDef = NULL;
 static HWND _hwndParent = NULL;
 
-// ->KeyHandlerComposition.cpp
-extern const WCHAR *markZWSP;
-extern const WCHAR *markAnnotation;
+static const WCHAR *markZWSP = L"\u200B";	//U+200B ZERO WIDTH SPACE
+static const WCHAR *markAnnotation = L";";
 
 static const WCHAR *markNo = L":";
 static const WCHAR *markNoTT = L" ";
@@ -31,7 +30,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 
 	_bShow = FALSE;
 	_dwFlags = 0;
-	_uShowedCandList = 0;
+	_uShowedCount = 0;
 	_uCount = 0;
 	_uIndex = 0;
 	_uPageCnt = 0;
@@ -248,7 +247,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 	UINT i;
 	HRESULT hr = S_OK;
 
-	if(pIndex == NULL || puPageCnt == NULL)
+	if(puPageCnt == NULL)
 	{
 		return E_INVALIDARG;
 	}
@@ -259,13 +258,16 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 	}
 	else
 	{
-		hr = E_FAIL;
+		hr = S_FALSE;
 	}
 
-	for(i=0; i<uSize; i++)
+	if(pIndex != NULL)
 	{
-		*pIndex = _PageInex[i];
-		pIndex++;
+		for(i=0; i<uSize; i++)
+		{
+			*pIndex = _PageInex[i];
+			pIndex++;
+		}
 	}
 
 	*puPageCnt = _uPageCnt;
@@ -318,13 +320,13 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 			}
 
 			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
-			_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCandList + k ].first.first);
+			_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCount + k ].first.first);
 			
 			if(_pTextService->annotation &&
-				!_pTextService->candidates[ _uShowedCandList + k ].first.second.empty())
+				!_pTextService->candidates[ _uShowedCount + k ].first.second.empty())
 			{
 				_CandStr[k].append(markAnnotation +
-					_pTextService->candidates[ _uShowedCandList + k ].first.second);
+					_pTextService->candidates[ _uShowedCount + k ].first.second);
 			}
 
 			++k;
@@ -332,7 +334,6 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 	}
 
 	_uPageCnt = uPageCnt;
-
 	return S_OK;
 }
 
@@ -702,7 +703,7 @@ void CCandidateWindow::_SetTextRegword(const std::wstring &text, BOOL fixed, BOO
 	}
 }
 
-BOOL CCandidateWindow::_CanShowUI()
+BOOL CCandidateWindow::_CanShowUIElement()
 {
 	ITfUIElementMgr *pUIElementMgr;
 	BOOL bShow = TRUE;
@@ -721,20 +722,20 @@ void CCandidateWindow::_InitList()
 {
 	UINT i;
 
-	_uShowedCandList = (UINT)_pTextService->untilcandlist - 1;
-	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCandList;
+	_uShowedCount = (UINT)_pTextService->untilcandlist - 1;
+	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCount;
 
 	_CandStr.clear();
 	for(i=0; i<_uCount; i++)
 	{
 		_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
-		_CandStr[i].append(markNo + _pTextService->candidates[ _uShowedCandList + i ].first.first);
+		_CandStr[i].append(markNo + _pTextService->candidates[ _uShowedCount + i ].first.first);
 
 		if(_pTextService->annotation &&
-			!_pTextService->candidates[ _uShowedCandList + i ].first.second.empty())
+			!_pTextService->candidates[ _uShowedCount + i ].first.second.empty())
 		{
 			_CandStr[i].append(markAnnotation +
-				_pTextService->candidates[ _uShowedCandList + i ].first.second);
+				_pTextService->candidates[ _uShowedCount + i ].first.second);
 		}
 	}
 
@@ -1003,7 +1004,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 		}
 		break;
 
-	//TODO とりあえず結合文字は考慮しない
+	//結合文字は考慮しない
 
 	case SKK_BACK:
 		if(comptext.empty() && regwordstrpos > 0 && regwordstr.size() > 0)
@@ -1153,13 +1154,13 @@ void CCandidateWindow::_UpdateTT()
 			strTT.append(markLinkS + _EscapeTags(_pTextService->selkey[(i % MAX_SELKEY_C)][0]) + markLinkE);
 
 			strTT.append(markNoTT +
-				_EscapeTags(_pTextService->candidates[ count + _uShowedCandList + i ].first.first));
+				_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.first));
 
 			if(_pTextService->annotation &&
-				!_pTextService->candidates[ count + _uShowedCandList + i ].first.second.empty())
+				!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
 			{
 				strTT.append(markAnnotation +
-					_EscapeTags(_pTextService->candidates[ count + _uShowedCandList + i ].first.second));
+					_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.second));
 			}
 
 			strTT.append(markCandEnd);
