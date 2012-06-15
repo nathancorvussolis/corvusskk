@@ -295,7 +295,7 @@ void CTextService::_ConvNum(std::wstring &convnum, const std::wstring &key, cons
 
 void CTextService::_StartDicSrv()
 {
-	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSSRVMUTEX);
+	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, srvmutexname);
 	if(hMutex != NULL)
 	{
 		CloseHandle(hMutex);
@@ -307,7 +307,7 @@ void CTextService::_StartDicSrv()
 
 void CTextService::_StartConfigure()
 {
-	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSCNFMUTEX);
+	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, cnfmutexname);
 	if(hMutex != NULL)
 	{
 		CloseHandle(hMutex);

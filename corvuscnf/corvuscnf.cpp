@@ -12,30 +12,24 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DlgProcKana(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DlgProcJLatin(HWND, UINT, WPARAM, LPARAM);
 
-int APIENTRY wWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPWSTR    lpCmdLine,
-                     int       nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
 	HANDLE hMutex;
 	INITCOMMONCONTROLSEX icex;
 
-	hMutex = CreateMutex(NULL, FALSE, CORVUSCNFMUTEX);
+	setlocale(LC_ALL, "japanese");
+
+	CreateConfigPath();
+
+	hMutex = CreateMutexW(NULL, FALSE, cnfmutexname);
 	if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		return 0;
 	}
 
-	setlocale(LC_ALL, "japanese");
-
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
 	InitCommonControlsEx(&icex);
-
-	CreateConfigPath();
 
 	CreateProperty(hInstance);
 	

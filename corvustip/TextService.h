@@ -248,8 +248,11 @@ private:
 	WCHAR pathconfjlat[MAX_PATH];	//ASCII全英変換表
 
 	//corvussrv.exe との名前付きパイプ
-	WCHAR pipename[MAX_PIPENAME];
+	WCHAR pipename[MAX_KRNLOBJNAME];
 	HANDLE hPipe;
+	//ミューテックス
+	WCHAR srvmutexname[MAX_KRNLOBJNAME];
+	WCHAR cnfmutexname[MAX_KRNLOBJNAME];
 
 	//キーマップ
 	BYTE keymap_latin[KEYMAPNUM];	//全英/アスキー

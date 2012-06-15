@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.6.2
+     CorvusSKK version 0.6.3
      http://code.google.com/p/corvus-skk/
      corvussolis@gmail.com
 ================================================================================
@@ -29,11 +29,11 @@
 
 ２．CorvusSKK のインストール
 
-  32bit版 Windows では corvusskk_X.Y.Z_x86.7z を展開し、
-  corvusskk_x86.msi を実行して下さい。
+  32bit版 Windows では corvusskk-X.Y.Z-x86.7z を展開し、
+  corvusskk-x86.msi を実行して下さい。
 
-  64bit版 Windows では corvusskk_X.Y.Z_x64.7z を展開し、
-  corvusskk_x64.msi を実行して下さい。
+  64bit版 Windows では corvusskk-X.Y.Z-x64.7z を展開し、
+  corvusskk-x64.msi を実行して下さい。
 
   （X, Y, Z はバージョン番号）
 

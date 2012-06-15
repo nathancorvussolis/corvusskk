@@ -26,6 +26,7 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService)
 CLangBarItemButton::~CLangBarItemButton()
 {
 	DllRelease();
+
 	_pTextService->Release();
 }
 

@@ -8,6 +8,8 @@ const WCHAR *TextServiceDesc = TEXTSERVICE_DESC;
 const WCHAR *RccsUNICODE = L"r" CCSUNICODE;
 const WCHAR *WccsUNICODE = L"w" CCSUNICODE;
 
+WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
+
 // ファイルパス
 WCHAR pathconfig[MAX_PATH];		//設定
 WCHAR pathconfdic[MAX_PATH];	//SKK辞書リスト
@@ -69,4 +71,76 @@ void CreateConfigPath()
 
 	wcsncpy_s(pathskkcvidx, appdata, _TRUNCATE);
 	wcsncat_s(pathskkcvidx, fnskkcvidx, _TRUNCATE);
+
+	HANDLE hToken;
+	PTOKEN_USER pTokenUser;
+	DWORD dwLength;
+	LPWSTR pszUserSid = L"";
+	WCHAR szDigest[32+1];
+	MD5_DIGEST digest;
+
+	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
+	ZeroMemory(szDigest, sizeof(szDigest));
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+
+		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		{
+			ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid);
+		}
+
+		LocalFree(pTokenUser);
+		CloseHandle(hToken);
+	}
+
+	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+	{
+		for(int i=0; i<_countof(digest.digest); i++)
+		{
+			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+		}
+	}
+
+	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
+
+	LocalFree(pszUserSid);
+}
+
+BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
+{
+	BOOL bRet = FALSE;
+	HCRYPTPROV hProv = NULL;
+	HCRYPTHASH hHash = NULL;
+	BYTE *pbData;
+	DWORD dwDataLen;
+
+	if(digest == NULL)
+	{
+		return FALSE;
+	}
+
+	ZeroMemory(digest, sizeof(digest));
+	pbData = digest->digest;
+	dwDataLen = sizeof(digest->digest);
+
+	if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+	{
+		if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+		{
+			if(CryptHashData(hHash, data, datalen, 0))
+			{
+				if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
+				{
+					bRet = TRUE;
+				}
+			}
+			CryptDestroyHash(hHash);
+		}
+		CryptReleaseContext(hProv, 0);
+	}
+
+	return bRet;
 }

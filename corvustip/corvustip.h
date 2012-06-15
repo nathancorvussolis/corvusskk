@@ -3,14 +3,14 @@
 #define CORVUSTIP_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.2"
+#define TEXTSERVICE_VER		L"0.6.3"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvustip"
-#define RC_VERSION			"0.6.2"
-#define RC_VERSION_D		0,6,2,0
+#define RC_VERSION			"0.6.3"
+#define RC_VERSION_D		0,6,3,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -21,7 +21,7 @@
 #define LANGBAR_ITEM_DESC   L"ver. " TEXTSERVICE_VER
 #define LANGBAR_FUNC_DESC	TEXTSERVICE_DESC L" " TEXTSERVICE_VER
 
-#define MAX_PIPENAME 256
+#define MAX_KRNLOBJNAME 256
 #define CORVUSSRVEXE	L"corvussrv.exe"
 #define CORVUSCNFEXE	L"corvuscnf.exe"
 #ifndef _DEBUG
@@ -29,8 +29,8 @@
 #else
 #define CORVUSKRNLOBJ	L"corvus-skk-debug-"
 #endif
-#define CORVUSSRVMUTEX	CORVUSKRNLOBJ L"srv"
-#define CORVUSCNFMUTEX	CORVUSKRNLOBJ L"cnf"
+#define CORVUSSRVMUTEX	CORVUSKRNLOBJ L"srv-"
+#define CORVUSCNFMUTEX	CORVUSKRNLOBJ L"cnf-"
 #define CORVUSSRVPIPE	L"\\\\.\\pipe\\" CORVUSKRNLOBJ
 
 //request to corvussrv
@@ -107,6 +107,8 @@ extern const WCHAR *LangbarItemDesc;
 extern const WCHAR *LangbarFuncDesc;
 
 extern HINSTANCE g_hInst;
+
+extern OSVERSIONINFO g_ovi;
 
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInput;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConverted;

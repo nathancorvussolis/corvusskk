@@ -547,11 +547,7 @@ void CCandidateWindow::_BeginUIElement()
 		}
 	}
 
-	OSVERSIONINFO ovi;
-	ZeroMemory(&ovi, sizeof(ovi));
-	ovi.dwOSVersionInfoSize = sizeof(ovi);
-	GetVersionEx(&ovi);
-	if(ovi.dwMajorVersion < 6)
+	if(g_ovi.dwMajorVersion < 6)
 	{
 		_bShow = TRUE;
 	}

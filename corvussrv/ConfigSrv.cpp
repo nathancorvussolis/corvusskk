@@ -20,8 +20,9 @@ const WCHAR *fnskkcvidx = L"skkcv.idx";
 const WCHAR *fnuserdic = L"userdic.txt";
 const WCHAR *fnusercmp = L"usercmp.txt";
 
-WCHAR pipename[MAX_PIPENAME];	//名前付きパイプ
-WCHAR pipesddl[MAX_PIPENAME];	//名前付きパイプSDDL
+WCHAR pipename[MAX_KRNLOBJNAME];	//名前付きパイプ
+WCHAR pipesddl[MAX_KRNLOBJNAME];	//名前付きパイプSDDL
+WCHAR srvmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // config.ini セクション
 const WCHAR * IniSecServer = L"Server";
@@ -78,14 +79,12 @@ void CreateConfigPath()
 	HANDLE hToken;
 	PTOKEN_USER pTokenUser;
 	DWORD dwLength;
-	LPWSTR pszUserSid;
-	WCHAR szUserSid[256];
+	LPWSTR pszUserSid = L"";
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
 
 	ZeroMemory(pipename, sizeof(pipename));
 	ZeroMemory(pipesddl, sizeof(pipesddl));
-	ZeroMemory(szUserSid, sizeof(szUserSid));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
@@ -95,20 +94,16 @@ void CreateConfigPath()
 
 		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 		{
-			if(ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid))
-			{
-				wcsncpy_s(szUserSid, pszUserSid, _TRUNCATE);
-				LocalFree(pszUserSid);
-			}
+			ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid);
 		}
 
 		LocalFree(pTokenUser);
 		CloseHandle(hToken);
 	}
 
-	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", szUserSid);
+	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", pszUserSid);
 
-	if(GetMD5(&digest, (const BYTE *)szUserSid, (DWORD)wcslen(szUserSid)*sizeof(WCHAR)))
+	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 	{
 		for(int i=0; i<_countof(digest.digest); i++)
 		{
@@ -117,14 +112,17 @@ void CreateConfigPath()
 	}
 
 	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, szDigest);
+	_snwprintf_s(srvmutexname, _TRUNCATE, L"%s%s", CORVUSSRVMUTEX, szDigest);
+
+	LocalFree(pszUserSid);
 }
 
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 {
-    BOOL bRet = FALSE;
-    HCRYPTPROV hProv = NULL;
-    HCRYPTHASH hHash = NULL;
-    BYTE *pbData;
+	BOOL bRet = FALSE;
+	HCRYPTPROV hProv = NULL;
+	HCRYPTHASH hHash = NULL;
+	BYTE *pbData;
 	DWORD dwDataLen;
 
 	if(digest == NULL)
@@ -132,27 +130,27 @@ BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 		return FALSE;
 	}
 
-    ZeroMemory(digest, sizeof(digest));
-    pbData = digest->digest;
+	ZeroMemory(digest, sizeof(digest));
+	pbData = digest->digest;
 	dwDataLen = sizeof(digest->digest);
-    
-    if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET))
-	{
-        if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
-		{
-            if(CryptHashData(hHash, data, datalen, 0))
-			{
-                if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
-				{
-                    bRet = TRUE;
-                }
-            }
-            CryptDestroyHash(hHash);
-        }
-        CryptReleaseContext(hProv, 0);
-    }
 
-    return bRet;
+	if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+	{
+		if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+		{
+			if(CryptHashData(hHash, data, datalen, 0))
+			{
+				if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
+				{
+					bRet = TRUE;
+				}
+			}
+			CryptDestroyHash(hHash);
+		}
+		CryptReleaseContext(hProv, 0);
+	}
+
+	return bRet;
 }
 
 void LoadConfig()

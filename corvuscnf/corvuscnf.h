@@ -3,14 +3,14 @@
 #define CORVUSCNF_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.2"
+#define TEXTSERVICE_VER		L"0.6.3"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvuscnf"
-#define RC_VERSION			"0.6.2"
-#define RC_VERSION_D		0,6,2,0
+#define RC_VERSION			"0.6.3"
+#define RC_VERSION_D		0,6,3,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -18,12 +18,13 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 
+#define MAX_KRNLOBJNAME		256
 #ifndef _DEBUG
 #define CORVUSKRNLOBJ	L"corvus-skk-"
 #else
 #define CORVUSKRNLOBJ	L"corvus-skk-debug-"
 #endif
-#define CORVUSCNFMUTEX		CORVUSKRNLOBJ L"cnf"
+#define CORVUSCNFMUTEX		CORVUSKRNLOBJ L"cnf-"
 
 #define MAX_SKKSERVER_HOST	(255+1)
 #define MAX_SKKSERVER_PORT	(5+1)
@@ -32,9 +33,16 @@
 
 #define KEYRELEN		256
 
+typedef struct {
+	BYTE digest[16];
+} MD5_DIGEST;
+
+// corvuscnf
+void CreateProperty(HINSTANCE hInst);
+
 // ConfigCnf
 void CreateConfigPath();
-void CreateProperty(HINSTANCE hInst);
+BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 
 // PropertyConfDictionary
 void LoadDictionary(HWND hwnd);
@@ -57,6 +65,8 @@ extern const WCHAR *TextServiceDesc;
 
 extern const WCHAR *RccsUNICODE;
 extern const WCHAR *WccsUNICODE;
+
+extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // ファイルパス
 extern WCHAR pathconfig[MAX_PATH];		//設定

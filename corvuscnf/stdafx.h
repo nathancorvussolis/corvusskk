@@ -14,3 +14,5 @@
 #include <Shlobj.h>
 #include <CommCtrl.h>
 #include <CommDlg.h>
+#include <Sddl.h>
+#include <WinCrypt.h>

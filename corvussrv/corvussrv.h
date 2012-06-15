@@ -3,14 +3,14 @@
 #define CORVUSSRV_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.2"
+#define TEXTSERVICE_VER		L"0.6.3"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvussrv"
-#define RC_VERSION			"0.6.2"
-#define RC_VERSION_D		0,6,2,0
+#define RC_VERSION			"0.6.3"
+#define RC_VERSION_D		0,6,3,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -18,13 +18,13 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 
-#define MAX_PIPENAME		256
+#define MAX_KRNLOBJNAME		256
 #ifndef _DEBUG
 #define CORVUSKRNLOBJ	L"corvus-skk-"
 #else
 #define CORVUSKRNLOBJ	L"corvus-skk-debug-"
 #endif
-#define CORVUSSRVMUTEX		CORVUSKRNLOBJ L"srv"
+#define CORVUSSRVMUTEX		CORVUSKRNLOBJ L"srv-"
 #define CORVUSSRVPIPE		L"\\\\.\\pipe\\" CORVUSKRNLOBJ
 
 #define MAX_SKKSERVER_HOST	(255+1)
@@ -76,7 +76,8 @@ void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates);
 void AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command);
 void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate);
 void LoadUserDic();
-HANDLE StartSaveUserDic();
+HANDLE StartSaveUserDicEx();
+void StartSaveUserDic();
 
 // ConvSKKServer
 void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates);
@@ -100,8 +101,9 @@ extern WCHAR pathskkcvidx[MAX_PATH];	//取込SKK辞書インデックス
 extern WCHAR pathuserdic[MAX_PATH];		//ユーザ辞書
 extern WCHAR pathusercmp[MAX_PATH];		//補完見出し語
 
-extern WCHAR pipename[MAX_PIPENAME];	//名前付きパイプ
-extern WCHAR pipesddl[MAX_PIPENAME];	//名前付きパイプSDDL
+extern WCHAR pipename[MAX_KRNLOBJNAME];	//名前付きパイプ
+extern WCHAR pipesddl[MAX_KRNLOBJNAME];	//名前付きパイプSDDL
+extern WCHAR srvmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // 辞書サーバ設定
 extern BOOL serv;		//SKK辞書サーバを使用する

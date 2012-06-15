@@ -322,7 +322,7 @@ void LoadUserDic()
 	LoadComplement();
 }
 
-unsigned int __stdcall SaveUserDicThread(void *p)
+unsigned int __stdcall SaveUserDicThreadEx(void *p)
 {
 	FILE *fp;
 	std::wstring s;
@@ -381,11 +381,10 @@ unsigned int __stdcall SaveUserDicThread(void *p)
 
 	delete userdata;
 
-	_endthreadex(0);
 	return 0;
 }
 
-HANDLE StartSaveUserDic()
+HANDLE StartSaveUserDicEx()
 {
 	HANDLE hThread = NULL;
 
@@ -396,10 +395,26 @@ HANDLE StartSaveUserDic()
 		userdata->userdics = userdics; 
 		userdata->complements = complements;
 
-		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveUserDicThread, userdata, 0, NULL);
+		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveUserDicThreadEx, userdata, 0, NULL);
 	}
 
 	return hThread;
+}
+
+void SaveUserDicThreadExClose(void *p)
+{
+	HANDLE hThread = (HANDLE)p;
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+}
+
+void StartSaveUserDic()
+{
+	HANDLE hThread = StartSaveUserDicEx();
+	if(hThread != NULL)
+	{
+		_beginthread(SaveUserDicThreadExClose, 0, hThread);
+	}
 }
 
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates)

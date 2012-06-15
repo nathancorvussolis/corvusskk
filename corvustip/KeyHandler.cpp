@@ -187,9 +187,9 @@ void CTextService::_KeyboardChanged()
 			break;
 		}
 
-		_ResetStatus();
-
 		_StartDicSrv();
+
+		_ResetStatus();
 
 		_LoadBehavior();
 		_LoadSelKey();
@@ -203,18 +203,14 @@ void CTextService::_KeyboardChanged()
 		exinputmode = inputmode;
 		inputmode = im_default;
 
-		_ResetStatus();
-
 		if(exinputmode != im_default)
 		{
 			_SaveUserDic();
 		}
 
-		if(_pCandidateList != NULL)
-		{
-			_pCandidateList->_EndCandidateList();
-			_pCandidateList = NULL;
-		}
+		_ResetStatus();
+
+		_ClearComposition();
 	}
 
 	_UpdateLanguageBar();

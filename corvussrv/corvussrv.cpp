@@ -13,34 +13,31 @@ HFONT hFont;
 #endif
 HINSTANCE hInst;
 HANDLE hMutex;
-HANDLE hThread;
+HANDLE hThreadSrv;
 BOOL bSrvThreadExit;
 BOOL bUserDicChg;
 CRITICAL_SECTION csUserDataSave;
 
-int APIENTRY wWinMain(HINSTANCE hInstance,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
 	WNDCLASSEX wcex;
 	HWND hWnd;
 	WSADATA wsaData;
 
-	hMutex = CreateMutex(NULL, FALSE, CORVUSSRVMUTEX);
+	setlocale(LC_ALL, "japanese");
+
+	CreateConfigPath();
+
+	hMutex = CreateMutexW(NULL, FALSE, srvmutexname);
 	if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		return 0;
 	}
 
-	setlocale(LC_ALL, "japanese");
+	LoadConfig();
 
 	WSAStartup(WINSOCK_VERSION, &wsaData);
-
-	CreateConfigPath();
-
-	LoadConfig();
 
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -118,7 +115,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		LoadUserDic();
 
 		bSrvThreadExit = FALSE;
-		hThread = SrvStart();
+		hThreadSrv = SrvStart();
 
 		RegisterRun();
 		break;
@@ -128,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 		DeleteObject(hFont);
 #endif
-		hThreadSave = StartSaveUserDic();
+		hThreadSave = StartSaveUserDicEx();
 		WaitForSingleObject(hThreadSave, INFINITE);
 
 		bSrvThreadExit = TRUE;
@@ -137,8 +134,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		if(hPipe != INVALID_HANDLE_VALUE)
 		{
 			CloseHandle(hPipe);
-			WaitForSingleObject(hThread, INFINITE);
+			WaitForSingleObject(hThreadSrv, INFINITE);
 		}
+
+		CloseHandle(hThreadSrv);
 
 		DeleteCriticalSection(&csUserDataSave);
 
@@ -378,7 +377,6 @@ unsigned int __stdcall SrvThread(void *p)
 
 	CloseHandle(hPipe);
 	
-	_endthreadex(0);
 	return 0;
 }
 

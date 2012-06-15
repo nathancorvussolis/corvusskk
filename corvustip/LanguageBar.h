@@ -37,10 +37,10 @@ public:
 private:
 	LONG _cRef;
 
+	CTextService *_pTextService;
+
 	ITfLangBarItemSink *_pLangBarItemSink;
 	TF_LANGBARITEMINFO _LangBarItemInfo;
-
-	CTextService *_pTextService;
 };
 
 #endif

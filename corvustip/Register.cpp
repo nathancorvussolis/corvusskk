@@ -33,14 +33,10 @@ BOOL RegisterProfiles()
 	
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 	
-	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService,TEXTSERVICE_LANGID,
+	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
 
-	OSVERSIONINFO ovi;
-	ZeroMemory(&ovi, sizeof(ovi));
-	ovi.dwOSVersionInfoSize = sizeof(ovi);
-	GetVersionEx(&ovi);
-	if(ovi.dwMajorVersion < 6)
+	if(g_ovi.dwMajorVersion < 6)
 	{
 		//XPで既定の言語に設定する為、デフォルトで存在するという仮定で
 		//MS-IME2002の入力ロケール識別子「E0010411」をとりあえず使用。
