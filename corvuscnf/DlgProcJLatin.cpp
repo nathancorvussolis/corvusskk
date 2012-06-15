@@ -156,6 +156,10 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		case PSN_APPLY:
 			SaveJLatin(hDlg);
 
+			WriterEndElement(pXmlWriter);	//TagRoot
+
+			WriterNewLine(pXmlWriter);
+
 			WriterFinal(&pXmlWriter, &pXmlFileStream);
 
 			return (INT_PTR)TRUE;

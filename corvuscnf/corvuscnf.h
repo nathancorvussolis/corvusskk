@@ -21,7 +21,7 @@ void CreateConfigPath();
 // PropertyConfDictionary
 void LoadDictionary(HWND hwnd);
 void SaveDictionary(HWND hwnd);
-void MakeSKKDic(HWND hwnd);
+HRESULT MakeSKKDic(HWND hwnd);
 
 // PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);

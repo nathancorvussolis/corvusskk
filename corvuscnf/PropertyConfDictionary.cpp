@@ -70,8 +70,7 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 {
 	HWND hWndList;
 	WCHAR path[MAX_PATH];
-	std::vector<std::wstring> apath;
-	size_t size, i;
+	size_t count, size, i, is;
 	FILE *fpskkdic;
 	WCHAR bom;
 	CHAR buf[BUFSIZE];
@@ -84,17 +83,12 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 	ENTRYS::iterator entrys_itr;
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	size = ListView_GetItemCount(hWndList);
+	count = ListView_GetItemCount(hWndList);
 
-	for(i=0; i<size; i++)
+	for(i=0; i<count; i++)
 	{
 		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
-		apath.push_back(path);
-	}
-
-	for(i=0; i<apath.size(); i++)
-	{
-		_wfopen_s(&fpskkdic, apath[i].c_str(), L"rb");
+		_wfopen_s(&fpskkdic, path, L"rb");
 		if(fpskkdic == NULL)
 		{
 			continue;
@@ -161,14 +155,14 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 			re.assign(L"\\t|\\r|\\n");
 			fmt.assign(L"");
 			s = std::regex_replace(s, re, fmt);
-			i = s.find_first_of(L'\x20');
-			if(i == std::wstring::npos)
+			is = s.find_first_of(L'\x20');
+			if(is == std::wstring::npos)
 			{
 				continue;
 			}
 
-			entry.first = s.substr(0, i);
-			entry.second = s.substr(i + 1);
+			entry.first = s.substr(0, is);
+			entry.second = s.substr(is + 1);
 			entrys_itr = entrys.find(entry.first);
 			if(entrys_itr == entrys.end())
 			{
@@ -184,8 +178,9 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 	}
 }
 
-void WriteSKKDicXml(ENTRYS &entrys)
+HRESULT WriteSKKDicXml(ENTRYS &entrys)
 {
+	HRESULT hr;
 	FILE *fpidx;
 	IXmlWriter *pWriter;
 	IStream *pFileStream;
@@ -198,21 +193,33 @@ void WriteSKKDicXml(ENTRYS &entrys)
 	APPDATAXMLATTR attr;
 	APPDATAXMLROW::iterator r_itr;;
 	APPDATAXMLROW row;
+	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLLIST list;
 	ULARGE_INTEGER uli1;
 	LARGE_INTEGER li0 = {0};
 
 	_wfopen_s(&fpidx, pathskkcvdicidx, L"wb");
 
-	WriterInit(pathskkcvdicxml, &pWriter, &pFileStream);
+	hr = WriterInit(pathskkcvdicxml, &pWriter, &pFileStream, FALSE);
+	EXIT_NOT_S_OK(hr);
 
-	WriterStartSection(pWriter, SectionDictionary);
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterStartElement(pWriter, TagRoot);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterStartSection(pWriter, SectionDictionary);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
 	for(entrys_itr = entrys.begin(); entrys_itr != entrys.end(); entrys_itr++)
 	{
-		//見出し
-		//line = entrys_itr->first;
-
 		//エントリを「/」で分割
 		es.clear();
 		i = 0;
@@ -227,10 +234,9 @@ void WriteSKKDicXml(ENTRYS &entrys)
 			}
 			es.push_back(s.substr(i + 1, ie - is - 1));
 			i = ie;
-
 		}
 
-		// concatを置換
+		// 候補と注釈を分割
 		list.clear();
 		for(i=0; i<es.size(); i++)
 		{
@@ -260,62 +266,92 @@ void WriteSKKDicXml(ENTRYS &entrys)
 			list.push_back(row);
 		}
 
-		for(r_itr = row.begin(); r_itr != row.end(); r_itr++)
+		// concatを置換
+		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
 		{
-			s = r_itr->second;
-
-			re.assign(L".*\\(concat \".*\"\\).*");
-			if(std::regex_match(s, re))
+			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
-				re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-				fmt.assign(L"$1$2$3");
-				s = std::regex_replace(s, re, fmt);
+				s = r_itr->second;
 
-				re.assign(L"\\\\057");
-				fmt.assign(L"/");
-				s = std::regex_replace(s, re, fmt);
+				re.assign(L".*\\(concat \".*\"\\).*");
+				if(std::regex_match(s, re))
+				{
+					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
+					fmt.assign(L"$1$2$3");
+					s = std::regex_replace(s, re, fmt);
 
-				re.assign(L"\\\\073");
-				fmt.assign(L";");
-				s = std::regex_replace(s, re, fmt);
+					re.assign(L"\\\\057");
+					fmt.assign(L"/");
+					s = std::regex_replace(s, re, fmt);
+
+					re.assign(L"\\\\073");
+					fmt.assign(L";");
+					s = std::regex_replace(s, re, fmt);
+				}
+
+				r_itr->second = s;
 			}
-
-			r_itr->second = s;
 		}
 
 		//インデックスファイル書き込み
 		if(fpidx != NULL)
 		{
-			pWriter->Flush();
+			hr = pWriter->Flush();
+			EXIT_NOT_S_OK(hr);
 
-			pFileStream->Seek(li0, STREAM_SEEK_CUR, &uli1);
+			hr = pFileStream->Seek(li0, STREAM_SEEK_CUR, &uli1);
+			EXIT_NOT_S_OK(hr);
 
-			uli1.QuadPart += 1;
 			fwrite(&uli1.QuadPart, sizeof(uli1.QuadPart), 1, fpidx);
 		}
 
-		//辞書ファイル書き込み
-		WriterStartElement(pWriter, L"entry");
+		hr = WriterStartElement(pWriter, TagEntry);
+		EXIT_NOT_S_OK(hr);
 
-		WriterAttribute(pWriter, L"key", entrys_itr->first.c_str());
+		hr = WriterAttribute(pWriter, TagKey, entrys_itr->first.c_str());	//見出し
+		EXIT_NOT_S_OK(hr);
+	
+		hr = WriterList(pWriter, list);	//候補
+		EXIT_NOT_S_OK(hr);
 
-		WriterList(pWriter, list);
+		hr = WriterEndElement(pWriter);	//TagEntry
+		EXIT_NOT_S_OK(hr);
 
-		WriterEndElement(pWriter);
+		hr = WriterNewLine(pWriter);
+		EXIT_NOT_S_OK(hr);
 	}
 
-	WriterEndSection(pWriter);
+	hr = WriterEndSection(pWriter);	//SectionDictionary
+	EXIT_NOT_S_OK(hr);
 
-	WriterFinal(&pWriter, &pFileStream);
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
-	fclose(fpidx);
+	hr = WriterEndElement(pWriter);	//TagRoot
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+NOT_S_OK:
+	hr = WriterFinal(&pWriter, &pFileStream);
+
+	if(fpidx != NULL)
+	{
+		fclose(fpidx);
+	}
+
+	return hr;
 }
 
-void MakeSKKDic(HWND hwnd)
+HRESULT MakeSKKDic(HWND hwnd)
 {
+	HRESULT hr;
 	ENTRYS entrys;
 
 	LoadSKKDic(hwnd, entrys);
 
-	WriteSKKDicXml(entrys);
+	hr = WriteSKKDicXml(entrys);
+
+	return hr;
 }

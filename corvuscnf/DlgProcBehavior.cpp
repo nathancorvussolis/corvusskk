@@ -174,6 +174,8 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			WriterInit(pathconfigxml, &pXmlWriter, &pXmlFileStream);
 
+			WriterStartElement(pXmlWriter, TagRoot);
+
 			WriterStartSection(pXmlWriter, SectionFont);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));

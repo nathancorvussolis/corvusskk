@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.7.0
+     CorvusSKK version 0.7.1
      http://code.google.com/p/corvus-skk/
      corvussolis@gmail.com
 ================================================================================
@@ -15,10 +15,11 @@
 --------------------------------------------------------------------------------
 
 
-１．Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ のインストール
+１．必須ライブラリ のインストール
 
-  32bit版 Windows では x86 のパッケージのみを、64bit版 Windows では x86 と x64
-  のパッケージの両方を予めインストールして下さい。
+  32bit版 Windows では x86 の VC++ パッケージのみを、
+  64bit版 Windows では x86 と x64 の VC++ パッケージの両方を
+  予めインストールして下さい。
 
   Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x86)
   http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c32f406a-f8fc-4164-b6eb-5328b8578f03
@@ -26,7 +27,8 @@
   Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x64)
   http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c68ccbb6-75ef-4c9d-a326-879eab4fcdf8
 
-  XPでは、SP3 または IE7以降 または XP用XMLLite を予めインストールして下さい。
+  XPでは、SP3(x64はSP2) または IE7以降 または XP用XMLLite を
+  予めインストールして下さい。
 
   Windows XP 用 XMLLite (KB915865)
   http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=d7b5dc81-ad14-4de2-8ad5-8c4a9aab5992
@@ -83,7 +85,12 @@
 --------------------------------------------------------------------------------
 
 
-・設定ファイル、SKK辞書、ユーザ辞書
+・設定ダイアログ
+
+  設定ダイアログで変更した後は、キーボード OFF → ON で新しい設定が反映されます。
+
+
+・設定ファイル、SKK辞書
 
   各種設定及び取込済SKK辞書は、ディレクトリ %AppData%\CorvusSKK の各ファイルに
   保存されます。
@@ -92,19 +99,25 @@
   || skkcvdic.xml   || 取込済SKK辞書
   || skkcvdic.idx   || 取込済SKK辞書インデックス
 
+  各種設定の config.xml ファイルは、UTF-8 の XML フォーマットのテキストファイル
+  となっており、テキストエディタで編集可能です。
+  変更した後は、キーボード OFF → ON で新しい設定が反映されます。
+
+
+・ユーザ辞書
+
   ユーザ辞書は、ディレクトリ %AppData%\CorvusSKK のファイルに保存されます。
+
+  || userdic.xml    || ユーザ辞書
+
   独自フォーマットとしており、他のSKK風ソフトウェアのユーザ辞書との互換性は
   ありません。
-  サーバプロセス（corvussrv.exe）の起動時にメモリ上に読み込まれ、
+  ユーザ辞書は、サーバプロセス（corvussrv.exe）の起動時にメモリ上に読み込まれ、
   追加、変更、削除があったとき、かつ、以下のいずれかのときに上書きされます。
     ・キーボード ON 状態から OFF 状態にするとき
     ・キーボード ON 状態のアプリケーションが終了するとき
     ・アプリケーションがフォーカスを失うとき
     ・サーバプロセス（corvussrv.exe）が終了するとき
-
-  || userdic.xml    || ユーザ辞書
-
-  設定ダイアログで変更した後は、キーボード OFF → ON で新しい設定が反映されます。
 
 
 ・動作

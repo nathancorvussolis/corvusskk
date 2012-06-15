@@ -9,8 +9,6 @@ void AddComplement(const std::wstring &searchkey);
 void DelComplement(const std::wstring &searchkey);
 void LoadComplement();
 
-#define BUFSIZE 0x1000
-
 //ユーザ辞書
 USERDICS userdics;
 //補完
@@ -128,6 +126,9 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 		{
 			for(l_itr = d_itr->second.begin(); l_itr != d_itr->second.end(); l_itr++)
 			{
+				candidate.clear();
+				annotation.clear();
+
 				for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 				{
 					if(r_itr->first == AttributeCandidate)
@@ -221,6 +222,7 @@ void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
 
 void LoadUserDic()
 {
+	HRESULT hr;
 	USERDICS::iterator userdics_itr;
 	CANDIDATES::iterator candidates_itrs;
 	USERDICSPAIR userdic;
@@ -234,7 +236,8 @@ void LoadUserDic()
 
 	userdics.clear();
 
-	ReadDicList(pathuserdicxml, SectionDictionary, xmldic);
+	hr = ReadDicList(pathuserdicxml, SectionDictionary, xmldic);
+	EXIT_NOT_S_OK(hr);
 
 	for(d_itr = xmldic.begin(); d_itr != xmldic.end(); d_itr++)
 	{
@@ -243,6 +246,9 @@ void LoadUserDic()
 
 		for(l_itr = d_itr->second.begin(); l_itr != d_itr->second.end(); l_itr++)
 		{
+			candidate.clear();
+			annotation.clear();
+
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
 				if(r_itr->first == AttributeCandidate)
@@ -289,11 +295,13 @@ void LoadUserDic()
 
 	}
 	
+NOT_S_OK:
 	LoadComplement();
 }
 
 unsigned int __stdcall SaveUserDicThreadEx(void *p)
 {
+	HRESULT hr;
 	IXmlWriter *pWriter;
 	IStream *pFileStream;
 	std::wstring s;
@@ -310,10 +318,24 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 
 	EnterCriticalSection(&csUserDataSave);	// !
 
-	WriterInit(pathuserdicxml, &pWriter, &pFileStream);
+	hr = WriterInit(pathuserdicxml, &pWriter, &pFileStream, FALSE);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterStartElement(pWriter, TagRoot);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
 	//ユーザ辞書
-	WriterStartSection(pWriter, SectionDictionary);
+	hr = WriterStartSection(pWriter, SectionDictionary);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
 	for(u_itr = userdata->userdics.begin(); u_itr != userdata->userdics.end(); u_itr++)
 	{
@@ -333,19 +355,34 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 			list.push_back(row);
 		}
 		
-		WriterStartElement(pWriter, L"entry");
+		hr = WriterStartElement(pWriter, TagEntry);
+		EXIT_NOT_S_OK(hr);
 
-		WriterAttribute(pWriter, L"key", u_itr->first.c_str());
+		hr = WriterAttribute(pWriter, TagKey, u_itr->first.c_str());	//補完見出し語
+		EXIT_NOT_S_OK(hr);
 
-		WriterList(pWriter, list);
+		hr = WriterList(pWriter, list);
+		EXIT_NOT_S_OK(hr);
 
-		WriterEndElement(pWriter);
+		hr = WriterEndElement(pWriter);	//TagEntry
+		EXIT_NOT_S_OK(hr);
+
+		hr = WriterNewLine(pWriter);
+		EXIT_NOT_S_OK(hr);
 	}
 
-	WriterEndSection(pWriter);
+	hr = WriterEndSection(pWriter);	//SectionDictionary
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
 	//補完
-	WriterStartSection(pWriter, SectionComplement);
+	hr = WriterStartSection(pWriter, SectionComplement);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
 	list.clear();
 
@@ -360,12 +397,26 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 		list.push_back(row);
 	}
 
-	WriterList(pWriter, list);
+	hr = WriterList(pWriter, list, TRUE);
+	EXIT_NOT_S_OK(hr);
 
-	WriterEndSection(pWriter);
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
 
+	hr = WriterEndSection(pWriter);	//SectionComplement
+	EXIT_NOT_S_OK(hr);
 
-	WriterFinal(&pWriter, &pFileStream);
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterEndElement(pWriter);	//TagRoot
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+NOT_S_OK:
+	hr = WriterFinal(&pWriter, &pFileStream);
 
 	LeaveCriticalSection(&csUserDataSave);	// !
 
@@ -451,6 +502,7 @@ void DelComplement(const std::wstring &searchkey)
 
 void LoadComplement()
 {
+	HRESULT hr;
 	COMPLEMENTS::iterator complements_itr;
 	APPDATAXMLLIST xmllist;
 	APPDATAXMLLIST::iterator l_itr;
@@ -458,7 +510,8 @@ void LoadComplement()
 
 	complements.clear();
 
-	ReadList(pathuserdicxml, SectionComplement, xmllist);
+	hr = ReadList(pathuserdicxml, SectionComplement, xmllist);
+	EXIT_NOT_S_OK(hr);
 
 	for(l_itr = xmllist.begin(); l_itr != xmllist.end(); l_itr++)
 	{
@@ -482,4 +535,7 @@ void LoadComplement()
 			}
 		}
 	}
+
+NOT_S_OK:
+	;
 }

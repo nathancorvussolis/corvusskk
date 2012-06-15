@@ -2,10 +2,19 @@
 #ifndef CONFIGXML_H
 #define CONFIGXML_H
 
+#include <string>
+#include <vector>
+#include <map>
+
+#include <Windows.h>
 #include <xmllite.h>
+#include <Shlwapi.h>
 
 #pragma comment(lib, "xmllite.lib")
 #pragma comment(lib, "shlwapi.lib")
+
+#define NOT_S_OK not_s_ok
+#define EXIT_NOT_S_OK(hr) if(S_OK != (hr)) goto NOT_S_OK
 
 typedef std::pair<std::wstring, std::wstring> APPDATAXMLATTR;
 typedef std::vector<APPDATAXMLATTR> APPDATAXMLROW;
@@ -18,18 +27,45 @@ HRESULT ReadDicList(LPCWSTR path, LPCWSTR section, APPDATAXMLDIC &list, ULONGLON
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list);
 HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval);
 
+HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream, BOOL indent = TRUE);
+HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream);
+
+HRESULT WriterNewLine(IXmlWriter *pWriter);
 HRESULT WriterStartElement(IXmlWriter *pWriter, LPCWSTR element);
 HRESULT WriterEndElement(IXmlWriter *pWriter);
 HRESULT WriterAttribute(IXmlWriter *pWriter, LPCWSTR name, LPCWSTR value);
-HRESULT WriterData(IXmlWriter *pWriter, const std::wstring &data);
 
 HRESULT WriterStartSection(IXmlWriter *pWriter, LPCWSTR name);
 HRESULT WriterEndSection(IXmlWriter *pWriter);
 HRESULT WriterKey(IXmlWriter *pWriter, LPCWSTR key, LPCWSTR value);
 HRESULT WriterRow(IXmlWriter *pWriter, const APPDATAXMLROW &row);
-HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list);
-HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream);
-HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream);
+HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list, BOOL newline = FALSE);
+
+//tag
+extern LPCWSTR TagRoot;
+extern LPCWSTR TagSection;
+extern LPCWSTR TagKey;
+extern LPCWSTR TagEntry;
+extern LPCWSTR TagList;
+extern LPCWSTR TagRow;
+
+//attribute
+extern LPCWSTR AttributeName;
+extern LPCWSTR AttributeValue;
+extern LPCWSTR AttributeCandidate;
+extern LPCWSTR AttributeAnnotation;
+extern LPCWSTR AttributeKey;
+extern LPCWSTR AttributePath;
+extern LPCWSTR AttributeCPStart;
+extern LPCWSTR AttributeCPAlter;
+extern LPCWSTR AttributeCPOkuri;
+extern LPCWSTR AttributeRoman;
+extern LPCWSTR AttributeHiragana;
+extern LPCWSTR AttributeKatakana;
+extern LPCWSTR AttributeKatakanaAnk;
+extern LPCWSTR AttributeSoku;
+extern LPCWSTR AttributeLatin;
+extern LPCWSTR AttributeJLatin;
 
 //section
 extern LPCWSTR SectionFont;
@@ -105,21 +141,5 @@ extern LPCWSTR SectionJLatin;
 
 //section
 extern LPCWSTR SectionComplement;
-
-//attribute
-extern LPCWSTR AttributeCandidate;
-extern LPCWSTR AttributeAnnotation;
-extern LPCWSTR AttributeKey;
-extern LPCWSTR AttributePath;
-extern LPCWSTR AttributeCPStart;
-extern LPCWSTR AttributeCPAlter;
-extern LPCWSTR AttributeCPOkuri;
-extern LPCWSTR AttributeRoman;
-extern LPCWSTR AttributeHiragana;
-extern LPCWSTR AttributeKatakana;
-extern LPCWSTR AttributeKatakanaAnk;
-extern LPCWSTR AttributeSoku;
-extern LPCWSTR AttributeLatin;
-extern LPCWSTR AttributeJLatin;
 
 #endif
