@@ -101,7 +101,7 @@ void CreateConfigPath()
 		CloseHandle(hToken);
 	}
 
-	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", pszUserSid);
+	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", pszUserSid);
 
 	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 	{

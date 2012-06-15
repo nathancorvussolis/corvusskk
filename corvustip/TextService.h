@@ -113,6 +113,7 @@ public:
 	void _StartComposition(ITfContext *pContext);
 	void _TerminateComposition(TfEditCookie ec, ITfContext *pContext);
 	void _EndComposition(ITfContext *pContext);
+	void _CancelComposition(TfEditCookie ec, ITfContext *pContext);
 	void _ClearComposition();
 
 	// LanguageBar

@@ -3,14 +3,14 @@
 #define CORVUSSRV_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.3"
+#define TEXTSERVICE_VER		L"0.6.4"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvussrv"
-#define RC_VERSION			"0.6.3"
-#define RC_VERSION_D		0,6,3,0
+#define RC_VERSION			"0.6.4"
+#define RC_VERSION_D		0,6,4,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME

@@ -160,10 +160,57 @@ void CTextService::_EndComposition(ITfContext *pContext)
 	}
 }
 
+class CClearCompositionEditSession : public CEditSessionBase
+{
+public:
+	CClearCompositionEditSession(CTextService *pTextService, ITfContext *pContext) : CEditSessionBase(pTextService, pContext)
+	{
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		_pTextService->_CancelComposition(ec, _pContext);
+		return S_OK;
+	}
+};
+
+void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
+{
+	TF_SELECTION tfSelection;
+	ITfRange *pRangeComposition;
+	ULONG cFetched;
+
+	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK || cFetched != 1)
+	{
+		return;
+	}
+
+	if(_pComposition->GetRange(&pRangeComposition) == S_OK)
+	{
+		if(_IsRangeCovered(ec, tfSelection.range, pRangeComposition))
+		{
+			pRangeComposition->SetText(ec, 0, L"", 0);
+			
+			tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
+
+			pContext->SetSelection(ec, 1, &tfSelection);
+		}
+		pRangeComposition->Release();
+	}
+
+	tfSelection.range->Release();
+
+	_TerminateComposition(ec, pContext);
+}
+
 void CTextService::_ClearComposition()
 {
 	ITfDocumentMgr *pDocumentMgrFocus = NULL;
 	ITfContext *pContext = NULL;
+	CClearCompositionEditSession *pEditSession;
+	HRESULT hr;
 
 	if(_pCandidateList != NULL)
 	{
@@ -178,7 +225,14 @@ void CTextService::_ClearComposition()
 			if((pDocumentMgrFocus->GetTop(&pContext) == S_OK) && (pContext != NULL))
 			{
 				_ResetStatus();
-				_InvokeKeyHandler(pContext, 0, 0, SKK_ENTER);
+
+				pEditSession = new CClearCompositionEditSession(this, pContext);
+				if(pEditSession != NULL)
+				{
+					pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
+					pEditSession->Release();
+				}
+
 				pContext->Release();
 			}
 			pDocumentMgrFocus->Release();
