@@ -866,8 +866,8 @@ void CCandidateWindow::_PrevPage()
 				}
 				_UpdateTT();
 			}
-			return;
 		}
+		return;
 	}
 
 	_uIndex = _PageInex[uNewPage];

@@ -3,14 +3,14 @@
 #define CORVUSTIP_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.1"
+#define TEXTSERVICE_VER		L"0.6.2"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvustip"
-#define RC_VERSION			"0.6.1"
-#define RC_VERSION_D		0,6,1,0
+#define RC_VERSION			"0.6.2"
+#define RC_VERSION_D		0,6,2,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -21,11 +21,17 @@
 #define LANGBAR_ITEM_DESC   L"ver. " TEXTSERVICE_VER
 #define LANGBAR_FUNC_DESC	TEXTSERVICE_DESC L" " TEXTSERVICE_VER
 
+#define MAX_PIPENAME 256
 #define CORVUSSRVEXE	L"corvussrv.exe"
 #define CORVUSCNFEXE	L"corvuscnf.exe"
-#define CORVUSSRVMUTEX	TEXTSERVICE_DESC L"_SRV_Mutex"
-#define CORVUSCNFMUTEX	TEXTSERVICE_DESC L"_CNF_Mutex"
-#define CORVUSSRVPIPE	L"\\\\.\\pipe\\" TEXTSERVICE_DESC L"_"
+#ifndef _DEBUG
+#define CORVUSKRNLOBJ	L"corvus-skk-"
+#else
+#define CORVUSKRNLOBJ	L"corvus-skk-debug-"
+#endif
+#define CORVUSSRVMUTEX	CORVUSKRNLOBJ L"srv"
+#define CORVUSCNFMUTEX	CORVUSKRNLOBJ L"cnf"
+#define CORVUSSRVPIPE	L"\\\\.\\pipe\\" CORVUSKRNLOBJ
 
 //request to corvussrv
 #define REQ_SEARCH		L'1'	//辞書検索
@@ -34,11 +40,9 @@
 #define REQ_USER_ADD_1	L'B'	//ユーザ辞書追加(補完あり)
 #define REQ_USER_DEL	L'D'	//ユーザ辞書削除
 #define REQ_USER_SAVE	L'S'	//ユーザ辞書書き込み
-#define REQ_CHECK_ALIVE	L'?'	//check alive
 //reply from corvussrv
 #define REP_OK			L'1'	//hit
 #define REP_FALSE		L'4'	//nothig
-#define REP_CHECK_ALIVE	L'!'	//alive
 
 //入力モード
 enum
@@ -114,6 +118,10 @@ extern const GUID c_guidLangBarItemButton;
 extern const GUID c_guidDisplayAttributeInput;
 extern const GUID c_guidDisplayAttributeConverted;
 extern const GUID c_guidCandidateListUIElement;
+
+typedef struct {
+	BYTE digest[16];
+} MD5_DIGEST;
 
 LONG DllAddRef();
 LONG DllRelease();

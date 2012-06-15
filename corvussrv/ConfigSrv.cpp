@@ -20,7 +20,8 @@ const WCHAR *fnskkcvidx = L"skkcv.idx";
 const WCHAR *fnuserdic = L"userdic.txt";
 const WCHAR *fnusercmp = L"usercmp.txt";
 
-WCHAR pipename[_MAX_FNAME];		//名前付きパイプ
+WCHAR pipename[MAX_PIPENAME];	//名前付きパイプ
+WCHAR pipesddl[MAX_PIPENAME];	//名前付きパイプSDDL
 
 // config.ini セクション
 const WCHAR * IniSecServer = L"Server";
@@ -40,8 +41,6 @@ DWORD timeout;	//タイムアウト
 void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
-	WCHAR username[UNLEN + 1];
-	DWORD dwSize;
 
 	pathconf[0] = L'\0';
 	pathskkcvdic[0] = L'\0';
@@ -76,11 +75,84 @@ void CreateConfigPath()
 	wcsncpy_s(pathusercmp, appdata, _TRUNCATE);
 	wcsncat_s(pathusercmp, fnusercmp, _TRUNCATE);
 
-	//名前付きパイプ
-	ZeroMemory(username, sizeof(username));
-	dwSize = _countof(username) - 1;
-	GetUserNameW(username, &dwSize);
-	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, username);
+	HANDLE hToken;
+	PTOKEN_USER pTokenUser;
+	DWORD dwLength;
+	LPWSTR pszUserSid;
+	WCHAR szUserSid[256];
+	WCHAR szDigest[32+1];
+	MD5_DIGEST digest;
+
+	ZeroMemory(pipename, sizeof(pipename));
+	ZeroMemory(pipesddl, sizeof(pipesddl));
+	ZeroMemory(szUserSid, sizeof(szUserSid));
+	ZeroMemory(szDigest, sizeof(szDigest));
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+
+		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		{
+			if(ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid))
+			{
+				wcsncpy_s(szUserSid, pszUserSid, _TRUNCATE);
+				LocalFree(pszUserSid);
+			}
+		}
+
+		LocalFree(pTokenUser);
+		CloseHandle(hToken);
+	}
+
+	_snwprintf_s(pipesddl, _TRUNCATE, L"D:(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)S:(ML;;NW;;;LW)", szUserSid);
+
+	if(GetMD5(&digest, (const BYTE *)szUserSid, (DWORD)wcslen(szUserSid)*sizeof(WCHAR)))
+	{
+		for(int i=0; i<_countof(digest.digest); i++)
+		{
+			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+		}
+	}
+
+	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, szDigest);
+}
+
+BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
+{
+    BOOL bRet = FALSE;
+    HCRYPTPROV hProv = NULL;
+    HCRYPTHASH hHash = NULL;
+    BYTE *pbData;
+	DWORD dwDataLen;
+
+	if(digest == NULL)
+	{
+		return FALSE;
+	}
+
+    ZeroMemory(digest, sizeof(digest));
+    pbData = digest->digest;
+	dwDataLen = sizeof(digest->digest);
+    
+    if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET))
+	{
+        if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+		{
+            if(CryptHashData(hHash, data, datalen, 0))
+			{
+                if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
+				{
+                    bRet = TRUE;
+                }
+            }
+            CryptDestroyHash(hHash);
+        }
+        CryptReleaseContext(hProv, 0);
+    }
+
+    return bRet;
 }
 
 void LoadConfig()

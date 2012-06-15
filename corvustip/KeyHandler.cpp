@@ -197,8 +197,6 @@ void CTextService::_KeyboardChanged()
 		_LoadConvPoint();
 		_LoadKana();
 		_LoadJLatin();
-
-		_ConnectDic();
 	}
 	else
 	{
@@ -207,8 +205,10 @@ void CTextService::_KeyboardChanged()
 
 		_ResetStatus();
 
-		_SaveUserDic();
-		_DisonnectDic();
+		if(exinputmode != im_default)
+		{
+			_SaveUserDic();
+		}
 
 		if(_pCandidateList != NULL)
 		{

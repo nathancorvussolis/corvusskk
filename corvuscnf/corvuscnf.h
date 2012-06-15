@@ -3,14 +3,14 @@
 #define CORVUSCNF_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.6.1"
+#define TEXTSERVICE_VER		L"0.6.2"
 
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_FILE				"corvuscnf"
-#define RC_VERSION			"0.6.1"
-#define RC_VERSION_D		0,6,1,0
+#define RC_VERSION			"0.6.2"
+#define RC_VERSION_D		0,6,2,0
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -18,7 +18,12 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 
-#define CORVUSCNFMUTEX	TEXTSERVICE_DESC L"_CNF_Mutex"
+#ifndef _DEBUG
+#define CORVUSKRNLOBJ	L"corvus-skk-"
+#else
+#define CORVUSKRNLOBJ	L"corvus-skk-debug-"
+#endif
+#define CORVUSCNFMUTEX		CORVUSKRNLOBJ L"cnf"
 
 #define MAX_SKKSERVER_HOST	(255+1)
 #define MAX_SKKSERVER_PORT	(5+1)
@@ -27,16 +32,16 @@
 
 #define KEYRELEN		256
 
-// configure
+// ConfigCnf
 void CreateConfigPath();
 void CreateProperty(HINSTANCE hInst);
 
-// configureDictionary
+// PropertyConfDictionary
 void LoadDictionary(HWND hwnd);
 void SaveDictionary(HWND hwnd);
 void MakeSKKDic(void);
 
-// configureConv
+// PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
 void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
 void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName, LPCWSTR lpDefault);

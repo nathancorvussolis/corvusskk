@@ -184,17 +184,17 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="configDlgConvPoint.cpp" />
-    <ClCompile Include="configDlgJLatin.cpp" />
-    <ClCompile Include="configDlgBehavior.cpp" />
-    <ClCompile Include="configDlgDictionary.cpp" />
-    <ClCompile Include="configDlgKeyMap1.cpp" />
-    <ClCompile Include="configDlgKeyMap2.cpp" />
-    <ClCompile Include="configDlgKana.cpp" />
-    <ClCompile Include="configDlgSelKey.cpp" />
-    <ClCompile Include="configurecnf.cpp" />
-    <ClCompile Include="configureConv.cpp" />
-    <ClCompile Include="configureDictionary.cpp" />
+    <ClCompile Include="DlgProcConvPoint.cpp" />
+    <ClCompile Include="DlgProcJLatin.cpp" />
+    <ClCompile Include="DlgProcBehavior.cpp" />
+    <ClCompile Include="DlgProcDictionary.cpp" />
+    <ClCompile Include="DlgProcKeyMap1.cpp" />
+    <ClCompile Include="DlgProcKeyMap2.cpp" />
+    <ClCompile Include="DlgProcKana.cpp" />
+    <ClCompile Include="DlgProcSelKey.cpp" />
+    <ClCompile Include="ConfigCnf.cpp" />
+    <ClCompile Include="PropertyConfConv.cpp" />
+    <ClCompile Include="PropertyConfDictionary.cpp" />
     <ClCompile Include="corvuscnf.cpp" />
     <ClCompile Include="eucjis2004.cpp" />
     <ClCompile Include="eucjis2004table.cpp" />

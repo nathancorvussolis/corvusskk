@@ -97,7 +97,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <Culture>0x0411</Culture>
@@ -115,7 +115,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <Culture>0x0411</Culture>
@@ -138,7 +138,7 @@
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
     </Link>
@@ -160,7 +160,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ws2_32.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ProgramDatabaseFile>
@@ -177,11 +177,11 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="convCharacter.cpp" />
-    <ClCompile Include="convSKKServer.cpp" />
+    <ClCompile Include="ConfigSrv.cpp" />
+    <ClCompile Include="ConvCharacter.cpp" />
+    <ClCompile Include="ConvDictionary.cpp" />
+    <ClCompile Include="ConvSKKServer.cpp" />
     <ClCompile Include="corvussrv.cpp" />
-    <ClCompile Include="configuresrv.cpp" />
-    <ClCompile Include="convDictionary.cpp" />
     <ClCompile Include="eucjis2004.cpp" />
     <ClCompile Include="eucjis2004table.cpp" />
     <ClCompile Include="stdafx.cpp">

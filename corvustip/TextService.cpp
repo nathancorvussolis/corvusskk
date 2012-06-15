@@ -197,6 +197,8 @@ exit:
 
 STDAPI CTextService::Deactivate()
 {
+	_SaveUserDic();
+
 	if(_pCandidateList != NULL)
 	{
 		delete _pCandidateList;

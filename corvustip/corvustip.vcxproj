@@ -154,7 +154,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile />
     <ResourceCompile>
@@ -174,7 +174,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <ResourceCompile>
       <Culture>0x0411</Culture>
@@ -196,7 +196,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ProgramDatabaseFile>
@@ -221,7 +221,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ProgramDatabaseFile>

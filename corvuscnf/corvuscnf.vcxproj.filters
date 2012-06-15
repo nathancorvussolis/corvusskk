@@ -49,33 +49,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="configDlgBehavior.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configDlgDictionary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configDlgJLatin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configDlgKana.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configDlgKeyMap1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configDlgKeyMap2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configurecnf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configureConv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="configureDictionary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="convtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -88,10 +61,37 @@
     <ClCompile Include="eucjis2004table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="configDlgSelKey.cpp">
+    <ClCompile Include="DlgProcBehavior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="configDlgConvPoint.cpp">
+    <ClCompile Include="DlgProcConvPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcJLatin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcKana.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcKeyMap1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcKeyMap2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcSelKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyConfConv.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyConfDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigCnf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

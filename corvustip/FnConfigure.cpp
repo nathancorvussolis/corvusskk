@@ -67,8 +67,6 @@ const CONFIG_KEYMAP configkeymap[] =
 void CTextService::_CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
-	WCHAR username[UNLEN + 1];
-	DWORD dwSize;
 
 	pathconfig[0] = L'\0';
 	pathconfcvpt[0] = L'\0';
@@ -97,10 +95,80 @@ void CTextService::_CreateConfigPath()
 	wcsncpy_s(pathconfjlat, appdata, _TRUNCATE);
 	wcsncat_s(pathconfjlat, fnconfjlat, _TRUNCATE);
 
-	ZeroMemory(username, sizeof(username));
-	dwSize = _countof(username) - 1;
-	GetUserNameW(username, &dwSize);
-	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, username);
+	HANDLE hToken;
+	PTOKEN_USER pTokenUser;
+	DWORD dwLength;
+	LPWSTR pszUserSid;
+	WCHAR szUserSid[256];
+	WCHAR szDigest[32+1];
+	MD5_DIGEST digest;
+
+	ZeroMemory(pipename, sizeof(pipename));
+	ZeroMemory(szUserSid, sizeof(szUserSid));
+	ZeroMemory(szDigest, sizeof(szDigest));
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+
+		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		{
+			if(ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid))
+			{
+				wcsncpy_s(szUserSid, pszUserSid, _TRUNCATE);
+				LocalFree(pszUserSid);
+			}
+		}
+
+		LocalFree(pTokenUser);
+		CloseHandle(hToken);
+	}
+
+	if(_GetMD5(&digest, (const BYTE *)szUserSid, (DWORD)wcslen(szUserSid)*sizeof(WCHAR)))
+	{
+		for(int i=0; i<_countof(digest.digest); i++)
+		{
+			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+		}
+	}
+
+	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, szDigest);
+}
+
+BOOL CTextService::_GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
+{
+    BOOL bRet = FALSE;
+    HCRYPTPROV hProv = NULL;
+    HCRYPTHASH hHash = NULL;
+    BYTE *pbData;
+	DWORD dwDataLen;
+
+	if(digest == NULL)
+	{
+		return FALSE;
+	}
+
+    ZeroMemory(digest, sizeof(digest));
+    pbData = digest->digest;
+	dwDataLen = sizeof(digest->digest);
+    
+    if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_MACHINE_KEYSET))
+	{
+        if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+		{
+            if(CryptHashData(hHash, data, datalen, 0))
+			{
+                if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
+				{
+                    bRet = TRUE;
+                }
+            }
+            CryptDestroyHash(hHash);
+        }
+        CryptReleaseContext(hProv, 0);
+    }
+    return bRet;
 }
 
 void CTextService::_LoadBehavior()

@@ -158,19 +158,19 @@ public:
 	// KeyHandlerDictionary
 	void _ConvDic(WCHAR command);
 	void _ConnectDic();
-	void _DisonnectDic();
-	void _CheckAliveDic();
+	void _DisconnectDic();
 	void _AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command);
 	void _DelUserDic(const std::wstring &searchkey, const std::wstring &candidate);
 	void _SaveUserDic();
+	void _ConvDicNum();
+	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
 	void _StartDicSrv();
 	void _StartConfigure();
 	void _StartProcess(const WCHAR *fname);
-	void _ConvDicNum();
-	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
 
 	// FnConfigure
 	void _CreateConfigPath();
+	BOOL _GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 	void _LoadBehavior();
 	void _LoadSelKey();
 	void _LoadKeyMap();
@@ -248,7 +248,7 @@ private:
 	WCHAR pathconfjlat[MAX_PATH];	//ASCII全英変換表
 
 	//corvussrv.exe との名前付きパイプ
-	WCHAR pipename[_MAX_FNAME];
+	WCHAR pipename[MAX_PIPENAME];
 	HANDLE hPipe;
 
 	//キーマップ

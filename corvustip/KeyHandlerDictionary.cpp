@@ -4,6 +4,35 @@
 
 #define BUFSIZE 0x2000	// -> corvussrv.cpp
 
+void CTextService::_ConnectDic()
+{
+	DWORD dwMode;
+
+	if(WaitNamedPipeW(pipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
+	{
+		_StartDicSrv();
+	}
+
+	hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
+	if(hPipe == INVALID_HANDLE_VALUE)
+	{
+		return;
+	}
+
+	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
+	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
+}
+
+void CTextService::_DisconnectDic()
+{
+	if(hPipe != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hPipe);
+		hPipe = INVALID_HANDLE_VALUE;
+	}
+}
+
 void CTextService::_ConvDic(WCHAR command)
 {
 	WCHAR wbuf[BUFSIZE];
@@ -13,27 +42,27 @@ void CTextService::_ConvDic(WCHAR command)
 	size_t i, ic, ia;
 	std::wstring s, sc, sa;
 
+	_ConnectDic();
+
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\n", command, searchkey.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
 
 	if(wbuf[0] != REP_OK)
 	{
-		return;
+		goto exit;
 	}
 
 	s.assign(wbuf);
@@ -56,55 +85,9 @@ void CTextService::_ConvDic(WCHAR command)
 		candidates.push_back(CANDIDATE(CANDIDATEBASE(sc, sa), CANDIDATEBASE(sc, sa)));
 		i = ia;
 	}
-}
 
-void CTextService::_ConnectDic()
-{
-	DWORD dwMode;
-
-	if(WaitNamedPipeW(pipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
-	{
-		_StartDicSrv();
-	}
-
-	hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ,
-		FILE_SHARE_READ | FILE_SHARE_WRITE,
-		NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if(hPipe == INVALID_HANDLE_VALUE)
-	{
-		return;
-	}
-
-	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
-}
-
-void CTextService::_DisonnectDic()
-{
-	if(hPipe != INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hPipe);
-		hPipe = INVALID_HANDLE_VALUE;
-	}
-}
-
-void CTextService::_CheckAliveDic()
-{
-	WCHAR buf;
-	DWORD bytes;
-
-	buf = REQ_CHECK_ALIVE;
-	if(WriteFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
-	{
-		_ConnectDic();
-		return;
-	}
-
-	if(ReadFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
-	{
-		_ConnectDic();
-		return;
-	}
+exit:
+	_DisconnectDic();
 }
 
 void CTextService::_AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command)
@@ -112,27 +95,27 @@ void CTextService::_AddUserDic(const std::wstring &searchkey, const std::wstring
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
+	_ConnectDic();
+
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
 		command, searchkey.c_str(), candidate.c_str(), annotation.c_str());
 
-	//接続確認
-	_CheckAliveDic();
-
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
+
+exit:
+	_DisconnectDic();
 }
 
 void CTextService::_DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
@@ -140,27 +123,27 @@ void CTextService::_DelUserDic(const std::wstring &searchkey, const std::wstring
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
+	_ConnectDic();
+
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
 		REQ_USER_DEL, searchkey.c_str(), candidate.c_str());
 
-	//接続確認
-	_CheckAliveDic();
-
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
+
+exit:
+	_DisconnectDic();
 }
 
 void CTextService::_SaveUserDic()
@@ -168,58 +151,21 @@ void CTextService::_SaveUserDic()
 	WCHAR buf;
 	DWORD bytes;
 
+	_ConnectDic();
+
 	buf = REQ_USER_SAVE;
 	if(WriteFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
+		goto exit;
 	}
 
 	if(ReadFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
 	{
-		_ConnectDic();
-		return;
-	}
-}
-
-void CTextService::_StartDicSrv()
-{
-	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSSRVMUTEX);
-	if(hMutex != NULL)
-	{
-		CloseHandle(hMutex);
-		return;
+		goto exit;
 	}
 
-	_StartProcess(CORVUSSRVEXE);
-}
-
-void CTextService::_StartConfigure()
-{
-	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSCNFMUTEX);
-	if(hMutex != NULL)
-	{
-		CloseHandle(hMutex);
-		return;
-	}
-
-	_StartProcess(CORVUSCNFEXE);
-}
-
-void CTextService::_StartProcess(const WCHAR *fname)
-{
-	WCHAR path[MAX_PATH];
-	WCHAR drive[_MAX_DRIVE];
-	WCHAR dir[_MAX_DIR];
-	PROCESS_INFORMATION pi;
-	STARTUPINFOW si;
-
-	GetModuleFileNameW(g_hInst, path, _countof(path));
-	_wsplitpath_s(path, drive, _countof(drive), dir, _countof(dir), NULL, 0, NULL, 0);
-	_snwprintf_s(path, _TRUNCATE, L"%s%s%s", drive, dir, fname);
-	ZeroMemory(&si,sizeof(si));
-	si.cb = sizeof(si);
-	CreateProcessW(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+exit:
+	_DisconnectDic();
 }
 
 void CTextService::_ConvDicNum()
@@ -345,4 +291,44 @@ void CTextService::_ConvNum(std::wstring &convnum, const std::wstring &key, cons
 	}
 	repcandidate.append(candidate_tmp);
 	convnum = repcandidate;
+}
+
+void CTextService::_StartDicSrv()
+{
+	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSSRVMUTEX);
+	if(hMutex != NULL)
+	{
+		CloseHandle(hMutex);
+		return;
+	}
+
+	_StartProcess(CORVUSSRVEXE);
+}
+
+void CTextService::_StartConfigure()
+{
+	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, CORVUSCNFMUTEX);
+	if(hMutex != NULL)
+	{
+		CloseHandle(hMutex);
+		return;
+	}
+
+	_StartProcess(CORVUSCNFEXE);
+}
+
+void CTextService::_StartProcess(const WCHAR *fname)
+{
+	WCHAR path[MAX_PATH];
+	WCHAR drive[_MAX_DRIVE];
+	WCHAR dir[_MAX_DIR];
+	PROCESS_INFORMATION pi;
+	STARTUPINFOW si;
+
+	GetModuleFileNameW(g_hInst, path, _countof(path));
+	_wsplitpath_s(path, drive, _countof(drive), dir, _countof(dir), NULL, 0, NULL, 0);
+	_snwprintf_s(path, _TRUNCATE, L"%s%s%s", drive, dir, fname);
+	ZeroMemory(&si,sizeof(si));
+	si.cb = sizeof(si);
+	CreateProcessW(NULL, path, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
 }

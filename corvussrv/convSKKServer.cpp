@@ -37,8 +37,6 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 
 	ZeroMemory(buf, sizeof(buf));
 
-	EnterCriticalSection(&csSKKServ);	// !
-
 	if(sock == INVALID_SOCKET)
 	{
 		ConnectSKKServer();
@@ -85,8 +83,6 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 	}
 
 end:
-	LeaveCriticalSection(&csSKKServ);	// !
-
 	if(idxbuf > 0 && buf[0] == SKK_HIT)
 	{
 		size = _countof(wbuf) - 1;

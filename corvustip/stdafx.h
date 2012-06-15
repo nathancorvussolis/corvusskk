@@ -22,4 +22,5 @@
 #include <Shlwapi.h>
 #include <Uxtheme.h>
 #include <CommCtrl.h>
-#include <LMCons.h>
+#include <Sddl.h>
+#include <WinCrypt.h>

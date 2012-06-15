@@ -64,8 +64,6 @@ void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	USERDICS::iterator userdics_itr;
 	CANDIDATES::iterator candidates_itr;
 
-	EnterCriticalSection(&csUserDic);	// !
-
 	userdics_itr = userdics.find(searchkey);
 	if(userdics_itr != userdics.end())
 	{
@@ -77,8 +75,6 @@ void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates)
 			}
 		}
 	}
-
-	LeaveCriticalSection(&csUserDic);	// !
 }
 
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
@@ -175,8 +171,6 @@ void AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, co
 	CANDIDATES::iterator candidates_itr;
 	USERDICSPAIR userdic;
 
-	EnterCriticalSection(&csUserDic);	// !
-
 	userdics_itr = userdics.find(searchkey);
 	if(userdics_itr == userdics.end())
 	{
@@ -202,16 +196,12 @@ void AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, co
 	}
 
 	bUserDicChg = TRUE;
-
-	LeaveCriticalSection(&csUserDic);	// !
 }
 
 void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
 {
 	USERDICS::iterator userdics_itr;
 	CANDIDATES::iterator candidates_itr;
-
-	EnterCriticalSection(&csUserDic);	// !
 
 	userdics_itr = userdics.find(searchkey);
 	if(userdics_itr != userdics.end())
@@ -232,8 +222,6 @@ void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
 	}
 
 	bUserDicChg = TRUE;
-
-	LeaveCriticalSection(&csUserDic);	// !
 }
 
 void LoadUserDic()
@@ -252,14 +240,11 @@ void LoadUserDic()
 	std::wstring candidate;
 	std::wstring annotation;
 
-	EnterCriticalSection(&csUserDic);	// !
-
 	userdics.clear();
 
 	_wfopen_s(&fp, pathuserdic, RccsUNICODE);
 	if(fp == NULL)
 	{
-		LeaveCriticalSection(&csUserDic);	// !
 		return;
 	}
 
@@ -335,35 +320,25 @@ void LoadUserDic()
 	fclose(fp);
 	
 	LoadComplement();
-
-	LeaveCriticalSection(&csUserDic);	// !
 }
 
 unsigned int __stdcall SaveUserDicThread(void *p)
 {
 	FILE *fp;
+	std::wstring s;
 	USERDICS::iterator userdics_itr;
 	CANDIDATES::iterator candidates_itr;
-	USERDICS userdics_tmp;
-	std::wstring s;
 	COMPLEMENTS::iterator complements_itr;
-	COMPLEMENTS complements_tmp;
 
-	EnterCriticalSection(&csUserDic);	// !
+	USERDATA *userdata = (USERDATA *)p;
 
-	userdics_tmp = userdics;
-	complements_tmp = complements;
-	bUserDicChg = FALSE;
-
-	LeaveCriticalSection(&csUserDic);	// !
-
-	EnterCriticalSection(&csUserDicS);	// !
+	EnterCriticalSection(&csUserDataSave);	// !
 
 	//ユーザ辞書
 	_wfopen_s(&fp, pathuserdic, WccsUNICODE);
 	if(fp != NULL)
 	{
-		for(userdics_itr = userdics_tmp.begin(); userdics_itr != userdics_tmp.end(); userdics_itr++)
+		for(userdics_itr = userdata->userdics.begin(); userdics_itr != userdata->userdics.end(); userdics_itr++)
 		{
 			//key
 			s = userdics_itr->first;
@@ -385,15 +360,15 @@ unsigned int __stdcall SaveUserDicThread(void *p)
 
 		fclose(fp);
 	}
-	userdics_tmp.clear();
+	userdata->userdics.clear();
 
 	//補完
 	_wfopen_s(&fp, pathusercmp, WccsUNICODE);
 	if(fp != NULL)
 	{
-		if(!complements_tmp.empty())
+		if(!userdata->complements.empty())
 		{
-			for(complements_itr = complements_tmp.begin(); complements_itr != complements_tmp.end(); complements_itr++)
+			for(complements_itr = userdata->complements.begin(); complements_itr != userdata->complements.end(); complements_itr++)
 			{
 				fwprintf(fp, L"%s\n", complements_itr->c_str());
 			}
@@ -402,7 +377,9 @@ unsigned int __stdcall SaveUserDicThread(void *p)
 		fclose(fp);
 	}
 
-	LeaveCriticalSection(&csUserDicS);	// !
+	LeaveCriticalSection(&csUserDataSave);	// !
+
+	delete userdata;
 
 	_endthreadex(0);
 	return 0;
@@ -411,17 +388,15 @@ unsigned int __stdcall SaveUserDicThread(void *p)
 HANDLE StartSaveUserDic()
 {
 	HANDLE hThread = NULL;
-	BOOL bUserDicChgTmp;
 
-	EnterCriticalSection(&csUserDic);	// !
-
-	bUserDicChgTmp = bUserDicChg;
-
-	LeaveCriticalSection(&csUserDic);	// !
-
-	if(bUserDicChgTmp)
+	if(bUserDicChg)
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveUserDicThread, NULL, 0, NULL);
+		bUserDicChg = FALSE;
+		USERDATA *userdata = new USERDATA();
+		userdata->userdics = userdics; 
+		userdata->complements = complements;
+
+		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveUserDicThread, userdata, 0, NULL);
 	}
 
 	return hThread;
@@ -430,8 +405,6 @@ HANDLE StartSaveUserDic()
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates)
 {
 	COMPLEMENTS::reverse_iterator cmp_ritr;
-
-	EnterCriticalSection(&csUserDic);	// !
 
 	candidates.clear();
 
@@ -445,8 +418,6 @@ void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates)
 			}
 		}
 	}
-
-	LeaveCriticalSection(&csUserDic);	// !
 }
 
 void AddComplement(const std::wstring &searchkey)

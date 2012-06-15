@@ -175,9 +175,6 @@ void CTextService::_StartConv()
 	candidates.clear();
 	candidates.shrink_to_fit();
 
-	//接続確認
-	_CheckAliveDic();
-
 	//通常検索
 	_ConvDic(REQ_SEARCH);
 
@@ -270,9 +267,6 @@ void CTextService::_NextComp()
 
 		candidates.clear();
 		candidates.shrink_to_fit();
-
-		//接続確認
-		_CheckAliveDic();
 
 		//補完
 		_ConvDic(REQ_COMPLEMENT);

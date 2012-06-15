@@ -4,7 +4,7 @@
 #define BUFSIZE 0x2000	// -> KeyHandlerDictionary.cpp
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-void SrvStart();
+HANDLE SrvStart();
 void RegisterRun();
 
 #ifdef _DEBUG
@@ -13,19 +13,16 @@ HFONT hFont;
 #endif
 HINSTANCE hInst;
 HANDLE hMutex;
+HANDLE hThread;
+BOOL bSrvThreadExit;
 BOOL bUserDicChg;
-CRITICAL_SECTION csUserDic;
-CRITICAL_SECTION csUserDicS;
-CRITICAL_SECTION csSKKServ;
+CRITICAL_SECTION csUserDataSave;
 
 int APIENTRY wWinMain(HINSTANCE hInstance,
                      HINSTANCE hPrevInstance,
                      LPTSTR    lpCmdLine,
                      int       nCmdShow)
 {
-	UNREFERENCED_PARAMETER(hPrevInstance);
-	UNREFERENCED_PARAMETER(lpCmdLine);
-
 	MSG msg;
 	WNDCLASSEX wcex;
 	HWND hWnd;
@@ -92,7 +89,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance,
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HANDLE hThread;
+	HANDLE hThreadSave;
+	HANDLE hPipe;
 #ifdef _DEBUG
 	RECT r;
 	HDC hDC;
@@ -114,15 +112,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SendMessage(hwndEdit, WM_SETFONT, (WPARAM)hFont, 0);
 		ReleaseDC(hwndEdit, hDC);
 #endif
-		InitializeCriticalSection(&csUserDic);
-		InitializeCriticalSection(&csUserDicS);
-		InitializeCriticalSection(&csSKKServ);
+		InitializeCriticalSection(&csUserDataSave);
 
 		bUserDicChg = FALSE;
-
 		LoadUserDic();
 
-		SrvStart();
+		bSrvThreadExit = FALSE;
+		hThread = SrvStart();
 
 		RegisterRun();
 		break;
@@ -132,12 +128,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 		DeleteObject(hFont);
 #endif
-		hThread = StartSaveUserDic();
-		WaitForSingleObject(hThread, INFINITE);
+		hThreadSave = StartSaveUserDic();
+		WaitForSingleObject(hThreadSave, INFINITE);
 
-		DeleteCriticalSection(&csSKKServ);
-		DeleteCriticalSection(&csUserDicS);
-		DeleteCriticalSection(&csUserDic);
+		bSrvThreadExit = TRUE;
+		hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+			NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
+		if(hPipe != INVALID_HANDLE_VALUE)
+		{
+			CloseHandle(hPipe);
+			WaitForSingleObject(hThread, INFINITE);
+		}
+
+		DeleteCriticalSection(&csUserDataSave);
 
 		ReleaseMutex(hMutex);
 		CloseHandle(hMutex);
@@ -170,9 +173,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //save user dictionary
 //	request	"S"
 //	reply	"1"
-//check alive
-//	request	"?"
-//	reply	"!"
 
 void SrvProc(WCHAR *wbuf, size_t size)
 {
@@ -280,168 +280,111 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		wbuf[1] = L'\0';
 		break;
 
-	case REQ_CHECK_ALIVE:
-		wbuf[0] = REP_CHECK_ALIVE;
-		wbuf[1] = L'\0';
-		break;
-
 	default:
 		wbuf[0] = L'0';
 		wbuf[1] = L'\0';
 		break;
 	}
-
 }
 
 unsigned int __stdcall SrvThread(void *p)
 {
-	HANDLE hPipe = *(HANDLE*)p;
+	HANDLE hPipe;
+	PSECURITY_DESCRIPTOR psd;
+	SECURITY_ATTRIBUTES sa;
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
 #ifdef _DEBUG
-	WCHAR reqcmd;
 	std::wstring dedit;
 	std::wregex re(L"\n");
 	std::wstring fmt(L"\r\n");
 #endif
 
-	*(HANDLE*)p = INVALID_HANDLE_VALUE;
+	while(true)
+	{
+		psd = NULL;
+		ConvertStringSecurityDescriptorToSecurityDescriptorW(pipesddl, SDDL_REVISION_1, &psd, NULL);
+		sa.nLength = sizeof(sa);
+		sa.lpSecurityDescriptor = psd;
+		sa.bInheritHandle = FALSE;
+
+		hPipe = CreateNamedPipeW(pipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 1,
+			BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 0, &sa);
+
+		LocalFree(psd);
+		
+		if(hPipe != INVALID_HANDLE_VALUE)
+		{
+			break;
+		}
+
+		Sleep(100);
+	}
 
 	while(true)
 	{
+		if(ConnectNamedPipe(hPipe, NULL) == FALSE)
+		{
+			DisconnectNamedPipe(hPipe);
+			Sleep(100);
+			continue;
+		}
+
+		if(bSrvThreadExit)
+		{
+			DisconnectNamedPipe(hPipe);
+			break;
+		}
+
+		LoadConfig();
+
 		bytesRead = 0;
 		ZeroMemory(wbuf, sizeof(wbuf));
 
 		bRet = ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL);
 
-		if(bRet == FALSE)
+		if(bRet == FALSE || bytesRead == 0)
 		{
-			StartSaveUserDic();
-			break;
-		}
-		if(bytesRead == 0)
-		{
+			DisconnectNamedPipe(hPipe);
 			continue;
 		}
 
 #ifdef _DEBUG
-		reqcmd = wbuf[0];
-		if(reqcmd == REQ_CHECK_ALIVE)
-		{
-			dedit.clear();
-		}
-		else
-		{
-			dedit.append(wbuf);
-			dedit.append(L"\n");
-		}
+		dedit.assign(wbuf);
+		dedit.append(L"\n");
 		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
 		SrvProc(wbuf, _countof(wbuf));
 
 #ifdef _DEBUG
-		if(reqcmd != REQ_CHECK_ALIVE)
-		{
-			dedit.append(wbuf);
-			dedit.append(L"\n");
-			dedit = std::regex_replace(dedit, re, fmt);
-			SetWindowTextW(hwndEdit, dedit.c_str());
-		}
+		dedit.append(wbuf);
+		dedit.append(L"\n");
+		dedit = std::regex_replace(dedit, re, fmt);
+		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
 		bRet = WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL);
 
-		if(bRet == FALSE)
+		if(bRet)
 		{
-			break;
+			FlushFileBuffers(hPipe);
 		}
 
-		FlushFileBuffers(hPipe);
+		DisconnectNamedPipe(hPipe);
 	}
 
-	DisconnectNamedPipe(hPipe);
 	CloseHandle(hPipe);
-
+	
 	_endthreadex(0);
 	return 0;
 }
 
-unsigned int __stdcall SrvListenThread(void *p)
+HANDLE SrvStart()
 {
-	HANDLE hPipe;
-	DWORD dwPipeMode;
-	uintptr_t tRet;
-	int count;
-
-	OSVERSIONINFO ovi;
-	ZeroMemory(&ovi, sizeof(ovi));
-	ovi.dwOSVersionInfoSize = sizeof(ovi);
-	GetVersionEx(&ovi);
-	if(ovi.dwMajorVersion < 6)
-	{
-		dwPipeMode = PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	}
-	else
-	{
-		dwPipeMode = PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS;
-	}
-
-	//IEの保護モード対応の為、名前付きパイプの整合性レベルを低くする
-	//http://msdn.microsoft.com/en-us/library/bb250462
-	PSECURITY_DESCRIPTOR pSD = NULL;
-	SECURITY_ATTRIBUTES sa;
-#define LOW_INTEGRITY_SDDL_SACL_W	L"S:(ML;;NW;;;LW)"
-	ConvertStringSecurityDescriptorToSecurityDescriptorW(LOW_INTEGRITY_SDDL_SACL_W, SDDL_REVISION_1, &pSD, NULL);
-	sa.nLength = sizeof(sa);
-	sa.lpSecurityDescriptor = pSD;
-	sa.bInheritHandle = FALSE;
-
-	while(true)
-	{
-		hPipe = CreateNamedPipeW(pipename, PIPE_ACCESS_DUPLEX, dwPipeMode,
-			PIPE_UNLIMITED_INSTANCES, BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 1000, &sa);
-		
-		if(hPipe == INVALID_HANDLE_VALUE)
-		{
-			break;
-		}
-
-		if(ConnectNamedPipe(hPipe, NULL) == FALSE)
-		{
-			CloseHandle(hPipe);
-			continue;
-		}
-
-		LoadConfig();
-
-		tRet = _beginthreadex(NULL, 0, SrvThread, &hPipe, 0, NULL);
-
-		if(tRet != 0)
-		{
-			count = 0;
-			while(hPipe != INVALID_HANDLE_VALUE)
-			{
-				if(count > 10)
-				{
-					break;
-				}
-				Sleep(100);
-				++count;
-			}
-		}
-	}
-
-	LocalFree(pSD);
-
-	_endthreadex(0);
-	return 0;
-}
-
-void SrvStart()
-{
-	_beginthreadex(NULL, 0, SrvListenThread, NULL, 0, NULL);
+	return (HANDLE)_beginthreadex(NULL, 0, SrvThread, NULL, 0, NULL);
 }
 
 void RegisterRun()

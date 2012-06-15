@@ -32,16 +32,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="configuresrv.cpp">
+    <ClCompile Include="ConvCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="convCharacter.cpp">
+    <ClCompile Include="ConvDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="convDictionary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="convSKKServer.cpp">
+    <ClCompile Include="ConvSKKServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="corvussrv.cpp">
@@ -51,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="eucjis2004table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigSrv.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
