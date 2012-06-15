@@ -1,0 +1,11 @@
+﻿
+#ifndef CONVTABLE_H
+#define CONVTABLE_H
+
+#include "convtype.h"
+
+//変換テーブル
+extern const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_NUM];
+extern const ASCII_JLATIN_CONV ascii_jlatin_conv_default[ASCII_JLATIN_TBL_NUM];
+
+#endif //CONVTABLE_H
