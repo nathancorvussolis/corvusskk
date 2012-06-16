@@ -251,6 +251,8 @@ private:
 	ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 
 public:
+	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
+
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
 	BOOL inputkey;			//見出し入力▽モード

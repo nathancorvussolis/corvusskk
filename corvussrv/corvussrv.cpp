@@ -9,7 +9,7 @@ HANDLE SrvStart();
 CRITICAL_SECTION csUserDataSave;
 BOOL bUserDicChg;
 OSVERSIONINFOW ovi;
-
+ULARGE_INTEGER ftConfig;
 #ifdef _DEBUG
 HWND hwndEdit;
 HFONT hFont;
@@ -50,6 +50,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	LocalFree(psd);
 
+	ftConfig.QuadPart = 0;
 	LoadConfig();
 
 	WSAStartup(WINSOCK_VERSION, &wsaData);
@@ -81,7 +82,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	}
 
 #ifdef _DEBUG
-	ShowWindow(hWnd, nCmdShow);
+	//ShowWindow(hWnd, nCmdShow);
+	ShowWindow(hWnd, SW_MINIMIZE);
 	UpdateWindow(hWnd);
 #endif
 
@@ -310,6 +312,8 @@ unsigned int __stdcall SrvThread(void *p)
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
+	HANDLE hFile;
+	ULARGE_INTEGER ft;
 #ifdef _DEBUG
 	std::wstring dedit;
 	std::wregex re(L"\n");
@@ -330,7 +334,18 @@ unsigned int __stdcall SrvThread(void *p)
 			break;
 		}
 
-		LoadConfig();
+		ft.QuadPart = 0;
+		hFile = CreateFileW(pathconfigxml, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		if(hFile != INVALID_HANDLE_VALUE)
+		{
+			GetFileTime(hFile, NULL, NULL, (FILETIME*)&ft);
+			CloseHandle(hFile);
+		}
+		if(ft.QuadPart != ftConfig.QuadPart)
+		{
+			ftConfig = ft;
+			LoadConfig();
+		}
 
 		bytesRead = 0;
 		ZeroMemory(wbuf, sizeof(wbuf));

@@ -245,8 +245,8 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 
-		// 多分コマンドプロンプト
-		if(pContextView->GetWnd(&hwnd) != S_OK)
+		//コマンドプロンプト
+		if(_pTextService->_dwActiveFlags & TF_TMF_CONSOLE)
 		{
 			_pCandidateWindow->_BeginUIElement();
 			pContextView->Release();
@@ -254,6 +254,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 		
+		if(pContextView->GetWnd(&hwnd) != S_OK)
+		{
+			goto exit;
+		}
+
 		_hwndParent = hwnd;
 		if(_hwndParent)
 		{
@@ -267,7 +272,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 		pContextView->Release();
 
-		if(!_pCandidateWindow->_Create(hwnd, reg))
+		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, reg))
 		{
 			goto exit;
 		}
@@ -414,10 +419,10 @@ void CCandidateList::_Show(BOOL bShow)
 	}
 }
 
-void CCandidateList::_SetTextRegword(const std::wstring &text, BOOL fixed, BOOL showcandlist)
+void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
 {
 	if(_pCandidateWindow)
 	{
-		_pCandidateWindow->_SetTextRegword(text, fixed, showcandlist);
+		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
 	}
 }

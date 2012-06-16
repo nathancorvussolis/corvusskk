@@ -5,9 +5,6 @@
 #include "CandidateWindow.h"
 #include "CandidateList.h"
 
-static WNDPROC ToolTipWndProcDef = NULL;
-static HWND _hwndParent = NULL;
-
 static LPCWSTR markZWSP = L"\u200B";	//U+200B ZERO WIDTH SPACE
 static LPCWSTR markAnnotation = L";";
 
@@ -19,416 +16,17 @@ static LPCWSTR markRegKeyEnd = L"：";
 static LPCWSTR markLinkS = L"<a>";
 static LPCWSTR markLinkE = L"</a>";
 
-CCandidateWindow::CCandidateWindow(CTextService *pTextService)
-{
-	_hwnd = NULL;
-
-	_pTextService = pTextService;
-	_pTextService->AddRef();
-
-	_pCandidateList = _pTextService->_GetCandidateList();
-	_pCandidateList->AddRef();
-
-	_bShow = FALSE;
-	_dwFlags = 0;
-	_uShowedCount = 0;
-	_uCount = 0;
-	_uIndex = 0;
-	_uPageCnt = 0;
-	_CandCount.clear();
-	_PageInex.clear();
-	_CandStr.clear();
-
-	hFont = NULL;
-
-	_reg = FALSE;
-
-	regword = FALSE;
-	regwordfixed = FALSE;
-	regwordshowcandlist = FALSE;
-
-	regwordstr.clear();
-	regwordstrpos = 0;
-	comptext.clear();
-
-	_ClearStatusReg();
-
-	_cRef = 1;
-}
-
-CCandidateWindow::~CCandidateWindow()
-{
-	_pCandidateList->Release();
-	_pTextService->Release();
-}
-
-STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
-{
-	if(ppvObj == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*ppvObj = NULL;
-
-	if(IsEqualIID(riid, IID_IUnknown) ||
-	        IsEqualIID(riid, IID_ITfUIElement) ||
-	        IsEqualIID(riid, IID_ITfCandidateListUIElement) ||
-	        IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior))
-	{
-		*ppvObj = (ITfCandidateListUIElementBehavior *)this;
-	}
-
-	if(*ppvObj)
-	{
-		AddRef();
-		return S_OK;
-	}
-
-	return E_NOINTERFACE;
-}
-
-STDAPI_(ULONG) CCandidateWindow::AddRef()
-{
-	return ++_cRef;
-}
-
-STDAPI_(ULONG) CCandidateWindow::Release()
-{
-	if(--_cRef == 0)
-	{
-		delete this;
-		return 0;
-	}
-
-	return _cRef;
-}
-
-STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
-{
-	BSTR bstrDesc;
-
-	if(bstr == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*bstr = NULL;
-
-	bstrDesc = SysAllocString(TextServiceDesc);
-
-	if(bstrDesc == NULL)
-	{
-		return E_OUTOFMEMORY;
-	}
-
-	*bstr = bstrDesc;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetGUID(GUID *pguid)
-{
-	if(pguid == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*pguid = c_guidCandidateListUIElement;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::Show(BOOL bShow)
-{
-	if(!_bShow)
-	{
-		return E_UNEXPECTED;
-	}
-
-	if(bShow)
-	{
-		if(_hwnd != NULL)
-		{
-			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
-		}
-	}
-	else
-	{
-		if(_hwnd != NULL)
-		{
-			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
-		}
-	}
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
-{
-	if(pbShow == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*pbShow = IsWindowVisible(_hwnd);
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
-{
-	if(pdwFlags == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*pdwFlags = _dwFlags;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetDocumentMgr(ITfDocumentMgr **ppdim)
-{
-	if(ppdim == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*ppdim = NULL;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetCount(UINT *puCount)
-{
-	if(puCount == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*puCount = _uCount;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
-{
-	if(puIndex == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*puIndex = _uIndex;
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
-{
-	if(pstr == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	if(uIndex < _CandStr.size())
-	{
-		*pstr = SysAllocString(_CandStr[uIndex].c_str());
-	}
-	else
-	{
-		*pstr = SysAllocString(L"");
-	}
-
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
-{
-	UINT i;
-	HRESULT hr = S_OK;
-
-	if(puPageCnt == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	if(uSize >= _uPageCnt)
-	{
-		uSize = _uPageCnt;
-	}
-	else
-	{
-		hr = S_FALSE;
-	}
-
-	if(pIndex != NULL)
-	{
-		for(i=0; i<uSize; i++)
-		{
-			*pIndex = _PageInex[i];
-			pIndex++;
-		}
-	}
-
-	*puPageCnt = _uPageCnt;
-	return hr;
-}
-
-STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
-{
-	UINT uCandCnt, i, j, k;
-
-	if(pIndex == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	for(j=0; j<uPageCnt-1; j++)
-	{
-		uCandCnt = pIndex[j + 1] - pIndex[j];
-		if(uCandCnt > MAX_SELKEY_C)
-		{
-			return E_INVALIDARG;
-		}
-	}
-
-	_PageInex.clear();
-	_CandCount.clear();
-	_CandStr.clear();
-	j = 0;
-	k = 0;
-	for(j=0; j<uPageCnt; j++)
-	{
-		if(j < (uPageCnt - 1))
-		{
-			uCandCnt = pIndex[j + 1] - pIndex[j];
-		}
-		else
-		{
-			uCandCnt = _uCount - k;
-		}
-
-		pIndex[j] = k;
-		_PageInex.push_back(k);
-		_CandCount.push_back(uCandCnt);
-
-		for(i=0; i<uCandCnt; i++)
-		{
-			if(k == _uCount)
-			{
-				break;
-			}
-
-			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
-			_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCount + k ].first.first);
-			
-			if(_pTextService->c_annotation &&
-				!_pTextService->candidates[ _uShowedCount + k ].first.second.empty())
-			{
-				_CandStr[k].append(markAnnotation +
-					_pTextService->candidates[ _uShowedCount + k ].first.second);
-			}
-
-			++k;
-		}
-	}
-
-	_uPageCnt = uPageCnt;
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
-{
-	UINT i;
-
-	if(puPage == NULL)
-	{
-		return E_INVALIDARG;
-	}
-
-	*puPage = 0;
-
-	if(_uPageCnt == 0)
-	{
-		return E_UNEXPECTED;
-	}
-
-	if(_uPageCnt == 1)
-	{
-		*puPage = 0;
-		return S_OK;
-	}
-
-	for(i=1; i<_uPageCnt; i++)
-	{
-		if(_PageInex[i] > _uIndex)
-		{
-			break;
-		}
-	}
-
-	*puPage = i - 1;
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::SetSelection(UINT nIndex)
-{
-	UINT uOldPage, uNewPage;
-
-	if(nIndex >= _uCount)
-	{
-		return E_INVALIDARG;
-	}
-
-	GetCurrentPage(&uOldPage);
-	_uIndex = nIndex;
-	GetCurrentPage(&uNewPage);
-
-	_dwFlags = TF_CLUIE_SELECTION;
-	if(uNewPage != uOldPage)
-	{
-		_dwFlags |= TF_CLUIE_CURRENTPAGE;
-	}
-
-	_UpdateUIElement();
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::Finalize()
-{
-	if(_pCandidateList)
-	{
-		_pCandidateList->_EndCandidateList();
-	}
-	return S_OK;
-}
-
-STDAPI CCandidateWindow::Abort()
-{
-	if(_pCandidateList)
-	{
-		_pCandidateList->_EndCandidateList();
-	}
-	return S_OK;
-}
-
-LRESULT CALLBACK _WindowProcTT(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	CallWindowProc(ToolTipWndProcDef, hwnd, uMsg, wParam, lParam);
-	return 0;
-}
-
-BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
+BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, UINT depth, BOOL reg)
 {
 	_hwndParent = hwndParent;
-	
-	_hwnd = CreateWindowExW(WS_EX_TOPMOST,
-	                       TOOLTIPS_CLASSW, NULL,
+	_pCandidateWindowParent = pCandidateWindowParent;
+	_depth = depth;
+
+	_hwnd = CreateWindowExW(WS_EX_TOPMOST, TOOLTIPS_CLASSW, NULL,
 	                       WS_POPUP | TTS_NOPREFIX | TTS_NOANIMATE | TTS_NOFADE,
 	                       CW_USEDEFAULT, CW_USEDEFAULT,
 	                       CW_USEDEFAULT, CW_USEDEFAULT,
-	                       _hwndParent, NULL, g_hInst, this);
+	                       _hwndParent, NULL, g_hInst, NULL);
 	if(_hwnd == NULL)
 	{
 		return FALSE;
@@ -441,7 +39,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 	ti.hinst = g_hInst;
 	ti.lpszText = L"";
 
-	if(SendMessageW(_hwnd, TTM_ADDTOOL, 0, (LPARAM)(LPTOOLINFOW) &ti) == FALSE)
+	if(SendMessageW(_hwnd, TTM_ADDTOOLW, 0, (LPARAM)(LPTOOLINFOW)&ti) == FALSE)
 	{
 		return FALSE;
 	}
@@ -452,13 +50,13 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 	}
 
 	//set font
-	HDC hdcTT = GetDC(_hwnd);
-	hFont = CreateFontW(-MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdcTT, LOGPIXELSY), 72), 0, 0, 0,
+	HDC hdc = GetDC(_hwnd);
+	hFont = CreateFontW(-MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
 		_pTextService->fontweight, _pTextService->fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 		_pTextService->fontname);
 	SendMessageW(_hwnd, WM_SETFONT, (WPARAM)hFont, 0);
-	ReleaseDC(_hwnd, hdcTT);
+	ReleaseDC(_hwnd, hdc);
 	//DeleteObject(hFont);	// -> _End()
 
 	//set color
@@ -477,10 +75,11 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 	SendMessageW(_hwnd, TTM_SETMARGIN, 0, (LPARAM)&rect);
 
 	//set window procedure
-	ToolTipWndProcDef = (WNDPROC)GetWindowLongPtr(_hwnd, GWLP_WNDPROC);
-	if(ToolTipWndProcDef != 0)
+	WndProcDef = (WNDPROC)GetWindowLongPtrW(_hwnd, GWLP_WNDPROC);
+	if(WndProcDef != 0)
 	{
-		SetWindowLongPtr(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowProcTT);
+		SetWindowLongPtrW(_hwnd, GWLP_USERDATA, (LONG_PTR)this);
+		SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
 		SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
 	}
 
@@ -489,17 +88,33 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, BOOL reg)
 	{
 		//辞書登録開始
 		regword = TRUE;
-		regwordstr.clear();
-		regwordstrpos = 0;
+		regwordtext.clear();
+		regwordtextpos = 0;
 		comptext.clear();
 		regwordfixed = TRUE;
-		regwordshowcandlist = FALSE;
 
 		_BackUpStatus();
 		_ClearStatus();
 	}	
 		
 	return TRUE;
+}
+
+LRESULT CALLBACK CCandidateWindow::_WindowPreProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	LRESULT ret = 0;
+	CCandidateWindow *pWindowProc = (CCandidateWindow*)GetWindowLongPtrW(hwnd, GWLP_USERDATA);
+	if(pWindowProc != NULL)
+	{
+		ret = pWindowProc->_WindowProc(hwnd, uMsg, wParam, lParam);
+	}
+	return ret;
+}
+
+LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	CallWindowProcW(WndProcDef, hwnd, uMsg, wParam, lParam);
+	return 0;
 }
 
 void CCandidateWindow::_Destroy()
@@ -515,7 +130,21 @@ void CCandidateWindow::_Move(int x, int y)
 {
 	if(_hwnd != NULL)
 	{
+		_pt.x = x;
+		_pt.y = y;
+
 		SendMessageW(_hwnd, TTM_TRACKPOSITION, 0, (LPARAM)MAKELONG(x, y));
+
+		if(_pCandidateWindow != NULL)
+		{
+#ifdef _DEBUG
+			RECT rc;
+			GetClientRect(_hwnd, &rc);
+			_pCandidateWindow->_Move(_pt.x, _pt.y + rc.bottom);
+#else
+			_pCandidateWindow->_Move(_pt.x, _pt.y);
+#endif
+		}
 	}
 }
 
@@ -529,7 +158,7 @@ void CCandidateWindow::_BeginUIElement()
 		_InitList();
 	}
 
-	_UpdateTT();
+	_Update();
 
 	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
 	{
@@ -580,15 +209,35 @@ void CCandidateWindow::_EndUIElement()
 	_bShow = FALSE;
 }
 
+BOOL CCandidateWindow::_CanShowUIElement()
+{
+	ITfUIElementMgr *pUIElementMgr;
+	BOOL bShow = TRUE;
+
+	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+	{
+		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
+		pUIElementMgr->EndUIElement(_dwUIElementId);
+		pUIElementMgr->Release();
+	}
+
+	return bShow;
+}
+
 HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 {
 	UINT i, page, index;
 
+	if(_pCandidateWindow != NULL && !_preEnd)
+	{
+		return _pCandidateWindow->_OnKeyDown(uVKey);
+	}
+
 	WCHAR ch = _pTextService->_GetCh((WPARAM)uVKey);
 	BYTE sf = _pTextService->_GetSf((WPARAM)uVKey, ch);
 
-	//辞書登録モードかつ候補一覧が表示されていない
-	if(regword && !regwordshowcandlist)
+	//辞書登録モード
+	if(regword)
 	{
 		_OnKeyDownRegword(uVKey, sf);
 		return S_OK;
@@ -601,13 +250,26 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 		{
 			if(!regword)
 			{
-				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-				_pCandidateList->_EndCandidateList();
+				if(_pCandidateWindowParent == NULL)
+				{
+					_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
+					_pCandidateList->_EndCandidateList();
+				}
+				else
+				{
+					if(_reg)
+					{
+						_RestoreStatusReg();
+					}
+					_PreEndReq();
+					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_EndReq();
+				}
 			}
 			else
 			{
 				_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
-				_UpdateTT();
+				_Update();
 			}
 		}
 		break;
@@ -636,15 +298,29 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 					{
 						if(!regword)
 						{
-							_pTextService->candidx = index;
-							_pCandidateList->_InvokeSfHandler(SKK_ENTER);
-							_pCandidateList->_EndCandidateList();
+							if(_pCandidateWindowParent == NULL)
+							{
+								_pTextService->candidx = index;
+								_pCandidateList->_InvokeSfHandler(SKK_ENTER);
+								_pCandidateList->_EndCandidateList();
+							}
+							else
+							{
+								if(_reg)
+								{
+									_RestoreStatusReg();
+								}
+								_PreEndReq();
+								_pTextService->candidx = index;
+								_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
+								_EndReq();
+							}
 						}
 						else
 						{
 							_pTextService->candidx = index;
 							_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
-							_UpdateTT();
+							_Update();
 						}
 						break;
 					}
@@ -662,26 +338,33 @@ HRESULT CCandidateWindow::_OnKeyUp(UINT uVKey)
 	return S_OK;
 }
 
-void CCandidateWindow::_SetTextRegword(const std::wstring &text, BOOL fixed, BOOL showcandlist)
+void CCandidateWindow::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
 {
 	//CTextService -> CCandidateList -> CCandidateWindow で入力文字列をもらう
 
-	regwordfixed = fixed;
-
-	if(showcandlist && !regwordshowcandlist)
+	if(_pCandidateWindow != NULL && !_preEnd)
 	{
-		//辞書登録モードで候補一覧を表示開始
-		_InitList();
-		_UpdateTT();
+		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
+		return;
 	}
 
-	regwordshowcandlist = showcandlist;
+	if(showreg)
+	{
+		_CreateNext(TRUE);
+	}
+
+	if(showcandlist)
+	{
+		_CreateNext(FALSE);
+	}
+
+	regwordfixed = fixed;
 
 	if(fixed)
 	{
 		comptext.clear();
-		regwordstr.insert(regwordstrpos, text);
-		regwordstrpos += text.size();
+		regwordtext.insert(regwordtextpos, text);
+		regwordtextpos += text.size();
 	}
 	else
 	{
@@ -691,21 +374,32 @@ void CCandidateWindow::_SetTextRegword(const std::wstring &text, BOOL fixed, BOO
 			regwordfixed = TRUE;
 		}
 	}
+
+	_Update();
 }
 
-BOOL CCandidateWindow::_CanShowUIElement()
+void CCandidateWindow::_PreEnd()
 {
-	ITfUIElementMgr *pUIElementMgr;
-	BOOL bShow = TRUE;
+	_preEnd = TRUE;
+}
 
-	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+void CCandidateWindow::_End()
+{
+	_preEnd = FALSE;
+
+#ifndef _DEBUG
+	if(_hwnd != NULL)
 	{
-		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
-		pUIElementMgr->EndUIElement(_dwUIElementId);
-		pUIElementMgr->Release();
+		SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
 	}
+#endif
 
-	return bShow;
+	if(_pCandidateWindow != NULL)
+	{
+		_pCandidateWindow->_Destroy();
+		_pCandidateWindow->Release();
+		_pCandidateWindow = NULL;
+	}
 }
 
 void CCandidateWindow::_InitList()
@@ -758,7 +452,7 @@ void CCandidateWindow::_UpdateUIElement()
 		}
 	}
 
-	_UpdateTT();
+	_Update();
 }
 
 void CCandidateWindow::_NextPage()
@@ -771,8 +465,8 @@ void CCandidateWindow::_NextPage()
 	{
 		if(_pCandidateList)
 		{
-			//候補一覧が独自描画のとき辞書登録せずに▽モードにする
-			if(!IsWindowVisible(_hwnd))
+			//辞書登録せずに▽モードにする
+			if(_pTextService->_dwActiveFlags & (TF_TMF_UIELEMENTENABLEDONLY | TF_TMF_IMMERSIVEMODE))
 			{
 				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
 				_pCandidateList->_EndCandidateList();
@@ -783,21 +477,19 @@ void CCandidateWindow::_NextPage()
 				{
 					//辞書登録開始
 					regword = TRUE;
-					regwordstr.clear();
-					regwordstrpos = 0;
+					regwordtext.clear();
+					regwordtextpos = 0;
 					comptext.clear();
 					regwordfixed = TRUE;
-					regwordshowcandlist = FALSE;
 
 					_BackUpStatus();
 					_ClearStatus();
 				}
 				else
 				{
-					//辞書登録モードの▽モードに戻る
-					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_CreateNext(TRUE);
 				}
-				_UpdateTT();
+				_Update();
 			}
 			return;
 		}
@@ -831,14 +523,41 @@ void CCandidateWindow::_PrevPage()
 			{
 				if(_pTextService->c_untilcandlist == 1)
 				{
-					_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-					_pCandidateList->_EndCandidateList();
+					if(_pCandidateWindowParent == NULL)
+					{
+						_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
+						_pCandidateList->_EndCandidateList();
+					}
+					else
+					{
+						if(_reg)
+						{
+							_RestoreStatusReg();
+						}
+						_PreEndReq();
+						_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+						_EndReq();
+					}
 				}
 				else
 				{
-					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
-					_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
-					_pCandidateList->_EndCandidateList();
+					if(_pCandidateWindowParent == NULL)
+					{
+						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
+						_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
+						_pCandidateList->_EndCandidateList();
+					}
+					else
+					{
+						if(_reg)
+						{
+							_RestoreStatusReg();
+						}
+						_PreEndReq();
+						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
+						_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+						_EndReq();
+					}
 				}
 			}
 			else
@@ -852,7 +571,7 @@ void CCandidateWindow::_PrevPage()
 					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
 					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
-				_UpdateTT();
+				_Update();
 			}
 		}
 		return;
@@ -874,9 +593,9 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 	HANDLE hCB;
 	PWCHAR pwCB;
 	std::wstring s;
-	std::wstring regwordstrconv;
-	std::wstring regwordstrcandidate;
-	std::wstring regwordstrannotation;
+	std::wstring regwordtextconv;
+	std::wstring regwordtextcandidate;
+	std::wstring regwordtextannotation;
 	std::wsmatch result;
 
 	//確定していないとき
@@ -884,7 +603,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 	{
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
 		_pTextService->_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
-		_UpdateTT();
+		_Update();
 		return;
 	}
 
@@ -898,19 +617,116 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 		_RestoreStatusReg();
 		_ClearStatusReg();
 
-		regwordshowcandlist = FALSE;
 		regwordfixed = FALSE;
 		regword = FALSE;
 
-		if(regwordstr.empty())	//空のときはキャンセル扱い
+		if(regwordtext.empty())	//空のときはキャンセル扱い
 		{
 			if(!_reg)
 			{
 				_InitList();
 				_uIndex = _PageInex[_PageInex.size() - 1];
-				_UpdateTT();
+				_Update();
 			}
 			else
+			{
+				if(_pCandidateWindowParent == NULL)
+				{
+					if(_pTextService->candidates.empty())
+					{
+						_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
+					}
+					else
+					{
+						_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
+					}
+					_pCandidateList->_EndCandidateList();
+				}
+				else
+				{
+					if(_reg)
+					{
+						_RestoreStatusReg();
+					}
+					_PreEndReq();
+					if(_pTextService->candidates.empty())
+					{
+						_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					}
+					else
+					{
+						_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+					}
+					_EndReq();
+				}
+			}
+		}
+		else
+		{
+			//候補と注釈を、行頭以外の最後のセミコロンで分割
+			if(std::regex_search(regwordtext, result, std::wregex(L".+;")))
+			{
+				regwordtextcandidate = result.str().substr(0, result.str().size() - 1);
+				regwordtextannotation = result.suffix();
+			}
+			else
+			{
+				regwordtextcandidate = regwordtext;
+				regwordtextannotation.clear();
+			}
+
+			//数値変換タイプ0～3の候補は#を数値にした見出し語が表示用 それ以外は見出し語そのまま
+			if(std::regex_match(regwordtextcandidate, std::wregex(L".*#[0-3].*")))
+			{
+				_pTextService->_ConvNum(regwordtextconv, _pTextService->searchkeyorg, regwordtextcandidate);
+			}
+			else
+			{
+				regwordtextconv = regwordtextcandidate;
+				_pTextService->searchkey = _pTextService->searchkeyorg;
+			}
+
+			_pTextService->candidates.push_back(CANDIDATE(
+				CANDIDATEBASE(regwordtextconv, regwordtextannotation),
+				(CANDIDATEBASE(regwordtextcandidate, regwordtextannotation))));
+			_pTextService->candidx = _pTextService->candidates.size() - 1;
+
+			regwordtext.clear();
+			regwordtextpos = 0;
+
+			if(_pCandidateWindowParent == NULL)
+			{
+				_pCandidateList->_InvokeSfHandler(SKK_ENTER);
+				_pCandidateList->_EndCandidateList();
+			}
+			else
+			{
+				_PreEndReq();
+				_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
+				_EndReq();
+			}
+		}
+		break;
+
+	case SKK_CANCEL:
+		_RestoreStatusReg();
+		_ClearStatusReg();
+
+		regwordfixed = FALSE;
+		regword = FALSE;
+
+		regwordtext.clear();
+		regwordtextpos = 0;
+		
+		if(!_reg)
+		{
+			_InitList();
+			_uIndex = _PageInex[_PageInex.size() - 1];
+			_Update();
+		}
+		else
+		{
+			if(_pCandidateWindowParent == NULL)
 			{
 				if(_pTextService->candidates.empty())
 				{
@@ -922,159 +738,105 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 				}
 				_pCandidateList->_EndCandidateList();
 			}
-		}
-		else
-		{
-			//候補と注釈を、行頭以外の最後のセミコロンで分割
-			if(std::regex_search(regwordstr, result, std::wregex(L".+;")))
-			{
-				regwordstrcandidate = result.str().substr(0, result.str().size() - 1);
-				regwordstrannotation = result.suffix();
-			}
 			else
 			{
-				regwordstrcandidate = regwordstr;
-				regwordstrannotation.clear();
+				_PreEndReq();
+				if(_pTextService->candidates.empty())
+				{
+					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+				}
+				else
+				{
+					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+				}
+				_EndReq();
 			}
-
-			//数値変換タイプ0～3の候補は#を数値にした見出し語が表示用 それ以外は見出し語そのまま
-			if(std::regex_match(regwordstrcandidate, std::wregex(L".*#[0-3].*")))
-			{
-				_pTextService->_ConvNum(regwordstrconv, _pTextService->searchkeyorg, regwordstrcandidate);
-			}
-			else
-			{
-				regwordstrconv = regwordstrcandidate;
-				_pTextService->searchkey = _pTextService->searchkeyorg;
-			}
-
-			_pTextService->candidates.push_back(CANDIDATE(
-				CANDIDATEBASE(regwordstrconv, regwordstrannotation),
-				(CANDIDATEBASE(regwordstrcandidate, regwordstrannotation))));
-			_pTextService->candidx = _pTextService->candidates.size() - 1;
-
-			regwordstr.clear();
-			regwordstrpos = 0;
-
-			_pCandidateList->_InvokeSfHandler(SKK_ENTER);
-			_pCandidateList->_EndCandidateList();
-		}
-		break;
-
-	case SKK_CANCEL:
-		_RestoreStatusReg();
-		_ClearStatusReg();
-
-		regwordshowcandlist = FALSE;
-		regwordfixed = FALSE;
-		regword = FALSE;
-
-		regwordstr.clear();
-		regwordstrpos = 0;
-		
-		if(!_reg)
-		{
-			_InitList();
-			_uIndex = _PageInex[_PageInex.size() - 1];
-			_UpdateTT();
-		}
-		else
-		{
-			if(_pTextService->candidates.empty())
-			{
-				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-			}
-			else
-			{
-				_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
-			}
-			_pCandidateList->_EndCandidateList();
 		}
 		break;
 
 	//結合文字は考慮しない
 
 	case SKK_BACK:
-		if(comptext.empty() && regwordstrpos > 0 && regwordstr.size() > 0)
+		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
-			if(regwordstr.size() >= 2 && regwordstrpos >= 2 &&
-				_pTextService->_IsSurrogatePair(regwordstr[regwordstrpos - 2], regwordstr[regwordstrpos - 1]))
+			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
+				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
-				regwordstrpos -= 2;
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
+				regwordtextpos -= 2;
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
 			}
 			else
 			{
-				--regwordstrpos;
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
+				--regwordtextpos;
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
 			}
-			_UpdateTT();
+			_Update();
 		}
 		break;
 
 	case SKK_DELETE:
-		if(comptext.empty() && regwordstrpos < regwordstr.size())
+		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
-			if(regwordstr.size() >= regwordstrpos + 2 &&
-				_pTextService->_IsSurrogatePair(regwordstr[regwordstrpos + 0], regwordstr[regwordstrpos + 1]))
+			if(regwordtext.size() >= regwordtextpos + 2 &&
+				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
 			}
 			else
 			{
-				regwordstr.erase(regwordstr.begin() + regwordstrpos);
+				regwordtext.erase(regwordtext.begin() + regwordtextpos);
 			}
-			_UpdateTT();
+			_Update();
 		}
 		break;
 
 	case SKK_LEFT:
-		if(comptext.empty() && regwordstrpos > 0 && regwordstr.size() > 0)
+		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
-			if(regwordstr.size() >= 2 && regwordstrpos >= 2 &&
-				_pTextService->_IsSurrogatePair(regwordstr[regwordstrpos - 2], regwordstr[regwordstrpos - 1]))
+			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
+				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
-				regwordstrpos -= 2;
+				regwordtextpos -= 2;
 			}
 			else
 			{
-				--regwordstrpos;
+				--regwordtextpos;
 			}
-			_UpdateTT();
+			_Update();
 		}
 		break;
 
 	case SKK_UP:
 		if(comptext.empty())
 		{
-			regwordstrpos = 0;
-			_UpdateTT();
+			regwordtextpos = 0;
+			_Update();
 		}
 		break;
 
 	case SKK_RIGHT:
-		if(comptext.empty() && regwordstrpos < regwordstr.size())
+		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
-			if(regwordstr.size() >= regwordstrpos + 2 &&
-				_pTextService->_IsSurrogatePair(regwordstr[regwordstrpos + 0], regwordstr[regwordstrpos + 1]))
+			if(regwordtext.size() >= regwordtextpos + 2 &&
+				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
-				regwordstrpos += 2;
+				regwordtextpos += 2;
 			}
 			else
 			{
-				++regwordstrpos;
+				++regwordtextpos;
 			}
-			_UpdateTT();
+			_Update();
 		}
 		break;
 
 	case SKK_DOWN:
 		if(comptext.empty())
 		{
-			regwordstrpos = regwordstr.size();
-			_UpdateTT();
+			regwordtextpos = regwordtext.size();
+			_Update();
 		}
 		break;
 
@@ -1089,9 +851,9 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 					if(pwCB != NULL) {
 						s.assign(pwCB);
 						s = std::regex_replace(s, std::wregex(L"\t|\r|\n"), std::wstring(L""));
-						regwordstr.insert(regwordstrpos, s);
-						regwordstrpos += s.size();
-						_UpdateTT();
+						regwordtext.insert(regwordtextpos, s);
+						regwordtextpos += s.size();
+						_Update();
 						GlobalUnlock(hCB);
 					}
 				}
@@ -1102,7 +864,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 
 	default:
 		_pTextService->_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
-		_UpdateTT();
+		_Update();
 		break;
 	}
 }
@@ -1112,19 +874,21 @@ std::wstring CCandidateWindow::_EscapeTags(const std::wstring &text)
 	return markZWSP + std::regex_replace(text, std::wregex(L"<"), std::wstring(L"<") + markZWSP) + markZWSP;
 }
 
-void CCandidateWindow::_UpdateTT()
+void CCandidateWindow::_Update()
 {
 	WCHAR selkey[2];
 	WCHAR strPage[32];
 	UINT i, page, count;
 
-	if(regword && !regwordshowcandlist)
+	if(regword)
 	{
-		strTT.clear();
-		strTT.append(markLinkS + _EscapeTags(searchkey_bak) + markLinkE);
-		strTT.append(markRegKeyEnd + _EscapeTags(regwordstr.substr(0, regwordstrpos)));
-		strTT.append(markLinkS + _EscapeTags(comptext) + markLinkE);
-		strTT.append(markCursor + _EscapeTags(regwordstr.substr(regwordstrpos)));
+		disptext.clear();
+		_snwprintf_s(strPage, _TRUNCATE, L"[%u] ", _depth);
+		disptext.append(strPage);
+		disptext.append(markLinkS + _EscapeTags(searchkey_bak) + markLinkE);
+		disptext.append(markRegKeyEnd + _EscapeTags(regwordtext.substr(0, regwordtextpos)));
+		disptext.append(markLinkS + _EscapeTags(comptext) + markLinkE);
+		disptext.append(markCursor + _EscapeTags(regwordtext.substr(regwordtextpos)));
 	}
 	else
 	{
@@ -1135,31 +899,31 @@ void CCandidateWindow::_UpdateTT()
 			count += _CandCount[i];
 		}
 
-		strTT.clear();
+		disptext.clear();
 		selkey[1] = L'\0';
 		for(i=0; i<_CandCount[page]; i++)
 		{
-			strTT.append(markLinkS + _EscapeTags(_pTextService->selkey[(i % MAX_SELKEY_C)][0]) + markLinkE);
+			disptext.append(markLinkS + _EscapeTags(_pTextService->selkey[(i % MAX_SELKEY_C)][0]) + markLinkE);
 
-			strTT.append(markNoTT +
+			disptext.append(markNoTT +
 				_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.first));
 
 			if(_pTextService->c_annotation &&
 				!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
 			{
-				strTT.append(markAnnotation +
+				disptext.append(markAnnotation +
 					_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.second));
 			}
 
-			strTT.append(markCandEnd);
+			disptext.append(markCandEnd);
 		}
 
 		_snwprintf_s(strPage, _TRUNCATE, L"(%u/%u)", page + 1, _uPageCnt);
-		strTT.append(strPage);
+		disptext.append(strPage);
 	}
 
-	ti.lpszText = (LPWSTR)strTT.c_str();
-	SendMessageW(_hwnd, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
+	ti.lpszText = (LPWSTR)disptext.c_str();
+	SendMessageW(_hwnd, TTM_UPDATETIPTEXTW, 0, (LPARAM)&ti);
 }
 
 void CCandidateWindow::_BackUpStatus()
@@ -1215,4 +979,44 @@ void CCandidateWindow::_ClearStatusReg()
 	searchkeyorg_bak.clear();
 	candidates_bak.clear();
 	candidx_bak = 0;
+}
+
+void CCandidateWindow::_PreEndReq()
+{
+	if(_pCandidateWindowParent != NULL && !_preEnd)
+	{
+		_pCandidateWindowParent->_PreEnd();
+	}
+}
+
+void CCandidateWindow::_EndReq()
+{
+	if(_pCandidateWindowParent != NULL && !_preEnd)
+	{
+		_pCandidateWindowParent->_End();
+	}
+}
+
+void CCandidateWindow::_CreateNext(BOOL reg)
+{
+	RECT rc;
+
+	GetClientRect(_hwnd, &rc);
+	_pCandidateWindow = new CCandidateWindow(_pTextService);
+	if(_pCandidateWindow)
+	{
+		_pCandidateWindow->_Create(_hwndParent, this, _depth + 1, reg);
+
+#ifdef _DEBUG
+		_pCandidateWindow->_Move(_pt.x, _pt.y + rc.bottom);
+#else
+		_pCandidateWindow->_Move(_pt.x, _pt.y);
+#endif
+
+		_pCandidateWindow->_BeginUIElement();
+
+#ifndef _DEBUG
+		SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+#endif
+	}
 }

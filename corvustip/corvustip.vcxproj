@@ -22,6 +22,7 @@
     <None Include="corvustip.def" />
     <None Include="Icon\Ascii.ico" />
     <None Include="Icon\CorvusSKK.ico" />
+    <None Include="Icon\CorvusSKKw.ico" />
     <None Include="Icon\Default.ico" />
     <None Include="Icon\Hiragana.ico" />
     <None Include="Icon\JLatin.ico" />
@@ -43,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CandidateList.cpp" />
+    <ClCompile Include="CandidateUIElement.cpp" />
     <ClCompile Include="CandidateWindow.cpp" />
     <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="CompartmentEventSink.cpp" />

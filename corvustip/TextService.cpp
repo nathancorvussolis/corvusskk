@@ -18,6 +18,8 @@ CTextService::CTextService()
 	_pComposition = NULL;
 	_pCandidateList = NULL;
 
+	_dwActiveFlags = 0;
+
 	hPipe = INVALID_HANDLE_VALUE;
 
 	inputmode = im_default;
@@ -128,16 +130,22 @@ STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 
 STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
+	_wsetlocale(LC_ALL, L"japanese");
+
 	INITCOMMONCONTROLSEX ex;
 	ex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	ex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
 	InitCommonControlsEx(&ex);
 
-	_wsetlocale(LC_ALL, L"japanese");
-
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
+
+	ITfThreadMgrEx *pThreadMgrEx;
+	if(_pThreadMgr->QueryInterface(IID_ITfThreadMgrEx, (void**)&pThreadMgrEx) == S_OK)
+	{
+		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
+	}
 	
 	if(!_InitThreadMgrEventSink())
 	{

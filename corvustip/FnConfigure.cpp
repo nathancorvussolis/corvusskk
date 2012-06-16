@@ -102,30 +102,11 @@ void CTextService::_LoadBehavior()
 {
 	RECT rect;
 	std::wstring strxmlval;
-	PACL pDacl;
-	PSECURITY_DESCRIPTOR pSD;
-	LPWSTR pszSD;
-	ULONG ulSD;
 	BOOL bAppContainer = FALSE;
 
-	if(IsVersion62AndOver(g_ovi))
+	if(_dwActiveFlags & TF_TMF_IMMERSIVEMODE)
 	{
-		if(GetSecurityInfo(GetCurrentProcess(), SE_KERNEL_OBJECT,
-			DACL_SECURITY_INFORMATION | LABEL_SECURITY_INFORMATION,
-			NULL, NULL, &pDacl, NULL, &pSD) == ERROR_SUCCESS)
-		{
-			if(ConvertSecurityDescriptorToStringSecurityDescriptorW(pSD, SDDL_REVISION_1,
-				DACL_SECURITY_INFORMATION | LABEL_SECURITY_INFORMATION, &pszSD, &ulSD))
-			{
-				// for Windows 8 Application Package Authority
-				if(wcsstr(pszSD, L"S-1-15-2") != NULL)
-				{
-					bAppContainer = TRUE;
-				}
-				LocalFree(pszSD);
-			}
-			LocalFree(pSD);
-		}
+		bAppContainer = TRUE;
 	}
 
 	ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);

@@ -36,7 +36,7 @@ public:
 
 	void _Show(BOOL bShow);
 
-	void _SetTextRegword(const std::wstring &text, BOOL fixed, BOOL showcandlist);
+	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 
 private:
 	LONG _cRef;

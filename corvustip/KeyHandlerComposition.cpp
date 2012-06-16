@@ -1,4 +1,5 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 #include "TextService.h"
 #include "CandidateList.h"
@@ -110,10 +111,15 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			}
 
 			//辞書登録ウィンドウを表示可能なら表示する
-			if(pContext == NULL || _ShowCandidateList(ec, pContext, TRUE) != S_OK)
+			if(pContext == NULL)
 			{
-				//辞書登録中の検索または表示不可なら▽モードに戻す
-				//ただし候補無しなら１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)
+				_pCandidateList->_SetText(composition, FALSE, FALSE, TRUE);
+				return S_OK;
+			}
+			else if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) || _ShowCandidateList(ec, pContext, TRUE) != S_OK)
+			{
+				//表示不可のとき▽モードに戻す
+				//ただし候補無しのとき１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)
 				if(!candidates.empty())
 				{
 					if(c_delokuricncl && accompidx != 0)
@@ -218,7 +224,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		{
 			showcandlist = TRUE;
 			candidx = 0;
-			_pCandidateList->_SetTextRegword(L"", FALSE, TRUE);
+			_pCandidateList->_SetText(composition, FALSE, TRUE, FALSE);
 			return S_OK;
 		}
 		else
@@ -232,7 +238,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 	{
-		_pCandidateList->_SetTextRegword(composition, fixed, FALSE);
+		_pCandidateList->_SetText(composition, fixed, FALSE, FALSE);
 		return S_OK;
 	}
 	else
@@ -249,7 +255,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 	{
-		_pCandidateList->_SetTextRegword(text, fixed, FALSE);
+		_pCandidateList->_SetText(text, fixed, FALSE, FALSE);
 		return S_OK;
 	}
 

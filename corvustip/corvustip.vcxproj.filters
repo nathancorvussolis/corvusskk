@@ -119,9 +119,15 @@
     <ClCompile Include="ThreadMgrEventSink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CandidateUIElement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon\CorvusSKK.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\CorvusSKKw.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Icon\Default.ico">

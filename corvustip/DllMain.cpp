@@ -1,6 +1,5 @@
 ﻿
 #include "corvustip.h"
-#include "TextService.h"
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
@@ -12,7 +11,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		ZeroMemory(&g_ovi, sizeof(g_ovi));
 		g_ovi.dwOSVersionInfoSize = sizeof(g_ovi);
 		GetVersionEx(&g_ovi);
-
 		break;
 
 	case DLL_PROCESS_DETACH:

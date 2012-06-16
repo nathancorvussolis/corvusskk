@@ -114,7 +114,7 @@
     <PostBuildEvent>
       <Command>"%WIX%bin\candle.exe" "corvusskk-x86.wxs" -ext WixUIExtension
 "%WIX%bin\light.exe" "corvusskk-x86.wixobj" -ext WixUIExtension
-7za.exe a corvusskk-x86.7z corvusskk-x86.msi README.TXT
+7za.exe a corvusskk-x86.7z corvusskk-x86.msi README.TXT ..\LICENSE.TXT
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -133,7 +133,7 @@
     <PostBuildEvent>
       <Command>"%WIX%bin\candle.exe" "corvusskk-x64.wxs" -ext WixUIExtension
 "%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension
-7za.exe a corvusskk-x64.7z corvusskk-x64.msi README.TXT</Command>
+7za.exe a corvusskk-x64.7z corvusskk-x64.msi README.TXT ..\LICENSE.TXT</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

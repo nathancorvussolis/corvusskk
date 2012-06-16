@@ -36,18 +36,22 @@ public:
 	STDMETHODIMP Finalize();
 	STDMETHODIMP Abort();
 
-	BOOL _Create(HWND hwndParent, BOOL regdic);
+	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, UINT depth, BOOL reg);
+	static LRESULT CALLBACK _WindowPreProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK _WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void _Destroy();
 
 	void _Move(int x, int y);
 	void _BeginUIElement();
 	void _EndUIElement();
+	BOOL _CanShowUIElement();
 
 	HRESULT _OnKeyDown(UINT uVKey);
 	HRESULT _OnKeyUp(UINT uVKey);
 
-	void _SetTextRegword(const std::wstring &text, BOOL fixed, BOOL showcandlist);
-	BOOL _CanShowUIElement();
+	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
+	void _PreEnd();
+	void _End();
 
 private:
 	LONG _cRef;
@@ -58,11 +62,16 @@ private:
 	void _PrevPage();
 	void _OnKeyDownRegword(UINT uVKey, BYTE sf);
 	std::wstring _EscapeTags(const std::wstring &text);
-	void _UpdateTT();
+	void _Update();
+
 	void _BackUpStatus();
 	void _ClearStatus();
 	void _RestoreStatusReg();
 	void _ClearStatusReg();
+
+	void _PreEndReq();
+	void _EndReq();
+	void _CreateNext(BOOL reg);
 
 	DWORD _dwUIElementId;
 	BOOL _bShow;
@@ -75,13 +84,20 @@ private:
 	std::vector< UINT > _PageInex;
 	std::vector< std::wstring > _CandStr;
 
-	HWND _hwnd;
 	CTextService *_pTextService;
 	CCandidateList *_pCandidateList;
+	CCandidateWindow *_pCandidateWindow;		//子
+	CCandidateWindow *_pCandidateWindowParent;	//親
+	HWND _hwnd;			//自分
+	HWND _hwndParent;	//親
+	BOOL _preEnd;		//親に対する終了要求
+	POINT _pt;			//位置
+	UINT _depth;		//深さ
 
 	//候補一覧、辞書登録のウィンドウ
+	WNDPROC WndProcDef;
 	TOOLINFOW ti;
-	std::wstring strTT;
+	std::wstring disptext;
 	HFONT hFont;
 
 	BOOL _reg;		//初期表示から辞書登録
@@ -89,9 +105,8 @@ private:
 	//辞書登録
 	BOOL regword;				//モード
 	BOOL regwordfixed;			//未確定文字列を確定
-	BOOL regwordshowcandlist;	//辞書登録モードで候補一覧表示中
-	std::wstring regwordstr;	//確定文字列
-	size_t regwordstrpos;		//カーソルインデックス
+	std::wstring regwordtext;	//確定文字列
+	size_t regwordtextpos;		//カーソルインデックス
 	std::wstring comptext;		//未確定文字列
 
 	//辞書登録前の状態バックアップ

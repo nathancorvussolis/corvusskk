@@ -19,6 +19,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HFONT hFont;
 	RECT rect;
 	LONG w;
+	FILE *fp;
 	std::wstring strxmlval;
 
 	switch(message)
@@ -176,6 +177,11 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case PSN_APPLY:
 			if(IsVersion62AndOver(ovi))
 			{
+				_wfopen_s(&fp, pathconfigxml, L"a");
+				if(fp != NULL)
+				{
+					fclose(fp);
+				}
 				SetFileDaclAC(pathconfigxml);
 			}
 
