@@ -466,7 +466,8 @@ void CCandidateWindow::_NextPage()
 		if(_pCandidateList)
 		{
 			//辞書登録せずに▽モードにする
-			if(_pTextService->_dwActiveFlags & (TF_TMF_UIELEMENTENABLEDONLY | TF_TMF_IMMERSIVEMODE))
+			if((_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) ||
+				((_pTextService->_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY)))
 			{
 				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
 				_pCandidateList->_EndCandidateList();

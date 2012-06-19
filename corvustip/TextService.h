@@ -121,7 +121,7 @@ public:
 	
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);
-	BOOL _SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, TfGuidAtom gaDisplayAttribute);
+	BOOL _SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, ITfRange *pRange, TfGuidAtom gaDisplayAttribute);
 
 	// KeyHandler
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
@@ -136,7 +136,7 @@ public:
 
 	// KeyHandlerCompostion
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed = FALSE, BOOL back = FALSE);
-	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, BOOL fixed);
+	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchReq, BOOL fixed);
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg);
 
 	// KeyHandlerControl
@@ -221,11 +221,13 @@ private:
 	ITfComposition *_pComposition;
 
 	CLangBarItemButton *_pLangBarItem;
+	CLangBarItemButton *_pLangBarItemI;
 
 	CCandidateList *_pCandidateList;
 
 	TfGuidAtom _gaDisplayAttributeInput;
-	TfGuidAtom _gaDisplayAttributeConverted;
+	TfGuidAtom _gaDisplayAttributeCandidate;
+	TfGuidAtom _gaDisplayAttributeAnnotation;
 
 private:
 	//ファイルパス

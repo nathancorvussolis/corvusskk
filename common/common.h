@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.7.3"
+#define TEXTSERVICE_VER		L"0.7.4"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.7.3"
-#define RC_VERSION_D		0,7,3,0
+#define RC_VERSION			"0.7.4"
+#define RC_VERSION_D		0,7,4,0
 
 #define MAX_KRNLOBJNAME		256
 
@@ -42,8 +42,18 @@ extern LPCWSTR fnuserdicxml;
 extern LPCWSTR fnskkcvdicxml;
 extern LPCWSTR fnskkcvdicidx;
 
+void debugout(LPCWSTR format, ...);
+BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
+BOOL IsVersion6AndOver(OSVERSIONINFOW ovi);
+BOOL IsVersion62AndOver(OSVERSIONINFOW ovi);
+BOOL SetFileDaclAC(LPCWSTR path);
+
 // for Windows 8
 #if 1
+#define EVENT_OBJECT_IME_SHOW               0x8027
+#define EVENT_OBJECT_IME_HIDE               0x8028
+#define EVENT_OBJECT_IME_CHANGE             0x8029
+
 #define TF_TMF_IMMERSIVEMODE          0x40000000
 
 #define TF_IPP_CAPS_IMMERSIVESUPPORT            0x00010000
@@ -55,11 +65,5 @@ extern const GUID GUID_COMPARTMENT_TKB_THIRDPARTYIME_MODE_ONOFF;
 extern const GUID GUID_LBI_INPUTMODE;
 extern const GUID GUID_INTEGRATIONSTYLE_SEARCHBOX;
 #endif
-
-void debugout(LPCWSTR format, ...);
-BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
-BOOL IsVersion6AndOver(OSVERSIONINFOW ovi);
-BOOL IsVersion62AndOver(OSVERSIONINFOW ovi);
-BOOL SetFileDaclAC(LPCWSTR path);
 
 #endif

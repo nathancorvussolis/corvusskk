@@ -102,11 +102,11 @@ void CTextService::_LoadBehavior()
 {
 	RECT rect;
 	std::wstring strxmlval;
-	BOOL bAppContainer = FALSE;
+	BOOL bShowCandList = TRUE;
 
-	if(_dwActiveFlags & TF_TMF_IMMERSIVEMODE)
+	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY))
 	{
-		bAppContainer = TRUE;
+		bShowCandList = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);
@@ -154,7 +154,7 @@ void CTextService::_LoadBehavior()
 		c_untilcandlist = 4;
 	}
 
-	if(bAppContainer)
+	if(!bShowCandList)
 	{
 		c_untilcandlist = 0;
 	}

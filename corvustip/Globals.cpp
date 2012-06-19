@@ -33,8 +33,12 @@ const GUID c_guidDisplayAttributeInput =
 { 0x7fe29429, 0xcb73, 0x43f0, { 0xb4, 0x81, 0xbc, 0x22, 0x0b, 0x68, 0xf2, 0xe3 } };
 
 // {EBFDDF5D-E34E-409e-8C93-9FE92DB32FB5}
-const GUID c_guidDisplayAttributeConverted = 
+const GUID c_guidDisplayAttributeCandidate = 
 { 0xebfddf5d, 0xe34e, 0x409e, { 0x8c, 0x93, 0x9f, 0xe9, 0x2d, 0xb3, 0x2f, 0xb5 } };
+
+// {ACEDB943-CFD1-4588-89DD-B80E5720CBC7}
+const GUID c_guidDisplayAttributeAnnotation = 
+{ 0xacedb943, 0xcfd1, 0x4588, { 0x89, 0xdd, 0xb8, 0x0e, 0x57, 0x20, 0xcb, 0xc7 } };
 
 // {3F821491-1536-4bc9-B4CA-080947B00F64}
 const GUID c_guidCandidateListUIElement = 
@@ -63,8 +67,12 @@ const GUID c_guidDisplayAttributeInput =
 { 0x6f99e3f1, 0x36ac, 0x4015, { 0xb3, 0x34, 0x21, 0x1c, 0xff, 0xcb, 0x32, 0x62 } };
 
 // {6877D302-1C51-4ba4-9329-2F80B5E3A4E7}
-const GUID c_guidDisplayAttributeConverted = 
+const GUID c_guidDisplayAttributeCandidate = 
 { 0x6877d302, 0x1c51, 0x4ba4, { 0x93, 0x29, 0x2f, 0x80, 0xb5, 0xe3, 0xa4, 0xe7 } };
+
+// {C6040719-6FF3-4b92-A589-36E93BFD53EC}
+const GUID c_guidDisplayAttributeAnnotation = 
+{ 0xc6040719, 0x6ff3, 0x4b92, { 0xa5, 0x89, 0x36, 0xe9, 0x3b, 0xfd, 0x53, 0xec } };
 
 // {25A6388F-D3CB-4866-A2C3-94E00970BF45}
 const GUID c_guidCandidateListUIElement = 
@@ -82,7 +90,7 @@ const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInput =
 	TF_ATTR_INPUT				// TF_DA_ATTR_INFO bAttr;
 };
 
-const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConverted =
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeCandidate =
 {
 	{TF_CT_NONE, 0},			// TF_DA_COLOR crText;
 	{TF_CT_NONE, 0},			// TF_DA_COLOR crBk;
@@ -90,4 +98,14 @@ const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConverted =
 	FALSE,						// BOOL fBoldLine;
 	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
 	TF_ATTR_TARGET_CONVERTED	// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeAnnotation =
+{
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crText;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crBk;
+	TF_LS_DASH,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_CONVERTED			// TF_DA_ATTR_INFO bAttr;
 };

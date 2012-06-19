@@ -45,9 +45,18 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 			return E_OUTOFMEMORY;
 		}
 	}
-	else if(IsEqualGUID(guid, c_guidDisplayAttributeConverted))
+	else if(IsEqualGUID(guid, c_guidDisplayAttributeCandidate))
 	{
-		*ppInfo = new CDisplayAttributeInfoConverted();
+		*ppInfo = new CDisplayAttributeInfoCandidate();
+
+		if(*ppInfo == NULL)
+		{
+			return E_OUTOFMEMORY;
+		}
+	}
+	else if(IsEqualGUID(guid, c_guidDisplayAttributeAnnotation))
+	{
+		*ppInfo = new CDisplayAttributeInfoAnnotation();
 
 		if(*ppInfo == NULL)
 		{
@@ -78,23 +87,18 @@ void CTextService::_ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContex
 	}
 }
 
-BOOL CTextService::_SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, TfGuidAtom gaDisplayAttribute)
+BOOL CTextService::_SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, ITfRange *pRange, TfGuidAtom gaDisplayAttribute)
 {
-	ITfRange *pRangeComposition;
 	ITfProperty *pDisplayAttributeProperty;
 	HRESULT hr = E_FAIL;
 
-	if(_pComposition->GetRange(&pRangeComposition) == S_OK)
+	if(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pDisplayAttributeProperty) == S_OK)
 	{
-		if(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pDisplayAttributeProperty) == S_OK)
-		{
-			VARIANT var;
-			var.vt = VT_I4;
-			var.lVal = gaDisplayAttribute;
-			hr = pDisplayAttributeProperty->SetValue(ec, pRangeComposition, &var);
-			pDisplayAttributeProperty->Release();
-		}
-		pRangeComposition->Release();
+		VARIANT var;
+		var.vt = VT_I4;
+		var.lVal = gaDisplayAttribute;
+		hr = pDisplayAttributeProperty->SetValue(ec, pRange, &var);
+		pDisplayAttributeProperty->Release();
 	}
 
 	return (hr == S_OK);
@@ -109,7 +113,8 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 	                    IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
 	{
 		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeInput, &_gaDisplayAttributeInput);
-		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeConverted, &_gaDisplayAttributeConverted);
+		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeCandidate, &_gaDisplayAttributeCandidate);
+		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeAnnotation, &_gaDisplayAttributeAnnotation);
 		pCategoryMgr->Release();
 	}
 

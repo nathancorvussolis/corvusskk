@@ -7,7 +7,7 @@ class CLangBarItemButton :
 	public ITfSource
 {
 public:
-	CLangBarItemButton(CTextService *pTextService);
+	CLangBarItemButton(CTextService *pTextService, REFGUID guid);
 	~CLangBarItemButton();
 
 	// IUnknown

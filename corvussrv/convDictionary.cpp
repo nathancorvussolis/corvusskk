@@ -358,7 +358,7 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 		hr = WriterStartElement(pWriter, TagEntry);
 		EXIT_NOT_S_OK(hr);
 
-		hr = WriterAttribute(pWriter, TagKey, u_itr->first.c_str());	//補完見出し語
+		hr = WriterAttribute(pWriter, TagKey, u_itr->first.c_str());	//見出し語
 		EXIT_NOT_S_OK(hr);
 
 		hr = WriterList(pWriter, list);

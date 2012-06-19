@@ -16,6 +16,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	std::wstring composition;
 	WCHAR candidatecount[16];
 	WCHAR useraddmode = REQ_USER_ADD_1;
+	LONG cchReq = 0;
 
 	if(showentry &&
 		(	(fixed && showcandlist) || 
@@ -37,6 +38,8 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				composition.append(kana.substr(accompidx + 1));
 				useraddmode = REQ_USER_ADD_0;
 			}
+
+			cchReq = (LONG)composition.size();
 
 			if(!fixed && c_annotation && !c_annotatlst &&
 				!candidates[candidx].first.second.empty())
@@ -110,13 +113,18 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				composition.append(kana.substr(accompidx + 1));
 			}
 
+			cchReq = (LONG)composition.size();
+
 			//辞書登録ウィンドウを表示可能なら表示する
-			if(pContext == NULL)
+			if(pContext == NULL)	//辞書登録用
 			{
 				_pCandidateList->_SetText(composition, FALSE, FALSE, TRUE);
 				return S_OK;
 			}
-			else if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) || _ShowCandidateList(ec, pContext, TRUE) != S_OK)
+
+			if(((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) ||
+				((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY))) ||
+				_ShowCandidateList(ec, pContext, TRUE) != S_OK)
 			{
 				//表示不可のとき▽モードに戻す
 				//ただし候補無しのとき１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)
@@ -133,6 +141,8 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					return S_OK;
 				}
 			}
+
+			showentry = TRUE;
 		}
 	}
 	else
@@ -183,6 +193,11 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				{
 					composition.append(roman);
 				}
+			}
+
+			if(showentry && (candidx + 1 == c_untilcandlist))
+			{
+				cchReq = (LONG)composition.size();
 			}
 		}
 		else
@@ -243,15 +258,17 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	}
 	else
 	{
-		return _SetText(ec, pContext, composition, fixed);
+		return _SetText(ec, pContext, composition, cchReq, fixed);
 	}
 }
 
-HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, BOOL fixed)
+HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchReq, BOOL fixed)
 {
 	TF_SELECTION tfSelection;
 	ITfRange *pRangeComposition;
+	ITfRange *pRangeClone;
 	ULONG cFetched;
+	LONG cch;
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 	{
@@ -275,7 +292,15 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		{
 			pRangeComposition->SetText(ec, 0, text.c_str(), (LONG)text.size());
 			
-			tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+			if(cchReq == 0)
+			{
+				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+			}
+			else
+			{
+				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_START);
+				tfSelection.range->ShiftEnd(ec, cchReq, &cch, NULL);
+			}
 			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
 
 			pContext->SetSelection(ec, 1, &tfSelection);
@@ -331,20 +356,33 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 					pProperty->Release();
 				}
 			}
+
+			if(pRangeComposition->Clone(&pRangeClone) == S_OK)
+			{
+				if(showentry)
+				{
+					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_START);
+					pRangeClone->ShiftEnd(ec, cchReq, &cch, NULL);
+					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeCandidate);
+		
+					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+					pRangeClone->ShiftStart(ec, cchReq, &cch, NULL);
+					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
+				}
+				else
+				{
+					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
+				}
+				pRangeClone->Release();
+			}
 		}
+
 		pRangeComposition->Release();
 	}
 
 	tfSelection.range->Release();
-
-	if(showentry)
-	{
-		_SetCompositionDisplayAttributes(ec, pContext, _gaDisplayAttributeConverted);
-	}
-	else
-	{
-		_SetCompositionDisplayAttributes(ec, pContext, _gaDisplayAttributeInput);
-	}
 
 	return S_OK;
 }

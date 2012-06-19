@@ -134,13 +134,23 @@ public:
 	}
 };
 
-class CDisplayAttributeInfoConverted : public CDisplayAttributeInfoBase
+class CDisplayAttributeInfoCandidate : public CDisplayAttributeInfoBase
 {
 public:
-	CDisplayAttributeInfoConverted()
+	CDisplayAttributeInfoCandidate()
 	{
-		_pguid = &c_guidDisplayAttributeConverted;
-		_pDisplayAttribute = &c_daDisplayAttributeConverted;
+		_pguid = &c_guidDisplayAttributeCandidate;
+		_pDisplayAttribute = &c_daDisplayAttributeCandidate;
+	}
+};
+
+class CDisplayAttributeInfoAnnotation : public CDisplayAttributeInfoBase
+{
+public:
+	CDisplayAttributeInfoAnnotation()
+	{
+		_pguid = &c_guidDisplayAttributeAnnotation;
+		_pDisplayAttribute = &c_daDisplayAttributeAnnotation;
 	}
 };
 

@@ -124,12 +124,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Icon\CorvusSKK.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\CorvusSKKw.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Icon\Default.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -146,6 +140,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="corvustip.def">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\CorvusSKK.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -5,6 +5,11 @@
 #define CLSID_STRLEN 38
 #define TEXTSERVICE_MODEL   L"Apartment"
 #define TEXTSERVICE_LANGID  MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT)
+#ifndef _DEBUG
+#define TEXTSERVICE_ICON_INDEX  0	// see resource script file
+#else
+#define TEXTSERVICE_ICON_INDEX  1
+#endif
 
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";
 static const WCHAR c_szInProcSvr32[] = L"InProcServer32";
@@ -15,15 +20,6 @@ BOOL RegisterProfiles()
 	ITfInputProcessorProfiles *pInputProcessProfiles;
 	WCHAR fileName[MAX_PATH];
 	HRESULT hr = E_FAIL;
-	ULONG uIconIndex = 0;	// see resource script file
-
-	if(IsVersion62AndOver(g_ovi))
-	{
-		uIconIndex = 1;
-	}
-#ifdef _DEBUG
-	uIconIndex = 2;
-#endif
 
 	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER,
 	                      IID_ITfInputProcessorProfiles, (void**)&pInputProcessProfiles) != S_OK)
@@ -39,7 +35,7 @@ BOOL RegisterProfiles()
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 	
 	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
-			c_guidProfile, TextServiceDesc, -1, fileName, -1, uIconIndex);
+			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
 
 	if(!IsVersion6AndOver(g_ovi))
 	{

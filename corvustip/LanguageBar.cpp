@@ -1,16 +1,17 @@
 ﻿
+#include "common.h"
 #include "corvustip.h"
 #include "TextService.h"
 #include "LanguageBar.h"
 
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x516b54ab
 
-CLangBarItemButton::CLangBarItemButton(CTextService *pTextService)
+CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 {
 	DllAddRef();
 
 	_LangBarItemInfo.clsidService = c_clsidTextService;
-	_LangBarItemInfo.guidItem = c_guidLangBarItemButton;
+	_LangBarItemInfo.guidItem = guid;
 	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_BTN_MENU | TF_LBI_STYLE_TEXTCOLORICON | TF_LBI_STYLE_SHOWNINTRAY;
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
@@ -282,10 +283,14 @@ BOOL CTextService::_InitLanguageBar()
 {
 	ITfLangBarItemMgr *pLangBarItemMgr;
 	BOOL fRet = FALSE;
+	BOOL fRetI = FALSE;
+
+	_pLangBarItem = NULL;
+	_pLangBarItemI = NULL;
 
 	if(_pThreadMgr->QueryInterface(IID_ITfLangBarItemMgr, (void **)&pLangBarItemMgr) == S_OK)
 	{
-		_pLangBarItem = new CLangBarItemButton(this);
+		_pLangBarItem = new CLangBarItemButton(this, c_guidLangBarItemButton);
 		if(_pLangBarItem != NULL)
 		{
 			if(pLangBarItemMgr->AddItem(_pLangBarItem) == S_OK)
@@ -298,10 +303,32 @@ BOOL CTextService::_InitLanguageBar()
 				_pLangBarItem = NULL;
 			}
 		}
+
+		if(IsVersion62AndOver(g_ovi))
+		{
+			_pLangBarItemI = new CLangBarItemButton(this, GUID_LBI_INPUTMODE);
+			if(_pLangBarItemI != NULL)
+			{
+				if(pLangBarItemMgr->AddItem(_pLangBarItemI) == S_OK)
+				{
+					fRetI = TRUE;
+				}
+				else
+				{
+					_pLangBarItemI->Release();
+					_pLangBarItemI = NULL;
+				}
+			}
+		}
+		else
+		{
+			fRetI = TRUE;
+		}
+
 		pLangBarItemMgr->Release();
 	}
 
-	return fRet;
+	return (fRet && fRetI);
 }
 
 void CTextService::_UninitLanguageBar()
@@ -318,6 +345,17 @@ void CTextService::_UninitLanguageBar()
 		_pLangBarItem->Release();
 		_pLangBarItem = NULL;
 	}
+
+	if(_pLangBarItemI != NULL)
+	{
+		if(_pThreadMgr->QueryInterface(IID_ITfLangBarItemMgr, (void **)&pLangBarItemMgr) == S_OK)
+		{
+			pLangBarItemMgr->RemoveItem(_pLangBarItemI);
+			pLangBarItemMgr->Release();
+		}
+		_pLangBarItemI->Release();
+		_pLangBarItemI = NULL;
+	}
 }
 
 void CTextService::_UpdateLanguageBar()
@@ -325,5 +363,9 @@ void CTextService::_UpdateLanguageBar()
 	if(_pLangBarItem != NULL)
 	{
 		_pLangBarItem->_Update();
+	}
+	if(_pLangBarItemI != NULL)
+	{
+		_pLangBarItemI->_Update();
 	}
 }

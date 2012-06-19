@@ -97,7 +97,7 @@ public:
 
 		while(cFetched < ulCount)
 		{
-			if(_iIndex > 1)
+			if(_iIndex > 2)
 			{
 				break;
 			}
@@ -112,7 +112,15 @@ public:
 			}
 			else if(_iIndex == 1)
 			{
-				pDisplayAttributeInfo = new CDisplayAttributeInfoConverted();
+				pDisplayAttributeInfo = new CDisplayAttributeInfoCandidate();
+				if(pDisplayAttributeInfo == NULL)
+				{
+					return E_OUTOFMEMORY;
+				}
+			}
+			else if(_iIndex == 2)
+			{
+				pDisplayAttributeInfo = new CDisplayAttributeInfoAnnotation();
 				if(pDisplayAttributeInfo == NULL)
 				{
 					return E_OUTOFMEMORY;
