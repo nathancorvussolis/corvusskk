@@ -9,6 +9,7 @@
 #define IDD_DIALOG_BEHAVIOR                     111
 #define IDD_DIALOG_DICTIONARY                   113
 #define IDD_DIALOG_SELKEY                       115
+#define IDD_DIALOG_PRSRVKEY                     117
 #define IDD_DIALOG_KEYMAP1                      121
 #define IDD_DIALOG_KEYMAP2                      123
 #define IDD_DIALOG_CONVPOINT                    125
@@ -47,6 +48,16 @@
 #define IDC_EDIT_SELKEY_DISP                    1502
 #define IDC_EDIT_SELKEY_SPARE                   1503
 #define IDC_BUTTON_SELKEY_W                     1504
+
+#define IDC_LIST_PRSRVKEY                       1701
+#define IDC_EDIT_PRSRVKEY_VKEY                  1702
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_ALT          1703
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL         1704
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT        1705
+#define IDC_BUTTON_PRSRVKEY_UP                  1706
+#define IDC_BUTTON_PRSRVKEY_DOWN                1707
+#define IDC_BUTTON_PRSRVKEY_W                   1708
+#define IDC_BUTTON_PRSRVKEY_D                   1709
 
 #define IDC_EDIT_KANA                           2101
 #define IDC_EDIT_CONV_CHAR                      2102

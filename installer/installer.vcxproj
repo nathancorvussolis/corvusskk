@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\LICENSE.TXT" />
     <None Include="corvusskk-x64.wxs" />
     <None Include="corvusskk-x86.wxs" />
     <None Include="ms-pl.rtf" />

@@ -40,6 +40,11 @@ const CONFIG_KEYMAP configkeymap[] =
 	,{SKK_NULL,			L""}
 };
 
+static const TF_PRESERVEDKEY c_PreservedKey0 = { VK_OEM_3/*0xC0*/, TF_MOD_ALT };
+static const TF_PRESERVEDKEY c_PreservedKey1 = { VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER };
+static const TF_PRESERVEDKEY c_PreservedKey2 = { VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER };
+static const TF_PRESERVEDKEY c_PreservedKey3 = { VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER };
+
 void CTextService::_CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
@@ -233,6 +238,47 @@ void CTextService::_LoadSelKey()
 		wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
 		selkey[i][0][0] = key[0];
 		selkey[i][1][0] = key[1];
+	}
+}
+
+void CTextService::_LoadPreservedKey()
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLLIST::iterator l_itr;
+	APPDATAXMLROW::iterator r_itr;
+	int i = 0;
+
+	ZeroMemory(preservedkey, sizeof(preservedkey));
+
+	if(ReadList(pathconfigxml, SectionPreservedKey, list) == S_OK && list.size() != 0)
+	{
+		for(l_itr = list.begin(); l_itr != list.end() && i < MAX_PRESERVEDKEY; l_itr++)
+		{
+			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			{
+				if(r_itr->first == AttributeVKey)
+				{
+					preservedkey[i].uVKey = wcstoul(r_itr->second.c_str(), NULL, 0);
+				}
+				else if(r_itr->first == AttributeMKey)
+				{
+					preservedkey[i].uModifiers = wcstoul(r_itr->second.c_str(), NULL, 0);
+					if(preservedkey[i].uModifiers == 0)
+					{
+						preservedkey[i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+					}
+				}
+			}
+
+			i++;
+		}
+	}
+	else
+	{
+		preservedkey[0] = c_PreservedKey0;
+		preservedkey[1] = c_PreservedKey1;
+		preservedkey[2] = c_PreservedKey2;
+		preservedkey[3] = c_PreservedKey3;
 	}
 }
 

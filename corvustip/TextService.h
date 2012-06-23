@@ -173,6 +173,7 @@ public:
 	void _CreateConfigPath();
 	void _LoadBehavior();
 	void _LoadSelKey();
+	void _LoadPreservedKey();
 	void _LoadKeyMap();
 	void _LoadConvPoint();
 	void _LoadKana();
@@ -297,6 +298,8 @@ public:
 
 	//候補一覧選択キー
 	WCHAR selkey[MAX_SELKEY_C][2][2];
+
+	TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
 };
 
 #endif // TEXTSERVICE_H

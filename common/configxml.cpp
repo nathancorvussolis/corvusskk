@@ -16,6 +16,8 @@ LPCWSTR AttributeCandidate = L"c";
 LPCWSTR AttributeAnnotation = L"a";
 LPCWSTR AttributeKey = L"key";
 LPCWSTR AttributePath = L"path";
+LPCWSTR AttributeVKey = L"vkey";
+LPCWSTR AttributeMKey = L"mkey";
 LPCWSTR AttributeCPStart = L"st";
 LPCWSTR AttributeCPAlter = L"al";
 LPCWSTR AttributeCPOkuri = L"ok";
@@ -63,6 +65,9 @@ LPCWSTR TimeOut = L"timeout";
 
 //section
 LPCWSTR SectionSelKey = L"selkey";
+
+//section
+LPCWSTR SectionPreservedKey = L"preservedkey";
 
 //section
 LPCWSTR SectionKeyMap = L"keymap";

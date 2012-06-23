@@ -4,7 +4,7 @@
 ================================================================================
 
 CorvusSKK
-Copyright (c) 2011-2012 Corvus Solis
+Copyright (c) 2011-2012 Nathan Corvus Solis
 Provided under Microsoft Public License.
 
 --------------------------------------------------------------------------------

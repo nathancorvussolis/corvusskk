@@ -200,6 +200,7 @@
     <ClCompile Include="DlgProcKeyMap1.cpp" />
     <ClCompile Include="DlgProcKeyMap2.cpp" />
     <ClCompile Include="DlgProcKana.cpp" />
+    <ClCompile Include="DlgProcPreservedKey.cpp" />
     <ClCompile Include="DlgProcSelKey.cpp" />
     <ClCompile Include="ConfigCnf.cpp" />
     <ClCompile Include="PropertyConfConv.cpp" />

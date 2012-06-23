@@ -4,9 +4,6 @@
 #include "CandidateList.h"
 #include "LanguageBar.h"
 
-static const TF_PRESERVEDKEY c_PreservedKey0 = { VK_OEM_3/*0xC0*/, TF_MOD_ALT };
-static const TF_PRESERVEDKEY c_PreservedKey1 = { VK_KANJI, TF_MOD_IGNORE_ALL_MODIFIER };
-
 static const WCHAR c_PreservedKeyDesc[] = L"OnOff";
 
 BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
@@ -130,7 +127,7 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 		BOOL fOpen = _IsKeyboardOpen();
 		if(!fOpen)
 		{
-			exinputmode = im_default;	// -> _KeyboardChanged()
+			exinputmode = im_default;	// -> OnChange() -> _KeyboardChanged()
 		}
 		else
 		{
@@ -176,14 +173,19 @@ BOOL CTextService::_InitPreservedKey()
 {
 	ITfKeystrokeMgr *pKeystrokeMgr;
 	HRESULT hr = E_FAIL;
+	int i;
 
 	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
 	{
-		hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff,
-			&c_PreservedKey0, c_PreservedKeyDesc, (ULONG)wcslen(c_PreservedKeyDesc));
-
-		hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff,
-			&c_PreservedKey1, c_PreservedKeyDesc, (ULONG)wcslen(c_PreservedKeyDesc));
+		for(i=0; i<MAX_PRESERVEDKEY; i++)
+		{
+			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
+			{
+				break;
+			}
+			hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff,
+				&preservedkey[i], c_PreservedKeyDesc, (ULONG)wcslen(c_PreservedKeyDesc));
+		}
 
 		pKeystrokeMgr->Release();
 	}
@@ -194,11 +196,18 @@ BOOL CTextService::_InitPreservedKey()
 void CTextService::_UninitPreservedKey()
 {
 	ITfKeystrokeMgr *pKeystrokeMgr;
+	int i;
 
 	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
 	{
-		pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff, &c_PreservedKey0);
-		pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff, &c_PreservedKey1);
+		for(i=0; i<MAX_PRESERVEDKEY; i++)
+		{
+			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
+			{
+				break;
+			}
+			pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff, &preservedkey[i]);
+		}
 
 		pKeystrokeMgr->Release();
 	}

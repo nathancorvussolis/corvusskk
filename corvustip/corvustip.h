@@ -8,6 +8,7 @@
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		32
 #define KEYRELEN			256
+#define MAX_PRESERVEDKEY	8
 
 //request to corvussrv
 #define REQ_SEARCH		L'1'	//辞書検索

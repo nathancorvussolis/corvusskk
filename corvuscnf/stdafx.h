@@ -16,3 +16,4 @@
 #include <CommDlg.h>
 #include <Sddl.h>
 #include <xmllite.h>
+#include <msctf.h>

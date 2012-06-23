@@ -8,6 +8,7 @@
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		32
 #define KEYRELEN			256
+#define MAX_PRESERVEDKEY	8
 
 #define MAX_SKKSERVER_HOST	(255+1)
 #define MAX_SKKSERVER_PORT	(5+1)
@@ -28,6 +29,8 @@ void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKey
 void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
 void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName, LPCWSTR lpDefault);
 void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
+void LoadPreservedKey(HWND hwnd);
+void SavePreservedKey(HWND hwnd);
 void LoadConvPoint(HWND hwnd);
 void SaveConvPoint(HWND hwnd);
 void LoadKana(HWND hwnd);

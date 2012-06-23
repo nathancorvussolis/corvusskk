@@ -79,6 +79,9 @@
     <ClCompile Include="ConfigCnf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DlgProcPreservedKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="corvuscnf.rc">

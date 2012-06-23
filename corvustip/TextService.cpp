@@ -136,6 +136,8 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	ex.dwSize = sizeof(INITCOMMONCONTROLSEX);
 	ex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
 	InitCommonControlsEx(&ex);
+	
+	_CreateConfigPath();
 
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();
@@ -180,6 +182,8 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 		goto exit;
 	}
 
+	_LoadPreservedKey();
+
 	if(!_InitPreservedKey())
 	{
 		goto exit;
@@ -194,8 +198,6 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	{
 		goto exit;
 	}
-	
-	_CreateConfigPath();
 
 	_KeyboardChanged();
 

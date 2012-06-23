@@ -56,6 +56,8 @@ extern LPCWSTR AttributeCandidate;
 extern LPCWSTR AttributeAnnotation;
 extern LPCWSTR AttributeKey;
 extern LPCWSTR AttributePath;
+extern LPCWSTR AttributeVKey;
+extern LPCWSTR AttributeMKey;
 extern LPCWSTR AttributeCPStart;
 extern LPCWSTR AttributeCPAlter;
 extern LPCWSTR AttributeCPOkuri;
@@ -103,6 +105,9 @@ extern LPCWSTR TimeOut;
 
 //section
 extern LPCWSTR SectionSelKey;
+
+//section
+extern LPCWSTR SectionPreservedKey;
 
 //section
 extern LPCWSTR SectionKeyMap;

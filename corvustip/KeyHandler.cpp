@@ -193,6 +193,11 @@ void CTextService::_KeyboardChanged()
 
 		_LoadBehavior();
 		_LoadSelKey();
+
+		_UninitPreservedKey();
+		_LoadPreservedKey();
+		_InitPreservedKey();
+
 		_LoadKeyMap();
 		_LoadConvPoint();
 		_LoadKana();
@@ -207,6 +212,10 @@ void CTextService::_KeyboardChanged()
 		{
 			_SaveUserDic();
 		}
+
+		_UninitPreservedKey();
+		_LoadPreservedKey();
+		_InitPreservedKey();
 
 		_ResetStatus();
 
