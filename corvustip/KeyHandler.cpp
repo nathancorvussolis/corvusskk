@@ -172,6 +172,13 @@ void CTextService::_KeyboardChanged()
 		return;
 	}
 
+	ITfThreadMgrEx *pThreadMgrEx;
+	if(_pThreadMgr->QueryInterface(IID_ITfThreadMgrEx, (void**)&pThreadMgrEx) == S_OK)
+	{
+		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
+		pThreadMgrEx->Release();
+	}
+
 	BOOL fOpen = _IsKeyboardOpen();
 	if(fOpen)
 	{

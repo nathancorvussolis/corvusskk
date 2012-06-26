@@ -141,8 +141,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					return S_OK;
 				}
 			}
-
-			showentry = TRUE;
 		}
 	}
 	else
@@ -359,7 +357,11 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 			if(pRangeComposition->Clone(&pRangeClone) == S_OK)
 			{
-				if(showentry)
+				if(cchReq == 0)
+				{
+					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
+				}
+				else
 				{
 					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
 					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_START);
@@ -370,10 +372,6 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
 					pRangeClone->ShiftStart(ec, cchReq, &cch, NULL);
 					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
-				}
-				else
-				{
-					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
 				}
 				pRangeClone->Release();
 			}

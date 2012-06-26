@@ -142,13 +142,6 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
-
-	ITfThreadMgrEx *pThreadMgrEx;
-	if(_pThreadMgr->QueryInterface(IID_ITfThreadMgrEx, (void**)&pThreadMgrEx) == S_OK)
-	{
-		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
-		pThreadMgrEx->Release();
-	}
 	
 	if(!_InitThreadMgrEventSink())
 	{
