@@ -16,77 +16,85 @@ static LPCWSTR markRegKeyEnd = L"：";
 static LPCWSTR markLinkS = L"<a>";
 static LPCWSTR markLinkE = L"</a>";
 
-BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, UINT depth, BOOL reg)
+BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg)
 {
 	_hwndParent = hwndParent;
 	_pCandidateWindowParent = pCandidateWindowParent;
 	_depth = depth;
+	_dwUIElementId = dwUIElementId;
 
-	_hwnd = CreateWindowExW(WS_EX_TOPMOST, TOOLTIPS_CLASSW, NULL,
-	                       WS_POPUP | TTS_NOPREFIX | TTS_NOANIMATE | TTS_NOFADE,
-	                       CW_USEDEFAULT, CW_USEDEFAULT,
-	                       CW_USEDEFAULT, CW_USEDEFAULT,
-	                       _hwndParent, NULL, g_hInst, NULL);
-	if(_hwnd == NULL)
+	if(_hwndParent != NULL)
 	{
-		return FALSE;
-	}
+		_hwnd = CreateWindowExW(WS_EX_TOPMOST, TOOLTIPS_CLASSW, NULL,
+							   WS_POPUP | TTS_NOPREFIX | TTS_NOANIMATE | TTS_NOFADE,
+							   CW_USEDEFAULT, CW_USEDEFAULT,
+							   CW_USEDEFAULT, CW_USEDEFAULT,
+							   _hwndParent, NULL, g_hInst, NULL);
+		if(_hwnd == NULL)
+		{
+			return FALSE;
+		}
 
-	ZeroMemory(&ti, sizeof(TOOLINFOW));
-	ti.cbSize = sizeof(TOOLINFOW);
-	ti.uFlags = TTF_TRACK | TTF_PARSELINKS;
-	ti.hwnd = _hwndParent;
-	ti.hinst = g_hInst;
-	ti.lpszText = L"";
+		ZeroMemory(&ti, sizeof(TOOLINFOW));
+		ti.cbSize = sizeof(TOOLINFOW);
+		ti.uFlags = TTF_TRACK | TTF_PARSELINKS;
+		ti.hwnd = _hwndParent;
+		ti.hinst = g_hInst;
+		ti.lpszText = L"";
 
-	if(SendMessageW(_hwnd, TTM_ADDTOOLW, 0, (LPARAM)(LPTOOLINFOW)&ti) == FALSE)
-	{
-		return FALSE;
-	}
+		if(SendMessageW(_hwnd, TTM_ADDTOOLW, 0, (LPARAM)(LPTOOLINFOW)&ti) == FALSE)
+		{
+			return FALSE;
+		}
 
-	if(!_pTextService->c_visualstyle)
-	{
-		SetWindowTheme(_hwnd, L" ", L" ");
-	}
+		if(!_pTextService->c_visualstyle)
+		{
+			SetWindowTheme(_hwnd, L" ", L" ");
+		}
 
-	//set font
-	HDC hdc = GetDC(_hwnd);
-	hFont = CreateFontW(-MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
-		_pTextService->fontweight, _pTextService->fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
-		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
-		_pTextService->fontname);
-	SendMessageW(_hwnd, WM_SETFONT, (WPARAM)hFont, 0);
-	ReleaseDC(_hwnd, hdc);
-	//DeleteObject(hFont);	// -> _End()
+		//set font
+		HDC hdc = GetDC(_hwnd);
+		hFont = CreateFontW(-MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
+			_pTextService->fontweight, _pTextService->fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
+			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
+			_pTextService->fontname);
+		SendMessageW(_hwnd, WM_SETFONT, (WPARAM)hFont, 0);
+		ReleaseDC(_hwnd, hdc);
+		//DeleteObject(hFont);	// -> _End()
 
-	//set color
-	SendMessageW(_hwnd, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(0,0,0), 0);
-	SendMessageW(_hwnd, TTM_SETTIPBKCOLOR, (WPARAM)RGB(255,255,255), 0);
+		//set color
+		SendMessageW(_hwnd, TTM_SETTIPTEXTCOLOR, (WPARAM)RGB(0,0,0), 0);
+		SendMessageW(_hwnd, TTM_SETTIPBKCOLOR, (WPARAM)RGB(255,255,255), 0);
 
-	//set max width
-	SendMessageW(_hwnd, TTM_SETMAXTIPWIDTH, 0, _pTextService->maxwidth);
+		//set max width
+		SendMessageW(_hwnd, TTM_SETMAXTIPWIDTH, 0, _pTextService->maxwidth);
 
-	//set initial duration
-	SendMessageW(_hwnd, TTM_SETDELAYTIME, TTDT_INITIAL, 0);
+		//set initial duration
+		SendMessageW(_hwnd, TTM_SETDELAYTIME, TTDT_INITIAL, 0);
 
-	//set mergin
-	#define MERGIN 2
-	RECT rect = {MERGIN,MERGIN,MERGIN,MERGIN};
-	SendMessageW(_hwnd, TTM_SETMARGIN, 0, (LPARAM)&rect);
+		//set mergin
+		#define MERGIN 2
+		RECT rect = {MERGIN,MERGIN,MERGIN,MERGIN};
+		SendMessageW(_hwnd, TTM_SETMARGIN, 0, (LPARAM)&rect);
 
-	//set window procedure
-	WndProcDef = (WNDPROC)GetWindowLongPtrW(_hwnd, GWLP_WNDPROC);
-	if(WndProcDef != 0)
-	{
-		SetWindowLongPtrW(_hwnd, GWLP_USERDATA, (LONG_PTR)this);
-		SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
-		SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+		//set window procedure
+		WndProcDef = (WNDPROC)GetWindowLongPtrW(_hwnd, GWLP_WNDPROC);
+		if(WndProcDef != 0)
+		{
+			SetWindowLongPtrW(_hwnd, GWLP_USERDATA, (LONG_PTR)this);
+			SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
+			SetWindowPos(_hwnd, NULL, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
+		}
 	}
 
 	_reg = reg;
 	if(reg)
 	{
 		//辞書登録開始
+		if(_hwnd == NULL)
+		{
+			regwordul = TRUE;
+		}
 		regword = TRUE;
 		regwordtext.clear();
 		regwordtextpos = 0;
@@ -95,8 +103,8 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 		_BackUpStatus();
 		_ClearStatus();
-	}	
-		
+	}
+	
 	return TRUE;
 }
 
@@ -160,17 +168,27 @@ void CCandidateWindow::_BeginUIElement()
 
 	_Update();
 
-	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+	if((_hwnd == NULL) && (_depth == 0))
 	{
-		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
-		if(!bShow)
+		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
 		{
-			pUIElementMgr->UpdateUIElement(_dwUIElementId);
+			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
+			if(!bShow)
+			{
+				pUIElementMgr->UpdateUIElement(_dwUIElementId);
+			}
+			pUIElementMgr->Release();
 		}
-		pUIElementMgr->Release();
 	}
 
-	_bShow = bShow;
+	if(_hwnd == NULL)
+	{
+		_bShow = FALSE;
+	}
+	else
+	{
+		_bShow = bShow;
+	}
 
 	if(!IsVersion6AndOver(g_ovi))
 	{
@@ -190,10 +208,13 @@ void CCandidateWindow::_EndUIElement()
 {
 	ITfUIElementMgr *pUIElementMgr;
 
-	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+	if((_hwnd == NULL) && (_depth == 0))
 	{
-		pUIElementMgr->EndUIElement(_dwUIElementId);
-		pUIElementMgr->Release();
+		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+		{
+			pUIElementMgr->EndUIElement(_dwUIElementId);
+			pUIElementMgr->Release();
+		}
 	}
 
 	if(_hwnd != NULL)
@@ -333,11 +354,6 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	return S_OK;
 }
 
-HRESULT CCandidateWindow::_OnKeyUp(UINT uVKey)
-{
-	return S_OK;
-}
-
 void CCandidateWindow::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
 {
 	//CTextService -> CCandidateList -> CCandidateWindow で入力文字列をもらう
@@ -400,6 +416,14 @@ void CCandidateWindow::_End()
 		_pCandidateWindow->Release();
 		_pCandidateWindow = NULL;
 	}
+
+	if(_hwnd == NULL)
+	{
+		_dwFlags = TF_CLUIE_DOCUMENTMGR | TF_CLUIE_COUNT | TF_CLUIE_SELECTION |
+			TF_CLUIE_STRING | TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;
+		_Update();
+		_UpdateUIElement();
+	}
 }
 
 void CCandidateWindow::_InitList()
@@ -451,8 +475,6 @@ void CCandidateWindow::_UpdateUIElement()
 			pUIElementMgr->Release();
 		}
 	}
-
-	_Update();
 }
 
 void CCandidateWindow::_NextPage()
@@ -465,15 +487,19 @@ void CCandidateWindow::_NextPage()
 	{
 		if(_pCandidateList)
 		{
-			//辞書登録せずに▽モードにする
-			if((_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) ||
-				((_pTextService->_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY)))
+			if((_pTextService->_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && (_hwnd != NULL))
 			{
+				//辞書登録せずに▽モードにする
 				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
 				_pCandidateList->_EndCandidateList();
 			}
 			else
 			{
+				if(_hwnd == NULL)
+				{
+					regwordul = TRUE;
+				}
+
 				if(!regword)
 				{
 					//辞書登録開始
@@ -490,6 +516,7 @@ void CCandidateWindow::_NextPage()
 				{
 					_CreateNext(TRUE);
 				}
+
 				_Update();
 			}
 			return;
@@ -504,6 +531,7 @@ void CCandidateWindow::_NextPage()
 		_dwFlags |= TF_CLUIE_CURRENTPAGE;
 	}
 
+	_Update();
 	_UpdateUIElement();
 }
 
@@ -572,7 +600,9 @@ void CCandidateWindow::_PrevPage()
 					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
 					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
+				
 				_Update();
+				_UpdateUIElement();
 			}
 		}
 		return;
@@ -586,6 +616,7 @@ void CCandidateWindow::_PrevPage()
 		_dwFlags |= TF_CLUIE_CURRENTPAGE;
 	}
 
+	_Update();
 	_UpdateUIElement();
 }
 
@@ -619,6 +650,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 		_ClearStatusReg();
 
 		regwordfixed = FALSE;
+		regwordul = FALSE;
 		regword = FALSE;
 
 		if(regwordtext.empty())	//空のときはキャンセル扱い
@@ -714,6 +746,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 		_ClearStatusReg();
 
 		regwordfixed = FALSE;
+		regwordul = FALSE;
 		regword = FALSE;
 
 		regwordtext.clear();
@@ -724,6 +757,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 			_InitList();
 			_uIndex = _PageInex[_PageInex.size() - 1];
 			_Update();
+			_UpdateUIElement();
 		}
 		else
 		{
@@ -855,6 +889,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 						regwordtext.insert(regwordtextpos, s);
 						regwordtextpos += s.size();
 						_Update();
+						_UpdateUIElement();
 						GlobalUnlock(hCB);
 					}
 				}
@@ -881,50 +916,72 @@ void CCandidateWindow::_Update()
 	WCHAR strPage[32];
 	UINT i, page, count;
 
-	if(regword)
+	if(regwordul)
 	{
 		disptext.clear();
 		_snwprintf_s(strPage, _TRUNCATE, L"[%u] ", _depth);
-		disptext.append(strPage);
-		disptext.append(markLinkS + _EscapeTags(searchkey_bak) + markLinkE);
-		disptext.append(markRegKeyEnd + _EscapeTags(regwordtext.substr(0, regwordtextpos)));
-		disptext.append(markLinkS + _EscapeTags(comptext) + markLinkE);
-		disptext.append(markCursor + _EscapeTags(regwordtext.substr(regwordtextpos)));
+		disptext.append(strPage + searchkey_bak);
+		disptext.append(markRegKeyEnd + regwordtext.substr(0, regwordtextpos));
+		if(!comptext.empty())
+		{
+			disptext.append(markCursor + comptext);
+		}
+		disptext.append(markCursor + regwordtext.substr(regwordtextpos));
+
+		_dwFlags = TF_CLUIE_COUNT | TF_CLUIE_SELECTION | TF_CLUIE_STRING |
+			TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;
+		_UpdateUIElement();
 	}
 	else
 	{
-		GetCurrentPage(&page);
-		count = 0;
-		for(i=0; i<page; i++)
+		if(regword)
 		{
-			count += _CandCount[i];
+			disptext.clear();
+			_snwprintf_s(strPage, _TRUNCATE, L"[%u] ", _depth);
+			disptext.append(strPage);
+			disptext.append(markLinkS + _EscapeTags(searchkey_bak) + markLinkE);
+			disptext.append(markRegKeyEnd + _EscapeTags(regwordtext.substr(0, regwordtextpos)));
+			disptext.append(markLinkS + _EscapeTags(comptext) + markLinkE);
+			disptext.append(markCursor + _EscapeTags(regwordtext.substr(regwordtextpos)));
 		}
-
-		disptext.clear();
-		selkey[1] = L'\0';
-		for(i=0; i<_CandCount[page]; i++)
+		else
 		{
-			disptext.append(markLinkS + _EscapeTags(_pTextService->selkey[(i % MAX_SELKEY_C)][0]) + markLinkE);
-
-			disptext.append(markNoTT +
-				_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.first));
-
-			if(_pTextService->c_annotation &&
-				!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
+			GetCurrentPage(&page);
+			count = 0;
+			for(i=0; i<page; i++)
 			{
-				disptext.append(markAnnotation +
-					_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.second));
+				count += _CandCount[i];
 			}
 
-			disptext.append(markCandEnd);
+			disptext.clear();
+			selkey[1] = L'\0';
+			for(i=0; i<_CandCount[page]; i++)
+			{
+				disptext.append(markLinkS + _EscapeTags(_pTextService->selkey[(i % MAX_SELKEY_C)][0]) + markLinkE);
+
+				disptext.append(markNoTT +
+					_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.first));
+
+				if(_pTextService->c_annotation &&
+					!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
+				{
+					disptext.append(markAnnotation +
+						_EscapeTags(_pTextService->candidates[ count + _uShowedCount + i ].first.second));
+				}
+
+				disptext.append(markCandEnd);
+			}
+
+			_snwprintf_s(strPage, _TRUNCATE, L"(%u/%u)", page + 1, _uPageCnt);
+			disptext.append(strPage);
 		}
 
-		_snwprintf_s(strPage, _TRUNCATE, L"(%u/%u)", page + 1, _uPageCnt);
-		disptext.append(strPage);
+		ti.lpszText = (LPWSTR)disptext.c_str();
+		if(_hwnd != NULL)
+		{
+			SendMessageW(_hwnd, TTM_UPDATETIPTEXTW, 0, (LPARAM)&ti);
+		}
 	}
-
-	ti.lpszText = (LPWSTR)disptext.c_str();
-	SendMessageW(_hwnd, TTM_UPDATETIPTEXTW, 0, (LPARAM)&ti);
 }
 
 void CCandidateWindow::_BackUpStatus()
@@ -1006,7 +1063,7 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 	_pCandidateWindow = new CCandidateWindow(_pTextService);
 	if(_pCandidateWindow)
 	{
-		_pCandidateWindow->_Create(_hwndParent, this, _depth + 1, reg);
+		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, reg);
 
 #ifdef _DEBUG
 		_pCandidateWindow->_Move(_pt.x, _pt.y + rc.bottom);
@@ -1017,7 +1074,10 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 		_pCandidateWindow->_BeginUIElement();
 
 #ifndef _DEBUG
-		SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+		if(_hwnd != NULL)
+		{
+			SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+		}
 #endif
 	}
 }

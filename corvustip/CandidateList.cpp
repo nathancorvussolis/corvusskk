@@ -197,7 +197,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	ITfContextView *pContextView;
 	BOOL fClipped;
 	RECT rc;
-	HWND hwnd;
+	HWND hwnd = NULL;
 
 	_EndCandidateList();
 
@@ -235,28 +235,15 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	_pCandidateWindow = new CCandidateWindow(_pTextService);
 	if(_pCandidateWindow != NULL)
 	{
-		if(reg && _pCandidateWindow->_CanShowUIElement() == FALSE)
-		{
-			goto exit;
-		}
-
 		if(pContextDocument->GetActiveView(&pContextView) != S_OK)
 		{
 			goto exit;
 		}
-
-		//コマンドプロンプト
-		if(_pTextService->_dwActiveFlags & TF_TMF_CONSOLE)
-		{
-			_pCandidateWindow->_BeginUIElement();
-			pContextView->Release();
-			hr = S_OK;
-			goto exit;
-		}
 		
-		if(pContextView->GetWnd(&hwnd) != S_OK)
+		if(((_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) == 0) &&
+			_pCandidateWindow->_CanShowUIElement())
 		{
-			goto exit;
+			pContextView->GetWnd(&hwnd);
 		}
 
 		_hwndParent = hwnd;
@@ -265,14 +252,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_OPENCANDIDATE, 1);
 		}
 
-		if(pContextView->GetTextExt(ec, pRangeComposition, &rc, &fClipped) != S_OK)
-		{
-			goto exit;
-		}
+		pContextView->GetTextExt(ec, pRangeComposition, &rc, &fClipped);
 
 		pContextView->Release();
 
-		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, reg))
+		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg))
 		{
 			goto exit;
 		}

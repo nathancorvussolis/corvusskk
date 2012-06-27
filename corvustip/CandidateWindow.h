@@ -36,7 +36,7 @@ public:
 	STDMETHODIMP Finalize();
 	STDMETHODIMP Abort();
 
-	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, UINT depth, BOOL reg);
+	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg);
 	static LRESULT CALLBACK _WindowPreProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void _Destroy();
@@ -47,7 +47,6 @@ public:
 	BOOL _CanShowUIElement();
 
 	HRESULT _OnKeyDown(UINT uVKey);
-	HRESULT _OnKeyUp(UINT uVKey);
 
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 	void _PreEnd();
@@ -104,6 +103,7 @@ private:
 
 	//辞書登録
 	BOOL regword;				//モード
+	BOOL regwordul;				//
 	BOOL regwordfixed;			//未確定文字列を確定
 	std::wstring regwordtext;	//確定文字列
 	size_t regwordtextpos;		//カーソルインデックス

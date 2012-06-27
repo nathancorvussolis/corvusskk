@@ -23,6 +23,8 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_hwndParent = NULL;
 
 	_preEnd = FALSE;
+
+	_dwUIElementId = 0;
 	_bShow = FALSE;
 	_dwFlags = 0;
 	_uShowedCount = 0;
@@ -38,6 +40,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_reg = FALSE;
 
 	regword = FALSE;
+	regwordul = FALSE;
 	regwordfixed = FALSE;
 
 	regwordtext.clear();
@@ -177,6 +180,11 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 
 STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 {
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->IsShown(pbShow);
+	}
+
 	if(pbShow == NULL)
 	{
 		return E_INVALIDARG;
@@ -189,6 +197,11 @@ STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 
 STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 {
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetUpdatedFlags(pdwFlags);
+	}
+
 	if(pdwFlags == NULL)
 	{
 		return E_INVALIDARG;
@@ -213,42 +226,78 @@ STDAPI CCandidateWindow::GetDocumentMgr(ITfDocumentMgr **ppdim)
 
 STDAPI CCandidateWindow::GetCount(UINT *puCount)
 {
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetCount(puCount);
+	}
+
 	if(puCount == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	*puCount = _uCount;
+	if(regwordul)
+	{
+		*puCount = 1;
+	}
+	else
+	{
+		*puCount = _uCount;
+	}
 
 	return S_OK;
 }
 
 STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
 {
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetSelection(puIndex);
+	}
+
 	if(puIndex == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	*puIndex = _uIndex;
+	if(regwordul)
+	{
+		*puIndex = 0;
+	}
+	else
+	{
+		*puIndex = _uIndex;
+	}
 
 	return S_OK;
 }
 
 STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
 {
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetString(uIndex, pstr);
+	}
+
 	if(pstr == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(uIndex < _CandStr.size())
+	if(regwordul)
 	{
-		*pstr = SysAllocString(_CandStr[uIndex].c_str());
+		*pstr = SysAllocString(disptext.c_str());
 	}
 	else
 	{
-		*pstr = SysAllocString(L"");
+		if(uIndex < _CandStr.size())
+		{
+			*pstr = SysAllocString(_CandStr[uIndex].c_str());
+		}
+		else
+		{
+			*pstr = SysAllocString(L"");
+		}
 	}
 
 	return S_OK;
@@ -259,30 +308,47 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 	UINT i;
 	HRESULT hr = S_OK;
 
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetPageIndex(pIndex, uSize, puPageCnt);
+	}
+
 	if(puPageCnt == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(uSize >= _uPageCnt)
+	if(regwordul)
 	{
-		uSize = _uPageCnt;
+		if(uSize > 0)
+		{
+			*pIndex = 0;
+		}
+		*puPageCnt = 1;
 	}
 	else
 	{
-		hr = S_FALSE;
-	}
-
-	if(pIndex != NULL)
-	{
-		for(i=0; i<uSize; i++)
+		if(uSize >= _uPageCnt)
 		{
-			*pIndex = _PageInex[i];
-			pIndex++;
+			uSize = _uPageCnt;
 		}
+		else
+		{
+			hr = S_FALSE;
+		}
+
+		if(pIndex != NULL)
+		{
+			for(i=0; i<uSize; i++)
+			{
+				*pIndex = _PageInex[i];
+				pIndex++;
+			}
+		}
+
+		*puPageCnt = _uPageCnt;
 	}
 
-	*puPageCnt = _uPageCnt;
 	return hr;
 }
 
@@ -290,62 +356,78 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 {
 	UINT uCandCnt, i, j, k;
 
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->SetPageIndex(pIndex, uPageCnt);
+	}
+
 	if(pIndex == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	for(j=0; j<uPageCnt-1; j++)
+	if(regwordul)
 	{
-		uCandCnt = pIndex[j + 1] - pIndex[j];
-		if(uCandCnt > MAX_SELKEY_C)
+		if(uPageCnt > 0)
 		{
-			return E_INVALIDARG;
+			*pIndex = 0;
 		}
 	}
-
-	_PageInex.clear();
-	_CandCount.clear();
-	_CandStr.clear();
-	j = 0;
-	k = 0;
-	for(j=0; j<uPageCnt; j++)
+	else
 	{
-		if(j < (uPageCnt - 1))
+		for(j=0; j<uPageCnt-1; j++)
 		{
 			uCandCnt = pIndex[j + 1] - pIndex[j];
-		}
-		else
-		{
-			uCandCnt = _uCount - k;
-		}
-
-		pIndex[j] = k;
-		_PageInex.push_back(k);
-		_CandCount.push_back(uCandCnt);
-
-		for(i=0; i<uCandCnt; i++)
-		{
-			if(k == _uCount)
+			if(uCandCnt > MAX_SELKEY_C)
 			{
-				break;
+				return E_INVALIDARG;
+			}
+		}
+
+		_PageInex.clear();
+		_CandCount.clear();
+		_CandStr.clear();
+		j = 0;
+		k = 0;
+		for(j=0; j<uPageCnt; j++)
+		{
+			if(j < (uPageCnt - 1))
+			{
+				uCandCnt = pIndex[j + 1] - pIndex[j];
+			}
+			else
+			{
+				uCandCnt = _uCount - k;
 			}
 
-			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
-			_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCount + k ].first.first);
+			pIndex[j] = k;
+			_PageInex.push_back(k);
+			_CandCount.push_back(uCandCnt);
+
+			for(i=0; i<uCandCnt; i++)
+			{
+				if(k == _uCount)
+				{
+					break;
+				}
+
+				_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
+				_CandStr[k].append(markNo + _pTextService->candidates[ _uShowedCount + k ].first.first);
 			
-			if(_pTextService->c_annotation &&
-				!_pTextService->candidates[ _uShowedCount + k ].first.second.empty())
-			{
-				_CandStr[k].append(markAnnotation +
-					_pTextService->candidates[ _uShowedCount + k ].first.second);
-			}
+				if(_pTextService->c_annotation &&
+					!_pTextService->candidates[ _uShowedCount + k ].first.second.empty())
+				{
+					_CandStr[k].append(markAnnotation +
+						_pTextService->candidates[ _uShowedCount + k ].first.second);
+				}
 
-			++k;
+				++k;
+			}
 		}
+
+		_uPageCnt = uPageCnt;
 	}
 
-	_uPageCnt = uPageCnt;
 	return S_OK;
 }
 
@@ -353,33 +435,46 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 {
 	UINT i;
 
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->GetCurrentPage(puPage);
+	}
+
 	if(puPage == NULL)
 	{
 		return E_INVALIDARG;
 	}
 
-	*puPage = 0;
-
-	if(_uPageCnt == 0)
-	{
-		return E_UNEXPECTED;
-	}
-
-	if(_uPageCnt == 1)
+	if(regwordul)
 	{
 		*puPage = 0;
-		return S_OK;
 	}
-
-	for(i=1; i<_uPageCnt; i++)
+	else
 	{
-		if(_PageInex[i] > _uIndex)
+		*puPage = 0;
+
+		if(_uPageCnt == 0)
 		{
-			break;
+			return E_UNEXPECTED;
 		}
+
+		if(_uPageCnt == 1)
+		{
+			*puPage = 0;
+			return S_OK;
+		}
+
+		for(i=1; i<_uPageCnt; i++)
+		{
+			if(_PageInex[i] > _uIndex)
+			{
+				break;
+			}
+		}
+
+		*puPage = i - 1;
 	}
 
-	*puPage = i - 1;
 	return S_OK;
 }
 
@@ -387,22 +482,35 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 {
 	UINT uOldPage, uNewPage;
 
+	if(_pCandidateWindow)
+	{
+		return _pCandidateWindow->SetSelection(nIndex);
+	}
+
 	if(nIndex >= _uCount)
 	{
 		return E_INVALIDARG;
 	}
 
-	GetCurrentPage(&uOldPage);
-	_uIndex = nIndex;
-	GetCurrentPage(&uNewPage);
-
-	_dwFlags = TF_CLUIE_SELECTION;
-	if(uNewPage != uOldPage)
+	if(regwordul)
 	{
-		_dwFlags |= TF_CLUIE_CURRENTPAGE;
+		_Update();
+	}
+	else
+	{
+		GetCurrentPage(&uOldPage);
+		_uIndex = nIndex;
+		GetCurrentPage(&uNewPage);
+
+		_dwFlags = TF_CLUIE_SELECTION;
+		if(uNewPage != uOldPage)
+		{
+			_dwFlags |= TF_CLUIE_CURRENTPAGE;
+		}
+
+		_UpdateUIElement();
 	}
 
-	_UpdateUIElement();
 	return S_OK;
 }
 

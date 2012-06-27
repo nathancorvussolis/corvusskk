@@ -122,8 +122,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				return S_OK;
 			}
 
-			if(((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) ||
-				((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY))) ||
+			if(((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY)) ||
 				_ShowCandidateList(ec, pContext, TRUE) != S_OK)
 			{
 				//表示不可のとき▽モードに戻す
