@@ -140,6 +140,8 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_NUM] =
 	{L"vwu", L"ゔ",   L"ヴ", L"ｳﾞ"},
 	{L"vwe", L"ゔぇ", L"ヹ", L"ｴﾞ"},
 	{L"vwo", L"ゔぉ", L"ヺ", L"ｦﾞ"},
+	{L"v,", L"゛", L"゛", L"ﾞ"},	//濁点「う゛」→「ｳﾞ」
+//	{L"v.", L"゜", L"゜", L"ﾟ"},	//半濁点
 
 	//鼻濁音
 	{L"xnga", L"か゚", L"カ゚", L"ｶﾟ"},

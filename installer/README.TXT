@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.7.7
+     CorvusSKK version 0.7.8
 
      http://code.google.com/p/corvus-skk/
      corvussolis@gmail.com
@@ -226,7 +226,7 @@
   || 取消       || Ctrl+g  Ctrl+[(Escape) || 
   || 後退       || Ctrl+h(Backspace)      || 
   || 削除       || DEL(Ctrl+Backspace)    || 辞書登録時のみ使用、Deleteキーも使用可
-  || *無効*     ||                        || アプリケーション側に非通知
+  || *無効*     || Ctrl+j                 || アプリケーション側に非通知、辞書登録の確定無効
   || 左移動     || Ctrl+b                 || 辞書登録時のみ使用、矢印キー(←)も使用可
   || 先頭移動   || Ctrl+a                 || 辞書登録時のみ使用、矢印キー(↑)も使用可
   || 右移動     || Ctrl+f                 || 辞書登録時のみ使用、矢印キー(→)も使用可

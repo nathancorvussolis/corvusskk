@@ -232,6 +232,19 @@ void CTextService::_KeyboardChanged()
 	_UpdateLanguageBar();
 }
 
+BOOL CTextService::_IsKeyVoid(WCHAR ch)
+{
+	if(ch < KEYMAPNUM)
+	{
+		if(keymap_void[ch] == SKK_VOID)
+		{
+			return TRUE;
+		}
+	}
+
+	return FALSE;
+}
+
 void CTextService::_ResetStatus()
 {
 	inputkey = FALSE;

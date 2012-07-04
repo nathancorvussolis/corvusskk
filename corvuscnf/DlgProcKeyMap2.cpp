@@ -9,7 +9,7 @@ static const KEYMAP KeyMap2[] =
 	{IDC_EDIT_CANCEL,	KeyMapCancel,	L"\\cg|\\x1B"},
 	{IDC_EDIT_BACK,		KeyMapBack,		L"\\ch"},
 	{IDC_EDIT_DELETE,	KeyMapDelete,	L"\\x7F"},
-	{IDC_EDIT_VOID,		KeyMapVoid,		L""},
+	{IDC_EDIT_VOID,		KeyMapVoid,		L"\\cj"},
 	{IDC_EDIT_LEFT,		KeyMapLeft,		L"\\cb"},
 	{IDC_EDIT_UP,		KeyMapUp,		L"\\ca"},
 	{IDC_EDIT_RIGHT,	KeyMapRight,	L"\\cf"},

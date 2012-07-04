@@ -182,6 +182,11 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		ss = *srcsize;
 	}
 
+	if(*dstsize == 0)
+	{
+		return FALSE;
+	}
+
 	for(si=0; ; si++)
 	{
 		if((ss <= si) || (*(src + si) == 0x00))
@@ -198,6 +203,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 				*srcsize = si;
 			}
 			*dstsize = di;
+			*(dst + di) = L'\0';
 			return FALSE;
 		}
 		si += i - 1;
@@ -212,13 +218,14 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 			}
 		}
 
-		if(*dstsize <= di + utf16num[0] + utf16num[1] + 1)	//limit
+		if(*dstsize <= di + utf16num[0] + utf16num[1])	//limit
 		{
 			if(srcsize != NULL)
 			{
 				*srcsize = si;
 			}
 			*dstsize = di;
+			*(dst + di) = L'\0';
 			return FALSE;
 		}
 
@@ -238,6 +245,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		*srcsize = si;
 	}
 	*dstsize = di;
+	*(dst + di) = L'\0';
 	return TRUE;
 }
 
@@ -265,6 +273,11 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		ss = *srcsize;
 	}
 
+	if(*dstsize == 0)
+	{
+		return FALSE;
+	}
+
 	for(si=0; ; si++)
 	{
 		if((ss <= si) || (*(src + si) == 0x0000))
@@ -276,6 +289,16 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		{
 			if(dst != NULL)
 			{
+				if(*dstsize <= di + 1)	//limit
+				{
+					if(srcsize != NULL)
+					{
+						*srcsize = si;
+					}
+					*dstsize = di;
+					*(dst + di) = 0;
+					return FALSE;
+				}
 				*(dst + di) = (CHAR)*(src + si);
 			}
 			++di;
@@ -318,6 +341,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							*srcsize = si;
 						}
 						*dstsize = di;
+						*(dst + di) = 0;
 						return FALSE;
 					}
 					if(dst != NULL)
@@ -347,6 +371,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 									*srcsize = si;
 								}
 								*dstsize = di;
+								*(dst + di) = 0;
 								return FALSE;
 							}
 							if(dst != NULL)
@@ -371,6 +396,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 									*srcsize = si;
 								}
 								*dstsize = di;
+								*(dst + di) = 0;
 								return FALSE;
 							}
 							if(dst != NULL)
@@ -409,6 +435,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								*srcsize = si;
 							}
 							*dstsize = di;
+							*(dst + di) = 0;
 							return FALSE;
 						}
 						if(dst != NULL)
@@ -430,6 +457,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 					*srcsize = si;
 				}
 				*dstsize = di;
+				*(dst + di) = 0;
 				return FALSE;
 			}
 		}
@@ -440,5 +468,6 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		*srcsize = si;
 	}
 	*dstsize = di;
+	*(dst + di) = 0;
 	return TRUE;
 }

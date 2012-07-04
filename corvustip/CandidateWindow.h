@@ -59,7 +59,7 @@ private:
 	void _UpdateUIElement();
 	void _NextPage();
 	void _PrevPage();
-	void _OnKeyDownRegword(UINT uVKey, BYTE sf);
+	void _OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf);
 	std::wstring _EscapeTags(const std::wstring &text);
 	void _Update();
 

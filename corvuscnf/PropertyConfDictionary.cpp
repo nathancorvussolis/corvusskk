@@ -126,12 +126,8 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 			case 0xFEFF:
 				break;
 			default:
-				size = _countof(wbuf) - 1;
-				if(EucJis2004ToWideChar(buf, NULL, wbuf, &size))
-				{
-					wbuf[size] = L'\0';
-				}
-				else
+				size = _countof(wbuf);
+				if(!EucJis2004ToWideChar(buf, NULL, wbuf, &size))
 				{
 					continue;
 				}

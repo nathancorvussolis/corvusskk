@@ -127,6 +127,7 @@ public:
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
 	void _KeyboardChanged();
+	BOOL _IsKeyVoid(WCHAR ch);
 	void _ResetStatus();
 	BOOL _IsSurrogatePair(WCHAR first, WCHAR second);
 

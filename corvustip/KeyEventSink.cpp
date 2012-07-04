@@ -65,12 +65,9 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		break;
 	}
 	//無効
-	if(ch < KEYMAPNUM)
+	if(_IsKeyVoid(ch))
 	{
-		if(keymap_void[ch] == SKK_VOID)
-		{
-			return TRUE;
-		}
+		return TRUE;
 	}
 	//処理しないCtrlキー
 	if(ctrl)

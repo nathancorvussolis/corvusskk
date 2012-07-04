@@ -40,10 +40,13 @@ const CONFIG_KEYMAP configkeymap[] =
 	,{SKK_NULL,			L""}
 };
 
-static const TF_PRESERVEDKEY c_PreservedKey0 = { VK_OEM_3/*0xC0*/, TF_MOD_ALT };
-static const TF_PRESERVEDKEY c_PreservedKey1 = { VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER };
-static const TF_PRESERVEDKEY c_PreservedKey2 = { VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER };
-static const TF_PRESERVEDKEY c_PreservedKey3 = { VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER };
+static const TF_PRESERVEDKEY c_PreservedKey[] =
+{
+	 { VK_OEM_3/*0xC0*/, TF_MOD_ALT }
+	,{ VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER }
+	,{ VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER }
+	,{ VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER }
+};
 
 void CTextService::_CreateConfigPath()
 {
@@ -154,7 +157,7 @@ void CTextService::_LoadBehavior()
 
 	ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
 	c_untilcandlist = _wtoi(strxmlval.c_str());
-	if(c_untilcandlist > 8 || (c_untilcandlist < 0))
+	if(c_untilcandlist > 8)
 	{
 		c_untilcandlist = 4;
 	}
@@ -262,8 +265,9 @@ void CTextService::_LoadPreservedKey()
 				}
 				else if(r_itr->first == AttributeMKey)
 				{
-					preservedkey[i].uModifiers = wcstoul(r_itr->second.c_str(), NULL, 0);
-					if(preservedkey[i].uModifiers == 0)
+					preservedkey[i].uModifiers =
+						wcstoul(r_itr->second.c_str(), NULL, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT);
+					if((preservedkey[i].uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
 					{
 						preservedkey[i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
 					}
@@ -275,10 +279,10 @@ void CTextService::_LoadPreservedKey()
 	}
 	else
 	{
-		preservedkey[0] = c_PreservedKey0;
-		preservedkey[1] = c_PreservedKey1;
-		preservedkey[2] = c_PreservedKey2;
-		preservedkey[3] = c_PreservedKey3;
+		for(i=0; i<_countof(c_PreservedKey); i++)
+		{
+			preservedkey[i] = c_PreservedKey[i];
+		}
 	}
 }
 

@@ -78,10 +78,9 @@ void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates)
 		}
 	}
 
-	size = _countof(utf16) - 1;
+	size = _countof(utf16);
 	if(EucJis2004ToWideChar(euc, NULL, utf16, &size))
 	{
-		utf16[size] = L'\0';
 		candidates.push_back(CANDIDATE(utf16, sucp));
 	}
 }

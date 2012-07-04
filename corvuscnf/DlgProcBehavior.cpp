@@ -77,9 +77,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			num[0] = L'0' + (WCHAR)i;
 			SendMessage(cmbUntilCandList, CB_ADDSTRING, 0, (LPARAM)num);
 		}
-		ReadValue(pathconfigxml, SectionFont, UntilCandList, strxmlval);
+		ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
 		i = strxmlval.empty() ? 4 : _wtoi(strxmlval.c_str());
-		if(i > 8 || (i == 0 && num[0] != L'0'))
+		if(i > 8)
 		{
 			i = 4;
 		}

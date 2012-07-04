@@ -260,7 +260,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	//辞書登録モード
 	if(regword)
 	{
-		_OnKeyDownRegword(uVKey, sf);
+		_OnKeyDownRegword(uVKey, ch, sf);
 		return S_OK;
 	}
 
@@ -620,7 +620,7 @@ void CCandidateWindow::_PrevPage()
 	_UpdateUIElement();
 }
 
-void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
+void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 {
 	HANDLE hCB;
 	PWCHAR pwCB;
@@ -646,6 +646,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, BYTE sf)
 		break;
 
 	case SKK_ENTER:
+		if(_pTextService->_IsKeyVoid(ch))
+		{
+			break;
+		}
+
 		_RestoreStatusReg();
 		_ClearStatusReg();
 

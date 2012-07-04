@@ -475,6 +475,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		}
 		break;
 
+	case SKK_VOID:
+		return S_OK;
+		break;
+
 	default:
 		break;
 	}

@@ -4,7 +4,6 @@
 
 void GetSKKServerVersion();
 void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
-size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, LPCWSTR src, const size_t srcsize);
 
 #define BUFSIZE		0x2000
 #define RBUFSIZE	0x800
@@ -28,9 +27,15 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 	int n, nn;
 	WCHAR wbuf[BUFSIZE];
 
-	ZeroMemory(key, sizeof(key));
-	size = MakeKeyToSKKServer(key, _countof(key), text.c_str(), text.size());
-	if(size == 0)
+	size = _countof(key) - 2;
+	if(WideCharToEucJis2004(text.c_str(), NULL, key + 1, &size))
+	{
+		key[0] = SKK_REQ;
+		key[size + 1] = 0x20;
+		key[size + 2] = 0x00;
+		size += 2;
+	}
+	else
 	{
 		return;
 	}
@@ -85,10 +90,9 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 end:
 	if(idxbuf > 0 && buf[0] == SKK_HIT)
 	{
-		size = _countof(wbuf) - 1;
+		size = _countof(wbuf);
 		if(EucJis2004ToWideChar(buf, NULL, wbuf, &size))
 		{
-			wbuf[size] = L'\0';
 			std::wstring res(&wbuf[1]);
 			if(!res.empty())
 			{
@@ -247,25 +251,4 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 				CANDIDATE(s.substr(0, s.find_first_of(L'\t')), s.substr(s.find_first_of(L'\t') + 1)));
 		}
 	}
-}
-
-size_t MakeKeyToSKKServer(CHAR *dst, size_t dstsize, LPCWSTR src, const size_t srcsize)
-{
-	CHAR key[KEYSIZE - 2];
-	size_t size;
-
-	size = _countof(key);
-	if(WideCharToEucJis2004(src, NULL, key, &size))
-	{
-		*dst = SKK_REQ;
-		memcpy_s(dst + 1, dstsize - 1, key, size);
-		*(dst + size + 1) = 0x20;
-		size += 2;
-	}
-	else
-	{
-		size = 0;
-	}
-
-	return size;
 }
