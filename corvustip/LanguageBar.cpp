@@ -138,30 +138,49 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
-	WCHAR *t = L"IDI_IM_DEFAULT";
+	LPCWSTR icon5[] =
+	{
+		L"IDI_5_DEFAULT", L"IDI_5_HIRAGANA", L"IDI_5_KATAKANA", L"IDI_5_JLATIN", L"IDI_5_ASCII"
+	};
+	LPCWSTR icon6[] =
+	{
+		L"IDI_6_DEFAULT", L"IDI_6_HIRAGANA", L"IDI_6_KATAKANA", L"IDI_6_JLATIN", L"IDI_6_ASCII"
+	};
+	int iconidx = 0;
+
+	LPCWSTR t = NULL;
 
 	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
 	{
 		switch(_pTextService->inputmode)
 		{
 		case im_hiragana:
-			t = L"IDI_IM_HIRAGANA";
+			iconidx = 1;
 			break;
 		case im_katakana:
-			t = L"IDI_IM_KATAKANA";
+			iconidx = 2;
 			break;
 		case im_jlatin:
-			t = L"IDI_IM_JLATIN";
+			iconidx = 3;
 			break;
 		case im_ascii:
-			t = L"IDI_IM_ASCII";
+			iconidx = 4;
 			break;
 		default:
 			break;
 		}
 	}
 
-	*phIcon = (HICON)LoadImageW(g_hInst, t, IMAGE_ICON, 16, 16, 0);
+	if(IsVersion6AndOver(g_ovi))
+	{
+		t = icon6[iconidx];
+	}
+	else
+	{
+		t = icon5[iconidx];
+	}
+
+	*phIcon = (HICON)LoadImageW(g_hInst, t, IMAGE_ICON, 16, 16, LR_SHARED);
 
 	return (*phIcon != NULL) ? S_OK : E_FAIL;
 }

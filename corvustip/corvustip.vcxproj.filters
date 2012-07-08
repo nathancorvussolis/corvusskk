@@ -145,6 +145,21 @@
     <None Include="Icon\CorvusSKK.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Icon\5Ascii.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\5Default.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\5Hiragana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\5JLatin.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\5Katakana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="corvustip.rc">

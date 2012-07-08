@@ -20,6 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="corvustip.def" />
+    <None Include="Icon\5Ascii.ico" />
+    <None Include="Icon\5Default.ico" />
+    <None Include="Icon\5Hiragana.ico" />
+    <None Include="Icon\5JLatin.ico" />
+    <None Include="Icon\5Katakana.ico" />
     <None Include="Icon\Ascii.ico" />
     <None Include="Icon\Default.ico" />
     <None Include="Icon\Hiragana.ico" />

@@ -1,4 +1,5 @@
 ﻿
+#include "common.h"
 #include "configxml.h"
 #include "corvuscnf.h"
 #include "convtable.h"
@@ -637,4 +638,122 @@ void SaveJLatin(HWND hwnd)
 	WriterList(pXmlWriter, list);
 
 	WriterEndSection(pXmlWriter);
+}
+
+
+void LoadConfigKanaTxt(LPCWSTR path)
+{
+	FILE *fp;
+	size_t t;
+	wchar_t b[BUFSIZE];
+	const wchar_t seps[] = L"\t\n\0";
+	size_t sidx, eidx;
+	ROMAN_KANA_CONV conv;
+	wchar_t soku[2];
+
+	ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
+
+	_wfopen_s(&fp, path, RccsUNICODE);
+	if(fp == NULL)
+	{
+		return;
+	}
+	
+	ZeroMemory(b, sizeof(b));
+	t = 0;
+	while(fgetws(b, BUFSIZE, fp) != NULL)
+	{
+		if(t >= ROMAN_KANA_TBL_NUM)
+		{
+			break;
+		}
+
+		ZeroMemory(&conv, sizeof(conv));
+
+		sidx = 0;
+		eidx = wcscspn(&b[sidx], seps);
+		b[sidx + eidx] = L'\0';
+		_snwprintf_s(conv.roman, _TRUNCATE, L"%s", &b[sidx]);
+		sidx += eidx + 1;
+		eidx = wcscspn(&b[sidx], seps);
+		b[sidx + eidx] = L'\0';
+		_snwprintf_s(conv.hiragana, _TRUNCATE, L"%s", &b[sidx]);
+		sidx += eidx + 1;
+		eidx = wcscspn(&b[sidx], seps);
+		b[sidx + eidx] = L'\0';
+		_snwprintf_s(conv.katakana, _TRUNCATE, L"%s", &b[sidx]);
+		sidx += eidx + 1;
+		eidx = wcscspn(&b[sidx], seps);
+		b[sidx + eidx] = L'\0';
+		_snwprintf_s(conv.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
+		sidx += eidx + 1;
+		eidx = wcscspn(&b[sidx], seps);
+		b[sidx + eidx] = L'\0';
+		_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
+		conv.soku = _wtoi(soku);
+		if(conv.soku != TRUE && conv.soku != FALSE)
+		{
+			conv.soku = FALSE;
+		}
+
+		ZeroMemory(b, sizeof(b));
+
+		if(conv.roman[0] == L'\0' &&
+			conv.hiragana[0] == L'\0' &&
+			conv.katakana[0] == L'\0' &&
+			conv.katakana_ank[0] == L'\0')
+		{
+			continue;
+		}
+
+		roman_kana_conv[t] = conv;
+		++t;
+	}
+
+	fclose(fp);
+}
+
+void LoadKanaTxt(HWND hwnd, LPCWSTR path)
+{
+	HWND hWndList;
+	int i;
+	LVITEMW item;
+
+	LoadConfigKanaTxt(path);
+
+	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
+
+	ListView_DeleteAllItems(hWndList);
+
+	for(i=0; ; i++)
+	{
+		if(roman_kana_conv[i].roman[0] == L'\0' &&
+			roman_kana_conv[i].hiragana[0] == L'\0' &&
+			roman_kana_conv[i].katakana[0] == L'\0' &&
+			roman_kana_conv[i].katakana_ank[0] == L'\0')
+		{
+			break;
+		}
+		item.mask = LVIF_TEXT;
+		item.pszText = roman_kana_conv[i].roman;
+		item.iItem = i;
+		item.iSubItem = 0;
+		ListView_InsertItem(hWndList, &item);
+		item.pszText = roman_kana_conv[i].hiragana;
+		item.iItem = i;
+		item.iSubItem = 1;
+		ListView_SetItem(hWndList, &item);
+		item.pszText = roman_kana_conv[i].katakana;
+		item.iItem = i;
+		item.iSubItem = 2;
+		ListView_SetItem(hWndList, &item);
+		item.pszText = roman_kana_conv[i].katakana_ank;
+		item.iItem = i;
+		item.iSubItem = 3;
+		ListView_SetItem(hWndList, &item);
+		item.pszText = (roman_kana_conv[i].soku == TRUE ? L"1" : L"0");
+		item.iItem = i;
+		item.iSubItem = 4;
+		ListView_SetItem(hWndList, &item);
+	}
 }

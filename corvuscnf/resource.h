@@ -99,10 +99,11 @@
 #define IDC_EDIT_KANATBL_K                      3104
 #define IDC_EDIT_KANATBL_KA                     3105
 #define IDC_CHECKBOX_KANATBL_SOKU               3106
-#define IDC_BUTTON_KANATBL_UP                   3107
-#define IDC_BUTTON_KANATBL_DOWN                 3108
-#define IDC_BUTTON_KANATBL_W                    3109
-#define IDC_BUTTON_KANATBL_D                    3110
+#define IDC_BUTTON_LOADKANA                     3107
+#define IDC_BUTTON_KANATBL_UP                   3108
+#define IDC_BUTTON_KANATBL_DOWN                 3109
+#define IDC_BUTTON_KANATBL_W                    3110
+#define IDC_BUTTON_KANATBL_D                    3111
 
 #define IDC_LIST_JLATTBL                        3301
 #define IDC_EDIT_JLATTBL_A                      3302

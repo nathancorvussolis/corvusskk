@@ -37,6 +37,8 @@ void LoadKana(HWND hwnd);
 void SaveKana(HWND hwnd);
 void LoadJLatin(HWND hwnd);
 void SaveJLatin(HWND hwnd);
+void LoadConfigKanaTxt(LPCWSTR path);
+void LoadKanaTxt(HWND hwnd, LPCWSTR path);
 
 extern LPCWSTR TextServiceDesc;
 

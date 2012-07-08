@@ -14,6 +14,8 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	ROMAN_KANA_CONV rkcBak;
 	WCHAR soku[8];
 	NMLISTVIEW *pListView;
+	OPENFILENAMEW ofn;
+	WCHAR path[MAX_PATH];
 
 	switch(message)
 	{
@@ -58,6 +60,22 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_KANATBL);
 		switch(LOWORD(wParam))
 		{
+		case IDC_BUTTON_LOADKANA:
+			path[0] = L'\0';
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = hDlg;
+			ofn.lpstrFile = path;
+			ofn.nMaxFile = _countof(path);
+			ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			ofn.lpstrTitle = L"Load Kana Table File"; 
+			if(GetOpenFileName(&ofn))
+			{
+				LoadKanaTxt(hDlg, ofn.lpstrFile);
+				PropSheet_Changed(GetParent(hDlg), hDlg);
+			}
+			break;
+
 		case IDC_BUTTON_KANATBL_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
