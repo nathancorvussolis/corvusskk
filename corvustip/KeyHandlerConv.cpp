@@ -457,7 +457,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 	size_t i, j;
 	BOOL exist;
 	WCHAR *convkana;
-	WCHAR srckana[2];
+	WCHAR srckana[3];
 	std::wstring dsttmp;
 
 	switch(srcmode)
@@ -482,9 +482,18 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 
 	for(i=0; i<src.size(); i++)
 	{
-		srckana[0] = src[i];
-		srckana[1] = L'\0';
-
+		if(((i + 1) < src.size()) && _IsSurrogatePair(src[i], src[i + 1]))
+		{
+			srckana[0] = src[i];
+			srckana[1] = src[i + 1];
+			srckana[2] = L'\0';
+			i++;
+		}
+		else
+		{
+			srckana[0] = src[i];
+			srckana[1] = L'\0';
+		}
 		exist = FALSE;
 
 		for(j=0; j<ROMAN_KANA_TBL_NUM; j++)

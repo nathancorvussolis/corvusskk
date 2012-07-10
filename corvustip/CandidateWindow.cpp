@@ -660,11 +660,15 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 
 		if(regwordtext.empty())	//空のときはキャンセル扱い
 		{
+			regwordtext.clear();
+			regwordtextpos = 0;
+
 			if(!_reg)
 			{
 				_InitList();
 				_uIndex = _PageInex[_PageInex.size() - 1];
 				_Update();
+				_UpdateUIElement();
 			}
 			else
 			{
@@ -682,10 +686,6 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 				}
 				else
 				{
-					if(_reg)
-					{
-						_RestoreStatusReg();
-					}
 					_PreEndReq();
 					if(_pTextService->candidates.empty())
 					{
