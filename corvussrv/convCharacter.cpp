@@ -9,12 +9,22 @@ void ConvUnicode(const std::wstring &text, CANDIDATES &candidates)
 	WCHAR utf16[3];
 
 	// U+XXXXXX (XXXXXX : 0000-FFFF,10000-10FFFF)
-	if(!std::regex_match(text, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
+	if(std::regex_match(text, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
 	{
-		return;
+		if(swscanf_s(text.c_str(), L"U+%X", &ucp) != 1)
+		{
+			return;
+		}
 	}
-
-	if(swscanf_s(text.c_str(), L"U+%X", &ucp) != 1)
+	// uxxxxxx (xxxxxx : 0000-ffff,10000-10ffff)
+	else if(std::regex_match(text, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
+	{
+		if(swscanf_s(text.c_str(), L"u%x", &ucp) != 1)
+		{
+			return;
+		}
+	}
+	else
 	{
 		return;
 	}

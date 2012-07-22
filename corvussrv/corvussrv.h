@@ -2,24 +2,10 @@
 #ifndef CORVUSSRV_H
 #define CORVUSSRV_H
 
+#include "common.h"
+
 //for resource
 #define RC_FILE				"corvussrv"
-
-#define MAX_KRNLOBJNAME		256
-
-#define MAX_SKKSERVER_HOST	(255+1)
-#define MAX_SKKSERVER_PORT	(5+1)
-
-//request from corvustip
-#define REQ_SEARCH		L'1'	//辞書検索
-#define REQ_COMPLEMENT	L'8'	//補完
-#define REQ_USER_ADD_0	L'A'	//ユーザ辞書追加(補完なし)
-#define REQ_USER_ADD_1	L'B'	//ユーザ辞書追加(補完あり)
-#define REQ_USER_DEL	L'D'	//ユーザ辞書削除
-#define REQ_USER_SAVE	L'S'	//ユーザ辞書書き込み
-//reply to corvustip
-#define REP_OK			L'1'	//hit
-#define REP_FALSE		L'4'	//nothig
 
 //候補   pair< candidate, annotation >
 typedef std::pair< std::wstring, std::wstring > CANDIDATE;
@@ -58,6 +44,7 @@ void StartSaveUserDic();
 void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates);
 void ConnectSKKServer();
 void DisconnectSKKServer();
+void GetSKKServerVersion();
 
 extern LPCWSTR TextServiceDesc;
 

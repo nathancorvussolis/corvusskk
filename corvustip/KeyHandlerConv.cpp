@@ -17,6 +17,12 @@ WCHAR CTextService::_GetCh(WPARAM wParam)
 	case im_hiragana:
 	case im_katakana:
 		keystate[VK_CAPITAL] = 0;
+		keystate[VK_KANA] = 0;
+		break;
+	case im_jlatin:
+	case im_ascii:
+		keystate[VK_KANA] = 0;
+		break;
 	default:
 		break;
 	}
@@ -86,18 +92,13 @@ BYTE CTextService::_GetSf(WPARAM wParam, WCHAR ch)
 
 HRESULT CTextService::_ConvRomanKana(ROMAN_KANA_CONV *pconv)
 {
-	size_t i;
+	size_t i, count;
 	HRESULT ret = E_ABORT;	//一致する可能性なし
 
-	for(i=0; i<ROMAN_KANA_TBL_NUM; i++)
+	count = roman_kana_conv.size();
+
+	for(i=0; i<count; i++)
 	{
-		if(roman_kana_conv[i].roman[0] == L'\0' &&
-			roman_kana_conv[i].hiragana[0] == L'\0' &&
-			roman_kana_conv[i].katakana[0] == L'\0' &&
-			roman_kana_conv[i].katakana_ank[0] == L'\0')
-		{
-			break;
-		}
 		if(roman_kana_conv[i].roman[0] == L'\0')
 		{
 			continue;
@@ -454,7 +455,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 
 void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode)
 {
-	size_t i, j;
+	size_t i, j, count;
 	BOOL exist;
 	WCHAR *convkana;
 	WCHAR srckana[3];
@@ -480,6 +481,8 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 		break;
 	}
 
+	count = roman_kana_conv.size();
+
 	for(i=0; i<src.size(); i++)
 	{
 		if(((i + 1) < src.size()) && _IsSurrogatePair(src[i], src[i + 1]))
@@ -496,7 +499,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 		}
 		exist = FALSE;
 
-		for(j=0; j<ROMAN_KANA_TBL_NUM; j++)
+		for(j=0; j<count; j++)
 		{
 			if(roman_kana_conv[j].roman[0] == L'\0')
 			{

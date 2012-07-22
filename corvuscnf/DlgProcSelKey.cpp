@@ -1,9 +1,8 @@
 ﻿
+#include "common.h"
 #include "configxml.h"
 #include "corvuscnf.h"
 #include "resource.h"
-
-#define MAX_SELKEY_C	9
 
 //デフォルト
 static LPCWSTR listSelKey[MAX_SELKEY_C] = {L"Aa",L"Ss",L"Dd",L"Ff",L"Jj",L"Kk",L"Ll",L"Gg",L"Hh"};

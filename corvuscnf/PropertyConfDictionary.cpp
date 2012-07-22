@@ -13,7 +13,7 @@ typedef std::map<std::wstring, std::wstring> ENTRYS;
 void LoadDictionary(HWND hwnd)
 {
 	HWND hWndList;
-	int i;
+	int i = 0;
 	LVITEMW item;
 	APPDATAXMLLIST list;
 	APPDATAXMLLIST::iterator l_itr;
@@ -21,7 +21,6 @@ void LoadDictionary(HWND hwnd)
 	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK)
 	{
 		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-		i = 0;
 		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
 		{
 			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
@@ -33,7 +32,7 @@ void LoadDictionary(HWND hwnd)
 			item.iItem = i;
 			item.iSubItem = 0;
 			ListView_InsertItem(hWndList, &item);
-			++i;
+			i++;
 		}
 		ListView_SetColumnWidth(hWndList, 0, LVSCW_AUTOSIZE);
 	}

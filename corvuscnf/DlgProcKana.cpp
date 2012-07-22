@@ -98,7 +98,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				ListView_SetItemText(hWndListView, index, 3, rkc.katakana_ank);
 				ListView_SetItemText(hWndListView, index, 4, rkc.soku ? L"1" : L"0");
 			}
-			else if(count < ROMAN_KANA_TBL_NUM)
+			else if(count < ROMAN_KANA_TBL_MAX)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 

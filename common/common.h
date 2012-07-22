@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.7.10"
+#define TEXTSERVICE_VER		L"0.7.11"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,10 +14,28 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.7.10"
-#define RC_VERSION_D		0,7,10,0
+#define RC_VERSION			"0.7.11"
+#define RC_VERSION_D		0,7,11,0
 
 #define MAX_KRNLOBJNAME		256
+#define CONV_POINT_NUM		32
+#define KEYRELEN			256
+#define MAX_PRESERVEDKEY	8
+#define MAX_SELKEY_C		9
+
+#define MAX_SKKSERVER_HOST	(255+1)
+#define MAX_SKKSERVER_PORT	(5+1)
+
+//request
+#define REQ_SEARCH		L'1'	//辞書検索
+#define REQ_COMPLEMENT	L'8'	//補完
+#define REQ_USER_ADD_0	L'A'	//ユーザ辞書追加(補完なし)
+#define REQ_USER_ADD_1	L'B'	//ユーザ辞書追加(補完あり)
+#define REQ_USER_DEL	L'D'	//ユーザ辞書削除
+#define REQ_USER_SAVE	L'S'	//ユーザ辞書書き込み
+//reply
+#define REP_OK			L'1'	//hit
+#define REP_FALSE		L'4'	//nothig
 
 #define CORVUSSRVEXE		L"corvussrv.exe"
 #define CORVUSCNFEXE		L"corvuscnf.exe"

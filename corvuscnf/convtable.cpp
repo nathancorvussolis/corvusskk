@@ -3,7 +3,7 @@
 
 // ローマ字仮名変換表
 
-const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_NUM] =
+const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 {
 	{L"a",  L"あ", L"ア", L"ｱ"}, {L"i",  L"い", L"イ", L"ｲ"}, {L"u",  L"う", L"ウ", L"ｳ"}, {L"e",  L"え", L"エ", L"ｴ"}, {L"o",  L"お", L"オ", L"ｵ"},
 	{L"ka", L"か", L"カ", L"ｶ"}, {L"ki", L"き", L"キ", L"ｷ"}, {L"ku", L"く", L"ク", L"ｸ"}, {L"ke", L"け", L"ケ", L"ｹ"}, {L"ko", L"こ", L"コ", L"ｺ"},
@@ -140,8 +140,6 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_NUM] =
 	{L"vwu", L"ゔ",   L"ヴ", L"ｳﾞ"},
 	{L"vwe", L"ゔぇ", L"ヹ", L"ｴﾞ"},
 	{L"vwo", L"ゔぉ", L"ヺ", L"ｦﾞ"},
-	{L"v,", L"゛", L"゛", L"ﾞ"},	//濁点「う゛」→「ｳﾞ」
-//	{L"v.", L"゜", L"゜", L"ﾟ"},	//半濁点
 
 	//鼻濁音
 	{L"xnga", L"か゚", L"カ゚", L"ｶﾟ"},
@@ -174,6 +172,12 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_NUM] =
 	{L"xru", L"ㇽ", L"ㇽ", L"ﾙ"},
 	{L"xre", L"ㇾ", L"ㇾ", L"ﾚ"},
 	{L"xro", L"ㇿ", L"ㇿ", L"ﾛ"},
+
+	//濁点、半濁点
+	{L"v,", L"゛", L"゛", L"ﾞ"},	//濁点「う゛」→「ｳﾞ」
+	{L"v.", L"゜", L"゜", L"ﾟ"},	//半濁点
+	{L"x,", L"\x3099", L"\x3099", L"ﾞ"},	//結合文字用濁音
+	{L"x.", L"\x309A", L"\x309A", L"ﾟ"},	//結合文字用半濁音「か゚」→「ｶﾟ」
 
 	//数字
 	{L"0", L"０", L"０", L"0"}, {L"1", L"１", L"１", L"1"},

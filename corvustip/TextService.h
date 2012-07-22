@@ -251,7 +251,7 @@ private:
 	WCHAR conv_point[CONV_POINT_NUM][3];
 
 	//変換テーブル
-	ROMAN_KANA_CONV roman_kana_conv[ROMAN_KANA_TBL_NUM];
+	std::vector<ROMAN_KANA_CONV> roman_kana_conv;
 	ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 
 public:

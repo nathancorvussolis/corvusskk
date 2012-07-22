@@ -447,44 +447,48 @@ void CTextService::_LoadKana()
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
+	ROMAN_KANA_CONV rkc;
 	WCHAR *pszb;
 	size_t blen;
 	std::wregex re(L"\\t|\\r|\\n");
 	std::wstring fmt(L"");;
 
-	ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
+	roman_kana_conv.clear();
+	roman_kana_conv.shrink_to_fit();
 
 	if(ReadList(pathconfigxml, SectionKana, list) == S_OK)
 	{
-		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_NUM; l_itr++)
+		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_MAX; l_itr++)
 		{
+			ZeroMemory(&rkc, sizeof(rkc));
+
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
 				pszb = NULL;
 
 				if(r_itr->first == AttributeRoman)
 				{
-					pszb = roman_kana_conv[i].roman;
-					blen = _countof(roman_kana_conv[i].roman);
+					pszb = rkc.roman;
+					blen = _countof(rkc.roman);
 				}
 				else if(r_itr->first == AttributeHiragana)
 				{
-					pszb = roman_kana_conv[i].hiragana;
-					blen = _countof(roman_kana_conv[i].hiragana);
+					pszb = rkc.hiragana;
+					blen = _countof(rkc.hiragana);
 				}
 				else if(r_itr->first == AttributeKatakana)
 				{
-					pszb = roman_kana_conv[i].katakana;
-					blen = _countof(roman_kana_conv[i].katakana);
+					pszb = rkc.katakana;
+					blen = _countof(rkc.katakana);
 				}
 				else if(r_itr->first == AttributeKatakanaAnk)
 				{
-					pszb = roman_kana_conv[i].katakana_ank;
-					blen = _countof(roman_kana_conv[i].katakana_ank);
+					pszb = rkc.katakana_ank;
+					blen = _countof(rkc.katakana_ank);
 				}
 				else if(r_itr->first == AttributeSoku)
 				{
-					roman_kana_conv[i].soku = _wtoi(r_itr->second.c_str());
+					rkc.soku = _wtoi(r_itr->second.c_str());
 				}
 
 				if(pszb != NULL)
@@ -493,6 +497,7 @@ void CTextService::_LoadKana()
 				}
 			}
 
+			roman_kana_conv.push_back(rkc);
 			i++;
 		}
 	}

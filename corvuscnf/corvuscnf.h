@@ -2,16 +2,10 @@
 #ifndef CORVUSCNF_H
 #define CORVUSCNF_H
 
+#include "common.h"
+
 //for resource
 #define RC_FILE				"corvuscnf"
-
-#define MAX_KRNLOBJNAME		256
-#define CONV_POINT_NUM		32
-#define KEYRELEN			256
-#define MAX_PRESERVEDKEY	8
-
-#define MAX_SKKSERVER_HOST	(255+1)
-#define MAX_SKKSERVER_PORT	(5+1)
 
 // corvuscnf
 void CreateProperty(HINSTANCE hInst);

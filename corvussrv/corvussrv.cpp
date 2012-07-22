@@ -50,10 +50,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	LocalFree(psd);
 
+	WSAStartup(WINSOCK_VERSION, &wsaData);
+
 	ftConfig.QuadPart = 0;
 	LoadConfig();
-
-	WSAStartup(WINSOCK_VERSION, &wsaData);
 
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(WNDCLASSEX);

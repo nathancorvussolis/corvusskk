@@ -8,7 +8,7 @@
 #define BUFSIZE 0x100
 
 WCHAR conv_point[CONV_POINT_NUM][3][2];
-ROMAN_KANA_CONV roman_kana_conv[ROMAN_KANA_TBL_NUM];
+std::vector<ROMAN_KANA_CONV> roman_kana_conv;
 ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
 
@@ -174,7 +174,7 @@ void SavePreservedKey(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionPreservedKey);
 
-	for(int i=0; i<MAX_PRESERVEDKEY; i++)
+	for(i=0; i<MAX_PRESERVEDKEY; i++)
 	{
 		if(preservedkey[i].uVKey == 0 &&
 			preservedkey[i].uModifiers == 0)
@@ -308,7 +308,7 @@ void SaveConvPoint(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionConvPoint);
 
-	for(int i=0; i<CONV_POINT_NUM; i++)
+	for(i=0; i<CONV_POINT_NUM; i++)
 	{
 		if(conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
@@ -343,43 +343,47 @@ void LoadConfigKana()
 	APPDATAXMLLIST list;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
+	ROMAN_KANA_CONV rkc;
 	int i = 0;
 	WCHAR *pszb;
 	size_t blen;
 
+	roman_kana_conv.clear();
+	roman_kana_conv.shrink_to_fit();
+
 	if(ReadList(pathconfigxml, SectionKana, list) == S_OK && list.size() != 0)
 	{
-		ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
-
-		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_NUM; l_itr++)
+		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_MAX; l_itr++)
 		{
+			ZeroMemory(&rkc, sizeof(rkc));
+
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
 				pszb = NULL;
 
 				if(r_itr->first == AttributeRoman)
 				{
-					pszb = roman_kana_conv[i].roman;
-					blen = _countof(roman_kana_conv[i].roman);
+					pszb = rkc.roman;
+					blen = _countof(rkc.roman);
 				}
 				else if(r_itr->first == AttributeHiragana)
 				{
-					pszb = roman_kana_conv[i].hiragana;
-					blen = _countof(roman_kana_conv[i].hiragana);
+					pszb = rkc.hiragana;
+					blen = _countof(rkc.hiragana);
 				}
 				else if(r_itr->first == AttributeKatakana)
 				{
-					pszb = roman_kana_conv[i].katakana;
-					blen = _countof(roman_kana_conv[i].katakana);
+					pszb = rkc.katakana;
+					blen = _countof(rkc.katakana);
 				}
 				else if(r_itr->first == AttributeKatakanaAnk)
 				{
-					pszb = roman_kana_conv[i].katakana_ank;
-					blen = _countof(roman_kana_conv[i].katakana_ank);
+					pszb = rkc.katakana_ank;
+					blen = _countof(rkc.katakana_ank);
 				}
 				else if(r_itr->first == AttributeSoku)
 				{
-					roman_kana_conv[i].soku = _wtoi(r_itr->second.c_str());
+					rkc.soku = _wtoi(r_itr->second.c_str());
 				}
 
 				if(pszb != NULL)
@@ -388,36 +392,36 @@ void LoadConfigKana()
 				}
 			}
 
+			roman_kana_conv.push_back(rkc);
 			i++;
 		}
 	}
 	else
 	{
-		memcpy_s(roman_kana_conv, sizeof(roman_kana_conv),
-			roman_kana_conv_default, sizeof(roman_kana_conv_default));
+		for(i=0; i<ROMAN_KANA_TBL_DEF_NUM; i++)
+		{
+			if(roman_kana_conv_default[i].roman[0] == L'\0')
+			{
+				break;
+			}
+			roman_kana_conv.push_back(roman_kana_conv_default[i]);
+		}
 	}
 }
 
 void LoadKana(HWND hwnd)
 {
 	HWND hWndList;
-	int i;
+	int i, count;
 	LVITEMW item;
 
 	LoadConfigKana();
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
+	count = (int)roman_kana_conv.size();
 
-	for(i=0; i<ROMAN_KANA_TBL_NUM; i++)
+	for(i=0; i<count; i++)
 	{
-		if(roman_kana_conv[i].roman[0] == L'\0' &&
-			roman_kana_conv[i].hiragana[0] == L'\0' &&
-			roman_kana_conv[i].katakana[0] == L'\0' &&
-			roman_kana_conv[i].katakana_ank[0] == L'\0')
-		{
-			break;
-		}
-
 		item.mask = LVIF_TEXT;
 		item.pszText = roman_kana_conv[i].roman;
 		item.iItem = i;
@@ -454,7 +458,10 @@ void SaveKana(HWND hwnd)
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_KANATBL);
 	count = ListView_GetItemCount(hWndListView);
-	for(i=0; i<count && i<ROMAN_KANA_TBL_NUM; i++)
+	roman_kana_conv.clear();
+	roman_kana_conv.shrink_to_fit();
+
+	for(i=0; i<count && i<ROMAN_KANA_TBL_MAX; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, rkc.roman, _countof(rkc.roman));
 		ListView_GetItemText(hWndListView, i, 1, rkc.hiragana, _countof(rkc.hiragana));
@@ -462,29 +469,14 @@ void SaveKana(HWND hwnd)
 		ListView_GetItemText(hWndListView, i, 3, rkc.katakana_ank, _countof(rkc.katakana_ank));
 		ListView_GetItemText(hWndListView, i, 4, soku, _countof(soku));
 		soku[0] == L'1' ? rkc.soku = TRUE : rkc.soku = FALSE;
-		roman_kana_conv[i] = rkc;
-	}
-	if(count < ROMAN_KANA_TBL_NUM)
-	{
-		roman_kana_conv[count].roman[0] = L'\0';
-		roman_kana_conv[count].hiragana[0] = L'\0';
-		roman_kana_conv[count].katakana[0] = L'\0';
-		roman_kana_conv[count].katakana_ank[0] = L'\0';
-		roman_kana_conv[count].soku = FALSE;
+		
+		roman_kana_conv.push_back(rkc);
 	}
 
 	WriterStartSection(pXmlWriter, SectionKana);
 
-	for(i=0; i<ROMAN_KANA_TBL_NUM; i++)
+	for(i=0; i<count; i++)
 	{
-		if(roman_kana_conv[i].roman[0] == L'\0' &&
-			roman_kana_conv[i].hiragana[0] == L'\0' &&
-			roman_kana_conv[i].katakana[0] == L'\0' &&
-			roman_kana_conv[i].katakana_ank[0] == L'\0')
-		{
-			break;
-		}
-
 		attr.first = AttributeRoman;
 		attr.second = roman_kana_conv[i].roman;
 		row.push_back(attr);
@@ -644,14 +636,14 @@ void SaveJLatin(HWND hwnd)
 void LoadConfigKanaTxt(LPCWSTR path)
 {
 	FILE *fp;
-	size_t t;
 	wchar_t b[BUFSIZE];
 	const wchar_t seps[] = L"\t\n\0";
 	size_t sidx, eidx;
-	ROMAN_KANA_CONV conv;
+	ROMAN_KANA_CONV rkc;
 	wchar_t soku[2];
 
-	ZeroMemory(roman_kana_conv, sizeof(roman_kana_conv));
+	roman_kana_conv.clear();
+	roman_kana_conv.shrink_to_fit();
 
 	_wfopen_s(&fp, path, RccsUNICODE);
 	if(fp == NULL)
@@ -660,54 +652,53 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	}
 	
 	ZeroMemory(b, sizeof(b));
-	t = 0;
+
 	while(fgetws(b, BUFSIZE, fp) != NULL)
 	{
-		if(t >= ROMAN_KANA_TBL_NUM)
+		if(roman_kana_conv.size() >= ROMAN_KANA_TBL_MAX)
 		{
 			break;
 		}
 
-		ZeroMemory(&conv, sizeof(conv));
+		ZeroMemory(&rkc, sizeof(rkc));
 
 		sidx = 0;
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.roman, _TRUNCATE, L"%s", &b[sidx]);
+		_snwprintf_s(rkc.roman, _TRUNCATE, L"%s", &b[sidx]);
 		sidx += eidx + 1;
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.hiragana, _TRUNCATE, L"%s", &b[sidx]);
+		_snwprintf_s(rkc.hiragana, _TRUNCATE, L"%s", &b[sidx]);
 		sidx += eidx + 1;
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.katakana, _TRUNCATE, L"%s", &b[sidx]);
+		_snwprintf_s(rkc.katakana, _TRUNCATE, L"%s", &b[sidx]);
 		sidx += eidx + 1;
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
-		_snwprintf_s(conv.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
+		_snwprintf_s(rkc.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
 		sidx += eidx + 1;
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
 		_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
-		conv.soku = _wtoi(soku);
-		if(conv.soku != TRUE && conv.soku != FALSE)
+		rkc.soku = _wtoi(soku);
+		if(rkc.soku != TRUE && rkc.soku != FALSE)
 		{
-			conv.soku = FALSE;
+			rkc.soku = FALSE;
 		}
 
 		ZeroMemory(b, sizeof(b));
 
-		if(conv.roman[0] == L'\0' &&
-			conv.hiragana[0] == L'\0' &&
-			conv.katakana[0] == L'\0' &&
-			conv.katakana_ank[0] == L'\0')
+		if(rkc.roman[0] == L'\0' &&
+			rkc.hiragana[0] == L'\0' &&
+			rkc.katakana[0] == L'\0' &&
+			rkc.katakana_ank[0] == L'\0')
 		{
 			continue;
 		}
 
-		roman_kana_conv[t] = conv;
-		++t;
+		roman_kana_conv.push_back(rkc);
 	}
 
 	fclose(fp);
@@ -716,24 +707,17 @@ void LoadConfigKanaTxt(LPCWSTR path)
 void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 {
 	HWND hWndList;
-	int i;
+	int i, count;
 	LVITEMW item;
 
 	LoadConfigKanaTxt(path);
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
-
 	ListView_DeleteAllItems(hWndList);
+	count = (int)roman_kana_conv.size();
 
-	for(i=0; ; i++)
+	for(i=0; i<count; i++)
 	{
-		if(roman_kana_conv[i].roman[0] == L'\0' &&
-			roman_kana_conv[i].hiragana[0] == L'\0' &&
-			roman_kana_conv[i].katakana[0] == L'\0' &&
-			roman_kana_conv[i].katakana_ank[0] == L'\0')
-		{
-			break;
-		}
 		item.mask = LVIF_TEXT;
 		item.pszText = roman_kana_conv[i].roman;
 		item.iItem = i;

@@ -145,6 +145,7 @@ void LoadConfig()
 		if(serv)
 		{
 			ConnectSKKServer();
+			GetSKKServerVersion();
 		}
 	}
 }
