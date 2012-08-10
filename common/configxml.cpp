@@ -25,7 +25,7 @@ LPCWSTR AttributeRoman = L"ro";
 LPCWSTR AttributeHiragana = L"hi";
 LPCWSTR AttributeKatakana = L"ka";
 LPCWSTR AttributeKatakanaAnk = L"an";
-LPCWSTR AttributeSoku = L"so";
+LPCWSTR AttributeSpOp = L"so";
 LPCWSTR AttributeLatin = L"la";
 LPCWSTR AttributeJLatin = L"jl";
 
@@ -71,6 +71,8 @@ LPCWSTR SectionPreservedKey = L"preservedkey";
 
 //section
 LPCWSTR SectionKeyMap = L"keymap";
+//section
+LPCWSTR SectionVKeyMap = L"vkeymap";
 //keys
 LPCWSTR KeyMapKana = L"kana";
 LPCWSTR KeyMapConvChar = L"convchar";
@@ -79,12 +81,13 @@ LPCWSTR KeyMapAscii = L"ascii";
 LPCWSTR KeyMapJMode = L"jmode";
 LPCWSTR KeyMapAbbrev = L"abbrev";
 LPCWSTR KeyMapAffix = L"affix";
-LPCWSTR KeyMapDirect = L"direct";
 LPCWSTR KeyMapNextCand = L"nextcand";
 LPCWSTR KeyMapPrevCand = L"prevcand";
 LPCWSTR KeyMapPurgeDic = L"purgedic";
 LPCWSTR KeyMapNextComp = L"nextcomp";
 LPCWSTR KeyMapPrevComp = L"prevcomp";
+LPCWSTR KeyMapConvPoint = L"convpoint";
+LPCWSTR KeyMapDirect = L"direct";
 LPCWSTR KeyMapEnter = L"enter";
 LPCWSTR KeyMapCancel = L"cancel";
 LPCWSTR KeyMapBack = L"back";
@@ -502,7 +505,7 @@ exit:
 	return hr;
 }
 
-HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval)
+HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval)
 {
 	IXmlReader *pReader = NULL;
 	IStream *pFileStream = NULL;
@@ -513,7 +516,7 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 	LPCWSTR pwszAttributeValue;
 	int sequence = 0;
 
-	strxmlval.clear();
+	strxmlval = defval;
 
 	hr = CreateStreamReader(path, &pReader, &pFileStream);
 	EXIT_NOT_S_OK(hr);

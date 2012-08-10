@@ -1,5 +1,5 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "LanguageBar.h"
 #include "convtype.h"
@@ -357,7 +357,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			_HandleCharReturn(ec, pContext);
 			return S_OK;
 		}
-		if(accompidx != 0 && accompidx == kana.size())
+		if(roman.empty() && accompidx != 0 && accompidx == kana.size())
 		{
 			accompidx = 0;
 			_Update(ec, pContext);
@@ -372,7 +372,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if(!kana.empty())
 			{
 				//結合文字は考慮しない
-				if(kana.size() >= 2 && _IsSurrogatePair(kana[kana.size() - 2], kana[kana.size() - 1]))
+				if(kana.size() >= 2 && IS_SURROGATE_PAIR(kana[kana.size() - 2], kana[kana.size() - 1]))
 				{
 					kana.pop_back();
 					kana.pop_back();

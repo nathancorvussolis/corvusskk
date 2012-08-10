@@ -1,5 +1,5 @@
 ﻿
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "configxml.h"
 #include "resource.h"
 

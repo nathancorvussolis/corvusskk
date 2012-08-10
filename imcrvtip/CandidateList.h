@@ -60,4 +60,4 @@ private:
 	CCandidateWindow *_pCandidateWindow;
 };
 
-#endif // CANDIDATELIST_H
+#endif //CANDIDATELIST_H

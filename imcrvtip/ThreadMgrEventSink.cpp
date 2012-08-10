@@ -1,5 +1,5 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 
 STDAPI CTextService::OnInitDocumentMgr(ITfDocumentMgr *pdim)

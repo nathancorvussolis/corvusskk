@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvussrv.h"
+#include "imcrvmgr.h"
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 
@@ -12,8 +12,8 @@ WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
 WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
 
 WCHAR krnlobjsddl[MAX_KRNLOBJNAME];		//SDDL
-WCHAR pipename[MAX_KRNLOBJNAME];		//名前付きパイプ
-WCHAR srvmutexname[MAX_KRNLOBJNAME];	//ミューテックス
+WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
+WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // 辞書サーバ設定
 BOOL serv;		//SKK辞書サーバを使用する
@@ -62,7 +62,7 @@ void CreateConfigPath()
 	MD5_DIGEST digest;
 
 	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
-	ZeroMemory(pipename, sizeof(pipename));
+	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
@@ -100,8 +100,8 @@ void CreateConfigPath()
 		}
 	}
 
-	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, szDigest);
-	_snwprintf_s(srvmutexname, _TRUNCATE, L"%s%s", CORVUSSRVMUTEX, szDigest);
+	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
+	_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", CORVUSMGRMUTEX, szDigest);
 
 	LocalFree(pszUserSid);
 }

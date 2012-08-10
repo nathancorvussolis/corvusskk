@@ -1,6 +1,6 @@
 ﻿
 #include "common.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 
 #define CLSID_STRLEN 38
 #define TEXTSERVICE_MODEL   L"Apartment"

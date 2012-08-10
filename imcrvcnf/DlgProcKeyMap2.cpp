@@ -1,20 +1,34 @@
 ﻿
 #include "configxml.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "resource.h"
 
-static const KEYMAP KeyMap2[] =
+static const KEYMAPCNF KeyMap2[] =
 {
-	{IDC_EDIT_ENTER,	KeyMapEnter,	L"\\cm|\\cj"},
-	{IDC_EDIT_CANCEL,	KeyMapCancel,	L"\\cg|\\x1B"},
-	{IDC_EDIT_BACK,		KeyMapBack,		L"\\ch"},
-	{IDC_EDIT_DELETE,	KeyMapDelete,	L"\\x7F"},
-	{IDC_EDIT_VOID,		KeyMapVoid,		L"\\cj"},
-	{IDC_EDIT_LEFT,		KeyMapLeft,		L"\\cb"},
-	{IDC_EDIT_UP,		KeyMapUp,		L"\\ca"},
-	{IDC_EDIT_RIGHT,	KeyMapRight,	L"\\cf"},
-	{IDC_EDIT_DOWN,		KeyMapDown,		L"\\ce"},
-	{IDC_EDIT_PASTE,	KeyMapPaste,	L"\\cy|\\cv"}
+	{IDC_EDIT_KANA,			KeyMapKana,		L""},
+	{IDC_EDIT_CONV_CHAR,	KeyMapConvChar,	L""},
+	{IDC_EDIT_JLATIN,		KeyMapJLatin,	L""},
+	{IDC_EDIT_ASCII,		KeyMapAscii,	L""},
+	{IDC_EDIT_JMODE,		KeyMapJMode,	L""},
+	{IDC_EDIT_ABBREV,		KeyMapAbbrev,	L""},
+	{IDC_EDIT_AFFIX,		KeyMapAffix,	L""},
+	{IDC_EDIT_NEXT_CAND,	KeyMapNextCand,	L""},
+	{IDC_EDIT_PREV_CAND,	KeyMapPrevCand,	L""},
+	{IDC_EDIT_PURGE_DIC,	KeyMapPurgeDic,	L""},
+	{IDC_EDIT_NEXT_COMP,	KeyMapNextComp,	L""},
+	{IDC_EDIT_PREV_COMP,	KeyMapPrevComp,	L""},
+	{IDC_EDIT_CONV_POINT,	KeyMapConvPoint,L""},
+	{IDC_EDIT_DIRECT,		KeyMapDirect,	L""},
+	{IDC_EDIT_ENTER,		KeyMapEnter,	L""},
+	{IDC_EDIT_CANCEL,		KeyMapCancel,	L""},
+	{IDC_EDIT_BACK,			KeyMapBack,		L""},
+	{IDC_EDIT_DELETE,		KeyMapDelete,	L"\\x2E"},
+	{IDC_EDIT_VOID,			KeyMapVoid,		L""},
+	{IDC_EDIT_LEFT,			KeyMapLeft,		L"\\x25"},
+	{IDC_EDIT_UP,			KeyMapUp,		L"\\x26"},
+	{IDC_EDIT_RIGHT,		KeyMapRight,	L"\\x27"},
+	{IDC_EDIT_DOWN,			KeyMapDown,		L"\\x28"},
+	{IDC_EDIT_PASTE,		KeyMapPaste,	L""}
 };
 
 INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -26,13 +40,27 @@ INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	case WM_INITDIALOG:
 		for(i=0; i<_countof(KeyMap2) ;i++)
 		{
-			LoadKeyMap(hDlg, KeyMap2[i].idd, KeyMap2[i].keyName, KeyMap2[i].defaultValue);
+			LoadKeyMap(hDlg, KeyMap2[i].idd, SectionVKeyMap, KeyMap2[i].keyName, KeyMap2[i].defaultValue);
 		}
 		return (INT_PTR)TRUE;
 		
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
+		case IDC_EDIT_KANA:
+		case IDC_EDIT_CONV_CHAR:
+		case IDC_EDIT_JLATIN:
+		case IDC_EDIT_ASCII:
+		case IDC_EDIT_JMODE:
+		case IDC_EDIT_ABBREV:
+		case IDC_EDIT_AFFIX:
+		case IDC_EDIT_NEXT_CAND:
+		case IDC_EDIT_PREV_CAND:
+		case IDC_EDIT_PURGE_DIC:
+		case IDC_EDIT_NEXT_COMP:
+		case IDC_EDIT_PREV_COMP:
+		case IDC_EDIT_CONV_POINT:
+		case IDC_EDIT_DIRECT:
 		case IDC_EDIT_ENTER:
 		case IDC_EDIT_CANCEL:
 		case IDC_EDIT_BACK:
@@ -61,6 +89,8 @@ INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
+			WriterStartSection(pXmlWriter, SectionVKeyMap);
+
 			for(i=0; i<_countof(KeyMap2) ;i++)
 			{
 				SaveKeyMap(hDlg, KeyMap2[i].idd, KeyMap2[i].keyName);

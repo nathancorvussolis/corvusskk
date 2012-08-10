@@ -1,6 +1,6 @@
 ﻿
 #include "configxml.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "resource.h"
 
 //デフォルト

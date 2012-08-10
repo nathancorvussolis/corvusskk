@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 

@@ -1,4 +1,4 @@
-LIBRARY	corvustip.dll
+LIBRARY	imcrvtip.dll
 
 EXPORTS
 		DllCanUnloadNow		PRIVATE

@@ -18,7 +18,7 @@
     <None Include="small.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="corvuscnf.ico">
+    <None Include="imcrvcnf.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
@@ -26,10 +26,10 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="convtable.h">
+    <ClInclude Include="imcrvcnf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="corvuscnf.h">
+    <ClInclude Include="convtable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -40,10 +40,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="convtable.cpp">
+    <ClCompile Include="imcrvcnf.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="corvuscnf.cpp">
+    <ClCompile Include="ConfigCnf.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="convtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcBehavior.cpp">
@@ -67,6 +70,9 @@
     <ClCompile Include="DlgProcKeyMap2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DlgProcPreservedKey.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="DlgProcSelKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -76,15 +82,9 @@
     <ClCompile Include="PropertyConfDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigCnf.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgProcPreservedKey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="corvuscnf.rc">
+    <ResourceCompile Include="imcrvcnf.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

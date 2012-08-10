@@ -2,7 +2,7 @@
 #ifndef EDITSESSION_H
 #define EDITSESSION_H
 
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 
 class CEditSessionBase : public ITfEditSession
@@ -72,4 +72,4 @@ private:
 	LONG _cRef;
 };
 
-#endif // EDITSESSION_H
+#endif //EDITSESSION_H

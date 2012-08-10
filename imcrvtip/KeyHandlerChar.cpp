@@ -1,5 +1,5 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
 
@@ -8,18 +8,17 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 	ROMAN_KANA_CONV rkc;
 	ASCII_JLATIN_CONV ajc;
 	HRESULT ret = S_OK;
+	std::wstring roman_conv;
 
 	if(showentry)
 	{
 		_HandleCharReturn(ec, pContext);
 	}
 
-	if(accompidx != 0 && accompidx == kana.size())
+	if(accompidx != 0 && accompidx == kana.size() && chO != L'\0')
 	{
 		kana.push_back(chO);
 	}
-
-	roman.push_back(ch);
 
 	switch(inputmode)
 	{
@@ -33,12 +32,62 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 		}
 		else
 		{
-			//ローマ字仮名変換
-			wcscpy_s(rkc.roman, roman.c_str());
+			//ローマ字仮名変換 待機処理
+			rkc.roman[0] = ch;
+			rkc.roman[1] = L'\0';
 			ret = _ConvRomanKana(&rkc);
 			switch(ret)
 			{
 			case S_OK:	//一致
+				if(rkc.wait)	//待機
+				{
+					ch = L'\0';
+					switch(inputmode)
+					{
+					case im_hiragana:
+						roman.append(rkc.hiragana);
+						break;
+					case im_katakana:
+						roman.append(rkc.katakana);
+						break;
+					default:
+						break;
+					}
+				}
+				break;
+			default:
+				break;
+			}
+
+			//ローマ字仮名変換
+			roman_conv = roman;
+			if(ch != L'\0')
+			{
+				roman_conv.push_back(ch);
+			}
+			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
+			ret = _ConvRomanKana(&rkc);
+			switch(ret)
+			{
+			case S_OK:	//一致
+				if(rkc.wait)	//待機
+				{
+					switch(inputmode)
+					{
+					case im_hiragana:
+						roman.assign(rkc.hiragana);
+						break;
+					case im_katakana:
+						roman.assign(rkc.katakana);
+						break;
+					default:
+						break;
+					}
+
+					_Update(ec, pContext);
+					break;
+				}
+
 				switch(inputmode)
 				{
 				case im_hiragana:
@@ -66,7 +115,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 				}
 				else
 				{
-					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv)
+					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv && !rkc.wait)
 					{
 						showentry = TRUE;
 						_StartConv();
@@ -80,6 +129,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 				break;
 			
 			case E_PENDING:	//途中まで一致
+				roman.push_back(ch);
 				_Update(ec, pContext);
 				break;
 			
@@ -100,7 +150,8 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 
 	case im_jlatin:
 		//ASCII全英変換
-		wcscpy_s(ajc.ascii, roman.c_str());
+		roman.push_back(ch);
+		wcsncpy_s(ajc.ascii, roman.c_str(), _TRUNCATE);
 		ret = _ConvAsciiJLatin(&ajc);
 		switch(ret)
 		{
@@ -117,7 +168,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 		break;
 
 	case im_ascii:
-		kana = roman;
+		kana.push_back(ch);
 		_HandleCharReturn(ec, pContext);
 		break;
 

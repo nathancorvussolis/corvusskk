@@ -1,6 +1,6 @@
 ﻿
 #include "common.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "resource.h"
 
 OSVERSIONINFOW ovi;

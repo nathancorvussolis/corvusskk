@@ -1,5 +1,5 @@
 ﻿
-#include "corvussrv.h"
+#include "imcrvmgr.h"
 
 #define BUFSIZE 0x2000	// -> KeyHandlerDictionary.cpp
 
@@ -41,7 +41,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 	sa.lpSecurityDescriptor = psd;
 	sa.bInheritHandle = FALSE;
 
-	hMutex = CreateMutexW(&sa, FALSE, srvmutexname);
+	hMutex = CreateMutexW(&sa, FALSE, mgrmutexname);
 	if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		LocalFree(psd);
@@ -149,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CloseHandle(hThreadSave);
 
 		bSrvThreadExit = TRUE;
-		hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
 			NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
 		if(hPipe != INVALID_HANDLE_VALUE)
 		{
@@ -400,7 +400,7 @@ HANDLE SrvStart()
 	sa.lpSecurityDescriptor = psd;
 	sa.bInheritHandle = FALSE;
 
-	hPipe = CreateNamedPipeW(pipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+	hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 1,
 		BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 0, &sa);
 

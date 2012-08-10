@@ -2,7 +2,7 @@
 #ifndef TEXTSERVICE_H
 #define TEXTSERVICE_H
 
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "convtype.h"
 
 class CLangBarItemButton;
@@ -127,9 +127,8 @@ public:
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
 	void _KeyboardChanged();
-	BOOL _IsKeyVoid(WCHAR ch);
+	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
-	BOOL _IsSurrogatePair(WCHAR first, WCHAR second);
 
 	// KeyHandlerChar
 	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR ch, WCHAR chO);
@@ -144,8 +143,8 @@ public:
 	HRESULT _HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR &ch);
 
 	// KeyHandlerConv
-	WCHAR _GetCh(WPARAM wParam);
-	BYTE _GetSf(WPARAM wParam, WCHAR ch);
+	WCHAR _GetCh(BYTE vk, BYTE vkoff = 0);
+	BYTE _GetSf(BYTE vk, WCHAR ch);
 	HRESULT _ConvRomanKana(ROMAN_KANA_CONV *pconv);
 	HRESULT _ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv);
 	void _StartConv();
@@ -166,7 +165,7 @@ public:
 	void _SaveUserDic();
 	void _ConvDicNum();
 	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
-	void _StartDicSrv();
+	void _StartManager();
 	void _StartConfigure();
 	void _StartProcess(LPCWSTR fname);
 
@@ -175,7 +174,7 @@ public:
 	void _LoadBehavior();
 	void _LoadSelKey();
 	void _LoadPreservedKey();
-	void _LoadKeyMap();
+	void _LoadKeyMap(LPCWSTR section, KEYMAP &keymap);
 	void _LoadConvPoint();
 	void _LoadKana();
 	void _LoadJLatin();
@@ -235,17 +234,16 @@ private:
 	//ファイルパス
 	WCHAR pathconfigxml[MAX_PATH];	//設定
 
-	//corvussrv.exe との名前付きパイプ
-	WCHAR pipename[MAX_KRNLOBJNAME];
+	//imcrvmgr.exe との名前付きパイプ
+	WCHAR mgrpipename[MAX_KRNLOBJNAME];
 	HANDLE hPipe;
 	//ミューテックス
-	WCHAR srvmutexname[MAX_KRNLOBJNAME];
+	WCHAR mgrmutexname[MAX_KRNLOBJNAME];
 	WCHAR cnfmutexname[MAX_KRNLOBJNAME];
 
 	//キーマップ
-	BYTE keymap_latin[KEYMAPNUM];	//全英/アスキー
-	BYTE keymap_jmode[KEYMAPNUM];	//ひらがな/カタカナ
-	BYTE keymap_void[KEYMAPNUM];	//無効
+	KEYMAP ckeymap;
+	KEYMAP vkeymap;
 
 	//変換位置指定（開始,代替,送り）
 	WCHAR conv_point[CONV_POINT_NUM][3];
@@ -303,4 +301,4 @@ public:
 	TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
 };
 
-#endif // TEXTSERVICE_H
+#endif //TEXTSERVICE_H

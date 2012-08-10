@@ -43,4 +43,4 @@ private:
 	TF_LANGBARITEMINFO _LangBarItemInfo;
 };
 
-#endif
+#endif //LANGUAGEBAR_H

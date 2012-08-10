@@ -18,71 +18,10 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="corvustip.def" />
-    <None Include="Icon\5Ascii.ico" />
-    <None Include="Icon\5Default.ico" />
-    <None Include="Icon\5Hiragana.ico" />
-    <None Include="Icon\5JLatin.ico" />
-    <None Include="Icon\5Katakana.ico" />
-    <None Include="Icon\Ascii.ico" />
-    <None Include="Icon\Default.ico" />
-    <None Include="Icon\Hiragana.ico" />
-    <None Include="Icon\JLatin.ico" />
-    <None Include="Icon\Katakana.ico" />
-    <None Include="Icon\CorvusSKK.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="corvustip.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CandidateList.h" />
-    <ClInclude Include="CandidateWindow.h" />
-    <ClInclude Include="DisplayAttributeInfo.h" />
-    <ClInclude Include="EditSession.h" />
-    <ClInclude Include="EnumDisplayAttributeInfo.h" />
-    <ClInclude Include="corvustip.h" />
-    <ClInclude Include="LanguageBar.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="TextService.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CandidateList.cpp" />
-    <ClCompile Include="CandidateUIElement.cpp" />
-    <ClCompile Include="CandidateWindow.cpp" />
-    <ClCompile Include="Compartment.cpp" />
-    <ClCompile Include="CompartmentEventSink.cpp" />
-    <ClCompile Include="Composition.cpp" />
-    <ClCompile Include="FnConfigure.cpp" />
-    <ClCompile Include="DisplayAttributeProvider.cpp" />
-    <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="FunctionProvider.cpp" />
-    <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="KeyEventSink.cpp" />
-    <ClCompile Include="KeyHandler.cpp" />
-    <ClCompile Include="KeyHandlerChar.cpp" />
-    <ClCompile Include="KeyHandlerControl.cpp" />
-    <ClCompile Include="KeyHandlerConv.cpp" />
-    <ClCompile Include="KeyHandlerDictionary.cpp" />
-    <ClCompile Include="KeyHandlerComposition.cpp" />
-    <ClCompile Include="LanguageBar.cpp" />
-    <ClCompile Include="Register.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="TextEditSink.cpp" />
-    <ClCompile Include="TextService.cpp" />
-    <ClCompile Include="ThreadFocusSink.cpp" />
-    <ClCompile Include="ThreadMgrEventSink.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{B1FE01FF-618C-4C7D-A5C9-14131D5111CD}</ProjectGuid>
+    <ProjectGuid>{0D83E604-A285-475A-8FEE-F532A3BD4CF4}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>corvustip</RootNamespace>
+    <RootNamespace>imcrvtip</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -117,13 +56,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -149,105 +88,155 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IMCRVTIP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
       <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
-    <ResourceCompile />
     <ResourceCompile>
-      <Culture>0x0411</Culture>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_ITERATOR_DEBUG_LEVEL=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;IMCRVTIP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
       <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
-      <Culture>0x0411</Culture>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IMCRVTIP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ProgramDatabaseFile>
-      </ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
-      <Culture>0x0411</Culture>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
-      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;IMCRVTIP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <ModuleDefinitionFile>corvustip.def</ModuleDefinitionFile>
-      <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <ProgramDatabaseFile>
-      </ProgramDatabaseFile>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>common.lib;comctl32.lib;uxtheme.lib;shlwapi.lib;crypt32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir)</AdditionalLibraryDirectories>
     </Link>
     <ResourceCompile>
-      <Culture>0x0411</Culture>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
     </ResourceCompile>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="CandidateList.h" />
+    <ClInclude Include="CandidateWindow.h" />
+    <ClInclude Include="DisplayAttributeInfo.h" />
+    <ClInclude Include="EditSession.h" />
+    <ClInclude Include="EnumDisplayAttributeInfo.h" />
+    <ClInclude Include="imcrvtip.h" />
+    <ClInclude Include="LanguageBar.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TextService.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CandidateList.cpp" />
+    <ClCompile Include="CandidateUIElement.cpp" />
+    <ClCompile Include="CandidateWindow.cpp" />
+    <ClCompile Include="Compartment.cpp" />
+    <ClCompile Include="CompartmentEventSink.cpp" />
+    <ClCompile Include="Composition.cpp" />
+    <ClCompile Include="DisplayAttributeProvider.cpp" />
+    <ClCompile Include="DllMain.cpp" />
+    <ClCompile Include="FnConfigure.cpp" />
+    <ClCompile Include="FunctionProvider.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="KeyEventSink.cpp" />
+    <ClCompile Include="KeyHandler.cpp" />
+    <ClCompile Include="KeyHandlerChar.cpp" />
+    <ClCompile Include="KeyHandlerComposition.cpp" />
+    <ClCompile Include="KeyHandlerControl.cpp" />
+    <ClCompile Include="KeyHandlerConv.cpp" />
+    <ClCompile Include="KeyHandlerDictionary.cpp" />
+    <ClCompile Include="LanguageBar.cpp" />
+    <ClCompile Include="Register.cpp" />
+    <ClCompile Include="Server.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TextEditSink.cpp" />
+    <ClCompile Include="TextService.cpp" />
+    <ClCompile Include="ThreadFocusSink.cpp" />
+    <ClCompile Include="ThreadMgrEventSink.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Icon\5Ascii.ico" />
+    <None Include="Icon\5Default.ico" />
+    <None Include="Icon\5Hiragana.ico" />
+    <None Include="Icon\5JLatin.ico" />
+    <None Include="Icon\5Katakana.ico" />
+    <None Include="Icon\Ascii.ico" />
+    <None Include="Icon\CorvusSKK.ico" />
+    <None Include="Icon\Default.ico" />
+    <None Include="Icon\Hiragana.ico" />
+    <None Include="Icon\JLatin.ico" />
+    <None Include="Icon\Katakana.ico" />
+    <None Include="imcrvtip.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="imcrvtip.rc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

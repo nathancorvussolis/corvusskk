@@ -1,5 +1,5 @@
 ﻿
-#include "corvussrv.h"
+#include "imcrvmgr.h"
 #include "eucjis2004.h"
 
 void GetSKKServerVersion();

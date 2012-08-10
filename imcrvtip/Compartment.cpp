@@ -1,5 +1,5 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 
 HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)

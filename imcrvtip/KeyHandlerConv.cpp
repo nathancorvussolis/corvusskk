@@ -1,10 +1,10 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
 #include "convtype.h"
 
-WCHAR CTextService::_GetCh(WPARAM wParam)
+WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 {
 	BYTE keystate[256];
 	WCHAR szU[4];
@@ -17,7 +17,14 @@ WCHAR CTextService::_GetCh(WPARAM wParam)
 	case im_hiragana:
 	case im_katakana:
 		keystate[VK_CAPITAL] = 0;
-		keystate[VK_KANA] = 0;
+		if(abbrevmode)
+		{
+			keystate[VK_KANA] = 0;
+		}
+		if(vkoff != 0)
+		{
+			keystate[vkoff] = 0;
+		}
 		break;
 	case im_jlatin:
 	case im_ascii:
@@ -27,7 +34,7 @@ WCHAR CTextService::_GetCh(WPARAM wParam)
 		break;
 	}
 
-	int retu = ToUnicode((UINT)wParam, 0, keystate, szU, _countof(szU), 0);
+	int retu = ToUnicode(vk, 0, keystate, szU, _countof(szU), 0);
 	if(retu != 1)
 	{
 		u = L'\0';
@@ -40,31 +47,21 @@ WCHAR CTextService::_GetCh(WPARAM wParam)
 	return u;
 }
 
-BYTE CTextService::_GetSf(WPARAM wParam, WCHAR ch)
+BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 {
 	BYTE k = SKK_NULL;
 
-	if(ch == L'\0')
+	if(ch == L'\0' && vk < KEYMAPNUM)
 	{
-		switch(wParam)
+		switch(inputmode)
 		{
-		case VK_LEFT:
-			k = SKK_LEFT;
+		case im_ascii:
+		case im_jlatin:
+			k = vkeymap.keylatin[vk];
 			break;
-		case VK_UP:
-			k = SKK_UP;
-			break;
-		case VK_RIGHT:
-			k = SKK_RIGHT;
-			break;
-		case VK_DOWN:
-			k = SKK_DOWN;
-			break;
-		case VK_BACK:
-			k = SKK_BACK;
-			break;
-		case VK_DELETE:
-			k = SKK_DELETE;
+		case im_hiragana:
+		case im_katakana:
+			k = vkeymap.keyjmode[vk];
 			break;
 		default:
 			break;
@@ -76,11 +73,11 @@ BYTE CTextService::_GetSf(WPARAM wParam, WCHAR ch)
 		{
 		case im_ascii:
 		case im_jlatin:
-			k = keymap_latin[ch];
+			k = ckeymap.keylatin[ch];
 			break;
 		case im_hiragana:
 		case im_katakana:
-			k = keymap_jmode[ch];
+			k = ckeymap.keyjmode[ch];
 			break;
 		default:
 			break;
@@ -362,29 +359,92 @@ void CTextService::_SetComp(const std::wstring &candidate)
 
 BOOL CTextService::_ConvN(WCHAR ch)
 {
-	// ( <"n*", ""> -> <"", "ん"> ) or ( <"nn", ""> -> <"", "ん"> )
 	ROMAN_KANA_CONV rkc;
 	HRESULT ret;
 	WCHAR chN;
+	WCHAR chO;
+	std::wstring roman_conv;
+	size_t i;
 
 	if(roman.empty())
 	{
 		return TRUE;
 	}
 
-	if(roman.size() != 1)
+	//「ん etc.」
+	wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
+	ret = _ConvRomanKana(&rkc);
+	switch(ret)
 	{
-		return FALSE;
+	case S_OK:	//一致
+		if(rkc.wait)	//待機
+		{
+			if(accompidx != 0 && accompidx == kana.size())
+			{
+				chN = L'\0';
+				switch(inputmode)
+				{
+				case im_hiragana:
+					chN = rkc.hiragana[0];
+					break;
+				case im_katakana:
+					chN = rkc.katakana[0];
+					break;
+				default:
+					break;
+				}
+
+				chO = L'\0';
+				for(i=0; i<CONV_POINT_NUM; i++)
+				{
+					if(conv_point[i][0] == L'\0' &&
+						conv_point[i][1] == L'\0' &&
+						conv_point[i][2] == L'\0')
+					{
+						break;
+					}
+					if(chN == conv_point[i][1])
+					{
+						chO = conv_point[i][2];
+						break;
+					}
+				}
+
+				if(chO == L'\0')
+				{
+					accompidx = 0;
+				}
+				else
+				{
+					kana.push_back(chO);
+				}
+			}
+
+			switch(inputmode)
+			{
+			case im_hiragana:
+				kana.append(rkc.hiragana);
+				break;
+			case im_katakana:
+				kana.append(rkc.katakana);
+				break;
+			default:
+				break;
+			}
+			roman.clear();
+			return TRUE;
+		}
+		break;
+	default:
+		break;
 	}
 
-	chN = roman[0];
-
-	if(ch != WCHAR_MAX)
+	// ( <"n*", ""> -> <"", "ん"> )
+	if(ch != L'\0' && ch != WCHAR_MAX)
 	{
-		// ( <"n*", ""> -> <"", "ん"> )
-		rkc.roman[0] = chN;
-		rkc.roman[1] = ch;
-		rkc.roman[2] = L'\0';
+		roman_conv = roman;
+		roman_conv.push_back(ch);
+		wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 		ret = _ConvRomanKana(&rkc);
 		switch(ret)
 		{
@@ -418,9 +478,10 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		}
 	}
 
-	// ( <"nn", ""> -> <"", "＊"> )
-	if(chN == L'n')
+	// ( <"nn", ""> -> <"", "ん"> )
+	if(roman.size() == 1)
 	{
+		chN = roman[0];
 		rkc.roman[0] = chN;
 		rkc.roman[1] = chN;
 		rkc.roman[2] = L'\0';
@@ -428,7 +489,10 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		switch(ret)
 		{
 		case S_OK:	//一致
-			if(!rkc.soku)	//「nn soku==0」
+			if(!rkc.soku &&
+				wcscmp(rkc.hiragana, L"ん") == 0 &&
+				wcscmp(rkc.katakana, L"ン") == 0 &&
+				wcscmp(rkc.katakana_ank, L"ﾝ") == 0)	//「nn soku==0」
 			{
 				switch(inputmode)
 				{
@@ -485,7 +549,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 
 	for(i=0; i<src.size(); i++)
 	{
-		if(((i + 1) < src.size()) && _IsSurrogatePair(src[i], src[i + 1]))
+		if(((i + 1) < src.size()) && IS_SURROGATE_PAIR(src[i], src[i + 1]))
 		{
 			srckana[0] = src[i];
 			srckana[1] = src[i + 1];

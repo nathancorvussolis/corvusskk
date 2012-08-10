@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "resource.h"
 
 INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

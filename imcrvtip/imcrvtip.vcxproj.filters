@@ -30,16 +30,16 @@
     <ClInclude Include="EditSession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EnumDisplayAttributeInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imcrvtip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="LanguageBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="corvustip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EnumDisplayAttributeInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -48,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CandidateList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CandidateUIElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CandidateWindow.cpp">
@@ -119,30 +122,9 @@
     <ClCompile Include="ThreadMgrEventSink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CandidateUIElement.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Icon\Default.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\Hiragana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\Katakana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\Ascii.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\JLatin.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="corvustip.def">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\CorvusSKK.ico">
+    <None Include="imcrvtip.def">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Icon\5Ascii.ico">
@@ -160,9 +142,27 @@
     <None Include="Icon\5Katakana.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Icon\Ascii.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\CorvusSKK.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\Default.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\Hiragana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\JLatin.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\Katakana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="corvustip.rc">
+    <ResourceCompile Include="imcrvtip.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

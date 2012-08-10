@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "convtype.h"
 
@@ -21,12 +21,13 @@ const CONFIG_KEYMAP configkeymap[] =
 	,{SKK_JMODE,		KeyMapJMode}
 	,{SKK_ABBREV,		KeyMapAbbrev}
 	,{SKK_AFFIX,		KeyMapAffix}
-	,{SKK_DIRECT,		KeyMapDirect}
 	,{SKK_NEXT_CAND,	KeyMapNextCand}
 	,{SKK_PREV_CAND,	KeyMapPrevCand}
 	,{SKK_PURGE_DIC,	KeyMapPurgeDic}
 	,{SKK_NEXT_COMP,	KeyMapNextComp}
 	,{SKK_PREV_COMP,	KeyMapPrevComp}
+	,{SKK_CONV_POINT,	KeyMapConvPoint}
+	,{SKK_DIRECT,		KeyMapDirect}
 	,{SKK_ENTER,		KeyMapEnter}
 	,{SKK_CANCEL,		KeyMapCancel}
 	,{SKK_BACK,			KeyMapBack}
@@ -74,7 +75,7 @@ void CTextService::_CreateConfigPath()
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
 
-	ZeroMemory(pipename, sizeof(pipename));
+	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
@@ -99,8 +100,8 @@ void CTextService::_CreateConfigPath()
 		}
 	}
 
-	_snwprintf_s(pipename, _TRUNCATE, L"%s%s", CORVUSSRVPIPE, szDigest);
-	_snwprintf_s(srvmutexname, _TRUNCATE, L"%s%s", CORVUSSRVMUTEX, szDigest);
+	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
+	_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", CORVUSMGRMUTEX, szDigest);
 	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
 
 	LocalFree(pszUserSid);
@@ -286,7 +287,7 @@ void CTextService::_LoadPreservedKey()
 	}
 }
 
-void CTextService::_LoadKeyMap()
+void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 {
 	size_t i;
 	WCHAR ch;
@@ -296,9 +297,7 @@ void CTextService::_LoadKeyMap()
 	std::wregex re;
 	std::wstring strxmlval;
 
-	ZeroMemory(keymap_jmode, sizeof(keymap_jmode));
-	ZeroMemory(keymap_latin, sizeof(keymap_latin));
-	ZeroMemory(keymap_void, sizeof(keymap_void));
+	ZeroMemory(&keymap, sizeof(keymap));
 	key[1] = L'\0';
 
 	for(i=0; i<_countof(configkeymap); i++)
@@ -307,7 +306,7 @@ void CTextService::_LoadKeyMap()
 		{
 			break;
 		}
-		ReadValue(pathconfigxml, SectionKeyMap, configkeymap[i].keyname, strxmlval);
+		ReadValue(pathconfigxml, section, configkeymap[i].keyname, strxmlval);
 		wcsncpy_s(keyre, strxmlval.c_str(), _TRUNCATE);
 		if(keyre[0] == L'\0')
 		{
@@ -336,9 +335,9 @@ void CTextService::_LoadKeyMap()
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						if(keymap_latin[ch] != SKK_JMODE)	//「ひらがな」が優先
+						if(keymap.keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
 						{
-							keymap_latin[ch] = configkeymap[i].skkfunc;
+							keymap.keylatin[ch] = configkeymap[i].skkfunc;
 						}
 					}
 				}
@@ -368,7 +367,7 @@ void CTextService::_LoadKeyMap()
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						keymap_jmode[ch] = configkeymap[i].skkfunc;
+						keymap.keyjmode[ch] = configkeymap[i].skkfunc;
 					}
 				}
 				catch(std::regex_error err)
@@ -392,7 +391,7 @@ void CTextService::_LoadKeyMap()
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						keymap_void[ch] = configkeymap[i].skkfunc;
+						keymap.keyvoid[ch] = configkeymap[i].skkfunc;
 					}
 				}
 				catch(std::regex_error err)
@@ -486,9 +485,10 @@ void CTextService::_LoadKana()
 					pszb = rkc.katakana_ank;
 					blen = _countof(rkc.katakana_ank);
 				}
-				else if(r_itr->first == AttributeSoku)
+				else if(r_itr->first == AttributeSpOp)
 				{
-					rkc.soku = _wtoi(r_itr->second.c_str());
+					rkc.soku = (_wtoi(r_itr->second.c_str()) & 0x1) ? TRUE : FALSE;
+					rkc.wait = (_wtoi(r_itr->second.c_str()) & 0x2) ? TRUE : FALSE;
 				}
 
 				if(pszb != NULL)

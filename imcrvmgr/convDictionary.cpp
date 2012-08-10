@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvussrv.h"
+#include "imcrvmgr.h"
 
 void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);

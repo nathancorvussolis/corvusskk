@@ -25,7 +25,7 @@ typedef std::map<std::wstring, APPDATAXMLLIST> APPDATAXMLDIC;
 
 HRESULT ReadDicList(LPCWSTR path, LPCWSTR section, APPDATAXMLDIC &list, ULONGLONG pos = 0);
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list);
-HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval);
+HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval = L"");
 
 HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream, BOOL indent = TRUE);
 HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream);
@@ -65,7 +65,7 @@ extern LPCWSTR AttributeRoman;
 extern LPCWSTR AttributeHiragana;
 extern LPCWSTR AttributeKatakana;
 extern LPCWSTR AttributeKatakanaAnk;
-extern LPCWSTR AttributeSoku;
+extern LPCWSTR AttributeSpOp;
 extern LPCWSTR AttributeLatin;
 extern LPCWSTR AttributeJLatin;
 
@@ -111,6 +111,8 @@ extern LPCWSTR SectionPreservedKey;
 
 //section
 extern LPCWSTR SectionKeyMap;
+//section
+extern LPCWSTR SectionVKeyMap;
 //keys
 extern LPCWSTR KeyMapKana;
 extern LPCWSTR KeyMapConvChar;
@@ -119,12 +121,13 @@ extern LPCWSTR KeyMapAscii;
 extern LPCWSTR KeyMapJMode;
 extern LPCWSTR KeyMapAbbrev;
 extern LPCWSTR KeyMapAffix;
-extern LPCWSTR KeyMapDirect;
 extern LPCWSTR KeyMapNextCand;
 extern LPCWSTR KeyMapPrevCand;
 extern LPCWSTR KeyMapPurgeDic;
 extern LPCWSTR KeyMapNextComp;
 extern LPCWSTR KeyMapPrevComp;
+extern LPCWSTR KeyMapConvPoint;
+extern LPCWSTR KeyMapDirect;
 extern LPCWSTR KeyMapEnter;
 extern LPCWSTR KeyMapCancel;
 extern LPCWSTR KeyMapBack;
@@ -148,4 +151,4 @@ extern LPCWSTR SectionJLatin;
 //section
 extern LPCWSTR SectionComplement;
 
-#endif
+#endif //CONFIGXML_H

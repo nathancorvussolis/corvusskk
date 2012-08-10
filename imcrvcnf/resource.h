@@ -66,23 +66,24 @@
 #define IDC_EDIT_JMODE                          2105
 #define IDC_EDIT_ABBREV                         2106
 #define IDC_EDIT_AFFIX                          2107
-#define IDC_EDIT_DIRECT                         2121
-#define IDC_EDIT_NEXT_CAND                      2122
-#define IDC_EDIT_PREV_CAND                      2123
-#define IDC_EDIT_PURGE_DIC                      2124
-#define IDC_EDIT_NEXT_COMP                      2125
-#define IDC_EDIT_PREV_COMP                      2126
+#define IDC_EDIT_NEXT_CAND                      2108
+#define IDC_EDIT_PREV_CAND                      2109
+#define IDC_EDIT_PURGE_DIC                      2110
+#define IDC_EDIT_NEXT_COMP                      2111
+#define IDC_EDIT_PREV_COMP                      2112
 
-#define IDC_EDIT_ENTER                          2301
-#define IDC_EDIT_CANCEL                         2302
-#define IDC_EDIT_BACK                           2303
-#define IDC_EDIT_DELETE                         2304
-#define IDC_EDIT_VOID                           2311
-#define IDC_EDIT_LEFT                           2321
-#define IDC_EDIT_UP                             2322
-#define IDC_EDIT_RIGHT                          2323
-#define IDC_EDIT_DOWN                           2324
-#define IDC_EDIT_PASTE                          2325
+#define IDC_EDIT_CONV_POINT                     2121
+#define IDC_EDIT_DIRECT                         2122
+#define IDC_EDIT_ENTER                          2123
+#define IDC_EDIT_CANCEL                         2124
+#define IDC_EDIT_BACK                           2125
+#define IDC_EDIT_DELETE                         2126
+#define IDC_EDIT_VOID                           2127
+#define IDC_EDIT_LEFT                           2128
+#define IDC_EDIT_UP                             2129
+#define IDC_EDIT_RIGHT                          2130
+#define IDC_EDIT_DOWN                           2131
+#define IDC_EDIT_PASTE                          2132
 
 #define IDC_LIST_CONVPOINT                      2501
 #define IDC_EDIT_CONVPOINT_ST                   2502
@@ -99,11 +100,12 @@
 #define IDC_EDIT_KANATBL_K                      3104
 #define IDC_EDIT_KANATBL_KA                     3105
 #define IDC_CHECKBOX_KANATBL_SOKU               3106
-#define IDC_BUTTON_LOADKANA                     3107
-#define IDC_BUTTON_KANATBL_UP                   3108
-#define IDC_BUTTON_KANATBL_DOWN                 3109
-#define IDC_BUTTON_KANATBL_W                    3110
-#define IDC_BUTTON_KANATBL_D                    3111
+#define IDC_CHECKBOX_KANATBL_WAIT               3107
+#define IDC_BUTTON_LOADKANA                     3108
+#define IDC_BUTTON_KANATBL_UP                   3109
+#define IDC_BUTTON_KANATBL_DOWN                 3110
+#define IDC_BUTTON_KANATBL_W                    3111
+#define IDC_BUTTON_KANATBL_D                    3112
 
 #define IDC_LIST_JLATTBL                        3301
 #define IDC_EDIT_JLATTBL_A                      3302
@@ -113,4 +115,4 @@
 #define IDC_BUTTON_JLATTBL_W                    3306
 #define IDC_BUTTON_JLATTBL_D                    3307
 
-#endif // RESOURCE_H
+#endif //RESOURCE_H

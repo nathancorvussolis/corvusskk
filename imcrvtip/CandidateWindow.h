@@ -3,6 +3,7 @@
 #define CANDIDATEWINDOW_H
 
 #include "TextService.h"
+#include "CandidateList.h"
 
 class CCandidateWindow : public ITfCandidateListUIElementBehavior
 {
@@ -59,9 +60,12 @@ private:
 	void _UpdateUIElement();
 	void _NextPage();
 	void _PrevPage();
-	void _OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf);
+	void _OnKeyDownRegword(UINT uVKey);
 	std::wstring _EscapeTags(const std::wstring &text);
 	void _Update();
+	void _EndCandidateList(BYTE sf);
+	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
+	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
 
 	void _BackUpStatus();
 	void _ClearStatus();
@@ -103,7 +107,7 @@ private:
 
 	//辞書登録
 	BOOL regword;				//モード
-	BOOL regwordul;				//
+	BOOL regwordul;				//UILess
 	BOOL regwordfixed;			//未確定文字列を確定
 	std::wstring regwordtext;	//確定文字列
 	size_t regwordtextpos;		//カーソルインデックス
@@ -120,4 +124,4 @@ private:
 	size_t candidx_bak;
 };
 
-#endif // CANDIDATEWINDOW_H
+#endif //CANDIDATEWINDOW_H

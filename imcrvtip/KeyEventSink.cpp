@@ -1,5 +1,5 @@
 ﻿
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
 #include "LanguageBar.h"
@@ -30,8 +30,8 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 
 	SHORT ctrl = GetKeyState(VK_CONTROL) & 0x8000;
 
-	WCHAR ch = _GetCh(wParam);
-	BYTE sf = _GetSf(wParam, ch);
+	WCHAR ch = _GetCh((BYTE)wParam);
+	BYTE sf = _GetSf((BYTE)wParam, ch);
 
 	//確定状態で処理する機能
 	switch(inputmode)
@@ -51,6 +51,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 	case im_katakana:
 		switch(sf)
 		{
+		case SKK_CONV_POINT:
 		case SKK_KANA:
 		case SKK_JLATIN:
 		case SKK_ASCII:
@@ -65,7 +66,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		break;
 	}
 	//無効
-	if(_IsKeyVoid(ch))
+	if(_IsKeyVoid(ch, (BYTE)wParam))
 	{
 		return TRUE;
 	}
@@ -75,10 +76,11 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		return FALSE;
 	}
 	// roman input
-	if(ch >= L'\x20' && ch <= L'\x7E')
-	{
+	//if(ch >= L'\x20' && ch <= L'\x7E')
+	//{
+	if(ch >= L'\x20')
 		return TRUE;
-	}
+	//}
 
 	return FALSE;
 }

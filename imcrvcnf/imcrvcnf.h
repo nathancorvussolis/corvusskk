@@ -1,13 +1,13 @@
 ﻿
-#ifndef CORVUSCNF_H
-#define CORVUSCNF_H
+#ifndef IMCRVCNF_H
+#define IMCRVCNF_H
 
 #include "common.h"
 
 //for resource
-#define RC_FILE				"corvuscnf"
+#define RC_FILE				"imcrvcnf"
 
-// corvuscnf
+// imcrvcnf
 void CreateProperty(HINSTANCE hInst);
 
 // ConfigCnf
@@ -21,7 +21,7 @@ HRESULT MakeSKKDic(HWND hwnd);
 // PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
 void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
-void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName, LPCWSTR lpDefault);
+void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault);
 void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
 void LoadPreservedKey(HWND hwnd);
 void SavePreservedKey(HWND hwnd);
@@ -53,6 +53,6 @@ typedef struct {
 	int idd;
 	LPCWSTR keyName;
 	LPCWSTR defaultValue;
-} KEYMAP;
+} KEYMAPCNF;
 
-#endif
+#endif //IMCRVCNF_H

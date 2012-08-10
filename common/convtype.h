@@ -12,7 +12,8 @@ typedef struct {
 	WCHAR hiragana[KANA_NUM];
 	WCHAR katakana[KANA_NUM];
 	WCHAR katakana_ank[KANA_NUM];
-	BOOL	soku;
+	BOOL  soku;
+	BOOL  wait;
 } ROMAN_KANA_CONV;
 
 //ASCII全英変換

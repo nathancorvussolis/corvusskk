@@ -1,5 +1,6 @@
 ﻿
-#include "corvustip.h"
+#include "configxml.h"
+#include "imcrvtip.h"
 #include "EditSession.h"
 #include "TextService.h"
 #include "LanguageBar.h"
@@ -46,12 +47,12 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	BYTE sf;
 	WCHAR ch;
 	WCHAR chO;
-	WCHAR chN;
+	std::wstring romanN;
 	
 	if(bSf == SKK_NULL)
 	{
-		ch = _GetCh(wParam);
-		sf = _GetSf(wParam, ch);
+		ch = _GetCh((BYTE)wParam);
+		sf = _GetSf((BYTE)wParam, ch);
 	}
 	else
 	{
@@ -59,9 +60,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		sf = bSf;
 	}
 
-	chO = ch;
+	chO = L'\0';
 
-	if(ch == L'\0')
+	if(ch == L'\0' && sf == SKK_NULL)
 	{
 		return S_FALSE;
 	}
@@ -117,16 +118,13 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		break;
 	}
 
-	if(ch >= L'\x20' && ch <= L'\x7E')
+	if(ch >= L'\x20')
 	{
 		if(!roman.empty())
 		{
-			chN = roman[0];
+			chO = L'\0';
 		}
-		else
-		{
-			chN = L'\0';
-		}
+		romanN = roman;
 		if(_HandleChar(ec, pContext, ch, chO) == E_ABORT)
 		{
 			//「n-」等
@@ -134,9 +132,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			{
 			case im_hiragana:
 			case im_katakana:
-				if(!abbrevmode && chN != L'\0')
+				if(!abbrevmode && !romanN.empty())
 				{
-					roman.push_back(chN);
+					roman = romanN;
 					if(_ConvN(WCHAR_MAX))
 					{
 						if(!inputkey)
@@ -194,7 +192,7 @@ void CTextService::_KeyboardChanged()
 			break;
 		}
 
-		_StartDicSrv();
+		_StartManager();
 
 		_ResetStatus();
 
@@ -205,7 +203,8 @@ void CTextService::_KeyboardChanged()
 		_LoadPreservedKey();
 		_InitPreservedKey();
 
-		_LoadKeyMap();
+		_LoadKeyMap(SectionKeyMap, ckeymap);
+		_LoadKeyMap(SectionVKeyMap, vkeymap);
 		_LoadConvPoint();
 		_LoadKana();
 		_LoadJLatin();
@@ -232,16 +231,22 @@ void CTextService::_KeyboardChanged()
 	_UpdateLanguageBar();
 }
 
-BOOL CTextService::_IsKeyVoid(WCHAR ch)
+BOOL CTextService::_IsKeyVoid(WCHAR ch, BYTE vk)
 {
 	if(ch < KEYMAPNUM)
 	{
-		if(keymap_void[ch] == SKK_VOID)
+		if(ckeymap.keyvoid[ch] == SKK_VOID)
 		{
 			return TRUE;
 		}
 	}
-
+	if(vk < KEYMAPNUM)
+	{
+		if(vkeymap.keyvoid[vk] == SKK_VOID)
+		{
+			return TRUE;
+		}
+	}
 	return FALSE;
 }
 
@@ -263,9 +268,4 @@ void CTextService::_ResetStatus()
 	roman.clear();
 	kana.clear();
 	accompidx = 0;
-}
-
-BOOL CTextService::_IsSurrogatePair(WCHAR first, WCHAR second)
-{
-	return ((first >= 0xD800 && first <= 0xDBFF) && (second >= 0xDC00 && second <= 0xDFFF)) ? TRUE : FALSE;
 }

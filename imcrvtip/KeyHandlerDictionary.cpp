@@ -1,20 +1,20 @@
 ﻿
 #include "common.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 
-#define BUFSIZE 0x2000	// -> corvussrv.cpp
+#define BUFSIZE 0x2000	// -> imcrvmgr.cpp
 
 void CTextService::_ConnectDic()
 {
 	DWORD dwMode;
 
-	if(WaitNamedPipeW(pipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
+	if(WaitNamedPipeW(mgrpipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
 	{
 		return;
 	}
 
-	hPipe = CreateFileW(pipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+	hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
 		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
 	if(hPipe == INVALID_HANDLE_VALUE)
 	{
@@ -43,7 +43,7 @@ void CTextService::_ConvDic(WCHAR command)
 	size_t i, ic, ia;
 	std::wstring s, sc, sa;
 
-	_StartDicSrv();
+	_StartManager();
 
 	_ConnectDic();
 
@@ -296,16 +296,16 @@ void CTextService::_ConvNum(std::wstring &convnum, const std::wstring &key, cons
 	convnum = repcandidate;
 }
 
-void CTextService::_StartDicSrv()
+void CTextService::_StartManager()
 {
-	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, srvmutexname);
+	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, mgrmutexname);
 	if(hMutex != NULL)
 	{
 		CloseHandle(hMutex);
 		return;
 	}
 
-	_StartProcess(CORVUSSRVEXE);
+	_StartProcess(CORVUSMGREXE);
 }
 
 void CTextService::_StartConfigure()

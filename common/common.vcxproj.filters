@@ -18,6 +18,9 @@
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="configxml.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -30,12 +33,12 @@
     <ClInclude Include="eucjis2004table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="configxml.cpp">
@@ -45,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="eucjis2004table.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

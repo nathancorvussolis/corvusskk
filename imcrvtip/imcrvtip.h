@@ -1,11 +1,11 @@
 ﻿
-#ifndef CORVUSTIP_H
-#define CORVUSTIP_H
+#ifndef IMCRVTIP_H
+#define IMCRVTIP_H
 
 #include "common.h"
 
 //for resource
-#define RC_FILE				"corvustip"
+#define RC_FILE				"imcrvtip"
 
 //入力モード
 enum
@@ -58,6 +58,12 @@ typedef std::vector< CANDIDATE > CANDIDATES;
 #define SKK_DOWN		0x05	// 末尾移動		c-e	VK_DOWN
 #define SKK_PASTE		0x19	// 貼付			c-y	(c-v)
 
+typedef struct {
+	BYTE keylatin[KEYMAPNUM];	//全英/アスキー
+	BYTE keyjmode[KEYMAPNUM];	//ひらがな/カタカナ
+	BYTE keyvoid[KEYMAPNUM];	//無効
+} KEYMAP;
+
 //候補一覧選択キー数
 #define MAX_SELKEY		7
 
@@ -85,4 +91,4 @@ extern const GUID c_guidCandidateListUIElement;
 LONG DllAddRef();
 LONG DllRelease();
 
-#endif // CORVUSTIP_H
+#endif //IMCRVTIP_H

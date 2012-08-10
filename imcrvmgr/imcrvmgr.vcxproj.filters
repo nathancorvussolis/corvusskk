@@ -15,10 +15,18 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="small.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="imcrvmgr.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="corvussrv.h">
+    <ClInclude Include="imcrvmgr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -35,15 +43,15 @@
     <ClCompile Include="ConvSKKServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="corvussrv.cpp">
+    <ClCompile Include="ConfigMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConfigSrv.cpp">
+    <ClCompile Include="imcrvmgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="corvussrv.rc">
+    <ResourceCompile Include="imcrvmgr.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

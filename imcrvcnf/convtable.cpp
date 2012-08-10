@@ -123,7 +123,7 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"xwi", L"ゐ", L"ヰ", L"ｲ"},
 	{L"xwu", L"う", L"ウ", L"ｳ"},
 	{L"xwe", L"ゑ", L"ヱ", L"ｴ"},
-	{L"xwo", L"お", L"オ", L"ｵ"},
+	{L"xwo", L"を", L"ヲ", L"ｦ"},
 
 	//か け
 	{L"xka", L"ゕ", L"ヵ", L"ｶ"},	//full width katakana small 'ka'
@@ -172,6 +172,10 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"xru", L"ㇽ", L"ㇽ", L"ﾙ"},
 	{L"xre", L"ㇾ", L"ㇾ", L"ﾚ"},
 	{L"xro", L"ㇿ", L"ㇿ", L"ﾛ"},
+
+	{L"xxnse", L"セ", L"セ", L"ｾ"},
+	{L"xxntu", L"ツ", L"ツ", L"ﾂ"},
+	{L"xxnto", L"ト", L"ト", L"ﾄ"},
 
 	//濁点、半濁点
 	{L"v,", L"゛", L"゛", L"ﾞ"},	//濁点「う゛」→「ｳﾞ」

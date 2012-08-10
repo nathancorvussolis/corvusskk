@@ -1,11 +1,11 @@
 ﻿
-#ifndef CORVUSSRV_H
-#define CORVUSSRV_H
+#ifndef IMCRVMGR_H
+#define IMCRVMGR_H
 
 #include "common.h"
 
 //for resource
-#define RC_FILE				"corvussrv"
+#define RC_FILE				"imcrvmgr"
 
 //候補   pair< candidate, annotation >
 typedef std::pair< std::wstring, std::wstring > CANDIDATE;
@@ -62,8 +62,8 @@ extern WCHAR pathskkcvdicxml[MAX_PATH];
 extern WCHAR pathskkcvdicidx[MAX_PATH];
 
 extern WCHAR krnlobjsddl[MAX_KRNLOBJNAME];	//SDDL
-extern WCHAR pipename[MAX_KRNLOBJNAME];	//名前付きパイプ
-extern WCHAR srvmutexname[MAX_KRNLOBJNAME];	//ミューテックス
+extern WCHAR mgrpipename[MAX_KRNLOBJNAME];	//名前付きパイプ
+extern WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // 辞書サーバ設定
 extern BOOL serv;		//SKK辞書サーバを使用する
@@ -71,4 +71,4 @@ extern WCHAR host[MAX_SKKSERVER_HOST];	//ホスト
 extern WCHAR port[MAX_SKKSERVER_PORT];	//ポート
 extern DWORD timeout;	//タイムアウト
 
-#endif //CORVUSSRV_H
+#endif //IMCRVMGR_H

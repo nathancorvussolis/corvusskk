@@ -154,4 +154,4 @@ public:
 	}
 };
 
-#endif DISPLAYATTRIBUTEINFO_H
+#endif //DISPLAYATTRIBUTEINFO_H

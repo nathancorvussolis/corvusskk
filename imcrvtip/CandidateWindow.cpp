@@ -1,6 +1,6 @@
 ﻿
 #include "common.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateWindow.h"
 #include "CandidateList.h"
@@ -248,21 +248,22 @@ BOOL CCandidateWindow::_CanShowUIElement()
 HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 {
 	UINT i, page, index;
+	WCHAR ch;
+	BYTE sf;
 
 	if(_pCandidateWindow != NULL && !_preEnd)
 	{
 		return _pCandidateWindow->_OnKeyDown(uVKey);
 	}
 
-	WCHAR ch = _pTextService->_GetCh((WPARAM)uVKey);
-	BYTE sf = _pTextService->_GetSf((WPARAM)uVKey, ch);
-
 	//辞書登録モード
 	if(regword)
 	{
-		_OnKeyDownRegword(uVKey, ch, sf);
+		_OnKeyDownRegword(uVKey);
 		return S_OK;
 	}
+
+	_GetChSf(uVKey, ch, sf);
 
 	switch(sf)
 	{
@@ -273,8 +274,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 			{
 				if(_pCandidateWindowParent == NULL)
 				{
-					_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-					_pCandidateList->_EndCandidateList();
+					_EndCandidateList(SKK_CANCEL);
 				}
 				else
 				{
@@ -283,13 +283,13 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 						_RestoreStatusReg();
 					}
 					_PreEndReq();
-					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, NULL, 0, SKK_CANCEL);
 					_EndReq();
 				}
 			}
 			else
 			{
-				_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+				_HandleKey(0, NULL, 0, SKK_CANCEL);
 				_Update();
 			}
 		}
@@ -305,6 +305,8 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 		break;
 
 	default:
+		_GetChSf(uVKey, ch, sf, VK_KANA);
+
 		for(i=0; i<MAX_SELKEY_C; i++)
 		{
 			if(ch == (L'1' + i) ||
@@ -322,8 +324,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 							if(_pCandidateWindowParent == NULL)
 							{
 								_pTextService->candidx = index;
-								_pCandidateList->_InvokeSfHandler(SKK_ENTER);
-								_pCandidateList->_EndCandidateList();
+								_EndCandidateList(SKK_ENTER);
 							}
 							else
 							{
@@ -333,14 +334,14 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 								}
 								_PreEndReq();
 								_pTextService->candidx = index;
-								_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
+								_HandleKey(0, NULL, 0, SKK_ENTER);
 								_EndReq();
 							}
 						}
 						else
 						{
 							_pTextService->candidx = index;
-							_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
+							_HandleKey(0, NULL, 0, SKK_ENTER);
 							_Update();
 						}
 						break;
@@ -490,8 +491,7 @@ void CCandidateWindow::_NextPage()
 			if((_pTextService->_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && (_hwnd != NULL))
 			{
 				//辞書登録せずに▽モードにする
-				_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-				_pCandidateList->_EndCandidateList();
+				_EndCandidateList(SKK_CANCEL);
 			}
 			else
 			{
@@ -554,8 +554,7 @@ void CCandidateWindow::_PrevPage()
 				{
 					if(_pCandidateWindowParent == NULL)
 					{
-						_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
-						_pCandidateList->_EndCandidateList();
+						_EndCandidateList(SKK_CANCEL);
 					}
 					else
 					{
@@ -564,7 +563,7 @@ void CCandidateWindow::_PrevPage()
 							_RestoreStatusReg();
 						}
 						_PreEndReq();
-						_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+						_HandleKey(0, NULL, 0, SKK_CANCEL);
 						_EndReq();
 					}
 				}
@@ -573,8 +572,7 @@ void CCandidateWindow::_PrevPage()
 					if(_pCandidateWindowParent == NULL)
 					{
 						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
-						_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
-						_pCandidateList->_EndCandidateList();
+						_EndCandidateList(SKK_PREV_CAND);
 					}
 					else
 					{
@@ -584,7 +582,7 @@ void CCandidateWindow::_PrevPage()
 						}
 						_PreEndReq();
 						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
-						_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+						_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 						_EndReq();
 					}
 				}
@@ -593,12 +591,12 @@ void CCandidateWindow::_PrevPage()
 			{
 				if(_pTextService->c_untilcandlist == 1)
 				{
-					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, NULL, 0, SKK_CANCEL);
 				}
 				else
 				{
 					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
-					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
 				
 				_Update();
@@ -620,7 +618,7 @@ void CCandidateWindow::_PrevPage()
 	_UpdateUIElement();
 }
 
-void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
+void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 {
 	HANDLE hCB;
 	PWCHAR pwCB;
@@ -629,12 +627,16 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 	std::wstring regwordtextcandidate;
 	std::wstring regwordtextannotation;
 	std::wsmatch result;
+	WCHAR ch;
+	BYTE sf;
+
+	_GetChSf(uVKey, ch, sf);
 
 	//確定していないとき
 	if(!regwordfixed)
 	{
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
-		_pTextService->_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
+		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
 		_Update();
 		return;
 	}
@@ -642,11 +644,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 	switch(sf)
 	{
 	case SKK_JMODE:
-		_pTextService->_HandleKey(0, NULL, 0, SKK_JMODE);
+		_HandleKey(0, NULL, 0, SKK_JMODE);
 		break;
 
 	case SKK_ENTER:
-		if(_pTextService->_IsKeyVoid(ch))
+		if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
 		{
 			break;
 		}
@@ -676,24 +678,23 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 				{
 					if(_pTextService->candidates.empty())
 					{
-						_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
+						_EndCandidateList(SKK_CANCEL);
 					}
 					else
 					{
-						_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
+						_EndCandidateList(SKK_PREV_CAND);
 					}
-					_pCandidateList->_EndCandidateList();
 				}
 				else
 				{
 					_PreEndReq();
 					if(_pTextService->candidates.empty())
 					{
-						_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+						_HandleKey(0, NULL, 0, SKK_CANCEL);
 					}
 					else
 					{
-						_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+						_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 					}
 					_EndReq();
 				}
@@ -734,13 +735,12 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 
 			if(_pCandidateWindowParent == NULL)
 			{
-				_pCandidateList->_InvokeSfHandler(SKK_ENTER);
-				_pCandidateList->_EndCandidateList();
+				_EndCandidateList(SKK_ENTER);
 			}
 			else
 			{
 				_PreEndReq();
-				_pTextService->_HandleKey(0, NULL, 0, SKK_ENTER);
+				_HandleKey(0, NULL, 0, SKK_ENTER);
 				_EndReq();
 			}
 		}
@@ -770,24 +770,23 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 			{
 				if(_pTextService->candidates.empty())
 				{
-					_pCandidateList->_InvokeSfHandler(SKK_CANCEL);
+					_EndCandidateList(SKK_CANCEL);
 				}
 				else
 				{
-					_pCandidateList->_InvokeSfHandler(SKK_PREV_CAND);
+					_EndCandidateList(SKK_PREV_CAND);
 				}
-				_pCandidateList->_EndCandidateList();
 			}
 			else
 			{
 				_PreEndReq();
 				if(_pTextService->candidates.empty())
 				{
-					_pTextService->_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, NULL, 0, SKK_CANCEL);
 				}
 				else
 				{
-					_pTextService->_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
 				_EndReq();
 			}
@@ -800,7 +799,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
 			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
-				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
+				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
 				regwordtextpos -= 2;
 				regwordtext.erase(regwordtext.begin() + regwordtextpos);
@@ -819,7 +818,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
 			if(regwordtext.size() >= regwordtextpos + 2 &&
-				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
+				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
 				regwordtext.erase(regwordtext.begin() + regwordtextpos);
 				regwordtext.erase(regwordtext.begin() + regwordtextpos);
@@ -836,7 +835,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
 			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
-				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
+				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
 				regwordtextpos -= 2;
 			}
@@ -860,7 +859,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
 			if(regwordtext.size() >= regwordtextpos + 2 &&
-				_pTextService->_IsSurrogatePair(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
+				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
 				regwordtextpos += 2;
 			}
@@ -904,7 +903,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey, WCHAR ch, BYTE sf)
 		break;
 
 	default:
-		_pTextService->_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
+		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
 		_Update();
 		break;
 	}
@@ -987,6 +986,23 @@ void CCandidateWindow::_Update()
 			SendMessageW(_hwnd, TTM_UPDATETIPTEXTW, 0, (LPARAM)&ti);
 		}
 	}
+}
+
+void CCandidateWindow::_EndCandidateList(BYTE sf)
+{
+	_pCandidateList->_InvokeSfHandler(sf);
+	_pCandidateList->_EndCandidateList();
+}
+
+HRESULT CCandidateWindow::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf)
+{
+	return _pTextService->_HandleKey(ec, pContext, wParam, bSf);
+}
+
+void CCandidateWindow::_GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff)
+{
+	ch = _pTextService->_GetCh(uVKey, vkoff);
+	sf = _pTextService->_GetSf(uVKey, ch);
 }
 
 void CCandidateWindow::_BackUpStatus()

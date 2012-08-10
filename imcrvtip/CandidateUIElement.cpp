@@ -1,6 +1,6 @@
 ﻿
 #include "common.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateWindow.h"
 #include "CandidateList.h"

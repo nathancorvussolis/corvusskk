@@ -1,6 +1,6 @@
 ﻿
 #include "common.h"
-#include "corvustip.h"
+#include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
 
@@ -217,7 +217,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	{
 		//結合文字は考慮しない
 		if(composition.size() >= 2 &&
-			_IsSurrogatePair(composition[composition.size() - 2], composition[composition.size() - 1]))
+			IS_SURROGATE_PAIR(composition[composition.size() - 2], composition[composition.size() - 1]))
 		{
 			composition.pop_back();
 			composition.pop_back();
@@ -292,17 +292,21 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			if(cchReq == 0)
 			{
 				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+				tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
 			}
 			else
 			{
-				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_START);
-				tfSelection.range->ShiftEnd(ec, cchReq, &cch, NULL);
+				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+				tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
+				// shift from end to start.
+				// shift over mathematical operators (U+2200-U+22FF) is rejected by OneNote.
+				tfSelection.range->ShiftStart(ec, cchReq - (LONG)text.size(), &cch, NULL);
 			}
-			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
 
+			tfSelection.range->Collapse(ec, TF_ANCHOR_START);
 			pContext->SetSelection(ec, 1, &tfSelection);
 
-			//for Excel's PHONETIC function
+			// for Excel's PHONETIC function
 			if(fixed && !text.empty())
 			{
 				ITfProperty *pProperty;
@@ -354,25 +358,26 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 				}
 			}
 
-			if(pRangeComposition->Clone(&pRangeClone) == S_OK)
+			if(!fixed)
 			{
-				if(cchReq == 0)
+				if(pRangeComposition->Clone(&pRangeClone) == S_OK)
 				{
-					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
+					if(cchReq == 0)
+					{
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
+					}
+					else
+					{
+						pRangeClone->ShiftEndToRange(ec, tfSelection.range, TF_ANCHOR_END);
+						pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeCandidate);
+
+						pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+						pRangeClone->ShiftStartToRange(ec, tfSelection.range, TF_ANCHOR_END);
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
+					}
+					pRangeClone->Release();
 				}
-				else
-				{
-					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
-					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_START);
-					pRangeClone->ShiftEnd(ec, cchReq, &cch, NULL);
-					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeCandidate);
-		
-					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
-					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
-					pRangeClone->ShiftStart(ec, cchReq, &cch, NULL);
-					_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
-				}
-				pRangeClone->Release();
 			}
 		}
 

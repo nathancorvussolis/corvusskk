@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.7.11"
+#define TEXTSERVICE_VER		L"0.8.0"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,11 +14,11 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.7.11"
-#define RC_VERSION_D		0,7,11,0
+#define RC_VERSION			"0.8.0"
+#define RC_VERSION_D		0,8,0,0
 
 #define MAX_KRNLOBJNAME		256
-#define CONV_POINT_NUM		32
+#define CONV_POINT_NUM		256
 #define KEYRELEN			256
 #define MAX_PRESERVEDKEY	8
 #define MAX_SELKEY_C		9
@@ -37,16 +37,18 @@
 #define REP_OK			L'1'	//hit
 #define REP_FALSE		L'4'	//nothig
 
-#define CORVUSSRVEXE		L"corvussrv.exe"
-#define CORVUSCNFEXE		L"corvuscnf.exe"
+#define CORVUSMGREXE		L"imcrvmgr.exe"
+#define CORVUSCNFEXE		L"imcrvcnf.exe"
 #ifndef _DEBUG
 #define CORVUSKRNLOBJ		L"corvus-skk-"
 #else
 #define CORVUSKRNLOBJ		L"corvus-skk-debug-"
 #endif
-#define CORVUSSRVMUTEX		CORVUSKRNLOBJ L"srv-"
+#define CORVUSMGRMUTEX		CORVUSKRNLOBJ L"mgr-"
 #define CORVUSCNFMUTEX		CORVUSKRNLOBJ L"cnf-"
-#define CORVUSSRVPIPE		L"\\\\.\\pipe\\" CORVUSKRNLOBJ
+#define CORVUSMGRPIPE		L"\\\\.\\pipe\\" CORVUSKRNLOBJ
+
+#define WCHAR_NULL	L'\0'
 
 typedef struct {
 	BYTE digest[16];
@@ -84,4 +86,4 @@ extern const GUID GUID_LBI_INPUTMODE;
 extern const GUID GUID_INTEGRATIONSTYLE_SEARCHBOX;
 #endif
 
-#endif
+#endif //COMMON_H

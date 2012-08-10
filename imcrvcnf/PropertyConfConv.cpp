@@ -1,7 +1,7 @@
 ﻿
 #include "common.h"
 #include "configxml.h"
-#include "corvuscnf.h"
+#include "imcrvcnf.h"
 #include "convtable.h"
 #include "resource.h"
 
@@ -29,12 +29,13 @@ void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKey
 	WriterKey(pXmlWriter, lpKeyName, num);
 }
 
-void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName, LPCWSTR lpDefault)
+void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault)
 {
 	std::wstring strxmlval;
+	LPCWSTR lpDefVal = L"\\";
 
-	ReadValue(pathconfigxml, SectionKeyMap, lpKeyName, strxmlval);
-	if(strxmlval.empty()) strxmlval = lpDefault;
+	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval, lpDefVal);
+	if(strxmlval == lpDefVal) strxmlval = lpDefault;
 	SetDlgItemTextW(hDlg, nIDDlgItem, strxmlval.c_str());
 }
 
@@ -381,9 +382,10 @@ void LoadConfigKana()
 					pszb = rkc.katakana_ank;
 					blen = _countof(rkc.katakana_ank);
 				}
-				else if(r_itr->first == AttributeSoku)
+				else if(r_itr->first == AttributeSpOp)
 				{
-					rkc.soku = _wtoi(r_itr->second.c_str());
+					rkc.soku = (_wtoi(r_itr->second.c_str()) & 0x1) ? TRUE : FALSE;
+					rkc.wait = (_wtoi(r_itr->second.c_str()) & 0x2) ? TRUE : FALSE;
 				}
 
 				if(pszb != NULL)
@@ -414,6 +416,7 @@ void LoadKana(HWND hwnd)
 	HWND hWndList;
 	int i, count;
 	LVITEMW item;
+	WCHAR soku[2];
 
 	LoadConfigKana();
 
@@ -439,7 +442,9 @@ void LoadKana(HWND hwnd)
 		item.iItem = i;
 		item.iSubItem = 3;
 		ListView_SetItem(hWndList, &item);
-		item.pszText = (roman_kana_conv[i].soku == TRUE ? L"1" : L"0");
+		soku[1] = L'\0';
+		soku[0] = L'0' + (roman_kana_conv[i].soku ? 1 : 0) + (roman_kana_conv[i].wait ? 2 : 0);
+		item.pszText = soku;
 		item.iItem = i;
 		item.iSubItem = 4;
 		ListView_SetItem(hWndList, &item);
@@ -468,8 +473,9 @@ void SaveKana(HWND hwnd)
 		ListView_GetItemText(hWndListView, i, 2, rkc.katakana, _countof(rkc.katakana));
 		ListView_GetItemText(hWndListView, i, 3, rkc.katakana_ank, _countof(rkc.katakana_ank));
 		ListView_GetItemText(hWndListView, i, 4, soku, _countof(soku));
-		soku[0] == L'1' ? rkc.soku = TRUE : rkc.soku = FALSE;
-		
+		((soku[0] - L'0') & 0x1) != 0 ? rkc.soku = TRUE : rkc.soku = FALSE;
+		((soku[0] - L'0') & 0x2) != 0 ? rkc.wait = TRUE : rkc.wait = FALSE;
+
 		roman_kana_conv.push_back(rkc);
 	}
 
@@ -493,8 +499,10 @@ void SaveKana(HWND hwnd)
 		attr.second = roman_kana_conv[i].katakana_ank;
 		row.push_back(attr);
 
-		attr.first = AttributeSoku;
-		attr.second = (roman_kana_conv[i].soku == TRUE ? L"1" : L"0");
+		attr.first = AttributeSpOp;
+		soku[1] = L'\0';
+		soku[0] = L'0' + (roman_kana_conv[i].soku ? 1 : 0) + (roman_kana_conv[i].wait ? 2 : 0);
+		attr.second = soku;
 		row.push_back(attr);
 
 		list.push_back(row);
@@ -682,11 +690,8 @@ void LoadConfigKanaTxt(LPCWSTR path)
 		eidx = wcscspn(&b[sidx], seps);
 		b[sidx + eidx] = L'\0';
 		_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
-		rkc.soku = _wtoi(soku);
-		if(rkc.soku != TRUE && rkc.soku != FALSE)
-		{
-			rkc.soku = FALSE;
-		}
+		rkc.soku = (_wtoi(soku) & 0x1) ? TRUE : FALSE;
+		rkc.wait = (_wtoi(soku) & 0x2) ? TRUE : FALSE;
 
 		ZeroMemory(b, sizeof(b));
 
@@ -709,6 +714,7 @@ void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 	HWND hWndList;
 	int i, count;
 	LVITEMW item;
+	WCHAR soku[2];
 
 	LoadConfigKanaTxt(path);
 
@@ -735,7 +741,9 @@ void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 		item.iItem = i;
 		item.iSubItem = 3;
 		ListView_SetItem(hWndList, &item);
-		item.pszText = (roman_kana_conv[i].soku == TRUE ? L"1" : L"0");
+		soku[1] = L'\0';
+		soku[0] = L'0' + (roman_kana_conv[i].soku ? 1 : 0) + (roman_kana_conv[i].wait ? 2 : 0);
+		item.pszText = soku;
 		item.iItem = i;
 		item.iSubItem = 4;
 		ListView_SetItem(hWndList, &item);
