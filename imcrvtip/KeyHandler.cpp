@@ -82,40 +82,43 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_OK;
 	}
 
-	switch(inputmode)
+	if(ch != L'\0')
 	{
-	case im_hiragana:
-	case im_katakana:
-		if(!abbrevmode || showentry)
+		switch(inputmode)
 		{
-			for(i=0; i<CONV_POINT_NUM; i++)
+		case im_hiragana:
+		case im_katakana:
+			if(!abbrevmode || showentry)
 			{
-				if(conv_point[i][0] == L'\0' &&
-					conv_point[i][1] == L'\0' &&
-					conv_point[i][2] == L'\0')
+				for(i=0; i<CONV_POINT_NUM; i++)
 				{
-					break;
-				}
-				if(ch == conv_point[i][0])
-				{
-					ch = conv_point[i][1];
-					chO = conv_point[i][2];
-					if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
+					if(conv_point[i][0] == L'\0' &&
+						conv_point[i][1] == L'\0' &&
+						conv_point[i][2] == L'\0')
 					{
-						return S_OK;
+						break;
 					}
-					break;
-				}
-				else if(ch == conv_point[i][1])
-				{
-					chO = conv_point[i][2];
-					break;
+					if(ch == conv_point[i][0])
+					{
+						ch = conv_point[i][1];
+						chO = conv_point[i][2];
+						if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
+						{
+							return S_OK;
+						}
+						break;
+					}
+					else if(ch == conv_point[i][1])
+					{
+						chO = conv_point[i][2];
+						break;
+					}
 				}
 			}
+			break;
+		default:
+			break;
 		}
-		break;
-	default:
-		break;
 	}
 
 	if(ch >= L'\x20')
