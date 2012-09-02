@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
@@ -122,8 +121,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				return S_OK;
 			}
 
-			if(((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY)) ||
-				_ShowCandidateList(ec, pContext, TRUE) != S_OK)
+			if(_ShowCandidateList(ec, pContext, TRUE) != S_OK)
 			{
 				//表示不可のとき▽モードに戻す
 				//ただし候補無しのとき１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)

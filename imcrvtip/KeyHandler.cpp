@@ -173,11 +173,25 @@ void CTextService::_KeyboardChanged()
 		return;
 	}
 
+	_dwActiveFlags = 0;
+	_ImmersiveMode = FALSE;
+	_UILessMode = FALSE;
+
 	ITfThreadMgrEx *pThreadMgrEx;
 	if(_pThreadMgr->QueryInterface(IID_ITfThreadMgrEx, (void**)&pThreadMgrEx) == S_OK)
 	{
 		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
 		pThreadMgrEx->Release();
+	}
+
+	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
+	{
+		_ImmersiveMode = TRUE;
+	}
+
+	if((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0)
+	{
+		_UILessMode = TRUE;
 	}
 
 	BOOL fOpen = _IsKeyboardOpen();

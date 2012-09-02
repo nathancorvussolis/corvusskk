@@ -81,7 +81,6 @@ extern LPCWSTR FontItalic;
 extern LPCWSTR SectionBehavior;
 //keys
 extern LPCWSTR MaxWidth;
-extern LPCWSTR VisualStyle;
 extern LPCWSTR UntilCandList;
 extern LPCWSTR DispCandNo;
 extern LPCWSTR Annotation;

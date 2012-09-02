@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "configxml.h"
 #include "imcrvcnf.h"
 
@@ -23,7 +22,7 @@ void CreateConfigPath()
 	pathskkcvdicxml[0] = L'\0';
 	pathskkcvdicidx[0] = L'\0';
 
-	if(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, NULL, appdata) != S_OK)
+	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
 	{
 		appdata[0] = L'\0';
 		return;

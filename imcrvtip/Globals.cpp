@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 
 HINSTANCE g_hInst;

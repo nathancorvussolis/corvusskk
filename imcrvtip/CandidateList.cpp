@@ -240,10 +240,12 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 		
-		if(((_pTextService->_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) == 0) &&
-			_pCandidateWindow->_CanShowUIElement())
+		if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
 		{
-			pContextView->GetWnd(&hwnd);
+			if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == NULL)
+			{
+				hwnd = GetFocus();
+			}
 		}
 
 		_hwndParent = hwnd;
@@ -261,8 +263,9 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 
-		_pCandidateWindow->_Move(rc.left, rc.bottom);
 		_pCandidateWindow->_BeginUIElement();
+		_pCandidateWindow->_Move(rc.left, rc.bottom);
+		_pCandidateWindow->_Redraw();
 
 		hr = S_OK;
 	}

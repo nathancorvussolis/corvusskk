@@ -171,6 +171,7 @@ public:
 
 	// FnConfigure
 	void _CreateConfigPath();
+	void _ReadBoolValue(LPCWSTR key, BOOL &value);
 	void _LoadBehavior();
 	void _LoadSelKey();
 	void _LoadPreservedKey();
@@ -254,6 +255,8 @@ private:
 
 public:
 	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
+	BOOL _ImmersiveMode;
+	BOOL _UILessMode;
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
@@ -271,7 +274,6 @@ public:
 	int fontweight;					//候補一覧のフォント設定
 	BOOL fontitalic;				//候補一覧のフォント設定
 	LONG maxwidth;			//候補一覧の最大幅
-	BOOL c_visualstyle;		//VisualStyleを使用する
 	size_t c_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
 	BOOL c_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL c_annotation;		//注釈を表示する

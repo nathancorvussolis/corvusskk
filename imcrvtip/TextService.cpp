@@ -27,7 +27,6 @@ CTextService::CTextService()
 
 	_ResetStatus();
 
-	c_visualstyle = FALSE;
 	c_untilcandlist = 4;
 	c_dispcandnum = FALSE;
 	c_nomodemark = FALSE;
@@ -131,11 +130,6 @@ STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
 	_wsetlocale(LC_ALL, L"japanese");
-
-	INITCOMMONCONTROLSEX ex;
-	ex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	ex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
-	InitCommonControlsEx(&ex);
 	
 	_CreateConfigPath();
 

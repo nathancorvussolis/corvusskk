@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvcnf.h"
 #include "resource.h"
 

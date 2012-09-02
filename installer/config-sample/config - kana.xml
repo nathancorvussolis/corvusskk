@@ -26,7 +26,6 @@
   </section>
   <section name="behavior">
     <key name="maxwidth" value="800" />
-    <key name="visualstyle" value="0" />
     <key name="untilcandlist" value="4" />
     <key name="dispcandno" value="0" />
     <key name="annotation" value="0" />

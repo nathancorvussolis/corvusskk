@@ -75,12 +75,11 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 	{
 		return FALSE;
 	}
-	// roman input
-	//if(ch >= L'\x20' && ch <= L'\x7E')
-	//{
+
 	if(ch >= L'\x20')
+	{
 		return TRUE;
-	//}
+	}
 
 	return FALSE;
 }

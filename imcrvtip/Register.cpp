@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 
 #define CLSID_STRLEN 38
@@ -14,6 +13,21 @@
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";
 static const WCHAR c_szInProcSvr32[] = L"InProcServer32";
 static const WCHAR c_szModelName[] = L"ThreadingModel";
+
+static const GUID c_guidCategory[] =
+{
+	GUID_TFCAT_TIP_KEYBOARD,
+	GUID_TFCAT_TIPCAP_SECUREMODE,
+	GUID_TFCAT_TIPCAP_UIELEMENTENABLED,
+	GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT,
+	GUID_TFCAT_TIPCAP_COMLESS,
+	GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER
+};
+static const GUID c_guidCategory8[] =
+{
+	GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
+	GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT
+};
 
 BOOL RegisterProfiles()
 {
@@ -71,21 +85,22 @@ void UnregisterProfiles()
 BOOL RegisterCategories()
 {
 	ITfCategoryMgr *pCategoryMgr;
+	int i;
 
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER,
 	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
 	{
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIP_KEYBOARD, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SECUREMODE, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_UIELEMENTENABLED, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_COMLESS, c_clsidTextService);
-		pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
+		for(i=0; i<_countof(c_guidCategory); i++)
+		{
+			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
+		}
 		// for Windows 8
 		if(IsVersion62AndOver(g_ovi))
 		{
-			pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT, c_clsidTextService);
-			pCategoryMgr->RegisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT, c_clsidTextService);
+			for(i=0; i<_countof(c_guidCategory8); i++)
+			{
+				pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
+			}
 		}
 
 		pCategoryMgr->Release();
@@ -101,21 +116,22 @@ BOOL RegisterCategories()
 void UnregisterCategories()
 {
 	ITfCategoryMgr *pCategoryMgr;
+	int i;
 
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER,
 	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
 	{
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIP_KEYBOARD, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SECUREMODE, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_UIELEMENTENABLED, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_INPUTMODECOMPARTMENT, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_COMLESS, c_clsidTextService);
-		pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER, c_clsidTextService);
+		for(i=0; i<_countof(c_guidCategory); i++)
+		{
+			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
+		}
 		// for Windows 8
 		if(IsVersion62AndOver(g_ovi))
 		{
-			pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT, c_clsidTextService);
-			pCategoryMgr->UnregisterCategory(c_clsidTextService, GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT, c_clsidTextService);
+			for(i=0; i<_countof(c_guidCategory8); i++)
+			{
+				pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
+			}
 		}
 
 		pCategoryMgr->Release();

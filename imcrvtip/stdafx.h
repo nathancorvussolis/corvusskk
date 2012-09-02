@@ -3,8 +3,6 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#define ISOLATION_AWARE_ENABLED 1
-
 #include <stdio.h>
 
 #include <string>
@@ -20,9 +18,4 @@
 #include <ctffunc.h>
 #include <Shlobj.h>
 #include <Shlwapi.h>
-#include <Uxtheme.h>
-#include <CommCtrl.h>
 #include <Sddl.h>
-#include <AclAPI.h>
-#include <WinCrypt.h>
-#include <xmllite.h>

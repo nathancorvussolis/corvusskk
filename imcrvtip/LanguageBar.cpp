@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "LanguageBar.h"
@@ -78,13 +77,32 @@ STDAPI_(ULONG) CLangBarItemButton::Release()
 
 STDAPI CLangBarItemButton::GetInfo(TF_LANGBARITEMINFO *pInfo)
 {
+	if(pInfo == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	*pInfo = _LangBarItemInfo;
+
 	return S_OK;
 }
 
 STDAPI CLangBarItemButton::GetStatus(DWORD *pdwStatus)
 {
-	*pdwStatus = 0;
+	if(pdwStatus == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
+	if(_pTextService->_IsKeyboardDisabled())
+	{
+		*pdwStatus = TF_LBI_STATUS_DISABLED;
+	}
+	else
+	{
+		*pdwStatus = 0;
+	}
+
 	return S_OK;
 }
 

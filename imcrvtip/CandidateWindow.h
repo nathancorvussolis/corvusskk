@@ -38,14 +38,15 @@ public:
 	STDMETHODIMP Abort();
 
 	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg);
-	static LRESULT CALLBACK _WindowPreProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT CALLBACK _WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void _Destroy();
-
 	void _Move(int x, int y);
 	void _BeginUIElement();
 	void _EndUIElement();
 	BOOL _CanShowUIElement();
+	void _CalcWindowRect();
+	void _Redraw();
 
 	HRESULT _OnKeyDown(UINT uVKey);
 
@@ -61,7 +62,6 @@ private:
 	void _NextPage();
 	void _PrevPage();
 	void _OnKeyDownRegword(UINT uVKey);
-	std::wstring _EscapeTags(const std::wstring &text);
 	void _Update();
 	void _EndCandidateList(BYTE sf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
@@ -99,7 +99,6 @@ private:
 
 	//候補一覧、辞書登録のウィンドウ
 	WNDPROC WndProcDef;
-	TOOLINFOW ti;
 	std::wstring disptext;
 	HFONT hFont;
 

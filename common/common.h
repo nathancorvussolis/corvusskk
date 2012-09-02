@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.8.1"
+#define TEXTSERVICE_VER		L"0.8.2"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.8.1"
-#define RC_VERSION_D		0,8,1,0
+#define RC_VERSION			"0.8.2"
+#define RC_VERSION_D		0,8,2,0
 
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256
@@ -70,10 +70,6 @@ BOOL SetFileDaclAC(LPCWSTR path);
 
 // for Windows 8
 #if 1
-#define EVENT_OBJECT_IME_SHOW               0x8027
-#define EVENT_OBJECT_IME_HIDE               0x8028
-#define EVENT_OBJECT_IME_CHANGE             0x8029
-
 #define TF_TMF_IMMERSIVEMODE          0x40000000
 
 #define TF_IPP_CAPS_IMMERSIVESUPPORT            0x00010000
@@ -81,9 +77,7 @@ BOOL SetFileDaclAC(LPCWSTR path);
 
 extern const GUID GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT;
 extern const GUID GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT;
-extern const GUID GUID_COMPARTMENT_TKB_THIRDPARTYIME_MODE_ONOFF;
 extern const GUID GUID_LBI_INPUTMODE;
-extern const GUID GUID_INTEGRATIONSTYLE_SEARCHBOX;
 #endif
 
 #endif //COMMON_H

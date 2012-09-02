@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 #include "TextService.h"
 

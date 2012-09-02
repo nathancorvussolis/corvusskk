@@ -41,7 +41,6 @@ LPCWSTR FontItalic = L"italic";
 LPCWSTR SectionBehavior = L"behavior";
 //keys
 LPCWSTR MaxWidth = L"maxwidth";
-LPCWSTR VisualStyle = L"visualstyle";
 LPCWSTR UntilCandList = L"untilcandlist";
 LPCWSTR DispCandNo = L"dispcandno";
 LPCWSTR Annotation = L"annotation";

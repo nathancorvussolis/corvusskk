@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "configxml.h"
 #include "imcrvcnf.h"
 #include "resource.h"
@@ -67,8 +66,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", w);
 		SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
-
-		LoadCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, SectionBehavior, VisualStyle);
 
 		cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
@@ -153,7 +150,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			break;
 
-		case IDC_CHECKBOX_VISUALSTYLE:
 		case IDC_CHECKBOX_DISPCANDNO:
 		case IDC_CHECKBOX_ANNOTATION:
 		case IDC_RADIO_ANNOTATALL:
@@ -217,8 +213,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			_snwprintf_s(num, _TRUNCATE, L"%d", w);
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 			WriterKey(pXmlWriter, MaxWidth, num);
-
-			SaveCheckButton(hDlg, IDC_CHECKBOX_VISUALSTYLE, SectionBehavior, VisualStyle);
 
 			cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 			num[0] = L'0' + (WCHAR)SendMessage(cmbUntilCandList, CB_GETCURSEL, 0, 0);

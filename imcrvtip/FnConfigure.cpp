@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "configxml.h"
 #include "imcrvtip.h"
 #include "TextService.h"
@@ -55,7 +54,7 @@ void CTextService::_CreateConfigPath()
 
 	pathconfigxml[0] = L'\0';
 
-	if(SHGetFolderPathW(NULL, CSIDL_APPDATA, NULL, NULL, appdata) != S_OK)
+	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
 	{
 		appdata[0] = L'\0';
 		return;
@@ -107,16 +106,21 @@ void CTextService::_CreateConfigPath()
 	LocalFree(pszUserSid);
 }
 
+void CTextService::_ReadBoolValue(LPCWSTR key, BOOL &value)
+{
+	std::wstring strxmlval;
+	ReadValue(pathconfigxml, SectionBehavior, key, strxmlval);
+	value = _wtoi(strxmlval.c_str());
+	if(value != TRUE && value != FALSE)
+	{
+		value = FALSE;
+	}
+}
+
 void CTextService::_LoadBehavior()
 {
 	RECT rect;
 	std::wstring strxmlval;
-	BOOL bShowCandList = TRUE;
-
-	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) && !(_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY))
-	{
-		bShowCandList = FALSE;
-	}
 
 	ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);
 	wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
@@ -149,13 +153,6 @@ void CTextService::_LoadBehavior()
 		maxwidth = rect.right;
 	}
 
-	ReadValue(pathconfigxml, SectionBehavior, VisualStyle, strxmlval);
-	c_visualstyle = _wtoi(strxmlval.c_str());
-	if(c_visualstyle != TRUE && c_visualstyle != FALSE)
-	{
-		c_visualstyle = FALSE;
-	}
-
 	ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
 	c_untilcandlist = _wtoi(strxmlval.c_str());
 	if(c_untilcandlist > 8)
@@ -163,66 +160,21 @@ void CTextService::_LoadBehavior()
 		c_untilcandlist = 4;
 	}
 
-	if(!bShowCandList)
-	{
-		c_untilcandlist = 0;
-	}
+	_ReadBoolValue(DispCandNo, c_dispcandnum);
 
-	ReadValue(pathconfigxml, SectionBehavior, DispCandNo, strxmlval);
-	c_dispcandnum = _wtoi(strxmlval.c_str());
-	if(c_dispcandnum != TRUE && c_dispcandnum != FALSE)
-	{
-		c_dispcandnum = FALSE;
-	}
+	_ReadBoolValue(Annotation, c_annotation);
 
-	ReadValue(pathconfigxml, SectionBehavior, Annotation, strxmlval);
-	c_annotation = _wtoi(strxmlval.c_str());
-	if(c_annotation != TRUE && c_annotation != FALSE)
-	{
-		c_annotation = FALSE;
-	}
+	_ReadBoolValue(AnnotatLst, c_annotatlst);
 
-	ReadValue(pathconfigxml, SectionBehavior, AnnotatLst, strxmlval);
-	c_annotatlst = _wtoi(strxmlval.c_str());
-	if(c_annotatlst != TRUE && c_annotatlst != FALSE)
-	{
-		c_annotatlst = FALSE;
-	}
+	_ReadBoolValue(NoModeMark, c_nomodemark);
 
-	ReadValue(pathconfigxml, SectionBehavior, NoModeMark, strxmlval);
-	c_nomodemark = _wtoi(strxmlval.c_str());
-	if(c_nomodemark != TRUE && c_nomodemark != FALSE)
-	{
-		c_nomodemark = FALSE;
-	}
+	_ReadBoolValue(NoOkuriConv, c_nookuriconv);
 
-	ReadValue(pathconfigxml, SectionBehavior, NoOkuriConv, strxmlval);
-	c_nookuriconv = _wtoi(strxmlval.c_str());
-	if(c_nookuriconv != TRUE && c_nookuriconv != FALSE)
-	{
-		c_nookuriconv = FALSE;
-	}
+	_ReadBoolValue(DelOkuriCncl, c_delokuricncl);
 
-	ReadValue(pathconfigxml, SectionBehavior, DelOkuriCncl, strxmlval);
-	c_delokuricncl = _wtoi(strxmlval.c_str());
-	if(c_delokuricncl != TRUE && c_delokuricncl != FALSE)
-	{
-		c_delokuricncl = FALSE;
-	}
+	_ReadBoolValue(BackIncEnter, c_backincenter);
 
-	ReadValue(pathconfigxml, SectionBehavior, BackIncEnter, strxmlval);
-	c_backincenter = _wtoi(strxmlval.c_str());
-	if(c_backincenter != TRUE && c_backincenter != FALSE)
-	{
-		c_backincenter = FALSE;
-	}
-
-	ReadValue(pathconfigxml, SectionBehavior, AddCandKtkn, strxmlval);
-	c_addcandktkn = _wtoi(strxmlval.c_str());
-	if(c_addcandktkn != TRUE && c_addcandktkn != FALSE)
-	{
-		c_addcandktkn = FALSE;
-	}
+	_ReadBoolValue(AddCandKtkn, c_addcandktkn);
 }
 
 void CTextService::_LoadSelKey()

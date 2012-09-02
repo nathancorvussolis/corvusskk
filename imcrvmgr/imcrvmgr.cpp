@@ -78,6 +78,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmd
 
 	if(!hWnd)
 	{
+		WSACleanup();
 		return 0;
 	}
 

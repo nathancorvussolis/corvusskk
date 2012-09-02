@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "configxml.h"
 #include "imcrvmgr.h"
 

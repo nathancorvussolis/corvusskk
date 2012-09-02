@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateWindow.h"
@@ -160,7 +159,8 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		{
 			if(_hwnd != NULL)
 			{
-				SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)TRUE, (LPARAM)&ti);
+				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 			}
 
 		}
@@ -168,7 +168,8 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		{
 			if(_hwnd != NULL)
 			{
-				SendMessageW(_hwnd, TTM_TRACKACTIVATE, (WPARAM)FALSE, (LPARAM)&ti);
+				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
 			}
 		}
 #ifndef _DEBUG

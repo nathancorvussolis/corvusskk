@@ -1,5 +1,4 @@
 ﻿
-#include "common.h"
 #include "configxml.h"
 #include "imcrvcnf.h"
 #include "convtable.h"
