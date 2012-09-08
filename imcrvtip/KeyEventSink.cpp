@@ -4,7 +4,7 @@
 #include "CandidateList.h"
 #include "LanguageBar.h"
 
-static const WCHAR c_PreservedKeyDesc[] = L"OnOff";
+static LPCWSTR c_PreservedKeyDesc = L"OnOff";
 
 BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 {

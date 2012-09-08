@@ -251,6 +251,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		_hwndParent = hwnd;
 		if(_hwndParent)
 		{
+			// for LibreOffice, to get position in screen
 			SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_OPENCANDIDATE, 1);
 		}
 
@@ -263,8 +264,8 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 
-		_pCandidateWindow->_BeginUIElement();
 		_pCandidateWindow->_Move(rc.left, rc.bottom);
+		_pCandidateWindow->_BeginUIElement();
 		_pCandidateWindow->_Redraw();
 
 		hr = S_OK;
@@ -291,6 +292,7 @@ void CCandidateList::_EndCandidateList()
 {
 	if(_hwndParent)
 	{
+		// for LibreOffice, to get position in screen
 		SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_CLOSECANDIDATE, 1);
 		_hwndParent = NULL;
 	}

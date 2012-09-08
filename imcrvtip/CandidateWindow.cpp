@@ -272,6 +272,11 @@ void CCandidateWindow::_CalcWindowRect()
 	HDC hdc;
 	int x, y, cx, cy;
 
+	if(_hwnd == NULL)
+	{
+		return;
+	}
+
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &rw, 0);
 
 	hdc = GetDC(_hwnd);
@@ -324,8 +329,11 @@ void CCandidateWindow::_CalcWindowRect()
 
 void CCandidateWindow::_Redraw()
 {
-	InvalidateRect(_hwnd, NULL, TRUE);
-	UpdateWindow(_hwnd);
+	if(_hwnd != NULL)
+	{
+		InvalidateRect(_hwnd, NULL, TRUE);
+		UpdateWindow(_hwnd);
+	}
 }
 
 HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)

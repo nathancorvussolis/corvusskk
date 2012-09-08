@@ -37,8 +37,6 @@ void CTextService::_ConvDic(WCHAR command)
 {
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
-	const WCHAR tab = L'\t';
-	const WCHAR nl = L'\n';
 	size_t i, ic, ia;
 	std::wstring s, sc, sa;
 
@@ -72,12 +70,12 @@ void CTextService::_ConvDic(WCHAR command)
 
 	while(true)
 	{
-		ic = s.find_first_of(tab, i + 1);
+		ic = s.find_first_of(L'\t', i + 1);
 		if(ic == std::wstring::npos)
 		{
 			break;
 		}
-		ia = s.find_first_of(nl, ic + 1);
+		ia = s.find_first_of(L'\n', ic + 1);
 		if(ia == std::wstring::npos)
 		{
 			break;
