@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="small.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="imcrvcnf.ico">
       <Filter>Resource Files</Filter>
     </None>

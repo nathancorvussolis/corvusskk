@@ -53,10 +53,7 @@ void CreateConfigPath()
 	wcsncpy_s(pathskkcvdicidx, appdata, _TRUNCATE);
 	wcsncat_s(pathskkcvdicidx, fnskkcvdicidx, _TRUNCATE);
 
-	HANDLE hToken;
-	PTOKEN_USER pTokenUser;
-	DWORD dwLength;
-	LPWSTR pszUserSid = L"";
+	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
 
@@ -64,45 +61,34 @@ void CreateConfigPath()
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	if(GetUserSid(&pszUserSid))
 	{
-		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
-		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)", pszUserSid);
 
-		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		if(IsVersion62AndOver(ovi))
 		{
-			ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid);
+			// for Windows 8 SDDL_ALL_APP_PACKAGES
+			wcsncat_s(krnlobjsddl, L"(A;;GA;;;AC)", _TRUNCATE);
+		}
+		if(IsVersion6AndOver(ovi))
+		{
+			// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
+			wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
 		}
 
-		LocalFree(pTokenUser);
-		CloseHandle(hToken);
-	}
-
-	_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)", pszUserSid);
-
-	if(IsVersion62AndOver(ovi))
-	{
-		// for Windows 8 SDDL_ALL_APP_PACKAGES
-		wcsncat_s(krnlobjsddl, L"(A;;GA;;;AC)", _TRUNCATE);
-	}
-	if(IsVersion6AndOver(ovi))
-	{
-		// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
-		wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
-	}
-
-	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
-	{
-		for(int i=0; i<_countof(digest.digest); i++)
+		if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+			for(int i=0; i<_countof(digest.digest); i++)
+			{
+				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+			}
 		}
+
+		LocalFree(pszUserSid);
 	}
 
 	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
 	_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", CORVUSMGRMUTEX, szDigest);
-
-	LocalFree(pszUserSid);
 }
 
 void LoadConfig()
@@ -111,7 +97,7 @@ void LoadConfig()
 	WCHAR porttmp[MAX_SKKSERVER_PORT];	//ポート
 	std::wstring strxmlval;
 
-	ReadValue(pathconfigxml, SectionServer, Serv, strxmlval);
+	ReadValue(pathconfigxml, SectionServer, ValueServerServ, strxmlval);
 	serv = _wtoi(strxmlval.c_str());
 	if(serv != TRUE && serv != FALSE)
 	{
@@ -124,13 +110,13 @@ void LoadConfig()
 		DisconnectSKKServer();
 	}
 
-	ReadValue(pathconfigxml, SectionServer, Host, strxmlval);
+	ReadValue(pathconfigxml, SectionServer, ValueServerHost, strxmlval);
 	wcsncpy_s(hosttmp, strxmlval.c_str(), _TRUNCATE);
 
-	ReadValue(pathconfigxml, SectionServer, Port, strxmlval);
+	ReadValue(pathconfigxml, SectionServer, ValueServerPort, strxmlval);
 	wcsncpy_s(porttmp, strxmlval.c_str(), _TRUNCATE);
 
-	ReadValue(pathconfigxml, SectionServer, TimeOut, strxmlval);
+	ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
 	timeout = _wtoi(strxmlval.c_str());
 	if(timeout > 60000) timeout = 1000;
 

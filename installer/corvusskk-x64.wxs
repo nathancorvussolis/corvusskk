@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="CorvusSKK" Language="1033" Version="0.8.3" Manufacturer="Nathan Corvus Solis" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
+    <Product Id="*" Name="CorvusSKK" Language="1033" Version="0.8.4" Manufacturer="Nathan Corvus Solis" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
         <Package Id="*" Compressed="yes" Description="CorvusSKK" Platform="x64" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
         <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
         <Directory Id="TARGETDIR" Name="SourceDir">
@@ -38,7 +38,7 @@
             </Directory>
         </Directory>
         <Component Id="RegistryRun" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Win64="yes" Directory="TARGETDIR">
-            <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Action="none">
+            <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
                 <RegistryValue Type="string" Name="imcrvmgr" Value="$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe" Action="write" />
             </RegistryKey>
         </Component>

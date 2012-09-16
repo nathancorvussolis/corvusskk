@@ -13,30 +13,30 @@ typedef struct {
 } CONFIG_KEYMAP;
 const CONFIG_KEYMAP configkeymap[] =
 {
-	 {SKK_KANA,			KeyMapKana}
-	,{SKK_CONV_CHAR,	KeyMapConvChar}
-	,{SKK_JLATIN,		KeyMapJLatin}
-	,{SKK_ASCII,		KeyMapAscii}
-	,{SKK_JMODE,		KeyMapJMode}
-	,{SKK_ABBREV,		KeyMapAbbrev}
-	,{SKK_AFFIX,		KeyMapAffix}
-	,{SKK_NEXT_CAND,	KeyMapNextCand}
-	,{SKK_PREV_CAND,	KeyMapPrevCand}
-	,{SKK_PURGE_DIC,	KeyMapPurgeDic}
-	,{SKK_NEXT_COMP,	KeyMapNextComp}
-	,{SKK_PREV_COMP,	KeyMapPrevComp}
-	,{SKK_CONV_POINT,	KeyMapConvPoint}
-	,{SKK_DIRECT,		KeyMapDirect}
-	,{SKK_ENTER,		KeyMapEnter}
-	,{SKK_CANCEL,		KeyMapCancel}
-	,{SKK_BACK,			KeyMapBack}
-	,{SKK_DELETE,		KeyMapDelete}
-	,{SKK_VOID,			KeyMapVoid}
-	,{SKK_LEFT,			KeyMapLeft}
-	,{SKK_UP,			KeyMapUp}
-	,{SKK_RIGHT,		KeyMapRight}
-	,{SKK_DOWN,			KeyMapDown}
-	,{SKK_PASTE,		KeyMapPaste}
+	 {SKK_KANA,			ValueKeyMapKana}
+	,{SKK_CONV_CHAR,	ValueKeyMapConvChar}
+	,{SKK_JLATIN,		ValueKeyMapJLatin}
+	,{SKK_ASCII,		ValueKeyMapAscii}
+	,{SKK_JMODE,		ValueKeyMapJMode}
+	,{SKK_ABBREV,		ValueKeyMapAbbrev}
+	,{SKK_AFFIX,		ValueKeyMapAffix}
+	,{SKK_NEXT_CAND,	ValueKeyMapNextCand}
+	,{SKK_PREV_CAND,	ValueKeyMapPrevCand}
+	,{SKK_PURGE_DIC,	ValueKeyMapPurgeDic}
+	,{SKK_NEXT_COMP,	ValueKeyMapNextComp}
+	,{SKK_PREV_COMP,	ValueKeyMapPrevComp}
+	,{SKK_CONV_POINT,	ValueKeyMapConvPoint}
+	,{SKK_DIRECT,		ValueKeyMapDirect}
+	,{SKK_ENTER,		ValueKeyMapEnter}
+	,{SKK_CANCEL,		ValueKeyMapCancel}
+	,{SKK_BACK,			ValueKeyMapBack}
+	,{SKK_DELETE,		ValueKeyMapDelete}
+	,{SKK_VOID,			ValueKeyMapVoid}
+	,{SKK_LEFT,			ValueKeyMapLeft}
+	,{SKK_UP,			ValueKeyMapUp}
+	,{SKK_RIGHT,		ValueKeyMapRight}
+	,{SKK_DOWN,			ValueKeyMapDown}
+	,{SKK_PASTE,		ValueKeyMapPaste}
 	,{SKK_NULL,			L""}
 };
 
@@ -67,43 +67,29 @@ void CTextService::_CreateConfigPath()
 	wcsncpy_s(pathconfigxml, appdata, _TRUNCATE);
 	wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
 
-	HANDLE hToken;
-	PTOKEN_USER pTokenUser;
-	DWORD dwLength;
-	LPWSTR pszUserSid = L"";
+	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
 
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	if(GetUserSid(&pszUserSid))
 	{
-		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
-		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
-
-		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid);
+			for(int i=0; i<_countof(digest.digest); i++)
+			{
+				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+			}
 		}
 
-		LocalFree(pTokenUser);
-		CloseHandle(hToken);
-	}
-
-	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
-	{
-		for(int i=0; i<_countof(digest.digest); i++)
-		{
-			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
-		}
+		LocalFree(pszUserSid);
 	}
 
 	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
 	_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", CORVUSMGRMUTEX, szDigest);
 	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
-
-	LocalFree(pszUserSid);
 }
 
 void CTextService::_ReadBoolValue(LPCWSTR key, BOOL &value)
@@ -122,14 +108,14 @@ void CTextService::_LoadBehavior()
 	RECT rect;
 	std::wstring strxmlval;
 
-	ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);
+	ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 	wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
 	
-	ReadValue(pathconfigxml, SectionFont, FontSize, strxmlval);
+	ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
 	fontpoint = _wtoi(strxmlval.c_str());
-	ReadValue(pathconfigxml, SectionFont, FontWeight, strxmlval);
+	ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);
 	fontweight = _wtoi(strxmlval.c_str());
-	ReadValue(pathconfigxml, SectionFont, FontItalic, strxmlval);
+	ReadValue(pathconfigxml, SectionFont, ValueFontItalic, strxmlval);
 	fontitalic = _wtoi(strxmlval.c_str());
 
 	if(fontpoint < 8 || fontpoint > 72)
@@ -145,7 +131,7 @@ void CTextService::_LoadBehavior()
 		fontitalic = FALSE;
 	}
 
-	ReadValue(pathconfigxml, SectionFont, MaxWidth, strxmlval);
+	ReadValue(pathconfigxml, SectionFont, ValueMaxWidth, strxmlval);
 	maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 	if(maxwidth < 0 || maxwidth > rect.right)
@@ -153,28 +139,28 @@ void CTextService::_LoadBehavior()
 		maxwidth = rect.right;
 	}
 
-	ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
+	ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 	c_untilcandlist = _wtoi(strxmlval.c_str());
 	if(c_untilcandlist > 8)
 	{
 		c_untilcandlist = 4;
 	}
 
-	_ReadBoolValue(DispCandNo, c_dispcandnum);
+	_ReadBoolValue(ValueDispCandNo, c_dispcandnum);
 
-	_ReadBoolValue(Annotation, c_annotation);
+	_ReadBoolValue(ValueAnnotation, c_annotation);
 
-	_ReadBoolValue(AnnotatLst, c_annotatlst);
+	_ReadBoolValue(ValueAnnotatLst, c_annotatlst);
 
-	_ReadBoolValue(NoModeMark, c_nomodemark);
+	_ReadBoolValue(ValueNoModeMark, c_nomodemark);
 
-	_ReadBoolValue(NoOkuriConv, c_nookuriconv);
+	_ReadBoolValue(ValueNoOkuriConv, c_nookuriconv);
 
-	_ReadBoolValue(DelOkuriCncl, c_delokuricncl);
+	_ReadBoolValue(ValueDelOkuriCncl, c_delokuricncl);
 
-	_ReadBoolValue(BackIncEnter, c_backincenter);
+	_ReadBoolValue(ValueBackIncEnter, c_backincenter);
 
-	_ReadBoolValue(AddCandKtkn, c_addcandktkn);
+	_ReadBoolValue(ValueAddCandKtkn, c_addcandktkn);
 }
 
 void CTextService::_LoadSelKey()

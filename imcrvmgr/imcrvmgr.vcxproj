@@ -174,10 +174,6 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="imcrvmgr.ico" />
-    <None Include="small.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="imcrvmgr.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

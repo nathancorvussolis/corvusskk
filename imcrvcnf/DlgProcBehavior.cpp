@@ -24,14 +24,14 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		ReadValue(pathconfigxml, SectionFont, FontName, strxmlval);
+		ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 		wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
 
-		ReadValue(pathconfigxml, SectionFont, FontSize, strxmlval);
+		ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
 		fontpoint = _wtoi(strxmlval.c_str());
-		ReadValue(pathconfigxml, SectionFont, FontWeight, strxmlval);
+		ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);
 		fontweight = _wtoi(strxmlval.c_str());
-		ReadValue(pathconfigxml, SectionFont, FontItalic, strxmlval);
+		ReadValue(pathconfigxml, SectionFont, ValueFontItalic, strxmlval);
 		fontitalic = _wtoi(strxmlval.c_str());
 
 		if(fontpoint < 8 || fontpoint > 72)
@@ -57,7 +57,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, fontpoint, FALSE);
 
-		ReadValue(pathconfigxml, SectionFont, MaxWidth, strxmlval);
+		ReadValue(pathconfigxml, SectionFont, ValueMaxWidth, strxmlval);
 		w = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 		if(w < 0 || w > rect.right)
@@ -74,7 +74,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			num[0] = L'0' + (WCHAR)i;
 			SendMessage(cmbUntilCandList, CB_ADDSTRING, 0, (LPARAM)num);
 		}
-		ReadValue(pathconfigxml, SectionBehavior, UntilCandList, strxmlval);
+		ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 		i = strxmlval.empty() ? 4 : _wtoi(strxmlval.c_str());
 		if(i > 8)
 		{
@@ -82,18 +82,18 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		SendMessage(cmbUntilCandList, CB_SETCURSEL, (WPARAM)i, 0);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
-		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, AnnotatLst);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, ValueDispCandNo);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, ValueAnnotation);
+		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, ValueAnnotatLst);
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_ANNOTATLST))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_ANNOTATALL, BST_CHECKED);
 		}
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, BackIncEnter);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, AddCandKtkn);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, ValueNoModeMark);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, ValueNoOkuriConv);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
 
 		return (INT_PTR)TRUE;
 
@@ -188,16 +188,16 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			WriterStartSection(pXmlWriter, SectionFont);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));
-			WriterKey(pXmlWriter, FontName, fontname);
+			WriterKey(pXmlWriter, ValueFontName, fontname);
 
 			hFont = (HFONT)SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
 			GetObject(hFont, sizeof(LOGFONT), &lf);
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTPOINT, num, _countof(num));
-			WriterKey(pXmlWriter, FontSize, num);
+			WriterKey(pXmlWriter, ValueFontSize, num);
 			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfWeight);
-			WriterKey(pXmlWriter, FontWeight, num);
+			WriterKey(pXmlWriter, ValueFontWeight, num);
 			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfItalic);
-			WriterKey(pXmlWriter, FontItalic, num);
+			WriterKey(pXmlWriter, ValueFontItalic, num);
 
 			WriterEndSection(pXmlWriter);
 
@@ -212,21 +212,21 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			_snwprintf_s(num, _TRUNCATE, L"%d", w);
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
-			WriterKey(pXmlWriter, MaxWidth, num);
+			WriterKey(pXmlWriter, ValueMaxWidth, num);
 
 			cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 			num[0] = L'0' + (WCHAR)SendMessage(cmbUntilCandList, CB_GETCURSEL, 0, 0);
 			num[1] = L'\0';
-			WriterKey(pXmlWriter, UntilCandList, num);
+			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, DispCandNo);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, Annotation);
-			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, AnnotatLst);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, NoModeMark);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, NoOkuriConv);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, DelOkuriCncl);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, BackIncEnter);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, AddCandKtkn);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, ValueDispCandNo);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, ValueAnnotation);
+			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, ValueAnnotatLst);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, ValueNoModeMark);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, ValueNoOkuriConv);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
 
 			WriterEndSection(pXmlWriter);
 

@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.8.3"
+#define TEXTSERVICE_VER		L"0.8.4"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.8.3"
-#define RC_VERSION_D		0,8,3,0
+#define RC_VERSION			"0.8.4"
+#define RC_VERSION_D		0,8,4,0
 
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256
@@ -63,9 +63,10 @@ extern LPCWSTR fnskkcvdicxml;
 extern LPCWSTR fnskkcvdicidx;
 
 void debugout(LPCWSTR format, ...);
-BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 BOOL IsVersion6AndOver(OSVERSIONINFOW ovi);
 BOOL IsVersion62AndOver(OSVERSIONINFOW ovi);
+BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
+BOOL GetUserSid(LPWSTR *ppszUserSid);
 BOOL SetFileDaclAC(LPCWSTR path);
 
 // for Windows 8

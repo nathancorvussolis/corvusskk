@@ -31,6 +31,26 @@ void debugout(LPCWSTR format, ...)
 	OutputDebugStringW(str);
 }
 
+BOOL IsVersion6AndOver(OSVERSIONINFOW ovi)
+{
+	BOOL bRet = FALSE;
+	if(ovi.dwMajorVersion >= 6)
+	{
+		bRet = TRUE;
+	}
+	return bRet;
+}
+
+BOOL IsVersion62AndOver(OSVERSIONINFOW ovi)
+{
+	BOOL bRet = FALSE;
+	if((ovi.dwMajorVersion == 6 && ovi.dwMinorVersion >= 2) || ovi.dwMajorVersion > 6)
+	{
+		bRet = TRUE;
+	}
+	return bRet;
+}
+
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 {
 	BOOL bRet = FALSE;
@@ -67,23 +87,28 @@ BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 	return bRet;
 }
 
-BOOL IsVersion6AndOver(OSVERSIONINFOW ovi)
+BOOL GetUserSid(LPWSTR *ppszUserSid)
 {
 	BOOL bRet = FALSE;
-	if(ovi.dwMajorVersion >= 6)
-	{
-		bRet = TRUE;
-	}
-	return bRet;
-}
+	HANDLE hToken;
+	PTOKEN_USER pTokenUser;
+	DWORD dwLength;
 
-BOOL IsVersion62AndOver(OSVERSIONINFOW ovi)
-{
-	BOOL bRet = FALSE;
-	if((ovi.dwMajorVersion == 6 && ovi.dwMinorVersion >= 2) || ovi.dwMajorVersion > 6)
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
-		bRet = TRUE;
+		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		{
+			if(ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid))
+			{
+				bRet = TRUE;
+			}
+		}
+		LocalFree(pTokenUser);
+		CloseHandle(hToken);
 	}
+
 	return bRet;
 }
 

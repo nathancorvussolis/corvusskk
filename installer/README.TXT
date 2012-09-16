@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.8.3
+     CorvusSKK version 0.8.4
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -16,7 +16,7 @@
 --------------------------------------------------------------------------------
 
 
-１．必須ライブラリ のインストール
+・必須ライブラリ のインストール
 
   32bit版 Windows では x86 の VC++ パッケージのみを、
   64bit版 Windows では x86 と x64 の VC++ パッケージの両方を
@@ -38,7 +38,7 @@
   http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c7cb26e9-68f1-4f80-b231-79d044431e8e
 
 
-２．CorvusSKK のインストール
+・CorvusSKK のインストール
 
   corvusskk-X.Y.Z.7z を展開し、32bit版 Windows では corvusskk-x86.msi、
   64bit版 Windows では corvusskk-x64.msi を実行して下さい。
@@ -46,7 +46,7 @@
   （X, Y, Z はバージョン番号）
 
 
-３．初期設定
+・初期設定
 
   任意のユーザーアカウントで初めて使用するときは、設定ダイアログでOKボタンを
   押して初期設定を保存して下さい。
@@ -57,17 +57,15 @@
   OKボタンを押してみて下さい。
 
 
-４．その他
+・Windows XP
 
   XPでの使用は動作が不安定な為、あまりお勧めしません。
 
-  XPでは、「テキストサービスと入力言語」ダイアログで「詳細なテキストサービスの
-  サポートをプログラムのすべてに拡張する」にチェックを入れて下さい。
+  「テキストサービスと入力言語」ダイアログで「詳細なテキストサービスのサポートを
+  プログラムのすべてに拡張する」にチェックを入れて下さい。
 
-  さらに、XP において、デフォルトのローマ字仮名変換表での JIS X 0213 で追加
-  された文字（鼻濁音、アイヌ語用仮名等）やSKK辞書の「SKK-JISYO.JIS3_4」、
-  「SKK-JISYO.JIS2004」の文字を表示するには、以下のような JIS X 0213:2004 対応
-  のフォントをインストールすることが必要です。
+  JIS X 0213 で追加された文字を表示するには、以下のような JIS X 0213:2004 対応
+  のフォントをインストールして下さい。
 
   JIS2004 対応 MS ゴシック & MS 明朝フォントパッケージ
   http://www.microsoft.com/ja-jp/windows/products/windowsvista/jp_font/jis04/default.aspx
@@ -77,6 +75,14 @@
 
   IPAフォント
   http://ossipedia.ipa.go.jp/ipafont/index.html
+
+
+・Windows 8
+
+  Windows Store アプリで使用するには、設定ファイル（config.xml）に Windows Store
+  アプリへのアクセス許可を付加させる必要があります。
+  Windows 8 で動作する設定ダイアログでOKボタンを押して保存を行うとアクセス許可の
+  付加が自動的に行われます。
 
 
 
@@ -379,23 +385,8 @@
     → 「;;セミコロン」と入力する。
 
 
-・UILessMode
-
-  コマンドプロンプト、DirectXのゲーム等の候補一覧が独自描画のアプリケーション
-  でも候補一覧の表示や辞書登録が可能です。（Vista以降）
-
-
-・Windows 8 対応について
-
-  とりあえず対応しています。
-  Metro UI アプリケーションにおいて入力モードのツールチップは表示しませんので
-  心眼を鍛えて下さい。
-  設定ファイル（config.xml）にMetroアプリケーションへのアクセス許可を付加させる
-  為、Windows 8 で動作する設定ダイアログでの保存を行う必要があります。
-
-
 ・開発環境
 
   Visual C++ 2010 Express + SP1
   Windows SDK 7.1
-  WiX 3.5
+  WiX 3.6

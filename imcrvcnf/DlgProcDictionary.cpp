@@ -38,17 +38,17 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		LoadDictionary(hDlg);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, Serv);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, ValueServerServ);
 
-		ReadValue(pathconfigxml, SectionServer, Host, strxmlval);
+		ReadValue(pathconfigxml, SectionServer, ValueServerHost, strxmlval);
 		if(strxmlval.empty()) strxmlval = defaultHost;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, strxmlval.c_str());
 
-		ReadValue(pathconfigxml, SectionServer, Port, strxmlval);
+		ReadValue(pathconfigxml, SectionServer, ValueServerPort, strxmlval);
 		if(strxmlval.empty()) strxmlval = defaultPort;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, strxmlval.c_str());
 
-		ReadValue(pathconfigxml, SectionServer, TimeOut, strxmlval);
+		ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
 		if(strxmlval.empty()) strxmlval = defaultTimeOut;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, strxmlval.c_str());
 
@@ -186,16 +186,16 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 			WriterStartSection(pXmlWriter, SectionServer);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, Serv);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, ValueServerServ);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, host, _countof(host));
-			WriterKey(pXmlWriter, Host, host);
+			WriterKey(pXmlWriter, ValueServerHost, host);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port, _countof(port));
-			WriterKey(pXmlWriter, Port, port);
+			WriterKey(pXmlWriter, ValueServerPort, port);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
-			WriterKey(pXmlWriter, TimeOut, num);
+			WriterKey(pXmlWriter, ValueServerTimeOut, num);
 
 			WriterEndSection(pXmlWriter);
 

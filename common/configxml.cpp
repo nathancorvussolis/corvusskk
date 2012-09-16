@@ -1,6 +1,9 @@
 ﻿
 #include "configxml.h"
 
+#pragma comment(lib, "xmllite.lib")
+#pragma comment(lib, "shlwapi.lib")
+
 //tag
 LPCWSTR TagRoot = L"skk";
 LPCWSTR TagSection = L"section";
@@ -32,24 +35,24 @@ LPCWSTR AttributeJLatin = L"jl";
 //section
 LPCWSTR SectionFont = L"font";
 //keys
-LPCWSTR FontName = L"name";
-LPCWSTR FontSize = L"size";
-LPCWSTR FontWeight = L"weight";
-LPCWSTR FontItalic = L"italic";
+LPCWSTR ValueFontName = L"name";
+LPCWSTR ValueFontSize = L"size";
+LPCWSTR ValueFontWeight = L"weight";
+LPCWSTR ValueFontItalic = L"italic";
 
 //section
 LPCWSTR SectionBehavior = L"behavior";
 //keys
-LPCWSTR MaxWidth = L"maxwidth";
-LPCWSTR UntilCandList = L"untilcandlist";
-LPCWSTR DispCandNo = L"dispcandno";
-LPCWSTR Annotation = L"annotation";
-LPCWSTR AnnotatLst = L"annotatlst";
-LPCWSTR NoModeMark = L"nomodemark";
-LPCWSTR NoOkuriConv = L"nookuriconv";
-LPCWSTR DelOkuriCncl = L"delokuricncl";
-LPCWSTR BackIncEnter = L"backincenter";
-LPCWSTR AddCandKtkn = L"addcandktkn";
+LPCWSTR ValueMaxWidth = L"maxwidth";
+LPCWSTR ValueUntilCandList = L"untilcandlist";
+LPCWSTR ValueDispCandNo = L"dispcandno";
+LPCWSTR ValueAnnotation = L"annotation";
+LPCWSTR ValueAnnotatLst = L"annotatlst";
+LPCWSTR ValueNoModeMark = L"nomodemark";
+LPCWSTR ValueNoOkuriConv = L"nookuriconv";
+LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
+LPCWSTR ValueBackIncEnter = L"backincenter";
+LPCWSTR ValueAddCandKtkn = L"addcandktkn";
 
 //section
 LPCWSTR SectionDictionary = L"dictionary";
@@ -57,10 +60,10 @@ LPCWSTR SectionDictionary = L"dictionary";
 //section
 LPCWSTR SectionServer = L"server";
 //keys
-LPCWSTR Serv = L"serv";
-LPCWSTR Host = L"host";
-LPCWSTR Port = L"port";
-LPCWSTR TimeOut = L"timeout";
+LPCWSTR ValueServerServ = L"serv";
+LPCWSTR ValueServerHost = L"host";
+LPCWSTR ValueServerPort = L"port";
+LPCWSTR ValueServerTimeOut = L"timeout";
 
 //section
 LPCWSTR SectionSelKey = L"selkey";
@@ -73,30 +76,30 @@ LPCWSTR SectionKeyMap = L"keymap";
 //section
 LPCWSTR SectionVKeyMap = L"vkeymap";
 //keys
-LPCWSTR KeyMapKana = L"kana";
-LPCWSTR KeyMapConvChar = L"convchar";
-LPCWSTR KeyMapJLatin = L"jlatin";
-LPCWSTR KeyMapAscii = L"ascii";
-LPCWSTR KeyMapJMode = L"jmode";
-LPCWSTR KeyMapAbbrev = L"abbrev";
-LPCWSTR KeyMapAffix = L"affix";
-LPCWSTR KeyMapNextCand = L"nextcand";
-LPCWSTR KeyMapPrevCand = L"prevcand";
-LPCWSTR KeyMapPurgeDic = L"purgedic";
-LPCWSTR KeyMapNextComp = L"nextcomp";
-LPCWSTR KeyMapPrevComp = L"prevcomp";
-LPCWSTR KeyMapConvPoint = L"convpoint";
-LPCWSTR KeyMapDirect = L"direct";
-LPCWSTR KeyMapEnter = L"enter";
-LPCWSTR KeyMapCancel = L"cancel";
-LPCWSTR KeyMapBack = L"back";
-LPCWSTR KeyMapDelete = L"delete";
-LPCWSTR KeyMapVoid = L"void";
-LPCWSTR KeyMapLeft = L"left";
-LPCWSTR KeyMapUp = L"up";
-LPCWSTR KeyMapRight = L"right";
-LPCWSTR KeyMapDown = L"down";
-LPCWSTR KeyMapPaste = L"paste";
+LPCWSTR ValueKeyMapKana = L"kana";
+LPCWSTR ValueKeyMapConvChar = L"convchar";
+LPCWSTR ValueKeyMapJLatin = L"jlatin";
+LPCWSTR ValueKeyMapAscii = L"ascii";
+LPCWSTR ValueKeyMapJMode = L"jmode";
+LPCWSTR ValueKeyMapAbbrev = L"abbrev";
+LPCWSTR ValueKeyMapAffix = L"affix";
+LPCWSTR ValueKeyMapNextCand = L"nextcand";
+LPCWSTR ValueKeyMapPrevCand = L"prevcand";
+LPCWSTR ValueKeyMapPurgeDic = L"purgedic";
+LPCWSTR ValueKeyMapNextComp = L"nextcomp";
+LPCWSTR ValueKeyMapPrevComp = L"prevcomp";
+LPCWSTR ValueKeyMapConvPoint = L"convpoint";
+LPCWSTR ValueKeyMapDirect = L"direct";
+LPCWSTR ValueKeyMapEnter = L"enter";
+LPCWSTR ValueKeyMapCancel = L"cancel";
+LPCWSTR ValueKeyMapBack = L"back";
+LPCWSTR ValueKeyMapDelete = L"delete";
+LPCWSTR ValueKeyMapVoid = L"void";
+LPCWSTR ValueKeyMapLeft = L"left";
+LPCWSTR ValueKeyMapUp = L"up";
+LPCWSTR ValueKeyMapRight = L"right";
+LPCWSTR ValueKeyMapDown = L"down";
+LPCWSTR ValueKeyMapPaste = L"paste";
 
 //section
 LPCWSTR SectionConvPoint = L"convpoint";

@@ -10,9 +10,6 @@
 #include <xmllite.h>
 #include <Shlwapi.h>
 
-#pragma comment(lib, "xmllite.lib")
-#pragma comment(lib, "shlwapi.lib")
-
 #define NOT_S_OK not_s_ok
 #define EXIT_NOT_S_OK(hr) if(S_OK != (hr)) goto NOT_S_OK
 
@@ -72,24 +69,24 @@ extern LPCWSTR AttributeJLatin;
 //section
 extern LPCWSTR SectionFont;
 //keys
-extern LPCWSTR FontName;
-extern LPCWSTR FontSize;
-extern LPCWSTR FontWeight;
-extern LPCWSTR FontItalic;
+extern LPCWSTR ValueFontName;
+extern LPCWSTR ValueFontSize;
+extern LPCWSTR ValueFontWeight;
+extern LPCWSTR ValueFontItalic;
 
 //section
 extern LPCWSTR SectionBehavior;
 //keys
-extern LPCWSTR MaxWidth;
-extern LPCWSTR UntilCandList;
-extern LPCWSTR DispCandNo;
-extern LPCWSTR Annotation;
-extern LPCWSTR AnnotatLst;
-extern LPCWSTR NoModeMark;
-extern LPCWSTR NoOkuriConv;
-extern LPCWSTR DelOkuriCncl;
-extern LPCWSTR BackIncEnter;
-extern LPCWSTR AddCandKtkn;
+extern LPCWSTR ValueMaxWidth;
+extern LPCWSTR ValueUntilCandList;
+extern LPCWSTR ValueDispCandNo;
+extern LPCWSTR ValueAnnotation;
+extern LPCWSTR ValueAnnotatLst;
+extern LPCWSTR ValueNoModeMark;
+extern LPCWSTR ValueNoOkuriConv;
+extern LPCWSTR ValueDelOkuriCncl;
+extern LPCWSTR ValueBackIncEnter;
+extern LPCWSTR ValueAddCandKtkn;
 
 //section
 extern LPCWSTR SectionDictionary;
@@ -97,10 +94,10 @@ extern LPCWSTR SectionDictionary;
 //section
 extern LPCWSTR SectionServer;
 //keys
-extern LPCWSTR Serv;
-extern LPCWSTR Host;
-extern LPCWSTR Port;
-extern LPCWSTR TimeOut;
+extern LPCWSTR ValueServerServ;
+extern LPCWSTR ValueServerHost;
+extern LPCWSTR ValueServerPort;
+extern LPCWSTR ValueServerTimeOut;
 
 //section
 extern LPCWSTR SectionSelKey;
@@ -113,30 +110,30 @@ extern LPCWSTR SectionKeyMap;
 //section
 extern LPCWSTR SectionVKeyMap;
 //keys
-extern LPCWSTR KeyMapKana;
-extern LPCWSTR KeyMapConvChar;
-extern LPCWSTR KeyMapJLatin;
-extern LPCWSTR KeyMapAscii;
-extern LPCWSTR KeyMapJMode;
-extern LPCWSTR KeyMapAbbrev;
-extern LPCWSTR KeyMapAffix;
-extern LPCWSTR KeyMapNextCand;
-extern LPCWSTR KeyMapPrevCand;
-extern LPCWSTR KeyMapPurgeDic;
-extern LPCWSTR KeyMapNextComp;
-extern LPCWSTR KeyMapPrevComp;
-extern LPCWSTR KeyMapConvPoint;
-extern LPCWSTR KeyMapDirect;
-extern LPCWSTR KeyMapEnter;
-extern LPCWSTR KeyMapCancel;
-extern LPCWSTR KeyMapBack;
-extern LPCWSTR KeyMapDelete;
-extern LPCWSTR KeyMapVoid;
-extern LPCWSTR KeyMapLeft;
-extern LPCWSTR KeyMapUp;
-extern LPCWSTR KeyMapRight;
-extern LPCWSTR KeyMapDown;
-extern LPCWSTR KeyMapPaste;
+extern LPCWSTR ValueKeyMapKana;
+extern LPCWSTR ValueKeyMapConvChar;
+extern LPCWSTR ValueKeyMapJLatin;
+extern LPCWSTR ValueKeyMapAscii;
+extern LPCWSTR ValueKeyMapJMode;
+extern LPCWSTR ValueKeyMapAbbrev;
+extern LPCWSTR ValueKeyMapAffix;
+extern LPCWSTR ValueKeyMapNextCand;
+extern LPCWSTR ValueKeyMapPrevCand;
+extern LPCWSTR ValueKeyMapPurgeDic;
+extern LPCWSTR ValueKeyMapNextComp;
+extern LPCWSTR ValueKeyMapPrevComp;
+extern LPCWSTR ValueKeyMapConvPoint;
+extern LPCWSTR ValueKeyMapDirect;
+extern LPCWSTR ValueKeyMapEnter;
+extern LPCWSTR ValueKeyMapCancel;
+extern LPCWSTR ValueKeyMapBack;
+extern LPCWSTR ValueKeyMapDelete;
+extern LPCWSTR ValueKeyMapVoid;
+extern LPCWSTR ValueKeyMapLeft;
+extern LPCWSTR ValueKeyMapUp;
+extern LPCWSTR ValueKeyMapRight;
+extern LPCWSTR ValueKeyMapDown;
+extern LPCWSTR ValueKeyMapPaste;
 
 //section
 extern LPCWSTR SectionConvPoint;

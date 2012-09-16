@@ -271,13 +271,18 @@ void CCandidateWindow::_CalcWindowRect()
 	RECT r, rw;
 	HDC hdc;
 	int x, y, cx, cy;
+	HMONITOR hMonitor;
+	MONITORINFO mi;
 
 	if(_hwnd == NULL)
 	{
 		return;
 	}
 
-	SystemParametersInfo(SPI_GETWORKAREA, 0, &rw, 0);
+	hMonitor = MonitorFromPoint(_pt, MONITOR_DEFAULTTONEAREST);
+	mi.cbSize = sizeof(mi);
+	GetMonitorInfoW(hMonitor, &mi);
+	rw = mi.rcWork;
 
 	hdc = GetDC(_hwnd);
 	SelectObject(hdc, hFont);
@@ -294,30 +299,26 @@ void CCandidateWindow::_CalcWindowRect()
 	cx = r.right + 8;
 	cy = r.bottom + 8;
 
-	if(rw.right < _pTextService->maxwidth)
-	{
-		x = 0;
-	}
-	else if(rw.right - cx < _pt.x)
+	if((rw.right - cx) < _pt.x)
 	{
 		x = rw.right - cx;
 	}
-	else if(_pt.x < 0)
+	else if(_pt.x < rw.left)
 	{
-		x = 0;
+		x = rw.left;
 	}
 	else
 	{
 		x = _pt.x;
 	}
 
-	if(rw.bottom - cy < _pt.y)
+	if((rw.bottom - cy) < _pt.y)
 	{
 		y = rw.bottom - cy;
 	}
-	else if(_pt.y < 0)
+	else if(_pt.y < rw.top)
 	{
-		y = 0;
+		y = rw.top;
 	}
 	else
 	{

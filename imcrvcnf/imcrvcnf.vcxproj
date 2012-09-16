@@ -174,7 +174,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="imcrvcnf.ico" />
-    <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="convtable.h" />

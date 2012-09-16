@@ -9,7 +9,7 @@ class CLangBarItemButton;
 class CCandidateList;
 
 class CTextService :
-	public ITfTextInputProcessorEx,
+	public ITfTextInputProcessor,
 	public ITfThreadMgrEventSink,
 	public ITfThreadFocusSink,
 	public ITfCompartmentEventSink,
@@ -33,9 +33,6 @@ public:
 	// ITfTextInputProcessor
 	STDMETHODIMP Activate(ITfThreadMgr *ptim, TfClientId tid);
 	STDMETHODIMP Deactivate();
-
-	// ITfTextInputProcessorEx
-	STDMETHODIMP ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags);
 
 	// ITfThreadMgrEventSink
 	STDMETHODIMP OnInitDocumentMgr(ITfDocumentMgr *pdim);
