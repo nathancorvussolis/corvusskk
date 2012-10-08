@@ -92,11 +92,27 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 			continue;
 		}
 
+		bom = L'\0';
 		fread(&bom, 2, 1, fpskkdic);
+		if(bom == 0xBBEF)
+		{
+			bom = L'\0';
+			fread(&bom, 2, 1, fpskkdic);
+			if((bom & 0xFF) == 0xBF)
+			{
+				bom = 0xFEFF;
+			}
+		}
 
 		switch(bom)
 		{
 		case 0xFEFF:
+			fclose(fpskkdic);
+			_wfopen_s(&fpskkdic, path, RccsUNICODE);
+			if(fpskkdic == NULL)
+			{
+				continue;
+			}
 			break;
 		default:
 			fseek(fpskkdic, SEEK_SET, 0);

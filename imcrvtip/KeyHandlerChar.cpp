@@ -3,7 +3,7 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR ch, WCHAR chO)
+HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, WCHAR ch, WCHAR chO)
 {
 	ROMAN_KANA_CONV rkc;
 	ASCII_JLATIN_CONV ajc;
@@ -12,6 +12,12 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 
 	if(showentry)
 	{
+		_Update(ec, pContext, composition, TRUE);
+		if(pContext == NULL)	//辞書登録用
+		{
+			composition.clear();
+		}
+		_ResetStatus();
 		_HandleCharReturn(ec, pContext);
 	}
 
@@ -26,6 +32,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 	case im_katakana:
 		if(abbrevmode)
 		{
+			_HandleCharTerminate(ec, pContext, composition);
 			roman.clear();
 			kana.push_back(ch);
 			_Update(ec, pContext);
@@ -84,6 +91,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 						break;
 					}
 
+					_HandleCharTerminate(ec, pContext, composition);
 					_Update(ec, pContext);
 					break;
 				}
@@ -104,8 +112,11 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 
 				if(!inputkey)
 				{
-					_Update(ec, pContext, TRUE);
-					_TerminateComposition(ec, pContext);
+					_HandleCharTerminate(ec, pContext, composition);	//候補＋仮名
+					if(composition.empty())
+					{
+						_HandleCharReturn(ec, pContext);	//仮名のみ
+					}
 					kana.clear();
 					if(rkc.soku)
 					{
@@ -115,6 +126,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 				}
 				else
 				{
+					_HandleCharTerminate(ec, pContext, composition);
 					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv && !rkc.wait)
 					{
 						showentry = TRUE;
@@ -129,11 +141,13 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WCHAR c
 				break;
 			
 			case E_PENDING:	//途中まで一致
+				_HandleCharTerminate(ec, pContext, composition);
 				roman.push_back(ch);
 				_Update(ec, pContext);
 				break;
 			
 			case E_ABORT:	//不一致
+				_HandleCharTerminate(ec, pContext, composition);
 				roman.clear();
 				if(accompidx != 0 && accompidx + 1 == kana.size())
 				{
@@ -184,6 +198,17 @@ HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, B
 	_Update(ec, pContext, TRUE, back);
 	_TerminateComposition(ec, pContext);
 	_ResetStatus();
+
+	return S_OK;
+}
+
+HRESULT CTextService::_HandleCharTerminate(TfEditCookie ec, ITfContext *pContext, std::wstring &composition)
+{
+	if(!composition.empty())
+	{
+		_Update(ec, pContext, composition, TRUE);
+		_TerminateComposition(ec, pContext);
+	}
 
 	return S_OK;
 }

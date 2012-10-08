@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.8.4"
+#define TEXTSERVICE_VER		L"0.8.5"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.8.4"
-#define RC_VERSION_D		0,8,4,0
+#define RC_VERSION			"0.8.5"
+#define RC_VERSION_D		0,8,5,0
 
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256

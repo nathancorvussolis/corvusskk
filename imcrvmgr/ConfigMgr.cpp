@@ -18,7 +18,8 @@ WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 BOOL serv;		//SKK辞書サーバを使用する
 WCHAR host[MAX_SKKSERVER_HOST] = {L'\0'};	//ホスト
 WCHAR port[MAX_SKKSERVER_PORT] = {L'\0'};	//ポート
-DWORD timeout;	//タイムアウト
+DWORD encoding = 0;		//エンコーディング
+DWORD timeout = 1000;	//タイムアウト
 
 void CreateConfigPath()
 {
@@ -95,6 +96,8 @@ void LoadConfig()
 {
 	WCHAR hosttmp[MAX_SKKSERVER_HOST];	//ホスト
 	WCHAR porttmp[MAX_SKKSERVER_PORT];	//ポート
+	DWORD encodingtmp;
+	DWORD timeouttmp;
 	std::wstring strxmlval;
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerServ, strxmlval);
@@ -116,15 +119,28 @@ void LoadConfig()
 	ReadValue(pathconfigxml, SectionServer, ValueServerPort, strxmlval);
 	wcsncpy_s(porttmp, strxmlval.c_str(), _TRUNCATE);
 
+	ReadValue(pathconfigxml, SectionServer, ValueServerEncoding, strxmlval);
+	encodingtmp = _wtoi(strxmlval.c_str());
+	if(encodingtmp != 1)
+	{
+		encodingtmp = 0;
+	}
+
 	ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
-	timeout = _wtoi(strxmlval.c_str());
-	if(timeout > 60000) timeout = 1000;
+	timeouttmp = _wtoi(strxmlval.c_str());
+	if(timeouttmp > 60000)
+	{
+		timeouttmp = 1000;
+	}
 
 	//変更があったら接続し直す
-	if(wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0)
+	if(wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
+		encodingtmp != encoding || timeouttmp != timeout)
 	{
 		wcsncpy_s(host, hosttmp, _TRUNCATE);
 		wcsncpy_s(port, porttmp, _TRUNCATE);
+		encoding = encodingtmp;
+		timeout = timeouttmp;
 
 		DisconnectSKKServer();
 		if(serv)

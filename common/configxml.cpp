@@ -63,6 +63,7 @@ LPCWSTR SectionServer = L"server";
 LPCWSTR ValueServerServ = L"serv";
 LPCWSTR ValueServerHost = L"host";
 LPCWSTR ValueServerPort = L"port";
+LPCWSTR ValueServerEncoding = L"encoding";
 LPCWSTR ValueServerTimeOut = L"timeout";
 
 //section

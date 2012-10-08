@@ -288,7 +288,7 @@ void CCandidateWindow::_CalcWindowRect()
 	SelectObject(hdc, hFont);
 	ZeroMemory(&r, sizeof(r));
 	r.right = _pTextService->maxwidth - 8;
-	if(r.right < 0)
+	if(r.right <= 0)
 	{
 		r.right = 1;
 	}

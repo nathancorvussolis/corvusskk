@@ -13,6 +13,11 @@ static LPCWSTR markAnnotation = L";";
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
 	std::wstring composition;
+	return _Update(ec, pContext, composition, fixed, back);
+}
+
+HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, BOOL fixed, BOOL back)
+{
 	WCHAR candidatecount[16];
 	WCHAR useraddmode = REQ_USER_ADD_1;
 	LONG cchReq = 0;

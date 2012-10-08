@@ -43,6 +43,7 @@
     <key name="serv" value="0" />
     <key name="host" value="localhost" />
     <key name="port" value="1178" />
+    <key name="encoding" value="0" />
     <key name="timeout" value="1000" />
   </section>
   <section name="selkey">

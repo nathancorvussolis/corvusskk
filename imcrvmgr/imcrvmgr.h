@@ -69,6 +69,7 @@ extern WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 extern BOOL serv;		//SKK辞書サーバを使用する
 extern WCHAR host[MAX_SKKSERVER_HOST];	//ホスト
 extern WCHAR port[MAX_SKKSERVER_PORT];	//ポート
+extern DWORD encoding;	//エンコーディング
 extern DWORD timeout;	//タイムアウト
 
 #endif //IMCRVMGR_H

@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.8.4
+     CorvusSKK version 0.8.5
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -159,10 +159,17 @@
   こちらからも辞書をダウンロード出来ます。 http://ring.nict.go.jp/archives/elisp/skk/dic/
   設定ダイアログのリストにSKK辞書を追加し、取込ボタンを押して下さい。
   独自形式の取込済SKK辞書に変換されて、使用可能となります。
-  SKK辞書の文字コードは、EUC-JIS-2004 と UTF-16(LE, BOMあり) に対応しています。
+  SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-16(LE, BOMあり)、
+  UTF-8(BOMあり) に対応しています。
   Emacs Lisp の関数は、(concat "～\073～")、(concat "～\057～") のみ対応して
   います。
-  SKK辞書サーバは同時に１つのみ使用可能です。IPv4、IPv6に対応しています。
+
+
+・SKK辞書サーバ
+
+  同時に１つのみ使用可能です。IPv4、IPv6 に対応しています。
+  通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応していますが、
+  通常のSKK辞書サーバではデフォルトの EUC-JIS-2004 を使用して下さい。
   サーバコンプリーション機能は未実装です。
 
 

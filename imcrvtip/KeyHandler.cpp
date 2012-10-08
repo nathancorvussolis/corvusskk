@@ -48,6 +48,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	WCHAR ch;
 	WCHAR chO;
 	std::wstring romanN;
+	std::wstring composition;
 	
 	if(bSf == SKK_NULL)
 	{
@@ -128,9 +129,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			chO = L'\0';
 		}
 		romanN = roman;
-		if(_HandleChar(ec, pContext, ch, chO) == E_ABORT)
+		if(_HandleChar(ec, pContext, composition, ch, chO) == E_ABORT)
 		{
-			//「n-」等
+			//待機処理等
 			switch(inputmode)
 			{
 			case im_hiragana:
@@ -142,13 +143,19 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					{
 						if(!inputkey)
 						{
+							_Update(ec, pContext, composition, TRUE);
+							if(pContext == NULL)	//辞書登録用
+							{
+								composition.clear();
+							}
+							_ResetStatus();
 							_HandleCharReturn(ec, pContext);
 						}
 						else
 						{
 							_Update(ec, pContext);
 						}
-						_HandleChar(ec, pContext, ch, chO);
+						_HandleChar(ec, pContext, composition, ch, chO);
 					}
 					else
 					{

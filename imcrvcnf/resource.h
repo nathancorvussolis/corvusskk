@@ -39,9 +39,11 @@
 #define IDC_BUTTON_SKK_DIC_MAKE                 1306
 
 #define IDC_CHECKBOX_SKKSRV                     1351
-#define IDC_EDIT_SKKSRV_HOST                    1352
-#define IDC_EDIT_SKKSRV_PORT                    1353
-#define IDC_EDIT_SKKSRV_TIMEOUT                 1354
+#define IDC_RADIO_EUC                           1352
+#define IDC_RADIO_UTF8                          1353
+#define IDC_EDIT_SKKSRV_HOST                    1354
+#define IDC_EDIT_SKKSRV_PORT                    1355
+#define IDC_EDIT_SKKSRV_TIMEOUT                 1356
 
 #define IDC_LIST_SELKEY                         1501
 #define IDC_EDIT_SELKEY_DISP                    1502

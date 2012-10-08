@@ -97,6 +97,7 @@ extern LPCWSTR SectionServer;
 extern LPCWSTR ValueServerServ;
 extern LPCWSTR ValueServerHost;
 extern LPCWSTR ValueServerPort;
+extern LPCWSTR ValueServerEncoding;
 extern LPCWSTR ValueServerTimeOut;
 
 //section

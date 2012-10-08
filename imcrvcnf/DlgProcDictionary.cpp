@@ -48,6 +48,12 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		if(strxmlval.empty()) strxmlval = defaultPort;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, strxmlval.c_str());
 
+		LoadCheckButton(hDlg, IDC_RADIO_UTF8, SectionServer, ValueServerEncoding);
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_UTF8))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_EUC, BST_CHECKED);
+		}
+
 		ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
 		if(strxmlval.empty()) strxmlval = defaultTimeOut;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, strxmlval.c_str());
@@ -169,6 +175,11 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			}
 			break;
 
+		case IDC_RADIO_EUC:
+		case IDC_RADIO_UTF8:
+			PropSheet_Changed(GetParent(hDlg), hDlg);
+			return (INT_PTR)TRUE;
+
 		default:
 			break;
 		}
@@ -193,6 +204,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port, _countof(port));
 			WriterKey(pXmlWriter, ValueServerPort, port);
+
+			SaveCheckButton(hDlg, IDC_RADIO_UTF8, SectionServer, ValueServerEncoding);
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
 			WriterKey(pXmlWriter, ValueServerTimeOut, num);

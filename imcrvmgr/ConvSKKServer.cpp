@@ -27,17 +27,38 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 	int n, nn;
 	WCHAR wbuf[BUFSIZE];
 
-	size = _countof(key) - 2;
-	if(WideCharToEucJis2004(text.c_str(), NULL, key + 1, &size))
+	switch(encoding)
 	{
-		key[0] = SKK_REQ;
-		key[size + 1] = 0x20;
-		key[size + 2] = 0x00;
-		size += 2;
-	}
-	else
-	{
+	case 0:
+		size = _countof(key) - 2;
+		if(WideCharToEucJis2004(text.c_str(), NULL, key + 1, &size))
+		{
+			key[0] = SKK_REQ;
+			key[size + 1] = 0x20;
+			key[size + 2] = 0x00;
+			size += 2;
+		}
+		else
+		{
+			return;
+		}
+		break;
+	case 1:
+		if((size = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), -1, key + 1, _countof(key) - 2, NULL, NULL)) != 0)
+		{
+			key[0] = SKK_REQ;
+			key[size + 0] = 0x20;
+			key[size + 1] = 0x00;
+			size += 2;
+		}
+		else
+		{
+			return;
+		}
+		break;
+	default:
 		return;
+		break;
 	}
 
 	ZeroMemory(buf, sizeof(buf));
@@ -90,8 +111,23 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 end:
 	if(idxbuf > 0 && buf[0] == SKK_HIT)
 	{
-		size = _countof(wbuf);
-		if(EucJis2004ToWideChar(buf, NULL, wbuf, &size))
+		BOOL ret = FALSE;
+		switch(encoding)
+		{
+		case 0:
+			size = _countof(wbuf);
+			ret = EucJis2004ToWideChar(buf, NULL, wbuf, &size);
+			break;
+		case 1:
+			if(MultiByteToWideChar(CP_UTF8, 0, buf, -1, wbuf, _countof(wbuf)) != 0)
+			{
+				ret = TRUE;
+			}
+			break;
+		default:
+			break;
+		}
+		if(ret)
 		{
 			std::wstring res(&wbuf[1]);
 			if(!res.empty())
@@ -175,7 +211,8 @@ void GetSKKServerVersion()
 		DisconnectSKKServer();
 		ConnectSKKServer();
 	}
-	else {
+	else
+	{
 		ZeroMemory(rbuf, sizeof(rbuf));
 		n = recv(sock, rbuf, sizeof(rbuf), 0);
 		if(n == SOCKET_ERROR || n == 0)
