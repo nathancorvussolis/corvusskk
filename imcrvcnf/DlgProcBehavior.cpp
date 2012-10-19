@@ -171,15 +171,12 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
-			if(IsVersion62AndOver(ovi))
+			_wfopen_s(&fp, pathconfigxml, L"ab");
+			if(fp != NULL)
 			{
-				_wfopen_s(&fp, pathconfigxml, L"a");
-				if(fp != NULL)
-				{
-					fclose(fp);
-				}
-				SetFileDaclAC(pathconfigxml);
+				fclose(fp);
 			}
+			SetFileDacl(pathconfigxml);
 
 			WriterInit(pathconfigxml, &pXmlWriter, &pXmlFileStream);
 

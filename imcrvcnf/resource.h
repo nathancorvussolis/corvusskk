@@ -38,6 +38,9 @@
 #define IDC_BUTTON_SKK_DIC_DOWN                 1305
 #define IDC_BUTTON_SKK_DIC_MAKE                 1306
 
+#define IDD_DIALOG_SKK_DIC_MAKE                 1321
+#define IDC_STATIC_DIC_PW                       1322
+
 #define IDC_CHECKBOX_SKKSRV                     1351
 #define IDC_RADIO_EUC                           1352
 #define IDC_RADIO_UTF8                          1353

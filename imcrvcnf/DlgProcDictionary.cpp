@@ -21,7 +21,6 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR host[MAX_SKKSERVER_HOST];
 	WCHAR port[MAX_SKKSERVER_PORT];
 	std::wstring strxmlval;
-	HRESULT hr;
 
 	switch(message)
 	{
@@ -145,16 +144,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				L"SKK辞書を読み込み、独自形式辞書を作成します。\nよろしいですか？",
 				TextServiceDesc, MB_OKCANCEL))
 			{
-				hr = MakeSKKDic(hDlg);
-				if(hr == S_OK)
-				{
-					MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
-				}
-				else
-				{
-					_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", hr);
-					MessageBoxW(hDlg, num, TextServiceDesc, MB_OK | MB_ICONERROR);
-				}
+				MakeSKKDic(hDlg);
 			}
 			return (INT_PTR)TRUE;
 

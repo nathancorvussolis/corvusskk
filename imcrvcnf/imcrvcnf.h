@@ -12,11 +12,12 @@ void CreateProperty(HINSTANCE hInst);
 
 // ConfigCnf
 void CreateConfigPath();
+BOOL SetFileDacl(LPCWSTR path);
 
 // PropertyConfDictionary
 void LoadDictionary(HWND hwnd);
 void SaveDictionary(HWND hwnd);
-HRESULT MakeSKKDic(HWND hwnd);
+void MakeSKKDic(HWND hwnd);
 
 // PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
@@ -39,6 +40,7 @@ extern LPCWSTR TextServiceDesc;
 extern IXmlWriter *pXmlWriter;
 extern IStream *pXmlFileStream;
 
+extern HINSTANCE hInst;
 extern OSVERSIONINFOW ovi;
 
 extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス

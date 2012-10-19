@@ -9,6 +9,13 @@
 typedef std::pair<std::wstring, std::wstring> ENTRY;
 typedef std::map<std::wstring, std::wstring> ENTRYS;
 
+typedef struct {
+	HWND p;
+	HWND c;
+	HRESULT hr;
+} MAKESKKDICINFO;
+MAKESKKDICINFO msdi;
+
 void LoadDictionary(HWND hwnd)
 {
 	HWND hWndList;
@@ -354,14 +361,68 @@ NOT_S_OK:
 	return hr;
 }
 
-HRESULT MakeSKKDic(HWND hwnd)
+unsigned int __stdcall MakeSKKDicThread(void *p)
 {
-	HRESULT hr;
 	ENTRYS entrys;
 
-	LoadSKKDic(hwnd, entrys);
+	LoadSKKDic(msdi.p, entrys);
+	msdi.hr = WriteSKKDicXml(entrys);
+	return 0;
+}
 
-	hr = WriteSKKDicXml(entrys);
+void MakeSKKDicWaitThread(void *p)
+{
+	WCHAR num[32];
+	HANDLE hThread;
+	
+	hThread = (HANDLE)_beginthreadex(NULL, 0, MakeSKKDicThread, NULL, 0, NULL);
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
 
-	return hr;
+	if(msdi.hr == S_OK)
+	{
+		MessageBoxW(msdi.c, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
+	}
+	else
+	{
+		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", msdi.hr);
+		MessageBoxW(msdi.c, num, TextServiceDesc, MB_OK | MB_ICONERROR);
+	}
+	EndDialog(msdi.c, TRUE);
+	return;
+}
+
+INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	LPCWSTR pw[] = {L"／",L"─",L"＼",L"│"};
+	static int ipw = 0;
+
+	switch(message)
+	{
+	case WM_INITDIALOG:
+		msdi.c = hDlg;
+		_beginthread(MakeSKKDicWaitThread, 0, NULL);
+		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
+		return (INT_PTR)TRUE;
+	case WM_TIMER:
+		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
+		ipw++;
+		if(ipw >= _countof(pw))
+		{
+			ipw = 0;
+		}
+		return (INT_PTR)TRUE;
+	case WM_DESTROY:
+		KillTimer(hDlg, IDC_STATIC_DIC_PW);
+		return (INT_PTR)TRUE;
+	default:
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+void MakeSKKDic(HWND hwnd)
+{
+	msdi.p = hwnd;
+	DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_MAKE), hwnd, DlgProcSKKDic);
 }

@@ -2,6 +2,7 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+HINSTANCE hInst;
 OSVERSIONINFOW ovi;
 
 // static dialog procedure
@@ -21,6 +22,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	INITCOMMONCONTROLSEX icex;
 
 	_wsetlocale(LC_ALL, L"japanese");
+
+	hInst = hInstance;
 
 	ZeroMemory(&ovi, sizeof(ovi));
 	ovi.dwOSVersionInfoSize = sizeof(ovi);
@@ -43,7 +46,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	return 0;
 }
 
-void CreateProperty(HINSTANCE hInst)
+void CreateProperty(HINSTANCE hInstance)
 {
 	PROPSHEETPAGEW psp;
 	PROPSHEETHEADERW psh;
@@ -93,7 +96,7 @@ void CreateProperty(HINSTANCE hInst)
 	ZeroMemory(&psh, sizeof(PROPSHEETHEADERW));
 	psh.dwSize = sizeof(PROPSHEETHEADERW);
 	psh.dwFlags = PSH_DEFAULT;
-	psh.hInstance = hInst;
+	psh.hInstance = hInstance;
 	psh.hwndParent = NULL;
 	psh.nPages = 9;
 	psh.phpage = hpsp;
