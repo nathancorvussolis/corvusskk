@@ -71,18 +71,10 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 			if(fixed && !candidates[candidx].second.first.empty())
 			{
 				//数値変換タイプ0～3の候補は数値を#にした見出し語 それ以外は見出し語そのまま
-				if(std::regex_match(candidates[candidx].second.first, std::wregex(L".*#[0-3].*")))
-				{
-					_AddUserDic(searchkey,
-						candidates[candidx].second.first, candidates[candidx].second.second,
-						useraddmode);
-				}
-				else
-				{
-					_AddUserDic(searchkeyorg,
-						candidates[candidx].second.first, candidates[candidx].second.second,
-						useraddmode);
-				}
+				_AddUserDic(useraddmode,
+					(std::regex_match(candidates[candidx].second.first, std::wregex(L".*#[0-3].*")) ?
+						searchkey : searchkeyorg),
+					candidates[candidx].second.first, candidates[candidx].second.second);
 			}
 		}
 		else

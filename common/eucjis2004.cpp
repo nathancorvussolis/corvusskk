@@ -202,7 +202,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 			{
 				*srcsize = si;
 			}
-			*dstsize = di;
+			*dstsize = di + 1;
 			*(dst + di) = L'\0';
 			return FALSE;
 		}
@@ -224,7 +224,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 			{
 				*srcsize = si;
 			}
-			*dstsize = di;
+			*dstsize = di + 1;
 			*(dst + di) = L'\0';
 			return FALSE;
 		}
@@ -244,7 +244,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	{
 		*srcsize = si;
 	}
-	*dstsize = di;
+	*dstsize = di + 1;
 	*(dst + di) = L'\0';
 	return TRUE;
 }
@@ -295,7 +295,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 					{
 						*srcsize = si;
 					}
-					*dstsize = di;
+					*dstsize = di + 1;
 					*(dst + di) = 0;
 					return FALSE;
 				}
@@ -340,7 +340,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						{
 							*srcsize = si;
 						}
-						*dstsize = di;
+						*dstsize = di + 1;
 						*(dst + di) = 0;
 						return FALSE;
 					}
@@ -370,7 +370,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								{
 									*srcsize = si;
 								}
-								*dstsize = di;
+								*dstsize = di + 1;
 								*(dst + di) = 0;
 								return FALSE;
 							}
@@ -395,7 +395,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								{
 									*srcsize = si;
 								}
-								*dstsize = di;
+								*dstsize = di + 1;
 								*(dst + di) = 0;
 								return FALSE;
 							}
@@ -434,7 +434,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							{
 								*srcsize = si;
 							}
-							*dstsize = di;
+							*dstsize = di + 1;
 							*(dst + di) = 0;
 							return FALSE;
 						}
@@ -456,7 +456,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 				{
 					*srcsize = si;
 				}
-				*dstsize = di;
+				*dstsize = di + 1;
 				*(dst + di) = 0;
 				return FALSE;
 			}
@@ -467,7 +467,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 	{
 		*srcsize = si;
 	}
-	*dstsize = di;
+	*dstsize = di + 1;
 	*(dst + di) = 0;
 	return TRUE;
 }

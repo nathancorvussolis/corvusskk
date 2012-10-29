@@ -159,8 +159,8 @@ public:
 	void _ConvDic(WCHAR command);
 	void _ConnectDic();
 	void _DisconnectDic();
-	void _AddUserDic(const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation, WCHAR command);
-	void _DelUserDic(const std::wstring &key, const std::wstring &candidate);
+	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
+	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
 	void _ConvDicNum();
 	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);

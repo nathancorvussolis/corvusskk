@@ -114,6 +114,9 @@ LPCWSTR SectionJLatin = L"jlatin";
 //section
 LPCWSTR SectionComplement = L"complement";
 
+//section
+LPCWSTR SectionAccompaniment = L"accompaniment";
+
 HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream)
 {
 	HRESULT hr = S_FALSE;

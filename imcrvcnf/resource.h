@@ -48,6 +48,9 @@
 #define IDC_EDIT_SKKSRV_PORT                    1355
 #define IDC_EDIT_SKKSRV_TIMEOUT                 1356
 
+#define IDC_BUTTON_SKK_DIC_LOAD                 1371
+#define IDC_BUTTON_SKK_DIC_SAVE                 1372
+
 #define IDC_LIST_SELKEY                         1501
 #define IDC_EDIT_SELKEY_DISP                    1502
 #define IDC_EDIT_SELKEY_SPARE                   1503
@@ -105,11 +108,11 @@
 #define IDC_EDIT_KANATBL_KA                     3105
 #define IDC_CHECKBOX_KANATBL_SOKU               3106
 #define IDC_CHECKBOX_KANATBL_WAIT               3107
-#define IDC_BUTTON_LOADKANA                     3108
-#define IDC_BUTTON_KANATBL_UP                   3109
-#define IDC_BUTTON_KANATBL_DOWN                 3110
-#define IDC_BUTTON_KANATBL_W                    3111
-#define IDC_BUTTON_KANATBL_D                    3112
+#define IDC_BUTTON_KANATBL_UP                   3108
+#define IDC_BUTTON_KANATBL_DOWN                 3109
+#define IDC_BUTTON_KANATBL_W                    3110
+#define IDC_BUTTON_KANATBL_D                    3111
+#define IDC_BUTTON_LOADKANA                     3112
 
 #define IDC_LIST_JLATTBL                        3301
 #define IDC_EDIT_JLATTBL_A                      3302

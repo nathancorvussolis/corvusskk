@@ -148,4 +148,7 @@ extern LPCWSTR SectionJLatin;
 //section
 extern LPCWSTR SectionComplement;
 
+//section
+extern LPCWSTR SectionAccompaniment;
+
 #endif //CONFIGXML_H

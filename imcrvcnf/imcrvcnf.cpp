@@ -50,55 +50,41 @@ void CreateProperty(HINSTANCE hInstance)
 {
 	PROPSHEETPAGEW psp;
 	PROPSHEETHEADERW psh;
-	HPROPSHEETPAGE hpsp[9];
+	struct {
+		int id;
+		DLGPROC DlgProc;
+	} DlgPage[] = {
+		{IDD_DIALOG_BEHAVIOR,	DlgProcBehavior},
+		{IDD_DIALOG_DICTIONARY,	DlgProcDictionary},
+		{IDD_DIALOG_SELKEY,		DlgProcSelKey},
+		{IDD_DIALOG_PRSRVKEY,	DlgProcPreservedKey},
+		{IDD_DIALOG_KEYMAP1,	DlgProcKeyMap1},
+		{IDD_DIALOG_KEYMAP2,	DlgProcKeyMap2},
+		{IDD_DIALOG_CONVPOINT,	DlgProcConvPoint},
+		{IDD_DIALOG_KANATBL,	DlgProcKana},
+		{IDD_DIALOG_JLATTBL,	DlgProcJLatin}
+	};
+	HPROPSHEETPAGE hpsp[_countof(DlgPage)];
+	int i;
 
 	ZeroMemory(&psp, sizeof(PROPSHEETPAGEW));
 	psp.dwSize = sizeof(PROPSHEETPAGEW);
 	psp.dwFlags = PSP_PREMATURE;
 	psp.hInstance = hInst;
 
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_BEHAVIOR);
-	psp.pfnDlgProc = (DLGPROC)DlgProcBehavior;
-	hpsp[0] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_DICTIONARY);
-	psp.pfnDlgProc = (DLGPROC)DlgProcDictionary;
-	hpsp[1] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_SELKEY);
-	psp.pfnDlgProc = (DLGPROC)DlgProcSelKey;
-	hpsp[2] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_PRSRVKEY);
-	psp.pfnDlgProc = (DLGPROC)DlgProcPreservedKey;
-	hpsp[3] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_KEYMAP1);
-	psp.pfnDlgProc = (DLGPROC)DlgProcKeyMap1;
-	hpsp[4] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_KEYMAP2);
-	psp.pfnDlgProc = (DLGPROC)DlgProcKeyMap2;
-	hpsp[5] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_CONVPOINT);
-	psp.pfnDlgProc = (DLGPROC)DlgProcConvPoint;
-	hpsp[6] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_KANATBL);
-	psp.pfnDlgProc = (DLGPROC)DlgProcKana;
-	hpsp[7] = CreatePropertySheetPageW(&psp);
-
-	psp.pszTemplate = MAKEINTRESOURCE(IDD_DIALOG_JLATTBL);
-	psp.pfnDlgProc = (DLGPROC)DlgProcJLatin;
-	hpsp[8] = CreatePropertySheetPageW(&psp);
+	for(i=0; i<_countof(DlgPage); i++)
+	{
+		psp.pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
+		psp.pfnDlgProc = DlgPage[i].DlgProc;
+		hpsp[i] = CreatePropertySheetPageW(&psp);
+	}
 
 	ZeroMemory(&psh, sizeof(PROPSHEETHEADERW));
 	psh.dwSize = sizeof(PROPSHEETHEADERW);
 	psh.dwFlags = PSH_DEFAULT;
 	psh.hInstance = hInstance;
 	psh.hwndParent = NULL;
-	psh.nPages = 9;
+	psh.nPages = _countof(DlgPage);
 	psh.phpage = hpsp;
 	psh.pszCaption = TEXTSERVICE_DESC L" (ver. " TEXTSERVICE_VER L")";
 	PropertySheetW(&psh);

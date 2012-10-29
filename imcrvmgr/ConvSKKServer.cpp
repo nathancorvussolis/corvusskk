@@ -21,7 +21,7 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 {
 	CHAR key[KEYSIZE];
 	size_t size;
-	CHAR buf[BUFSIZE];
+	CHAR buf[BUFSIZE*2];
 	size_t idxbuf = 0;
 	CHAR rbuf[RBUFSIZE];
 	int n, nn;
@@ -34,8 +34,8 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 		if(WideCharToEucJis2004(text.c_str(), NULL, key + 1, &size))
 		{
 			key[0] = SKK_REQ;
-			key[size + 1] = 0x20;
-			key[size + 2] = 0x00;
+			key[size + 0] = 0x20;
+			key[size + 1] = 0x00;
 			size += 2;
 		}
 		else
@@ -228,9 +228,13 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 	std::vector<std::wstring> es;
 	std::vector<std::wstring>::iterator es_itr;
 	size_t i, is, ie;
+	std::wstring ca[2];
 	std::wstring s;
 	std::wregex re;
 	std::wstring fmt;
+	CANDIDATE row;
+	CANDIDATES list;
+	CANDIDATES::iterator l_itr;
 
 	//エントリを「/」で分割
 	i = 0;
@@ -247,45 +251,56 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 		i = ie;
 	}
 
-	// 「;」→「\t」、concatを置換
-	for(es_itr = es.begin(); es_itr != es.end(); es_itr++)
+	//候補と注釈を分割
+	for(i=0; i<es.size(); i++)
 	{
-		s = *es_itr;
+		row.first.clear();
+		row.second.clear();
+		s = es[i];
+		ie = s.find_first_of(L';');
 
-		re.assign(L";");
-		fmt.assign(L"\t");
-		s = std::regex_replace(s, re, fmt);
-
-		if(s.find_first_of(L'\t') == 0)
+		if(ie == std::wstring::npos)
 		{
-			continue;
-		}
-
-		re.assign(L".*\\(concat \".*\"\\).*");
-		if(std::regex_match(s, re))
-		{
-			re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-			fmt.assign(L"$1$2$3");
-			s = std::regex_replace(s, re, fmt);	//annotation if annotation has / candidate if annotaion doesnot has
-			s = std::regex_replace(s, re, fmt);	//candidate if annotaion has
-
-			re.assign(L"\\\\057");
-			fmt.assign(L"/");
-			s = std::regex_replace(s, re, fmt);
-
-			re.assign(L"\\\\073");
-			fmt.assign(L";");
-			s = std::regex_replace(s, re, fmt);
-		}
-
-		if(s.find_first_of(L'\t') == std::wstring::npos)
-		{
-			candidates.push_back(CANDIDATE(s, L""));
+			row.first = s;
+			row.second = L"";
 		}
 		else
 		{
-			candidates.push_back(
-				CANDIDATE(s.substr(0, s.find_first_of(L'\t')), s.substr(s.find_first_of(L'\t') + 1)));
+			row.first = s.substr(0, ie);
+			row.second = s.substr(ie + 1);
 		}
+
+		list.push_back(row);
+	}
+
+	//concatを置換
+	for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
+	{
+		ca[0] = l_itr->first;
+		ca[1] = l_itr->second;
+
+		for(i=0; i<2; i++)
+		{
+			s = ca[i];
+			re.assign(L".*\\(concat \".*\"\\).*");
+			if(std::regex_match(s, re))
+			{
+				re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
+				fmt.assign(L"$1$2$3");
+				s = std::regex_replace(s, re, fmt);
+
+				re.assign(L"\\\\057");
+				fmt.assign(L"/");
+				s = std::regex_replace(s, re, fmt);
+
+				re.assign(L"\\\\073");
+				fmt.assign(L";");
+				s = std::regex_replace(s, re, fmt);
+
+				ca[i] = s;
+			}
+		}
+
+		candidates.push_back(CANDIDATE(ca[0], ca[1]));
 	}
 }

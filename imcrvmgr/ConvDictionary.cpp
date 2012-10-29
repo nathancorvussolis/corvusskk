@@ -1,17 +1,23 @@
 ﻿
 #include "configxml.h"
 #include "imcrvmgr.h"
+#include "eucjis2004.h"
+
+#define BUFSIZE 0x2000
 
 void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);
-void AddComplement(const std::wstring &searchkey);
-void DelComplement(const std::wstring &searchkey);
-void LoadComplement();
+void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
+void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
+void LoadKeyOrder(LPCWSTR section, KEYORDER &keyorder);
+void WriteSKKUserDicEntry(FILE *fp, const USERDIC::iterator &userdic_itr);
 
 //ユーザ辞書
-USERDICS userdics;
-//補完
-COMPLEMENTS complements;
+USERDIC userdic;
+//補完あり
+KEYORDER complements;
+//補完なし
+KEYORDER accompaniments;
 
 void ConvDictionary(const std::wstring &searchkey, CANDIDATES &candidates, WCHAR command)
 {
@@ -60,13 +66,13 @@ void ConvDictionary(const std::wstring &searchkey, CANDIDATES &candidates, WCHAR
 
 void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates)
 {
-	USERDICS::iterator userdics_itr;
+	USERDIC::iterator userdic_itr;
 	CANDIDATES::iterator candidates_itr;
 
-	userdics_itr = userdics.find(searchkey);
-	if(userdics_itr != userdics.end())
+	userdic_itr = userdic.find(searchkey);
+	if(userdic_itr != userdic.end())
 	{
-		for(candidates_itr = userdics_itr->second.begin(); candidates_itr != userdics_itr->second.end(); candidates_itr++)
+		for(candidates_itr = userdic_itr->second.begin(); candidates_itr != userdic_itr->second.end(); candidates_itr++)
 		{
 			if(!candidates_itr->first.empty())
 			{
@@ -89,7 +95,7 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	std::wstring candidate;
 	std::wstring annotation;
 	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");;
+	std::wstring fmt(L"");
 
 	_wfopen_s(&fpidx, pathskkcvdicidx, L"rb");
 	if(fpidx == NULL)
@@ -163,90 +169,108 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	fclose(fpidx);
 }
 
-void AddUserDic(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, WCHAR command)
+void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation)
 {
-	USERDICS::iterator userdics_itr;
+	USERDIC::iterator userdic_itr;
 	CANDIDATES::iterator candidates_itr;
-	USERDICSPAIR userdic;
+	USERDICENTRY userdicentry;
 
-	userdics_itr = userdics.find(searchkey);
-	if(userdics_itr == userdics.end())
+	userdic_itr = userdic.find(searchkey);
+	if(userdic_itr == userdic.end())
 	{
-		userdic.first = searchkey;
-		userdic.second.push_back(CANDIDATE(candidate, annotation));
-		userdics.insert(userdic);
+		userdicentry.first = searchkey;
+		userdicentry.second.push_back(CANDIDATE(candidate, annotation));
+		userdic.insert(userdicentry);
 	}
 	else
 	{
-		for(candidates_itr = userdics_itr->second.begin(); candidates_itr != userdics_itr->second.end(); candidates_itr++)
+		for(candidates_itr = userdic_itr->second.begin(); candidates_itr != userdic_itr->second.end(); candidates_itr++)
 		{
 			if(candidates_itr->first == candidate)
 			{
-				userdics_itr->second.erase(candidates_itr);
+				userdic_itr->second.erase(candidates_itr);
 				break;
 			}
 		}
-		userdics_itr->second.insert(userdics_itr->second.begin(), CANDIDATE(candidate, annotation));
+		userdic_itr->second.insert(userdic_itr->second.begin(), CANDIDATE(candidate, annotation));
 	}
 
-	if(command == REQ_USER_ADD_1)
+	switch(command)
 	{
-		AddComplement(searchkey);
+	case REQ_USER_ADD_0:
+		AddKeyOrder(searchkey, accompaniments);
+		break;
+	case REQ_USER_ADD_1:
+		AddKeyOrder(searchkey, complements);
+		break;
+	default:
+		break;
 	}
 
 	bUserDicChg = TRUE;
 }
 
-void DelUserDic(const std::wstring &searchkey, const std::wstring &candidate)
+void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate)
 {
-	USERDICS::iterator userdics_itr;
+	USERDIC::iterator userdic_itr;
 	CANDIDATES::iterator candidates_itr;
 
-	userdics_itr = userdics.find(searchkey);
-	if(userdics_itr != userdics.end())
+	userdic_itr = userdic.find(searchkey);
+	if(userdic_itr != userdic.end())
 	{
-		for(candidates_itr = userdics_itr->second.begin(); candidates_itr != userdics_itr->second.end(); candidates_itr++)
+		for(candidates_itr = userdic_itr->second.begin(); candidates_itr != userdic_itr->second.end(); candidates_itr++)
 		{
 			if(candidates_itr->first == candidate)
 			{
-				userdics_itr->second.erase(candidates_itr);
+				userdic_itr->second.erase(candidates_itr);
 				break;
 			}
 		}
 
-		if(userdics_itr->second.empty())	//候補が空になった
+		if(userdic_itr->second.empty())
 		{
-			userdics.erase(userdics_itr);
-			DelComplement(searchkey);
-		}
-	}
+			userdic.erase(userdic_itr);
 
-	bUserDicChg = TRUE;
+			switch(command)
+			{
+			case REQ_USER_DEL_0:
+				DelKeyOrder(searchkey, accompaniments);
+				break;
+			case REQ_USER_DEL_1:
+				DelKeyOrder(searchkey, complements);
+				break;
+			default:
+				break;
+			}
+		}
+
+		bUserDicChg = TRUE;
+	}
 }
 
 void LoadUserDic()
 {
 	HRESULT hr;
-	USERDICS::iterator userdics_itr;
+	USERDIC::iterator userdic_itr;
 	CANDIDATES::iterator candidates_itrs;
-	USERDICSPAIR userdic;
+	USERDICENTRY userdicentry;
 	APPDATAXMLDIC xmldic;
-	APPDATAXMLDIC::iterator d_itr;;
+	APPDATAXMLDIC::iterator d_itr;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
 	std::wstring candidate;
 	std::wstring annotation;
 	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");;
+	std::wstring fmt(L"");
 
-	userdics.clear();
+	userdic.clear();
 
 	hr = ReadDicList(pathuserdicxml, SectionDictionary, xmldic);
 	EXIT_NOT_S_OK(hr);
 
 	for(d_itr = xmldic.begin(); d_itr != xmldic.end(); d_itr++)
 	{
-		userdic.first = d_itr->first;
+		userdicentry.first = d_itr->first;
 
 		for(l_itr = d_itr->second.begin(); l_itr != d_itr->second.end(); l_itr++)
 		{
@@ -270,32 +294,35 @@ void LoadUserDic()
 				continue;
 			}
 
-			userdics_itr = userdics.find(userdic.first);
-			if(userdics_itr == userdics.end())
+			userdic_itr = userdic.find(userdicentry.first);
+			if(userdic_itr == userdic.end())
 			{
-				userdic.second.clear();
-				userdic.second.push_back(CANDIDATE(candidate, annotation));
-				userdics.insert(userdic);
+				userdicentry.second.clear();
+				userdicentry.second.push_back(CANDIDATE(candidate, annotation));
+				userdic.insert(userdicentry);
 			}
 			else
 			{
-				for(candidates_itrs = userdics_itr->second.begin(); candidates_itrs != userdics_itr->second.end(); candidates_itrs++)
+				for(candidates_itrs = userdic_itr->second.begin(); candidates_itrs != userdic_itr->second.end(); candidates_itrs++)
 				{
 					if(candidates_itrs->first == candidate)
 					{
 						break;
 					}
 				}
-				if(candidates_itrs == userdics_itr->second.end())
+				if(candidates_itrs == userdic_itr->second.end())
 				{
-					userdics_itr->second.push_back(CANDIDATE(candidate, annotation));
+					userdic_itr->second.push_back(CANDIDATE(candidate, annotation));
 				}
 			}
 		}
 	}
 	
+	LoadKeyOrder(SectionComplement, complements);
+	LoadKeyOrder(SectionAccompaniment, accompaniments);
+
 NOT_S_OK:
-	LoadComplement();
+	;
 }
 
 unsigned int __stdcall SaveUserDicThreadEx(void *p)
@@ -304,14 +331,14 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 	IXmlWriter *pWriter;
 	IStream *pFileStream;
 	std::wstring s;
-	USERDICS::iterator userdics_itr;
+	USERDIC::iterator userdic_itr;
 	CANDIDATES::iterator candidates_itr;
-	COMPLEMENTS::iterator complements_itr;
+	KEYORDER::iterator keyorder_itr;
 
 	APPDATAXMLATTR attr;
 	APPDATAXMLROW row;
 	APPDATAXMLLIST list;
-	USERDICS::iterator u_itr;
+	USERDIC::iterator u_itr;
 
 	USERDATA *userdata = (USERDATA *)p;
 
@@ -336,7 +363,7 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 	hr = WriterNewLine(pWriter);
 	EXIT_NOT_S_OK(hr);
 
-	for(u_itr = userdata->userdics.begin(); u_itr != userdata->userdics.end(); u_itr++)
+	for(u_itr = userdata->userdic.begin(); u_itr != userdata->userdic.end(); u_itr++)
 	{
 		list.clear();
 
@@ -376,7 +403,7 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 	hr = WriterNewLine(pWriter);
 	EXIT_NOT_S_OK(hr);
 
-	//補完
+	//補完あり
 	hr = WriterStartSection(pWriter, SectionComplement);
 	EXIT_NOT_S_OK(hr);
 
@@ -385,12 +412,12 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 
 	list.clear();
 
-	for(complements_itr = userdata->complements.begin(); complements_itr != userdata->complements.end(); complements_itr++)
+	for(keyorder_itr = userdata->complements.begin(); keyorder_itr != userdata->complements.end(); keyorder_itr++)
 	{
 		row.clear();
 
 		attr.first = AttributeKey;
-		attr.second = *complements_itr;
+		attr.second = *keyorder_itr;
 		row.push_back(attr);
 
 		list.push_back(row);
@@ -403,6 +430,38 @@ unsigned int __stdcall SaveUserDicThreadEx(void *p)
 	EXIT_NOT_S_OK(hr);
 
 	hr = WriterEndSection(pWriter);	//SectionComplement
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	//補完なし
+	hr = WriterStartSection(pWriter, SectionAccompaniment);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	list.clear();
+
+	for(keyorder_itr = userdata->accompaniments.begin(); keyorder_itr != userdata->accompaniments.end(); keyorder_itr++)
+	{
+		row.clear();
+
+		attr.first = AttributeKey;
+		attr.second = *keyorder_itr;
+		row.push_back(attr);
+
+		list.push_back(row);
+	}
+
+	hr = WriterList(pWriter, list, TRUE);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterNewLine(pWriter);
+	EXIT_NOT_S_OK(hr);
+
+	hr = WriterEndSection(pWriter);	//SectionAccompaniment
 	EXIT_NOT_S_OK(hr);
 
 	hr = WriterNewLine(pWriter);
@@ -432,8 +491,9 @@ HANDLE StartSaveUserDicEx()
 	{
 		bUserDicChg = FALSE;
 		USERDATA *userdata = new USERDATA();
-		userdata->userdics = userdics; 
+		userdata->userdic = userdic; 
 		userdata->complements = complements;
+		userdata->accompaniments = accompaniments;
 
 		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveUserDicThreadEx, userdata, 0, NULL);
 	}
@@ -459,59 +519,59 @@ void StartSaveUserDic()
 
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates)
 {
-	COMPLEMENTS::reverse_iterator cmp_ritr;
+	KEYORDER::reverse_iterator keyorder_ritr;
 
 	candidates.clear();
 
 	if(!complements.empty())
 	{
-		for(cmp_ritr=complements.rbegin(); cmp_ritr!=complements.rend(); cmp_ritr++)
+		for(keyorder_ritr = complements.rbegin(); keyorder_ritr != complements.rend(); keyorder_ritr++)
 		{
-			if(cmp_ritr->compare(0, searchkey.size(), searchkey) == 0)
+			if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0)
 			{
-				candidates.push_back(CANDIDATE(*cmp_ritr, L""));
+				candidates.push_back(CANDIDATE(*keyorder_ritr, L""));
 			}
 		}
 	}
 }
 
-void AddComplement(const std::wstring &searchkey)
+void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 {
-	DelComplement(searchkey);
+	DelKeyOrder(searchkey, keyorder);
 
-	complements.push_back(searchkey);
+	keyorder.push_back(searchkey);
 }
 
-void DelComplement(const std::wstring &searchkey)
+void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 {
-	COMPLEMENTS::iterator cmp_itr;
+	KEYORDER::iterator keyorder_itr;
 
-	if(!complements.empty())
+	if(!keyorder.empty())
 	{
-		for(cmp_itr = complements.begin(); cmp_itr != complements.end(); cmp_itr++)
+		for(keyorder_itr = keyorder.begin(); keyorder_itr != keyorder.end(); keyorder_itr++)
 		{
-			if(searchkey.compare(*cmp_itr) == 0)
+			if(searchkey == *keyorder_itr)
 			{
-				complements.erase(cmp_itr);
+				keyorder.erase(keyorder_itr);
 				break;
 			}
 		}
 	}
 }
 
-void LoadComplement()
+void LoadKeyOrder(LPCWSTR section, KEYORDER &keyorder)
 {
 	HRESULT hr;
-	COMPLEMENTS::iterator complements_itr;
+	KEYORDER::iterator keyorder_itr;
 	APPDATAXMLLIST xmllist;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
 	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");;
+	std::wstring fmt(L"");
 
-	complements.clear();
+	keyorder.clear();
 
-	hr = ReadList(pathuserdicxml, SectionComplement, xmllist);
+	hr = ReadList(pathuserdicxml, section, xmllist);
 	EXIT_NOT_S_OK(hr);
 
 	for(l_itr = xmllist.begin(); l_itr != xmllist.end(); l_itr++)
@@ -520,18 +580,18 @@ void LoadComplement()
 		{
 			if(r_itr->first == AttributeKey)
 			{
-				for(complements_itr = complements.begin(); complements_itr != complements.end(); complements_itr++)
+				for(keyorder_itr = keyorder.begin(); keyorder_itr != keyorder.end(); keyorder_itr++)
 				{
-					if(*complements_itr == r_itr->second)
+					if(*keyorder_itr == r_itr->second)
 					{
-						complements.erase(complements_itr);
-						complements_itr = complements.end();
+						keyorder.erase(keyorder_itr);
+						keyorder_itr = keyorder.end();
 						break;
 					}
 				}
-				if(complements_itr == complements.end())
+				if(keyorder_itr == keyorder.end())
 				{
-					complements.push_back(std::regex_replace(r_itr->second, re, fmt));
+					keyorder.push_back(std::regex_replace(r_itr->second, re, fmt));
 				}
 			}
 		}
@@ -539,4 +599,341 @@ void LoadComplement()
 
 NOT_S_OK:
 	;
+}
+
+BOOL LoadSKKUserDic(LPCWSTR path)
+{
+	size_t size, i, is, ie;
+	FILE *fpskkdic;
+	WCHAR bom;
+	CHAR buf[BUFSIZE*2];
+	WCHAR wbuf[BUFSIZE];
+	void *rp;
+	std::wstring ca[2];
+	std::wstring s;
+	std::wregex re;
+	std::wstring fmt;
+	CANDIDATE entry;
+	CANDIDATES entrys;
+	CANDIDATES::iterator entrys_itr;
+	CANDIDATES::reverse_iterator entrys_ritr;
+	std::vector<std::wstring> es;
+	CANDIDATE row;
+	CANDIDATES list;
+	CANDIDATES::reverse_iterator l_ritr;
+
+	_wfopen_s(&fpskkdic, path, L"rb");
+	if(fpskkdic == NULL)
+	{
+		return FALSE;
+	}
+
+	bom = L'\0';
+	fread(&bom, 2, 1, fpskkdic);
+	if(bom == 0xBBEF)
+	{
+		bom = L'\0';
+		fread(&bom, 2, 1, fpskkdic);
+		if((bom & 0xFF) == 0xBF)
+		{
+			bom = 0xFEFF;
+		}
+	}
+
+	switch(bom)
+	{
+	case 0xFEFF:
+		fclose(fpskkdic);
+		_wfopen_s(&fpskkdic, path, RccsUNICODE);
+		if(fpskkdic == NULL)
+		{
+			return FALSE;
+		}
+		break;
+	default:
+		fseek(fpskkdic, SEEK_SET, 0);
+		break;
+	}
+
+	while(true)
+	{
+		switch(bom)
+		{
+		case 0xFEFF:
+			rp = fgetws(wbuf, _countof(wbuf), fpskkdic);
+			break;
+		default:
+			rp = fgets(buf, _countof(buf), fpskkdic);
+			break;
+		}
+		if(rp == NULL)
+		{
+			break;
+		}
+
+		switch(bom)
+		{
+		case 0xFEFF:
+			break;
+		default:
+			size = _countof(wbuf);
+			if(!EucJis2004ToWideChar(buf, NULL, wbuf, &size))
+			{
+				continue;
+			}
+			break;
+		}
+
+		switch(wbuf[0])
+		{
+		case L'\0':
+		case L'\r':
+		case L'\n':
+		case L';':
+		case L'\x20':
+			continue;
+			break;
+		default:
+			break;
+		}
+
+		s.assign(wbuf);
+		re.assign(L"\\t|\\r|\\n");
+		fmt.assign(L"");
+		s = std::regex_replace(s, re, fmt);
+		//送りありエントリのブロック形式を除去
+		re.assign(L"\\[.+?/.+?/\\]/");
+		fmt.assign(L"");
+		s = std::regex_replace(s, re, fmt);
+
+		is = s.find_first_of(L'\x20');
+		if(is == std::wstring::npos)
+		{
+			continue;
+		}
+
+		entry.first = s.substr(0, is);
+		entry.second = s.substr(is + 1);
+		for(entrys_itr = entrys.begin(); entrys_itr != entrys.end(); entrys_itr++)
+		{
+			if(entrys_itr->first == entry.first)
+			{
+				entrys_itr->second += entry.second.substr(1);
+				break;
+			}
+		}
+		if(entrys_itr == entrys.end())
+		{
+			entrys.push_back(entry);
+		}
+	}
+
+	fclose(fpskkdic);
+
+	userdic.clear();
+	complements.clear();
+	accompaniments.clear();
+
+	for(entrys_ritr = entrys.rbegin(); entrys_ritr != entrys.rend(); entrys_ritr++)
+	{
+		//エントリを「/」で分割
+		es.clear();
+		i = 0;
+		s = entrys_ritr->second;
+		while(i < s.size())
+		{
+			is = s.find_first_of(L'/', i);
+			ie = s.find_first_of(L'/', is + 1);
+			if(ie == std::wstring::npos)
+			{
+				break;
+			}
+			es.push_back(s.substr(i + 1, ie - is - 1));
+			i = ie;
+		}
+
+		//候補と注釈を分割
+		list.clear();
+		for(i=0; i<es.size(); i++)
+		{
+			row.first.clear();
+			row.second.clear();
+			s = es[i];
+			ie = s.find_first_of(L';');
+
+			if(ie == std::wstring::npos)
+			{
+				row.first = s;
+				row.second = L"";
+			}
+			else
+			{
+				row.first = s.substr(0, ie);
+				row.second = s.substr(ie + 1);
+			}
+
+			list.push_back(row);
+		}
+
+		//concatを置換
+		for(l_ritr = list.rbegin(); l_ritr != list.rend(); l_ritr++)
+		{
+			ca[0] = l_ritr->first;
+			ca[1] = l_ritr->second;
+
+			for(i=0; i<2; i++)
+			{
+				s = ca[i];
+				re.assign(L".*\\(concat \".*\"\\).*");
+				if(std::regex_match(s, re))
+				{
+					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
+					fmt.assign(L"$1$2$3");
+					s = std::regex_replace(s, re, fmt);
+
+					re.assign(L"\\\\057");
+					fmt.assign(L"/");
+					s = std::regex_replace(s, re, fmt);
+
+					re.assign(L"\\\\073");
+					fmt.assign(L";");
+					s = std::regex_replace(s, re, fmt);
+
+					ca[i] = s;
+				}
+			}
+
+			AddUserDic((std::regex_match(entrys_ritr->first,
+				std::wregex(L"[^\\x00-\\x7F]+[a-z]")) ? REQ_USER_ADD_0 : REQ_USER_ADD_1),
+				entrys_ritr->first, ca[0], ca[1]);
+		}
+	}
+
+	return TRUE;
+}
+
+BOOL SaveSKKUserDic(LPCWSTR path)
+{
+	BOOL bRet = FALSE;
+	LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
+	LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
+	FILE *fp;
+	USERDIC userdic_tmp;
+	USERDIC::iterator userdic_itr;
+	KEYORDER::reverse_iterator keyorder_ritr;
+
+	_wfopen_s(&fp, path, WccsUNICODE);
+	if(fp == NULL)
+	{
+		goto NOT_S_OK;
+	}
+
+	userdic_tmp = userdic;
+
+	//送りありエントリ
+	fwprintf(fp, L"%s", EntriesAri);
+
+	for(keyorder_ritr = accompaniments.rbegin(); keyorder_ritr != accompaniments.rend(); keyorder_ritr++)
+	{
+		userdic_itr = userdic_tmp.find(*keyorder_ritr);
+		if(userdic_itr != userdic_tmp.end())
+		{
+			WriteSKKUserDicEntry(fp, userdic_itr);
+
+			userdic_tmp.erase(userdic_itr);
+		}
+	}
+
+	for(userdic_itr = userdic_tmp.begin(); userdic_itr != userdic_tmp.end(); )
+	{
+		if(std::regex_match(userdic_itr->first, std::wregex(L"[^\\x00-\\x7F]+[a-z]")))
+		{
+			WriteSKKUserDicEntry(fp, userdic_itr);
+
+			userdic_itr = userdic_tmp.erase(userdic_itr);
+		}
+		else
+		{
+			userdic_itr++;
+		}
+	}
+
+	//送りなしエントリ
+	fwprintf(fp, L"%s", EntriesNasi);
+
+	for(keyorder_ritr = complements.rbegin(); keyorder_ritr != complements.rend(); keyorder_ritr++)
+	{
+		userdic_itr = userdic_tmp.find(*keyorder_ritr);
+		if(userdic_itr != userdic_tmp.end())
+		{
+			WriteSKKUserDicEntry(fp, userdic_itr);
+
+			userdic_tmp.erase(userdic_itr);
+		}
+	}
+
+	for(userdic_itr = userdic_tmp.begin(); userdic_itr != userdic_tmp.end(); )
+	{
+		WriteSKKUserDicEntry(fp, userdic_itr);
+
+		userdic_itr = userdic_tmp.erase(userdic_itr);
+	}
+
+	fclose(fp);
+
+	bRet = TRUE;
+
+NOT_S_OK:
+
+	return bRet;
+}
+
+void WriteSKKUserDicEntry(FILE *fp, const USERDIC::iterator &userdic_itr)
+{
+	CANDIDATES::iterator candidates_itr;
+	std::wstring s;
+	std::wregex re(L"\\t|\\r|\\n");
+	std::wstring fmt(L"");
+	std::wsmatch result;
+	std::wstring ca[2];
+	int i;
+
+	fwprintf(fp, L"%s /", userdic_itr->first.c_str());
+
+	for(candidates_itr = userdic_itr->second.begin(); candidates_itr != userdic_itr->second.end(); candidates_itr++)
+	{
+		ca[0] = candidates_itr->first;
+		ca[1] = candidates_itr->second;
+
+		for(i=0; i<2; i++)
+		{
+			s = ca[i];
+			if(std::regex_search(s, result, std::wregex(L"[/;]")))
+			{
+				re.assign(L"/");
+				fmt.assign(L"\\057");
+				s = std::regex_replace(s, re, fmt);
+
+				re.assign(L";");
+				fmt.assign(L"\\073");
+				s = std::regex_replace(s, re, fmt);
+
+				s = L"(concat \"" + s + L"\")";
+
+				ca[i] = s;
+			}
+		}
+
+		fwprintf(fp, L"%s", ca[0].c_str());
+		if(ca[1].empty())
+		{
+			fwprintf(fp, L"/");
+		}
+		else
+		{
+			fwprintf(fp, L";%s/", ca[1].c_str());
+		}
+	}
+
+	fwprintf(fp, L"\n");
 }

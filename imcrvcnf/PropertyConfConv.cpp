@@ -4,7 +4,7 @@
 #include "convtable.h"
 #include "resource.h"
 
-#define BUFSIZE 0x100
+#define CONFKANALEN 0x100
 
 WCHAR conv_point[CONV_POINT_NUM][3][2];
 std::vector<ROMAN_KANA_CONV> roman_kana_conv;
@@ -643,7 +643,7 @@ void SaveJLatin(HWND hwnd)
 void LoadConfigKanaTxt(LPCWSTR path)
 {
 	FILE *fp;
-	wchar_t b[BUFSIZE];
+	wchar_t b[CONFKANALEN];
 	const wchar_t seps[] = L"\t\n\0";
 	size_t sidx, eidx;
 	ROMAN_KANA_CONV rkc;
@@ -660,7 +660,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	
 	ZeroMemory(b, sizeof(b));
 
-	while(fgetws(b, BUFSIZE, fp) != NULL)
+	while(fgetws(b, CONFKANALEN, fp) != NULL)
 	{
 		if(roman_kana_conv.size() >= ROMAN_KANA_TBL_MAX)
 		{

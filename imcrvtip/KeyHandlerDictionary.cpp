@@ -90,7 +90,7 @@ exit:
 	_DisconnectDic();
 }
 
-void CTextService::_AddUserDic(const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation, WCHAR command)
+void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
@@ -118,7 +118,7 @@ exit:
 	_DisconnectDic();
 }
 
-void CTextService::_DelUserDic(const std::wstring &key, const std::wstring &candidate)
+void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate)
 {
 	WCHAR wbuf[BUFSIZE];
 	DWORD bytesWrite, bytesRead;
@@ -128,7 +128,7 @@ void CTextService::_DelUserDic(const std::wstring &key, const std::wstring &cand
 	ZeroMemory(wbuf, sizeof(wbuf));
 
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
-		REQ_USER_DEL, key.c_str(), candidate.c_str());
+		command, key.c_str(), candidate.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
@@ -148,13 +148,14 @@ exit:
 
 void CTextService::_SaveUserDic()
 {
-	WCHAR buf;
+	WCHAR buf[2];
 	DWORD bytes;
 
 	_ConnectDic();
 
-	buf = REQ_USER_SAVE;
-	if(WriteFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
+	buf[0] = REQ_USER_SAVE;
+	buf[1] = L'\n';
+	if(WriteFile(hPipe, &buf, 4, &bytes, NULL) == FALSE)
 	{
 		goto exit;
 	}

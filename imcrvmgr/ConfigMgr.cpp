@@ -57,6 +57,7 @@ void CreateConfigPath()
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
+	int i;
 
 	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
@@ -64,22 +65,18 @@ void CreateConfigPath()
 
 	if(GetUserSid(&pszUserSid))
 	{
-		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)", pszUserSid);
+		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:%s(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)",
+			(IsVersion62AndOver(ovi) ? L"(A;;GA;;;AC)" : L""), pszUserSid);
 
-		if(IsVersion62AndOver(ovi))
-		{
-			// for Windows 8 SDDL_ALL_APP_PACKAGES
-			wcsncat_s(krnlobjsddl, L"(A;;GA;;;AC)", _TRUNCATE);
-		}
 		if(IsVersion6AndOver(ovi))
 		{
 			// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
 			wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
 		}
 
-		if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			for(int i=0; i<_countof(digest.digest); i++)
+			for(i=0; i<_countof(digest.digest); i++)
 			{
 				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
 			}

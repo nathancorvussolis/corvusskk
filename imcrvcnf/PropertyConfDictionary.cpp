@@ -4,7 +4,7 @@
 #include "resource.h"
 #include "eucjis2004.h"
 
-#define BUFSIZE 0x1000
+#define BUFSIZE 0x2000
 
 typedef std::pair<std::wstring, std::wstring> ENTRY;
 typedef std::map<std::wstring, std::wstring> ENTRYS;
@@ -78,7 +78,7 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 	size_t count, size, i, is;
 	FILE *fpskkdic;
 	WCHAR bom;
-	CHAR buf[BUFSIZE];
+	CHAR buf[BUFSIZE*2];
 	WCHAR wbuf[BUFSIZE];
 	void *rp;
 	std::wstring s;
@@ -208,7 +208,7 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 	std::wregex re;
 	std::wstring fmt;
 	APPDATAXMLATTR attr;
-	APPDATAXMLROW::iterator r_itr;;
+	APPDATAXMLROW::iterator r_itr;
 	APPDATAXMLROW row;
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLLIST list;
@@ -253,7 +253,7 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 			i = ie;
 		}
 
-		// 候補と注釈を分割
+		//候補と注釈を分割
 		list.clear();
 		for(i=0; i<es.size(); i++)
 		{
@@ -283,13 +283,12 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 			list.push_back(row);
 		}
 
-		// concatを置換
+		//concatを置換
 		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
 		{
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
 				s = r_itr->second;
-
 				re.assign(L".*\\(concat \".*\"\\).*");
 				if(std::regex_match(s, re))
 				{
@@ -304,9 +303,9 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 					re.assign(L"\\\\073");
 					fmt.assign(L";");
 					s = std::regex_replace(s, re, fmt);
-				}
 
-				r_itr->second = s;
+					r_itr->second = s;
+				}
 			}
 		}
 

@@ -43,41 +43,28 @@ void CreateConfigPath()
 	wcsncpy_s(pathskkcvdicidx, appdata, _TRUNCATE);
 	wcsncat_s(pathskkcvdicidx, fnskkcvdicidx, _TRUNCATE);
 
-	HANDLE hToken;
-	PTOKEN_USER pTokenUser;
-	DWORD dwLength;
-	LPWSTR pszUserSid = L"";
+	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
+	int i;
 
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	if(GetUserSid(&pszUserSid))
 	{
-		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
-		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
-
-		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			ConvertSidToStringSidW(pTokenUser->User.Sid, &pszUserSid);
+			for(i=0; i<_countof(digest.digest); i++)
+			{
+				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+			}
 		}
 
-		LocalFree(pTokenUser);
-		CloseHandle(hToken);
-	}
-
-	if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
-	{
-		for(int i=0; i<_countof(digest.digest); i++)
-		{
-			_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
-		}
+		LocalFree(pszUserSid);
 	}
 
 	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
-
-	LocalFree(pszUserSid);
 }
 
 BOOL SetFileDacl(LPCWSTR path)

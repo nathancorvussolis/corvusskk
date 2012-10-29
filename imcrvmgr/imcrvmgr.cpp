@@ -175,6 +175,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+//
+// request and reply commands defined at common.h
+//
 //search candidate
 //	request	"1\n<key>\n"
 //	reply	"1\n<candidate>\t<annotation>\n...\n":hit, "4":nothing
@@ -187,11 +190,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //add candidate (complement on)
 //	request	"B\n<key>\t<candidate>\t<annotation>\n"
 //	reply	"1"
-//delete candidate
+//delete candidate (complement off)
+//	request	"C\n<key>\t<candidate>\n"
+//	reply	"1"
+//delete candidate (complement on)
 //	request	"D\n<key>\t<candidate>\n"
 //	reply	"1"
 //save user dictionary
-//	request	"S"
+//	request	"S\n"
+//	reply	"1"
+//load skk user dictionary
+//	request	"U\n<path>\n"
+//	reply	"1"
+//save as skk user dictionary
+//	request	"V\n<path>\n"
 //	reply	"1"
 
 void SrvProc(WCHAR *wbuf, size_t size)
@@ -269,13 +281,14 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			annotation.assign(token);
 		}
 
-		AddUserDic(key, candidate, annotation, wbuf[0]);
+		AddUserDic(wbuf[0], key, candidate, annotation);
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
 		break;
 
-	case REQ_USER_DEL:
+	case REQ_USER_DEL_0:
+	case REQ_USER_DEL_1:
 		token = wcstok_s(&wbuf[2], seps, &next_token);
 		if(token != NULL)
 		{
@@ -287,7 +300,7 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			candidate.assign(token);
 		}
 
-		DelUserDic(key, candidate);
+		DelUserDic(wbuf[0], key, candidate);
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
@@ -297,6 +310,34 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		StartSaveUserDic();
 
 		wbuf[0] = REP_OK;
+		wbuf[1] = L'\0';
+		break;
+
+	case REQ_SKK_LOAD:
+		wbuf[wcslen(wbuf) - 1] = L'\0';
+		if(LoadSKKUserDic(&wbuf[2]))
+		{
+			bUserDicChg = TRUE;
+			StartSaveUserDic();
+			wbuf[0] = REP_OK;
+		}
+		else
+		{
+			wbuf[0] = REP_FALSE;
+		}
+		wbuf[1] = L'\0';
+		break;
+
+	case REQ_SKK_SAVE:
+		wbuf[wcslen(wbuf) - 1] = L'\0';
+		if(SaveSKKUserDic(&wbuf[2]))
+		{
+			wbuf[0] = REP_OK;
+		}
+		else
+		{
+			wbuf[0] = REP_FALSE;
+		}
 		wbuf[1] = L'\0';
 		break;
 

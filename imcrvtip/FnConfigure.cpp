@@ -4,8 +4,6 @@
 #include "TextService.h"
 #include "convtype.h"
 
-#define BUFSIZE		0x100
-
 // キー キー設定
 typedef struct {
 	BYTE skkfunc;
@@ -70,15 +68,16 @@ void CTextService::_CreateConfigPath()
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
 	MD5_DIGEST digest;
+	int i;
 
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
 	if(GetUserSid(&pszUserSid))
 	{
-		if(GetMD5(&digest, (const BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			for(int i=0; i<_countof(digest.digest); i++)
+			for(i=0; i<_countof(digest.digest); i++)
 			{
 				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
 			}
@@ -388,7 +387,7 @@ void CTextService::_LoadKana()
 	WCHAR *pszb;
 	size_t blen;
 	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");;
+	std::wstring fmt(L"");
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
@@ -450,7 +449,7 @@ void CTextService::_LoadJLatin()
 	WCHAR *pszb;
 	size_t blen;
 	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");;
+	std::wstring fmt(L"");
 
 	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
 
