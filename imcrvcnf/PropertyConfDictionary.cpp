@@ -9,12 +9,19 @@
 typedef std::pair<std::wstring, std::wstring> ENTRY;
 typedef std::map<std::wstring, std::wstring> ENTRYS;
 
-typedef struct {
-	HWND p;
-	HWND c;
+struct {
+	HWND parent;
+	HWND child;
 	HRESULT hr;
-} MAKESKKDICINFO;
-MAKESKKDICINFO msdi;
+} SkkDicInfo;
+
+struct {
+	HWND parent;
+	HWND child;
+	HRESULT hr;
+	WCHAR command;
+	WCHAR path[MAX_PATH];
+} SkkUserDicInfo;
 
 void LoadDictionary(HWND hwnd)
 {
@@ -289,7 +296,7 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
 			{
 				s = r_itr->second;
-				re.assign(L".*\\(concat \".*\"\\).*");
+				re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
 				if(std::regex_match(s, re))
 				{
 					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
@@ -364,8 +371,8 @@ unsigned int __stdcall MakeSKKDicThread(void *p)
 {
 	ENTRYS entrys;
 
-	LoadSKKDic(msdi.p, entrys);
-	msdi.hr = WriteSKKDicXml(entrys);
+	LoadSKKDic(SkkDicInfo.parent, entrys);
+	SkkDicInfo.hr = WriteSKKDicXml(entrys);
 	return 0;
 }
 
@@ -378,16 +385,17 @@ void MakeSKKDicWaitThread(void *p)
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
 
-	if(msdi.hr == S_OK)
+	EndDialog(SkkDicInfo.child, TRUE);
+
+	if(SkkDicInfo.hr == S_OK)
 	{
-		MessageBoxW(msdi.c, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
+		MessageBoxW(SkkDicInfo.parent, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 	}
 	else
 	{
-		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", msdi.hr);
-		MessageBoxW(msdi.c, num, TextServiceDesc, MB_OK | MB_ICONERROR);
+		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", SkkDicInfo.hr);
+		MessageBoxW(SkkDicInfo.parent, num, TextServiceDesc, MB_OK | MB_ICONERROR);
 	}
-	EndDialog(msdi.c, TRUE);
 	return;
 }
 
@@ -399,7 +407,7 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		msdi.c = hDlg;
+		SkkDicInfo.child = hDlg;
 		_beginthread(MakeSKKDicWaitThread, 0, NULL);
 		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
 		return (INT_PTR)TRUE;
@@ -422,6 +430,154 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 void MakeSKKDic(HWND hwnd)
 {
-	msdi.p = hwnd;
+	SkkDicInfo.parent = hwnd;
 	DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_MAKE), hwnd, DlgProcSKKDic);
+}
+
+unsigned int __stdcall ReqSKKUserDicThread(void *p)
+{
+	HANDLE hPipe = INVALID_HANDLE_VALUE;
+	DWORD dwMode;
+	WCHAR wbuf[BUFSIZE];
+	DWORD bytesWrite, bytesRead;
+	WCHAR mgrpipename[MAX_KRNLOBJNAME];
+	LPWSTR pszUserSid;
+	WCHAR szDigest[32+1];
+	MD5_DIGEST digest;
+	int i;
+
+	SkkUserDicInfo.hr = S_FALSE;
+
+	ZeroMemory(mgrpipename, sizeof(mgrpipename));
+	ZeroMemory(szDigest, sizeof(szDigest));
+
+	if(GetUserSid(&pszUserSid))
+	{
+		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+		{
+			for(i=0; i<_countof(digest.digest); i++)
+			{
+				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+			}
+		}
+
+		LocalFree(pszUserSid);
+	}
+
+	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
+
+	if(WaitNamedPipeW(mgrpipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
+	{
+		goto exit;
+	}
+
+	hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
+	if(hPipe == INVALID_HANDLE_VALUE)
+	{
+		goto exit;
+	}
+
+	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
+	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
+
+	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\n", SkkUserDicInfo.command, SkkUserDicInfo.path);
+
+	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
+	{
+		goto exit;
+	}
+
+	ZeroMemory(wbuf, sizeof(wbuf));
+
+	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
+	{
+		goto exit;
+	}
+
+	if(wbuf[0] != REP_OK)
+	{
+		goto exit;
+	}
+
+	SkkUserDicInfo.hr = S_OK;
+
+exit:
+	if(hPipe != INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hPipe);
+	}
+	return 0;
+}
+
+void ReqSKKUserDicWaitThread(void *p)
+{
+	WCHAR num[32];
+	HANDLE hThread;
+	
+	hThread = (HANDLE)_beginthreadex(NULL, 0, ReqSKKUserDicThread, NULL, 0, NULL);
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+
+	EndDialog(SkkUserDicInfo.child, TRUE);
+
+	if(SkkUserDicInfo.hr == S_OK)
+	{
+		MessageBoxW(SkkUserDicInfo.parent, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
+	}
+	else
+	{
+		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", SkkUserDicInfo.hr);
+		MessageBoxW(SkkUserDicInfo.parent, num, TextServiceDesc, MB_OK | MB_ICONERROR);
+	}
+	return;
+}
+
+INT_PTR CALLBACK DlgProcSKKUserDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	LPCWSTR pw[] = {L"／",L"─",L"＼",L"│"};
+	static int ipw = 0;
+
+	switch(message)
+	{
+	case WM_INITDIALOG:
+		SkkUserDicInfo.child = hDlg;
+		_beginthread(ReqSKKUserDicWaitThread, 0, NULL);
+		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
+		return (INT_PTR)TRUE;
+	case WM_TIMER:
+		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
+		ipw++;
+		if(ipw >= _countof(pw))
+		{
+			ipw = 0;
+		}
+		return (INT_PTR)TRUE;
+	case WM_DESTROY:
+		KillTimer(hDlg, IDC_STATIC_DIC_PW);
+		return (INT_PTR)TRUE;
+	default:
+		break;
+	}
+	return (INT_PTR)FALSE;
+}
+
+void ReqSKKUserDic(HWND hwnd, WCHAR command, LPCWSTR path)
+{
+	SkkUserDicInfo.parent = hwnd;
+	SkkUserDicInfo.command = command;
+	wcscpy_s(SkkUserDicInfo.path, path);
+	
+	switch(command)
+	{
+	case REQ_SKK_LOAD:
+		DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_USER_DIC), hwnd, DlgProcSKKUserDic);
+		break;
+	case REQ_SKK_SAVE:
+		SkkUserDicInfo.child = NULL;
+		ReqSKKUserDicWaitThread(NULL);
+		break;
+	default:
+		break;
+	}
 }

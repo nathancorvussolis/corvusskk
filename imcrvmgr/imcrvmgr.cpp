@@ -1,7 +1,7 @@
 ﻿
 #include "imcrvmgr.h"
 
-#define BUFSIZE 0x2000	// -> KeyHandlerDictionary.cpp
+#define BUFSIZE 0x2000
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HANDLE SrvStart();

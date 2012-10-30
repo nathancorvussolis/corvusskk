@@ -282,7 +282,7 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 		for(i=0; i<2; i++)
 		{
 			s = ca[i];
-			re.assign(L".*\\(concat \".*\"\\).*");
+			re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
 			if(std::regex_match(s, re))
 			{
 				re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");

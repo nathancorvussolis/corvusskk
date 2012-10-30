@@ -8,10 +8,6 @@ static LPCWSTR defaultHost = L"localhost";
 static LPCWSTR defaultPort = L"1178";
 static LPCWSTR defaultTimeOut = L"1000";
 
-#define BUFSIZE 0x2000	// -> imcrvmgr.cpp
-
-BOOL ReqSKKUserDic(WCHAR command, LPCWSTR path);
-
 INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
@@ -166,14 +162,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 					L"SKKユーザ辞書を読み込み、ユーザ辞書を上書きします。\nよろしいですか？",
 					TextServiceDesc, MB_OKCANCEL))
 				{
-					if(ReqSKKUserDic(REQ_SKK_LOAD, path))
-					{
-						MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK);
-					}
-					else
-					{
-						MessageBoxW(hDlg, L"失敗しました。", TextServiceDesc, MB_OK);
-					}
+					ReqSKKUserDic(hDlg, REQ_SKK_LOAD, path);
 				}
 			}
 			return (INT_PTR)TRUE;
@@ -189,14 +178,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
 			if(GetSaveFileNameW(&ofn) != 0)
 			{
-				if(ReqSKKUserDic(REQ_SKK_SAVE, path))
-				{
-					MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK);
-				}
-				else
-				{
-					MessageBoxW(hDlg, L"失敗しました。", TextServiceDesc, MB_OK);
-				}
+				ReqSKKUserDic(hDlg, REQ_SKK_SAVE, path);
 			}
 			return (INT_PTR)TRUE;
 
@@ -265,79 +247,4 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	}
 
 	return (INT_PTR)FALSE;
-}
-
-BOOL ReqSKKUserDic(WCHAR command, LPCWSTR path)
-{
-	BOOL bRet = FALSE;
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	DWORD dwMode;
-	WCHAR wbuf[BUFSIZE];
-	DWORD bytesWrite, bytesRead;
-	WCHAR mgrpipename[MAX_KRNLOBJNAME];
-	LPWSTR pszUserSid;
-	WCHAR szDigest[32+1];
-	MD5_DIGEST digest;
-	int i;
-
-	ZeroMemory(mgrpipename, sizeof(mgrpipename));
-	ZeroMemory(szDigest, sizeof(szDigest));
-
-	if(GetUserSid(&pszUserSid))
-	{
-		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
-		{
-			for(i=0; i<_countof(digest.digest); i++)
-			{
-				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
-			}
-		}
-
-		LocalFree(pszUserSid);
-	}
-
-	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
-
-	if(WaitNamedPipeW(mgrpipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
-	{
-		goto exit;
-	}
-
-	hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
-	if(hPipe == INVALID_HANDLE_VALUE)
-	{
-		goto exit;
-	}
-
-	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
-
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\n", command, path);
-
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
-	{
-		goto exit;
-	}
-
-	ZeroMemory(wbuf, sizeof(wbuf));
-
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
-	{
-		goto exit;
-	}
-
-	if(wbuf[0] != REP_OK)
-	{
-		goto exit;
-	}
-
-	bRet = TRUE;
-
-exit:
-	if(hPipe != INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hPipe);
-	}
-	return bRet;
 }

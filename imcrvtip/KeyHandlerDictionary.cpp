@@ -2,7 +2,7 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 
-#define BUFSIZE 0x2000	// -> imcrvmgr.cpp
+#define BUFSIZE 0x2000
 
 void CTextService::_ConnectDic()
 {

@@ -5,11 +5,15 @@
 
 #define BUFSIZE 0x2000
 
+LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
+LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
+
 void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
 void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
 void LoadKeyOrder(LPCWSTR section, KEYORDER &keyorder);
+void LoadSKKUserDicKeyOrder(KEYORDER &keyorder_tmp, KEYORDER &keyorder);
 void WriteSKKUserDicEntry(FILE *fp, const USERDIC::iterator &userdic_itr);
 
 //ユーザ辞書
@@ -501,20 +505,18 @@ HANDLE StartSaveUserDicEx()
 	return hThread;
 }
 
-void SaveUserDicThreadExClose(void *p)
+void SaveUserDicThreadExWaitThread(void *p)
 {
-	HANDLE hThread = (HANDLE)p;
+	HANDLE hThread;
+	
+	hThread = StartSaveUserDicEx();
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
 }
 
 void StartSaveUserDic()
 {
-	HANDLE hThread = StartSaveUserDicEx();
-	if(hThread != NULL)
-	{
-		_beginthread(SaveUserDicThreadExClose, 0, hThread);
-	}
+	_beginthread(SaveUserDicThreadExWaitThread, 0, NULL);
 }
 
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates)
@@ -568,6 +570,8 @@ void LoadKeyOrder(LPCWSTR section, KEYORDER &keyorder)
 	APPDATAXMLROW::iterator r_itr;
 	std::wregex re(L"\\t|\\r|\\n");
 	std::wstring fmt(L"");
+	KEYORDER::iterator keyorder_itrf;
+	KEYORDER::iterator keyorder_itrb;
 
 	keyorder.clear();
 
@@ -580,18 +584,24 @@ void LoadKeyOrder(LPCWSTR section, KEYORDER &keyorder)
 		{
 			if(r_itr->first == AttributeKey)
 			{
-				for(keyorder_itr = keyorder.begin(); keyorder_itr != keyorder.end(); keyorder_itr++)
+				keyorder.push_back(std::regex_replace(r_itr->second, re, fmt));
+			}
+		}
+	}
+
+	if(keyorder.size() > 1)
+	{
+		for(keyorder_itrf = keyorder.begin(); keyorder_itrf != keyorder.end(); keyorder_itrf++)
+		{
+			for(keyorder_itrb = keyorder_itrf + 1; keyorder_itrb != keyorder.end(); )
+			{
+				if(keyorder_itrf == keyorder_itrb)
 				{
-					if(*keyorder_itr == r_itr->second)
-					{
-						keyorder.erase(keyorder_itr);
-						keyorder_itr = keyorder.end();
-						break;
-					}
+					keyorder_itrb = keyorder.erase(keyorder_itrb);
 				}
-				if(keyorder_itr == keyorder.end())
+				else
 				{
-					keyorder.push_back(std::regex_replace(r_itr->second, re, fmt));
+					keyorder_itrb++;
 				}
 			}
 		}
@@ -613,14 +623,15 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 	std::wstring s;
 	std::wregex re;
 	std::wstring fmt;
-	CANDIDATE entry;
-	CANDIDATES entrys;
-	CANDIDATES::iterator entrys_itr;
-	CANDIDATES::reverse_iterator entrys_ritr;
 	std::vector<std::wstring> es;
 	CANDIDATE row;
 	CANDIDATES list;
 	CANDIDATES::reverse_iterator l_ritr;
+	std::wstring key;
+	std::wstring candidate;
+	int okuri = -1;
+	KEYORDER complements_tmp;
+	KEYORDER accompaniments_tmp;
 
 	_wfopen_s(&fpskkdic, path, L"rb");
 	if(fpskkdic == NULL)
@@ -655,6 +666,12 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 		break;
 	}
 
+	userdic.clear();
+	complements.clear();
+	complements.shrink_to_fit();
+	accompaniments.clear();
+	accompaniments.shrink_to_fit();
+
 	while(true)
 	{
 		switch(bom)
@@ -684,17 +701,35 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 			break;
 		}
 
-		switch(wbuf[0])
+		if(wcscmp(wbuf, EntriesAri) == 0)
 		{
-		case L'\0':
-		case L'\r':
-		case L'\n':
-		case L';':
-		case L'\x20':
+			okuri = 1;
 			continue;
-			break;
-		default:
-			break;
+		}
+		else if(wcscmp(wbuf, EntriesNasi) == 0)
+		{
+			okuri = 0;
+			continue;
+		}
+		else
+		{
+			switch(wbuf[0])
+			{
+			case L'\0':
+			case L'\r':
+			case L'\n':
+			case L';':
+			case L'\x20':
+				continue;
+				break;
+			default:
+				break;
+			}
+		}
+
+		if(okuri == -1)
+		{
+			continue;
 		}
 
 		s.assign(wbuf);
@@ -712,34 +747,13 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 			continue;
 		}
 
-		entry.first = s.substr(0, is);
-		entry.second = s.substr(is + 1);
-		for(entrys_itr = entrys.begin(); entrys_itr != entrys.end(); entrys_itr++)
-		{
-			if(entrys_itr->first == entry.first)
-			{
-				entrys_itr->second += entry.second.substr(1);
-				break;
-			}
-		}
-		if(entrys_itr == entrys.end())
-		{
-			entrys.push_back(entry);
-		}
-	}
+		key = s.substr(0, is);
+		candidate = s.substr(is + 1);
 
-	fclose(fpskkdic);
-
-	userdic.clear();
-	complements.clear();
-	accompaniments.clear();
-
-	for(entrys_ritr = entrys.rbegin(); entrys_ritr != entrys.rend(); entrys_ritr++)
-	{
 		//エントリを「/」で分割
 		es.clear();
 		i = 0;
-		s = entrys_ritr->second;
+		s = candidate;
 		while(i < s.size())
 		{
 			is = s.find_first_of(L'/', i);
@@ -784,7 +798,7 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 			for(i=0; i<2; i++)
 			{
 				s = ca[i];
-				re.assign(L".*\\(concat \".*\"\\).*");
+				re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
 				if(std::regex_match(s, re))
 				{
 					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
@@ -803,20 +817,63 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 				}
 			}
 
-			AddUserDic((std::regex_match(entrys_ritr->first,
-				std::wregex(L"[^\\x00-\\x7F]+[a-z]")) ? REQ_USER_ADD_0 : REQ_USER_ADD_1),
-				entrys_ritr->first, ca[0], ca[1]);
+			AddUserDic(WCHAR_MAX, key, ca[0], ca[1]);
+		}
+
+		switch(okuri)
+		{
+		case 0:
+			complements_tmp.push_back(key);
+			break;
+		case 1:
+			accompaniments_tmp.push_back(key);
+			break;
+		default:
+			break;
 		}
 	}
 
+	LoadSKKUserDicKeyOrder(complements_tmp, complements);
+	LoadSKKUserDicKeyOrder(accompaniments_tmp, accompaniments);
+
+	fclose(fpskkdic);
+
 	return TRUE;
+}
+
+void LoadSKKUserDicKeyOrder(KEYORDER &keyorder_tmp, KEYORDER &keyorder)
+{
+	KEYORDER::reverse_iterator keyorder_ritr;;
+	KEYORDER::iterator keyorder_itrf;
+	KEYORDER::iterator keyorder_itrb;
+
+	if(keyorder_tmp.size() > 1)
+	{
+		for(keyorder_itrf = keyorder_tmp.begin(); keyorder_itrf != keyorder_tmp.end(); keyorder_itrf++)
+		{
+			for(keyorder_itrb = keyorder_itrf + 1; keyorder_itrb != keyorder_tmp.end(); )
+			{
+				if(keyorder_itrf == keyorder_itrb)
+				{
+					keyorder_itrb = keyorder_tmp.erase(keyorder_itrb);
+				}
+				else
+				{
+					keyorder_itrb++;
+				}
+			}
+		}
+	}
+
+	for(keyorder_ritr = keyorder_tmp.rbegin(); keyorder_ritr != keyorder_tmp.rend(); keyorder_ritr++)
+	{
+		keyorder.push_back(*keyorder_ritr);
+	}
 }
 
 BOOL SaveSKKUserDic(LPCWSTR path)
 {
 	BOOL bRet = FALSE;
-	LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
-	LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 	FILE *fp;
 	USERDIC userdic_tmp;
 	USERDIC::iterator userdic_itr;
@@ -846,7 +903,7 @@ BOOL SaveSKKUserDic(LPCWSTR path)
 
 	for(userdic_itr = userdic_tmp.begin(); userdic_itr != userdic_tmp.end(); )
 	{
-		if(std::regex_match(userdic_itr->first, std::wregex(L"[^\\x00-\\x7F]+[a-z]")))
+		if(std::regex_match(userdic_itr->first, std::wregex(L".*[^\\x00-\\x7F][a-z]")))
 		{
 			WriteSKKUserDicEntry(fp, userdic_itr);
 
