@@ -53,7 +53,7 @@ extern LPCWSTR TextServiceDesc;
 
 extern CRITICAL_SECTION csUserDataSave;
 extern BOOL bUserDicChg;
-extern OSVERSIONINFOW ovi;
+extern OSVERSIONINFOW g_ovi;
 
 extern USERDIC userdic;
 extern KEYORDER complements;

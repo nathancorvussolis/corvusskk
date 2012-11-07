@@ -1,12 +1,7 @@
 ﻿
 #include "configxml.h"
+#include "parseskkdic.h"
 #include "imcrvmgr.h"
-#include "eucjis2004.h"
-
-#define BUFSIZE 0x2000
-
-LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
-LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 
 void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);
@@ -613,38 +608,28 @@ NOT_S_OK:
 
 BOOL LoadSKKUserDic(LPCWSTR path)
 {
-	size_t size, i, is, ie;
-	FILE *fpskkdic;
+	FILE *fp;
 	WCHAR bom;
-	CHAR buf[BUFSIZE*2];
-	WCHAR wbuf[BUFSIZE];
-	void *rp;
-	std::wstring ca[2];
-	std::wstring s;
-	std::wregex re;
-	std::wstring fmt;
-	std::vector<std::wstring> es;
-	CANDIDATE row;
-	CANDIDATES list;
-	CANDIDATES::reverse_iterator l_ritr;
 	std::wstring key;
-	std::wstring candidate;
-	int okuri = -1;
 	KEYORDER complements_tmp;
 	KEYORDER accompaniments_tmp;
+	int okuri = -1;
+	SKKDICCANDIDATES sc;
+	SKKDICCANDIDATES::iterator sc_itr;
+	int rl;
 
-	_wfopen_s(&fpskkdic, path, L"rb");
-	if(fpskkdic == NULL)
+	_wfopen_s(&fp, path, L"rb");
+	if(fp == NULL)
 	{
 		return FALSE;
 	}
 
 	bom = L'\0';
-	fread(&bom, 2, 1, fpskkdic);
+	fread(&bom, 2, 1, fp);
 	if(bom == 0xBBEF)
 	{
 		bom = L'\0';
-		fread(&bom, 2, 1, fpskkdic);
+		fread(&bom, 2, 1, fp);
 		if((bom & 0xFF) == 0xBF)
 		{
 			bom = 0xFEFF;
@@ -654,15 +639,15 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 	switch(bom)
 	{
 	case 0xFEFF:
-		fclose(fpskkdic);
-		_wfopen_s(&fpskkdic, path, RccsUNICODE);
-		if(fpskkdic == NULL)
+		fclose(fp);
+		_wfopen_s(&fp, path, RccsUNICODE);
+		if(fp == NULL)
 		{
 			return FALSE;
 		}
 		break;
 	default:
-		fseek(fpskkdic, SEEK_SET, 0);
+		fseek(fp, SEEK_SET, 0);
 		break;
 	}
 
@@ -674,150 +659,19 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 
 	while(true)
 	{
-		switch(bom)
-		{
-		case 0xFEFF:
-			rp = fgetws(wbuf, _countof(wbuf), fpskkdic);
-			break;
-		default:
-			rp = fgets(buf, _countof(buf), fpskkdic);
-			break;
-		}
-		if(rp == NULL)
+		rl = ReadSKKDicLine(fp, bom, okuri, key, sc);
+		if(rl == -1)
 		{
 			break;
 		}
-
-		switch(bom)
-		{
-		case 0xFEFF:
-			break;
-		default:
-			size = _countof(wbuf);
-			if(!EucJis2004ToWideChar(buf, NULL, wbuf, &size))
-			{
-				continue;
-			}
-			break;
-		}
-
-		if(wcscmp(wbuf, EntriesAri) == 0)
-		{
-			okuri = 1;
-			continue;
-		}
-		else if(wcscmp(wbuf, EntriesNasi) == 0)
-		{
-			okuri = 0;
-			continue;
-		}
-		else
-		{
-			switch(wbuf[0])
-			{
-			case L'\0':
-			case L'\r':
-			case L'\n':
-			case L';':
-			case L'\x20':
-				continue;
-				break;
-			default:
-				break;
-			}
-		}
-
-		if(okuri == -1)
+		else if(rl == 1)
 		{
 			continue;
 		}
 
-		s.assign(wbuf);
-		re.assign(L"\\t|\\r|\\n");
-		fmt.assign(L"");
-		s = std::regex_replace(s, re, fmt);
-		//送りありエントリのブロック形式を除去
-		re.assign(L"\\[.+?/.+?/\\]/");
-		fmt.assign(L"");
-		s = std::regex_replace(s, re, fmt);
-
-		is = s.find_first_of(L'\x20');
-		if(is == std::wstring::npos)
+		for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 		{
-			continue;
-		}
-
-		key = s.substr(0, is);
-		candidate = s.substr(is + 1);
-
-		//エントリを「/」で分割
-		es.clear();
-		i = 0;
-		s = candidate;
-		while(i < s.size())
-		{
-			is = s.find_first_of(L'/', i);
-			ie = s.find_first_of(L'/', is + 1);
-			if(ie == std::wstring::npos)
-			{
-				break;
-			}
-			es.push_back(s.substr(i + 1, ie - is - 1));
-			i = ie;
-		}
-
-		//候補と注釈を分割
-		list.clear();
-		for(i=0; i<es.size(); i++)
-		{
-			row.first.clear();
-			row.second.clear();
-			s = es[i];
-			ie = s.find_first_of(L';');
-
-			if(ie == std::wstring::npos)
-			{
-				row.first = s;
-				row.second = L"";
-			}
-			else
-			{
-				row.first = s.substr(0, ie);
-				row.second = s.substr(ie + 1);
-			}
-
-			list.push_back(row);
-		}
-
-		//concatを置換
-		for(l_ritr = list.rbegin(); l_ritr != list.rend(); l_ritr++)
-		{
-			ca[0] = l_ritr->first;
-			ca[1] = l_ritr->second;
-
-			for(i=0; i<2; i++)
-			{
-				s = ca[i];
-				re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
-				if(std::regex_match(s, re))
-				{
-					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-					fmt.assign(L"$1$2$3");
-					s = std::regex_replace(s, re, fmt);
-
-					re.assign(L"\\\\057");
-					fmt.assign(L"/");
-					s = std::regex_replace(s, re, fmt);
-
-					re.assign(L"\\\\073");
-					fmt.assign(L";");
-					s = std::regex_replace(s, re, fmt);
-
-					ca[i] = s;
-				}
-			}
-
-			AddUserDic(WCHAR_MAX, key, ca[0], ca[1]);
+			AddUserDic(WCHAR_MAX, key, sc_itr->first, sc_itr->second);
 		}
 
 		switch(okuri)
@@ -836,7 +690,7 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 	LoadSKKUserDicKeyOrder(complements_tmp, complements);
 	LoadSKKUserDicKeyOrder(accompaniments_tmp, accompaniments);
 
-	fclose(fpskkdic);
+	fclose(fp);
 
 	return TRUE;
 }

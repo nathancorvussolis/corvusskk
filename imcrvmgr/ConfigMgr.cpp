@@ -15,7 +15,7 @@ WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
 WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // 辞書サーバ設定
-BOOL serv;		//SKK辞書サーバを使用する
+BOOL serv = FALSE;		//SKK辞書サーバを使用する
 WCHAR host[MAX_SKKSERVER_HOST] = {L'\0'};	//ホスト
 WCHAR port[MAX_SKKSERVER_PORT] = {L'\0'};	//ポート
 DWORD encoding = 0;		//エンコーディング
@@ -66,9 +66,9 @@ void CreateConfigPath()
 	if(GetUserSid(&pszUserSid))
 	{
 		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:%s(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)",
-			(IsVersion62AndOver(ovi) ? L"(A;;GA;;;AC)" : L""), pszUserSid);
+			(IsVersion62AndOver(g_ovi) ? L"(A;;GA;;;AC)" : L""), pszUserSid);
 
-		if(IsVersion6AndOver(ovi))
+		if(IsVersion6AndOver(g_ovi))
 		{
 			// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
 			wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
@@ -91,6 +91,7 @@ void CreateConfigPath()
 
 void LoadConfig()
 {
+	BOOL servtmp;
 	WCHAR hosttmp[MAX_SKKSERVER_HOST];	//ホスト
 	WCHAR porttmp[MAX_SKKSERVER_PORT];	//ポート
 	DWORD encodingtmp;
@@ -98,16 +99,10 @@ void LoadConfig()
 	std::wstring strxmlval;
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerServ, strxmlval);
-	serv = _wtoi(strxmlval.c_str());
-	if(serv != TRUE && serv != FALSE)
+	servtmp = _wtoi(strxmlval.c_str());
+	if(servtmp != TRUE && servtmp != FALSE)
 	{
-		serv = FALSE;
-	}
-
-	//使用しないとき切断する
-	if(!serv)
-	{
-		DisconnectSKKServer();
+		servtmp = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerHost, strxmlval);
@@ -131,9 +126,11 @@ void LoadConfig()
 	}
 
 	//変更があったら接続し直す
-	if(wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
+	if(servtmp != serv ||
+		wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
 		encodingtmp != encoding || timeouttmp != timeout)
 	{
+		serv = servtmp;
 		wcsncpy_s(host, hosttmp, _TRUNCATE);
 		wcsncpy_s(port, porttmp, _TRUNCATE);
 		encoding = encodingtmp;

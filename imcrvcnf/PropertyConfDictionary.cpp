@@ -1,13 +1,16 @@
 ﻿
 #include "configxml.h"
+#include "parseskkdic.h"
 #include "imcrvcnf.h"
 #include "resource.h"
-#include "eucjis2004.h"
 
 #define BUFSIZE 0x2000
 
-typedef std::pair<std::wstring, std::wstring> ENTRY;
-typedef std::map<std::wstring, std::wstring> ENTRYS;
+typedef std::vector< std::wstring > ANNOTATIONS;
+typedef std::pair< std::wstring, ANNOTATIONS > CANDIDATE;
+typedef std::vector< CANDIDATE > CANDIDATES;
+typedef std::pair< std::wstring, CANDIDATES > SKKDICENTRY;
+typedef std::map< std::wstring, CANDIDATES > SKKDIC;
 
 struct {
 	HWND parent;
@@ -78,40 +81,92 @@ void SaveDictionary(HWND hwnd)
 	WriterList(pXmlWriter, list);
 }
 
-void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
+void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
+{
+	SKKDIC::iterator skkdic_itr;
+	SKKDICENTRY skkdicentry;
+	CANDIDATES::iterator candidates_itr;
+	ANNOTATIONS::iterator annotations_itr;;
+	ANNOTATIONS annotations;
+
+	skkdic_itr = skkdic.find(key);
+	if(skkdic_itr == skkdic.end())
+	{
+		skkdicentry.first = key;
+		if(!annotation.empty())
+		{
+			annotations.push_back(annotation);
+		}
+		skkdicentry.second.push_back(CANDIDATE(candidate, annotations));
+		skkdic.insert(skkdicentry);
+	}
+	else
+	{
+		for(candidates_itr = skkdic_itr->second.begin(); candidates_itr != skkdic_itr->second.end(); candidates_itr++)
+		{
+			if(candidates_itr->first == candidate)
+			{
+				for(annotations_itr = candidates_itr->second.begin(); annotations_itr != candidates_itr->second.end(); annotations_itr++)
+				{
+					if(*annotations_itr == annotation)
+					{
+						break;
+					}
+				}
+				if(annotations_itr == candidates_itr->second.end())
+				{
+					if(!annotation.empty())
+					{
+						candidates_itr->second.push_back(annotation);
+					}
+				}
+				break;
+			}
+		}
+		if(candidates_itr == skkdic_itr->second.end())
+		{
+			if(!annotation.empty())
+			{
+				annotations.push_back(annotation);
+			}
+			skkdic_itr->second.push_back(CANDIDATE(candidate, annotations));
+		}
+	}
+}
+
+void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 {
 	HWND hWndList;
 	WCHAR path[MAX_PATH];
-	size_t count, size, i, is;
-	FILE *fpskkdic;
+	size_t count, ic;
+	FILE *fp;
 	WCHAR bom;
-	CHAR buf[BUFSIZE*2];
-	WCHAR wbuf[BUFSIZE];
-	void *rp;
-	std::wstring s;
-	std::wregex re;
-	std::wstring fmt;
-	ENTRY entry;
-	ENTRYS::iterator entrys_itr;
+	std::wstring key;
+	int okuri;
+	SKKDICCANDIDATES sc;
+	SKKDICCANDIDATES::iterator sc_itr;
+	int rl;
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
 	count = ListView_GetItemCount(hWndList);
 
-	for(i=0; i<count; i++)
+	for(ic=0; ic<count; ic++)
 	{
-		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
-		_wfopen_s(&fpskkdic, path, L"rb");
-		if(fpskkdic == NULL)
+		ListView_GetItemText(hWndList, ic, 0, path, _countof(path));
+		okuri = -1;
+
+		_wfopen_s(&fp, path, L"rb");
+		if(fp == NULL)
 		{
 			continue;
 		}
 
 		bom = L'\0';
-		fread(&bom, 2, 1, fpskkdic);
+		fread(&bom, 2, 1, fp);
 		if(bom == 0xBBEF)
 		{
 			bom = L'\0';
-			fread(&bom, 2, 1, fpskkdic);
+			fread(&bom, 2, 1, fp);
 			if((bom & 0xFF) == 0xBF)
 			{
 				bom = 0xFEFF;
@@ -121,103 +176,51 @@ void LoadSKKDic(HWND hwnd, ENTRYS &entrys)
 		switch(bom)
 		{
 		case 0xFEFF:
-			fclose(fpskkdic);
-			_wfopen_s(&fpskkdic, path, RccsUNICODE);
-			if(fpskkdic == NULL)
+			fclose(fp);
+			_wfopen_s(&fp, path, RccsUNICODE);
+			if(fp == NULL)
 			{
 				continue;
 			}
 			break;
 		default:
-			fseek(fpskkdic, SEEK_SET, 0);
+			fseek(fp, SEEK_SET, 0);
 			break;
 		}
 
 		while(true)
 		{
-			switch(bom)
-			{
-			case 0xFEFF:
-				rp = fgetws(wbuf, _countof(wbuf), fpskkdic);
-				break;
-			default:
-				rp = fgets(buf, _countof(buf), fpskkdic);
-				break;
-			}
-			if(rp == NULL)
+			rl = ReadSKKDicLine(fp, bom, okuri, key, sc);
+			if(rl == -1)
 			{
 				break;
 			}
-
-			switch(bom)
-			{
-			case 0xFEFF:
-				break;
-			default:
-				size = _countof(wbuf);
-				if(!EucJis2004ToWideChar(buf, NULL, wbuf, &size))
-				{
-					continue;
-				}
-				break;
-			}
-
-			switch(wbuf[0])
-			{
-			case L'\0':
-			case L'\r':
-			case L'\n':
-			case L';':
-			case L'\x20':
-				continue;
-				break;
-			default:
-				break;
-			}
-
-			s.assign(wbuf);
-			re.assign(L"\\t|\\r|\\n");
-			fmt.assign(L"");
-			s = std::regex_replace(s, re, fmt);
-			is = s.find_first_of(L'\x20');
-			if(is == std::wstring::npos)
+			else if(rl == 1)
 			{
 				continue;
 			}
 
-			entry.first = s.substr(0, is);
-			entry.second = s.substr(is + 1);
-			entrys_itr = entrys.find(entry.first);
-			if(entrys_itr == entrys.end())
+			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 			{
-				entrys.insert(entry);
-			}
-			else
-			{
-				entrys_itr->second += entry.second.substr(1);
+				LoadSKKDicAdd(skkdic, key, sc_itr->first, sc_itr->second);
 			}
 		}
 
-		fclose(fpskkdic);
+		fclose(fp);
 	}
 }
 
-HRESULT WriteSKKDicXml(ENTRYS &entrys)
+HRESULT WriteSKKDicXml(SKKDIC &skkdic)
 {
 	HRESULT hr;
 	FILE *fpidx;
 	IXmlWriter *pWriter;
 	IStream *pFileStream;
-	ENTRYS::iterator entrys_itr;
-	std::vector<std::wstring> es;
-	size_t i, is, ie;
-	std::wstring s;
-	std::wregex re;
-	std::wstring fmt;
+	SKKDIC::iterator skkdic_itr;
+	CANDIDATES::iterator candidates_itr;
+	ANNOTATIONS::iterator annotations_itr;
 	APPDATAXMLATTR attr;
-	APPDATAXMLROW::iterator r_itr;
 	APPDATAXMLROW row;
-	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLLIST list;
 	ULARGE_INTEGER uli1;
 	LARGE_INTEGER li0 = {0};
@@ -242,78 +245,27 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 	hr = WriterNewLine(pWriter);
 	EXIT_NOT_S_OK(hr);
 
-	for(entrys_itr = entrys.begin(); entrys_itr != entrys.end(); entrys_itr++)
+	for(skkdic_itr = skkdic.begin(); skkdic_itr != skkdic.end(); skkdic_itr++)
 	{
-		//エントリを「/」で分割
-		es.clear();
-		i = 0;
-		s = entrys_itr->second;
-		while(i < s.size())
-		{
-			is = s.find_first_of(L'/', i);
-			ie = s.find_first_of(L'/', is + 1);
-			if(ie == std::wstring::npos)
-			{
-				break;
-			}
-			es.push_back(s.substr(i + 1, ie - is - 1));
-			i = ie;
-		}
-
-		//候補と注釈を分割
 		list.clear();
-		for(i=0; i<es.size(); i++)
+		for(candidates_itr = skkdic_itr->second.begin(); candidates_itr != skkdic_itr->second.end(); candidates_itr++)
 		{
 			row.clear();
-			s = es[i];
-			ie = s.find_first_of(L';');
-
-			if(ie == std::wstring::npos)
+			attr.first = AttributeCandidate;
+			attr.second = candidates_itr->first;
+			row.push_back(attr);
+			attr.first = AttributeAnnotation;
+			attr.second = L"";
+			for(annotations_itr = candidates_itr->second.begin(); annotations_itr != candidates_itr->second.end(); annotations_itr++)
 			{
-				attr.first = AttributeCandidate;
-				attr.second = s;
-				row.push_back(attr);
-				attr.first = AttributeAnnotation;
-				attr.second = L"";
-				row.push_back(attr);
-			}
-			else
-			{
-				attr.first = AttributeCandidate;
-				attr.second = s.substr(0, ie);
-				row.push_back(attr);
-				attr.first = AttributeAnnotation;
-				attr.second = s.substr(ie + 1);
-				row.push_back(attr);
-			}
-
-			list.push_back(row);
-		}
-
-		//concatを置換
-		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
-		{
-			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
-			{
-				s = r_itr->second;
-				re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
-				if(std::regex_match(s, re))
+				if(annotations_itr != candidates_itr->second.begin())
 				{
-					re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-					fmt.assign(L"$1$2$3");
-					s = std::regex_replace(s, re, fmt);
-
-					re.assign(L"\\\\057");
-					fmt.assign(L"/");
-					s = std::regex_replace(s, re, fmt);
-
-					re.assign(L"\\\\073");
-					fmt.assign(L";");
-					s = std::regex_replace(s, re, fmt);
-
-					r_itr->second = s;
+					attr.second += L",";
 				}
+				attr.second += *annotations_itr;
 			}
+			row.push_back(attr);
+			list.push_back(row);
 		}
 
 		//インデックスファイル書き込み
@@ -331,7 +283,7 @@ HRESULT WriteSKKDicXml(ENTRYS &entrys)
 		hr = WriterStartElement(pWriter, TagEntry);
 		EXIT_NOT_S_OK(hr);
 
-		hr = WriterAttribute(pWriter, TagKey, entrys_itr->first.c_str());	//見出し
+		hr = WriterAttribute(pWriter, TagKey, skkdic_itr->first.c_str());	//見出し
 		EXIT_NOT_S_OK(hr);
 	
 		hr = WriterList(pWriter, list);	//候補
@@ -369,10 +321,10 @@ NOT_S_OK:
 
 unsigned int __stdcall MakeSKKDicThread(void *p)
 {
-	ENTRYS entrys;
+	SKKDIC skkdic;
 
-	LoadSKKDic(SkkDicInfo.parent, entrys);
-	SkkDicInfo.hr = WriteSKKDicXml(entrys);
+	LoadSKKDic(SkkDicInfo.parent, skkdic);
+	SkkDicInfo.hr = WriteSKKDicXml(skkdic);
 	return 0;
 }
 

@@ -639,7 +639,6 @@ void SaveJLatin(HWND hwnd)
 	WriterEndSection(pXmlWriter);
 }
 
-
 void LoadConfigKanaTxt(LPCWSTR path)
 {
 	FILE *fp;

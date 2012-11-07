@@ -1,6 +1,6 @@
 ﻿
-#include "imcrvmgr.h"
 #include "eucjis2004.h"
+#include "imcrvmgr.h"
 
 void ConvUnicode(const std::wstring &text, CANDIDATES &candidates)
 {

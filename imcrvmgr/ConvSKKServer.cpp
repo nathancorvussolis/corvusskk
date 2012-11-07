@@ -1,6 +1,7 @@
 ﻿
-#include "imcrvmgr.h"
 #include "eucjis2004.h"
+#include "parseskkdic.h"
+#include "imcrvmgr.h"
 
 void GetSKKServerVersion();
 void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
@@ -36,7 +37,7 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 			key[0] = SKK_REQ;
 			key[size + 0] = 0x20;
 			key[size + 1] = 0x00;
-			size += 2;
+			size++;
 		}
 		else
 		{
@@ -49,7 +50,7 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 			key[0] = SKK_REQ;
 			key[size + 0] = 0x20;
 			key[size + 1] = 0x00;
-			size += 2;
+			size++;
 		}
 		else
 		{
@@ -225,82 +226,13 @@ void GetSKKServerVersion()
 
 void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
 {
-	std::vector<std::wstring> es;
-	std::vector<std::wstring>::iterator es_itr;
-	size_t i, is, ie;
-	std::wstring ca[2];
-	std::wstring s;
-	std::wregex re;
-	std::wstring fmt;
-	CANDIDATE row;
-	CANDIDATES list;
-	CANDIDATES::iterator l_itr;
+	SKKDICCANDIDATES sc;
+	SKKDICCANDIDATES::iterator sc_itr;
 
-	//エントリを「/」で分割
-	i = 0;
-	s = res;
-	while(i < s.size())
+	ParseSKKDicCandiate(res, sc);
+
+	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 	{
-		is = s.find_first_of(L'/', i);
-		ie = s.find_first_of(L'/', is + 1);
-		if(ie == std::wstring::npos)
-		{
-			break;
-		}
-		es.push_back(s.substr(i + 1, ie - is - 1));
-		i = ie;
-	}
-
-	//候補と注釈を分割
-	for(i=0; i<es.size(); i++)
-	{
-		row.first.clear();
-		row.second.clear();
-		s = es[i];
-		ie = s.find_first_of(L';');
-
-		if(ie == std::wstring::npos)
-		{
-			row.first = s;
-			row.second = L"";
-		}
-		else
-		{
-			row.first = s.substr(0, ie);
-			row.second = s.substr(ie + 1);
-		}
-
-		list.push_back(row);
-	}
-
-	//concatを置換
-	for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
-	{
-		ca[0] = l_itr->first;
-		ca[1] = l_itr->second;
-
-		for(i=0; i<2; i++)
-		{
-			s = ca[i];
-			re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
-			if(std::regex_match(s, re))
-			{
-				re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-				fmt.assign(L"$1$2$3");
-				s = std::regex_replace(s, re, fmt);
-
-				re.assign(L"\\\\057");
-				fmt.assign(L"/");
-				s = std::regex_replace(s, re, fmt);
-
-				re.assign(L"\\\\073");
-				fmt.assign(L";");
-				s = std::regex_replace(s, re, fmt);
-
-				ca[i] = s;
-			}
-		}
-
-		candidates.push_back(CANDIDATE(ca[0], ca[1]));
+		candidates.push_back(CANDIDATE(sc_itr->first, sc_itr->second));
 	}
 }
