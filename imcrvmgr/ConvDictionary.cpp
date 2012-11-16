@@ -803,8 +803,8 @@ void WriteSKKUserDicEntry(FILE *fp, const USERDIC::iterator &userdic_itr)
 {
 	CANDIDATES::iterator candidates_itr;
 	std::wstring s;
-	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");
+	std::wregex re;
+	std::wstring fmt;
 	std::wsmatch result;
 	std::wstring ca[2];
 	int i;
@@ -819,8 +819,15 @@ void WriteSKKUserDicEntry(FILE *fp, const USERDIC::iterator &userdic_itr)
 		for(i=0; i<2; i++)
 		{
 			s = ca[i];
-			if(std::regex_search(s, result, std::wregex(L"[/;]")))
+
+			// " -> \", \ -> \\, / -> \057, ; -> \073
+			re.assign(L"[/;]");
+			if(std::regex_search(s, re))
 			{
+				re.assign(L"([\\\"|\\\\])");
+				fmt.assign(L"\\$1");
+				s = std::regex_replace(s, re, fmt);
+
 				re.assign(L"/");
 				fmt.assign(L"\\057");
 				s = std::regex_replace(s, re, fmt);

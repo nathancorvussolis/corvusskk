@@ -1,8 +1,8 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.8.9
+     CorvusSKK version 0.8.10
 
-     https://code.google.com/p/corvus-skk/
+     http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
 ================================================================================
 
@@ -23,19 +23,19 @@
   予めインストールして下さい。
 
   Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x86)
-  http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c32f406a-f8fc-4164-b6eb-5328b8578f03
+  http://www.microsoft.com/ja-jp/download/details.aspx?id=8328
 
   Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x64)
-  http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c68ccbb6-75ef-4c9d-a326-879eab4fcdf8
+  http://www.microsoft.com/ja-jp/download/details.aspx?id=13523
 
   XPでは、SP3(x64はSP2) または IE7以降 または XP用XMLLite を
   予めインストールして下さい。
 
   Windows XP 用 XMLLite (KB915865)
-  http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=d7b5dc81-ad14-4de2-8ad5-8c4a9aab5992
+  http://www.microsoft.com/ja-jp/download/details.aspx?id=13978
 
   Windows XP x64 Edition 用 XMLLite (KB915865) 
-  http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=c7cb26e9-68f1-4f80-b231-79d044431e8e
+  http://www.microsoft.com/ja-jp/download/details.aspx?id=12186
 
 
 ・CorvusSKK のインストール
@@ -73,7 +73,7 @@
   http://www.microsoft.com/ja-jp/windows/products/windowsvista/jp_font/jis04/default.aspx
 
   Windows XP 向け ClearType 対応メイリオ バージョン 5.00
-  http://www.microsoft.com/downloads/ja-jp/details.aspx?FamilyID=f7d758d2-46ff-4c55-92f2-69ae834ac928
+  http://www.microsoft.com/ja-jp/download/details.aspx?id=10550
 
   IPAフォント
   http://ossipedia.ipa.go.jp/ipafont/index.html
@@ -173,8 +173,8 @@
   独自形式の取込済SKK辞書に変換されて、使用可能となります。
   SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-16(LE, BOMあり)、
   UTF-8(BOMあり) に対応しています。
-  Emacs Lisp の関数は、(concat "～\073～")、(concat "～\057～") のみ対応して
-  います。
+  Emacs Lisp の関数は、concat のみ対応で、エスケープ文字としては、
+  \040 ～ \0176、\"、\\、に対応しています。
 
 
 ・SKK辞書サーバ
@@ -193,8 +193,8 @@
   出力ファイルの文字コードは、UTF-16(LE, BOMあり) です。
   送り仮名のマッチに用いられる送りありエントリの角括弧のブロックは使用しない
   ので、読み込みでは無視されます。
-  Emacs Lisp の関数は、(concat "～\073～")、(concat "～\057～") のみ対応して
-  います。
+  Emacs Lisp の関数は、concat のみ対応で、エスケープ文字としては、
+  \040 ～ \0176、\"、\\、に対応しています。
 
 
 ・候補一覧選択キー
@@ -221,7 +221,7 @@
 
   各機能に対してキーを正規表現で設定して下さい。
   Visual C++ 2010 の TR1 正規表現で、文法は ECMAScript を使用しています。
-  正規表現の詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/bb982727
+  正規表現の詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/bb982727(v=vs.100).aspx
 
   無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
   文字として認識される場合はキー設定（文字）のほうが優先されます。

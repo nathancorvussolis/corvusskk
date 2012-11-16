@@ -140,25 +140,54 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &d)
 
 void ParseLisp(std::wstring &s)
 {
-	std::wregex re;
-	std::wstring fmt;
+	// \" -> ", \\ -> \, \ooo -> ascii
+	std::wstring tmpstr, resstr, substr, suffix, numstr, fmt;
+	std::wregex rescat, rercat, reesc, renum;
+	std::wsmatch res;
+	unsigned long u;
 
 	if(s.find(L"concat") != std::wstring::npos)
 	{
-		re.assign(L".*\\(concat \".*(\\\\057|\\\\073).*\"\\).*");
-		if(std::regex_match(s, re))
+		rescat.assign(L"\\(concat \".*?\"\\)");
+		rercat.assign(L"\\(concat \"(.*)\"\\)");
+		reesc.assign(L"\\\\([\\\"|\\\\])");
+		fmt.assign(L"$1");
+		renum.assign(L"\\\\0[0-9]+");
+
+		tmpstr = s;
+		suffix = s;
+
+		while(std::regex_search(tmpstr, res, rescat))
 		{
-			re.assign(L"(.*)\\(concat \"(.*)\"\\)(.*)");
-			fmt.assign(L"$1$2$3");
-			s = std::regex_replace(s, re, fmt);
+			resstr += res.prefix();
+			substr = res.str();
+			suffix = res.suffix();
 
-			re.assign(L"\\\\057");
-			fmt.assign(L"/");
-			s = std::regex_replace(s, re, fmt);
+			substr = std::regex_replace(substr, rercat, fmt);
+			substr = std::regex_replace(substr, reesc, fmt);
 
-			re.assign(L"\\\\073");
-			fmt.assign(L";");
-			s = std::regex_replace(s, re, fmt);
+			while(std::regex_search(substr, res, renum))
+			{
+				resstr += res.prefix();
+				numstr = res.str();
+				numstr.erase(0, 1);	// '\\'
+				u = wcstoul(numstr.c_str(), NULL, 0);
+				if(u >= 0x20 && u <= 0x7E)
+				{
+					resstr.append(1, (wchar_t)u);
+				}
+				else
+				{
+					resstr += res.str();
+				}
+				substr = res.suffix();
+			}
+
+			resstr += substr;
+			tmpstr = suffix;
 		}
+
+		resstr += suffix;
+		s = resstr;
 	}
 }
