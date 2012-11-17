@@ -152,7 +152,7 @@ void ParseLisp(std::wstring &s)
 		rercat.assign(L"\\(concat \"(.*)\"\\)");
 		reesc.assign(L"\\\\([\\\"|\\\\])");
 		fmt.assign(L"$1");
-		renum.assign(L"\\\\0[0-9]+");
+		renum.assign(L"\\\\[0-7]{3}");
 
 		tmpstr = s;
 		suffix = s;
@@ -170,7 +170,7 @@ void ParseLisp(std::wstring &s)
 			{
 				resstr += res.prefix();
 				numstr = res.str();
-				numstr.erase(0, 1);	// '\\'
+				numstr[0] = L'0';
 				u = wcstoul(numstr.c_str(), NULL, 0);
 				if(u >= 0x20 && u <= 0x7E)
 				{
