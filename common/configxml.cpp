@@ -44,6 +44,14 @@ LPCWSTR ValueFontItalic = L"italic";
 LPCWSTR SectionBehavior = L"behavior";
 //keys
 LPCWSTR ValueMaxWidth = L"maxwidth";
+LPCWSTR ValueColorBG = L"colbg";
+LPCWSTR ValueColorFR = L"colfr";
+LPCWSTR ValueColorSE = L"colse";
+LPCWSTR ValueColorCO = L"colco";
+LPCWSTR ValueColorCA = L"colca";
+LPCWSTR ValueColorSC = L"colsc";
+LPCWSTR ValueColorAN = L"colan";
+LPCWSTR ValueColorNO = L"colno";
 LPCWSTR ValueUntilCandList = L"untilcandlist";
 LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueAnnotation = L"annotation";

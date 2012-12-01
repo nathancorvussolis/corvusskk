@@ -69,7 +69,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			item.iSubItem = 2;
 			ListView_SetItem(hWndListView, &item);
 		}
-		return (INT_PTR)TRUE;
+		return TRUE;
 		
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
@@ -93,7 +93,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, num);
 				ListView_SetItemText(hWndListView, index, 2, num);
 
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 		default:
@@ -122,7 +122,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 					ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
 					SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, num);
 				}
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 
@@ -143,7 +143,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 			WriterEndSection(pXmlWriter);
 
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -153,5 +153,5 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	default:
 		break;
 	}
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

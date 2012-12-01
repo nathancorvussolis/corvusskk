@@ -78,6 +78,14 @@ extern LPCWSTR ValueFontItalic;
 extern LPCWSTR SectionBehavior;
 //keys
 extern LPCWSTR ValueMaxWidth;
+extern LPCWSTR ValueColorBG;
+extern LPCWSTR ValueColorFR;
+extern LPCWSTR ValueColorSE;
+extern LPCWSTR ValueColorCO;
+extern LPCWSTR ValueColorCA;
+extern LPCWSTR ValueColorSC;
+extern LPCWSTR ValueColorAN;
+extern LPCWSTR ValueColorNO;
 extern LPCWSTR ValueUntilCandList;
 extern LPCWSTR ValueDispCandNo;
 extern LPCWSTR ValueAnnotation;

@@ -6,14 +6,17 @@
 
 static LPCWSTR markNo = L":";
 static LPCWSTR markAnnotation = L";";
-static LPCWSTR markCandEnd = L"　";
+static LPCWSTR markCandEnd = L"\u3000";
 static LPCWSTR markCursor = L"|";
 static LPCWSTR markRegKeyEnd = L"：";
-static LPCWSTR markSP = L" ";
+static LPCWSTR markSP = L"\x20";
 static LPCWSTR markNBSP = L"\u00A0";
 
 BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg)
 {
+	HDC hdc;
+	LOGFONTW logfont;
+
 	_hwndParent = hwndParent;
 	_pCandidateWindowParent = pCandidateWindowParent;
 	_depth = depth;
@@ -21,7 +24,8 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 	if(_hwndParent != NULL)
 	{
-		WNDCLASSW wc;
+		WNDCLASSEXW wc;
+		wc.cbSize = sizeof(wc);
 		wc.style = CS_IME | CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW;
 		wc.lpfnWndProc = DefWindowProcW;
 		wc.cbClsExtra = 0;
@@ -29,10 +33,11 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wc.hInstance = g_hInst;
 		wc.hIcon = NULL;
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = TextServiceDesc;
-		RegisterClassW(&wc);
+		wc.hIconSm = NULL;
+		RegisterClassExW(&wc);
 
 		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, TextServiceDesc,
 			NULL, WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -52,13 +57,28 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 				SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		}
 
-		HDC hdc = GetDC(_hwnd);
-		hFont = CreateFontW(-MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
-			_pTextService->fontweight, _pTextService->fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
-			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
-			_pTextService->fontname);
+		hdc = GetDC(_hwnd);
+
+		logfont.lfHeight = -MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		logfont.lfWidth = 0;
+		logfont.lfEscapement = 0;
+		logfont.lfOrientation = 0;
+		logfont.lfWeight = _pTextService->fontweight;
+		logfont.lfItalic = _pTextService->fontitalic;
+		logfont.lfUnderline = FALSE;
+		logfont.lfStrikeOut = FALSE;
+		logfont.lfCharSet = SHIFTJIS_CHARSET;
+		logfont.lfOutPrecision = OUT_DEFAULT_PRECIS;
+		logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+		logfont.lfQuality = PROOF_QUALITY;
+		logfont.lfPitchAndFamily = DEFAULT_PITCH;
+		wcscpy_s(logfont.lfFaceName, _pTextService->fontname);
+		hFont = CreateFontIndirectW(&logfont);
+
+		logfont.lfUnderline = TRUE;
+		hFontU = CreateFontIndirectW(&logfont);
+
 		ReleaseDC(_hwnd, hdc);
-		//DeleteObject(hFont);	// -> _End()
 	}
 
 	_reg = reg;
@@ -101,6 +121,13 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	HBITMAP hmembmp;
     RECT r;
 	int cx, cy;
+	std::wstring s;
+	RECT rc;
+	POINT pt;
+	TEXTMETRIC tm;
+	UINT page, count, i;
+	int cycle;
+	WCHAR strPage[32];
 
 	switch(uMsg)
 	{
@@ -115,19 +142,102 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
 		SelectObject(hmemdc, hmembmp);
 
-		SetTextColor(hmemdc, RGB(0x00,0x00,0x00));
-		SetBkColor(hmemdc, RGB(0xFF,0xFF,0xFF));
 		SelectObject(hmemdc, hFont);
-		SelectObject(hmemdc, GetStockObject(BLACK_PEN));
-		SelectObject(hmemdc, GetStockObject(WHITE_BRUSH));
+
+		SetDCPenColor(hmemdc, _pTextService->colors[CL_COLOR_FR]);
+		SelectObject(hmemdc, GetStockObject(DC_PEN));
+		SetDCBrushColor(hmemdc, _pTextService->colors[CL_COLOR_BG]);
+		SelectObject(hmemdc, GetStockObject(DC_BRUSH));
 
 		Rectangle(hmemdc, 0, 0, cx, cy);
-		
-		r.left += 4;
-		r.top += 4;
-		r.right -= 4;
-		r.bottom -= 4;
-		DrawTextW(hmemdc, disptext.c_str(), -1, &r, DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+		if(regwordul || regword)
+		{
+			r.left += 2;
+			r.top += 4;
+			r.right -= 2;
+			r.bottom -= 4;
+
+			_PaintRegWord(hmemdc, &r);
+		}
+		else if(_CandCount.size() != 0)
+		{
+			GetTextMetrics(hmemdc, &tm);
+
+			pt.x = 2;
+			pt.y = 4;
+
+			GetCurrentPage(&page);
+			count = 0;
+			for(i=0; i<page; i++)
+			{
+				count += _CandCount[i];
+			}
+
+			for(i=0; i<_CandCount[page]; i++)
+			{
+				_MakeCandidateString(s, page, count, i, -1);
+
+				r.left = 0;
+				r.top = 0;
+				r.right = 1;
+				r.bottom = 1;
+
+				DrawTextW(hmemdc, s.c_str(), -1, &r,
+					DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+				if(pt.x == 2 && r.right > cx - 2)
+				{
+					cx = r.right;
+				}
+				else if(pt.x + r.right > cx - 2)
+				{
+					pt.x = 2;
+					pt.y += tm.tmHeight;
+				}
+
+				rc.left = pt.x;
+				rc.top = pt.y;
+				rc.right = pt.x + r.right;
+				rc.bottom = pt.y + tm.tmHeight;
+
+				for(cycle=4; cycle>=0; cycle--)
+				{
+					_PaintCandidate(hmemdc, &rc, page, count, i, cycle);
+				}
+
+				pt.x += r.right;
+			}
+
+			_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
+
+			r.left = 0;
+			r.top = 0;
+			r.right = 1;
+			r.bottom = 1;
+
+			DrawTextW(hmemdc, strPage, -1, &r,
+				DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+			if(pt.x == 2 && r.right > cx - 2)
+			{
+				cx = r.right;
+			}
+			else if(pt.x + r.right > cx - 2)
+			{
+				pt.x = 2;
+				pt.y += tm.tmHeight;
+			}
+
+			rc.left = pt.x;
+			rc.top = pt.y;
+			rc.right = pt.x + r.right;
+			rc.bottom = pt.y + tm.tmHeight;
+
+			SetTextColor(hmemdc, _pTextService->colors[CL_COLOR_NO]);
+			SetBkColor(hmemdc, _pTextService->colors[CL_COLOR_BG]);
+			DrawTextW(hmemdc, strPage, -1, &rc, DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		}
 
 		BitBlt(hdc, 0, 0, cx, cy, hmemdc, 0, 0, SRCCOPY);
 
@@ -142,6 +252,128 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 	return 0;
+}
+
+void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
+{
+	WCHAR strPage[32];
+
+	s.clear();
+
+	if(cycle > 2)
+	{
+		return;
+	}
+
+	_snwprintf_s(strPage, _TRUNCATE, L"%s[%u]%s", markNBSP, _depth, markNBSP);
+	s.append(strPage + searchkey_bak + markRegKeyEnd);
+	s.append(regwordtext.substr(0, regwordtextpos));
+
+	if(cycle == 0)
+	{
+		return;
+	}
+
+	if(!comptext.empty())
+	{
+		s.append(comptext);
+	}
+
+	if(cycle == 1)
+	{
+		return;
+	}
+
+	s.append(markCursor + regwordtext.substr(regwordtextpos) + markNBSP);
+}
+
+void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
+{
+	std::wstring s;
+	int cycle;
+	HFONT f[3] = {hFont, hFontU, hFont};
+
+	for(cycle=2; cycle>=0; cycle--)
+	{
+		_MakeRegWordString(s, cycle);
+
+		SelectObject(hdc, f[cycle]);
+		SetTextColor(hdc, _pTextService->colors[CL_COLOR_CA]);
+		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
+
+		DrawTextW(hdc, s.c_str(), -1, lpr,
+			DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+	}
+}
+
+void CCandidateWindow::_MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle)
+{
+	s.clear();
+
+	if(cycle > 4)
+	{
+		return;
+	}
+
+	s.append(markNBSP);
+	s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)][0]);
+
+	if(cycle == 0)
+	{
+		return;
+	}
+
+	s.append(markNo);
+
+	if(cycle == 1)
+	{
+		return;
+	}
+
+	s.append(
+		std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.first,
+			std::wregex(markSP), std::wstring(markNBSP)));
+
+	if(cycle == 2)
+	{
+		return;
+	}
+
+	if(_pTextService->c_annotation &&
+		!_pTextService->candidates[ count + _uShowedCount + idx ].first.second.empty())
+	{
+		s.append(markAnnotation);
+
+		if(cycle == 3)
+		{
+			return;
+		}
+
+		s.append(
+			std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.second,
+				std::wregex(markSP), std::wstring(markNBSP)));
+	}
+
+	if(cycle == 4)
+	{
+		return;
+	}
+
+	s.append(markCandEnd);
+}
+
+void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx, int cycle)
+{
+	std::wstring s;
+
+	_MakeCandidateString(s, page, count, idx, cycle);
+
+	if(cycle <= 4 && cycle >= 0)
+	{
+		SetTextColor(hdc, _pTextService->colors[cycle + 2]);
+		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
+		DrawTextW(hdc, s.c_str(), -1, lpr, DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+	}
 }
 
 void CCandidateWindow::_Destroy()
@@ -247,6 +479,10 @@ void CCandidateWindow::_EndUIElement()
 	{
 		DeleteObject(hFont);
 	}
+	if(hFontU != NULL)
+	{
+		DeleteObject(hFontU);
+	}
 
 	_bShow = FALSE;
 }
@@ -270,9 +506,15 @@ void CCandidateWindow::_CalcWindowRect()
 {
 	RECT r, rw;
 	HDC hdc;
-	int x, y, cx, cy;
+	int x, y, cx = 0, cy = 0;
 	HMONITOR hMonitor;
 	MONITORINFO mi;
+	UINT page, count, i;
+	std::wstring s;
+	POINT pt;
+	TEXTMETRIC tm;
+	int xmax = 0;
+	WCHAR strPage[32];
 
 	if(_hwnd == NULL)
 	{
@@ -286,18 +528,105 @@ void CCandidateWindow::_CalcWindowRect()
 
 	hdc = GetDC(_hwnd);
 	SelectObject(hdc, hFont);
+
 	ZeroMemory(&r, sizeof(r));
 	r.right = _pTextService->maxwidth - 8;
 	if(r.right <= 0)
 	{
 		r.right = 1;
 	}
-	DrawTextW(hdc, disptext.c_str(), -1, &r,
-		DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
-	ReleaseDC(_hwnd, hdc);
 
-	cx = r.right + 8;
-	cy = r.bottom + 8;
+	if(regwordul || regword)
+	{
+		DrawTextW(hdc, disptext.c_str(), -1, &r,
+			DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+		cx = r.right + 4;
+		cy = r.bottom + 8;
+	}
+	else if(_CandCount.size() != 0)
+	{
+		GetTextMetrics(hdc, &tm);
+
+		pt.x = 0;
+		pt.y = 0;
+		cx = r.right;
+
+		GetCurrentPage(&page);
+		count = 0;
+		for(i=0; i<page; i++)
+		{
+			count += _CandCount[i];
+		}
+
+		for(i=0; i<_CandCount[page]; i++)
+		{
+			_MakeCandidateString(s, page, count, i, -1);
+
+			r.left = 0;
+			r.top = 0;
+			r.right = 1;
+			r.bottom = 1;
+
+			DrawTextW(hdc, s.c_str(), -1, &r,
+				DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+			if(pt.x == 0 && r.right > cx)
+			{
+				cx = r.right;
+			}
+			else if(pt.x + r.right > cx)
+			{
+				pt.x = 0;
+				pt.y += tm.tmHeight;
+			}
+
+			pt.x += r.right;
+
+			if(pt.x > xmax)
+			{
+				xmax = pt.x;
+				if(xmax > cx)
+				{
+					cx = xmax;
+				}
+			}
+		}
+
+		_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
+
+		r.left = 0;
+		r.top = 0;
+		r.right = 1;
+		r.bottom = 1;
+
+		DrawTextW(hdc, strPage, -1, &r,
+			DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+		if(pt.x == 0 && r.right > cx)
+		{
+			cx = r.right;
+		}
+		else if(pt.x + r.right > cx)
+		{
+			pt.x = 0;
+			pt.y += tm.tmHeight;
+		}
+
+		pt.x += r.right;
+
+		if(pt.x > xmax)
+		{
+			xmax = pt.x;
+			if(xmax > cx)
+			{
+				cx = xmax;
+			}
+		}
+
+		cx = xmax + 4;
+		cy = pt.y + tm.tmHeight + 8;
+	}
 
 	if((rw.right - cx) < _pt.x)
 	{
@@ -325,6 +654,7 @@ void CCandidateWindow::_CalcWindowRect()
 		y = _pt.y;
 	}
 
+	ReleaseDC(_hwnd, hdc);
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 }
 
@@ -996,20 +1326,9 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 
 void CCandidateWindow::_Update()
 {
-	WCHAR strPage[32];
-	UINT i, page, count;
-
 	if(regwordul || regword)
 	{
-		disptext.clear();
-		_snwprintf_s(strPage, _TRUNCATE, L"[%u]%s", _depth, markNBSP);
-		disptext.append(strPage + searchkey_bak + markRegKeyEnd);
-		disptext.append(regwordtext.substr(0, regwordtextpos));
-		if(!comptext.empty())
-		{
-			disptext.append(markCursor + comptext);
-		}
-		disptext.append(markCursor + regwordtext.substr(regwordtextpos));
+		_MakeRegWordString(disptext, -1);
 	}
 
 	if(regwordul)
@@ -1020,42 +1339,6 @@ void CCandidateWindow::_Update()
 	}
 	else
 	{
-		if(!regword)
-		{
-			GetCurrentPage(&page);
-			count = 0;
-			for(i=0; i<page; i++)
-			{
-				count += _CandCount[i];
-			}
-
-			disptext.clear();
-			for(i=0; i<_CandCount[page]; i++)
-			{
-				disptext.append(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
-
-				disptext.append(
-					std::regex_replace(markNBSP +
-						_pTextService->candidates[ count + _uShowedCount + i ].first.first,
-						std::wregex(markSP), std::wstring(markNBSP)));
-
-				if(_pTextService->c_annotation &&
-					!_pTextService->candidates[ count + _uShowedCount + i ].first.second.empty())
-				{
-					disptext.append(
-						std::regex_replace(markAnnotation +
-							_pTextService->candidates[ count + _uShowedCount + i ].first.second,
-							std::wregex(markSP), std::wstring(markNBSP)));
-				}
-
-				disptext.append(markCandEnd);
-				disptext.append(markSP);
-			}
-
-			_snwprintf_s(strPage, _TRUNCATE, L"(%u/%u)", page + 1, _uPageCnt);
-			disptext.append(strPage);
-		}
-
 		if(_hwnd != NULL)
 		{
 			_CalcWindowRect();

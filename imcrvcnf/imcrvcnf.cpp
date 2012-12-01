@@ -81,7 +81,7 @@ void CreateProperty(HINSTANCE hInstance)
 
 	ZeroMemory(&psh, sizeof(PROPSHEETHEADERW));
 	psh.dwSize = sizeof(PROPSHEETHEADERW);
-	psh.dwFlags = PSH_DEFAULT;
+	psh.dwFlags = PSH_DEFAULT | PSH_NOCONTEXTHELP;
 	psh.hInstance = hInstance;
 	psh.hwndParent = NULL;
 	psh.nPages = _countof(DlgPage);

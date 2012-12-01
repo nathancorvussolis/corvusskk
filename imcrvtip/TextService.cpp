@@ -26,16 +26,6 @@ CTextService::CTextService()
 	exinputmode = im_default;
 
 	_ResetStatus();
-
-	c_untilcandlist = 4;
-	c_dispcandnum = FALSE;
-	c_nomodemark = FALSE;
-	c_annotation = FALSE;
-	c_annotatlst = FALSE;
-	c_nookuriconv = FALSE;
-	c_delokuricncl = FALSE;
-	c_backincenter = FALSE;
-	c_addcandktkn = FALSE;
 }
 
 CTextService::~CTextService()

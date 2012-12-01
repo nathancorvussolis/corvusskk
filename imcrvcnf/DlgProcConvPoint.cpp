@@ -40,7 +40,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		LoadConvPoint(hDlg);
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
@@ -87,7 +87,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				item.iSubItem = 2;
 				ListView_SetItem(hWndListView, &item);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_CONVPOINT_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -97,7 +97,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 				ListView_DeleteItem(hWndListView, index);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_CONVPOINT_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -122,7 +122,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_CONVPOINT_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -148,7 +148,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -179,13 +179,13 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 					ListView_GetItemText(hWndListView, index, 2, key, _countof(key));
 					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				}
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 
 		case PSN_APPLY:
 			SaveConvPoint(hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -196,5 +196,5 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

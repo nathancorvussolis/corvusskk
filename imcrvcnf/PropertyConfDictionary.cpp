@@ -86,7 +86,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	SKKDIC::iterator skkdic_itr;
 	SKKDICENTRY skkdicentry;
 	CANDIDATES::iterator candidates_itr;
-	ANNOTATIONS::iterator annotations_itr;;
+	ANNOTATIONS::iterator annotations_itr;
 	ANNOTATIONS annotations;
 
 	skkdic_itr = skkdic.find(key);
@@ -362,7 +362,7 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SkkDicInfo.child = hDlg;
 		_beginthread(MakeSKKDicWaitThread, 0, NULL);
 		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
-		return (INT_PTR)TRUE;
+		return TRUE;
 	case WM_TIMER:
 		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
 		ipw++;
@@ -370,14 +370,14 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		{
 			ipw = 0;
 		}
-		return (INT_PTR)TRUE;
+		return TRUE;
 	case WM_DESTROY:
 		KillTimer(hDlg, IDC_STATIC_DIC_PW);
-		return (INT_PTR)TRUE;
+		return TRUE;
 	default:
 		break;
 	}
-	return (INT_PTR)FALSE;
+	return FALSE;
 }
 
 void MakeSKKDic(HWND hwnd)
@@ -496,7 +496,7 @@ INT_PTR CALLBACK DlgProcSKKUserDic(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		SkkUserDicInfo.child = hDlg;
 		_beginthread(ReqSKKUserDicWaitThread, 0, NULL);
 		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
-		return (INT_PTR)TRUE;
+		return TRUE;
 	case WM_TIMER:
 		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
 		ipw++;
@@ -504,14 +504,14 @@ INT_PTR CALLBACK DlgProcSKKUserDic(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		{
 			ipw = 0;
 		}
-		return (INT_PTR)TRUE;
+		return TRUE;
 	case WM_DESTROY:
 		KillTimer(hDlg, IDC_STATIC_DIC_PW);
-		return (INT_PTR)TRUE;
+		return TRUE;
 	default:
 		break;
 	}
-	return (INT_PTR)FALSE;
+	return FALSE;
 }
 
 void ReqSKKUserDic(HWND hwnd, WCHAR command, LPCWSTR path)

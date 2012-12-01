@@ -3,23 +3,43 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+static struct {
+	int id;
+	LPCWSTR value;
+	COLORREF col;
+} colors[8] = {
+	{IDC_COL_BG, ValueColorBG, RGB(0xFF,0xFF,0xFF)},
+	{IDC_COL_FR, ValueColorFR, RGB(0x00,0x00,0x00)},
+	{IDC_COL_SE, ValueColorSE, RGB(0x00,0x00,0xFF)},
+	{IDC_COL_CO, ValueColorCO, RGB(0x80,0x80,0x80)},
+	{IDC_COL_CA, ValueColorCA, RGB(0x00,0x00,0x00)},
+	{IDC_COL_SC, ValueColorSC, RGB(0x80,0x80,0x80)},
+	{IDC_COL_AN, ValueColorAN, RGB(0x80,0x80,0x80)},
+	{IDC_COL_NO, ValueColorNO, RGB(0x00,0x00,0x00)}
+};
+
+void DrawColor(HWND hwnd, HDC hdc, COLORREF col);
+
 INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HWND cmbUntilCandList;
+	HWND hwnd;
 	size_t i;
 	WCHAR num[16];
 	WCHAR fontname[LF_FACESIZE];
-	int fontpoint;
-	int fontweight;
+	int fontpoint, fontweight, x, y;
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
 	LOGFONT lf;
-	HDC hdcDlg;
+	HDC hdc;
 	HFONT hFont;
 	RECT rect;
+	POINT pt;
 	LONG w;
 	FILE *fp;
 	std::wstring strxmlval;
+	CHOOSECOLORW cc;
+	static COLORREF colCust[16];
+	PAINTSTRUCT ps;
 
 	switch(message)
 	{
@@ -48,16 +68,16 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname);
-		hdcDlg = GetDC(hDlg);
-		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hdcDlg, LOGPIXELSY), 72), 0, 0, 0,
+		hdc = GetDC(hDlg);
+		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
 			fontweight, fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, fontname);
 		SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
-		ReleaseDC(hDlg, hdcDlg);
+		ReleaseDC(hDlg, hdc);
 
 		SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, fontpoint, FALSE);
 
-		ReadValue(pathconfigxml, SectionFont, ValueMaxWidth, strxmlval);
+		ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
 		w = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 		SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 		if(w < 0 || w > rect.right)
@@ -67,12 +87,23 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		_snwprintf_s(num, _TRUNCATE, L"%d", w);
 		SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 
-		cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
+		ZeroMemory(&colCust, sizeof(colCust));
+
+		for(i=0; i<_countof(colors); i++)
+		{
+			ReadValue(pathconfigxml, SectionBehavior, colors[i].value, strxmlval);
+			if(!strxmlval.empty())
+			{
+				colors[i].col = wcstoul(strxmlval.c_str(), NULL, 0);
+			}
+		}
+
+		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
 		for(i=0; i<=8; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
-			SendMessage(cmbUntilCandList, CB_ADDSTRING, 0, (LPARAM)num);
+			SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 		i = strxmlval.empty() ? 4 : _wtoi(strxmlval.c_str());
@@ -80,7 +111,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		{
 			i = 4;
 		}
-		SendMessage(cmbUntilCandList, CB_SETCURSEL, (WPARAM)i, 0);
+		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, ValueDispCandNo);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, ValueAnnotation);
@@ -95,17 +126,17 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
 		case IDC_BUTTON_CHOOSEFONT:
-			hdcDlg = GetDC(hDlg);
+			hdc = GetDC(hDlg);
 
 			hFont = (HFONT)SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
 			GetObject(hFont, sizeof(LOGFONT), &lf);
-			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE), GetDeviceCaps(hdcDlg, LOGPIXELSY), 72);
+			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
 			lf.lfCharSet = SHIFTJIS_CHARSET;
 
 			ZeroMemory(&cf, sizeof(cf));
@@ -119,21 +150,21 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				SetDlgItemText(hDlg, IDC_EDIT_FONTNAME, lf.lfFaceName);
-				lf.lfHeight = -MulDiv(10, GetDeviceCaps(hdcDlg, LOGPIXELSY), 72);
+				lf.lfHeight = -MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 				hFont = CreateFontIndirect(&lf);
 				SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
 				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / 10, FALSE);
 			}
 
-			ReleaseDC(hDlg, hdcDlg);
-			return (INT_PTR)TRUE;
+			ReleaseDC(hDlg, hdc);
+			return TRUE;
 
 		case IDC_EDIT_MAXWIDTH:
 			switch(HIWORD(wParam))
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
-				return (INT_PTR)TRUE;
+				return TRUE;
 			default:
 				break;
 			}
@@ -144,7 +175,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			{
 			case CBN_SELCHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
-				return (INT_PTR)TRUE;
+				return TRUE;
 			default:
 				break;
 			}
@@ -160,13 +191,58 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_BACKINCENTER:
 		case IDC_CHECKBOX_ADDCANDKTKN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
 		}
 		break;
+
+	case WM_LBUTTONDOWN:
+		for(i=0; i<_countof(colors); i++)
+		{
+			hwnd = GetDlgItem(hDlg, colors[i].id);
+			GetWindowRect(hwnd, &rect);
+			pt.x = x = GET_X_LPARAM(lParam);
+			pt.y = y = GET_Y_LPARAM(lParam);
+			ClientToScreen(hDlg, &pt);
+
+			if(rect.left <= pt.x && pt.x <= rect.right &&
+				rect.top <= pt.y && pt.y <= rect.bottom)
+			{
+				cc.lStructSize = sizeof(cc);
+				cc.hwndOwner = hDlg;
+				cc.hInstance = NULL;
+				cc.rgbResult = colors[i].col;
+				cc.lpCustColors = colCust;
+				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+				cc.lCustData = NULL;
+				cc.lpfnHook = NULL;
+				cc.lpTemplateName = NULL;
+				if(ChooseColorW(&cc))
+				{
+					hdc = GetDC(hDlg);
+					DrawColor(hwnd, hdc, cc.rgbResult);
+					ReleaseDC(hDlg, hdc);
+					colors[i].col = cc.rgbResult;
+					PropSheet_Changed(GetParent(hDlg), hDlg);
+					return TRUE;
+				}
+				break;
+			}
+		}
+		break;
 		
+	case WM_PAINT:
+		hdc = BeginPaint(hDlg, &ps);
+		for(i=0; i<_countof(colors); i++)
+		{
+			DrawColor(GetDlgItem(hDlg, colors[i].id), hdc, colors[i].col);
+		}
+		EndPaint(hDlg, &ps);
+		return TRUE;
+		break;
+
 	case WM_NOTIFY:
 		switch(((LPNMHDR)lParam)->code)
 		{
@@ -211,8 +287,14 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 			WriterKey(pXmlWriter, ValueMaxWidth, num);
 
-			cmbUntilCandList = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
-			num[0] = L'0' + (WCHAR)SendMessage(cmbUntilCandList, CB_GETCURSEL, 0, 0);
+			for(i=0; i<_countof(colors); i++)
+			{
+				_snwprintf_s(num, _TRUNCATE, L"0x%06X", colors[i].col);
+				WriterKey(pXmlWriter, colors[i].value, num);
+			}
+
+			hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
+			num[0] = L'0' + (WCHAR)SendMessage(hwnd, CB_GETCURSEL, 0, 0);
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
@@ -227,7 +309,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			WriterEndSection(pXmlWriter);
 
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -238,5 +320,18 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
+}
+
+void DrawColor(HWND hwnd, HDC hdc, COLORREF col)
+{
+	RECT rect;
+
+	hdc = GetDC(hwnd);
+	SelectObject(hdc, GetStockObject(BLACK_PEN));
+	SetDCBrushColor(hdc, col);
+	SelectObject(hdc, GetStockObject(DC_BRUSH));
+	GetClientRect(hwnd, &rect);
+	Rectangle(hdc, rect.left, rect.top, rect.right, rect.bottom);
+	ReleaseDC(hwnd, hdc);
 }

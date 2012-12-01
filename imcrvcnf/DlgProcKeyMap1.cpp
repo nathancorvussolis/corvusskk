@@ -42,7 +42,7 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		{
 			LoadKeyMap(hDlg, KeyMap1[i].idd, SectionKeyMap, KeyMap1[i].keyName, KeyMap1[i].defaultValue);
 		}
-		return (INT_PTR)TRUE;
+		return TRUE;
 		
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
@@ -75,7 +75,7 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
-				return (INT_PTR)TRUE;
+				return TRUE;
 			default:
 				break;
 			}
@@ -98,7 +98,7 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 			WriterEndSection(pXmlWriter);
 
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -109,5 +109,5 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

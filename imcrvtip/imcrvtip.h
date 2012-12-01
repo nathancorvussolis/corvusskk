@@ -67,6 +67,15 @@ typedef struct {
 //候補一覧選択キー数
 #define MAX_SELKEY		7
 
+#define CL_COLOR_BG		0
+#define CL_COLOR_FR		1
+#define CL_COLOR_SE		2
+#define CL_COLOR_CO		3
+#define CL_COLOR_CA		4
+#define CL_COLOR_SC		5
+#define CL_COLOR_AN		6
+#define CL_COLOR_NO		7
+
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR LangbarItemDesc;
 extern LPCWSTR LangbarFuncDesc;

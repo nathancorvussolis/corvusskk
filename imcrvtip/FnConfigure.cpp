@@ -46,6 +46,20 @@ static const TF_PRESERVEDKEY c_PreservedKey[] =
 	,{ VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER }
 };
 
+static struct {
+	LPCWSTR value;
+	COLORREF col;
+} colorsxmlvalue[8] = {
+	{ValueColorBG, RGB(0xFF,0xFF,0xFF)},
+	{ValueColorFR, RGB(0x00,0x00,0x00)},
+	{ValueColorSE, RGB(0x00,0x00,0xFF)},
+	{ValueColorCO, RGB(0x80,0x80,0x80)},
+	{ValueColorCA, RGB(0x00,0x00,0x00)},
+	{ValueColorSC, RGB(0x80,0x80,0x80)},
+	{ValueColorAN, RGB(0x80,0x80,0x80)},
+	{ValueColorNO, RGB(0x00,0x00,0x00)}
+};
+
 void CTextService::_CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
@@ -106,6 +120,7 @@ void CTextService::_LoadBehavior()
 {
 	RECT rect;
 	std::wstring strxmlval;
+	int i;
 
 	ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 	wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
@@ -130,12 +145,22 @@ void CTextService::_LoadBehavior()
 		fontitalic = FALSE;
 	}
 
-	ReadValue(pathconfigxml, SectionFont, ValueMaxWidth, strxmlval);
+	ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
 	maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 	SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
 	if(maxwidth < 0 || maxwidth > rect.right)
 	{
 		maxwidth = rect.right;
+	}
+
+	for(i=0; i<_countof(colors); i++)
+	{
+		colors[i] = colorsxmlvalue[i].col;
+		ReadValue(pathconfigxml, SectionBehavior, colorsxmlvalue[i].value, strxmlval);
+		if(!strxmlval.empty())
+		{
+			colors[i] = wcstoul(strxmlval.c_str(), NULL, 0);
+		}
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);

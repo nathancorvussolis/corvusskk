@@ -40,6 +40,10 @@ public:
 	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg);
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	void _MakeRegWordString(std::wstring &s, int stage);
+	void _PaintRegWord(HDC hdc, LPRECT lpr);
+	void _MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle);
+	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx, int cycle);
 	void _Destroy();
 	void _Move(int x, int y);
 	void _BeginUIElement();
@@ -101,6 +105,7 @@ private:
 	WNDPROC WndProcDef;
 	std::wstring disptext;
 	HFONT hFont;
+	HFONT hFontU;
 
 	BOOL _reg;		//初期表示から辞書登録
 

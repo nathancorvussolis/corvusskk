@@ -697,7 +697,7 @@ BOOL LoadSKKUserDic(LPCWSTR path)
 
 void LoadSKKUserDicKeyOrder(KEYORDER &keyorder_tmp, KEYORDER &keyorder)
 {
-	KEYORDER::reverse_iterator keyorder_ritr;;
+	KEYORDER::reverse_iterator keyorder_ritr;
 	KEYORDER::iterator keyorder_itrf;
 	KEYORDER::iterator keyorder_itrb;
 

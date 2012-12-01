@@ -273,6 +273,7 @@ public:
 	int fontweight;					//候補一覧のフォント設定
 	BOOL fontitalic;				//候補一覧のフォント設定
 	LONG maxwidth;			//候補一覧の最大幅
+	COLORREF colors[8];		//候補一覧の色
 	size_t c_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
 	BOOL c_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL c_annotation;		//注釈を表示する

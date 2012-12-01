@@ -55,7 +55,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 		LoadKana(hDlg);
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_KANATBL);
@@ -140,7 +140,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				item.iSubItem = 4;
 				ListView_SetItem(hWndListView, &item);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_KANATBL_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -150,7 +150,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 				ListView_DeleteItem(hWndListView, index);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_KANATBL_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -188,7 +188,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				ListView_SetItemText(hWndListView, index, 4, soku);
 				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_KANATBL_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -227,7 +227,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				ListView_SetItemText(hWndListView, index, 4, soku);
 				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -268,13 +268,13 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 					CheckDlgButton(hDlg, IDC_CHECKBOX_KANATBL_SOKU, (rkc.soku ? BST_CHECKED : BST_UNCHECKED));
 					CheckDlgButton(hDlg, IDC_CHECKBOX_KANATBL_WAIT, (rkc.wait ? BST_CHECKED : BST_UNCHECKED));
 				}
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 
 		case PSN_APPLY:
 			SaveKana(hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -282,5 +282,5 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

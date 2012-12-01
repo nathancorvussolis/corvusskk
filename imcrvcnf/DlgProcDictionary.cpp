@@ -57,7 +57,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		if(strxmlval.empty()) strxmlval = defaultTimeOut;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, strxmlval.c_str());
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
@@ -77,7 +77,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 				ListView_EnsureVisible(hWndListView, index - 1, FALSE);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -93,7 +93,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 				ListView_EnsureVisible(hWndListView, index + 1, FALSE);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_ADD:
 			path[0] = L'\0';
@@ -126,7 +126,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_DEL:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -137,7 +137,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_DeleteItem(hWndListView, index);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_MAKE:
 			if(IDOK == MessageBoxW(hDlg,
@@ -146,7 +146,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			{
 				MakeSKKDic(hDlg);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_LOAD:
 			path[0] = L'\0';
@@ -165,7 +165,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 					ReqSKKUserDic(hDlg, REQ_SKK_LOAD, path);
 				}
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_SAVE:
 			path[0] = L'\0';
@@ -180,11 +180,11 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			{
 				ReqSKKUserDic(hDlg, REQ_SKK_SAVE, path);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_CHECKBOX_SKKSRV:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_EDIT_SKKSRV_HOST:
 		case IDC_EDIT_SKKSRV_PORT:
@@ -193,7 +193,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
-				return (INT_PTR)TRUE;
+				return TRUE;
 			default:
 				break;
 			}
@@ -202,7 +202,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		case IDC_RADIO_EUC:
 		case IDC_RADIO_UTF8:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -236,7 +236,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 			WriterEndSection(pXmlWriter);
 
-			return (INT_PTR)TRUE;
+			return TRUE;
 		default:
 			break;
 		}
@@ -246,5 +246,5 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

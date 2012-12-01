@@ -45,7 +45,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 		LoadPreservedKey(hDlg);
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_PRSRVKEY);
@@ -94,7 +94,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				item.iSubItem = 3;
 				ListView_SetItem(hWndListView, &item);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_PRSRVKEY_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -104,7 +104,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 				ListView_DeleteItem(hWndListView, index);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_PRSRVKEY_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -134,7 +134,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_PRSRVKEY_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -165,7 +165,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -199,13 +199,13 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 					ListView_GetItemText(hWndListView, index, 3, key, _countof(key));
 					CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT, key[0] == L'1' ? BST_CHECKED : BST_UNCHECKED);					
 				}
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 
 		case PSN_APPLY:
 			SavePreservedKey(hDlg);
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -216,5 +216,5 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		break;
 	}
 
-	return (INT_PTR)FALSE;
+	return FALSE;
 }

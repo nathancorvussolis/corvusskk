@@ -36,7 +36,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 		LoadJLatin(hDlg);
 
-		return (INT_PTR)TRUE;
+		return TRUE;
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
@@ -74,7 +74,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				item.iSubItem = 1;
 				ListView_SetItem(hWndListView, &item);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_JLATTBL_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -84,7 +84,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 				ListView_DeleteItem(hWndListView, index);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_JLATTBL_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -102,7 +102,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				ListView_SetItemText(hWndListView, index, 1, ajcBak.jlatin);
 				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		case IDC_BUTTON_JLATTBL_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
@@ -121,7 +121,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				ListView_SetItemText(hWndListView, index, 1, ajcBak.jlatin);
 				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 			}
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
@@ -149,7 +149,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
 					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
 				}
-				return (INT_PTR)TRUE;
+				return TRUE;
 			}
 			break;
 
@@ -162,12 +162,12 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 			WriterFinal(&pXmlWriter, &pXmlFileStream);
 
-			return (INT_PTR)TRUE;
+			return TRUE;
 
 		default:
 			break;
 		}
 		break;
 	}
-	return (INT_PTR)FALSE;
+	return FALSE;
 }
