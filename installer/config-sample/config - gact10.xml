@@ -48,14 +48,14 @@
   </section>
   <section name="behavior">
     <key name="maxwidth" value="800" />
-    <key name="colbg" value="0xFFFFFF" />
-    <key name="colfr" value="0x000000" />
-    <key name="colse" value="0xFF0000" />
-    <key name="colco" value="0x808080" />
-    <key name="colca" value="0x000000" />
-    <key name="colsc" value="0x808080" />
-    <key name="colan" value="0x808080" />
-    <key name="colno" value="0x000000" />
+    <key name="colorbg" value="0xFFFFFF" />
+    <key name="colorfr" value="0x000000" />
+    <key name="colorse" value="0xFF0000" />
+    <key name="colorco" value="0x808080" />
+    <key name="colorca" value="0x000000" />
+    <key name="colorsc" value="0x808080" />
+    <key name="coloran" value="0x808080" />
+    <key name="colorno" value="0x000000" />
     <key name="untilcandlist" value="4" />
     <key name="dispcandno" value="0" />
     <key name="annotation" value="0" />

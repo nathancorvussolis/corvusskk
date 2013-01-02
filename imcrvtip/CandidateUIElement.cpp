@@ -35,6 +35,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_CandStr.clear();
 
 	hFont = NULL;
+	hFontU = NULL;
 
 	_reg = FALSE;
 

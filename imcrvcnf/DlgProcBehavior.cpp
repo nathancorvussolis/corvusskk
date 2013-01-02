@@ -6,7 +6,7 @@
 static struct {
 	int id;
 	LPCWSTR value;
-	COLORREF col;
+	COLORREF color;
 } colors[8] = {
 	{IDC_COL_BG, ValueColorBG, RGB(0xFF,0xFF,0xFF)},
 	{IDC_COL_FR, ValueColorFR, RGB(0x00,0x00,0x00)},
@@ -94,7 +94,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			ReadValue(pathconfigxml, SectionBehavior, colors[i].value, strxmlval);
 			if(!strxmlval.empty())
 			{
-				colors[i].col = wcstoul(strxmlval.c_str(), NULL, 0);
+				colors[i].color = wcstoul(strxmlval.c_str(), NULL, 0);
 			}
 		}
 
@@ -213,7 +213,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				cc.lStructSize = sizeof(cc);
 				cc.hwndOwner = hDlg;
 				cc.hInstance = NULL;
-				cc.rgbResult = colors[i].col;
+				cc.rgbResult = colors[i].color;
 				cc.lpCustColors = colCust;
 				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
 				cc.lCustData = NULL;
@@ -224,7 +224,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 					hdc = GetDC(hDlg);
 					DrawColor(hwnd, hdc, cc.rgbResult);
 					ReleaseDC(hDlg, hdc);
-					colors[i].col = cc.rgbResult;
+					colors[i].color = cc.rgbResult;
 					PropSheet_Changed(GetParent(hDlg), hDlg);
 					return TRUE;
 				}
@@ -237,7 +237,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		hdc = BeginPaint(hDlg, &ps);
 		for(i=0; i<_countof(colors); i++)
 		{
-			DrawColor(GetDlgItem(hDlg, colors[i].id), hdc, colors[i].col);
+			DrawColor(GetDlgItem(hDlg, colors[i].id), hdc, colors[i].color);
 		}
 		EndPaint(hDlg, &ps);
 		return TRUE;
@@ -289,7 +289,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			for(i=0; i<_countof(colors); i++)
 			{
-				_snwprintf_s(num, _TRUNCATE, L"0x%06X", colors[i].col);
+				_snwprintf_s(num, _TRUNCATE, L"0x%06X", colors[i].color);
 				WriterKey(pXmlWriter, colors[i].value, num);
 			}
 

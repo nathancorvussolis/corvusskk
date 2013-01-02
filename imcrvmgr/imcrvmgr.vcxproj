@@ -21,8 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{07A9CBF0-E535-4ED7-8058-ECF6819B0993}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>imcrvsrv</RootNamespace>
-    <ProjectName>imcrvmgr</ProjectName>
+    <RootNamespace>imcrvmgr</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

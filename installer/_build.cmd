@@ -2,18 +2,16 @@
 
 pushd %~dp0
 
-call _clean.cmd
+rem call _clean.cmd
 
 "%WIX%bin\candle.exe" "corvusskk-x64.wxs" -ext WixUIExtension
 "%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension
 rem "%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension -cultures:ja-jp
-rem 7za.exe a corvusskk-x64.7z corvusskk-x64.msi README.TXT ..\LICENSE.TXT
 
 "%WIX%bin\candle.exe" "corvusskk-x86.wxs" -ext WixUIExtension
 "%WIX%bin\light.exe" "corvusskk-x86.wixobj" -ext WixUIExtension
 rem "%WIX%bin\light.exe" "corvusskk-x86.wixobj" -ext WixUIExtension -cultures:ja-jp
-rem 7za.exe a corvusskk-x86.7z corvusskk-x86.msi README.TXT ..\LICENSE.TXT
 
-call _mkarc.cmd
+rem call _mkarc.cmd
 
 popd

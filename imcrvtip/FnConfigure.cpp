@@ -48,7 +48,7 @@ static const TF_PRESERVEDKEY c_PreservedKey[] =
 
 static struct {
 	LPCWSTR value;
-	COLORREF col;
+	COLORREF color;
 } colorsxmlvalue[8] = {
 	{ValueColorBG, RGB(0xFF,0xFF,0xFF)},
 	{ValueColorFR, RGB(0x00,0x00,0x00)},
@@ -155,7 +155,7 @@ void CTextService::_LoadBehavior()
 
 	for(i=0; i<_countof(colors); i++)
 	{
-		colors[i] = colorsxmlvalue[i].col;
+		colors[i] = colorsxmlvalue[i].color;
 		ReadValue(pathconfigxml, SectionBehavior, colorsxmlvalue[i].value, strxmlval);
 		if(!strxmlval.empty())
 		{

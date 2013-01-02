@@ -44,14 +44,14 @@ LPCWSTR ValueFontItalic = L"italic";
 LPCWSTR SectionBehavior = L"behavior";
 //keys
 LPCWSTR ValueMaxWidth = L"maxwidth";
-LPCWSTR ValueColorBG = L"colbg";
-LPCWSTR ValueColorFR = L"colfr";
-LPCWSTR ValueColorSE = L"colse";
-LPCWSTR ValueColorCO = L"colco";
-LPCWSTR ValueColorCA = L"colca";
-LPCWSTR ValueColorSC = L"colsc";
-LPCWSTR ValueColorAN = L"colan";
-LPCWSTR ValueColorNO = L"colno";
+LPCWSTR ValueColorBG = L"colorbg";
+LPCWSTR ValueColorFR = L"colorfr";
+LPCWSTR ValueColorSE = L"colorse";
+LPCWSTR ValueColorCO = L"colorco";
+LPCWSTR ValueColorCA = L"colorca";
+LPCWSTR ValueColorSC = L"colorsc";
+LPCWSTR ValueColorAN = L"coloran";
+LPCWSTR ValueColorNO = L"colorno";
 LPCWSTR ValueUntilCandList = L"untilcandlist";
 LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueAnnotation = L"annotation";
@@ -613,7 +613,15 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 					goto exit;
 				}
 				break;
+			case 2:
+				if(wcscmp(TagSection, pwszLocalName) == 0)
+				{
+					sequence = 1;
+				}
+				break;
 			case 3:
+			case 4:
+			case 5:
 				if(wcscmp(TagSection, pwszLocalName) == 0)
 				{
 					goto exit;

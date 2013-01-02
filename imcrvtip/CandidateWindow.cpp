@@ -4,6 +4,9 @@
 #include "CandidateWindow.h"
 #include "CandidateList.h"
 
+#define MERGIN_X 2
+#define MERGIN_Y 4
+
 static LPCWSTR markNo = L":";
 static LPCWSTR markAnnotation = L";";
 static LPCWSTR markCandEnd = L"\u3000";
@@ -119,15 +122,18 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	HDC hdc;
 	HDC hmemdc;
 	HBITMAP hmembmp;
-    RECT r;
+	HPEN npen;
+	HBRUSH nbrush;
+	RECT r;
 	int cx, cy;
 	std::wstring s;
 	RECT rc;
 	POINT pt;
-	TEXTMETRIC tm;
+	TEXTMETRICW tm;
 	UINT page, count, i;
 	int cycle;
 	WCHAR strPage[32];
+	HGDIOBJ bmp, font, pen, brush;
 
 	switch(uMsg)
 	{
@@ -140,32 +146,38 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 		hmemdc = CreateCompatibleDC(hdc);
 		hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
-		SelectObject(hmemdc, hmembmp);
+		bmp = SelectObject(hmemdc, hmembmp);
 
-		SelectObject(hmemdc, hFont);
-
-		SetDCPenColor(hmemdc, _pTextService->colors[CL_COLOR_FR]);
-		SelectObject(hmemdc, GetStockObject(DC_PEN));
-		SetDCBrushColor(hmemdc, _pTextService->colors[CL_COLOR_BG]);
-		SelectObject(hmemdc, GetStockObject(DC_BRUSH));
+		npen = CreatePen(PS_SOLID, 1, _pTextService->colors[CL_COLOR_FR]);
+		pen = SelectObject(hmemdc, npen);
+		nbrush = CreateSolidBrush(_pTextService->colors[CL_COLOR_BG]);
+		brush = SelectObject(hmemdc, nbrush);
 
 		Rectangle(hmemdc, 0, 0, cx, cy);
 
+		SelectObject(hmemdc, pen);
+		SelectObject(hmemdc, brush);
+
+		DeleteObject(npen);
+		DeleteObject(nbrush);
+
+		font = SelectObject(hmemdc, hFont);
+
 		if(regwordul || regword)
 		{
-			r.left += 2;
-			r.top += 4;
-			r.right -= 2;
-			r.bottom -= 4;
+			r.left += MERGIN_X;
+			r.top += MERGIN_Y;
+			r.right -= MERGIN_X;
+			r.bottom -= MERGIN_Y;
 
 			_PaintRegWord(hmemdc, &r);
 		}
 		else if(_CandCount.size() != 0)
 		{
-			GetTextMetrics(hmemdc, &tm);
+			GetTextMetricsW(hmemdc, &tm);
 
-			pt.x = 2;
-			pt.y = 4;
+			pt.x = MERGIN_X;
+			pt.y = MERGIN_Y;
 
 			GetCurrentPage(&page);
 			count = 0;
@@ -184,15 +196,15 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 				r.bottom = 1;
 
 				DrawTextW(hmemdc, s.c_str(), -1, &r,
-					DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-				if(pt.x == 2 && r.right > cx - 2)
+				if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
 				{
 					cx = r.right;
 				}
-				else if(pt.x + r.right > cx - 2)
+				else if(pt.x + r.right > cx - MERGIN_X)
 				{
-					pt.x = 2;
+					pt.x = MERGIN_X;
 					pt.y += tm.tmHeight;
 				}
 
@@ -217,15 +229,15 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 			r.bottom = 1;
 
 			DrawTextW(hmemdc, strPage, -1, &r,
-				DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-			if(pt.x == 2 && r.right > cx - 2)
+			if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
 			{
 				cx = r.right;
 			}
-			else if(pt.x + r.right > cx - 2)
+			else if(pt.x + r.right > cx - MERGIN_X)
 			{
-				pt.x = 2;
+				pt.x = MERGIN_X;
 				pt.y += tm.tmHeight;
 			}
 
@@ -236,10 +248,14 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 			SetTextColor(hmemdc, _pTextService->colors[CL_COLOR_NO]);
 			SetBkColor(hmemdc, _pTextService->colors[CL_COLOR_BG]);
-			DrawTextW(hmemdc, strPage, -1, &rc, DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			DrawTextW(hmemdc, strPage, -1, &rc,
+				DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
 
 		BitBlt(hdc, 0, 0, cx, cy, hmemdc, 0, 0, SRCCOPY);
+
+		SelectObject(hmemdc, font);
+		SelectObject(hmemdc, bmp);
 
 		DeleteObject(hmembmp);
 		DeleteObject(hmemdc);
@@ -292,6 +308,9 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 	std::wstring s;
 	int cycle;
 	HFONT f[3] = {hFont, hFontU, hFont};
+	HGDIOBJ font;
+
+	font = SelectObject(hdc, hFont);
 
 	for(cycle=2; cycle>=0; cycle--)
 	{
@@ -302,13 +321,20 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
 
 		DrawTextW(hdc, s.c_str(), -1, lpr,
-			DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 	}
+
+	SelectObject(hdc, font);
 }
 
 void CCandidateWindow::_MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle)
 {
 	s.clear();
+
+	if(_pTextService->candidates.size() <= count + _uShowedCount + idx)
+	{
+		return;
+	}
 
 	if(cycle > 4)
 	{
@@ -372,7 +398,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	{
 		SetTextColor(hdc, _pTextService->colors[cycle + 2]);
 		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
-		DrawTextW(hdc, s.c_str(), -1, lpr, DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		DrawTextW(hdc, s.c_str(), -1, lpr,
+			DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 	}
 }
 
@@ -512,9 +539,10 @@ void CCandidateWindow::_CalcWindowRect()
 	UINT page, count, i;
 	std::wstring s;
 	POINT pt;
-	TEXTMETRIC tm;
+	TEXTMETRICW tm;
 	int xmax = 0;
 	WCHAR strPage[32];
+	HGDIOBJ font;
 
 	if(_hwnd == NULL)
 	{
@@ -527,10 +555,10 @@ void CCandidateWindow::_CalcWindowRect()
 	rw = mi.rcWork;
 
 	hdc = GetDC(_hwnd);
-	SelectObject(hdc, hFont);
+	font = SelectObject(hdc, hFont);
 
 	ZeroMemory(&r, sizeof(r));
-	r.right = _pTextService->maxwidth - 8;
+	r.right = _pTextService->maxwidth - MERGIN_X * 2;
 	if(r.right <= 0)
 	{
 		r.right = 1;
@@ -539,14 +567,14 @@ void CCandidateWindow::_CalcWindowRect()
 	if(regwordul || regword)
 	{
 		DrawTextW(hdc, disptext.c_str(), -1, &r,
-			DT_CALCRECT | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-		cx = r.right + 4;
-		cy = r.bottom + 8;
+		cx = r.right + MERGIN_X * 2;
+		cy = r.bottom + MERGIN_Y * 2;
 	}
 	else if(_CandCount.size() != 0)
 	{
-		GetTextMetrics(hdc, &tm);
+		GetTextMetricsW(hdc, &tm);
 
 		pt.x = 0;
 		pt.y = 0;
@@ -569,7 +597,7 @@ void CCandidateWindow::_CalcWindowRect()
 			r.bottom = 1;
 
 			DrawTextW(hdc, s.c_str(), -1, &r,
-				DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
 			if(pt.x == 0 && r.right > cx)
 			{
@@ -601,7 +629,7 @@ void CCandidateWindow::_CalcWindowRect()
 		r.bottom = 1;
 
 		DrawTextW(hdc, strPage, -1, &r,
-			DT_CALCRECT | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
 		if(pt.x == 0 && r.right > cx)
 		{
@@ -624,8 +652,8 @@ void CCandidateWindow::_CalcWindowRect()
 			}
 		}
 
-		cx = xmax + 4;
-		cy = pt.y + tm.tmHeight + 8;
+		cx = xmax + MERGIN_X * 2;
+		cy = pt.y + tm.tmHeight + MERGIN_Y * 2;
 	}
 
 	if((rw.right - cx) < _pt.x)
@@ -654,6 +682,7 @@ void CCandidateWindow::_CalcWindowRect()
 		y = _pt.y;
 	}
 
+	SelectObject(hdc, font);
 	ReleaseDC(_hwnd, hdc);
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 }

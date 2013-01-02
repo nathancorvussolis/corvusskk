@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.8.12
+     CorvusSKK version 0.9.0
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -9,7 +9,9 @@
   Windows XP, Vista, 7, 8 に多分対応する、
   SKK風の Text Input Processor です。いわゆる IME です。
 
-
+  デジタル署名
+  発行先 Open Source Developer, SASAKI Nobuyuki
+  発行者 Certum Level III CA
 
 --------------------------------------------------------------------------------
      インストール

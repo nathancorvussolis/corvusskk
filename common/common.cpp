@@ -22,6 +22,7 @@ const GUID GUID_LBI_INPUTMODE =
 
 void debugout(LPCWSTR format, ...)
 {
+#ifdef _DEBUG
 	va_list argptr;
 	va_start(argptr, format);
 	INT len = _vscwprintf(format, argptr) + 1;
@@ -29,6 +30,7 @@ void debugout(LPCWSTR format, ...)
 	vswprintf_s(str, len, format, argptr);
 	va_end(argptr);
 	OutputDebugStringW(str);
+#endif
 }
 
 BOOL IsVersion6AndOver(OSVERSIONINFOW ovi)

@@ -126,8 +126,7 @@ void LoadConfig()
 	}
 
 	//変更があったら接続し直す
-	if(servtmp != serv ||
-		wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
+	if(servtmp != serv || wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
 		encodingtmp != encoding || timeouttmp != timeout)
 	{
 		serv = servtmp;

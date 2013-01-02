@@ -48,7 +48,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	WCHAR ch;
 	WCHAR chO;
 	std::wstring romanN;
-	std::wstring composition;
+	std::wstring composition;	//二重確定防止
 	
 	if(bSf == SKK_NULL)
 	{

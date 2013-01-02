@@ -19,7 +19,7 @@ HANDLE hMutex;
 HANDLE hThreadSrv;
 BOOL bSrvThreadExit;
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
+int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
 	WNDCLASSEX wcex;
