@@ -456,7 +456,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(accompidx == 0 && _ConvN(ch))
+				if(_ConvN(ch) && accompidx == 0)
 				{
 					//送り仮名入力開始
 					accompidx = kana.size();

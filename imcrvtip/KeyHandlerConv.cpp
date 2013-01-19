@@ -439,7 +439,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		break;
 	}
 
-	// ( <"n*", ""> -> <"", "ん"> )
+	// ( <"n*", ""> -> <"", "ん"> ) SKK_CONV_POINTのみ
 	if(ch != L'\0' && ch != WCHAR_MAX)
 	{
 		roman_conv = roman;
@@ -467,16 +467,32 @@ BOOL CTextService::_ConvN(WCHAR ch)
 			}
 			else
 			{
-				return FALSE;	//「na,ni,nu,ne,no」
+				_ConvNN();
+				return TRUE;	//「ka,na,nn」etc.
 			}
 			break;
 		case E_PENDING:	//途中まで一致
-			return FALSE;		//「nya,nyu,nyo」
+			_ConvNN();
+			return TRUE;		//「ky,ny」etc.
 			break;
 		default:
 			break;
 		}
 	}
+
+	if(_ConvNN())
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+BOOL CTextService::_ConvNN()
+{
+	ROMAN_KANA_CONV rkc;
+	HRESULT ret;
+	WCHAR chN;
 
 	// ( <"nn", ""> -> <"", "ん"> )
 	if(roman.size() == 1)

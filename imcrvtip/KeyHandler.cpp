@@ -102,10 +102,13 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					if(ch == conv_point[i][0])
 					{
 						ch = conv_point[i][1];
-						chO = conv_point[i][2];
-						if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
+						if(!inputkey || !kana.empty())
 						{
-							return S_OK;
+							chO = conv_point[i][2];
+							if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
+							{
+								return S_OK;
+							}
 						}
 						break;
 					}
@@ -124,9 +127,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	if(ch >= L'\x20')
 	{
-		if(!roman.empty())
+		if(!roman.empty() && chO != L'\0')
 		{
-			chO = L'\0';
+			chO = roman[0];
 		}
 		romanN = roman;
 		if(_HandleChar(ec, pContext, composition, ch, chO) == E_ABORT)

@@ -153,6 +153,7 @@ public:
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
 	BOOL _ConvN(WCHAR ch);
+	BOOL _ConvNN();
 	void _ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode);
 
 	// KeyHandlerDictionary

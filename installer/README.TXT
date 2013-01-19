@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.9.0
+     CorvusSKK version 0.9.1
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -422,4 +422,4 @@
 
   Visual C++ 2010 Express + SP1
   Windows SDK 7.1
-  WiX 3.6
+  WiX 3.7
