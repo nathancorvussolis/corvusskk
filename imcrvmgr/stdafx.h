@@ -17,3 +17,4 @@
 #include <Windowsx.h>
 #include <Shlobj.h>
 #include <Sddl.h>
+#include <xmllite.h>

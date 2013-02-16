@@ -3,7 +3,7 @@
 #include "TextService.h"
 #include "LanguageBar.h"
 
-#define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x516b54ab
+#define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
 
 CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 {

@@ -1,9 +1,6 @@
 ﻿
 #include "configxml.h"
 
-#pragma comment(lib, "xmllite.lib")
-#pragma comment(lib, "shlwapi.lib")
-
 //tag
 LPCWSTR TagRoot = L"skk";
 LPCWSTR TagSection = L"section";

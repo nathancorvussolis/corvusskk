@@ -20,8 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE.TXT" />
-    <None Include="corvusskk-x64.wxs" />
-    <None Include="corvusskk-x86.wxs" />
+    <None Include="corvusskk-x64.wxs">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="corvusskk-x86.wxs">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ms-pl.rtf" />
     <None Include="README.TXT" />
   </ItemGroup>
@@ -136,8 +140,8 @@
       <SubSystem>NotSet</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>"%WIX%bin\candle.exe" "corvusskk-x86.wxs" -ext WixUIExtension
-"%WIX%bin\light.exe" "corvusskk-x86.wixobj" -ext WixUIExtension
+      <Command>"%WIX%bin\candle.exe" -nologo "corvusskk-x86.wxs"
+"%WIX%bin\light.exe" -nologo -ext WixUIExtension "corvusskk-x86.wixobj"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -158,8 +162,8 @@
       <SubSystem>NotSet</SubSystem>
     </Link>
     <PostBuildEvent>
-      <Command>"%WIX%bin\candle.exe" "corvusskk-x64.wxs" -ext WixUIExtension
-"%WIX%bin\light.exe" "corvusskk-x64.wixobj" -ext WixUIExtension
+      <Command>"%WIX%bin\candle.exe" -nologo "corvusskk-x64.wxs"
+"%WIX%bin\light.exe" -nologo -ext WixUIExtension "corvusskk-x64.wixobj"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>

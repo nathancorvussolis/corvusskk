@@ -7,7 +7,7 @@ static LPCWSTR markMidashi = L"▽";
 static LPCWSTR markHenkan = L"▼";
 static LPCWSTR markOkuri = L"*";
 
-static LPCWSTR markSP = L" ";
+static LPCWSTR markSP = L"\x20";
 static LPCWSTR markAnnotation = L";";
 
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)

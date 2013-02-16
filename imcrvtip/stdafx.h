@@ -19,3 +19,4 @@
 #include <Shlobj.h>
 #include <Shlwapi.h>
 #include <Sddl.h>
+#include <xmllite.h>

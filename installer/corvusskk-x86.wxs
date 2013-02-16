@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="CorvusSKK" Language="1033" Version="0.9.1" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
-        <Package Id="*" Compressed="yes" Description="CorvusSKK" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
+    <?define version="0.9.2" ?>
+    <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
+        <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
         <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
         <Directory Id="TARGETDIR" Name="SourceDir">
             <Directory Id="SystemFolder" Name="SystemFolder">
@@ -39,7 +40,7 @@
         <Property Id="WIX_MINIMAL" Value="CorvusSKK" />
         <UIRef Id="WixUI_Minimal" />
         <Upgrade Id="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
-            <UpgradeVersion Property="SELFFOUND" OnlyDetect="no" Maximum="10.0.0" Minimum="0.0.0" IncludeMaximum="no" IncludeMinimum="yes" />
+            <UpgradeVersion Property="PREVIOUSFOUND" OnlyDetect="no" Maximum="$(var.version)" Minimum="0.0.0" IncludeMaximum="no" IncludeMinimum="yes" />
         </Upgrade>
         <InstallExecuteSequence>
             <RemoveExistingProducts After="InstallInitialize" />

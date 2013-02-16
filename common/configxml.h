@@ -2,16 +2,8 @@
 #ifndef CONFIGXML_H
 #define CONFIGXML_H
 
-#include <string>
-#include <vector>
-#include <map>
-
-#include <Windows.h>
-#include <xmllite.h>
-#include <Shlwapi.h>
-
 #define NOT_S_OK not_s_ok
-#define EXIT_NOT_S_OK(hr) if(S_OK != (hr)) goto NOT_S_OK
+#define EXIT_NOT_S_OK(hr) if((hr) != S_OK) goto NOT_S_OK
 
 typedef std::pair<std::wstring, std::wstring> APPDATAXMLATTR;
 typedef std::vector<APPDATAXMLATTR> APPDATAXMLROW;
@@ -20,9 +12,15 @@ typedef std::vector<APPDATAXMLROW> APPDATAXMLLIST;
 typedef std::pair<std::wstring, APPDATAXMLLIST> APPDATAXMLDICPAIR;
 typedef std::map<std::wstring, APPDATAXMLLIST> APPDATAXMLDIC;
 
+HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream);
+void CloseStreamReader(IXmlReader *pReader, IStream *pFileStream);
+
 HRESULT ReadDicList(LPCWSTR path, LPCWSTR section, APPDATAXMLDIC &list, ULONGLONG pos = 0);
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list);
 HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval = L"");
+
+HRESULT CreateStreamWriter(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream);
+void CloseStreamWriter(IXmlWriter *pWriter, IStream *pFileStream);
 
 HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream, BOOL indent = TRUE);
 HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream);

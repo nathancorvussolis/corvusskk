@@ -212,7 +212,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 
 HRESULT WriteSKKDicXml(SKKDIC &skkdic)
 {
-	HRESULT hr;
+	HRESULT hr, hrf;
 	FILE *fpidx;
 	IXmlWriter *pWriter;
 	IStream *pFileStream;
@@ -222,10 +222,9 @@ HRESULT WriteSKKDicXml(SKKDIC &skkdic)
 	APPDATAXMLATTR attr;
 	APPDATAXMLROW row;
 	APPDATAXMLLIST list;
-	ULARGE_INTEGER uli1;
-	LARGE_INTEGER li0 = {0};
-
-	_wfopen_s(&fpidx, pathskkcvdicidx, L"wb");
+	FILE *fpxml;
+	__int64 fpxmlidx = 0;
+	CHAR buf[BUFSIZE*2];
 
 	hr = WriterInit(pathskkcvdicxml, &pWriter, &pFileStream, FALSE);
 	EXIT_NOT_S_OK(hr);
@@ -268,18 +267,6 @@ HRESULT WriteSKKDicXml(SKKDIC &skkdic)
 			list.push_back(row);
 		}
 
-		//インデックスファイル書き込み
-		if(fpidx != NULL)
-		{
-			hr = pWriter->Flush();
-			EXIT_NOT_S_OK(hr);
-
-			hr = pFileStream->Seek(li0, STREAM_SEEK_CUR, &uli1);
-			EXIT_NOT_S_OK(hr);
-
-			fwrite(&uli1.QuadPart, sizeof(uli1.QuadPart), 1, fpidx);
-		}
-
 		hr = WriterStartElement(pWriter, TagEntry);
 		EXIT_NOT_S_OK(hr);
 
@@ -309,11 +296,37 @@ HRESULT WriteSKKDicXml(SKKDIC &skkdic)
 	EXIT_NOT_S_OK(hr);
 
 NOT_S_OK:
-	hr = WriterFinal(&pWriter, &pFileStream);
+	hrf = WriterFinal(&pWriter, &pFileStream);
+	if(hr == S_OK)
+	{
+		hr = hrf;
+	}
 
+	_wfopen_s(&fpidx, pathskkcvdicidx, L"wb");
 	if(fpidx != NULL)
 	{
+		_wfopen_s(&fpxml, pathskkcvdicxml, L"rb");
+		if(fpxml != NULL)
+		{
+			while(fgets(buf, _countof(buf), fpxml) != NULL)
+			{
+				if(strncmp(buf, "<entry ", 7) == 0)
+				{
+					fwrite(&fpxmlidx, sizeof(fpxmlidx), 1, fpidx);
+				}
+				fpxmlidx = _ftelli64(fpxml);
+			}
+			fclose(fpxml);
+		}
+		else
+		{
+			hr = S_FALSE;
+		}
 		fclose(fpidx);
+	}
+	else
+	{
+		hr = S_FALSE;
 	}
 
 	return hr;
@@ -365,14 +378,14 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		return TRUE;
 	case WM_TIMER:
 		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
-		ipw++;
-		if(ipw >= _countof(pw))
+		if(++ipw >= _countof(pw))
 		{
 			ipw = 0;
 		}
 		return TRUE;
 	case WM_DESTROY:
 		KillTimer(hDlg, IDC_STATIC_DIC_PW);
+		ipw = 0;
 		return TRUE;
 	default:
 		break;
@@ -499,14 +512,14 @@ INT_PTR CALLBACK DlgProcSKKUserDic(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		return TRUE;
 	case WM_TIMER:
 		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
-		ipw++;
-		if(ipw >= _countof(pw))
+		if(++ipw >= _countof(pw))
 		{
 			ipw = 0;
 		}
 		return TRUE;
 	case WM_DESTROY:
 		KillTimer(hDlg, IDC_STATIC_DIC_PW);
+		ipw = 0;
 		return TRUE;
 	default:
 		break;
