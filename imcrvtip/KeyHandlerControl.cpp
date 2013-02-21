@@ -473,6 +473,37 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		}
 		break;
 
+	case SKK_PASTE:
+		if(inputkey && !showentry)
+		{
+			if(IsClipboardFormatAvailable(CF_UNICODETEXT))
+			{
+				HANDLE hCB;
+				PWCHAR pwCB;
+				if(OpenClipboard(NULL))
+				{
+					hCB = GetClipboardData(CF_UNICODETEXT);
+					if(hCB != NULL)
+					{
+						pwCB = (PWCHAR)GlobalLock(hCB);
+						if(pwCB != NULL)
+						{
+							if(!_ConvN(WCHAR_MAX))
+							{
+								roman.clear();
+							}
+							kana.append(pwCB);
+							kana = std::regex_replace(kana, std::wregex(L"\t|\r|\n|\x20"), std::wstring(L""));
+							_Update(ec, pContext);
+							GlobalUnlock(hCB);
+						}
+					}
+					CloseClipboard();
+				}
+			}
+		}
+		break;
+
 	case SKK_VOID:
 		return S_OK;
 		break;

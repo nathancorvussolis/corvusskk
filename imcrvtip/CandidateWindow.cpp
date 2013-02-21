@@ -1064,8 +1064,6 @@ void CCandidateWindow::_PrevPage()
 
 void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 {
-	HANDLE hCB;
-	PWCHAR pwCB;
 	std::wstring s;
 	std::wstring regwordtextconv;
 	std::wstring regwordtextcandidate;
@@ -1326,12 +1324,16 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_PASTE:
 		if(IsClipboardFormatAvailable(CF_UNICODETEXT))
 		{
+			HANDLE hCB;
+			PWCHAR pwCB;
 			if(OpenClipboard(NULL))
 			{
 				hCB = GetClipboardData(CF_UNICODETEXT);
-				if(hCB != NULL) {
+				if(hCB != NULL)
+				{
 					pwCB = (PWCHAR)GlobalLock(hCB);
-					if(pwCB != NULL) {
+					if(pwCB != NULL)
+					{
 						s.assign(pwCB);
 						s = std::regex_replace(s, std::wregex(L"\t|\r|\n"), std::wstring(L""));
 						regwordtext.insert(regwordtextpos, s);
