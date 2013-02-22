@@ -91,9 +91,14 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	{
 		return 1;
 	}
-
 	key = s.substr(0, is);
-	s = s.substr(is + 1);
+
+	is = s.find_first_of(L'/', is);
+	if(is == std::wstring::npos)
+	{
+		return 1;
+	}
+	s = s.substr(is);
 
 	ParseSKKDicCandiate(s, c);
 
