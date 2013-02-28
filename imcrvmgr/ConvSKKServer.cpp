@@ -144,6 +144,9 @@ void ConnectSKKServer()
 	ADDRINFOW aiwHints;
 	ADDRINFOW *paiwResult;
 	ADDRINFOW *paiw;
+	u_long mode;
+	timeval tv;
+	fd_set fdw, fde;
 
 	ZeroMemory(&aiwHints, sizeof(aiwHints));
 	aiwHints.ai_family = AF_UNSPEC;
@@ -176,16 +179,37 @@ void ConnectSKKServer()
 			continue;
 		}
 
+		mode = 1;
+		ioctlsocket(sock, FIONBIO, &mode);
+
 		if(connect(sock, paiw->ai_addr, (int)paiw->ai_addrlen) == SOCKET_ERROR)
 		{
-			closesocket(sock);
-			sock = INVALID_SOCKET;
-			continue;
+			if(WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				closesocket(sock);
+				sock = INVALID_SOCKET;
+				continue;
+			}
 		}
-		else
+
+		mode = 0;
+		ioctlsocket(sock, FIONBIO, &mode);
+
+		tv.tv_sec = timeout / 1000;
+		tv.tv_usec = (timeout % 1000) * 1000;
+
+		FD_ZERO(&fdw);
+		FD_ZERO(&fde);
+		FD_SET(sock, &fdw);
+		FD_SET(sock, &fde);
+ 
+		select(0, NULL, &fdw, &fde, &tv);
+		if(FD_ISSET(sock, &fdw))
 		{
 			break;
 		}
+
+		DisconnectSKKServer();
 	}
 
 	FreeAddrInfoW(paiwResult);

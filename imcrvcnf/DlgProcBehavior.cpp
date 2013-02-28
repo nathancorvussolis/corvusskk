@@ -106,10 +106,10 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
-		i = strxmlval.empty() ? 4 : _wtoi(strxmlval.c_str());
-		if(i > 8)
+		i = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
+		if(i < 0 || i > 8)
 		{
-			i = 4;
+			i = 5;
 		}
 		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
