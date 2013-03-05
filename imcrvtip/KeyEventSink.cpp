@@ -76,6 +76,15 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		return FALSE;
 	}
 
+	switch(inputmode)
+	{
+	case im_ascii:
+		return FALSE;
+		break;
+	default:
+		break;
+	}
+
 	if(ch >= L'\x20')
 	{
 		return TRUE;

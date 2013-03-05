@@ -27,13 +27,7 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 		}
 		break;
 	case im_jlatin:
-		keystate[VK_KANA] = 0;
-		break;
 	case im_ascii:
-		if(keystate[VK_KANA] == 0)
-		{
-			return L'\0';
-		}
 		keystate[VK_KANA] = 0;
 		break;
 	default:
