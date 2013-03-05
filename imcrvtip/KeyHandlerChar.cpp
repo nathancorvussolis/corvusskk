@@ -23,7 +23,8 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 
 	if(accompidx != 0 && accompidx == kana.size() && chO != L'\0')
 	{
-		kana.push_back(chO);
+		kana.insert(cursoridx, 1, chO);
+		cursoridx++;
 	}
 
 	switch(inputmode)
@@ -34,7 +35,8 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		{
 			_HandleCharTerminate(ec, pContext, composition);
 			roman.clear();
-			kana.push_back(ch);
+			kana.insert(cursoridx, 1, ch);
+			cursoridx++;
 			_Update(ec, pContext);
 		}
 		else
@@ -99,10 +101,20 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				switch(inputmode)
 				{
 				case im_hiragana:
-					kana.append(rkc.hiragana);
+					kana.insert(cursoridx, rkc.hiragana);
+					if(accompidx != 0 && cursoridx < accompidx)
+					{
+						accompidx += wcslen(rkc.hiragana);
+					}
+					cursoridx += wcslen(rkc.hiragana);
 					break;
 				case im_katakana:
-					kana.append(rkc.katakana);
+					kana.insert(cursoridx, rkc.katakana);
+					if(accompidx != 0 && cursoridx < accompidx)
+					{
+						accompidx += wcslen(rkc.katakana);
+					}
+					cursoridx += wcslen(rkc.katakana);
 					break;
 				default:
 					break;
@@ -149,9 +161,14 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 			case E_ABORT:	//不一致
 				_HandleCharTerminate(ec, pContext, composition);
 				roman.clear();
-				if(accompidx != 0 && accompidx + 1 == kana.size())
+				if(accompidx != 0 && accompidx + 1 == cursoridx)
 				{
-					kana.pop_back();	//送りローマ字削除
+					kana.erase(cursoridx - 1, 1);	//送りローマ字削除
+					cursoridx--;
+					if(accompidx != kana.size())
+					{
+						accompidx = 0;
+					}
 				}
 				_Update(ec, pContext);
 				break;

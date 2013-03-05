@@ -9,6 +9,7 @@ static LPCWSTR markOkuri = L"*";
 
 static LPCWSTR markSP = L"\x20";
 static LPCWSTR markAnnotation = L";";
+static LPCWSTR markCursor = L"|";
 
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
@@ -168,6 +169,10 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 				if(accompidx == 0)
 				{
 					composition.append(kana);
+					if(pContext == NULL && !fixed && cursoridx != kana.size())
+					{
+						composition.insert(cursoridx + (composition.size() - kana.size()), markCursor);
+					}
 				}
 				else
 				{
@@ -180,10 +185,54 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					{
 						composition.append(kana.substr(accompidx + 1));
 					}
+					if(pContext == NULL && !fixed && roman.empty() && cursoridx != kana.size())
+					{
+						if(c_nomodemark)
+						{
+							if(cursoridx < accompidx)
+							{
+								composition.insert(cursoridx, markCursor);
+							}
+							else
+							{
+								composition.insert(cursoridx - 1, markCursor);
+							}
+						}
+						else
+						{
+							composition.insert(cursoridx + 1, markCursor);
+						}
+					}
 				}
 				if(!fixed && !roman.empty())
 				{
-					composition.append(roman);
+					if(c_nomodemark)
+					{
+						if(accompidx != 0 && accompidx < cursoridx)
+						{
+							if(pContext == NULL && cursoridx != kana.size())
+							{
+								composition.insert(cursoridx - 1, markCursor);
+							}
+							composition.insert(cursoridx - 1, roman);
+						}
+						else
+						{
+							if(pContext == NULL && cursoridx != kana.size())
+							{
+								composition.insert(cursoridx, markCursor);
+							}
+							composition.insert(cursoridx, roman);
+						}
+					}
+					else
+					{
+						if(pContext == NULL && cursoridx != kana.size())
+						{
+							composition.insert(cursoridx + 1, markCursor);
+						}
+						composition.insert(cursoridx + 1, roman);
+					}
 				}
 			}
 
@@ -210,7 +259,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 
 	if(fixed && back && c_backincenter && !composition.empty())
 	{
-		//結合文字は考慮しない
+		// surrogate pair
 		if(composition.size() >= 2 &&
 			IS_SURROGATE_PAIR(composition[composition.size() - 2], composition[composition.size() - 1]))
 		{
@@ -288,6 +337,18 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			{
 				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
 				tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
+
+				if(c_nomodemark && accompidx != 0 && cursoridx <= accompidx)
+				{
+					cchReq = (LONG)cursoridx - (LONG)kana.size() + 1;
+				}
+				else
+				{
+					cchReq = (LONG)cursoridx - (LONG)kana.size();
+				}
+
+				tfSelection.range->ShiftStart(ec, cchReq, &cch, NULL);
+				cchReq = 0;
 			}
 			else
 			{
@@ -300,6 +361,28 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 			tfSelection.range->Collapse(ec, TF_ANCHOR_START);
 			pContext->SetSelection(ec, 1, &tfSelection);
+
+			if(!fixed)
+			{
+				if(pRangeComposition->Clone(&pRangeClone) == S_OK)
+				{
+					if(cchReq == 0)
+					{
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
+					}
+					else
+					{
+						pRangeClone->ShiftEndToRange(ec, tfSelection.range, TF_ANCHOR_END);
+						pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeCandidate);
+
+						pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+						pRangeClone->ShiftStartToRange(ec, tfSelection.range, TF_ANCHOR_END);
+						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
+					}
+					pRangeClone->Release();
+				}
+			}
 
 			// for Excel's PHONETIC function
 			if(fixed && !text.empty())
@@ -350,28 +433,6 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						SysFreeString(var.bstrVal);
 					}
 					pProperty->Release();
-				}
-			}
-
-			if(!fixed)
-			{
-				if(pRangeComposition->Clone(&pRangeClone) == S_OK)
-				{
-					if(cchReq == 0)
-					{
-						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInput);
-					}
-					else
-					{
-						pRangeClone->ShiftEndToRange(ec, tfSelection.range, TF_ANCHOR_END);
-						pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
-						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeCandidate);
-
-						pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
-						pRangeClone->ShiftStartToRange(ec, tfSelection.range, TF_ANCHOR_END);
-						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeAnnotation);
-					}
-					pRangeClone->Release();
 				}
 			}
 		}

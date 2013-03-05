@@ -18,7 +18,21 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		return _pTextService->_HandleKey(ec, _pContext, _wParam, _bSf);
+#ifdef _DEBUG
+		_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf);
+#else
+		__try
+		{
+			_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf);
+		}
+		__except(EXCEPTION_EXECUTE_HANDLER)
+		{
+			_pTextService->_ResetStatus();
+			_pTextService->_ClearComposition();
+		}
+
+#endif
+		return S_OK;
 	}
 
 private:
@@ -295,4 +309,6 @@ void CTextService::_ResetStatus()
 	roman.clear();
 	kana.clear();
 	accompidx = 0;
+
+	cursoridx = 0;
 }

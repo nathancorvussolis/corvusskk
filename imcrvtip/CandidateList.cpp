@@ -110,8 +110,20 @@ STDAPI CCandidateList::OnKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 	}
 
 	*pfEaten = TRUE;
+#ifdef _DEBUG
 	_pCandidateWindow->_OnKeyDown((UINT)wParam);
+#else
+	__try
+	{
+		_pCandidateWindow->_OnKeyDown((UINT)wParam);
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+		_pTextService->_ResetStatus();
+		_pTextService->_ClearComposition();
+	}
 
+#endif
 	return S_OK;
 }
 

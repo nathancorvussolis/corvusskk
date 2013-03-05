@@ -27,7 +27,13 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 		}
 		break;
 	case im_jlatin:
+		keystate[VK_KANA] = 0;
+		break;
 	case im_ascii:
+		if(keystate[VK_KANA] == 0)
+		{
+			return L'\0';
+		}
 		keystate[VK_KANA] = 0;
 		break;
 	default:
@@ -355,6 +361,11 @@ void CTextService::_SetComp(const std::wstring &candidate)
 	{
 		_ConvKanaToKana(kana, inputmode, candidate, im_hiragana);
 	}
+
+	if(cursoridx > kana.size())
+	{
+		cursoridx = kana.size();
+	}
 }
 
 BOOL CTextService::_ConvN(WCHAR ch)
@@ -416,17 +427,20 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 				else
 				{
-					kana.push_back(chO);
+					kana.insert(cursoridx, 1, ch);
+					cursoridx++;
 				}
 			}
 
 			switch(inputmode)
 			{
 			case im_hiragana:
-				kana.append(rkc.hiragana);
+				kana.insert(cursoridx, rkc.hiragana);
+				cursoridx += wcslen(rkc.hiragana);
 				break;
 			case im_katakana:
-				kana.append(rkc.katakana);
+				kana.insert(cursoridx, rkc.katakana);
+				cursoridx += wcslen(rkc.katakana);
 				break;
 			default:
 				break;
@@ -454,10 +468,12 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				switch(inputmode)
 				{
 				case im_hiragana:
-					kana.append(rkc.hiragana);
+					kana.insert(cursoridx, rkc.hiragana);
+					cursoridx += wcslen(rkc.hiragana);
 					break;
 				case im_katakana:
-					kana.append(rkc.katakana);
+					kana.insert(cursoridx, rkc.katakana);
+					cursoridx += wcslen(rkc.katakana);
 					break;
 				default:
 					break;
@@ -513,10 +529,12 @@ BOOL CTextService::_ConvNN()
 				switch(inputmode)
 				{
 				case im_hiragana:
-					kana.append(rkc.hiragana);
+					kana.insert(cursoridx, rkc.hiragana);
+					cursoridx += wcslen(rkc.hiragana);
 					break;
 				case im_katakana:
-					kana.append(rkc.katakana);
+					kana.insert(cursoridx, rkc.katakana);
+					cursoridx += wcslen(rkc.katakana);
 					break;
 				default:
 					break;

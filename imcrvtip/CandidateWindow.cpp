@@ -1235,7 +1235,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		}
 		break;
 
-	//結合文字は考慮しない
+	// surrogate pair
 
 	case SKK_BACK:
 		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
@@ -1402,6 +1402,7 @@ void CCandidateWindow::_BackUpStatus()
 	abbrevmode_bak = _pTextService->abbrevmode;
 	kana_bak = _pTextService->kana;
 	accompidx_bak = _pTextService->accompidx;
+	cursoridx_bak = _pTextService->cursoridx;
 	searchkey_bak = _pTextService->searchkey;
 	searchkeyorg_bak = _pTextService->searchkeyorg;
 	candidates_bak = _pTextService->candidates;
@@ -1414,6 +1415,7 @@ void CCandidateWindow::_ClearStatus()
 	_pTextService->abbrevmode = FALSE;
 	_pTextService->kana.clear();
 	_pTextService->accompidx = 0;
+	_pTextService->cursoridx = 0;
 	_pTextService->searchkey.clear();
 	_pTextService->searchkeyorg.clear();
 	_pTextService->candidates.clear();
@@ -1430,6 +1432,7 @@ void CCandidateWindow::_RestoreStatusReg()
 	_pTextService->abbrevmode = abbrevmode_bak;
 	_pTextService->kana = kana_bak;
 	_pTextService->accompidx = accompidx_bak;
+	_pTextService->cursoridx = cursoridx_bak;
 	_pTextService->searchkey = searchkey_bak;
 	_pTextService->searchkeyorg = searchkeyorg_bak;
 	_pTextService->candidates = candidates_bak;
@@ -1445,6 +1448,7 @@ void CCandidateWindow::_ClearStatusReg()
 	abbrevmode_bak = FALSE;
 	kana_bak.clear();
 	accompidx_bak = 0;
+	cursoridx_bak = 0;
 	searchkey_bak.clear();
 	searchkeyorg_bak.clear();
 	candidates_bak.clear();

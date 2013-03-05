@@ -29,7 +29,6 @@ typedef std::vector< CANDIDATE > CANDIDATES;
 
 //skk function code
 #define SKK_NULL		0x00	// NUL
-#define SKK_CONV_POINT	0x51	// 変換位置		Q ;
 
 #define SKK_KANA		0x71	// かな／カナ	q
 #define SKK_CONV_CHAR	0x11	// ｶﾅ全英変換	c-q
@@ -38,20 +37,19 @@ typedef std::vector< CANDIDATE > CANDIDATES;
 #define SKK_JMODE		0x0A	// ひらがな		c-j(LF)	(c-q)	(ASCII/全英モード)
 #define SKK_ABBREV		0x2F	// abbrev		/
 #define SKK_AFFIX		0x3E	// 接辞			> <
-
-#define SKK_DIRECT		0x30	// 直接入力		0-9
 #define SKK_NEXT_CAND	0x20	// 次候補		SP	c-n
 #define SKK_PREV_CAND	0x78	// 前候補		x	c-p
 #define SKK_PURGE_DIC	0x58	// 辞書削除		X
 #define SKK_NEXT_COMP	0x09	// 次補完		c-i(HT)
 #define SKK_PREV_COMP	0x15	// 前補完		c-u
 
+#define SKK_CONV_POINT	0x51	// 変換位置		Q ;
+#define SKK_DIRECT		0x30	// 直接入力		0-9
 #define SKK_ENTER		0x0D	// 確定			c-m(CR)	c-j(LF)
 #define SKK_CANCEL		0x07	// 取消			c-g	(c-[)
 #define SKK_BACK		0x08	// 後退			c-h(BS)	VK_BACK
 #define SKK_DELETE		0x7F	// 削除			DEL	VK_DELETE
 #define SKK_VOID		0xFF	// 無効
-
 #define SKK_LEFT		0x02	// 左移動		c-b	VK_LEFT
 #define SKK_UP			0x01	// 先頭移動		c-a	VK_UP
 #define SKK_RIGHT		0x06	// 右移動		c-f	VK_RIGHT

@@ -122,6 +122,7 @@ private:
 	BOOL abbrevmode_bak;
 	std::wstring kana_bak;
 	size_t accompidx_bak;
+	size_t cursoridx_bak;
 	std::wstring searchkey_bak;
 	std::wstring searchkeyorg_bak;
 	CANDIDATES candidates_bak;

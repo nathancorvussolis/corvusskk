@@ -298,6 +298,8 @@ public:
 	CANDIDATES candidates;	//候補
 	size_t candidx;			//候補インデックス
 
+	size_t cursoridx;		//カーソルインデックス
+
 	//候補一覧選択キー
 	WCHAR selkey[MAX_SELKEY_C][2][2];
 
