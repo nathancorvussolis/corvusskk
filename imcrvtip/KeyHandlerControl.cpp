@@ -211,6 +211,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			inputkey = TRUE;
 			ch = L'>';
 			kana.push_back(ch);
+			cursoridx++;
 			_Update(ec, pContext);
 			return S_OK;
 		}
@@ -240,6 +241,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			ch = L'>';
 			roman.clear();
 			kana.push_back(ch);
+			cursoridx++;
 			if(!c_nookuriconv)
 			{
 				//辞書検索開始(接頭辞)
@@ -369,18 +371,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(_ConvN(ch))
+				if(_ConvN(ch) && accompidx == 0)
 				{
 					//送り仮名入力開始
-					if(accompidx != 0)
-					{
-						if(accompidx < cursoridx)
-						{
-							cursoridx--;
-						}
-						kana.erase(accompidx, 1);
-						accompidx = 0;
-					}
 					if(cursoridx == kana.size())
 					{
 						accompidx = cursoridx;

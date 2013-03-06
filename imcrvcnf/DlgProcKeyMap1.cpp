@@ -22,7 +22,7 @@ static const KEYMAPCNF KeyMap1[] =
 	{IDC_EDIT_ENTER,		ValueKeyMapEnter,		L"\\cm|\\cj"},
 	{IDC_EDIT_CANCEL,		ValueKeyMapCancel,		L"\\cg|\\x1B"},
 	{IDC_EDIT_BACK,			ValueKeyMapBack,		L"\\ch"},
-	{IDC_EDIT_DELETE,		ValueKeyMapDelete,		L"\\x7F"},
+	{IDC_EDIT_DELETE,		ValueKeyMapDelete,		L"\\cd|\\x7F"},
 	{IDC_EDIT_VOID,			ValueKeyMapVoid,		L"\\cj"},
 	{IDC_EDIT_LEFT,			ValueKeyMapLeft,		L"\\cb"},
 	{IDC_EDIT_UP,			ValueKeyMapUp,			L"\\ca"},

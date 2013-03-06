@@ -79,7 +79,7 @@
     <key name="enter" value="\cm|\cj" />
     <key name="cancel" value="\cg|\x1B" />
     <key name="back" value="\ch" />
-    <key name="delete" value="\x7F" />
+    <key name="delete" value="\cd|\x7F" />
     <key name="void" value="\cj" />
     <key name="left" value="\cb" />
     <key name="up" value="\ca" />

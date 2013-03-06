@@ -28,7 +28,8 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		return TRUE;
 	}
 
-	SHORT ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+	SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+	SHORT vk_kana = GetKeyState(VK_KANA) & 0x0001;
 
 	WCHAR ch = _GetCh((BYTE)wParam);
 	BYTE sf = _GetSf((BYTE)wParam, ch);
@@ -71,18 +72,14 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		return TRUE;
 	}
 	//処理しないCtrlキー
-	if(ctrl)
+	if(vk_ctrl)
 	{
 		return FALSE;
 	}
-
-	switch(inputmode)
+	//ASCIIモード、かなキーロック
+	if(inputmode == im_ascii && !vk_kana)
 	{
-	case im_ascii:
 		return FALSE;
-		break;
-	default:
-		break;
 	}
 
 	if(ch >= L'\x20')

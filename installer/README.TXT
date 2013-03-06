@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.9.7
+     CorvusSKK version 0.9.8
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -262,8 +262,8 @@
   || 直接入力   || 0～9                   || 見出し語入力でローマ字仮名変換しない
   || 確定       || Ctrl+m(Return)  Ctrl+j || 
   || 取消       || Ctrl+g  Ctrl+[(Escape) || 
-  || 後退       || Ctrl+h(Backspace)      || 
-  || 削除       || DEL(Ctrl+Backspace)    || 
+  || 後退       || Ctrl+h(BS)             || 
+  || 削除       || Ctrl+d  DEL(Ctrl+BS)   || 
   || *無効*     || Ctrl+j                 || アプリケーション側に非通知、辞書登録の確定無効
   || 左移動     || Ctrl+b                 || 
   || 先頭移動   || Ctrl+a                 || 
