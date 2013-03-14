@@ -338,7 +338,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
 				tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
 
-				if(c_nomodemark && accompidx != 0 && cursoridx <= accompidx)
+				if(c_nomodemark && accompidx != 0 && cursoridx <= accompidx && cursoridx < kana.size())
 				{
 					cchReq = (LONG)cursoridx - (LONG)kana.size() + 1;
 				}

@@ -241,7 +241,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			ch = L'>';
 			roman.clear();
 			kana.push_back(ch);
-			cursoridx++;
+			cursoridx = kana.size();
 			if(!c_nookuriconv)
 			{
 				//辞書検索開始(接頭辞)
@@ -431,6 +431,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		else
 		{
 			kana.clear();
+			cursoridx = 0;
 			_HandleCharReturn(ec, pContext);
 		}
 		return S_OK;
@@ -552,7 +553,28 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_LEFT:
 		if(inputkey && !showentry)
 		{
-			_ConvN(WCHAR_MAX);
+			if(!_ConvN(WCHAR_MAX))
+			{
+				roman.clear();
+			}
+			if(accompidx != 0)
+			{
+				if(accompidx + 1 == cursoridx)
+				{
+					kana.erase(cursoridx - 1, 1);
+					cursoridx--;
+					accompidx = 0;
+				}
+				if(accompidx == kana.size())
+				{
+					accompidx = 0;
+				}
+			}
+			if(kana.empty())
+			{
+				_Update(ec, pContext);
+				return S_OK;
+			}
 			if(cursoridx > 0)
 			{
 				// surrogate pair
@@ -579,7 +601,28 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_UP:
 		if(inputkey && !showentry)
 		{
-			_ConvN(WCHAR_MAX);
+			if(!_ConvN(WCHAR_MAX))
+			{
+				roman.clear();
+			}
+			if(accompidx != 0)
+			{
+				if(accompidx + 1 == cursoridx)
+				{
+					kana.erase(cursoridx - 1, 1);
+					cursoridx--;
+					accompidx = 0;
+				}
+				if(accompidx == kana.size())
+				{
+					accompidx = 0;
+				}
+			}
+			if(kana.empty())
+			{
+				_Update(ec, pContext);
+				return S_OK;
+			}
 			cursoridx = 0;
 			_Update(ec, pContext);
 			return S_OK;
@@ -589,7 +632,28 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_RIGHT:
 		if(inputkey && !showentry)
 		{
-			_ConvN(WCHAR_MAX);
+			if(!_ConvN(WCHAR_MAX))
+			{
+				roman.clear();
+			}
+			if(accompidx != 0)
+			{
+				if(accompidx + 1 == cursoridx)
+				{
+					kana.erase(cursoridx - 1, 1);
+					cursoridx--;
+					accompidx = 0;
+				}
+				if(accompidx == kana.size())
+				{
+					accompidx = 0;
+				}
+			}
+			if(kana.empty())
+			{
+				_Update(ec, pContext);
+				return S_OK;
+			}
 			if(cursoridx < kana.size())
 			{
 				// surrogate pair
@@ -614,7 +678,28 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_DOWN:
 		if(inputkey && !showentry)
 		{
-			_ConvN(WCHAR_MAX);
+			if(!_ConvN(WCHAR_MAX))
+			{
+				roman.clear();
+			}
+			if(accompidx != 0)
+			{
+				if(accompidx + 1 == cursoridx)
+				{
+					kana.erase(cursoridx - 1, 1);
+					cursoridx--;
+					accompidx = 0;
+				}
+				if(accompidx == kana.size())
+				{
+					accompidx = 0;
+				}
+			}
+			if(kana.empty())
+			{
+				_Update(ec, pContext);
+				return S_OK;
+			}
 			cursoridx = kana.size();
 			_Update(ec, pContext);
 			return S_OK;

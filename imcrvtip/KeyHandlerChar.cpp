@@ -130,6 +130,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 						_HandleCharReturn(ec, pContext);	//仮名のみ
 					}
 					kana.clear();
+					cursoridx = 0;
 					if(rkc.soku)
 					{
 						roman.push_back(ch);
