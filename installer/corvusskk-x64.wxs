@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?define version="0.9.9" ?>
-    <Product Id="22CDB115-BBFE-4DDF-BD47-C3FC5A81DA16" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
+    <?define version="0.10.0" ?>
+    <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
         <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x64" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
         <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
         <Directory Id="TARGETDIR" Name="SourceDir">
@@ -15,8 +15,7 @@
                             <File Id="mgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
                         </Component>
                         <Component Guid="CBC6E637-0EF3-4E97-B7C3-2A6430CADE72" Id="TIP_X86">
-                            <File Id="tip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1">
-                            </File>
+                            <File Id="tip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
                         </Component>
                     </Directory>
                 </Directory>
@@ -31,8 +30,7 @@
                             <File Id="mgr_x64" Name="imcrvmgr.exe" Source="..\x64\Release\imcrvmgr.exe" />
                         </Component>
                         <Component Guid="010DBC18-3C6C-491D-9236-C68B94905C81" Id="TIP_X64" Win64="yes">
-                            <File Id="tip_x64" Name="imcrvtip.dll" Source="..\x64\Release\imcrvtip.dll" SelfRegCost="1">
-                            </File>
+                            <File Id="tip_x64" Name="imcrvtip.dll" Source="..\x64\Release\imcrvtip.dll" SelfRegCost="1" />
                         </Component>
                     </Directory>
                 </Directory>
@@ -63,7 +61,9 @@
             <UpgradeVersion Property="SELFFOUND" OnlyDetect="yes" Maximum="$(var.version)" Minimum="$(var.version)" IncludeMaximum="yes" IncludeMinimum="yes" />
             <UpgradeVersion Property="NEWERFOUND" OnlyDetect="yes" Minimum="$(var.version)" IncludeMinimum="no" />
         </Upgrade>
+        <CustomAction Id="PreventDowngrading" Error="A newer version already installed." />
         <InstallExecuteSequence>
+            <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWERFOUND</Custom>
             <RemoveExistingProducts After="InstallInitialize" />
             <ScheduleReboot After="InstallFinalize" />
         </InstallExecuteSequence>

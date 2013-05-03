@@ -41,18 +41,12 @@ void CreateConfigPath()
 	wcsncat_s(appdata, L"\\", _TRUNCATE);
 
 	_wmkdir(appdata);
+	SetCurrentDirectoryW(appdata);
 
-	wcsncpy_s(pathconfigxml, appdata, _TRUNCATE);
-	wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
-
-	wcsncpy_s(pathuserdicxml, appdata, _TRUNCATE);
-	wcsncat_s(pathuserdicxml, fnuserdicxml, _TRUNCATE);
-
-	wcsncpy_s(pathskkcvdicxml, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvdicxml, fnskkcvdicxml, _TRUNCATE);
-
-	wcsncpy_s(pathskkcvdicidx, appdata, _TRUNCATE);
-	wcsncat_s(pathskkcvdicidx, fnskkcvdicidx, _TRUNCATE);
+	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
+	_snwprintf_s(pathuserdicxml, _TRUNCATE, L"%s%s", appdata, fnuserdicxml);
+	_snwprintf_s(pathskkcvdicxml, _TRUNCATE, L"%s%s", appdata, fnskkcvdicxml);
+	_snwprintf_s(pathskkcvdicidx, _TRUNCATE, L"%s%s", appdata, fnskkcvdicidx);
 
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];

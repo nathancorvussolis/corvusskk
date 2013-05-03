@@ -1156,14 +1156,10 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				regwordtextannotation.clear();
 			}
 
-			//数値変換タイプ0～3の候補は#を数値にした見出し語が表示用 それ以外は見出し語そのまま
-			if(std::regex_match(regwordtextcandidate, std::wregex(L".*#[0-3].*")))
+			//変換
+			_pTextService->_ConvertCandidate(regwordtextconv, _pTextService->searchkeyorg, regwordtextcandidate);
+			if(regwordtextconv.empty() || regwordtextconv == regwordtextcandidate)
 			{
-				_pTextService->_ConvNum(regwordtextconv, _pTextService->searchkeyorg, regwordtextcandidate);
-			}
-			else
-			{
-				regwordtextconv = regwordtextcandidate;
 				_pTextService->searchkey = _pTextService->searchkeyorg;
 			}
 
@@ -1171,6 +1167,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				CANDIDATEBASE(regwordtextconv, regwordtextannotation),
 				(CANDIDATEBASE(regwordtextcandidate, regwordtextannotation))));
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
+			_pTextService->candorgcnt = 0;
 
 			regwordtext.clear();
 			regwordtextpos = 0;
@@ -1407,6 +1404,7 @@ void CCandidateWindow::_BackUpStatus()
 	searchkeyorg_bak = _pTextService->searchkeyorg;
 	candidates_bak = _pTextService->candidates;
 	candidx_bak = _pTextService->candidx;
+	candorgcnt_bak = _pTextService->candorgcnt;
 }
 
 void CCandidateWindow::_ClearStatus()
@@ -1420,6 +1418,7 @@ void CCandidateWindow::_ClearStatus()
 	_pTextService->searchkeyorg.clear();
 	_pTextService->candidates.clear();
 	_pTextService->candidx = 0;
+	_pTextService->candorgcnt = 0;
 	_pTextService->showcandlist = FALSE;
 	_pTextService->showentry = FALSE;
 	_pTextService->inputkey = FALSE;
@@ -1437,6 +1436,7 @@ void CCandidateWindow::_RestoreStatusReg()
 	_pTextService->searchkeyorg = searchkeyorg_bak;
 	_pTextService->candidates = candidates_bak;
 	_pTextService->candidx = candidx_bak;
+	_pTextService->candorgcnt = candorgcnt_bak;
 	_pTextService->showcandlist = TRUE;
 	_pTextService->showentry = TRUE;
 	_pTextService->inputkey = TRUE;
@@ -1453,6 +1453,7 @@ void CCandidateWindow::_ClearStatusReg()
 	searchkeyorg_bak.clear();
 	candidates_bak.clear();
 	candidx_bak = 0;
+	candorgcnt_bak = 0;
 }
 
 void CCandidateWindow::_PreEndReq()

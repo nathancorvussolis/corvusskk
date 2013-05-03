@@ -310,12 +310,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_PURGE_DIC:
 		if(showentry)
 		{
-			//数値変換タイプ0～3の候補は数値を#にした見出し語 それ以外は見出し語そのまま
 			_DelUserDic((accompidx == 0 ? REQ_USER_DEL_1 : REQ_USER_DEL_0),
-				(std::regex_match(candidates[candidx].second.first, std::wregex(L".*#[0-3].*")) ?
-					searchkey : searchkeyorg),
+				((candorgcnt <= candidx) ? searchkey : searchkeyorg),
 				candidates[candidx].second.first);
-
 			showentry = FALSE;
 			candidx = 0;
 			_Update(ec, pContext);

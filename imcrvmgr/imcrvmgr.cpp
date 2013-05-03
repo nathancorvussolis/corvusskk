@@ -28,7 +28,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	PSECURITY_DESCRIPTOR psd;
 	SECURITY_ATTRIBUTES sa;
 
-	_wsetlocale(LC_ALL, L"japanese");
+	_wsetlocale(LC_ALL, L"JPN");
 
 	ZeroMemory(&g_ovi, sizeof(g_ovi));
 	g_ovi.dwOSVersionInfoSize = sizeof(g_ovi);
@@ -179,11 +179,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // request and reply commands defined at common.h
 //
 //search candidate
-//	request	"1\n<key>\n"
-//	reply	"1\n<candidate>\t<annotation>\n...\n":hit, "4":nothing
+//	request	"1\n<key>\t<key(original)>\n"
+//	reply	"1\n<candidate(display)>\t<candidate(regist)>\t<annotation>\n...\n":hit, "4":nothing
 //search key for complement
 //	request	"8\n<key>\n"
-//	reply	"1\n<key>\t\n...\n":hit, "4":nothing
+//	reply	"1\n<key>\t\t\n...\n":hit, "4":nothing
+//convert candidate
+//	request	"9\n<candidate>\n"
+//	reply	"1\n<candidate converted>\n":hit, "4":nothing
 //add candidate (complement off)
 //	request	"A\n<key>\t<candidate>\t<annotation>\n"
 //	reply	"1"
@@ -208,30 +211,45 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void SrvProc(WCHAR *wbuf, size_t size)
 {
+	SEARCHRESULTS searchresults;
+	SEARCHRESULTS::iterator searchresults_itr;
 	CANDIDATES candidates;
 	CANDIDATES::iterator candidates_itr;
 	const wchar_t seps[]   = L"\t\n";
 	wchar_t *token = NULL;
 	wchar_t *next_token = NULL;
+	std::wstring keyorg;
 	std::wstring key;
 	std::wstring candidate;
 	std::wstring annotation;
+	std::wstring conv;
 
 	switch(wbuf[0])
 	{
 	case REQ_SEARCH:
-		wbuf[wcslen(wbuf) - 1] = L'\0';
-		ConvDictionary(std::wstring(&wbuf[2]), candidates, wbuf[0]);
-		if(!candidates.empty())
+		token = wcstok_s(&wbuf[2], seps, &next_token);
+		if(token != NULL)
+		{
+			key.assign(token);
+			token = wcstok_s(NULL, seps, &next_token);
+		}
+		if(token != NULL)
+		{
+			keyorg.assign(token);
+		}
+		ConvDictionary(key, keyorg, searchresults);
+		if(!searchresults.empty())
 		{
 			wbuf[0] = REP_OK;
 			wbuf[1] = L'\n';
 			wbuf[2] = L'\0';
-			for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
+			for(searchresults_itr = searchresults.begin(); searchresults_itr != searchresults.end(); searchresults_itr++)
 			{
-				wcsncat_s(wbuf, size, candidates_itr->first.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, searchresults_itr->first.first.c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, candidates_itr->second.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, searchresults_itr->first.second.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
+				wcsncat_s(wbuf, size, searchresults_itr->second.c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
 			}
 		}
@@ -243,8 +261,12 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		break;
 
 	case REQ_COMPLEMENT:
-		wbuf[wcslen(wbuf) - 1] = L'\0';
-		ConvComplement(std::wstring(&wbuf[2]), candidates);
+		token = wcstok_s(&wbuf[2], seps, &next_token);
+		if(token != NULL)
+		{
+			key.assign(token);
+		}
+		ConvComplement(key, candidates);
 		if(!candidates.empty())
 		{
 			wbuf[0] = REP_OK;
@@ -253,8 +275,35 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
 			{
 				wcsncat_s(wbuf, size, candidates_itr->first.c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t\n", _TRUNCATE);
+				wcsncat_s(wbuf, size, L"\t\t\n", _TRUNCATE);
 			}
+		}
+		else
+		{
+			wbuf[0] = REP_FALSE;
+			wbuf[1] = L'\0';
+		}
+		break;
+
+	case REQ_CONVERSION:
+		token = wcstok_s(&wbuf[2], seps, &next_token);
+		if(token != NULL)
+		{
+			key.assign(token);
+			token = wcstok_s(NULL, seps, &next_token);
+		}
+		if(token != NULL)
+		{
+			candidate.assign(token);
+		}
+		ConvCandidate(key, candidate, conv);
+		if(!conv.empty())
+		{
+			wbuf[0] = REP_OK;
+			wbuf[1] = L'\n';
+			wbuf[2] = L'\0';
+			wcsncat_s(wbuf, size, conv.c_str(), _TRUNCATE);
+			wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
 		}
 		else
 		{

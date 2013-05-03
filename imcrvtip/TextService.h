@@ -157,14 +157,13 @@ public:
 	void _ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode);
 
 	// KeyHandlerDictionary
-	void _ConvDic(WCHAR command);
 	void _ConnectDic();
 	void _DisconnectDic();
+	void _SearchDic(WCHAR command);
+	void _ConvertCandidate(std::wstring &conv, const std::wstring &key, const std::wstring &candidate);
 	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
 	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
-	void _ConvDicNum();
-	void _ConvNum(std::wstring &convnum, const std::wstring &key, const std::wstring &candidate);
 	void _StartManager();
 	void _StartConfigure();
 	void _StartProcess(LPCWSTR fname);
@@ -297,6 +296,7 @@ public:
 	//候補
 	CANDIDATES candidates;	//候補
 	size_t candidx;			//候補インデックス
+	size_t candorgcnt;		//オリジナル見出し語の候補数
 
 	size_t cursoridx;		//カーソルインデックス
 

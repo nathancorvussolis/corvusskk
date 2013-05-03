@@ -76,8 +76,7 @@ void CTextService::_CreateConfigPath()
 	wcsncat_s(appdata, TextServiceDesc, _TRUNCATE);
 	wcsncat_s(appdata, L"\\", _TRUNCATE);
 
-	wcsncpy_s(pathconfigxml, appdata, _TRUNCATE);
-	wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
+	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
 
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];

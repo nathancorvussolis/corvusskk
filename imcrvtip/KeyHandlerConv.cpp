@@ -168,9 +168,10 @@ void CTextService::_StartConv()
 
 	candidates.clear();
 	candidates.shrink_to_fit();
+	candorgcnt = 0;
 
 	//通常検索
-	_ConvDic(REQ_SEARCH);
+	_SearchDic(REQ_SEARCH);
 
 	//片仮名変換
 	if(c_addcandktkn && !abbrevmode)
@@ -193,14 +194,20 @@ void CTextService::_StartConv()
 		}
 	}
 
-	searchkeyorg = searchkey;	//オリジナルバックアップ
-
+	candorgcnt = candidates.size();
 	candidates_bak = candidates;
 	candidates.clear();
 	candidates.shrink_to_fit();
 
-	//数値変換検索
-	_ConvDicNum();
+	searchkeyorg = searchkey;	//オリジナルバックアップ
+
+	//数値を#に置換
+	searchkey = std::regex_replace(searchkey, std::wregex(L"[0-9]+"), std::wstring(L"#"));
+	if(searchkey != searchkeyorg)
+	{
+		//数値変換検索
+		_SearchDic(REQ_SEARCH);
+	}
 
 	candidates_num = candidates;
 	candidates.clear();
@@ -299,7 +306,7 @@ void CTextService::_NextComp()
 		candidates.shrink_to_fit();
 
 		//補完
-		_ConvDic(REQ_COMPLEMENT);
+		_SearchDic(REQ_COMPLEMENT);
 
 		if(!candidates.empty())
 		{

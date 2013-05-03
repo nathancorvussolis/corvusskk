@@ -127,6 +127,7 @@ private:
 	std::wstring searchkeyorg_bak;
 	CANDIDATES candidates_bak;
 	size_t candidx_bak;
+	size_t candorgcnt_bak;
 };
 
 #endif //CANDIDATEWINDOW_H

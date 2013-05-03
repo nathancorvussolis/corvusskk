@@ -99,7 +99,11 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 			if((ej[0] >= ejs && ej[0] <= eje) &&
 			        (ej[1] >= ejs && ej[1] <= eje))
 			{
-				*ucp1 = euc2[ej[0] - ejs][ej[1] - ejs];
+				*ucp1 = 0;
+				if(euc2i[ej[0] - ejs] != 0)
+				{
+					*ucp1 = euc2[euc2i[ej[0] - ejs] - 1][ej[1] - ejs];
+				}
 				*ucp2 = 0;
 				srcused = 3;
 			}
@@ -387,7 +391,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							exist = TRUE;
 							break;
 						}
-						else if(ucp == euc2[i][j])	// JIS X 0213 Plane 2
+						else if(euc2i[i] != 0 && ucp == euc2[euc2i[i] - 1][j])	// JIS X 0213 Plane 2
 						{
 							if(*dstsize <= di + 3)	//limit
 							{

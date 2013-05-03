@@ -71,10 +71,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 			//ユーザ辞書登録
 			if(fixed && !candidates[candidx].second.first.empty())
 			{
-				//数値変換タイプ0～3の候補は数値を#にした見出し語 それ以外は見出し語そのまま
-				_AddUserDic(useraddmode,
-					(std::regex_match(candidates[candidx].second.first, std::wregex(L".*#[0-3].*")) ?
-						searchkey : searchkeyorg),
+				_AddUserDic(useraddmode, ((candorgcnt <= candidx) ? searchkey : searchkeyorg),
 					candidates[candidx].second.first, candidates[candidx].second.second);
 			}
 		}
@@ -285,10 +282,11 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 		}
 		else
 		{
+			_SetText(ec, pContext, composition, cchReq, fixed);
 			//候補一覧表示開始
 			showcandlist = TRUE;
 			candidx = 0;
-			_ShowCandidateList(ec, pContext, FALSE);
+			return _ShowCandidateList(ec, pContext, FALSE);
 		}
 	}
 

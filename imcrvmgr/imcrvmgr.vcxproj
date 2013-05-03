@@ -180,7 +180,10 @@
     <ClCompile Include="ConfigMgr.cpp" />
     <ClCompile Include="ConvCharacter.cpp" />
     <ClCompile Include="ConvDictionary.cpp" />
+    <ClCompile Include="ConvGadget.cpp" />
+    <ClCompile Include="ConvNum.cpp" />
     <ClCompile Include="ConvSKKServer.cpp" />
+    <ClCompile Include="ConvUserDictionary.cpp" />
     <ClCompile Include="imcrvmgr.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

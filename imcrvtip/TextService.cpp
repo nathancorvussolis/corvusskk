@@ -114,7 +114,7 @@ STDAPI_(ULONG) CTextService::Release()
 
 STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 {
-	_wsetlocale(LC_ALL, L"japanese");
+	//_wsetlocale(LC_ALL, L"JPN");
 	
 	_CreateConfigPath();
 

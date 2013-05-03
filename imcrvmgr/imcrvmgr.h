@@ -18,13 +18,18 @@ typedef std::pair< std::wstring, CANDIDATES > USERDICENTRY;
 //見出し語順序
 typedef std::vector< std::wstring > KEYORDER;
 
+//検索結果
+typedef std::pair< std::wstring, std::wstring > CANDIDATEPAIR; //表示用候補、辞書登録用候補
+typedef std::pair< CANDIDATEPAIR, std::wstring > SEARCHRESULT; //候補、注釈
+typedef std::vector< SEARCHRESULT > SEARCHRESULTS;
+
 typedef struct {
 	USERDIC userdic;
 	KEYORDER complements;
 	KEYORDER accompaniments;
 } USERDATA;
 
-// ConfigSrv
+// ConfigMgr
 void CreateConfigPath();
 void LoadConfig();
 
@@ -33,7 +38,17 @@ void ConvUnicode(const std::wstring &text, CANDIDATES &candidates);
 void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates);
 
 // ConvDictionary
-void ConvDictionary(const std::wstring &searchkey, CANDIDATES &candidates, WCHAR command);
+void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg, SEARCHRESULTS &searchresults);
+void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv);
+
+// ConvGadget
+std::wstring ConvGaget(const std::wstring &key, const std::wstring &candidate);
+
+// ConvNum
+std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);
+
+// ConvUserDictionary
+void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);

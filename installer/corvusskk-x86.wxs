@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?define version="0.9.9" ?>
-    <Product Id="8879E8F2-5163-4E98-A406-0E2BC05F8308" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
+    <?define version="0.10.0" ?>
+    <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
         <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
         <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
         <Directory Id="TARGETDIR" Name="SourceDir">
@@ -15,8 +15,7 @@
                             <File Id="mgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
                         </Component>
                         <Component Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B" Id="TIP_X86">
-                            <File Id="tip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1">
-                            </File>
+                            <File Id="tip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
                         </Component>
                     </Directory>
                 </Directory>
@@ -44,7 +43,9 @@
             <UpgradeVersion Property="SELFFOUND" OnlyDetect="yes" Maximum="$(var.version)" Minimum="$(var.version)" IncludeMaximum="yes" IncludeMinimum="yes" />
             <UpgradeVersion Property="NEWERFOUND" OnlyDetect="yes" Minimum="$(var.version)" IncludeMinimum="no" />
         </Upgrade>
+        <CustomAction Id="PreventDowngrading" Error="A newer version already installed." />
         <InstallExecuteSequence>
+            <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWERFOUND</Custom>
             <RemoveExistingProducts After="InstallInitialize" />
             <ScheduleReboot After="InstallFinalize" />
         </InstallExecuteSequence>

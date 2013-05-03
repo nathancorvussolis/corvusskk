@@ -21,7 +21,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	HANDLE hMutex;
 	INITCOMMONCONTROLSEX icex;
 
-	_wsetlocale(LC_ALL, L"japanese");
+	_wsetlocale(LC_ALL, L"JPN");
 
 	hInst = hInstance;
 

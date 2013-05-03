@@ -41,6 +41,15 @@
     <ClCompile Include="imcrvmgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ConvUserDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvGadget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConvNum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvmgr.rc">
