@@ -65,6 +65,7 @@
     <key name="delokuricncl" value="0" />
     <key name="backincenter" value="0" />
     <key name="addcandktkn" value="0" />
+    <key name="showmodeimm" value="0" />
   </section>
   <section name="dictionary">
     <list />

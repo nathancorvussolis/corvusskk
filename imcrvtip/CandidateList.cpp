@@ -345,6 +345,11 @@ void CCandidateList::_EndCandidateList()
 	}
 }
 
+BOOL CCandidateList::_IsShowCandidateWindow()
+{
+	return (_pCandidateWindow != NULL) ? TRUE : FALSE;
+}
+
 BOOL CCandidateList::_IsContextCandidateWindow(ITfContext *pContext)
 {
 	return (_pContextCandidateWindow == pContext) ? TRUE : FALSE;
@@ -355,9 +360,9 @@ HRESULT CCandidateList::_AdviseContextKeyEventSink()
 	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
-	if(_pContextCandidateWindow->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+	if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
-		hr = pSource->AdviseSink(IID_ITfContextKeyEventSink, (ITfContextKeyEventSink *)this, &_dwCookieContextKeyEventSink);
+		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfContextKeyEventSink *)this), &_dwCookieContextKeyEventSink);
 		pSource->Release();
 	}
 
@@ -371,7 +376,7 @@ HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 
 	if(_pContextCandidateWindow != NULL)
 	{
-		if(_pContextCandidateWindow->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+		if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			hr = pSource->UnadviseSink(_dwCookieContextKeyEventSink);
 			pSource->Release();
@@ -386,9 +391,9 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
-	if(_pContextDocument->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+	if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
-		hr = pSource->AdviseSink(IID_ITfTextLayoutSink, (ITfTextLayoutSink *)this, &_dwCookieTextLayoutSink);
+		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
 		pSource->Release();
 	}
 
@@ -402,7 +407,7 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 
 	if(_pContextDocument != NULL)
 	{
-		if(_pContextDocument->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+		if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
 			pSource->Release();
@@ -414,7 +419,7 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 
 void CCandidateList::_Show(BOOL bShow)
 {
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->Show(bShow);
 	}
@@ -422,8 +427,16 @@ void CCandidateList::_Show(BOOL bShow)
 
 void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
 {
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
+	}
+}
+
+void CCandidateList::_Move(int x, int y)
+{
+	if(_pCandidateWindow != NULL)
+	{
+		_pCandidateWindow->_Move(x, y);
 	}
 }

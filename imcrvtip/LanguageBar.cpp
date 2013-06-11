@@ -1,6 +1,8 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
+#include "EditSession.h"
+#include "CandidateList.h"
 #include "LanguageBar.h"
 
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
@@ -238,7 +240,7 @@ STDAPI CLangBarItemButton::AdviseSink(REFIID riid, IUnknown *punk, DWORD *pdwCoo
 		return CONNECT_E_ADVISELIMIT;
 	}
 
-	if(punk->QueryInterface(IID_ITfLangBarItemSink, (void **)&_pLangBarItemSink) != S_OK)
+	if(punk->QueryInterface(IID_PPV_ARGS(&_pLangBarItemSink)) != S_OK)
 	{
 		_pLangBarItemSink = NULL;
 		return E_NOINTERFACE;
@@ -325,7 +327,7 @@ BOOL CTextService::_InitLanguageBar()
 	_pLangBarItem = NULL;
 	_pLangBarItemI = NULL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfLangBarItemMgr, (void **)&pLangBarItemMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 	{
 		_pLangBarItem = new CLangBarItemButton(this, c_guidLangBarItemButton);
 		if(_pLangBarItem != NULL)
@@ -374,7 +376,7 @@ void CTextService::_UninitLanguageBar()
 
 	if(_pLangBarItem != NULL)
 	{
-		if(_pThreadMgr->QueryInterface(IID_ITfLangBarItemMgr, (void **)&pLangBarItemMgr) == S_OK)
+		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 		{
 			pLangBarItemMgr->RemoveItem(_pLangBarItem);
 			pLangBarItemMgr->Release();
@@ -385,7 +387,7 @@ void CTextService::_UninitLanguageBar()
 
 	if(_pLangBarItemI != NULL)
 	{
-		if(_pThreadMgr->QueryInterface(IID_ITfLangBarItemMgr, (void **)&pLangBarItemMgr) == S_OK)
+		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 		{
 			pLangBarItemMgr->RemoveItem(_pLangBarItemI);
 			pLangBarItemMgr->Release();
@@ -394,6 +396,29 @@ void CTextService::_UninitLanguageBar()
 		_pLangBarItemI = NULL;
 	}
 }
+
+class CImmersiveInputModeEditSession : public CEditSessionBase
+{
+public:
+	CImmersiveInputModeEditSession(CTextService *pTextService, ITfContext *pContext, const std::wstring &mode) : CEditSessionBase(pTextService, pContext)
+	{
+		_pTextService = pTextService;
+		_pContext = pContext;
+		_mode = mode;
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		_pTextService->_SetText(ec, _pContext, _mode, -(LONG)_mode.size(), FALSE);
+		return S_OK;
+	}
+
+private:
+	CTextService *_pTextService;
+	ITfContext *_pContext;
+	std::wstring _mode;
+};
 
 void CTextService::_UpdateLanguageBar()
 {
@@ -404,5 +429,64 @@ void CTextService::_UpdateLanguageBar()
 	if(_pLangBarItemI != NULL)
 	{
 		_pLangBarItemI->_Update();
+	}
+
+	if(c_showmodeimm && _ImmersiveMode && !_UILessMode)
+	{
+		std::wstring mode;
+		switch(inputmode)
+		{
+		case im_hiragana:
+			mode = L" [かな]";
+			break;
+		case im_katakana:
+			mode = L" [カナ]";
+			break;
+		case im_jlatin:
+			mode = L" [全英]";
+			break;
+		case im_ascii:
+			mode = L" [SKK]";
+			break;
+		default:
+			break;
+		}
+
+		if(_pCandidateList && _pCandidateList->_IsShowCandidateWindow())
+		{
+			_pCandidateList->_SetText(mode, FALSE, FALSE, FALSE);
+		}
+		else if(!_IsComposing())
+		{
+			ITfDocumentMgr *pDocumentMgrFocus;
+			CImmersiveInputModeEditSession *pEditSession;
+			HRESULT hr;
+
+			switch(inputmode)
+			{
+			case im_hiragana:
+			case im_katakana:
+			case im_jlatin:
+			case im_ascii:
+				if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
+				{
+					ITfContext *pContext;
+					if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
+					{
+						pEditSession = new CImmersiveInputModeEditSession(this, pContext, mode);
+						if(pEditSession != NULL)
+						{
+							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+							pEditSession->Release();
+						}
+						pContext->Release();
+					}
+					pDocumentMgrFocus->Release();
+				}
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }

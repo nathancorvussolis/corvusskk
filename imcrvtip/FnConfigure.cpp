@@ -170,20 +170,14 @@ void CTextService::_LoadBehavior()
 	}
 
 	_ReadBoolValue(ValueDispCandNo, c_dispcandnum);
-
 	_ReadBoolValue(ValueAnnotation, c_annotation);
-
 	_ReadBoolValue(ValueAnnotatLst, c_annotatlst);
-
 	_ReadBoolValue(ValueNoModeMark, c_nomodemark);
-
 	_ReadBoolValue(ValueNoOkuriConv, c_nookuriconv);
-
 	_ReadBoolValue(ValueDelOkuriCncl, c_delokuricncl);
-
 	_ReadBoolValue(ValueBackIncEnter, c_backincenter);
-
 	_ReadBoolValue(ValueAddCandKtkn, c_addcandktkn);
+	_ReadBoolValue(ValueShowModeImm, c_showmodeimm);
 }
 
 void CTextService::_LoadSelKey()

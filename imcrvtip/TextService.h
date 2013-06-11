@@ -283,6 +283,7 @@ public:
 	BOOL c_delokuricncl;	//取消のとき送り仮名を削除する
 	BOOL c_backincenter;	//後退に確定を含める
 	BOOL c_addcandktkn;		//候補に片仮名変換を追加する
+	BOOL c_showmodeimm;		//没入型で入力モードを表示する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

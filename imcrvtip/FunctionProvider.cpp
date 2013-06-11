@@ -122,7 +122,7 @@ BOOL CTextService::_InitFunctionProvider()
 	ITfSourceSingle *pSourceSingle;
 	HRESULT hr = E_FAIL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void **)&pSourceSingle) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
 	{
 		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_ITfFunctionProvider, (ITfFnConfigure *)this);
 		pSourceSingle->Release();
@@ -135,7 +135,7 @@ void CTextService::_UninitFunctionProvider()
 {
 	ITfSourceSingle *pSourceSingle;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfSourceSingle, (void **)&pSourceSingle) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
 	{
 		pSourceSingle->UnadviseSingleSink(_ClientId, IID_ITfFunctionProvider);
 		pSourceSingle->Release();

@@ -25,7 +25,10 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 
 	if(_IsComposing())
 	{
-		return TRUE;
+		if(inputmode != im_ascii)
+		{
+			return TRUE;
+		}
 	}
 
 	SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
@@ -98,6 +101,21 @@ STDAPI CTextService::OnSetFocus(BOOL fForeground)
 STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
 	*pfEaten = _IsKeyEaten(pic, wParam);
+
+	//ASCIIモード
+	if(inputmode == im_ascii)
+	{
+		WCHAR ch = _GetCh((BYTE)wParam);
+		//無効
+		if(_IsKeyVoid(ch, (BYTE)wParam))
+		{
+			_UpdateLanguageBar();
+		}
+		else if(ch != L'\0')
+		{
+			_ClearComposition();
+		}
+	}
 	return S_OK;
 }
 
@@ -153,7 +171,7 @@ BOOL CTextService::_InitKeyEventSink()
 	ITfKeystrokeMgr *pKeystrokeMgr;
 	HRESULT hr = E_FAIL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, (ITfKeyEventSink *)this, TRUE);
 		pKeystrokeMgr->Release();
@@ -166,7 +184,7 @@ void CTextService::_UninitKeyEventSink()
 {
 	ITfKeystrokeMgr *pKeystrokeMgr;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		pKeystrokeMgr->UnadviseKeyEventSink(_ClientId);
 		pKeystrokeMgr->Release();
@@ -179,7 +197,7 @@ BOOL CTextService::_InitPreservedKey()
 	HRESULT hr = E_FAIL;
 	int i;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		for(i=0; i<MAX_PRESERVEDKEY; i++)
 		{
@@ -202,7 +220,7 @@ void CTextService::_UninitPreservedKey()
 	ITfKeystrokeMgr *pKeystrokeMgr;
 	int i;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfKeystrokeMgr, (void **)&pKeystrokeMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		for(i=0; i<MAX_PRESERVEDKEY; i++)
 		{

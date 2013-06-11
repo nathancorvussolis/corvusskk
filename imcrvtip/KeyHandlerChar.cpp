@@ -189,6 +189,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		{
 		case S_OK:		//一致
 			kana.assign(ajc.jlatin);
+			cursoridx = kana.size();
 			_HandleCharReturn(ec, pContext);
 			break;
 		case E_PENDING:	//途中まで一致
@@ -199,8 +200,9 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		}
 		break;
 
-	case im_ascii:
+	case im_ascii:	//かなキーロックONのときのみ
 		kana.push_back(ch);
+		cursoridx = kana.size();
 		_HandleCharReturn(ec, pContext);
 		break;
 

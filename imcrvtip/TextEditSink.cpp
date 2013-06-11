@@ -1,13 +1,14 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
+#include "CandidateList.h"
 
 STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEditRecord *pEditRecord)
 {
-	// clear when auto completion
 	ITfRange *pRangeComposition;
 	if(_IsComposing() && _pComposition->GetRange(&pRangeComposition) == S_OK)
 	{
+		// clear when auto completion
 		BOOL fEmpty = FALSE;
 		if(pRangeComposition->IsEmpty(ecReadOnly, &fEmpty) == S_OK && fEmpty)
 		{
@@ -17,6 +18,23 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 				_EndComposition(pic);
 			}
 		}
+
+		// reposition candidate window
+		if(_pCandidateList != NULL)
+		{
+			ITfContextView *pContextView;
+			if(pic->GetActiveView(&pContextView) == S_OK)
+			{
+				RECT rc;
+				BOOL fClipped;
+				if(pContextView->GetTextExt(ecReadOnly, pRangeComposition, &rc, &fClipped) == S_OK)
+				{
+					_pCandidateList->_Move(rc.left, rc.bottom);
+				}
+				pContextView->Release();
+			}
+		}
+
 		pRangeComposition->Release();
 	}
 
@@ -30,7 +48,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 
 	if(_dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
-		if(_pTextEditSinkContext->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+		if(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			pSource->UnadviseSink(_dwTextEditSinkCookie);
 			pSource->Release();
@@ -58,9 +76,9 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 
 	fRet = FALSE;
 
-	if(_pTextEditSinkContext->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+	if(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
-		if(pSource->AdviseSink(IID_ITfTextEditSink, (ITfTextEditSink *)this, &_dwTextEditSinkCookie) == S_OK)
+		if(pSource->AdviseSink(IID_IUNK_ARGS((ITfTextEditSink *)this), &_dwTextEditSinkCookie) == S_OK)
 		{
 			fRet = TRUE;
 		}

@@ -35,8 +35,7 @@ BOOL RegisterProfiles()
 	WCHAR fileName[MAX_PATH];
 	HRESULT hr = E_FAIL;
 
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER,
-	                      IID_ITfInputProcessorProfiles, (void**)&pInputProcessProfiles) != S_OK)
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) != S_OK)
 	{
 		goto exit;
 	}
@@ -74,8 +73,7 @@ void UnregisterProfiles()
 {
 	ITfInputProcessorProfiles *pInputProcessProfiles;
 
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER,
-	                      IID_ITfInputProcessorProfiles, (void**)&pInputProcessProfiles) == S_OK)
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) == S_OK)
 	{
 		pInputProcessProfiles->Unregister(c_clsidTextService);
 		pInputProcessProfiles->Release();
@@ -87,8 +85,7 @@ BOOL RegisterCategories()
 	ITfCategoryMgr *pCategoryMgr;
 	int i;
 
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER,
-	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(i=0; i<_countof(c_guidCategory); i++)
 		{
@@ -118,8 +115,7 @@ void UnregisterCategories()
 	ITfCategoryMgr *pCategoryMgr;
 	int i;
 
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER,
-	                      IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(i=0; i<_countof(c_guidCategory); i++)
 		{

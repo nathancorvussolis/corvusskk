@@ -38,6 +38,7 @@
 #define IDC_CHECKBOX_DELOKURICNCL               1120
 #define IDC_CHECKBOX_BACKINCENTER               1121
 #define IDC_CHECKBOX_ADDCANDKTKN                1122
+#define IDC_CHECKBOX_SHOWMODEIMM                1123
 
 #define IDC_LIST_SKK_DIC                        1301
 #define IDC_BUTTON_SKK_DIC_ADD                  1302

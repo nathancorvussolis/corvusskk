@@ -8,7 +8,7 @@ HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)
 	ITfCompartment *pCompartment;
 	HRESULT hr = E_FAIL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
 		{
@@ -39,7 +39,7 @@ BOOL CTextService::_IsKeyboardDisabled()
 		goto exit;
 	}
 	
-	if(pContext->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		ITfCompartment *pCompartmentDisabled;
 		ITfCompartment *pCompartmentEmptyContext;
@@ -92,7 +92,7 @@ BOOL CTextService::_IsKeyboardOpen()
 	ITfCompartmentMgr *pCompartmentMgr;
 	BOOL fOpen = FALSE;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		ITfCompartment *pCompartment;
 		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
@@ -118,7 +118,7 @@ HRESULT CTextService::_SetKeyboardOpen(BOOL fOpen)
 	ITfCompartment *pCompartment;
 	HRESULT hr = E_FAIL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
 		{

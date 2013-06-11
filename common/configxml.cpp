@@ -58,6 +58,7 @@ LPCWSTR ValueNoOkuriConv = L"nookuriconv";
 LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";
 LPCWSTR ValueAddCandKtkn = L"addcandktkn";
+LPCWSTR ValueShowModeImm = L"showmodeimm";
 
 //section
 LPCWSTR SectionDictionary = L"dictionary";
@@ -128,7 +129,7 @@ HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFile
 
 	if(ppReader != NULL && ppFileStream != NULL)
 	{
-		hr = CreateXmlReader(IID_IXmlReader, (LPVOID *)ppReader, NULL);
+		hr = CreateXmlReader(IID_PPV_ARGS(ppReader), NULL);
 		EXIT_NOT_S_OK(hr);
 
 		hr = SHCreateStreamOnFileW(path, STGM_READ, ppFileStream);
@@ -646,7 +647,7 @@ HRESULT CreateStreamWriter(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFile
 
 	if(ppWriter != NULL && ppFileStream != NULL)
 	{
-		hr = CreateXmlWriter(IID_IXmlWriter, (LPVOID *)ppWriter, NULL);
+		hr = CreateXmlWriter(IID_PPV_ARGS(ppWriter), NULL);
 		EXIT_NOT_S_OK(hr);
 
 		hr = SHCreateStreamOnFileW(path, STGM_WRITE | STGM_CREATE, ppFileStream);

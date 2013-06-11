@@ -21,13 +21,13 @@ BOOL CTextService::_InitCompartmentEventSink()
 	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
 		{
-			if(pCompartment->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+			if(pCompartment->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 			{
-				hr = pSource->AdviseSink(IID_ITfCompartmentEventSink, (ITfCompartmentEventSink *)this, &_dwCompartmentEventSinkCookie);
+				hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfCompartmentEventSink *)this), &_dwCompartmentEventSinkCookie);
 				pSource->Release();
 			}
 			pCompartment->Release();
@@ -49,11 +49,11 @@ void CTextService::_UninitCompartmentEventSink()
 	ITfCompartment *pCompartment;
 	ITfSource *pSource;
 
-	if(_pThreadMgr->QueryInterface(IID_ITfCompartmentMgr, (void **)&pCompartmentMgr) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
 		{
-			if(pCompartment->QueryInterface(IID_ITfSource, (void **)&pSource) == S_OK)
+			if(pCompartment->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 			{
 				pSource->UnadviseSink(_dwCompartmentEventSinkCookie);
 			}

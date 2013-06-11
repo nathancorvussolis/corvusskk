@@ -36,9 +36,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if(roman.empty())
 			{
 				//カタカナモードへ
+				_HandleCharReturn(ec, pContext);
 				inputmode = im_katakana;
 				_UpdateLanguageBar();
-				_HandleCharReturn(ec, pContext);
 				return S_OK;
 			}
 			break;
@@ -60,9 +60,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if(roman.empty())
 			{
 				//ひらがなモードへ
+				_HandleCharReturn(ec, pContext);
 				inputmode = im_hiragana;
 				_UpdateLanguageBar();
-				_HandleCharReturn(ec, pContext);
 				return S_OK;
 			}
 			break;
@@ -125,9 +125,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if(roman.empty())
 			{
 				//全英モードへ
+				_HandleCharReturn(ec, pContext);
 				inputmode = im_jlatin;
 				_UpdateLanguageBar();
-				_HandleCharReturn(ec, pContext);
 				return S_OK;
 			}
 			break;
@@ -149,9 +149,9 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if(roman.empty())
 			{
 				//アスキーモードへ
+				_HandleCharReturn(ec, pContext);
 				inputmode = im_ascii;
 				_UpdateLanguageBar();
-				_HandleCharReturn(ec, pContext);
 				return S_OK;
 			}
 			break;
@@ -166,6 +166,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		case im_jlatin:
 		case im_ascii:
 			//ひらがなモードへ
+			_HandleCharReturn(ec, pContext);
 			inputmode = im_hiragana;
 			_UpdateLanguageBar();
 			break;

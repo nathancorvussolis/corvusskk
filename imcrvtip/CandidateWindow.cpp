@@ -448,7 +448,7 @@ void CCandidateWindow::_BeginUIElement()
 
 	if((_hwnd == NULL) && (_depth == 0))
 	{
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 			if(!bShow)
@@ -489,7 +489,7 @@ void CCandidateWindow::_EndUIElement()
 
 	if((_hwnd == NULL) && (_depth == 0))
 	{
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->EndUIElement(_dwUIElementId);
 			pUIElementMgr->Release();
@@ -519,7 +519,7 @@ BOOL CCandidateWindow::_CanShowUIElement()
 	ITfUIElementMgr *pUIElementMgr;
 	BOOL bShow = TRUE;
 
-	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 	{
 		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 		pUIElementMgr->EndUIElement(_dwUIElementId);
@@ -922,7 +922,7 @@ void CCandidateWindow::_UpdateUIElement()
 	if(!_bShow)
 	{
 		ITfUIElementMgr *pUIElementMgr;
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_ITfUIElementMgr, (void **)&pUIElementMgr) == S_OK)
+		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->UpdateUIElement(_dwUIElementId);
 			pUIElementMgr->Release();
@@ -1083,6 +1083,12 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		return;
 	}
 
+	if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
+	{
+		_pTextService->_UpdateLanguageBar();
+		return;
+	}
+
 	switch(sf)
 	{
 	case SKK_JMODE:
@@ -1090,11 +1096,6 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		break;
 
 	case SKK_ENTER:
-		if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
-		{
-			break;
-		}
-
 		_RestoreStatusReg();
 		_ClearStatusReg();
 

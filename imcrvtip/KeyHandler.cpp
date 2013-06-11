@@ -91,9 +91,21 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		complement = FALSE;	//補完終了
 		break;
 	}
+
+	BOOL iscomp = _IsComposing();
 	
 	if(_HandleControl(ec, pContext, sf, ch) == S_OK)
 	{
+		if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
+		{
+			_UpdateLanguageBar();
+		}
+		return S_OK;
+	}
+
+	if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
+	{
+		_UpdateLanguageBar();
 		return S_OK;
 	}
 
@@ -202,7 +214,7 @@ void CTextService::_KeyboardChanged()
 	_UILessMode = FALSE;
 
 	ITfThreadMgrEx *pThreadMgrEx;
-	if(_pThreadMgr->QueryInterface(IID_ITfThreadMgrEx, (void**)&pThreadMgrEx) == S_OK)
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx)) == S_OK)
 	{
 		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
 		pThreadMgrEx->Release();

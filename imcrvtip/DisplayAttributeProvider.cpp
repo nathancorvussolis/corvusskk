@@ -109,8 +109,7 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 	ITfCategoryMgr *pCategoryMgr;
 	HRESULT hr = E_FAIL;
 
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER,
-	                    IID_ITfCategoryMgr, (void**)&pCategoryMgr) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeInput, &_gaDisplayAttributeInput);
 		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeCandidate, &_gaDisplayAttributeCandidate);

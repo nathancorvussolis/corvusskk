@@ -307,7 +307,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 	ITfRange *pRangeComposition;
 	ITfRange *pRangeClone;
 	ULONG cFetched;
-	LONG cch;
+	LONG cch, cchRes;
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 	{
@@ -331,6 +331,8 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		{
 			pRangeComposition->SetText(ec, 0, text.c_str(), (LONG)text.size());
 			
+			// shift from end to start.
+			// shift over mathematical operators (U+2200-U+22FF) is rejected by OneNote.
 			if(cchReq == 0)
 			{
 				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
@@ -338,23 +340,30 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 				if(c_nomodemark && accompidx != 0 && cursoridx <= accompidx && cursoridx < kana.size())
 				{
-					cchReq = (LONG)cursoridx - (LONG)kana.size() + 1;
+					cchRes = (LONG)cursoridx - (LONG)kana.size() + 1;
 				}
 				else
 				{
-					cchReq = (LONG)cursoridx - (LONG)kana.size();
+					cchRes = (LONG)cursoridx - (LONG)kana.size();
 				}
 
-				tfSelection.range->ShiftStart(ec, cchReq, &cch, NULL);
-				cchReq = 0;
+				tfSelection.range->ShiftStart(ec, cchRes, &cch, NULL);
 			}
 			else
 			{
+				cchRes = cchReq - (LONG)text.size();
+				if(cchRes > 0)
+				{
+					cchRes = 0;
+				}
+				else if(cchRes < -(LONG)text.size())
+				{
+					cchRes = -(LONG)text.size();
+				}
+
 				tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
 				tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
-				// shift from end to start.
-				// shift over mathematical operators (U+2200-U+22FF) is rejected by OneNote.
-				tfSelection.range->ShiftStart(ec, cchReq - (LONG)text.size(), &cch, NULL);
+				tfSelection.range->ShiftStart(ec, cchRes, &cch, NULL);
 			}
 
 			tfSelection.range->Collapse(ec, TF_ANCHOR_START);

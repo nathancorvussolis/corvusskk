@@ -98,4 +98,6 @@ extern const GUID c_guidCandidateListUIElement;
 LONG DllAddRef();
 LONG DllRelease();
 
+#define IID_IUNK_ARGS(pType) __uuidof(*(pType)), (IUnknown *)pType
+
 #endif //IMCRVTIP_H

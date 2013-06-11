@@ -76,11 +76,11 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 	ITfComposition *pComposition = NULL;
 	HRESULT hr = E_FAIL;
 
-	if(_pContext->QueryInterface(IID_ITfInsertAtSelection, (void **)&pInsertAtSelection) == S_OK)
+	if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
 	{
 		if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRangeInsert) == S_OK)
 		{
-			if(_pContext->QueryInterface(IID_ITfContextComposition, (void **)&pContextComposition) == S_OK)
+			if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
 			{
 				if((pContextComposition->StartComposition(ec, pRangeInsert, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
 				{
@@ -232,7 +232,6 @@ void CTextService::_ClearComposition()
 					pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 					pEditSession->Release();
 				}
-
 				pContext->Release();
 			}
 			pDocumentMgrFocus->Release();

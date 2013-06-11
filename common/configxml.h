@@ -93,6 +93,7 @@ extern LPCWSTR ValueNoOkuriConv;
 extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;
 extern LPCWSTR ValueAddCandKtkn;
+extern LPCWSTR ValueShowModeImm;
 
 //section
 extern LPCWSTR SectionDictionary;

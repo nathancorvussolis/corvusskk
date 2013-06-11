@@ -71,32 +71,12 @@ static std::wstring substring(const _GPARAM &param)
 
 static std::wstring concat(const _GPARAM &param)
 {
-	if(param.size() < 1) return L"";
-
 	std::wstring ret;
-	std::wstring s = param[0];
-	std::wstring numstr, substr = s;
-	std::wregex renum(L"\\\\[0-7]{3}");
-	std::wsmatch res;
-	unsigned long u;
-
-	while(std::regex_search(substr, res, renum))
+	
+	for(_GPARAM::const_iterator pitr = param.begin(); pitr != param.end(); pitr++)
 	{
-		ret += res.prefix();
-		numstr = res.str();
-		numstr[0] = L'0';
-		u = wcstoul(numstr.c_str(), NULL, 0);
-		if(u >= 0x20 && u <= 0x7E)
-		{
-			ret.append(1, (wchar_t)u);
-		}
-		else
-		{
-			ret += res.str();
-		}
-		substr = res.suffix();
+		ret += *pitr;
 	}
-	ret += substr;
 
 	return ret;
 }
@@ -178,7 +158,6 @@ static std::wstring lambda(const _GPARAM &param)
 	return param[1];
 }
 
-#if 0
 static std::wstring plus1(const _GPARAM &param)
 {
 	if(param.size() < 1) return L"";
@@ -198,12 +177,13 @@ static std::wstring minus1(const _GPARAM &param)
 
 	return num;
 }
-#endif
 
 static std::wstring plus(const _GPARAM &param)
 {
 	int n = 0;
-	for(size_t i = 0; i<param.size(); i++)
+	size_t i;
+
+	for(i = 0; i<param.size(); i++)
 	{
 		n += _wtoi(param[i].c_str());
 	}
@@ -217,6 +197,7 @@ static std::wstring plus(const _GPARAM &param)
 static std::wstring minus(const _GPARAM &param)
 {
 	int n = 0;
+	size_t i;
 
 	if(param.size() == 1)
 	{
@@ -225,7 +206,7 @@ static std::wstring minus(const _GPARAM &param)
 	else
 	{
 		n = _wtoi(param[0].c_str());
-		for(size_t i = 1; i<param.size(); i++)
+		for(i = 1; i<param.size(); i++)
 		{
 			n -= _wtoi(param[i].c_str());
 		}
@@ -237,7 +218,6 @@ static std::wstring minus(const _GPARAM &param)
 	return num;
 }
 
-#if 0
 static std::wstring mul(const _GPARAM &param)
 {
 	int n = 1;
@@ -288,7 +268,6 @@ static std::wstring mod(const _GPARAM &param)
 
 	return num;
 }
-#endif
 
 
 
@@ -566,31 +545,14 @@ struct {
 	{L"current-time-string", current_time_string},
 	{L"car", car},
 	{L"lambda", lambda},
-#if 0
 	{L"1+", plus1},
 	{L"1-", minus1},
-#endif
 	{L"+", plus},
 	{L"-", minus},
-#if 0
 	{L"*", mul},
 	{L"/", div},
 	{L"%", mod},
-	//{L"mod", moda},
-#endif
-#if 0
-	{L"and", xf},
-	{L"or", xf},
-	{L"=", xf},
-	{L"/=", xf},
-	{L"<", xf},
-	{L">", xf},
-	{L"<=", xf},
-	{L">=", xf},
-	{L"max", xf},
-	{L"min", xf},
-	{L"abs", xf},
-#endif
+
 	{L"window-width", window_width},
 	{L"fill-column", fill_column},
 
@@ -606,11 +568,43 @@ struct {
 	{L"", xf}
 };
 
-static std::wstring trimdq(const std::wstring s)
+static std::wstring parse_string_esc(const std::wstring s)
+{
+	std::wstring ret;
+	std::wstring numstr, substr = s;
+	std::wregex renum(L"\\\\[0-7]{3}");
+	std::wsmatch res;
+	unsigned long u;
+
+	substr = std::regex_replace(substr,
+		std::wregex(L"\\\\([\\\"|\\\\])"), std::wstring(L"$1"));
+
+	while(std::regex_search(substr, res, renum))
+	{
+		ret += res.prefix();
+		numstr = res.str();
+		numstr[0] = L'0';
+		u = wcstoul(numstr.c_str(), NULL, 0);
+		if(u >= 0x20 && u <= 0x7E)
+		{
+			ret.append(1, (wchar_t)u);
+		}
+		else
+		{
+			ret += res.str();
+		}
+		substr = res.suffix();
+	}
+	ret += substr;
+
+	return ret;
+}
+
+static std::wstring parse_string(const std::wstring s)
 {
 	if(s.size() >= 2 && s[0] == L'\"' && s[s.size() - 1] == L'\"')
 	{
-		return s.substr(1, s.size() - 2);
+		return parse_string_esc(s.substr(1, s.size() - 2));
 	}
 	return s;
 }
@@ -650,35 +644,38 @@ static std::wstring gadget_func(const std::wstring s)
 			{
 				idqcnt = 1;
 			}
-			else if(ss[i] == L'\"' && idqcnt == 1)
+			else if(ss[i] == L'\"' && ss[i-1] != L'\\' && idqcnt == 1)
 			{
 				idqcnt = 0;
 			}
 
-			if(ss[i] == L'(' && idqcnt == 0)
+			if(idqcnt == 0)
 			{
-				if(ibracketcnt == 0) ibracket = i;
-				ibracketcnt++;
-			}
-			else if(ss[i] == L')' && idqcnt == 0)
-			{
-				ibracketcnt--;
-				if(ibracketcnt == 0)
+				if(ss[i] == L'(')
 				{
-					param.push_back(gadget_func(trimdq(ss.substr(ibracket, i - ibracket + 1))));
-					iparam = i + 2;
-					i++;
+					if(ibracketcnt == 0) ibracket = i;
+					ibracketcnt++;
 				}
-			}
-			else if(ss[i] == L'\x20' && ibracketcnt == 0 && idqcnt == 0)
-			{
-				param.push_back(trimdq(ss.substr(iparam, i - iparam)));
-				iparam = i + 1;
+				else if(ss[i] == L')')
+				{
+					ibracketcnt--;
+					if(ibracketcnt == 0)
+					{
+						param.push_back(gadget_func(parse_string(ss.substr(ibracket, i - ibracket + 1))));
+						iparam = i + 2;
+						i++;
+					}
+				}
+				else if(ss[i] == L'\x20' && ibracketcnt == 0)
+				{
+					param.push_back(parse_string(ss.substr(iparam, i - iparam)));
+					iparam = i + 1;
+				}
 			}
 		}
 		if(ss.size() > iparam)
 		{
-			param.push_back(trimdq(ss.substr(iparam)));
+			param.push_back(parse_string(ss.substr(iparam)));
 		}
 	}
 
@@ -715,21 +712,6 @@ std::wstring ConvGaget(const std::wstring &key, const std::wstring &candidate)
 {
 	std::wstring ret;
 	size_t i;
-	size_t is = 0;
-	size_t ie = 0;
-
-	for(i=0; i<candidate.size(); i++)
-	{
-		if(candidate[i] == L'(') is++;
-	}
-	for(i=0; i<candidate.size(); i++)
-	{
-		if(candidate[i] == L')') ie++;
-	}
-	if(is != ie)
-	{
-		return candidate;
-	}
 
 	gadgetkey = key;
 	gadgettime = time(NULL);

@@ -30,13 +30,13 @@ public:
 		ITfContext *pContextDocument, TfEditCookie ec, ITfRange *pRangeComposition, BOOL regdic);
 	void _EndCandidateList();
 
+	BOOL _IsShowCandidateWindow();
 	BOOL _IsContextCandidateWindow(ITfContext *pContext);
 
 	void _InvokeSfHandler(BYTE sf);
-
 	void _Show(BOOL bShow);
-
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
+	void _Move(int x, int y);
 
 private:
 	LONG _cRef;
