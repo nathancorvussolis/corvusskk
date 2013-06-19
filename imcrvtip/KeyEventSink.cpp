@@ -102,18 +102,21 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 {
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
-	//ASCIIモード
-	if(inputmode == im_ascii)
+	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
 	{
-		WCHAR ch = _GetCh((BYTE)wParam);
-		//無効
-		if(_IsKeyVoid(ch, (BYTE)wParam))
+		//ASCIIモード
+		if(inputmode == im_ascii)
 		{
-			_UpdateLanguageBar();
-		}
-		else if(ch != L'\0')
-		{
-			_ClearComposition();
+			WCHAR ch = _GetCh((BYTE)wParam);
+			//無効
+			if(_IsKeyVoid(ch, (BYTE)wParam))
+			{
+				_UpdateLanguageBar();
+			}
+			else if(ch != L'\0')
+			{
+				_ClearComposition();
+			}
 		}
 	}
 	return S_OK;

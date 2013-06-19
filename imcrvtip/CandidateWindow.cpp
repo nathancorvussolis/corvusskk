@@ -1086,15 +1086,14 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
 	{
 		_pTextService->_UpdateLanguageBar();
-		return;
+		if(sf == SKK_ENTER)
+		{
+			return;
+		}
 	}
 
 	switch(sf)
 	{
-	case SKK_JMODE:
-		_HandleKey(0, NULL, 0, SKK_JMODE);
-		break;
-
 	case SKK_ENTER:
 		_RestoreStatusReg();
 		_ClearStatusReg();
