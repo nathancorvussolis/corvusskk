@@ -404,7 +404,7 @@ void CTextService::_LoadKana()
 	ROMAN_KANA_CONV rkc;
 	WCHAR *pszb;
 	size_t blen;
-	std::wregex re(L"\\t|\\r|\\n");
+	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
 	roman_kana_conv.clear();
@@ -466,7 +466,7 @@ void CTextService::_LoadJLatin()
 	int i = 0;
 	WCHAR *pszb;
 	size_t blen;
-	std::wregex re(L"\\t|\\r|\\n");
+	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
 	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));

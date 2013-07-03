@@ -1,16 +1,15 @@
 ﻿
+#include "common.h"
 #include "eucjis2004.h"
 #include "parseskkdic.h"
-
-#define BUFSIZE 0x2000
 
 LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
 LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 
 int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCANDIDATES &c)
 {
-	CHAR buf[BUFSIZE*2];
-	WCHAR wbuf[BUFSIZE];
+	CHAR buf[DICBUFSIZE*2];
+	WCHAR wbuf[DICBUFSIZE];
 	size_t size, is;
 	void *rp;
 	std::wstring s;
@@ -58,17 +57,9 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	}
 	else
 	{
-		switch(wbuf[0])
+		if(L'\0' <= wbuf[0] && wbuf[0] <= L'\x20')
 		{
-		case L'\0':
-		case L'\r':
-		case L'\n':
-		case L';':
-		case L'\x20':
 			return 1;
-			break;
-		default:
-			break;
 		}
 	}
 
@@ -78,7 +69,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	}
 
 	s.assign(wbuf);
-	re.assign(L"\\t|\\r|\\n");
+	re.assign(L"[\\x00-\\x19]");
 	fmt.assign(L"");
 	s = std::regex_replace(s, re, fmt);
 	//送りありエントリのブロック形式を除去
@@ -136,63 +127,6 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &d)
 			candidate = candidate.substr(0, ia);
 		}
 
-		ParseLisp(candidate);
-		ParseLisp(annotation);
-
 		d.push_back(SKKDICCANDIDATE(candidate, annotation));
-	}
-}
-
-void ParseLisp(std::wstring &s)
-{
-	// \" -> ", \\ -> \, \ooo -> ascii
-	std::wstring tmpstr, resstr, substr, suffix, numstr, fmt;
-	std::wregex rescat, rercat, reesc, renum;
-	std::wsmatch res;
-	unsigned long u;
-
-	if(s.find(L"concat") != std::wstring::npos)
-	{
-		rescat.assign(L"\\(concat \".*?\"\\)");
-		rercat.assign(L"\\(concat \"(.*)\"\\)");
-		reesc.assign(L"\\\\([\\\"|\\\\])");
-		fmt.assign(L"$1");
-		renum.assign(L"\\\\[0-7]{3}");
-
-		tmpstr = s;
-		suffix = s;
-
-		while(std::regex_search(tmpstr, res, rescat))
-		{
-			resstr += res.prefix();
-			substr = res.str();
-			suffix = res.suffix();
-
-			substr = std::regex_replace(substr, rercat, fmt);
-			substr = std::regex_replace(substr, reesc, fmt);
-
-			while(std::regex_search(substr, res, renum))
-			{
-				resstr += res.prefix();
-				numstr = res.str();
-				numstr[0] = L'0';
-				u = wcstoul(numstr.c_str(), NULL, 0);
-				if(u >= 0x20 && u <= 0x7E)
-				{
-					resstr.append(1, (wchar_t)u);
-				}
-				else
-				{
-					resstr += res.str();
-				}
-				substr = res.suffix();
-			}
-
-			resstr += substr;
-			tmpstr = suffix;
-		}
-
-		resstr += suffix;
-		s = resstr;
 	}
 }

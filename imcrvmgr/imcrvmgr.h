@@ -32,6 +32,7 @@ typedef struct {
 // ConfigMgr
 void CreateConfigPath();
 void LoadConfig();
+BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft);
 
 // ConvCharacter
 void ConvUnicode(const std::wstring &text, CANDIDATES &candidates);
@@ -39,6 +40,7 @@ void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates);
 
 // ConvDictionary
 void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg, SEARCHRESULTS &searchresults);
+void InitSKKDic();
 void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv);
 
 // ConvGadget
@@ -52,11 +54,10 @@ void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
-void LoadUserDic();
-HANDLE StartSaveUserDicEx();
-void StartSaveUserDic();
-BOOL LoadSKKUserDic(LPCWSTR path);
-BOOL SaveSKKUserDic(LPCWSTR path);
+BOOL LoadSKKUserDic();
+BOOL SaveSKKUserDic(USERDATA* userdata);
+HANDLE StartSaveSKKUserDicEx();
+void StartSaveSKKUserDic();
 
 // ConvSKKServer
 void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates);
@@ -75,10 +76,10 @@ extern KEYORDER complements;
 extern KEYORDER accompaniments;
 
 // ファイルパス
-extern WCHAR pathconfigxml[MAX_PATH];
-extern WCHAR pathuserdicxml[MAX_PATH];
-extern WCHAR pathskkcvdicxml[MAX_PATH];
-extern WCHAR pathskkcvdicidx[MAX_PATH];
+extern WCHAR pathconfigxml[MAX_PATH];	//設定
+extern WCHAR pathuserdic[MAX_PATH];		//ユーザ辞書
+extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
+extern WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
 extern WCHAR krnlobjsddl[MAX_KRNLOBJNAME];	//SDDL
 extern WCHAR mgrpipename[MAX_KRNLOBJNAME];	//名前付きパイプ

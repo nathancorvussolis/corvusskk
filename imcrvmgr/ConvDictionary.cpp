@@ -18,7 +18,7 @@ void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkey
 	CANDIDATES::iterator candidates_itrf;
 	CANDIDATES::iterator candidates_itrb;
 	CANDIDATES candidates;
-	std::wregex re(L"\\t|\\r|\\n");
+	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
 	searchresults.clear();
@@ -70,31 +70,28 @@ void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkey
 	}
 }
 
-void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv)
-{
-	conv = ConvMisc(searchkey, candidate);
-}
-
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 {
-	FILE *fpidx;
-	ULONGLONG pos;
-	long left, mid, right;
+	FILE *fpdic, *fpidx;
+	std::wstring key;
+	long pos, left, mid, right;
 	int comp;
-	APPDATAXMLDIC xmldic;
-	APPDATAXMLDIC::iterator d_itr;
-	APPDATAXMLLIST::iterator l_itr;
-	APPDATAXMLROW::iterator r_itr;
-	std::wstring candidate;
-	std::wstring annotation;
-	std::wregex re(L"\\t|\\r|\\n");
-	std::wstring fmt(L"");
+	WCHAR wbuf[DICBUFSIZE];
+	WCHAR *p;
 
-	_wfopen_s(&fpidx, pathskkcvdicidx, L"rb");
+	_wfopen_s(&fpidx, pathskkidx, RB);
 	if(fpidx == NULL)
 	{
 		return;
 	}
+	_wfopen_s(&fpdic, pathskkdic, RB);
+	if(fpdic == NULL)
+	{
+		fclose(fpidx);
+		return;
+	}
+
+	key = searchkey + L"\x20";
 
 	left = 0;
 	fseek(fpidx, 0, SEEK_END);
@@ -103,49 +100,22 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	while(left <= right)
 	{
 		mid = (left + right) / 2;
-		fseek(fpidx, mid*sizeof(pos), SEEK_SET);
+		fseek(fpidx, mid * sizeof(pos), SEEK_SET);
 		fread(&pos, sizeof(pos), 1, fpidx);
 
-		if(ReadDicList(pathskkcvdicxml, SectionDictionary, xmldic, pos) != S_OK)
-		{
-			break;
-		}
+		fseek(fpdic, pos, SEEK_SET);
+		memset(wbuf, 0, sizeof(wbuf));
+		fgetws(wbuf, _countof(wbuf), fpdic);
 
-		d_itr = xmldic.begin();
-		if(d_itr != xmldic.end())
-		{
-			comp = searchkey.compare(d_itr->first);
-		}
-		else
-		{
-			break;
-		}
-
+		comp = wcsncmp(key.c_str(), wbuf, key.size());
 		if(comp == 0)
 		{
-			for(l_itr = d_itr->second.begin(); l_itr != d_itr->second.end(); l_itr++)
+			if((p = wcschr(wbuf, L'\x20')) != NULL)
 			{
-				candidate.clear();
-				annotation.clear();
-
-				for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+				if((p = wcschr(p, L'/')) != NULL)
 				{
-					if(r_itr->first == AttributeCandidate)
-					{
-						candidate = std::regex_replace(r_itr->second, re, fmt);
-					}
-					else if(r_itr->first == AttributeAnnotation)
-					{
-						annotation = std::regex_replace(r_itr->second, re, fmt);
-					}
+					ParseSKKDicCandiate(p, candidates);
 				}
-
-				if(candidate.empty())
-				{
-					continue;
-				}
-
-				candidates.push_back(CANDIDATE(candidate, annotation));
 			}
 			break;
 		}
@@ -158,8 +128,14 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 			right = mid - 1;
 		}
 	}
-
+	
+	fclose(fpdic);
 	fclose(fpidx);
+}
+
+void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv)
+{
+	conv = ConvMisc(searchkey, candidate);
 }
 
 std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate)

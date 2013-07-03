@@ -397,6 +397,7 @@ static std::wstring conv_gengo_to_ad(const std::wstring &num, const std::wstring
 static std::wstring skk_gengo_to_ad(const _GPARAM &param)
 {
 	if(param.size() < 2) return L"";
+	if(skk_num_list.empty()) return L"";
 
 	std::wstring num = skk_num_list[0];
 	std::wstring head = param[0];
@@ -574,7 +575,7 @@ static std::wstring parse_string_esc(const std::wstring s)
 	std::wstring numstr, substr = s;
 	std::wregex renum(L"\\\\[0-7]{3}");
 	std::wsmatch res;
-	unsigned long u;
+	wchar_t u;
 
 	substr = std::regex_replace(substr,
 		std::wregex(L"\\\\([\\\"|\\\\])"), std::wstring(L"$1"));
@@ -584,10 +585,10 @@ static std::wstring parse_string_esc(const std::wstring s)
 		ret += res.prefix();
 		numstr = res.str();
 		numstr[0] = L'0';
-		u = wcstoul(numstr.c_str(), NULL, 0);
-		if(u >= 0x20 && u <= 0x7E)
+		u = (wchar_t)wcstoul(numstr.c_str(), NULL, 0);
+		if(u >= L'\x20' && u <= L'\x7E')
 		{
-			ret.append(1, (wchar_t)u);
+			ret.append(1, u);
 		}
 		else
 		{

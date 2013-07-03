@@ -2,8 +2,6 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 
-#define BUFSIZE 0x2000
-
 void CTextService::_ConnectDic()
 {
 	DWORD dwMode;
@@ -35,7 +33,7 @@ void CTextService::_DisconnectDic()
 
 void CTextService::_SearchDic(WCHAR command)
 {
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 	size_t i, icd, icr, ia;
 	std::wstring s, scd, scr, sa;
@@ -104,7 +102,7 @@ exit:
 
 void CTextService::_ConvertCandidate(std::wstring &conv, const std::wstring &key, const std::wstring &candidate)
 {
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
 	_StartManager();
@@ -143,7 +141,7 @@ exit:
 
 void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();
@@ -171,7 +169,7 @@ exit:
 
 void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate)
 {
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();

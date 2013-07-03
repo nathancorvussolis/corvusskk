@@ -162,6 +162,10 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+				if(_depth == 0)
+				{
+					NotifyWinEvent(EVENT_OBJECT_IME_SHOW, _hwnd, OBJID_CLIENT, CHILDID_SELF);
+				}
 			}
 
 		}
@@ -171,6 +175,10 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
+				if(_depth == 0)
+				{
+					NotifyWinEvent(EVENT_OBJECT_IME_HIDE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
+				}
 			}
 		}
 #ifndef _DEBUG

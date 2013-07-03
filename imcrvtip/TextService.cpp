@@ -46,6 +46,10 @@ STDAPI CTextService::QueryInterface(REFIID riid, void **ppvObj)
 	{
 		*ppvObj = (ITfTextInputProcessor *)this;
 	}
+	else if(IsEqualIID(riid, IID_ITfTextInputProcessorEx))
+	{
+		*ppvObj = (ITfTextInputProcessorEx *)this;
+	}
 	else if(IsEqualIID(riid, IID_ITfThreadMgrEventSink))
 	{
 		*ppvObj = (ITfThreadMgrEventSink *)this;
@@ -113,6 +117,11 @@ STDAPI_(ULONG) CTextService::Release()
 }
 
 STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
+{
+	return ActivateEx(ptim, tid, 0);
+}
+
+STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
 	//_wsetlocale(LC_ALL, L"JPN");
 	

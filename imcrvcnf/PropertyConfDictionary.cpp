@@ -4,13 +4,12 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-#define BUFSIZE 0x2000
-
 typedef std::vector< std::wstring > ANNOTATIONS;
 typedef std::pair< std::wstring, ANNOTATIONS > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
 typedef std::pair< std::wstring, CANDIDATES > SKKDICENTRY;
 typedef std::map< std::wstring, CANDIDATES > SKKDIC;
+typedef std::map<std::wstring, long> KEYPOS;
 
 struct {
 	HWND parent;
@@ -134,7 +133,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	}
 }
 
-void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
+void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	HWND hWndList;
 	WCHAR path[MAX_PATH];
@@ -155,7 +154,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 		ListView_GetItemText(hWndList, ic, 0, path, _countof(path));
 		okuri = -1;
 
-		_wfopen_s(&fp, path, L"rb");
+		_wfopen_s(&fp, path, RB);
 		if(fp == NULL)
 		{
 			continue;
@@ -184,7 +183,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 			}
 			break;
 		default:
-			fseek(fp, SEEK_SET, 0);
+			fseek(fp, 0, SEEK_SET);
 			break;
 		}
 
@@ -202,7 +201,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 
 			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 			{
-				LoadSKKDicAdd(skkdic, key, sc_itr->first, sc_itr->second);
+				LoadSKKDicAdd((okuri == 0 ? entries_n : entries_a), key, sc_itr->first, sc_itr->second);
 			}
 		}
 
@@ -210,134 +209,98 @@ void LoadSKKDic(HWND hwnd, SKKDIC &skkdic)
 	}
 }
 
-HRESULT WriteSKKDicXml(SKKDIC &skkdic)
+void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const CANDIDATES &candidates)
 {
-	HRESULT hr, hrf;
-	FILE *fpidx;
-	IXmlWriter *pWriter;
-	IStream *pFileStream;
-	SKKDIC::iterator skkdic_itr;
-	CANDIDATES::iterator candidates_itr;
-	ANNOTATIONS::iterator annotations_itr;
-	APPDATAXMLATTR attr;
-	APPDATAXMLROW row;
-	APPDATAXMLLIST list;
-	FILE *fpxml;
-	__int64 fpxmlidx = 0;
-	CHAR buf[BUFSIZE*2];
+	CANDIDATES::const_iterator candidates_itr;
+	ANNOTATIONS::const_iterator annotations_itr;
+	std::wstring line;
 
-	hr = WriterInit(pathskkcvdicxml, &pWriter, &pFileStream, FALSE);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterNewLine(pWriter);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterStartElement(pWriter, TagRoot);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterNewLine(pWriter);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterStartSection(pWriter, SectionDictionary);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterNewLine(pWriter);
-	EXIT_NOT_S_OK(hr);
-
-	for(skkdic_itr = skkdic.begin(); skkdic_itr != skkdic.end(); skkdic_itr++)
+	line = key + L" /";
+	for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
 	{
-		list.clear();
-		for(candidates_itr = skkdic_itr->second.begin(); candidates_itr != skkdic_itr->second.end(); candidates_itr++)
+		line += candidates_itr->first;
+		if(!candidates_itr->second.empty())
 		{
-			row.clear();
-			attr.first = AttributeCandidate;
-			attr.second = candidates_itr->first;
-			row.push_back(attr);
-			attr.first = AttributeAnnotation;
-			attr.second = L"";
+			line += L";";
 			for(annotations_itr = candidates_itr->second.begin(); annotations_itr != candidates_itr->second.end(); annotations_itr++)
 			{
 				if(annotations_itr != candidates_itr->second.begin())
 				{
-					attr.second += L",";
+					line += L",";
 				}
-				attr.second += *annotations_itr;
+				line += *annotations_itr;
 			}
-			row.push_back(attr);
-			list.push_back(row);
 		}
-
-		hr = WriterStartElement(pWriter, TagEntry);
-		EXIT_NOT_S_OK(hr);
-
-		hr = WriterAttribute(pWriter, TagKey, skkdic_itr->first.c_str());	//見出し
-		EXIT_NOT_S_OK(hr);
+		line += L"/";
+	}
 	
-		hr = WriterList(pWriter, list);	//候補
-		EXIT_NOT_S_OK(hr);
+	fwprintf(fp, L"%s\n", line.c_str());
+}
 
-		hr = WriterEndElement(pWriter);	//TagEntry
-		EXIT_NOT_S_OK(hr);
+HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
+{
+	FILE *fp;
+	FILE *fpidx;
+	SKKDIC::const_iterator entries_itr;
+	SKKDIC::const_reverse_iterator entries_ritr;
+	long pos;
+	KEYPOS keypos;
+	KEYPOS::const_iterator keypos_itr;
 
-		hr = WriterNewLine(pWriter);
-		EXIT_NOT_S_OK(hr);
-	}
-
-	hr = WriterEndSection(pWriter);	//SectionDictionary
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterNewLine(pWriter);
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterEndElement(pWriter);	//TagRoot
-	EXIT_NOT_S_OK(hr);
-
-	hr = WriterNewLine(pWriter);
-	EXIT_NOT_S_OK(hr);
-
-NOT_S_OK:
-	hrf = WriterFinal(&pWriter, &pFileStream);
-	if(hr == S_OK)
+	_wfopen_s(&fp, pathskkdic, WccsUNICODE);
+	if(fp == NULL)
 	{
-		hr = hrf;
+		return S_FALSE;
 	}
 
-	_wfopen_s(&fpidx, pathskkcvdicidx, L"wb");
-	if(fpidx != NULL)
+	//送りありエントリ
+	fwprintf(fp, L"%s", EntriesAri);
+
+	for(entries_ritr = entries_a.rbegin(); entries_ritr != entries_a.rend(); entries_ritr++)
 	{
-		_wfopen_s(&fpxml, pathskkcvdicxml, L"rb");
-		if(fpxml != NULL)
-		{
-			while(fgets(buf, _countof(buf), fpxml) != NULL)
-			{
-				if(strncmp(buf, "<entry ", 7) == 0)
-				{
-					fwrite(&fpxmlidx, sizeof(fpxmlidx), 1, fpidx);
-				}
-				fpxmlidx = _ftelli64(fpxml);
-			}
-			fclose(fpxml);
-		}
-		else
-		{
-			hr = S_FALSE;
-		}
-		fclose(fpidx);
-	}
-	else
-	{
-		hr = S_FALSE;
+		fseek(fp, 0, SEEK_END);
+		pos = ftell(fp);
+		keypos.insert(KEYPOS::value_type(entries_ritr->first, pos));
+
+		WriteSKKDicEntry(fp, entries_ritr->first, entries_ritr->second);
 	}
 
-	return hr;
+	//送りなしエントリ
+	fwprintf(fp, L"%s", EntriesNasi);
+
+	for(entries_itr = entries_n.begin(); entries_itr != entries_n.end(); entries_itr++)
+	{
+		fseek(fp, 0, SEEK_END);
+		pos = ftell(fp);
+		keypos.insert(KEYPOS::value_type(entries_itr->first, pos));
+
+		WriteSKKDicEntry(fp, entries_itr->first, entries_itr->second);
+	}
+
+	fclose(fp);
+
+	_wfopen_s(&fpidx, pathskkidx, WB);
+	if(fpidx == NULL)
+	{
+		return S_FALSE;
+	}
+
+	for(keypos_itr = keypos.begin(); keypos_itr != keypos.end(); keypos_itr++)
+	{
+		fwrite(&keypos_itr->second, sizeof(keypos_itr->second), 1, fpidx);
+	}
+
+	fclose(fpidx);
+
+	return S_OK;
 }
 
 unsigned int __stdcall MakeSKKDicThread(void *p)
 {
-	SKKDIC skkdic;
+	SKKDIC entries_a, entries_n;
 
-	LoadSKKDic(SkkDicInfo.parent, skkdic);
-	SkkDicInfo.hr = WriteSKKDicXml(skkdic);
+	LoadSKKDic(SkkDicInfo.parent, entries_a, entries_n);
+	SkkDicInfo.hr = WriteSKKDic(entries_a, entries_n);
 	return 0;
 }
 
@@ -397,152 +360,4 @@ void MakeSKKDic(HWND hwnd)
 {
 	SkkDicInfo.parent = hwnd;
 	DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_MAKE), hwnd, DlgProcSKKDic);
-}
-
-unsigned int __stdcall ReqSKKUserDicThread(void *p)
-{
-	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	DWORD dwMode;
-	WCHAR wbuf[BUFSIZE];
-	DWORD bytesWrite, bytesRead;
-	WCHAR mgrpipename[MAX_KRNLOBJNAME];
-	LPWSTR pszUserSid;
-	WCHAR szDigest[32+1];
-	MD5_DIGEST digest;
-	int i;
-
-	SkkUserDicInfo.hr = S_FALSE;
-
-	ZeroMemory(mgrpipename, sizeof(mgrpipename));
-	ZeroMemory(szDigest, sizeof(szDigest));
-
-	if(GetUserSid(&pszUserSid))
-	{
-		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
-		{
-			for(i=0; i<_countof(digest.digest); i++)
-			{
-				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
-			}
-		}
-
-		LocalFree(pszUserSid);
-	}
-
-	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);
-
-	if(WaitNamedPipeW(mgrpipename, NMPWAIT_USE_DEFAULT_WAIT) == 0)
-	{
-		goto exit;
-	}
-
-	hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
-	if(hPipe == INVALID_HANDLE_VALUE)
-	{
-		goto exit;
-	}
-
-	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
-
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\n", SkkUserDicInfo.command, SkkUserDicInfo.path);
-
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
-	{
-		goto exit;
-	}
-
-	ZeroMemory(wbuf, sizeof(wbuf));
-
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
-	{
-		goto exit;
-	}
-
-	if(wbuf[0] != REP_OK)
-	{
-		goto exit;
-	}
-
-	SkkUserDicInfo.hr = S_OK;
-
-exit:
-	if(hPipe != INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hPipe);
-	}
-	return 0;
-}
-
-void ReqSKKUserDicWaitThread(void *p)
-{
-	WCHAR num[32];
-	HANDLE hThread;
-	
-	hThread = (HANDLE)_beginthreadex(NULL, 0, ReqSKKUserDicThread, NULL, 0, NULL);
-	WaitForSingleObject(hThread, INFINITE);
-	CloseHandle(hThread);
-
-	EndDialog(SkkUserDicInfo.child, TRUE);
-
-	if(SkkUserDicInfo.hr == S_OK)
-	{
-		MessageBoxW(SkkUserDicInfo.parent, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
-	}
-	else
-	{
-		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", SkkUserDicInfo.hr);
-		MessageBoxW(SkkUserDicInfo.parent, num, TextServiceDesc, MB_OK | MB_ICONERROR);
-	}
-	return;
-}
-
-INT_PTR CALLBACK DlgProcSKKUserDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	LPCWSTR pw[] = {L"／",L"─",L"＼",L"│"};
-	static int ipw = 0;
-
-	switch(message)
-	{
-	case WM_INITDIALOG:
-		SkkUserDicInfo.child = hDlg;
-		_beginthread(ReqSKKUserDicWaitThread, 0, NULL);
-		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
-		return TRUE;
-	case WM_TIMER:
-		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
-		if(++ipw >= _countof(pw))
-		{
-			ipw = 0;
-		}
-		return TRUE;
-	case WM_DESTROY:
-		KillTimer(hDlg, IDC_STATIC_DIC_PW);
-		ipw = 0;
-		return TRUE;
-	default:
-		break;
-	}
-	return FALSE;
-}
-
-void ReqSKKUserDic(HWND hwnd, WCHAR command, LPCWSTR path)
-{
-	SkkUserDicInfo.parent = hwnd;
-	SkkUserDicInfo.command = command;
-	wcscpy_s(SkkUserDicInfo.path, path);
-	
-	switch(command)
-	{
-	case REQ_SKK_LOAD:
-		DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_USER_DIC), hwnd, DlgProcSKKUserDic);
-		break;
-	case REQ_SKK_SAVE:
-		SkkUserDicInfo.child = NULL;
-		ReqSKKUserDicWaitThread(NULL);
-		break;
-	default:
-		break;
-	}
 }

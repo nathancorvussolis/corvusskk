@@ -18,7 +18,6 @@ BOOL SetFileDacl(LPCWSTR path);
 void LoadDictionary(HWND hwnd);
 void SaveDictionary(HWND hwnd);
 void MakeSKKDic(HWND hwnd);
-void ReqSKKUserDic(HWND hwnd, WCHAR command, LPCWSTR path);
 
 // PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
@@ -48,8 +47,8 @@ extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
-extern WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
-extern WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
+extern WCHAR pathskkdic[MAX_PATH];	//取込SKK辞書
+extern WCHAR pathskkidx[MAX_PATH];	//取込SKK辞書インデックス
 
 //キー設定
 typedef struct {

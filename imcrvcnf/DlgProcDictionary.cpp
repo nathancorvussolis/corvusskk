@@ -141,44 +141,10 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		case IDC_BUTTON_SKK_DIC_MAKE:
 			if(IDOK == MessageBoxW(hDlg,
-				L"SKK辞書を読み込み、独自形式辞書を作成します。\nよろしいですか？",
+				L"SKK辞書を取り込みます。\nよろしいですか？",
 				TextServiceDesc, MB_OKCANCEL))
 			{
 				MakeSKKDic(hDlg);
-			}
-			return TRUE;
-
-		case IDC_BUTTON_SKK_DIC_LOAD:
-			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(OPENFILENAMEW));
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
-			ofn.hwndOwner = hDlg;
-			ofn.lpstrFile = path;
-			ofn.nMaxFile = MAX_PATH;
-			ofn.Flags = OFN_FILEMUSTEXIST;
-			if(GetOpenFileNameW(&ofn) != 0)
-			{
-				if(IDOK == MessageBoxW(hDlg,
-					L"SKKユーザ辞書を読み込み、ユーザ辞書を上書きします。\nよろしいですか？",
-					TextServiceDesc, MB_OKCANCEL))
-				{
-					ReqSKKUserDic(hDlg, REQ_SKK_LOAD, path);
-				}
-			}
-			return TRUE;
-
-		case IDC_BUTTON_SKK_DIC_SAVE:
-			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(OPENFILENAMEW));
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
-			ofn.hwndOwner = hDlg;
-			ofn.lpstrFile = path;
-			ofn.nMaxFile = MAX_PATH;
-			ofn.lpstrFilter = L"SKKユーザ辞書 (*.*)\0*.*\0\0";
-			ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-			if(GetSaveFileNameW(&ofn) != 0)
-			{
-				ReqSKKUserDic(hDlg, REQ_SKK_SAVE, path);
 			}
 			return TRUE;
 

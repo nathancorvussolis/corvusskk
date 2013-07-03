@@ -10,6 +10,5 @@ extern LPCWSTR EntriesNasi;
 
 int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCANDIDATES &d);
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &d);
-void ParseLisp(std::wstring &s);
 
 #endif //PARSESKKDIC_H

@@ -4,11 +4,13 @@
 #define CCSUNICODE L",ccs=UNICODE"
 LPCWSTR RccsUNICODE = L"r" CCSUNICODE;
 LPCWSTR WccsUNICODE = L"w" CCSUNICODE;
+LPCWSTR RB = L"rb";
+LPCWSTR WB = L"wb";
 
-LPCWSTR fnconfigxml = L"config.xml";
-LPCWSTR fnuserdicxml = L"userdic.xml";
-LPCWSTR fnskkcvdicxml = L"skkcvdic.xml";
-LPCWSTR fnskkcvdicidx = L"skkcvdic.idx";
+LPCWSTR fnconfigxml = L"config.xml";	//設定
+LPCWSTR fnuserdic = L"userdict.txt";	//ユーザ辞書
+LPCWSTR fnskkdic = L"skkdict.dic";		//取込SKK辞書
+LPCWSTR fnskkidx = L"skkdict.idx";		//取込SKK辞書インデックス
 
 // for Windows 8
 #if 1

@@ -5,10 +5,10 @@
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 
 // ファイルパス
-WCHAR pathconfigxml[MAX_PATH];		//設定
-WCHAR pathuserdicxml[MAX_PATH];		//ユーザ辞書
-WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
-WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
+WCHAR pathconfigxml[MAX_PATH];	//設定
+WCHAR pathuserdic[MAX_PATH];	//ユーザ辞書
+WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
+WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
 WCHAR krnlobjsddl[MAX_KRNLOBJNAME];		//SDDL
 WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
@@ -26,9 +26,9 @@ void CreateConfigPath()
 	WCHAR appdata[MAX_PATH];
 
 	pathconfigxml[0] = L'\0';
-	pathuserdicxml[0] = L'\0';
-	pathskkcvdicxml[0] = L'\0';
-	pathskkcvdicidx[0] = L'\0';
+	pathuserdic[0] = L'\0';
+	pathskkdic[0] = L'\0';
+	pathskkidx[0] = L'\0';
 
 	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
 	{
@@ -44,9 +44,9 @@ void CreateConfigPath()
 	SetCurrentDirectoryW(appdata);
 
 	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
-	_snwprintf_s(pathuserdicxml, _TRUNCATE, L"%s%s", appdata, fnuserdicxml);
-	_snwprintf_s(pathskkcvdicxml, _TRUNCATE, L"%s%s", appdata, fnskkcvdicxml);
-	_snwprintf_s(pathskkcvdicidx, _TRUNCATE, L"%s%s", appdata, fnskkcvdicidx);
+	_snwprintf_s(pathuserdic, _TRUNCATE, L"%s%s", appdata, fnuserdic);
+	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
+	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];
@@ -136,4 +136,25 @@ void LoadConfig()
 			GetSKKServerVersion();
 		}
 	}
+}
+
+BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft)
+{
+	BOOL ret = FALSE;
+	FILETIME ftn;
+
+	HANDLE hFile = CreateFileW(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	if(hFile != INVALID_HANDLE_VALUE)
+	{
+		GetFileTime(hFile, NULL, NULL, &ftn);
+		CloseHandle(hFile);
+
+		if(((ULARGE_INTEGER *)ft)->QuadPart != ((ULARGE_INTEGER *)&ftn)->QuadPart)
+		{
+			*ft = ftn;
+			ret = TRUE;
+		}
+	}
+
+	return ret;
 }

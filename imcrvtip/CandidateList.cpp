@@ -23,7 +23,7 @@ public:
 
 		if(_pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
 		{
-			_pCandidateWindow->_Move(rc.left, rc.bottom);
+			_pCandidateWindow->_Move(&rc);
 		}
 		return S_OK;
 	}
@@ -276,7 +276,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			goto exit;
 		}
 
-		_pCandidateWindow->_Move(rc.left, rc.bottom);
+		_pCandidateWindow->_Move(&rc);
 		_pCandidateWindow->_BeginUIElement();
 		_pCandidateWindow->_Redraw();
 
@@ -433,10 +433,10 @@ void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcan
 	}
 }
 
-void CCandidateList::_Move(int x, int y)
+void CCandidateList::_Move(LPRECT lpr)
 {
 	if(_pCandidateWindow != NULL)
 	{
-		_pCandidateWindow->_Move(x, y);
+		_pCandidateWindow->_Move(lpr);
 	}
 }

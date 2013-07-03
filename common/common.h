@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.11.1"
+#define TEXTSERVICE_VER		L"0.12.0"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,11 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.11.1"
-#define RC_VERSION_D		0,11,1,0
+#define RC_VERSION			"0.12.0"
+#define RC_VERSION_D		0,12,0,0
+
+#define DICBUFSIZE			0x2000
+#define PIPEBUFSIZE			0x2000
 
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256
@@ -35,8 +38,6 @@
 #define REQ_USER_DEL_0	L'C'	//ユーザ辞書削除(送りあり、補完なし)
 #define REQ_USER_DEL_1	L'D'	//ユーザ辞書削除(送りなし、補完あり)
 #define REQ_USER_SAVE	L'S'	//ユーザ辞書保存
-#define REQ_SKK_LOAD	L'U'	//SKKユーザ辞書読み込み
-#define REQ_SKK_SAVE	L'V'	//SKKユーザ辞書書き出し
 //reply
 #define REP_OK			L'1'	//hit
 #define REP_FALSE		L'4'	//nothing
@@ -58,11 +59,13 @@ typedef struct {
 
 extern LPCWSTR RccsUNICODE;
 extern LPCWSTR WccsUNICODE;
+extern LPCWSTR RB;
+extern LPCWSTR WB;
 
-extern LPCWSTR fnconfigxml;
-extern LPCWSTR fnuserdicxml;
-extern LPCWSTR fnskkcvdicxml;
-extern LPCWSTR fnskkcvdicidx;
+extern LPCWSTR fnconfigxml;	//設定
+extern LPCWSTR fnuserdic;	//ユーザ辞書
+extern LPCWSTR fnskkdic;	//取込SKK辞書
+extern LPCWSTR fnskkidx;	//取込SKK辞書インデックス
 
 void debugout(LPCWSTR format, ...);
 BOOL IsVersion6AndOver(OSVERSIONINFOW ovi);
@@ -72,6 +75,10 @@ BOOL GetUserSid(LPWSTR *ppszUserSid);
 
 // for Windows 8
 #if 1
+#define EVENT_OBJECT_IME_SHOW               0x8027
+#define EVENT_OBJECT_IME_HIDE               0x8028
+#define EVENT_OBJECT_IME_CHANGE             0x8029
+
 #define TF_TMF_IMMERSIVEMODE          0x40000000
 
 #define TF_IPP_CAPS_IMMERSIVESUPPORT            0x00010000

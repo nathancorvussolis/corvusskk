@@ -6,7 +6,7 @@
 void GetSKKServerVersion();
 void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
 
-#define BUFSIZE		0x2000
+#define SBUFSIZE	0x2000
 #define RBUFSIZE	0x800
 #define KEYSIZE		0x100
 
@@ -22,11 +22,11 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 {
 	CHAR key[KEYSIZE];
 	size_t size;
-	CHAR buf[BUFSIZE*2];
+	CHAR buf[SBUFSIZE*2];
 	size_t idxbuf = 0;
 	CHAR rbuf[RBUFSIZE];
 	int n, nn;
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[SBUFSIZE];
 
 	switch(encoding)
 	{

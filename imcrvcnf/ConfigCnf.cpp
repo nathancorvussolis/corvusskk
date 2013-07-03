@@ -10,17 +10,17 @@ IStream *pXmlFileStream;
 WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // ファイルパス
-WCHAR pathconfigxml[MAX_PATH];		//設定
-WCHAR pathskkcvdicxml[MAX_PATH];	//取込SKK辞書
-WCHAR pathskkcvdicidx[MAX_PATH];	//取込SKK辞書インデックス
+WCHAR pathconfigxml[MAX_PATH];	//設定
+WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
+WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
 void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
 
 	pathconfigxml[0] = L'\0';
-	pathskkcvdicxml[0] = L'\0';
-	pathskkcvdicidx[0] = L'\0';
+	pathskkdic[0] = L'\0';
+	pathskkidx[0] = L'\0';
 
 	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
 	{
@@ -36,8 +36,8 @@ void CreateConfigPath()
 	SetCurrentDirectoryW(appdata);
 
 	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
-	_snwprintf_s(pathskkcvdicxml, _TRUNCATE, L"%s%s", appdata, fnskkcvdicxml);
-	_snwprintf_s(pathskkcvdicidx, _TRUNCATE, L"%s%s", appdata, fnskkcvdicidx);
+	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
+	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
 	LPWSTR pszUserSid;
 	WCHAR szDigest[32+1];

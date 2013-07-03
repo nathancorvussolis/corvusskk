@@ -58,9 +58,6 @@
 #define IDC_EDIT_SKKSRV_PORT                    1355
 #define IDC_EDIT_SKKSRV_TIMEOUT                 1356
 
-#define IDC_BUTTON_SKK_DIC_LOAD                 1371
-#define IDC_BUTTON_SKK_DIC_SAVE                 1372
-
 #define IDC_LIST_SELKEY                         1501
 #define IDC_EDIT_SELKEY_DISP                    1502
 #define IDC_EDIT_SELKEY_SPARE                   1503

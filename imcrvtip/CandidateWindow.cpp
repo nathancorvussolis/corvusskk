@@ -412,12 +412,11 @@ void CCandidateWindow::_Destroy()
 	}
 }
 
-void CCandidateWindow::_Move(int x, int y)
+void CCandidateWindow::_Move(LPCRECT lpr)
 {
 	if(_hwnd != NULL)
 	{
-		_pt.x = x;
-		_pt.y = y;
+		_rect = *lpr;
 
 		_CalcWindowRect();
 
@@ -426,9 +425,13 @@ void CCandidateWindow::_Move(int x, int y)
 #ifdef _DEBUG
 			RECT rc;
 			GetClientRect(_hwnd, &rc);
-			_pCandidateWindow->_Move(_pt.x, _pt.y + rc.bottom);
+			rc.left = _rect.left;
+			rc.top += _rect.bottom;
+			rc.right = _rect.right;
+			rc.bottom += _rect.bottom;
+			_pCandidateWindow->_Move(&rc);
 #else
-			_pCandidateWindow->_Move(_pt.x, _pt.y);
+			_pCandidateWindow->_Move(&_rect);
 #endif
 		}
 	}
@@ -479,6 +482,10 @@ void CCandidateWindow::_BeginUIElement()
 		{
 			SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+			if(_depth == 0)
+			{
+				NotifyWinEvent(EVENT_OBJECT_IME_SHOW, _hwnd, OBJID_CLIENT, CHILDID_SELF);
+			}
 		}
 	}
 }
@@ -500,6 +507,10 @@ void CCandidateWindow::_EndUIElement()
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
+		if(_depth == 0)
+		{
+			NotifyWinEvent(EVENT_OBJECT_IME_HIDE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
+		}
 	}
 
 	if(hFont != NULL)
@@ -549,7 +560,9 @@ void CCandidateWindow::_CalcWindowRect()
 		return;
 	}
 
-	hMonitor = MonitorFromPoint(_pt, MONITOR_DEFAULTTONEAREST);
+	pt.x = _rect.left;
+	pt.y = _rect.bottom;
+	hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
 	mi.cbSize = sizeof(mi);
 	GetMonitorInfoW(hMonitor, &mi);
 	rw = mi.rcWork;
@@ -656,35 +669,47 @@ void CCandidateWindow::_CalcWindowRect()
 		cy = pt.y + tm.tmHeight + MERGIN_Y * 2;
 	}
 
-	if((rw.right - cx) < _pt.x)
+	if((rw.right - cx) < _rect.left)
 	{
 		x = rw.right - cx;
 	}
-	else if(_pt.x < rw.left)
+	else if(_rect.left < rw.left)
 	{
 		x = rw.left;
 	}
 	else
 	{
-		x = _pt.x;
+		x = _rect.left;
 	}
 
-	if((rw.bottom - cy) < _pt.y)
+	if((rw.bottom - cy) < _rect.bottom)
 	{
-		y = rw.bottom - cy;
+		if(_rect.top < rw.bottom)
+		{
+			y = _rect.top - cy;
+		}
+		else
+		{
+			y = rw.bottom - cy;
+		}
 	}
-	else if(_pt.y < rw.top)
+	else if(_rect.bottom < rw.top)
 	{
 		y = rw.top;
 	}
 	else
 	{
-		y = _pt.y;
+		y = _rect.bottom;
 	}
 
 	SelectObject(hdc, font);
 	ReleaseDC(_hwnd, hdc);
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
+
+	if(_pCandidateWindow == NULL)
+	{
+		NotifyWinEvent(EVENT_OBJECT_IME_CHANGE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
+	}
 }
 
 void CCandidateWindow::_Redraw()
@@ -1474,18 +1499,21 @@ void CCandidateWindow::_EndReq()
 
 void CCandidateWindow::_CreateNext(BOOL reg)
 {
-	RECT rc;
-
-	GetClientRect(_hwnd, &rc);
 	_pCandidateWindow = new CCandidateWindow(_pTextService);
 	if(_pCandidateWindow)
 	{
 		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, reg);
 
 #ifdef _DEBUG
-		_pCandidateWindow->_Move(_pt.x, _pt.y + rc.bottom);
+		RECT rc;
+		GetClientRect(_hwnd, &rc);
+		rc.left = _rect.left;
+		rc.top += _rect.bottom;
+		rc.right = _rect.right;
+		rc.bottom += _rect.bottom;
+		_pCandidateWindow->_Move(&rc);
 #else
-		_pCandidateWindow->_Move(_pt.x, _pt.y);
+		_pCandidateWindow->_Move(&_rect);
 #endif
 
 		_pCandidateWindow->_BeginUIElement();

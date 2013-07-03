@@ -1,15 +1,13 @@
 ﻿
 #include "imcrvmgr.h"
 
-#define BUFSIZE 0x2000
-
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HANDLE SrvStart();
 
 CRITICAL_SECTION csUserDataSave;
 BOOL bUserDicChg;
 OSVERSIONINFOW g_ovi;
-ULARGE_INTEGER ftConfig;
+FILETIME ftConfig;
 #ifdef _DEBUG
 HWND hwndEdit;
 HFONT hFont;
@@ -52,8 +50,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	WSAStartup(WINSOCK_VERSION, &wsaData);
 
-	ftConfig.QuadPart = 0;
-	LoadConfig();
+	ZeroMemory(&ftConfig, sizeof(ftConfig));
+	if(IsFileUpdated(pathconfigxml, &ftConfig))
+	{
+		LoadConfig();
+	}
 
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -130,7 +131,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InitializeCriticalSection(&csUserDataSave);
 
 		bUserDicChg = FALSE;
-		LoadUserDic();
+		LoadSKKUserDic();
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
@@ -145,7 +146,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 		DeleteObject(hFont);
 #endif
-		hThreadSave = StartSaveUserDicEx();
+		hThreadSave = StartSaveSKKUserDicEx();
 		WaitForSingleObject(hThreadSave, INFINITE);
 		CloseHandle(hThreadSave);
 
@@ -201,12 +202,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //	reply	"1"
 //save user dictionary
 //	request	"S\n"
-//	reply	"1"
-//load skk user dictionary
-//	request	"U\n<path>\n"
-//	reply	"1"
-//save as skk user dictionary
-//	request	"V\n<path>\n"
 //	reply	"1"
 
 void SrvProc(WCHAR *wbuf, size_t size)
@@ -356,37 +351,9 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		break;
 
 	case REQ_USER_SAVE:
-		StartSaveUserDic();
+		StartSaveSKKUserDic();
 
 		wbuf[0] = REP_OK;
-		wbuf[1] = L'\0';
-		break;
-
-	case REQ_SKK_LOAD:
-		wbuf[wcslen(wbuf) - 1] = L'\0';
-		if(LoadSKKUserDic(&wbuf[2]))
-		{
-			bUserDicChg = TRUE;
-			StartSaveUserDic();
-			wbuf[0] = REP_OK;
-		}
-		else
-		{
-			wbuf[0] = REP_FALSE;
-		}
-		wbuf[1] = L'\0';
-		break;
-
-	case REQ_SKK_SAVE:
-		wbuf[wcslen(wbuf) - 1] = L'\0';
-		if(SaveSKKUserDic(&wbuf[2]))
-		{
-			wbuf[0] = REP_OK;
-		}
-		else
-		{
-			wbuf[0] = REP_FALSE;
-		}
 		wbuf[1] = L'\0';
 		break;
 
@@ -400,11 +367,9 @@ void SrvProc(WCHAR *wbuf, size_t size)
 unsigned int __stdcall SrvThread(void *p)
 {
 	HANDLE hPipe = (HANDLE)p;
-	WCHAR wbuf[BUFSIZE];
+	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
-	HANDLE hFile;
-	ULARGE_INTEGER ft;
 #ifdef _DEBUG
 	std::wstring dedit;
 	std::wregex re(L"\n");
@@ -425,16 +390,8 @@ unsigned int __stdcall SrvThread(void *p)
 			break;
 		}
 
-		ft.QuadPart = 0;
-		hFile = CreateFileW(pathconfigxml, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-		if(hFile != INVALID_HANDLE_VALUE)
+		if(IsFileUpdated(pathconfigxml, &ftConfig))
 		{
-			GetFileTime(hFile, NULL, NULL, (FILETIME*)&ft);
-			CloseHandle(hFile);
-		}
-		if(ft.QuadPart != ftConfig.QuadPart)
-		{
-			ftConfig = ft;
 			LoadConfig();
 		}
 
@@ -493,7 +450,7 @@ HANDLE SrvStart()
 
 	hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, 1,
-		BUFSIZE*sizeof(WCHAR), BUFSIZE*sizeof(WCHAR), 0, &sa);
+		PIPEBUFSIZE*sizeof(WCHAR), PIPEBUFSIZE*sizeof(WCHAR), 0, &sa);
 
 	LocalFree(psd);
 

@@ -9,13 +9,9 @@ typedef std::pair<std::wstring, std::wstring> APPDATAXMLATTR;
 typedef std::vector<APPDATAXMLATTR> APPDATAXMLROW;
 typedef std::vector<APPDATAXMLROW> APPDATAXMLLIST;
 
-typedef std::pair<std::wstring, APPDATAXMLLIST> APPDATAXMLDICPAIR;
-typedef std::map<std::wstring, APPDATAXMLLIST> APPDATAXMLDIC;
-
 HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream);
 void CloseStreamReader(IXmlReader *pReader, IStream *pFileStream);
 
-HRESULT ReadDicList(LPCWSTR path, LPCWSTR section, APPDATAXMLDIC &list, ULONGLONG pos = 0);
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list);
 HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval = L"");
 
@@ -151,11 +147,5 @@ extern LPCWSTR SectionKana;
 
 //section
 extern LPCWSTR SectionJLatin;
-
-//section
-extern LPCWSTR SectionComplement;
-
-//section
-extern LPCWSTR SectionAccompaniment;
 
 #endif //CONFIGXML_H

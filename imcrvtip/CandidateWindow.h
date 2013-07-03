@@ -45,7 +45,7 @@ public:
 	void _MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle);
 	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx, int cycle);
 	void _Destroy();
-	void _Move(int x, int y);
+	void _Move(LPCRECT lpr);
 	void _BeginUIElement();
 	void _EndUIElement();
 	BOOL _CanShowUIElement();
@@ -98,7 +98,7 @@ private:
 	HWND _hwnd;			//自分
 	HWND _hwndParent;	//親
 	BOOL _preEnd;		//親に対する終了要求
-	POINT _pt;			//位置
+	RECT _rect;			//親の位置
 	UINT _depth;		//深さ
 
 	//候補一覧、辞書登録のウィンドウ
