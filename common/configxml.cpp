@@ -165,9 +165,6 @@ HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 	APPDATAXMLATTR attr;
 	APPDATAXMLROW row;
 
-	list.clear();
-	list.shrink_to_fit();
-
 	hr = CreateStreamReader(path, &pReader, &pFileStream);
 	EXIT_NOT_S_OK(hr);
 

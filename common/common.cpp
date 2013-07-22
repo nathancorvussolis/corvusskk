@@ -35,24 +35,34 @@ void debugout(LPCWSTR format, ...)
 #endif
 }
 
-BOOL IsVersion6AndOver(OSVERSIONINFOW ovi)
+BOOL IsVersion6AndOver()
 {
-	BOOL bRet = FALSE;
-	if(ovi.dwMajorVersion >= 6)
-	{
-		bRet = TRUE;
-	}
-	return bRet;
+	OSVERSIONINFOEXW osvi;
+	DWORDLONG mask = 0;
+
+	ZeroMemory(&osvi, sizeof(osvi));
+	osvi.dwOSVersionInfoSize = sizeof(osvi);
+	osvi.dwMajorVersion = 6;
+
+	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
+
+	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION, mask);
 }
 
-BOOL IsVersion62AndOver(OSVERSIONINFOW ovi)
+BOOL IsVersion62AndOver()
 {
-	BOOL bRet = FALSE;
-	if((ovi.dwMajorVersion == 6 && ovi.dwMinorVersion >= 2) || ovi.dwMajorVersion > 6)
-	{
-		bRet = TRUE;
-	}
-	return bRet;
+	OSVERSIONINFOEXW osvi;
+	DWORDLONG mask = 0;
+
+	ZeroMemory(&osvi, sizeof(osvi));
+	osvi.dwOSVersionInfoSize = sizeof(osvi);
+	osvi.dwMajorVersion = 6;
+	osvi.dwMinorVersion = 2;
+
+	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
+
+	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, mask);
 }
 
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)

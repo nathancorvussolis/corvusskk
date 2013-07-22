@@ -73,7 +73,7 @@ BOOL SetFileDacl(LPCWSTR path)
 	if(GetUserSid(&pszUserSid))
 	{
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
-			(IsVersion62AndOver(g_ovi) ? L"(A;;FR;;;AC)" : L""), pszUserSid);
+			(IsVersion62AndOver() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
 		LocalFree(pszUserSid);
 	}
 

@@ -33,7 +33,7 @@ void LoadDictionary(HWND hwnd)
 	APPDATAXMLLIST list;
 	APPDATAXMLLIST::iterator l_itr;
 
-	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK)
+	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK && list.size() != 0)
 	{
 		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
 		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
@@ -233,32 +233,35 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const CANDIDATES &candi
 		}
 		line += L"/";
 	}
-	
-	fwprintf(fp, L"%s\n", line.c_str());
+	line += L"\r\n";
+
+	fwrite(line.c_str(), line.size() * sizeof(WCHAR), 1, fp);
 }
 
 HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 {
 	FILE *fp;
-	FILE *fpidx;
 	SKKDIC::const_iterator entries_itr;
 	SKKDIC::const_reverse_iterator entries_ritr;
 	long pos;
 	KEYPOS keypos;
 	KEYPOS::const_iterator keypos_itr;
 
-	_wfopen_s(&fp, pathskkdic, WccsUNICODE);
+	_wfopen_s(&fp, pathskkdic, WB);
 	if(fp == NULL)
 	{
 		return S_FALSE;
 	}
 
+	fwrite("\xFF\xFE", 2, 1, fp);
+
 	//送りありエントリ
-	fwprintf(fp, L"%s", EntriesAri);
+	fwrite(EntriesAri, wcslen(EntriesAri) * sizeof(WCHAR), 1, fp);
+	fseek(fp, -2, SEEK_END);
+	fwrite(L"\r\n", 4, 1, fp);
 
 	for(entries_ritr = entries_a.rbegin(); entries_ritr != entries_a.rend(); entries_ritr++)
 	{
-		fseek(fp, 0, SEEK_END);
 		pos = ftell(fp);
 		keypos.insert(KEYPOS::value_type(entries_ritr->first, pos));
 
@@ -266,11 +269,12 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	}
 
 	//送りなしエントリ
-	fwprintf(fp, L"%s", EntriesNasi);
+	fwrite(EntriesNasi, wcslen(EntriesNasi) * sizeof(WCHAR), 1, fp);
+	fseek(fp, -2, SEEK_END);
+	fwrite(L"\r\n", 4, 1, fp);
 
 	for(entries_itr = entries_n.begin(); entries_itr != entries_n.end(); entries_itr++)
 	{
-		fseek(fp, 0, SEEK_END);
 		pos = ftell(fp);
 		keypos.insert(KEYPOS::value_type(entries_itr->first, pos));
 
@@ -279,18 +283,18 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	fclose(fp);
 
-	_wfopen_s(&fpidx, pathskkidx, WB);
-	if(fpidx == NULL)
+	_wfopen_s(&fp, pathskkidx, WB);
+	if(fp == NULL)
 	{
 		return S_FALSE;
 	}
 
 	for(keypos_itr = keypos.begin(); keypos_itr != keypos.end(); keypos_itr++)
 	{
-		fwrite(&keypos_itr->second, sizeof(keypos_itr->second), 1, fpidx);
+		fwrite(&keypos_itr->second, sizeof(keypos_itr->second), 1, fp);
 	}
 
-	fclose(fpidx);
+	fclose(fp);
 
 	return S_OK;
 }

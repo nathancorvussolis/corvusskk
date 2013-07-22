@@ -522,10 +522,10 @@ void LoadConfigJLatin()
 	WCHAR *pszb;
 	size_t blen;
 
+	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
+
 	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK && list.size() != 0)
 	{
-		ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
-
 		for(l_itr = list.begin(); l_itr != list.end() && i < ASCII_JLATIN_TBL_NUM; l_itr++)
 		{
 			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)

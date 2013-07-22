@@ -50,7 +50,7 @@ BOOL RegisterProfiles()
 	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
 
-	if(!IsVersion6AndOver(g_ovi))
+	if(!IsVersion6AndOver())
 	{
 		//XPで既定の言語に設定する為、デフォルトで存在するという仮定で
 		//MS-IME2002の入力ロケール識別子「E0010411」をとりあえず使用。
@@ -92,7 +92,7 @@ BOOL RegisterCategories()
 			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 		// for Windows 8
-		if(IsVersion62AndOver(g_ovi))
+		if(IsVersion62AndOver())
 		{
 			for(i=0; i<_countof(c_guidCategory8); i++)
 			{
@@ -122,7 +122,7 @@ void UnregisterCategories()
 			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 		// for Windows 8
-		if(IsVersion62AndOver(g_ovi))
+		if(IsVersion62AndOver())
 		{
 			for(i=0; i<_countof(c_guidCategory8); i++)
 			{

@@ -6,7 +6,6 @@ HANDLE SrvStart();
 
 CRITICAL_SECTION csUserDataSave;
 BOOL bUserDicChg;
-OSVERSIONINFOW g_ovi;
 FILETIME ftConfig;
 #ifdef _DEBUG
 HWND hwndEdit;
@@ -27,10 +26,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	SECURITY_ATTRIBUTES sa;
 
 	_wsetlocale(LC_ALL, L"JPN");
-
-	ZeroMemory(&g_ovi, sizeof(g_ovi));
-	g_ovi.dwOSVersionInfoSize = sizeof(g_ovi);
-	GetVersionEx(&g_ovi);
 
 	CreateConfigPath();
 

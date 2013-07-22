@@ -41,7 +41,6 @@ extern IXmlWriter *pXmlWriter;
 extern IStream *pXmlFileStream;
 
 extern HINSTANCE hInst;
-extern OSVERSIONINFOW g_ovi;
 
 extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 

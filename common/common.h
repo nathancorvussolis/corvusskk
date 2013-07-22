@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"0.12.0"
+#define TEXTSERVICE_VER		L"0.12.1"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"0.12.0"
-#define RC_VERSION_D		0,12,0,0
+#define RC_VERSION			"0.12.1"
+#define RC_VERSION_D		0,12,1,0
 
 #define DICBUFSIZE			0x2000
 #define PIPEBUFSIZE			0x2000
@@ -68,8 +68,8 @@ extern LPCWSTR fnskkdic;	//取込SKK辞書
 extern LPCWSTR fnskkidx;	//取込SKK辞書インデックス
 
 void debugout(LPCWSTR format, ...);
-BOOL IsVersion6AndOver(OSVERSIONINFOW ovi);
-BOOL IsVersion62AndOver(OSVERSIONINFOW ovi);
+BOOL IsVersion6AndOver();
+BOOL IsVersion62AndOver();
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 BOOL GetUserSid(LPWSTR *ppszUserSid);
 

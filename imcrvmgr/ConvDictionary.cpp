@@ -21,9 +21,6 @@ void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkey
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
-	searchresults.clear();
-	searchresults.shrink_to_fit();
-
 	//ユーザ辞書
 	ConvUserDic(searchkey, candidates);
 

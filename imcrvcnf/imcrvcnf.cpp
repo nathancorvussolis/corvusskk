@@ -3,7 +3,6 @@
 #include "resource.h"
 
 HINSTANCE hInst;
-OSVERSIONINFOW g_ovi;
 
 // static dialog procedure
 INT_PTR CALLBACK DlgProcBehavior(HWND, UINT, WPARAM, LPARAM);
@@ -24,10 +23,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	_wsetlocale(LC_ALL, L"JPN");
 
 	hInst = hInstance;
-
-	ZeroMemory(&g_ovi, sizeof(g_ovi));
-	g_ovi.dwOSVersionInfoSize = sizeof(g_ovi);
-	GetVersionEx(&g_ovi);
 
 	CreateConfigPath();
 

@@ -370,7 +370,7 @@ void CTextService::_LoadConvPoint()
 
 	ZeroMemory(conv_point, sizeof(conv_point));
 
-	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK)
+	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < CONV_POINT_NUM; l_itr++)
 		{
@@ -410,7 +410,7 @@ void CTextService::_LoadKana()
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
 
-	if(ReadList(pathconfigxml, SectionKana, list) == S_OK)
+	if(ReadList(pathconfigxml, SectionKana, list) == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_MAX; l_itr++)
 		{
@@ -471,7 +471,7 @@ void CTextService::_LoadJLatin()
 
 	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
 
-	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK)
+	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < ASCII_JLATIN_TBL_NUM; l_itr++)
 		{

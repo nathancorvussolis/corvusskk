@@ -80,8 +80,6 @@ extern LPCWSTR LangbarFuncDesc;
 
 extern HINSTANCE g_hInst;
 
-extern OSVERSIONINFOW g_ovi;
-
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInput;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeCandidate;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeAnnotation;

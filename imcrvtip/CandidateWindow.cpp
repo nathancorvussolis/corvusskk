@@ -471,7 +471,7 @@ void CCandidateWindow::_BeginUIElement()
 		_bShow = bShow;
 	}
 
-	if(!IsVersion6AndOver(g_ovi))
+	if(!IsVersion6AndOver())
 	{
 		_bShow = TRUE;
 	}

@@ -191,7 +191,7 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 		}
 	}
 
-	if(IsVersion6AndOver(g_ovi))
+	if(IsVersion6AndOver())
 	{
 		t = icon6[iconidx];
 	}
@@ -343,7 +343,7 @@ BOOL CTextService::_InitLanguageBar()
 			}
 		}
 
-		if(IsVersion62AndOver(g_ovi))
+		if(IsVersion62AndOver())
 		{
 			_pLangBarItemI = new CLangBarItemButton(this, GUID_LBI_INPUTMODE);
 			if(_pLangBarItemI != NULL)

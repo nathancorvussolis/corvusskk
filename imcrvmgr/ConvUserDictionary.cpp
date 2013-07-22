@@ -193,12 +193,6 @@ BOOL LoadSKKUserDic()
 		return FALSE;
 	}
 
-	userdic.clear();
-	complements.clear();
-	complements.shrink_to_fit();
-	accompaniments.clear();
-	accompaniments.shrink_to_fit();
-
 	while(true)
 	{
 		rl = ReadSKKDicLine(fp, 0xFEFF, okuri, key, sc);

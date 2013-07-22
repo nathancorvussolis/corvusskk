@@ -1,13 +1,12 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.12.0
+     CorvusSKK version 0.12.1
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
 ================================================================================
 
   Windows XP, Vista, 7, 8 に多分対応するSKK風のIMEです。
-  Text Input Processor として実装しています。
 
   デジタル署名
   発行先 Open Source Developer, SASAKI Nobuyuki
@@ -29,15 +28,6 @@
 
   Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x64)
   http://www.microsoft.com/ja-jp/download/details.aspx?id=13523
-
-  XPでは、SP3(x64はSP2) または IE7以降 または XP用XMLLite を
-  予めインストールして下さい。
-
-  Windows XP 用 XMLLite (KB915865)
-  http://www.microsoft.com/ja-jp/download/details.aspx?id=13978
-
-  Windows XP x64 Edition 用 XMLLite (KB915865) 
-  http://www.microsoft.com/ja-jp/download/details.aspx?id=12186
 
 
 ・CorvusSKK のインストール
@@ -62,6 +52,8 @@
 
 
 ・Windows XP
+
+  XPでは、SP3(x64はSP2) を予めインストールして下さい。
 
   XPでの使用は動作が不安定な為、あまりお勧めしません。
 
