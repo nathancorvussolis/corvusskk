@@ -117,7 +117,6 @@ void CTextService::_ReadBoolValue(LPCWSTR key, BOOL &value)
 
 void CTextService::_LoadBehavior()
 {
-	RECT rect;
 	std::wstring strxmlval;
 	int i;
 
@@ -146,10 +145,9 @@ void CTextService::_LoadBehavior()
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
 	maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
-	SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
-	if(maxwidth < 0 || maxwidth > rect.right)
+	if(maxwidth < 0)
 	{
-		maxwidth = rect.right;
+		maxwidth = MAX_WIDTH_DEFAULT;
 	}
 
 	for(i=0; i<_countof(colors); i++)

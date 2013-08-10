@@ -18,7 +18,7 @@ static struct {
 	{IDC_COL_NO, ValueColorNO, RGB(0x00,0x00,0x00)}
 };
 
-void DrawColor(HWND hwnd, HDC hdc, COLORREF col);
+void DrawColor(HWND hwnd, COLORREF col);
 
 INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -79,10 +79,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
 		w = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
-		if(w < 0 || w > rect.right)
+		if(w < 0)
 		{
-			w = rect.right;
+			w = MAX_WIDTH_DEFAULT;
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", w);
 		SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
@@ -223,9 +222,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				cc.lpTemplateName = NULL;
 				if(ChooseColorW(&cc))
 				{
-					hdc = GetDC(hDlg);
-					DrawColor(hwnd, hdc, cc.rgbResult);
-					ReleaseDC(hDlg, hdc);
+					DrawColor(hwnd, cc.rgbResult);
 					colors[i].color = cc.rgbResult;
 					PropSheet_Changed(GetParent(hDlg), hDlg);
 					return TRUE;
@@ -239,7 +236,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		hdc = BeginPaint(hDlg, &ps);
 		for(i=0; i<_countof(colors); i++)
 		{
-			DrawColor(GetDlgItem(hDlg, colors[i].id), hdc, colors[i].color);
+			DrawColor(GetDlgItem(hDlg, colors[i].id), colors[i].color);
 		}
 		EndPaint(hDlg, &ps);
 		return TRUE;
@@ -280,10 +277,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num, _countof(num));
 			w = _wtol(num);
-			SystemParametersInfo(SPI_GETWORKAREA, 0, &rect, 0);
-			if(w < 0 || w > rect.right)
+			if(w < 0)
 			{
-				w = rect.right;
+				w = MAX_WIDTH_DEFAULT;
 			}
 			_snwprintf_s(num, _TRUNCATE, L"%d", w);
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
@@ -326,9 +322,10 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	return FALSE;
 }
 
-void DrawColor(HWND hwnd, HDC hdc, COLORREF col)
+void DrawColor(HWND hwnd, COLORREF col)
 {
 	RECT rect;
+	HDC hdc;
 
 	hdc = GetDC(hwnd);
 	SelectObject(hdc, GetStockObject(BLACK_PEN));

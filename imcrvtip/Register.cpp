@@ -23,6 +23,7 @@ static const GUID c_guidCategory[] =
 	GUID_TFCAT_TIPCAP_COMLESS,
 	GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER
 };
+// for Windows 8
 static const GUID c_guidCategory8[] =
 {
 	GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,

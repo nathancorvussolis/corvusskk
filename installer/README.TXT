@@ -1,12 +1,12 @@
 ﻿
 ================================================================================
-     CorvusSKK version 0.12.1
+     CorvusSKK version 0.12.2
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
 ================================================================================
 
-  Windows XP, Vista, 7, 8 に多分対応するSKK風のIMEです。
+  Windows XP, Vista, 7, 8, 8.1 に多分対応するSKK風のIMEです。
 
   デジタル署名
   発行先 Open Source Developer, SASAKI Nobuyuki
