@@ -66,6 +66,17 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 			break;
+		case im_katakana_ank:
+			_ConvN(WCHAR_MAX);
+			if(roman.empty())
+			{
+				//ひらがなモードへ
+				_HandleCharReturn(ec, pContext);
+				inputmode = im_hiragana;
+				_UpdateLanguageBar();
+				return S_OK;
+			}
+			break;
 		default:
 			break;
 		}
@@ -106,6 +117,29 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 					return S_OK;
 				}
 			}
+			else
+			{
+				_ConvN(WCHAR_MAX);
+			}
+			if(roman.empty())
+			{
+				//半角ｶﾀｶﾅモードへ
+				_HandleCharReturn(ec, pContext);
+				inputmode = im_katakana_ank;
+				_UpdateLanguageBar();
+				return S_OK;
+			}
+			break;
+		case im_katakana_ank:
+			_ConvN(WCHAR_MAX);
+			if(roman.empty())
+			{
+				//ひらがなモードへ
+				_HandleCharReturn(ec, pContext);
+				inputmode = im_hiragana;
+				_UpdateLanguageBar();
+				return S_OK;
+			}
 			break;
 		default:
 			break;
@@ -121,6 +155,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 		case im_hiragana:
 		case im_katakana:
+		case im_katakana_ank:
 			_ConvN(WCHAR_MAX);
 			if(roman.empty())
 			{
@@ -145,6 +180,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 		case im_hiragana:
 		case im_katakana:
+		case im_katakana_ank:
 			_ConvN(WCHAR_MAX);
 			if(roman.empty())
 			{

@@ -11,9 +11,9 @@
 enum
 {
     im_default = 0,		//デフォルト
-    im_hiragana = 1,	//ひらがな
+    im_hiragana,		//ひらがな
     im_katakana,		//カタカナ
-    im_katakana_ank,	//半角ｶﾀｶﾅ (仮名変換のみ)
+    im_katakana_ank,	//半角ｶﾀｶﾅ
     im_jlatin,			//全英
     im_ascii			//ASCII
 };

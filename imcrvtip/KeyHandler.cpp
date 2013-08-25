@@ -115,6 +115,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		{
 		case im_hiragana:
 		case im_katakana:
+		case im_katakana_ank:
 			if(!abbrevmode || showentry)
 			{
 				for(i=0; i<CONV_POINT_NUM; i++)
@@ -165,6 +166,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			{
 			case im_hiragana:
 			case im_katakana:
+			case im_katakana_ank:
 				if(!abbrevmode && !romanN.empty())
 				{
 					roman = romanN;

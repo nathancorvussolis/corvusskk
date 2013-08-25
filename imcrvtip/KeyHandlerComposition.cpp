@@ -406,6 +406,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						{
 						case im_hiragana:
 						case im_katakana:
+						case im_katakana_ank:
 							if(!abbrevmode && kana.size() >= 2)
 							{
 								if(kana.front() == L'>')

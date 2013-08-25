@@ -16,6 +16,7 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 	{
 	case im_hiragana:
 	case im_katakana:
+	case im_katakana_ank:
 		keystate[VK_CAPITAL] = 0;
 		if(abbrevmode)
 		{
@@ -61,6 +62,7 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 			break;
 		case im_hiragana:
 		case im_katakana:
+		case im_katakana_ank:
 			k = vkeymap.keyjmode[vk];
 			break;
 		default:
@@ -77,6 +79,7 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 			break;
 		case im_hiragana:
 		case im_katakana:
+		case im_katakana_ank:
 			k = ckeymap.keyjmode[ch];
 			break;
 		default:
@@ -402,6 +405,9 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				case im_katakana:
 					chN = rkc.katakana[0];
 					break;
+				case im_katakana_ank:
+					chN = rkc.katakana_ank[0];
+					break;
 				default:
 					break;
 				}
@@ -443,6 +449,10 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				kana.insert(cursoridx, rkc.katakana);
 				cursoridx += wcslen(rkc.katakana);
 				break;
+			case im_katakana_ank:
+				kana.insert(cursoridx, rkc.katakana_ank);
+				cursoridx += wcslen(rkc.katakana_ank);
+				break;
 			default:
 				break;
 			}
@@ -475,6 +485,10 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				case im_katakana:
 					kana.insert(cursoridx, rkc.katakana);
 					cursoridx += wcslen(rkc.katakana);
+					break;
+				case im_katakana_ank:
+					kana.insert(cursoridx, rkc.katakana_ank);
+					cursoridx += wcslen(rkc.katakana_ank);
 					break;
 				default:
 					break;
@@ -536,6 +550,10 @@ BOOL CTextService::_ConvNN()
 				case im_katakana:
 					kana.insert(cursoridx, rkc.katakana);
 					cursoridx += wcslen(rkc.katakana);
+					break;
+				case im_katakana_ank:
+					kana.insert(cursoridx, rkc.katakana_ank);
+					cursoridx += wcslen(rkc.katakana_ank);
 					break;
 				default:
 					break;

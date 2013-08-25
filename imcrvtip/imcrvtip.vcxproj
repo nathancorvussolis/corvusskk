@@ -226,12 +226,14 @@
     <None Include="Icon\5Hiragana.ico" />
     <None Include="Icon\5JLatin.ico" />
     <None Include="Icon\5Katakana.ico" />
+    <None Include="Icon\5Katakana1.ico" />
     <None Include="Icon\Ascii.ico" />
     <None Include="Icon\CorvusSKK.ico" />
     <None Include="Icon\Default.ico" />
     <None Include="Icon\Hiragana.ico" />
     <None Include="Icon\JLatin.ico" />
     <None Include="Icon\Katakana.ico" />
+    <None Include="Icon\Katakana1.ico" />
     <None Include="imcrvtip.def" />
   </ItemGroup>
   <ItemGroup>

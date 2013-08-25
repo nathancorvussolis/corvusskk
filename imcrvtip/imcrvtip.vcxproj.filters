@@ -142,6 +142,9 @@
     <None Include="Icon\5Katakana.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Icon\5Katakana1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="Icon\Ascii.ico">
       <Filter>Resource Files</Filter>
     </None>
@@ -158,6 +161,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="Icon\Katakana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\Katakana1.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

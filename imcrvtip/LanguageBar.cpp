@@ -160,11 +160,11 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
 	LPCWSTR icon5[] =
 	{
-		L"IDI_5_DEFAULT", L"IDI_5_HIRAGANA", L"IDI_5_KATAKANA", L"IDI_5_JLATIN", L"IDI_5_ASCII"
+		L"IDI_5_DEFAULT", L"IDI_5_HIRAGANA", L"IDI_5_KATAKANA", L"IDI_5_KATAKANA1", L"IDI_5_JLATIN", L"IDI_5_ASCII"
 	};
 	LPCWSTR icon6[] =
 	{
-		L"IDI_6_DEFAULT", L"IDI_6_HIRAGANA", L"IDI_6_KATAKANA", L"IDI_6_JLATIN", L"IDI_6_ASCII"
+		L"IDI_6_DEFAULT", L"IDI_6_HIRAGANA", L"IDI_6_KATAKANA", L"IDI_6_KATAKANA1", L"IDI_6_JLATIN", L"IDI_6_ASCII"
 	};
 	int iconidx = 0;
 
@@ -180,11 +180,14 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 		case im_katakana:
 			iconidx = 2;
 			break;
-		case im_jlatin:
+		case im_katakana_ank:
 			iconidx = 3;
 			break;
-		case im_ascii:
+		case im_jlatin:
 			iconidx = 4;
+			break;
+		case im_ascii:
+			iconidx = 5;
 			break;
 		default:
 			break;
@@ -293,6 +296,10 @@ STDAPI CLangBarItemButton::_Update()
 			break;
 		case im_katakana:
 			var.lVal = TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE;
+			_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
+			break;
+		case im_katakana_ank:
+			var.lVal = TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA;
 			_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
 			break;
 		case im_jlatin:
@@ -442,6 +449,9 @@ void CTextService::_UpdateLanguageBar()
 		case im_katakana:
 			mode = L" [カナ]";
 			break;
+		case im_katakana_ank:
+			mode = L" [ｶﾅ]";
+			break;
 		case im_jlatin:
 			mode = L" [全英]";
 			break;
@@ -466,6 +476,7 @@ void CTextService::_UpdateLanguageBar()
 			{
 			case im_hiragana:
 			case im_katakana:
+			case im_katakana_ank:
 			case im_jlatin:
 			case im_ascii:
 				if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)

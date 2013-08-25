@@ -57,9 +57,23 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		{
 		case SKK_CONV_POINT:
 		case SKK_KANA:
+		case SKK_CONV_CHAR:
 		case SKK_JLATIN:
 		case SKK_ASCII:
 		case SKK_ABBREV:
+			return TRUE;
+			break;
+		default:
+			break;
+		}
+		break;
+	case im_katakana_ank:
+		switch(sf)
+		{
+		case SKK_KANA:
+		case SKK_CONV_CHAR:
+		case SKK_JLATIN:
+		case SKK_ASCII:
 			return TRUE;
 			break;
 		default:

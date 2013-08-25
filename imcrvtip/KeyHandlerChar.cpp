@@ -31,6 +31,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 	{
 	case im_hiragana:
 	case im_katakana:
+	case im_katakana_ank:
 		if(abbrevmode)
 		{
 			_HandleCharTerminate(ec, pContext, composition);
@@ -58,6 +59,9 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 						break;
 					case im_katakana:
 						roman.append(rkc.katakana);
+						break;
+					case im_katakana_ank:
+						roman.append(rkc.katakana_ank);
 						break;
 					default:
 						break;
@@ -89,6 +93,9 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					case im_katakana:
 						roman.assign(rkc.katakana);
 						break;
+					case im_katakana_ank:
+						roman.assign(rkc.katakana_ank);
+						break;
 					default:
 						break;
 					}
@@ -115,6 +122,14 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 						accompidx += wcslen(rkc.katakana);
 					}
 					cursoridx += wcslen(rkc.katakana);
+					break;
+				case im_katakana_ank:
+					kana.insert(cursoridx, rkc.katakana_ank);
+					if(accompidx != 0 && cursoridx < accompidx)
+					{
+						accompidx += wcslen(rkc.katakana_ank);
+					}
+					cursoridx += wcslen(rkc.katakana_ank);
 					break;
 				default:
 					break;
