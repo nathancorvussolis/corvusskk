@@ -39,6 +39,9 @@
     <ClInclude Include="LanguageBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="TextService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -127,43 +130,43 @@
     <None Include="imcrvtip.def">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\5Ascii.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\5Default.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\5Hiragana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\5JLatin.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\5Katakana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\5Katakana1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\Ascii.ico">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Icon\CorvusSKK.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\Default.ico">
+    <None Include="Icon\xAscii.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\Hiragana.ico">
+    <None Include="Icon\xDefault.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\JLatin.ico">
+    <None Include="Icon\xHiragana.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\Katakana.ico">
+    <None Include="Icon\xJLatin.ico">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\Katakana1.ico">
+    <None Include="Icon\xKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\xKatakana1.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zAscii.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zDefault.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zHiragana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zJLatin.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Icon\zKatakana1.ico">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

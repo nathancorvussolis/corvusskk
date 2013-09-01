@@ -26,23 +26,23 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		lvc.fmt = LVCFMT_CENTER;
 
 		lvc.iSubItem = 0;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"ﾛｰﾏ字";
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"かな";
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"カナ";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 		lvc.iSubItem = 3;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"ｶﾅ";
 		ListView_InsertColumn(hWndListView, 3, &lvc);
 		lvc.iSubItem = 4;
-		lvc.cx = 30;
+		lvc.cx = GetScaledSizeX(hDlg, 30);
 		lvc.pszText = L"…";
 		ListView_InsertColumn(hWndListView, 4, &lvc);
 

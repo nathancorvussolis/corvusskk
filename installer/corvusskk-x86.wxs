@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <?define version="1.0.0" ?>
+    <?define version="1.1.0" ?>
     <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
         <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
         <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />

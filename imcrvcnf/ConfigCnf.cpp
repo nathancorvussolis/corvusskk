@@ -88,3 +88,11 @@ BOOL SetFileDacl(LPCWSTR path)
 
 	return bRet;
 }
+
+int GetScaledSizeX(HWND hwnd, int size)
+{
+	HDC hdc = GetDC(hwnd);
+	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(hwnd, hdc);
+	return MulDiv(size, dpiX, 96);
+}

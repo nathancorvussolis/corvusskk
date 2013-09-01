@@ -22,19 +22,19 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		lvc.fmt = LVCFMT_CENTER;
 
 		lvc.iSubItem = 0;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"仮想ｷｰ";
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"ALT";
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"CTRL";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 		lvc.iSubItem = 3;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"SHIFT";
 		ListView_InsertColumn(hWndListView, 3, &lvc);
 

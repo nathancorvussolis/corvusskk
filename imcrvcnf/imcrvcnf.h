@@ -13,6 +13,7 @@ void CreateProperty(HINSTANCE hInst);
 // ConfigCnf
 void CreateConfigPath();
 BOOL SetFileDacl(LPCWSTR path);
+int GetScaledSizeX(HWND hwnd, int size);
 
 // PropertyConfDictionary
 void LoadDictionary(HWND hwnd);

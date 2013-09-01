@@ -22,15 +22,15 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		lvc.fmt = LVCFMT_CENTER;
 
 		lvc.iSubItem = 0;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"開始";
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"代替";
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"送り";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 

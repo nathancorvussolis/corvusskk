@@ -187,6 +187,11 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					}
 				}
 				_Update(ec, pContext);
+				if(!inputkey)
+				{
+					//OnCompositionTerminatedを呼ばないアプリの為にコンポジションを終了
+					_HandleCharReturn(ec, pContext);
+				}
 				break;
 			default:
 				break;

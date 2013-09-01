@@ -23,11 +23,11 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		lvc.fmt = LVCFMT_CENTER;
 
 		lvc.iSubItem = 0;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"ASCII";
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = 60;
+		lvc.cx = GetScaledSizeX(hDlg, 60);
 		lvc.pszText = L"全英";
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 

@@ -4,8 +4,20 @@
 #include "EditSession.h"
 #include "CandidateList.h"
 #include "LanguageBar.h"
+#include "resource.h"
 
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
+
+// monochrome icons
+static const WORD iconIDX[] =
+{
+	IDI_X_DEFAULT, IDI_X_HIRAGANA, IDI_X_KATAKANA, IDI_X_KATAKANA1, IDI_X_JLATIN, IDI_X_ASCII
+};
+// png icons
+static const WORD iconIDZ[] =
+{
+	IDI_Z_DEFAULT, IDI_Z_HIRAGANA, IDI_Z_KATAKANA, IDI_Z_KATAKANA1, IDI_Z_JLATIN, IDI_Z_ASCII
+};
 
 CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 {
@@ -13,7 +25,11 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 
 	_LangBarItemInfo.clsidService = c_clsidTextService;
 	_LangBarItemInfo.guidItem = guid;
-	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_BTN_MENU | TF_LBI_STYLE_TEXTCOLORICON | TF_LBI_STYLE_SHOWNINTRAY;
+	//TF_LBI_STYLE_TEXTCOLORICON
+	// Any black pixel within the icon will be converted to the text color of the selected theme.
+	// The icon must be monochrome.
+	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_BTN_MENU | TF_LBI_STYLE_SHOWNINTRAY |
+		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 
@@ -158,52 +174,59 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
-	LPCWSTR icon5[] =
-	{
-		L"IDI_5_DEFAULT", L"IDI_5_HIRAGANA", L"IDI_5_KATAKANA", L"IDI_5_KATAKANA1", L"IDI_5_JLATIN", L"IDI_5_ASCII"
-	};
-	LPCWSTR icon6[] =
-	{
-		L"IDI_6_DEFAULT", L"IDI_6_HIRAGANA", L"IDI_6_KATAKANA", L"IDI_6_KATAKANA1", L"IDI_6_JLATIN", L"IDI_6_ASCII"
-	};
-	int iconidx = 0;
-
-	LPCWSTR t = NULL;
+	size_t iconindex = 0;
+	WORD iconid = 0;
+	int size = 16;
 
 	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
 	{
 		switch(_pTextService->inputmode)
 		{
 		case im_hiragana:
-			iconidx = 1;
+			iconindex = 1;
 			break;
 		case im_katakana:
-			iconidx = 2;
+			iconindex = 2;
 			break;
 		case im_katakana_ank:
-			iconidx = 3;
+			iconindex = 3;
 			break;
 		case im_jlatin:
-			iconidx = 4;
+			iconindex = 4;
 			break;
 		case im_ascii:
-			iconidx = 5;
+			iconindex = 5;
 			break;
 		default:
 			break;
 		}
 	}
 
-	if(IsVersion6AndOver())
+	if(IsVersion62AndOver())
 	{
-		t = icon6[iconidx];
+		if(iconindex < _countof(iconIDZ))
+		{
+			iconid = iconIDZ[iconindex];
+		}
 	}
 	else
 	{
-		t = icon5[iconidx];
+		if(iconindex < _countof(iconIDX))
+		{
+			iconid = iconIDX[iconindex];
+		}
 	}
 
-	*phIcon = (HICON)LoadImageW(g_hInst, t, IMAGE_ICON, 16, 16, LR_SHARED);
+	//XPは16で固定、Vista以降はDPIを考慮
+	if(IsVersion6AndOver())
+	{
+		HDC hdc = GetDC(NULL);
+		int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+		ReleaseDC(NULL, hdc);
+		size = MulDiv(16, dpiX, 96);
+	}
+
+	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
 
 	return (*phIcon != NULL) ? S_OK : E_FAIL;
 }

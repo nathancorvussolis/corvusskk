@@ -184,6 +184,7 @@
     <ClInclude Include="EnumDisplayAttributeInfo.h" />
     <ClInclude Include="imcrvtip.h" />
     <ClInclude Include="LanguageBar.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="TextService.h" />
   </ItemGroup>
@@ -221,19 +222,19 @@
     <ClCompile Include="ThreadMgrEventSink.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Icon\5Ascii.ico" />
-    <None Include="Icon\5Default.ico" />
-    <None Include="Icon\5Hiragana.ico" />
-    <None Include="Icon\5JLatin.ico" />
-    <None Include="Icon\5Katakana.ico" />
-    <None Include="Icon\5Katakana1.ico" />
-    <None Include="Icon\Ascii.ico" />
     <None Include="Icon\CorvusSKK.ico" />
-    <None Include="Icon\Default.ico" />
-    <None Include="Icon\Hiragana.ico" />
-    <None Include="Icon\JLatin.ico" />
-    <None Include="Icon\Katakana.ico" />
-    <None Include="Icon\Katakana1.ico" />
+    <None Include="Icon\xAscii.ico" />
+    <None Include="Icon\xDefault.ico" />
+    <None Include="Icon\xHiragana.ico" />
+    <None Include="Icon\xJLatin.ico" />
+    <None Include="Icon\xKatakana.ico" />
+    <None Include="Icon\xKatakana1.ico" />
+    <None Include="Icon\zAscii.ico" />
+    <None Include="Icon\zDefault.ico" />
+    <None Include="Icon\zHiragana.ico" />
+    <None Include="Icon\zJLatin.ico" />
+    <None Include="Icon\zKatakana.ico" />
+    <None Include="Icon\zKatakana1.ico" />
     <None Include="imcrvtip.def" />
   </ItemGroup>
   <ItemGroup>
