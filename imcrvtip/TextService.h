@@ -257,8 +257,8 @@ private:
 
 public:
 	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
-	BOOL _ImmersiveMode;
-	BOOL _UILessMode;
+	BOOL _ImmersiveMode;	//Immersive Mode
+	BOOL _UILessMode;		//UILess Mode
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
@@ -286,7 +286,7 @@ public:
 	BOOL c_delokuricncl;	//取消のとき送り仮名を削除する
 	BOOL c_backincenter;	//後退に確定を含める
 	BOOL c_addcandktkn;		//候補に片仮名変換を追加する
-	BOOL c_showmodeimm;		//没入型で入力モードを表示する
+	BOOL c_showmodeimm;		//没入型のとき入力モードを表示する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字
@@ -307,6 +307,7 @@ public:
 	//候補一覧選択キー
 	WCHAR selkey[MAX_SELKEY_C][2][2];
 
+	//preserved key
 	TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
 };
 

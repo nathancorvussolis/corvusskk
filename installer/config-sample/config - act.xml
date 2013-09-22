@@ -21,14 +21,14 @@
     <key name="colorsc" value="0x808080" />
     <key name="coloran" value="0x808080" />
     <key name="colorno" value="0x000000" />
-    <key name="untilcandlist" value="4" />
+    <key name="untilcandlist" value="5" />
     <key name="dispcandno" value="0" />
-    <key name="annotation" value="0" />
+    <key name="annotation" value="1" />
     <key name="annotatlst" value="0" />
     <key name="nomodemark" value="0" />
     <key name="nookuriconv" value="0" />
-    <key name="delokuricncl" value="0" />
-    <key name="backincenter" value="0" />
+    <key name="delokuricncl" value="1" />
+    <key name="backincenter" value="1" />
     <key name="addcandktkn" value="0" />
     <key name="showmodeimm" value="0" />
   </section>
@@ -708,7 +708,6 @@
       <row ro="`ca" hi="ゕ" ka="ヵ" an="ｶ" so="0" />
       <row ro="`ce" hi="ゖ" ka="ヶ" an="ｹ" so="0" />
 
-<!--
       <row ro="0" hi="0" ka="0" an="0" so="0" />
       <row ro="1" hi="1" ka="1" an="1" so="0" />
       <row ro="2" hi="2" ka="2" an="2" so="0" />
@@ -721,92 +720,54 @@
       <row ro="9" hi="9" ka="9" an="9" so="0" />
       <row ro=" " hi=" " ka=" " an=" " so="0" />
       <row ro="!" hi="!" ka="!" an="!" so="0" />
-      <row ro="`&quot;" hi="&quot;" ka="&quot;" an="&quot;" so="0" />
+      <row ro="`&quot;" hi="&quot;" ka="&quot;" an="&quot;" so="0" />		<!-- ACT -->
       <row ro="#" hi="#" ka="#" an="#" so="0" />
       <row ro="$" hi="$" ka="$" an="$" so="0" />
       <row ro="%" hi="%" ka="%" an="%" so="0" />
       <row ro="&amp;" hi="&amp;" ka="&amp;" an="&amp;" so="0" />
-      <row ro="`'" hi="'" ka="'" an="'" so="0" />
+      <row ro="`'" hi="'" ka="'" an="'" so="0" />		<!-- ACT -->
       <row ro="(" hi="(" ka="(" an="(" so="0" />
       <row ro=")" hi=")" ka=")" an=")" so="0" />
       <row ro="*" hi="*" ka="*" an="*" so="0" />
       <row ro="+" hi="+" ka="+" an="+" so="0" />
-      <row ro="," hi="," ka="," an="," so="0" />
-      <row ro="-" hi="-" ka="-" an="-" so="0" />
-      <row ro="." hi="." ka="." an="." so="0" />
+      <row ro="," hi="、" ka="、" an="､" so="0" />		<!-- 読点 -->
+      <row ro="-" hi="ー" ka="ー" an="ｰ" so="0" />		<!-- 長音 -->
+      <row ro="." hi="。" ka="。" an="｡" so="0" />		<!-- 句点 -->
       <row ro="/" hi="/" ka="/" an="/" so="0" />
-      <row ro="`:" hi=":" ka=":" an=":" so="0" />
-      <row ro="`;" hi=";" ka=";" an=";" so="0" />
+      <row ro="`:" hi=":" ka=":" an=":" so="0" />		<!-- ACT -->
+      <row ro="`;" hi=";" ka=";" an=";" so="0" />		<!-- ACT -->
       <row ro="&lt;" hi="&lt;" ka="&lt;" an="&lt;" so="0" />
       <row ro="=" hi="=" ka="=" an="=" so="0" />
       <row ro=">" hi=">" ka=">" an=">" so="0" />
       <row ro="?" hi="?" ka="?" an="?" so="0" />
       <row ro="@" hi="@" ka="@" an="@" so="0" />
-      <row ro="[" hi="[" ka="[" an="[" so="0" />
-      <row ro="`\" hi="\" ka="\" an="\" so="0" />
-      <row ro="]" hi="]" ka="]" an="]" so="0" />
+      <row ro="[" hi="「" ka="「" an="｢" so="0" />		<!-- 括弧 -->
+      <row ro="`\" hi="\" ka="\" an="\" so="0" />		<!-- ACT -->
+      <row ro="]" hi="」" ka="」" an="｣" so="0" />		<!-- 括弧 -->
       <row ro="^" hi="^" ka="^" an="^" so="0" />
       <row ro="_" hi="_" ka="_" an="_" so="0" />
-      <row ro="``" hi="`" ka="`" an="`" so="0" />
-      <row ro="{" hi="{" ka="{" an="{" so="0" />
-      <row ro="`|" hi="|" ka="|" an="|" so="0" />
-      <row ro="}" hi="}" ka="}" an="}" so="0" />
--->
-      <row ro="0" hi="０" ka="０" an="0" so="0" />
-      <row ro="1" hi="１" ka="１" an="1" so="0" />
-      <row ro="2" hi="２" ka="２" an="2" so="0" />
-      <row ro="3" hi="３" ka="３" an="3" so="0" />
-      <row ro="4" hi="４" ka="４" an="4" so="0" />
-      <row ro="5" hi="５" ka="５" an="5" so="0" />
-      <row ro="6" hi="６" ka="６" an="6" so="0" />
-      <row ro="7" hi="７" ka="７" an="7" so="0" />
-      <row ro="8" hi="８" ka="８" an="8" so="0" />
-      <row ro="9" hi="９" ka="９" an="9" so="0" />
-      <row ro=" " hi=" " ka=" " an=" " so="0" />
-      <row ro="!" hi="！" ka="！" an="!" so="0" />
-      <row ro="`&quot;" hi="”" ka="”" an="&quot;" so="0" />		<!-- ACT -->
-      <row ro="#" hi="＃" ka="＃" an="#" so="0" />
-      <row ro="$" hi="＄" ka="＄" an="$" so="0" />
-      <row ro="%" hi="％" ka="％" an="%" so="0" />
-      <row ro="&amp;" hi="＆" ka="＆" an="&amp;" so="0" />
-      <row ro="`'" hi="’" ka="’" an="'" so="0" />		<!-- ACT -->
-      <row ro="(" hi="（" ka="（" an="(" so="0" />
-      <row ro=")" hi="）" ka="）" an=")" so="0" />
-      <row ro="*" hi="＊" ka="＊" an="*" so="0" />
-      <row ro="+" hi="＋" ka="＋" an="+" so="0" />
-      <row ro="," hi="、" ka="、" an="､" so="0" />
-      <row ro="-" hi="ー" ka="ー" an="ｰ" so="0" />
-      <row ro="." hi="。" ka="。" an="｡" so="0" />
-      <row ro="/" hi="／" ka="／" an="/" so="0" />
-      <row ro="`:" hi="：" ka="：" an=":" so="0" />		<!-- ACT -->
-      <row ro="`;" hi="；" ka="；" an=";" so="0" />		<!-- ACT -->
-      <row ro="&lt;" hi="＜" ka="＜" an="&lt;" so="0" />
-      <row ro="=" hi="＝" ka="＝" an="=" so="0" />
-      <row ro=">" hi="＞" ka="＞" an=">" so="0" />
-      <row ro="?" hi="？" ka="？" an="?" so="0" />
-      <row ro="@" hi="＠" ka="＠" an="@" so="0" />
-      <row ro="[" hi="「" ka="「" an="｢" so="0" />
-      <row ro="`\" hi="＼" ka="＼" an="\" so="0" />		<!-- ACT -->
-      <row ro="]" hi="」" ka="」" an="｣" so="0" />
-      <row ro="^" hi="＾" ka="＾" an="^" so="0" />
-      <row ro="_" hi="＿" ka="＿" an="_" so="0" />
       <row ro="`" hi="‘" ka="‘" an="`" so="0" />
-      <row ro="{" hi="｛" ka="｛" an="{" so="0" />
-      <row ro="`|" hi="｜" ka="｜" an="|" so="0" />		<!-- ACT -->
-      <row ro="}" hi="｝" ka="｝" an="}" so="0" />
+      <row ro="{" hi="{" ka="{" an="{" so="0" />
+      <row ro="`|" hi="|" ka="|" an="|" so="0" />		<!-- ACT -->
+      <row ro="}" hi="}" ka="}" an="}" so="0" />
+      <row ro="~" hi="~" ka="~" an="~" so="0" />
 
-      <row ro="~" hi="～" ka="～" an="~" so="0" />
       <row ro="` " hi="　" ka="　" an=" " so="0" />		<!-- ACT -->
-      <row ro="`-" hi="～" ka="～" an="～" so="0" />		<!-- ACT -->
       <row ro="`," hi="‥" ka="‥" an="‥" so="0" />		<!-- ACT -->
+      <row ro="`-" hi="～" ka="～" an="～" so="0" />		<!-- ACT -->
       <row ro="`." hi="…" ka="…" an="…" so="0" />		<!-- ACT -->
       <row ro="`/" hi="・" ka="・" an="･" so="0" />		<!-- ACT -->
+      <row ro="`(" hi="（" ka="（" an="（" so="0" />		<!-- ACT -->
+      <row ro="`)" hi="）" ka="）" an="）" so="0" />		<!-- ACT -->
       <row ro="`[" hi="『" ka="『" an="『" so="0" />		<!-- ACT -->
       <row ro="`]" hi="』" ka="』" an="』" so="0" />		<!-- ACT -->
+      <row ro="`{" hi="【" ka="【" an="【" so="0" />		<!-- ACT -->
+      <row ro="`}" hi="】" ka="】" an="】" so="0" />		<!-- ACT -->
       <row ro="`d" hi="←" ka="←" an="←" so="0" />		<!-- ACT -->
       <row ro="`h" hi="↓" ka="↓" an="↓" so="0" />		<!-- ACT -->
       <row ro="`t" hi="↑" ka="↑" an="↑" so="0" />		<!-- ACT -->
       <row ro="`n" hi="→" ka="→" an="→" so="0" />		<!-- ACT -->
+      <row ro="`N" hi="⇒" ka="⇒" an="⇒" so="0" />		<!-- ACT -->
     </list>
   </section>
   <section name="jlatin">

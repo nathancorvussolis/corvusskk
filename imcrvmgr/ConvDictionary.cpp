@@ -138,16 +138,19 @@ void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate,
 std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate)
 {
 	std::wstring ret;
+	std::wstring candidate_tmp = candidate;
 	std::wregex rxnum(L"[0-9]+");
 	std::wregex rxint(L"#[0-9]");
 
-	if(std::regex_search(key, rxnum) && std::regex_search(candidate, rxint))
+	if(std::regex_search(key, rxnum) && std::regex_search(candidate_tmp, rxint))
 	{
-		ret = ConvNum(key, candidate);
+		ret = ConvNum(key, candidate_tmp);
+		candidate_tmp = ret;
 	}
-	else if(candidate.size() > 2 && candidate[0] == L'(' && candidate[candidate.size() - 1] == L')')
+	
+	if(candidate_tmp.size() > 2 && candidate_tmp[0] == L'(' && candidate_tmp[candidate_tmp.size() - 1] == L')')
 	{
-		ret = ConvGaget(key, candidate);
+		ret = ConvGaget(key, candidate_tmp);
 	}
 
 	return ret;

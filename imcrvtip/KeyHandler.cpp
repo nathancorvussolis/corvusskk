@@ -109,6 +109,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_OK;
 	}
 
+	//変換位置指定
 	if(ch != L'\0')
 	{
 		switch(inputmode)
@@ -118,6 +119,17 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		case im_katakana_ank:
 			if(!abbrevmode || showentry)
 			{
+				//ローマ字仮名変換表を優先させる
+				ROMAN_KANA_CONV rkc;
+				std::wstring roman_conv;
+				roman_conv = roman;
+				roman_conv.push_back(ch);
+				wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
+				if(_ConvRomanKana(&rkc) != E_ABORT)
+				{
+					break;
+				}
+
 				for(i=0; i<CONV_POINT_NUM; i++)
 				{
 					if(conv_point[i][0] == L'\0' &&

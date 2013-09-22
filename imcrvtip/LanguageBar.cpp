@@ -8,6 +8,25 @@
 
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
 
+// langbar menu items
+static struct {
+	int inputmode;
+	UINT id;
+	DWORD flag;
+	LPCWSTR text;
+} menuItems[] = {
+	{im_hiragana,		IDM_HIRAGANA,	0, L"［かな］"},
+	{im_katakana,		IDM_KATAKANA,	0, L"［カナ］"},
+	{im_katakana_ank,	IDM_KATAKANA_ANK, 0, L"［－ｶﾅ］"},
+	{im_jlatin,			IDM_JLATIN,		0, L"［全英］"},
+	{im_ascii,			IDM_ASCII,		0, L"［SKK］"},
+	{im_default,		IDM_DEFAULT,	0, L"［－－］"},
+	{im_disable,		IDM_NONE,		TF_LBMENUF_SEPARATOR, L""},
+	{im_disable,		IDM_CONFIG,		0, L"設定"},
+	{im_disable,		IDM_NONE,		TF_LBMENUF_SEPARATOR, L""},
+	{im_disable,		IDM_NONE,		0, L"キャンセル"}
+};
+
 // monochrome icons
 static const WORD iconIDX[] =
 {
@@ -28,8 +47,9 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 	//TF_LBI_STYLE_TEXTCOLORICON
 	// Any black pixel within the icon will be converted to the text color of the selected theme.
 	// The icon must be monochrome.
-	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_BTN_MENU | TF_LBI_STYLE_SHOWNINTRAY |
-		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);
+	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_SHOWNINTRAY |
+		(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE) ? TF_LBI_STYLE_BTN_BUTTON : TF_LBI_STYLE_BTN_MENU) |
+		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used under NT6.2
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 
@@ -126,7 +146,12 @@ STDAPI CLangBarItemButton::GetStatus(DWORD *pdwStatus)
 
 STDAPI CLangBarItemButton::Show(BOOL fShow)
 {
-	return E_NOTIMPL;
+	if(_pLangBarItemSink == NULL)
+	{
+		return E_FAIL;
+	}
+
+	return _pLangBarItemSink->OnUpdate(TF_LBI_STATUS);
 }
 
 STDAPI CLangBarItemButton::GetTooltipString(BSTR *pbstrToolTip)
@@ -154,6 +179,64 @@ STDAPI CLangBarItemButton::GetTooltipString(BSTR *pbstrToolTip)
 
 STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcArea)
 {
+	if(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE))
+	{
+		switch(click)
+		{
+		case TF_LBI_CLK_RIGHT:
+			{
+				HMENU hMenu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_SYSTRAY_MENU));
+				if(hMenu)
+				{
+					UINT check = IDM_DEFAULT;
+					for(int i=0; i<_countof(menuItems); i++)
+					{
+						if(_pTextService->inputmode == menuItems[i].inputmode)
+						{
+							check = menuItems[i].id;
+							break;
+						}
+					}
+					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DEFAULT, check, MF_BYCOMMAND);
+					HMENU hSubMenu = GetSubMenu(hMenu, 0);
+					if(hSubMenu)
+					{
+						TPMPARAMS tpm;
+						TPMPARAMS *ptpm = NULL;
+						if(prcArea != NULL)
+						{
+							tpm.cbSize = sizeof(tpm);
+							tpm.rcExclude = *prcArea;
+							ptpm = &tpm;
+						}
+						BOOL bRet = TrackPopupMenuEx(hSubMenu,
+							TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_VERTICAL,
+							pt.x, pt.y, GetFocus(), ptpm);
+						this->OnMenuSelect(bRet);
+					}
+					DestroyMenu(hMenu);
+				}
+			}
+			break;
+		case TF_LBI_CLK_LEFT:
+			{
+				BOOL fOpen = _pTextService->_IsKeyboardOpen();
+				if(!fOpen)
+				{
+					_pTextService->exinputmode = im_default;	// -> OnChange() -> _KeyboardChanged()
+				}
+				else
+				{
+					_pTextService->_ClearComposition();
+				}
+				_pTextService->_SetKeyboardOpen(fOpen ? FALSE : TRUE);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -164,11 +247,60 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		return E_INVALIDARG;
 	}
 
+	for(int i=0; i<_countof(menuItems); i++)
+	{
+		pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
+			(_pTextService->inputmode == menuItems[i].inputmode ? TF_LBMENUF_RADIOCHECKED : 0),
+			NULL, NULL, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), NULL);
+	}
+
 	return S_OK;
 }
 
 STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 {
+	BOOL fOpen = _pTextService->_IsKeyboardOpen();
+	switch(wID)
+	{
+	case IDM_CONFIG:
+		_pTextService->_StartConfigure();
+		break;
+	case IDM_HIRAGANA:
+	case IDM_KATAKANA:
+	case IDM_KATAKANA_ANK:
+	case IDM_JLATIN:
+	case IDM_ASCII:
+		for(int i=0; i<_countof(menuItems); i++)
+		{
+			if(wID == menuItems[i].id)
+			{
+				_pTextService->inputmode = menuItems[i].inputmode;
+				if(!fOpen)
+				{
+					_pTextService->exinputmode = _pTextService->inputmode;	// -> OnChange() -> _KeyboardChanged()
+					_pTextService->_SetKeyboardOpen(TRUE);
+				}
+				else
+				{
+					_pTextService->_ClearComposition();
+					_pTextService->_UpdateLanguageBar();
+				}
+				break;
+			}
+		}
+		break;
+	case IDM_DEFAULT:
+		_pTextService->inputmode = im_default;
+		if(fOpen)
+		{
+			_pTextService->_ClearComposition();
+			_pTextService->_SetKeyboardOpen(FALSE);
+		}
+		break;
+	default:
+		break;
+	}
+
 	return S_OK;
 }
 

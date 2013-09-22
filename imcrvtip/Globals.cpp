@@ -5,7 +5,6 @@ HINSTANCE g_hInst;
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 LPCWSTR LangbarItemDesc = L"ver. " TEXTSERVICE_VER;
-LPCWSTR LangbarFuncDesc = TEXTSERVICE_DESC L" " TEXTSERVICE_VER;
 
 // for Windows 8
 #if 1

@@ -18,4 +18,14 @@
 #define IDI_Z_JLATIN     305
 #define IDI_Z_ASCII      306
 
+#define IDR_SYSTRAY_MENU    1000
+#define IDM_NONE            1001
+#define IDM_HIRAGANA        1011
+#define IDM_KATAKANA        1012
+#define IDM_KATAKANA_ANK    1013
+#define IDM_JLATIN          1014
+#define IDM_ASCII           1015
+#define IDM_DEFAULT         1020
+#define IDM_CONFIG          1021
+
 #endif //RESOURCE_H

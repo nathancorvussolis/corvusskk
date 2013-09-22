@@ -85,7 +85,7 @@ HRESULT CTextService::GetDisplayName(BSTR *pbstrName)
 
 	*pbstrName = NULL;
 
-	bstrName = SysAllocString(LangbarFuncDesc);
+	bstrName = SysAllocString(L"設定");
 
 	if(bstrName == NULL)
 	{

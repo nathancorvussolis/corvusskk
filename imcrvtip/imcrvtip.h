@@ -10,7 +10,8 @@
 //入力モード
 enum
 {
-    im_default = 0,		//デフォルト
+	im_disable = 0,		//無効
+    im_default,			//デフォルト
     im_hiragana,		//ひらがな
     im_katakana,		//カタカナ
     im_katakana_ank,	//半角ｶﾀｶﾅ
@@ -76,7 +77,6 @@ typedef struct {
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR LangbarItemDesc;
-extern LPCWSTR LangbarFuncDesc;
 
 extern HINSTANCE g_hInst;
 
