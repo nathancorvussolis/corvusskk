@@ -127,6 +127,20 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 				if(_ConvRomanKana(&rkc) != E_ABORT)
 				{
+					for(i=0; i<CONV_POINT_NUM; i++)
+					{
+						if(conv_point[i][0] == L'\0' &&
+							conv_point[i][1] == L'\0' &&
+							conv_point[i][2] == L'\0')
+						{
+							break;
+						}
+						if(ch == conv_point[i][1])
+						{
+							chO = conv_point[i][2];
+							break;
+						}
+					}
 					break;
 				}
 
