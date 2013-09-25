@@ -88,7 +88,7 @@ private:
 	UINT _uIndex;
 	UINT _uPageCnt;
 	std::vector< UINT > _CandCount;
-	std::vector< UINT > _PageInex;
+	std::vector< UINT > _PageIndex;
 	std::vector< std::wstring > _CandStr;
 
 	CTextService *_pTextService;

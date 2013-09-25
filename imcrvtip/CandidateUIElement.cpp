@@ -31,7 +31,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_uIndex = 0;
 	_uPageCnt = 0;
 	_CandCount.clear();
-	_PageInex.clear();
+	_PageIndex.clear();
 	_CandStr.clear();
 
 	hFont = NULL;
@@ -351,7 +351,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 		{
 			for(i=0; i<uSize; i++)
 			{
-				*pIndex = _PageInex[i];
+				*pIndex = _PageIndex[i];
 				pIndex++;
 			}
 		}
@@ -394,7 +394,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 			}
 		}
 
-		_PageInex.clear();
+		_PageIndex.clear();
 		_CandCount.clear();
 		_CandStr.clear();
 		j = 0;
@@ -411,7 +411,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 			}
 
 			pIndex[j] = k;
-			_PageInex.push_back(k);
+			_PageIndex.push_back(k);
 			_CandCount.push_back(uCandCnt);
 
 			for(i=0; i<uCandCnt; i++)
@@ -476,7 +476,7 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 
 		for(i=1; i<_uPageCnt; i++)
 		{
-			if(_PageInex[i] > _uIndex)
+			if(_PageIndex[i] > _uIndex)
 			{
 				break;
 			}

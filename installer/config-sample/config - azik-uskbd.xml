@@ -73,12 +73,13 @@
     <key name="jmode" value="\cj|\cq" />
     <key name="abbrev" value="/" />
     <key name="affix" value="&lt;|>" />
-    <key name="direct" value="[0-9]" />
     <key name="nextcand" value="\x20|\cn" />
     <key name="prevcand" value="x|\cp" />
     <key name="purgedic" value="X|\cx" />
     <key name="nextcomp" value="\ci" />
     <key name="prevcomp" value="\cu" />
+    <key name="convpoint" value="" />
+    <key name="direct" value="[0-9]" />
     <key name="enter" value="\cm|\cj" />
     <key name="cancel" value="\cg|\x1B" />
     <key name="back" value="\ch" />
@@ -762,7 +763,7 @@
       <row ro="8" hi="8" ka="8" an="8" so="0" />
       <row ro="9" hi="9" ka="9" an="9" so="0" />
       <row ro=" " hi=" " ka=" " an=" " so="0" />
-      <row ro="!" hi="!" ka="!" an="!" so="0" />
+      <row ro="!" hi="！" ka="！" an="!" so="0" />		<!-- 全角 -->
       <row ro="&quot;" hi="&quot;" ka="&quot;" an="&quot;" so="0" />
       <row ro="#" hi="#" ka="#" an="#" so="0" />
       <row ro="$" hi="$" ka="$" an="$" so="0" />
@@ -782,7 +783,7 @@
       <row ro="&lt;" hi="&lt;" ka="&lt;" an="&lt;" so="0" />
       <row ro="=" hi="=" ka="=" an="=" so="0" />
       <row ro=">" hi=">" ka=">" an=">" so="0" />
-      <row ro="?" hi="?" ka="?" an="?" so="0" />
+      <row ro="?" hi="？" ka="？" an="?" so="0" />		<!-- 全角 -->
       <row ro="@" hi="@" ka="@" an="@" so="0" />
       <row ro="x[" hi="「" ka="「" an="｢" so="0" />		<!-- 括弧 --><!-- x前置 -->
       <row ro="\" hi="\" ka="\" an="\" so="0" />
@@ -796,10 +797,7 @@
       <row ro="}" hi="}" ka="}" an="}" so="0" />
       <row ro="~" hi="~" ka="~" an="~" so="0" />
 
-      <row ro="z;" hi="゛" ka="゛" an="ﾞ" so="0" />
-      <row ro="z:" hi="゜" ka="゜" an="ﾟ" so="0" />
-
-      <row ro="z " hi="　" ka="　" an=" " so="0" />
+      <row ro="z " hi="　" ka="　" an="　" so="0" />
       <row ro="z," hi="‥" ka="‥" an="‥" so="0" />
       <row ro="z-" hi="～" ka="～" an="～" so="0" />
       <row ro="z." hi="…" ka="…" an="…" so="0" />
@@ -810,6 +808,8 @@
       <row ro="z]" hi="』" ka="』" an="』" so="0" />
       <row ro="z{" hi="【" ka="【" an="【" so="0" />
       <row ro="z}" hi="】" ka="】" an="】" so="0" />
+      <row ro="z;" hi="゛" ka="゛" an="ﾞ" so="0" />
+      <row ro="z:" hi="゜" ka="゜" an="ﾟ" so="0" />
 
       <row ro="xxh" hi="←" ka="←" an="←" so="0" />
       <row ro="xxj" hi="↓" ka="↓" an="↓" so="0" />

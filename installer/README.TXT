@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.2.1
+     CorvusSKK version 1.2.2
 
      http://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -388,6 +388,7 @@
     skk-gengo-to-ad
     skk-current-date
     skk-default-current-date
+    skk-relative-date
     skk-omikuji (引数なし、独自実装。おみくじを引くことができます)
 
     window-width (80で固定)

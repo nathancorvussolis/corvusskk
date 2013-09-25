@@ -629,8 +629,6 @@
       <row ro="v." hi="゜" ka="゜" an="ﾟ" so="0" />
       <row ro="x," hi="゙" ka="゙" an="ﾞ" so="0" />
       <row ro="x." hi="゚" ka="゚" an="ﾟ" so="0" />
-      <row ro="z;" hi="゛" ka="゛" an="ﾞ" so="0" />
-      <row ro="z:" hi="゜" ka="゜" an="ﾟ" so="0" />
 
       <row ro="0" hi="0" ka="0" an="0" so="0" />
       <row ro="1" hi="1" ka="1" an="1" so="0" />
@@ -643,7 +641,7 @@
       <row ro="8" hi="8" ka="8" an="8" so="0" />
       <row ro="9" hi="9" ka="9" an="9" so="0" />
       <row ro=" " hi=" " ka=" " an=" " so="0" />
-      <row ro="!" hi="!" ka="!" an="!" so="0" />
+      <row ro="!" hi="！" ka="！" an="!" so="0" />		<!-- 全角 -->
       <row ro="&quot;" hi="&quot;" ka="&quot;" an="&quot;" so="0" />
       <row ro="#" hi="#" ka="#" an="#" so="0" />
       <row ro="$" hi="$" ka="$" an="$" so="0" />
@@ -663,7 +661,7 @@
       <row ro="&lt;" hi="&lt;" ka="&lt;" an="&lt;" so="0" />
       <row ro="=" hi="=" ka="=" an="=" so="0" />
       <row ro=">" hi=">" ka=">" an=">" so="0" />
-      <row ro="?" hi="?" ka="?" an="?" so="0" />
+      <row ro="?" hi="？" ka="？" an="?" so="0" />		<!-- 全角 -->
       <row ro="@" hi="@" ka="@" an="@" so="0" />
       <row ro="[" hi="「" ka="「" an="｢" so="0" />		<!-- 括弧 -->
       <row ro="\" hi="\" ka="\" an="\" so="0" />
@@ -676,7 +674,7 @@
       <row ro="}" hi="}" ka="}" an="}" so="0" />
       <row ro="~" hi="~" ka="~" an="~" so="0" />
 
-      <row ro="z " hi="　" ka="　" an=" " so="0" />
+      <row ro="z " hi="　" ka="　" an="　" so="0" />
       <row ro="z," hi="‥" ka="‥" an="‥" so="0" />
       <row ro="z-" hi="～" ka="～" an="～" so="0" />
       <row ro="z." hi="…" ka="…" an="…" so="0" />
@@ -692,6 +690,8 @@
       <row ro="zk" hi="↑" ka="↑" an="↑" so="0" />
       <row ro="zl" hi="→" ka="→" an="→" so="0" />
       <row ro="zL" hi="⇒" ka="⇒" an="⇒" so="0" />
+      <row ro="z;" hi="゛" ka="゛" an="ﾞ" so="0" />
+      <row ro="z:" hi="゜" ka="゜" an="ﾟ" so="0" />
 
 <!-- 仮名入力 -->
 

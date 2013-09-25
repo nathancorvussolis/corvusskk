@@ -49,6 +49,8 @@ static std::wstring gadgetkey;
 static std::vector<std::wstring> skk_num_list;
 static time_t gadgettime;
 
+std::wstring gadget_func(const std::wstring s);
+
 
 
 static std::wstring xf(const _GPARAM &param)
@@ -151,13 +153,6 @@ static std::wstring car(const _GPARAM &param)
 	return ret;
 }
 
-static std::wstring lambda(const _GPARAM &param)
-{
-	if(param.size() < 2) return L"";
-
-	return param[1];
-}
-
 static std::wstring plus1(const _GPARAM &param)
 {
 	if(param.size() < 1) return L"";
@@ -234,19 +229,18 @@ static std::wstring mul(const _GPARAM &param)
 
 static std::wstring div(const _GPARAM &param)
 {
-	int n = 1;
-	for(size_t i = 0; i<param.size(); i++)
+	if(param.size() < 2) return L"";
+
+	int n1 = _wtoi(param[0].c_str());
+	int n2 = _wtoi(param[1].c_str());
+	if(n2 == 0)
 	{
-		if(_wtoi(param[i].c_str()) == 0)
-		{
-			n = 0;
-			break;
-		}
-		n /= _wtoi(param[i].c_str());
+		n1 = 0;
+		n2 = 1;
 	}
 
 	WCHAR num[32];
-	_snwprintf_s(num, _TRUNCATE, L"%d", n);
+	_snwprintf_s(num, _TRUNCATE, L"%d", n1 / n2);
 
 	return num;
 }
@@ -412,26 +406,35 @@ static std::wstring skk_gengo_to_ad(const _GPARAM &param)
 
 static std::wstring skk_current_date(const _GPARAM &param)
 {
-	if(param.size() > 0) return param[0];
-
-	struct tm d;
-	localtime_s(&d, &gadgettime);
-	WCHAR y[5];
-	_snwprintf_s(y, _TRUNCATE, L"%d", d.tm_year + 1900);
-	std::wstring gg = conv_ad_to_gengo(y, L"0", L"#1", L"");
-	if (gg.empty())
+	std::wstring ret;
+	if(param.size() == 0)
 	{
-		return L"";
+		struct tm d;
+		localtime_s(&d, &gadgettime);
+		WCHAR y[5];
+		_snwprintf_s(y, _TRUNCATE, L"%d", d.tm_year + 1900);
+		std::wstring gg = conv_ad_to_gengo(y, L"0", L"#1", L"");
+		if (gg.empty())
+		{
+			return L"";
+		}
+		WCHAR st[32];
+		WCHAR sm[4];
+		WCHAR sd[4];
+		_snwprintf_s(sm, _TRUNCATE, L"%d", d.tm_mon + 1);
+		_snwprintf_s(sd, _TRUNCATE, L"%d", d.tm_mday);
+		_snwprintf_s(st, _TRUNCATE, L"%s年%s月%s日(%s)",
+			gg.c_str(), ConvNum(sm, L"#1").c_str(), ConvNum(sd, L"#1").c_str(), week_jp[d.tm_wday]);
+		ret = st;
 	}
-	WCHAR st[32];
-	WCHAR sm[4];
-	WCHAR sd[4];
-	_snwprintf_s(sm, _TRUNCATE, L"%d", d.tm_mon + 1);
-	_snwprintf_s(sd, _TRUNCATE, L"%d", d.tm_mday);
-	_snwprintf_s(st, _TRUNCATE, L"%s年%s月%s日(%s)",
-		gg.c_str(), ConvNum(sm, L"#1").c_str(), ConvNum(sd, L"#1").c_str(), week_jp[d.tm_wday]);
+	else
+	{
+		ret = gadget_func(param[0]);
+		//format param[1];
+		//and-time param[2];
+	}
 
-	return st;
+	return ret;
 }
 
 static std::wstring skk_default_current_date(const _GPARAM &param)
@@ -532,6 +535,45 @@ static std::wstring skk_default_current_date(const _GPARAM &param)
 	return ret;
 }
 
+static std::wstring skk_relative_date(const _GPARAM &param)
+{
+	_GPARAM x;
+	if(param.size() == 0) return skk_current_date(x);
+
+	if(param.size() < 5) return L"";
+
+	std::wstring func = param[0];
+	if(param[0] == L"nil")
+	{
+		func = L"(skk-current-date)";
+	}
+
+	//format param[1];
+	//and-time param[2];
+	std::wstring ymd = param[3];
+	int diff = _wtoi(param[4].c_str());
+
+	struct tm d;
+	localtime_s(&d, &gadgettime);
+
+	if(ymd == L":yy") d.tm_year += diff;
+	else if(ymd == L":mm") d.tm_mon += diff;
+	else if(ymd == L":dd") d.tm_mday += diff;
+
+	time_t gadgettime_bak= gadgettime;
+	gadgettime = mktime(&d);
+
+	std::wstring ret;
+	if(gadgettime != (time_t)-1)
+	{
+		ret = gadget_func(func);
+	}
+
+	gadgettime = gadgettime_bak;
+
+	return ret;
+}
+
 
 
 struct {
@@ -545,7 +587,7 @@ struct {
 	{L"string-to-number", string_to_number},
 	{L"current-time-string", current_time_string},
 	{L"car", car},
-	{L"lambda", lambda},
+	{L"lambda", xf},
 	{L"1+", plus1},
 	{L"1-", minus1},
 	{L"+", plus},
@@ -565,6 +607,7 @@ struct {
 	{L"skk-gengo-to-ad", skk_gengo_to_ad},
 	{L"skk-current-date", skk_current_date},
 	{L"skk-default-current-date", skk_default_current_date},
+	{L"skk-relative-date", skk_relative_date},
 
 	{L"", xf}
 };
@@ -635,6 +678,11 @@ static std::wstring gadget_func(const std::wstring s)
 	else
 	{
 		funcname = ss.substr(0, i);
+		if(funcname == L"lambda")
+		{
+			return std::regex_replace(ss,
+				std::wregex(L"lambda\\s+\\(.*?\\)\\s+(\\(.+\\))"), std::wstring(L"$1"));
+		}
 
 		iparam = i + 1;
 		ibracketcnt = 0;
@@ -709,7 +757,7 @@ static std::wstring gadget_func(const std::wstring s)
 	return ret;
 }
 
-std::wstring ConvGaget(const std::wstring &key, const std::wstring &candidate)
+std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate)
 {
 	std::wstring ret;
 	size_t i;

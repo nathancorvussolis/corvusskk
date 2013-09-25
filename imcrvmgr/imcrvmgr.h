@@ -44,7 +44,7 @@ void InitSKKDic();
 void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv);
 
 // ConvGadget
-std::wstring ConvGaget(const std::wstring &key, const std::wstring &candidate);
+std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate);
 
 // ConvNum
 std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);

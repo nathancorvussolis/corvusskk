@@ -792,7 +792,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 				GetCurrentPage(&page);
 				if(i < _CandCount[page])
 				{
-					index = (UINT)(_pTextService->c_untilcandlist - 1) + _PageInex[page] + i;
+					index = (UINT)(_pTextService->c_untilcandlist - 1) + _PageIndex[page] + i;
 					if(index < _pTextService->candidates.size())
 					{
 						if(!regword)
@@ -927,11 +927,11 @@ void CCandidateWindow::_InitList()
 
 	_uPageCnt = ((_uCount - (_uCount % MAX_SELKEY)) / MAX_SELKEY) + ((_uCount % MAX_SELKEY) == 0 ? 0 : 1);
 
-	_PageInex.clear();
+	_PageIndex.clear();
 	_CandCount.clear();
 	for(i=0; i<_uPageCnt; i++)
 	{
-		_PageInex.push_back(i * MAX_SELKEY);
+		_PageIndex.push_back(i * MAX_SELKEY);
 		_CandCount.push_back( (i < (_uPageCnt - 1)) ? MAX_SELKEY :
 			(((_uCount % MAX_SELKEY) == 0) ? MAX_SELKEY : (_uCount % MAX_SELKEY)) );
 	}
@@ -992,7 +992,7 @@ void CCandidateWindow::_NextPage()
 		}
 	}
 
-	_uIndex = _PageInex[uNewPage];
+	_uIndex = _PageIndex[uNewPage];
 
 	_dwFlags = TF_CLUIE_SELECTION;
 	if(uNewPage != uOldPage)
@@ -1075,7 +1075,7 @@ void CCandidateWindow::_PrevPage()
 		return;
 	}
 
-	_uIndex = _PageInex[uNewPage];
+	_uIndex = _PageIndex[uNewPage];
 
 	_dwFlags = TF_CLUIE_SELECTION;
 	if(uNewPage != uOldPage)
@@ -1135,7 +1135,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			if(!_reg)
 			{
 				_InitList();
-				_uIndex = _PageInex[_PageInex.size() - 1];
+				_uIndex = _PageIndex[_PageIndex.size() - 1];
 				_Update();
 				_UpdateUIElement();
 			}
@@ -1224,7 +1224,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		if(!_reg)
 		{
 			_InitList();
-			_uIndex = _PageInex[_PageInex.size() - 1];
+			_uIndex = _PageIndex[_PageIndex.size() - 1];
 			_Update();
 			_UpdateUIElement();
 		}
