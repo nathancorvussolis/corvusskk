@@ -4,12 +4,16 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-typedef std::vector< std::wstring > ANNOTATIONS;
-typedef std::pair< std::wstring, ANNOTATIONS > CANDIDATE;
+//候補   pair< candidate, annotation >
+typedef std::pair< std::wstring, std::wstring > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
-typedef std::pair< std::wstring, CANDIDATES > SKKDICENTRY;
+
+//辞書   pair< key, candidates >
 typedef std::map< std::wstring, CANDIDATES > SKKDIC;
-typedef std::map<std::wstring, long> KEYPOS;
+typedef std::pair< std::wstring, CANDIDATES > SKKDICENTRY;
+
+//見出し語位置
+typedef std::map< std::wstring, long > KEYPOS;
 
 struct {
 	HWND parent;
@@ -85,18 +89,19 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	SKKDIC::iterator skkdic_itr;
 	SKKDICENTRY skkdicentry;
 	CANDIDATES::iterator candidates_itr;
-	ANNOTATIONS::iterator annotations_itr;
-	ANNOTATIONS annotations;
+	LPCWSTR seps = L",";
+	std::wstring annotation_seps;
+
+	if(!annotation.empty())
+	{
+		annotation_seps = seps + annotation + seps;
+	}
 
 	skkdic_itr = skkdic.find(key);
 	if(skkdic_itr == skkdic.end())
 	{
 		skkdicentry.first = key;
-		if(!annotation.empty())
-		{
-			annotations.push_back(annotation);
-		}
-		skkdicentry.second.push_back(CANDIDATE(candidate, annotations));
+		skkdicentry.second.push_back(CANDIDATE(candidate, annotation_seps));
 		skkdic.insert(skkdicentry);
 	}
 	else
@@ -105,18 +110,15 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		{
 			if(candidates_itr->first == candidate)
 			{
-				for(annotations_itr = candidates_itr->second.begin(); annotations_itr != candidates_itr->second.end(); annotations_itr++)
+				if(candidates_itr->second.find(annotation_seps) == std::wstring::npos)
 				{
-					if(*annotations_itr == annotation)
+					if(candidates_itr->second.empty())
 					{
-						break;
+						candidates_itr->second.append(annotation_seps);
 					}
-				}
-				if(annotations_itr == candidates_itr->second.end())
-				{
-					if(!annotation.empty())
+					else
 					{
-						candidates_itr->second.push_back(annotation);
+						candidates_itr->second.append(annotation + seps);
 					}
 				}
 				break;
@@ -124,11 +126,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		}
 		if(candidates_itr == skkdic_itr->second.end())
 		{
-			if(!annotation.empty())
-			{
-				annotations.push_back(annotation);
-			}
-			skkdic_itr->second.push_back(CANDIDATE(candidate, annotations));
+			skkdic_itr->second.push_back(CANDIDATE(candidate, annotation_seps));
 		}
 	}
 }
@@ -212,24 +210,15 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const CANDIDATES &candidates)
 {
 	CANDIDATES::const_iterator candidates_itr;
-	ANNOTATIONS::const_iterator annotations_itr;
 	std::wstring line;
 
 	line = key + L" /";
 	for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
 	{
 		line += candidates_itr->first;
-		if(!candidates_itr->second.empty())
+		if(candidates_itr->second.size() > 2)
 		{
-			line += L";";
-			for(annotations_itr = candidates_itr->second.begin(); annotations_itr != candidates_itr->second.end(); annotations_itr++)
-			{
-				if(annotations_itr != candidates_itr->second.begin())
-				{
-					line += L",";
-				}
-				line += *annotations_itr;
-			}
+			line += L";" + candidates_itr->second.substr(1, candidates_itr->second.size() - 2);
 		}
 		line += L"/";
 	}
@@ -253,6 +242,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 		return S_FALSE;
 	}
 
+	//BOM
 	fwrite("\xFF\xFE", 2, 1, fp);
 
 	//送りありエントリ
@@ -283,6 +273,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	fclose(fp);
 
+	//インデックスファイル
 	_wfopen_s(&fp, pathskkidx, WB);
 	if(fp == NULL)
 	{

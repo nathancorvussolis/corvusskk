@@ -109,6 +109,7 @@
     <key name="purgedic" value="X|\cx" />
     <key name="nextcomp" value="\ci" />
     <key name="prevcomp" value="\cu" />
+    <key name="hint" value="" />
     <key name="convpoint" value="" />
     <key name="direct" value="[0-9]" />
     <key name="enter" value="\cm|\cj" />
@@ -135,6 +136,7 @@
     <key name="purgedic" value="" />
     <key name="nextcomp" value="" />
     <key name="prevcomp" value="" />
+    <key name="hint" value="" />
     <key name="convpoint" value="" />
     <key name="direct" value="" />
     <key name="enter" value="" />

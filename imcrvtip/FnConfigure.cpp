@@ -11,39 +11,40 @@ typedef struct {
 } CONFIG_KEYMAP;
 const CONFIG_KEYMAP configkeymap[] =
 {
-	 {SKK_KANA,			ValueKeyMapKana}
-	,{SKK_CONV_CHAR,	ValueKeyMapConvChar}
-	,{SKK_JLATIN,		ValueKeyMapJLatin}
-	,{SKK_ASCII,		ValueKeyMapAscii}
-	,{SKK_JMODE,		ValueKeyMapJMode}
-	,{SKK_ABBREV,		ValueKeyMapAbbrev}
-	,{SKK_AFFIX,		ValueKeyMapAffix}
-	,{SKK_NEXT_CAND,	ValueKeyMapNextCand}
-	,{SKK_PREV_CAND,	ValueKeyMapPrevCand}
-	,{SKK_PURGE_DIC,	ValueKeyMapPurgeDic}
-	,{SKK_NEXT_COMP,	ValueKeyMapNextComp}
-	,{SKK_PREV_COMP,	ValueKeyMapPrevComp}
-	,{SKK_CONV_POINT,	ValueKeyMapConvPoint}
-	,{SKK_DIRECT,		ValueKeyMapDirect}
-	,{SKK_ENTER,		ValueKeyMapEnter}
-	,{SKK_CANCEL,		ValueKeyMapCancel}
-	,{SKK_BACK,			ValueKeyMapBack}
-	,{SKK_DELETE,		ValueKeyMapDelete}
-	,{SKK_VOID,			ValueKeyMapVoid}
-	,{SKK_LEFT,			ValueKeyMapLeft}
-	,{SKK_UP,			ValueKeyMapUp}
-	,{SKK_RIGHT,		ValueKeyMapRight}
-	,{SKK_DOWN,			ValueKeyMapDown}
-	,{SKK_PASTE,		ValueKeyMapPaste}
-	,{SKK_NULL,			L""}
+	{SKK_KANA,		ValueKeyMapKana},
+	{SKK_CONV_CHAR,	ValueKeyMapConvChar},
+	{SKK_JLATIN,	ValueKeyMapJLatin},
+	{SKK_ASCII,		ValueKeyMapAscii},
+	{SKK_JMODE,		ValueKeyMapJMode},
+	{SKK_ABBREV,	ValueKeyMapAbbrev},
+	{SKK_AFFIX,		ValueKeyMapAffix},
+	{SKK_NEXT_CAND,	ValueKeyMapNextCand},
+	{SKK_PREV_CAND,	ValueKeyMapPrevCand},
+	{SKK_PURGE_DIC,	ValueKeyMapPurgeDic},
+	{SKK_NEXT_COMP,	ValueKeyMapNextComp},
+	{SKK_PREV_COMP,	ValueKeyMapPrevComp},
+	{SKK_HINT,		ValueKeyMapHint},
+	{SKK_CONV_POINT,ValueKeyMapConvPoint},
+	{SKK_DIRECT,	ValueKeyMapDirect},
+	{SKK_ENTER,		ValueKeyMapEnter},
+	{SKK_CANCEL,	ValueKeyMapCancel},
+	{SKK_BACK,		ValueKeyMapBack},
+	{SKK_DELETE,	ValueKeyMapDelete},
+	{SKK_VOID,		ValueKeyMapVoid},
+	{SKK_LEFT,		ValueKeyMapLeft},
+	{SKK_UP,		ValueKeyMapUp},
+	{SKK_RIGHT,		ValueKeyMapRight},
+	{SKK_DOWN,		ValueKeyMapDown},
+	{SKK_PASTE,		ValueKeyMapPaste},
+	{SKK_NULL,		L""}
 };
 
 static const TF_PRESERVEDKEY c_PreservedKey[] =
 {
-	 { VK_OEM_3/*0xC0*/, TF_MOD_ALT }
-	,{ VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER }
-	,{ VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER }
-	,{ VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER }
+	{ VK_OEM_3/*0xC0*/, TF_MOD_ALT },
+	{ VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER },
+	{ VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER },
+	{ VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER }
 };
 
 static struct {
@@ -401,7 +402,7 @@ void CTextService::_LoadKana()
 	int i = 0;
 	ROMAN_KANA_CONV rkc;
 	WCHAR *pszb;
-	size_t blen;
+	size_t blen = 0;
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
@@ -463,7 +464,7 @@ void CTextService::_LoadJLatin()
 	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 	WCHAR *pszb;
-	size_t blen;
+	size_t blen = 0;
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 

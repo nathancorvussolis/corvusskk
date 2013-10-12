@@ -19,7 +19,7 @@ void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKey
 	CheckDlgButton(hDlg, nIDDlgItem, (_wtoi(strxmlval.c_str()) == TRUE ? BST_CHECKED : BST_UNCHECKED));
 }
 
-void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName)
+void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 {
 	WCHAR num[2];
 
@@ -52,10 +52,12 @@ void LoadConfigPreservedKey()
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
+	HRESULT hr;
 
 	ZeroMemory(preservedkey, sizeof(preservedkey));
+	hr = ReadList(pathconfigxml, SectionPreservedKey, list);
 
-	if(ReadList(pathconfigxml, SectionPreservedKey, list) == S_OK && list.size() != 0)
+	if(hr == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < MAX_PRESERVEDKEY; l_itr++)
 		{
@@ -207,10 +209,12 @@ void LoadConfigConvPoint()
 	APPDATAXMLLIST::iterator l_itr;
 	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
+	HRESULT hr;
 
 	ZeroMemory(conv_point, sizeof(conv_point));
+	hr = ReadList(pathconfigxml, SectionConvPoint, list);
 
-	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK && list.size() != 0)
+	if(hr == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < CONV_POINT_NUM; l_itr++)
 		{
@@ -233,7 +237,7 @@ void LoadConfigConvPoint()
 			i++;
 		}
 	}
-	else
+	else if(hr != S_OK)
 	{
 		for(i=0; i<26; i++)
 		{
@@ -346,12 +350,14 @@ void LoadConfigKana()
 	ROMAN_KANA_CONV rkc;
 	int i = 0;
 	WCHAR *pszb;
-	size_t blen;
+	size_t blen = 0;
+	HRESULT hr;
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
+	hr = ReadList(pathconfigxml, SectionKana, list);
 
-	if(ReadList(pathconfigxml, SectionKana, list) == S_OK && list.size() != 0)
+	if(hr == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_MAX; l_itr++)
 		{
@@ -397,7 +403,7 @@ void LoadConfigKana()
 			i++;
 		}
 	}
-	else
+	else if(hr != S_OK)
 	{
 		for(i=0; i<ROMAN_KANA_TBL_DEF_NUM; i++)
 		{
@@ -520,11 +526,13 @@ void LoadConfigJLatin()
 	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 	WCHAR *pszb;
-	size_t blen;
+	size_t blen = 0;
+	HRESULT hr;
 
 	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
+	hr = ReadList(pathconfigxml, SectionJLatin, list);
 
-	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK && list.size() != 0)
+	if(hr == S_OK && list.size() != 0)
 	{
 		for(l_itr = list.begin(); l_itr != list.end() && i < ASCII_JLATIN_TBL_NUM; l_itr++)
 		{
@@ -552,7 +560,7 @@ void LoadConfigJLatin()
 			i++;
 		}
 	}
-	else
+	else if(hr != S_OK)
 	{
 		memcpy_s(ascii_jlatin_conv, sizeof(ascii_jlatin_conv),
 			ascii_jlatin_conv_default, sizeof(ascii_jlatin_conv_default));

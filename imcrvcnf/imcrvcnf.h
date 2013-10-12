@@ -22,7 +22,7 @@ void MakeSKKDic(HWND hwnd);
 
 // PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault = L"");
-void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName);
+void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
 void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault);
 void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
 void LoadPreservedKey(HWND hwnd);

@@ -43,6 +43,7 @@ typedef std::vector< CANDIDATE > CANDIDATES;
 #define SKK_PURGE_DIC	0x58	// 辞書削除		X
 #define SKK_NEXT_COMP	0x09	// 次補完		c-i(HT)
 #define SKK_PREV_COMP	0x15	// 前補完		c-u
+#define SKK_HINT		0x3B	// 絞り込み		;
 
 #define SKK_CONV_POINT	0x51	// 変換位置		Q ;
 #define SKK_DIRECT		0x30	// 直接入力		0-9
@@ -62,6 +63,8 @@ typedef struct {
 	BYTE keyjmode[KEYMAPNUM];	//ひらがな/カタカナ
 	BYTE keyvoid[KEYMAPNUM];	//無効
 } KEYMAP;
+
+#define CHAR_SKK_HINT	L'\x20'
 
 //候補一覧選択キー数
 #define MAX_SELKEY		7

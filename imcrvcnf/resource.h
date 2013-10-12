@@ -84,6 +84,7 @@
 #define IDC_EDIT_PURGE_DIC                      2110
 #define IDC_EDIT_NEXT_COMP                      2111
 #define IDC_EDIT_PREV_COMP                      2112
+#define IDC_EDIT_HINT                           2113
 
 #define IDC_EDIT_CONV_POINT                     2121
 #define IDC_EDIT_DIRECT                         2122

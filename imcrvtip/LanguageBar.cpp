@@ -596,25 +596,13 @@ void CTextService::_UpdateLanguageBar()
 	if(c_showmodeimm && _ImmersiveMode && !_UILessMode)
 	{
 		std::wstring mode;
-		switch(inputmode)
+		for(int i=0; i<_countof(menuItems); i++)
 		{
-		case im_hiragana:
-			mode = L" [かな]";
-			break;
-		case im_katakana:
-			mode = L" [カナ]";
-			break;
-		case im_katakana_ank:
-			mode = L" [ｶﾅ]";
-			break;
-		case im_jlatin:
-			mode = L" [全英]";
-			break;
-		case im_ascii:
-			mode = L" [SKK]";
-			break;
-		default:
-			break;
+			if(inputmode == menuItems[i].inputmode)
+			{
+				mode = menuItems[i].text;
+				break;
+			}
 		}
 
 		if(_pCandidateList && _pCandidateList->_IsShowCandidateWindow())

@@ -11,7 +11,7 @@
 typedef std::pair< std::wstring, std::wstring > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
 
-//ユーザ辞書   pair< key , candidates >
+//ユーザ辞書   pair< key, candidates >
 typedef std::map< std::wstring, CANDIDATES > USERDIC;
 typedef std::pair< std::wstring, CANDIDATES > USERDICENTRY;
 

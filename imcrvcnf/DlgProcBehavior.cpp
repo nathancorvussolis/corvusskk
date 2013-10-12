@@ -106,7 +106,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 		i = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
-		if(i < 0 || i > 8)
+		if(i > 8)
 		{
 			i = 5;
 		}
@@ -296,15 +296,15 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, ValueDispCandNo);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, ValueAnnotation);
-			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, ValueAnnotatLst);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, ValueNoModeMark);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, ValueNoOkuriConv);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEIMM, SectionBehavior, ValueShowModeImm);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, ValueDispCandNo);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
+			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, ValueNoModeMark);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, ValueNoOkuriConv);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, ValueDelOkuriCncl);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, ValueBackIncEnter);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, ValueAddCandKtkn);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEIMM, ValueShowModeImm);
 
 			WriterEndSection(pXmlWriter);
 

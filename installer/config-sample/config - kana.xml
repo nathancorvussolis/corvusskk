@@ -87,6 +87,7 @@
     <key name="purgedic" value="X|\cx" />
     <key name="nextcomp" value="\ci" />
     <key name="prevcomp" value="\cu" />
+    <key name="hint" value="" />
     <key name="convpoint" value="" />
     <key name="direct" value="[0-9]" />
     <key name="enter" value="\cm|\cj" />
@@ -113,6 +114,7 @@
     <key name="purgedic" value="\x7B" />
     <key name="nextcomp" value="" />
     <key name="prevcomp" value="" />
+    <key name="hint" value="" />
     <key name="convpoint" value="\x70|\x1C|\x1D" />
     <key name="direct" value="" />
     <key name="enter" value="" />
@@ -527,23 +529,6 @@
       <row ro="hwyo" hi="ふょ" ka="フョ" an="ﾌｮ" so="0" />
       <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" />
       <row ro="n'" hi="ん" ka="ン" an="ﾝ" so="0" />
-      <row ro="nb" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nc" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nd" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nf" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="ng" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nh" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nj" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nk" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nm" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="np" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nr" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="ns" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nt" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nv" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nw" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nx" hi="ん" ka="ン" an="ﾝ" so="1" />
-      <row ro="nz" hi="ん" ka="ン" an="ﾝ" so="1" />
       <row ro="mb" hi="ん" ka="ン" an="ﾝ" so="1" />
       <row ro="mm" hi="ん" ka="ン" an="ﾝ" so="1" />
       <row ro="mp" hi="ん" ka="ン" an="ﾝ" so="1" />
@@ -557,7 +542,6 @@
       <row ro="hh" hi="っ" ka="ッ" an="ｯ" so="1" />
       <row ro="jj" hi="っ" ka="ッ" an="ｯ" so="1" />
       <row ro="kk" hi="っ" ka="ッ" an="ｯ" so="1" />
-      <row ro="mm" hi="っ" ka="ッ" an="ｯ" so="1" />
       <row ro="pp" hi="っ" ka="ッ" an="ｯ" so="1" />
       <row ro="rr" hi="っ" ka="ッ" an="ｯ" so="1" />
       <row ro="ss" hi="っ" ka="ッ" an="ｯ" so="1" />

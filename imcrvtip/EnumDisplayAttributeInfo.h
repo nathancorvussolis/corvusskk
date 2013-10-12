@@ -82,7 +82,7 @@ public:
 	}
 	STDMETHODIMP Next(ULONG ulCount, ITfDisplayAttributeInfo **rgInfo, ULONG *pcFetched)
 	{
-		ITfDisplayAttributeInfo *pDisplayAttributeInfo;
+		ITfDisplayAttributeInfo *pDisplayAttributeInfo = NULL;
 		ULONG cFetched = 0;
 
 		if(rgInfo == NULL)

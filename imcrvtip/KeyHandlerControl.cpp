@@ -279,7 +279,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			roman.clear();
 			kana.push_back(ch);
 			cursoridx = kana.size();
-			if(!c_nookuriconv)
+			if(!c_nookuriconv && !hintmode)
 			{
 				//辞書検索開始(接頭辞)
 				showentry = TRUE;
@@ -371,6 +371,31 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		if(inputkey && !showentry)
 		{
 			_PrevComp();
+			_Update(ec, pContext);
+			return S_OK;
+		}
+		break;
+
+	case SKK_HINT:
+		if(showentry)
+		{
+			candidx = 0;
+			showentry = FALSE;
+		}
+		if(inputkey && !showentry)
+		{
+			_ConvN(WCHAR_MAX);
+			if(roman.empty() && !kana.empty() && cursoridx != 0 &&
+				kana.find_first_of(CHAR_SKK_HINT) == std::wstring::npos)
+			{
+				hintmode = TRUE;
+				kana.insert(cursoridx, 1, CHAR_SKK_HINT);
+				if(cursoridx < accompidx)
+				{
+					accompidx++;
+				}
+				cursoridx++;
+			}
 			_Update(ec, pContext);
 			return S_OK;
 		}
@@ -759,9 +784,26 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 							{
 								roman.clear();
 							}
+							if(accompidx != 0)
+							{
+								if(accompidx + 1 == cursoridx)
+								{
+									kana.erase(cursoridx - 1, 1);
+									cursoridx--;
+									accompidx = 0;
+								}
+								if(accompidx == kana.size())
+								{
+									accompidx = 0;
+								}
+							}
 							std::wstring s = pwCB;
-							s = std::regex_replace(s, std::wregex(L"\t|\r|\n|\x20"), std::wstring(L""));
+							s = std::regex_replace(s, std::wregex(L"[\\x00-\\x20]"), std::wstring(L""));
 							kana.insert(cursoridx, s);
+							if(accompidx != 0 && cursoridx <= accompidx)
+							{
+								accompidx += s.size();
+							}
 							cursoridx += s.size();
 							_Update(ec, pContext);
 							GlobalUnlock(hCB);

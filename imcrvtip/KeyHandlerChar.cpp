@@ -155,7 +155,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				else
 				{
 					_HandleCharTerminate(ec, pContext, composition);
-					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv && !rkc.wait)
+					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv && !hintmode && !rkc.wait)
 					{
 						showentry = TRUE;
 						_StartConv();

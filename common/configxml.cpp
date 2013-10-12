@@ -95,6 +95,7 @@ LPCWSTR ValueKeyMapPrevCand = L"prevcand";
 LPCWSTR ValueKeyMapPurgeDic = L"purgedic";
 LPCWSTR ValueKeyMapNextComp = L"nextcomp";
 LPCWSTR ValueKeyMapPrevComp = L"prevcomp";
+LPCWSTR ValueKeyMapHint = L"hint";
 LPCWSTR ValueKeyMapConvPoint = L"convpoint";
 LPCWSTR ValueKeyMapDirect = L"direct";
 LPCWSTR ValueKeyMapEnter = L"enter";
@@ -589,7 +590,7 @@ NOT_S_OK:
 
 HRESULT WriterRow(IXmlWriter *pWriter, const APPDATAXMLROW &row)
 {
-	HRESULT hr;
+	HRESULT hr = S_FALSE;
 	APPDATAXMLROW::const_iterator r_itr;
 
 	for(r_itr = row.begin(); r_itr != row.end(); r_itr++)

@@ -49,7 +49,7 @@ static std::wstring gadgetkey;
 static std::vector<std::wstring> skk_num_list;
 static time_t gadgettime;
 
-std::wstring gadget_func(const std::wstring s);
+static std::wstring gadget_func(const std::wstring s);
 
 
 
@@ -664,6 +664,11 @@ static std::wstring gadget_func(const std::wstring s)
 	_GPARAM param;
 	size_t iparam, ibracket, ibracketcnt, idqcnt;
 
+	if(is == std::wstring::npos || ie == std::wstring::npos)
+	{
+		return s;
+	}
+
 	std::wstring ss = s.substr(is + 1, ie - is - 1);
 	if(ss.empty())
 	{
@@ -685,6 +690,7 @@ static std::wstring gadget_func(const std::wstring s)
 		}
 
 		iparam = i + 1;
+		ibracket = 0;
 		ibracketcnt = 0;
 		idqcnt = 0;
 		for(i=i+1; i<ss.size(); i++)

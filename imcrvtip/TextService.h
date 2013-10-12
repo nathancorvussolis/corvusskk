@@ -150,6 +150,7 @@ public:
 	HRESULT _ConvRomanKana(ROMAN_KANA_CONV *pconv);
 	HRESULT _ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv);
 	void _StartConv();
+	void _StartSubConv();
 	void _NextConv();
 	void _PrevConv();
 	void _NextComp();
@@ -262,13 +263,13 @@ public:
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
+	int exinputmode;		//入力モードの前回状態
 	BOOL inputkey;			//見出し入力▽モード
 	BOOL abbrevmode;		//abbrevモード
 	BOOL showentry;			//候補表示▼モード
 	BOOL showcandlist;		//候補リスト表示
 	BOOL complement;		//補完
-
-	int exinputmode;		//入力モードの前回状態
+	BOOL hintmode;			//ヒントモード
 
 	//動作設定
 	WCHAR fontname[LF_FACESIZE];	//候補一覧のフォント設定

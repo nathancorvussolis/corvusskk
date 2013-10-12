@@ -90,7 +90,7 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 					tfSelection.range = pRangeInsert;
 					tfSelection.style.ase = TF_AE_NONE;
 					tfSelection.style.fInterimChar = FALSE;
-					_pContext->SetSelection(ec, 1, &tfSelection);
+					hr = _pContext->SetSelection(ec, 1, &tfSelection);
 				}
 				pContextComposition->Release();
 			}
@@ -99,7 +99,7 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 		pInsertAtSelection->Release();
 	}
 
-	return S_OK;
+	return hr;
 }
 
 void CTextService::_StartComposition(ITfContext *pContext)

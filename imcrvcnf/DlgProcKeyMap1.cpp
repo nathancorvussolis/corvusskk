@@ -17,6 +17,7 @@ static const KEYMAPCNF KeyMap1[] =
 	{IDC_EDIT_PURGE_DIC,	ValueKeyMapPurgeDic,	L"X|\\cx"},
 	{IDC_EDIT_NEXT_COMP,	ValueKeyMapNextComp,	L"\\ci"},
 	{IDC_EDIT_PREV_COMP,	ValueKeyMapPrevComp,	L"\\cu"},
+	{IDC_EDIT_HINT,			ValueKeyMapHint,		L""},
 	{IDC_EDIT_CONV_POINT,	ValueKeyMapConvPoint,	L""},
 	{IDC_EDIT_DIRECT,		ValueKeyMapDirect,		L"[0-9]"},
 	{IDC_EDIT_ENTER,		ValueKeyMapEnter,		L"\\cm|\\cj"},
@@ -59,6 +60,7 @@ INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		case IDC_EDIT_PURGE_DIC:
 		case IDC_EDIT_NEXT_COMP:
 		case IDC_EDIT_PREV_COMP:
+		case IDC_EDIT_HINT:
 		case IDC_EDIT_CONV_POINT:
 		case IDC_EDIT_DIRECT:
 		case IDC_EDIT_ENTER:

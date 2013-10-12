@@ -93,7 +93,24 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	}
 
 	BOOL iscomp = _IsComposing();
-	
+
+	if(sf == SKK_CONV_POINT)
+	{
+		if(!abbrevmode || showentry)
+		{
+			//ローマ字仮名変換表を優先させる
+			ROMAN_KANA_CONV rkc;
+			std::wstring roman_conv;
+			roman_conv = roman;
+			roman_conv.push_back(ch);
+			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
+			if(_ConvRomanKana(&rkc) != E_ABORT)
+			{
+				sf = SKK_NULL;
+			}
+		}
+	}
+
 	if(_HandleControl(ec, pContext, sf, ch) == S_OK)
 	{
 		if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
@@ -212,7 +229,16 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						{
 							_Update(ec, pContext);
 						}
-						_HandleChar(ec, pContext, composition, ch, chO);
+						if(sf == SKK_DIRECT && inputkey && !showentry)
+						{
+							kana.insert(cursoridx, 1, ch);
+							cursoridx++;
+							_Update(ec, pContext);
+						}
+						else
+						{
+							_HandleChar(ec, pContext, composition, ch, chO);
+						}
 					}
 					else
 					{
@@ -338,6 +364,7 @@ void CTextService::_ResetStatus()
 	showentry = FALSE;
 	showcandlist = FALSE;
 	complement = FALSE;
+	hintmode = FALSE;
 
 	searchkey.clear();
 	searchkeyorg.clear();

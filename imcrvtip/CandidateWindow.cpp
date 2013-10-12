@@ -1357,7 +1357,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 					if(pwCB != NULL)
 					{
 						s.assign(pwCB);
-						s = std::regex_replace(s, std::wregex(L"\t|\r|\n"), std::wstring(L""));
+						s = std::regex_replace(s, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
 						regwordtext.insert(regwordtextpos, s);
 						regwordtextpos += s.size();
 						_Update();
