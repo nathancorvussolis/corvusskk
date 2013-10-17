@@ -46,26 +46,35 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 
 			cchReq = (LONG)composition.size();
 
-			if(!fixed && c_annotation && !c_annotatlst &&
-				!candidates[candidx].first.second.empty())
+			if(!fixed)
 			{
-				composition.append(markAnnotation + candidates[candidx].first.second);
-			}
+				if(purgedicmode)
+				{
+					composition.append(L" [削除?(Y/n)]");
+				}
+				else
+				{
+					if(c_annotation && !c_annotatlst && !candidates[candidx].first.second.empty())
+					{
+						composition.append(markAnnotation + candidates[candidx].first.second);
+					}
 
-			if(!fixed && c_untilcandlist == 0 && c_dispcandnum)
-			{
-				composition.append(L" (");
-				_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
-				composition.append(candidatecount);
-				composition.append(L"/");
-				_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidates.size());
-				composition.append(candidatecount);
-				composition.append(L")");
-			}
+					if(c_untilcandlist == 0 && c_dispcandnum)
+					{
+						composition.append(L" (");
+						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
+						composition.append(candidatecount);
+						composition.append(L"/");
+						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidates.size());
+						composition.append(candidatecount);
+						composition.append(L")");
+					}
 
-			if(!fixed && c_nomodemark && composition.empty())
-			{
-				composition.append(markSP);
+					if(c_nomodemark && composition.empty())
+					{
+						composition.append(markSP);
+					}
+				}
 			}
 
 			//ユーザ辞書登録
@@ -128,6 +137,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						accompidx = 0;
 					}
 					candidx = 0;
+					cursoridx = kana.size();
 					showentry = FALSE;
 					_Update(ec, pContext, fixed);
 					return S_OK;

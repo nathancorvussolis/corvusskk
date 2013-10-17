@@ -173,6 +173,7 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(ValueAnnotatLst, c_annotatlst);
 	_ReadBoolValue(ValueNoModeMark, c_nomodemark);
 	_ReadBoolValue(ValueNoOkuriConv, c_nookuriconv);
+	_ReadBoolValue(ValueDelCvPosCncl, c_delcvposcncl);
 	_ReadBoolValue(ValueDelOkuriCncl, c_delokuricncl);
 	_ReadBoolValue(ValueBackIncEnter, c_backincenter);
 	_ReadBoolValue(ValueAddCandKtkn, c_addcandktkn);

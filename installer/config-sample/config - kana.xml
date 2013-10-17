@@ -40,7 +40,8 @@
     <key name="annotatlst" value="0" />
     <key name="nomodemark" value="0" />
     <key name="nookuriconv" value="0" />
-    <key name="delokuricncl" value="1" />
+    <key name="delcvposcncl" value="1" />
+    <key name="delokuricncl" value="0" />
     <key name="backincenter" value="1" />
     <key name="addcandktkn" value="0" />
     <key name="showmodeimm" value="0" />

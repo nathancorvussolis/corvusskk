@@ -18,7 +18,7 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 	case im_katakana:
 	case im_katakana_ank:
 		keystate[VK_CAPITAL] = 0;
-		if(abbrevmode)
+		if(abbrevmode || purgedicmode)
 		{
 			keystate[VK_KANA] = 0;
 		}
@@ -339,13 +339,8 @@ void CTextService::_NextConv()
 	}
 	else
 	{
-		if(c_delokuricncl && accompidx != 0)
-		{
-			kana = kana.substr(0, accompidx);
-			accompidx = 0;
-		}
-		candidx = 0;
 		showentry = FALSE;
+		candidx = 0;
 	}
 }
 
@@ -358,6 +353,18 @@ void CTextService::_PrevConv()
 	else
 	{
 		showentry = FALSE;
+		if(c_delokuricncl && accompidx != 0)
+		{
+			kana = kana.substr(0, accompidx);
+			accompidx = 0;
+			cursoridx = kana.size();
+		}
+		if(c_delcvposcncl && accompidx != 0)
+		{
+			kana.erase(accompidx, 1);
+			accompidx = 0;
+			cursoridx--;
+		}
 	}
 }
 
@@ -654,7 +661,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 {
 	size_t i, j, count;
 	BOOL exist;
-	WCHAR *convkana;
+	WCHAR *convkana = NULL;
 	WCHAR srckana[3];
 	std::wstring dsttmp;
 

@@ -269,6 +269,7 @@ public:
 	BOOL showentry;			//候補表示▼モード
 	BOOL showcandlist;		//候補リスト表示
 	BOOL complement;		//補完
+	BOOL purgedicmode;		//辞書削除モード
 	BOOL hintmode;			//ヒントモード
 
 	//動作設定
@@ -284,6 +285,7 @@ public:
 	BOOL c_annotatlst;		//（候補一覧のみ）
 	BOOL c_nomodemark;		//▽▼*マークを表示しない
 	BOOL c_nookuriconv;		//送り仮名が決定したとき変換を開始しない
+	BOOL c_delcvposcncl;	//取消のとき変換位置を削除する
 	BOOL c_delokuricncl;	//取消のとき送り仮名を削除する
 	BOOL c_backincenter;	//後退に確定を含める
 	BOOL c_addcandktkn;		//候補に片仮名変換を追加する

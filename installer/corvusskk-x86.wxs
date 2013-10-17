@@ -1,70 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-    <?define version="1.3.0" ?>
-    <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
+  <?define version="1.3.1" ?>
+  <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
-        <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
-        <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
+    <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
+    <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
 
-        <Directory Id="TARGETDIR" Name="SourceDir">
-            <Directory Id="SystemFolder" Name="SystemFolder">
-                <Directory Id="ime_x86" Name="IME">
-                    <Directory Id="corvusskk_x86" Name="IMCRVSKK">
-                        <Component Guid="B3338B63-FB00-4206-8678-6352340F6685" Id="CNF_X86">
-                            <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
-                        </Component>
-                        <Component Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7" Id="MGR_X86">
-                            <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
-                        </Component>
-                        <Component Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B" Id="TIP_X86">
-                            <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
-                        </Component>
-                    </Directory>
-                </Directory>
-            </Directory>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="SystemFolder" Name="SystemFolder">
+        <Directory Id="ime_x86" Name="IME">
+          <Directory Id="corvusskk_x86" Name="IMCRVSKK">
+            <Component Guid="B3338B63-FB00-4206-8678-6352340F6685" Id="CNF_X86">
+              <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
+            </Component>
+            <Component Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7" Id="MGR_X86">
+              <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
+            </Component>
+            <Component Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B" Id="TIP_X86">
+              <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
+            </Component>
+          </Directory>
         </Directory>
+      </Directory>
+    </Directory>
 
-        <Component Id="RegistryRun" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
-            <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-                <RegistryValue Type="string" Name="imcrvmgr" Value="$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe" Action="write" />
-            </RegistryKey>
-        </Component>
+    <Component Id="RegistryRun" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
+      <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
+        <RegistryValue Type="string" Name="imcrvmgr" Value="$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe" Action="write" />
+      </RegistryKey>
+    </Component>
 
-        <Feature Id="Default" Title="Main" Level="1">
-            <ComponentRef Id="CNF_X86" />
-            <ComponentRef Id="MGR_X86" />
-            <ComponentRef Id="TIP_X86" />
-            <ComponentRef Id="RegistryRun" />
-        </Feature>
+    <Feature Id="Default" Title="Main" Level="1">
+      <ComponentRef Id="CNF_X86" />
+      <ComponentRef Id="MGR_X86" />
+      <ComponentRef Id="TIP_X86" />
+      <ComponentRef Id="RegistryRun" />
+    </Feature>
 
-        <UI />
-        <WixVariable Id="WixUILicenseRtf" Value="ms-pl.rtf" />
-        <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
-        <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
-        <Property Id="WIX_MINIMAL" Value="CorvusSKK" />
-        <UIRef Id="WixUI_Minimal" />
+    <UI />
+    <WixVariable Id="WixUILicenseRtf" Value="ms-pl.rtf" />
+    <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
+    <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
+    <Property Id="WIX_MINIMAL" Value="CorvusSKK" />
+    <UIRef Id="WixUI_Minimal" />
 
-        <Upgrade Id="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
-            <UpgradeVersion Property="PREVIOUSFOUND" OnlyDetect="no" Maximum="$(var.version)" Minimum="0.0.0" IncludeMaximum="no" IncludeMinimum="yes" />
-            <UpgradeVersion Property="SELFFOUND" OnlyDetect="yes" Maximum="$(var.version)" Minimum="$(var.version)" IncludeMaximum="yes" IncludeMinimum="yes" />
-            <UpgradeVersion Property="NEWERFOUND" OnlyDetect="yes" Minimum="$(var.version)" IncludeMinimum="no" />
-        </Upgrade>
+    <Upgrade Id="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
+      <UpgradeVersion Property="PREVIOUSFOUND" OnlyDetect="no" Maximum="$(var.version)" Minimum="0.0.0" IncludeMaximum="no" IncludeMinimum="yes" />
+      <UpgradeVersion Property="SELFFOUND" OnlyDetect="yes" Maximum="$(var.version)" Minimum="$(var.version)" IncludeMaximum="yes" IncludeMinimum="yes" />
+      <UpgradeVersion Property="NEWERFOUND" OnlyDetect="yes" Minimum="$(var.version)" IncludeMinimum="no" />
+    </Upgrade>
 
-        <CustomAction Id="PreventDowngrading" Error="A newer version already installed." />
-        <InstallExecuteSequence>
-            <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWERFOUND</Custom>
-            <RemoveExistingProducts After="InstallInitialize" />
-            <ScheduleReboot After="InstallFinalize" />
-        </InstallExecuteSequence>
+    <CustomAction Id="PreventDowngrading" Error="A newer version already installed." />
+    <InstallExecuteSequence>
+      <Custom Action="PreventDowngrading" After="FindRelatedProducts">NEWERFOUND</Custom>
+      <RemoveExistingProducts After="InstallInitialize" />
+      <ScheduleReboot After="InstallFinalize" />
+    </InstallExecuteSequence>
 
-        <Condition Message="This installer is used for 32-bit Windows. Use 64-bit installer.">
-            NOT VersionNT64
-        </Condition>
-        <Condition Message="This application does not support this version of Windows.">
-            <![CDATA[(VersionNT >= 600) OR ((VersionNT = 501) AND (ServicePackLevel >= 3))]]>
-        </Condition>
+    <Condition Message="This installer is used for 32-bit Windows. Use 64-bit installer.">
+      <![CDATA[NOT VersionNT64]]>
+    </Condition>
+    <Condition Message="This application does not support this version of Windows.">
+      <![CDATA[(VersionNT >= 600) OR ((VersionNT = 501) AND (ServicePackLevel >= 3))]]>
+    </Condition>
 
-    </Product>
+  </Product>
 
 </Wix>

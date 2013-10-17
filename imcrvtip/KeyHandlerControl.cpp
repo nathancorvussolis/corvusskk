@@ -324,6 +324,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 			//候補表示開始
+			cursoridx = kana.size();
 			showentry = TRUE;
 			_StartConv();
 			_Update(ec, pContext);
@@ -347,12 +348,24 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_PURGE_DIC:
 		if(showentry)
 		{
-			_DelUserDic((accompidx == 0 ? REQ_USER_DEL_1 : REQ_USER_DEL_0),
-				((candorgcnt <= candidx) ? searchkey : searchkeyorg),
-				candidates[candidx].second.first);
-			showentry = FALSE;
-			candidx = 0;
-			_Update(ec, pContext);
+			if(purgedicmode)
+			{
+				purgedicmode = FALSE;
+				_DelUserDic((accompidx == 0 ? REQ_USER_DEL_1 : REQ_USER_DEL_0),
+					((candorgcnt <= candidx) ? searchkey : searchkeyorg),
+					candidates[candidx].second.first);
+				showentry = FALSE;
+				candidx = 0;
+				kana.clear();
+				accompidx = 0;
+				cursoridx = 0;
+				_HandleCharReturn(ec, pContext);
+			}
+			else
+			{
+				purgedicmode = TRUE;
+				_Update(ec, pContext);
+			}
 			return S_OK;
 		}
 		break;
@@ -478,18 +491,26 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_CANCEL:
 		if(showentry)
 		{
+			candidx = 0;
+			showentry = FALSE;
 			if(c_delokuricncl && accompidx != 0)
 			{
 				kana = kana.substr(0, accompidx);
 				accompidx = 0;
 				cursoridx = kana.size();
 			}
-			showentry = FALSE;
+			if(c_delcvposcncl && accompidx != 0)
+			{
+				kana.erase(accompidx, 1);
+				accompidx = 0;
+				cursoridx--;
+			}
 			_Update(ec, pContext);
 		}
 		else
 		{
 			kana.clear();
+			accompidx = 0;
 			cursoridx = 0;
 			_HandleCharReturn(ec, pContext);
 		}

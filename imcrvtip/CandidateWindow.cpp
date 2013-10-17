@@ -11,6 +11,9 @@ static LPCWSTR markNo = L":";
 static LPCWSTR markAnnotation = L";";
 static LPCWSTR markCandEnd = L"\u3000";
 static LPCWSTR markCursor = L"|";
+static LPCWSTR markReg = L"登録";
+static LPCWSTR markRegL = L"[";
+static LPCWSTR markRegR = L"]";
 static LPCWSTR markRegKeyEnd = L"：";
 static LPCWSTR markSP = L"\x20";
 static LPCWSTR markNBSP = L"\u00A0";
@@ -272,7 +275,8 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 {
-	WCHAR strPage[32];
+	std::wstring bracket;
+	size_t i;
 
 	s.clear();
 
@@ -281,8 +285,13 @@ void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 		return;
 	}
 
-	_snwprintf_s(strPage, _TRUNCATE, L"%s[%u]%s", markNBSP, _depth, markNBSP);
-	s.append(strPage + searchkey_bak + markRegKeyEnd);
+	bracket.append(markNBSP);
+	for(i=0; i<_depth+1; i++) bracket.append(markRegL);
+	bracket.append(markReg);
+	for(i=0; i<_depth+1; i++) bracket.append(markRegR);
+	bracket.append(markNBSP);
+
+	s.append(bracket + searchkey_bak + markRegKeyEnd);
 	s.append(regwordtext.substr(0, regwordtextpos));
 
 	if(cycle == 0)

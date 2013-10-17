@@ -92,6 +92,36 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		break;
 	}
 
+	if(purgedicmode)	//辞書削除
+	{
+		switch(sf)
+		{
+		case SKK_ENTER:
+			sf = SKK_PURGE_DIC;
+			break;
+		case SKK_CANCEL:
+			purgedicmode = FALSE;
+			_Update(ec, pContext);
+			return S_OK;
+			break;
+		default:
+			switch(ch)
+			{
+			case L'Y': case 'y':
+				sf = SKK_PURGE_DIC;
+				break;
+			case L'N': case L'n':
+				purgedicmode = FALSE;
+				_Update(ec, pContext);
+				return S_OK;
+				break;
+			default:
+				return S_FALSE;
+			}
+			break;
+		}
+	}
+
 	BOOL iscomp = _IsComposing();
 
 	if(sf == SKK_CONV_POINT)
@@ -364,6 +394,7 @@ void CTextService::_ResetStatus()
 	showentry = FALSE;
 	showcandlist = FALSE;
 	complement = FALSE;
+	purgedicmode = FALSE;
 	hintmode = FALSE;
 
 	searchkey.clear();
