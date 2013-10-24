@@ -20,6 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\LICENSE.TXT" />
+    <None Include="config-sample\config - act.xml" />
+    <None Include="config-sample\config - azik-jpkbd.xml" />
+    <None Include="config-sample\config - azik-uskbd.xml" />
+    <None Include="config-sample\config - gact10.xml" />
+    <None Include="config-sample\config - kana.xml" />
+    <None Include="config-sample\config - roman.xml" />
+    <None Include="config-sample\kanatable.txt" />
     <None Include="corvusskk-x64.wxs">
       <SubType>Designer</SubType>
     </None>

@@ -6,5 +6,31 @@
     <None Include="ms-pl.rtf" />
     <None Include="README.TXT" />
     <None Include="..\LICENSE.TXT" />
+    <None Include="config-sample\config - act.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\config - azik-jpkbd.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\config - azik-uskbd.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\config - gact10.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\config - kana.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\config - roman.xml">
+      <Filter>config-sample</Filter>
+    </None>
+    <None Include="config-sample\kanatable.txt">
+      <Filter>config-sample</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="config-sample">
+      <UniqueIdentifier>{b760104d-89d8-44eb-b032-bdaa64106f39}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -157,6 +157,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					_HandleCharTerminate(ec, pContext, composition);
 					if(!kana.empty() && accompidx != 0 && !rkc.soku && !c_nookuriconv && !hintmode && !rkc.wait)
 					{
+						cursoridx = kana.size();
 						showentry = TRUE;
 						_StartConv();
 					}

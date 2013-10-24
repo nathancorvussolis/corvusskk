@@ -398,10 +398,11 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		if(inputkey && !showentry)
 		{
 			_ConvN(WCHAR_MAX);
-			if(roman.empty() && !kana.empty() && cursoridx != 0 &&
+			if(roman.empty() && !kana.empty() &&
 				kana.find_first_of(CHAR_SKK_HINT) == std::wstring::npos)
 			{
 				hintmode = TRUE;
+				cursoridx = kana.size();
 				kana.insert(cursoridx, 1, CHAR_SKK_HINT);
 				if(cursoridx < accompidx)
 				{
