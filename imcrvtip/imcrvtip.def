@@ -1,7 +1,7 @@
-LIBRARY	imcrvtip.dll
+LIBRARY		imcrvtip.dll
 
 EXPORTS
-		DllCanUnloadNow		PRIVATE
-		DllGetClassObject	PRIVATE
-		DllRegisterServer	PRIVATE
-		DllUnregisterServer	PRIVATE
+	DllCanUnloadNow			PRIVATE
+	DllGetClassObject		PRIVATE
+	DllRegisterServer		PRIVATE
+	DllUnregisterServer		PRIVATE

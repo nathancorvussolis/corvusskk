@@ -1,5 +1,5 @@
 ﻿
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 
 CorvusSKK
@@ -8,27 +8,56 @@ Copyright (C) 2011-2013 Nathan Corvus Solis
 
 Microsoft Public License (MS-PL)
 
-This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+This license governs use of the accompanying software. If you use the software,
+you accept this license. If you do not accept the license, do not use the
+software.
 
 1. Definitions
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
-A "contribution" is the original software, or any additions or changes to the software.
-A "contributor" is any person that distributes its contribution under this license.
-"Licensed patents" are a contributor's patent claims that read directly on its contribution.
+The terms "reproduce," "reproduction," "derivative works," and "distribution"
+have the same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the
+software.
+A "contributor" is any person that distributes its contribution under this
+license.
+"Licensed patents" are a contributor's patent claims that read directly on its
+contribution.
 
 2. Grant of Rights
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
-(B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+(A) Copyright Grant- Subject to the terms of this license, including the
+license conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free copyright license to reproduce its
+contribution, prepare derivative works of its contribution, and distribute its
+contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license
+conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free license under its licensed patents to
+make, have made, use, sell, offer for sale, import, and/or otherwise dispose
+of its contribution in the software or derivative works of the contribution in
+the software.
 
 3. Conditions and Limitations
-(A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
-(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
-(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
-(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+(A) No Trademark License- This license does not grant you rights to use any
+contributors' name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you
+claim are infringed by the software, your patent license from such contributor
+to the software ends automatically.
+(C) If you distribute any portion of the software, you must retain all
+copyright, patent, trademark, and attribution notices that are present in the
+software.
+(D) If you distribute any portion of the software in source code form, you may
+do so only under this license by including a complete copy of this license
+with your distribution. If you distribute any portion of the software in
+compiled or object code form, you may only do so under a license that complies
+with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The
+contributors give no express warranties, guarantees or conditions. You may have
+additional consumer rights under your local laws which this license cannot
+change. To the extent permitted under your local laws, the contributors
+exclude the implied warranties of merchantability, fitness for a particular
+purpose and non-infringement.
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 
 EUC-JIS-2004 (JIS X 0213:2004 Appendix 3) vs Unicode mapping table
@@ -41,7 +70,7 @@ License:
  You can use, modify, distribute this table freely.
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 
 
 Text Services Framework Sample Code
@@ -58,24 +87,146 @@ MSDN Code Gallery Licenses
 
 MICROSOFT PUBLIC LICENSE (Ms-PL)
 
-This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+This license governs use of the accompanying software. If you use the software,
+you accept this license. If you do not accept the license, do not use the
+software.
 
 1. Definitions
-The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
-A "contribution" is the original software, or any additions or changes to the software.
-A "contributor" is any person that distributes its contribution under this license.
-"Licensed patents" are a contributor's patent claims that read directly on its contribution.
+The terms "reproduce," "reproduction," "derivative works," and "distribution"
+have the same meaning here as under U.S. copyright law.
+A "contribution" is the original software, or any additions or changes to the
+software.
+A "contributor" is any person that distributes its contribution under this
+license.
+"Licensed patents" are a contributor's patent claims that read directly on its
+contribution.
 
 2. Grant of Rights
-(A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
-(B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+(A) Copyright Grant- Subject to the terms of this license, including the
+license conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free copyright license to reproduce its
+contribution, prepare derivative works of its contribution, and distribute its
+contribution or any derivative works that you create.
+(B) Patent Grant- Subject to the terms of this license, including the license
+conditions and limitations in section 3, each contributor grants you a
+non-exclusive, worldwide, royalty-free license under its licensed patents to
+make, have made, use, sell, offer for sale, import, and/or otherwise dispose
+of its contribution in the software or derivative works of the contribution in
+the software.
 
 3. Conditions and Limitations
-(A) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
-(B) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
-(C) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
-(D) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
-(E) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+(A) No Trademark License- This license does not grant you rights to use any
+contributors' name, logo, or trademarks.
+(B) If you bring a patent claim against any contributor over patents that you
+claim are infringed by the software, your patent license from such contributor
+to the software ends automatically.
+(C) If you distribute any portion of the software, you must retain all
+copyright, patent, trademark, and attribution notices that are present in the
+software.
+(D) If you distribute any portion of the software in source code form, you may
+do so only under this license by including a complete copy of this license
+with your distribution. If you distribute any portion of the software in
+compiled or object code form, you may only do so under a license that complies
+with this license.
+(E) The software is licensed "as-is." You bear the risk of using it. The
+contributors give no express warranties, guarantees or conditions. You may have
+additional consumer rights under your local laws which this license cannot
+change. To the extent permitted under your local laws, the contributors
+exclude the implied warranties of merchantability, fitness for a particular
+purpose and non-infringement.
 
 
---------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+
+MICROSOFT SOFTWARE LICENSE TERMS
+
+MICROSOFT VISUAL C++ REDISTRIBUTABLE FOR VISUAL STUDIO 2013
+
+These license terms are an agreement between Microsoft Corporation (or based
+on where you live, one of its affiliates) and you. Please read them. They
+apply to the software named above, which includes the media on which you
+received it, if any. The terms also apply to any Microsoft
+  *  updates,
+  *  supplements,
+  *  Internet-based services, and
+  *  support services
+for this software, unless other terms accompany those items. If so, those
+terms apply.
+BY USING THE SOFTWARE, YOU ACCEPT THESE TERMS. IF YOU DO NOT ACCEPT THEM,
+DO NOT USE THE SOFTWARE.
+IF YOU COMPLY WITH THESE LICENSE TERMS, YOU HAVE THE PERPETUAL RIGHTS BELOW.
+1.  INSTALLATION AND USE RIGHTS. You may install and use any number of copies
+    of the software on your devices.
+2.  SCOPE OF LICENSE. The software is licensed, not sold. This agreement only
+    gives you some rights to use the software. Microsoft reserves all other
+    rights. Unless applicable law gives you more rights despite this
+    limitation, you may use the software only as expressly permitted in this
+    agreement. In doing so, you must comply with any technical limitations in
+    the software that only allow you to use it in certain ways. You may not
+    *  disclose the results of any benchmark tests of the software to any third
+       party without Microsoft’s prior written approval;
+    *  work around any technical limitations in the software;
+    *  reverse engineer, decompile or disassemble the software, except and only
+       to the extent that applicable law expressly permits, despite this
+       limitation;
+    *  make more copies of the software than specified in this agreement or
+       allowed by applicable law, despite this limitation;
+    *  publish the software for others to copy;
+    *  rent, lease or lend the software;
+    *  transfer the software or this agreement to any third party; or
+    *  use the software for commercial software hosting services.
+3.  BACKUP COPY. You may make one backup copy of the software. You may use it
+    only to reinstall the software.
+4.  DOCUMENTATION. Any person that has valid access to your computer or
+    internal network may copy and use the documentation for your internal,
+    reference purposes.
+5.  EXPORT RESTRICTIONS. The software is subject to United States export laws
+    and regulations. You must comply with all domestic and international export
+    laws and regulations that apply to the software. These laws include
+    restrictions on destinations, end users and end use. For additional
+    information, see www.microsoft.com/exporting.
+6.  SUPPORT SERVICES. Because this software is “as is,” we may not provide
+    support services for it.
+7.  ENTIRE AGREEMENT. This agreement, and the terms for supplements, updates,
+    Internet-based services and support services that you use, are the entire
+    agreement for the software and support services.
+8.  APPLICABLE LAW.
+    a.  United States. If you acquired the software in the United States,
+        Washington state law governs the interpretation of this agreement and
+        applies to claims for breach of it, regardless of conflict of laws
+        principles. The laws of the state where you live govern all other
+        claims, including claims under state consumer protection laws, unfair
+        competition laws, and in tort.
+    b.  Outside the United States. If you acquired the software in any other
+        country, the laws of that country apply.
+9.  LEGAL EFFECT. This agreement describes certain legal rights. You may have
+    other rights under the laws of your country. You may also have rights with
+    respect to the party from whom you acquired the software. This agreement
+    does not change your rights under the laws of your country if the laws of
+    your country do not permit it to do so.
+10. DISCLAIMER OF WARRANTY. THE SOFTWARE IS LICENSED “AS-IS.” YOU BEAR THE
+    RISK OF USING IT. MICROSOFT GIVES NO EXPRESS WARRANTIES, GUARANTEES OR
+    CONDITIONS. YOU MAY HAVE ADDITIONAL CONSUMER RIGHTS OR STATUTORY GUARANTEES
+    UNDER YOUR LOCAL LAWS WHICH THIS AGREEMENT CANNOT CHANGE. TO THE EXTENT
+    PERMITTED UNDER YOUR LOCAL LAWS, MICROSOFT EXCLUDES THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+    FOR AUSTRALIA - YOU HAVE STATUTORY GUARANTEES UNDER THE AUSTRALIAN CONSUMER
+    LAW AND NOTHING IN THESE TERMS IS INTENDED TO AFFECT THOSE RIGHTS.
+11. LIMITATION ON AND EXCLUSION OF REMEDIES AND DAMAGES. YOU CAN RECOVER FROM
+    MICROSOFT AND ITS SUPPLIERS ONLY DIRECT DAMAGES UP TO U.S. $5.00. YOU
+    CANNOT RECOVER ANY OTHER DAMAGES, INCLUDING CONSEQUENTIAL, LOST PROFITS,
+    SPECIAL, INDIRECT OR INCIDENTAL DAMAGES.
+    This limitation applies to
+    *  anything related to the software, services, content (including code) on
+       third party Internet sites, or third party programs; and
+    *  claims for breach of contract, breach of warranty, guarantee or
+       condition, strict liability, negligence, or other tort to the extent
+       permitted by applicable law.
+    It also applies even if Microsoft knew or should have known about the
+    possibility of the damages. The above limitation or exclusion may not apply
+    to you because your country may not allow the exclusion or limitation of
+    incidental, consequential or other damages.
+
+
+-------------------------------------------------------------------------------

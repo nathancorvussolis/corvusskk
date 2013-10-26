@@ -9,22 +9,22 @@
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
 
 // langbar menu items
-static struct {
+static const struct {
 	int inputmode;
 	UINT id;
 	DWORD flag;
 	LPCWSTR text;
 } menuItems[] = {
-	{im_hiragana,		IDM_HIRAGANA,	0, L"［かな］"},
-	{im_katakana,		IDM_KATAKANA,	0, L"［カナ］"},
-	{im_katakana_ank,	IDM_KATAKANA_ANK, 0, L"［－ｶﾅ］"},
-	{im_jlatin,			IDM_JLATIN,		0, L"［全英］"},
-	{im_ascii,			IDM_ASCII,		0, L"［SKK］"},
-	{im_default,		IDM_DEFAULT,	0, L"［－－］"},
-	{im_disable,		IDM_NONE,		TF_LBMENUF_SEPARATOR, L""},
-	{im_disable,		IDM_CONFIG,		0, L"設定"},
-	{im_disable,		IDM_NONE,		TF_LBMENUF_SEPARATOR, L""},
-	{im_disable,		IDM_NONE,		0, L"キャンセル"}
+	{im_hiragana,		IDM_HIRAGANA,		0, L"［かな］"},
+	{im_katakana,		IDM_KATAKANA,		0, L"［カナ］"},
+	{im_katakana_ank,	IDM_KATAKANA_ANK,	0, L"［－ｶﾅ］"},
+	{im_jlatin,			IDM_JLATIN,			0, L"［全英］"},
+	{im_ascii,			IDM_ASCII,			0, L"［SKK］"},
+	{im_default,		IDM_DEFAULT,		0, L"［－－］"},
+	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
+	{im_disable,		IDM_CONFIG,			0, L"設定"},
+	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
+	{im_disable,		IDM_NONE,			0, L"キャンセル"}
 };
 
 // monochrome icons
@@ -49,7 +49,7 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 	// The icon must be monochrome.
 	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_SHOWNINTRAY |
 		(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE) ? TF_LBI_STYLE_BTN_BUTTON : TF_LBI_STYLE_BTN_MENU) |
-		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used under NT6.2
+		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used under Windows 8
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 
@@ -78,8 +78,8 @@ STDAPI CLangBarItemButton::QueryInterface(REFIID riid, void **ppvObj)
 	*ppvObj = NULL;
 
 	if(IsEqualIID(riid, IID_IUnknown) ||
-	        IsEqualIID(riid, IID_ITfLangBarItem) ||
-	        IsEqualIID(riid, IID_ITfLangBarItemButton))
+		IsEqualIID(riid, IID_ITfLangBarItem) ||
+		IsEqualIID(riid, IID_ITfLangBarItemButton))
 	{
 		*ppvObj = (ITfLangBarItemButton *)this;
 	}
@@ -221,11 +221,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 		case TF_LBI_CLK_LEFT:
 			{
 				BOOL fOpen = _pTextService->_IsKeyboardOpen();
-				if(!fOpen)
-				{
-					_pTextService->exinputmode = im_default;	// -> OnChange() -> _KeyboardChanged()
-				}
-				else
+				if(fOpen)
 				{
 					_pTextService->_ClearComposition();
 				}
@@ -277,7 +273,6 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 				_pTextService->inputmode = menuItems[i].inputmode;
 				if(!fOpen)
 				{
-					_pTextService->exinputmode = _pTextService->inputmode;	// -> OnChange() -> _KeyboardChanged()
 					_pTextService->_SetKeyboardOpen(TRUE);
 				}
 				else
@@ -308,7 +303,6 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
 	size_t iconindex = 0;
 	WORD iconid = 0;
-	int size = 16;
 
 	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
 	{
@@ -349,14 +343,11 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 		}
 	}
 
-	//XPは16で固定、Vista以降はDPIを考慮
-	if(IsVersion6AndOver())
-	{
-		HDC hdc = GetDC(NULL);
-		int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-		ReleaseDC(NULL, hdc);
-		size = MulDiv(16, dpiX, 96);
-	}
+	//DPIを考慮
+	HDC hdc = GetDC(NULL);
+	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(NULL, hdc);
+	int size = MulDiv(16, dpiX, 96);
 
 	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
 
@@ -432,16 +423,11 @@ STDAPI CLangBarItemButton::_Update()
 	VARIANT var;
 
 	var.vt = VT_I4;
-	
-	var.lVal = TF_SENTENCEMODE_PHRASEPREDICT;
-	_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_SENTENCE, &var);	
 
-	if(_pTextService->_IsKeyboardDisabled() || !_pTextService->_IsKeyboardOpen())
-	{
-		var.lVal = TF_CONVERSIONMODE_ALPHANUMERIC;
-		_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
-	}
-	else
+	var.lVal = TF_SENTENCEMODE_PHRASEPREDICT;
+	_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_SENTENCE, &var);
+
+	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
 	{
 		switch(_pTextService->inputmode)
 		{
@@ -466,8 +452,6 @@ STDAPI CLangBarItemButton::_Update()
 			_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
 			break;
 		default:
-			var.lVal = TF_CONVERSIONMODE_ALPHANUMERIC;
-			_pTextService->_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
 			break;
 		}
 	}

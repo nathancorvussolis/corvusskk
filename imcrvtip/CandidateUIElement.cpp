@@ -74,9 +74,9 @@ STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
 	*ppvObj = NULL;
 
 	if(IsEqualIID(riid, IID_IUnknown) ||
-	        IsEqualIID(riid, IID_ITfUIElement) ||
-	        IsEqualIID(riid, IID_ITfCandidateListUIElement) ||
-	        IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior))
+		IsEqualIID(riid, IID_ITfUIElement) ||
+		IsEqualIID(riid, IID_ITfCandidateListUIElement) ||
+		IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior))
 	{
 		*ppvObj = (ITfCandidateListUIElementBehavior *)this;
 	}

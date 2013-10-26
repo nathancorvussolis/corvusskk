@@ -286,7 +286,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	return S_OK;
 }
 
-void CTextService::_KeyboardChanged()
+void CTextService::_KeyboardOpenCloseChanged()
 {
 	if(_pThreadMgr == NULL)
 	{
@@ -318,14 +318,14 @@ void CTextService::_KeyboardChanged()
 	if(fOpen)
 	{
 		//OnPreservedKey()経由ならひらがなモード
-		//OnChange()経由なら前回のモード
-		switch(exinputmode)
+		//それ以外なら現在のモード
+		switch(inputmode)
 		{
-		case im_default:
+		case im_disable:
 			inputmode = im_hiragana;
 			break;
 		default:
-			inputmode = exinputmode;
+			_KeyboardInputConversionChanged();
 			break;
 		}
 
@@ -348,13 +348,9 @@ void CTextService::_KeyboardChanged()
 	}
 	else
 	{
-		exinputmode = inputmode;
 		inputmode = im_default;
 
-		if(exinputmode != im_default)
-		{
-			_SaveUserDic();
-		}
+		_SaveUserDic();
 
 		_UninitPreservedKey();
 		_LoadPreservedKey();
@@ -366,6 +362,46 @@ void CTextService::_KeyboardChanged()
 	}
 
 	_UpdateLanguageBar();
+}
+
+void CTextService::_KeyboardInputConversionChanged()
+{
+	if(!_IsKeyboardDisabled() && _IsKeyboardOpen())
+	{
+		VARIANT var;
+		if(_GetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var) == S_OK)
+		{
+			int inputmode_bak = inputmode;
+			LONG lval = var.lVal & (TF_CONVERSIONMODE_ALPHANUMERIC |
+				TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE);
+			switch(lval)
+			{
+			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE:
+				inputmode = im_hiragana;
+				break;
+			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE:
+				inputmode = im_katakana;
+				break;
+			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA:
+				inputmode = im_katakana_ank;
+				break;
+			case TF_CONVERSIONMODE_ALPHANUMERIC | TF_CONVERSIONMODE_FULLSHAPE:
+				inputmode = im_jlatin;
+				break;
+			case TF_CONVERSIONMODE_ALPHANUMERIC:
+				inputmode = im_ascii;
+				break;
+			default:
+				break;
+			}
+			if(inputmode != inputmode_bak)
+			{
+				_ResetStatus();
+				_ClearComposition();
+				_UpdateLanguageBar();
+			}
+		}
+	}
 }
 
 BOOL CTextService::_IsKeyVoid(WCHAR ch, BYTE vk)

@@ -24,9 +24,9 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 	LONG cchReq = 0;
 
 	if(showentry &&
-		(	(fixed && showcandlist) || 
-			(c_untilcandlist == 0) || 
-			(candidx + 1 < c_untilcandlist) || 
+		(	(fixed && showcandlist) ||
+			(c_untilcandlist == 0) ||
+			(candidx + 1 < c_untilcandlist) ||
 			(candidates.size() + 1 == c_untilcandlist)	))
 	{
 		if(!candidates.empty() && candidx < candidates.size())

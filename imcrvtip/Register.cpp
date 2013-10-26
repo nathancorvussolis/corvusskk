@@ -23,7 +23,7 @@ static const GUID c_guidCategory[] =
 	GUID_TFCAT_TIPCAP_COMLESS,
 	GUID_TFCAT_DISPLAYATTRIBUTEPROVIDER
 };
-// for Windows 8
+// for Windows 8 or later
 static const GUID c_guidCategory8[] =
 {
 	GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT,
@@ -50,18 +50,6 @@ BOOL RegisterProfiles()
 	
 	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
-
-	if(!IsVersion6AndOver())
-	{
-		//XPで既定の言語に設定する為、デフォルトで存在するという仮定で
-		//MS-IME2002の入力ロケール識別子「E0010411」をとりあえず使用。
-		HKL hkl = LoadKeyboardLayoutW(L"E0010411", KLF_ACTIVATE);
-		if(hkl != NULL)
-		{
-			pInputProcessProfiles->SubstituteKeyboardLayout(
-				c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, hkl);
-		}
-	}
 
 exit_r:
 	pInputProcessProfiles->Release();
@@ -92,7 +80,7 @@ BOOL RegisterCategories()
 		{
 			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
-		// for Windows 8
+		// for Windows 8 or later
 		if(IsVersion62AndOver())
 		{
 			for(i=0; i<_countof(c_guidCategory8); i++)
@@ -122,7 +110,7 @@ void UnregisterCategories()
 		{
 			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
-		// for Windows 8
+		// for Windows 8 or later
 		if(IsVersion62AndOver())
 		{
 			for(i=0; i<_countof(c_guidCategory8); i++)

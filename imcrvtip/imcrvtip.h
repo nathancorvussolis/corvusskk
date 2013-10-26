@@ -4,19 +4,16 @@
 
 #include "common.h"
 
-//for resource
-#define RC_FILE				"imcrvtip"
-
 //入力モード
 enum
 {
 	im_disable = 0,		//無効
-    im_default,			//デフォルト
-    im_hiragana,		//ひらがな
-    im_katakana,		//カタカナ
-    im_katakana_ank,	//半角ｶﾀｶﾅ
-    im_jlatin,			//全英
-    im_ascii			//ASCII
+	im_default,			//デフォルト
+	im_hiragana,		//ひらがな
+	im_katakana,		//カタカナ
+	im_katakana_ank,	//半角ｶﾀｶﾅ
+	im_jlatin,			//全英
+	im_ascii			//ASCII
 };
 
 //候補   pair< candidate, annotation >
@@ -100,21 +97,5 @@ LONG DllAddRef();
 LONG DllRelease();
 
 #define IID_IUNK_ARGS(pType) __uuidof(*(pType)), (IUnknown *)pType
-
-// for Windows 8
-#if 1
-#define EVENT_OBJECT_IME_SHOW               0x8027
-#define EVENT_OBJECT_IME_HIDE               0x8028
-#define EVENT_OBJECT_IME_CHANGE             0x8029
-
-#define TF_TMF_IMMERSIVEMODE          0x40000000
-
-#define TF_IPP_CAPS_IMMERSIVESUPPORT            0x00010000
-#define TF_IPP_CAPS_SYSTRAYSUPPORT              0x00020000
-
-extern const GUID GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT;
-extern const GUID GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT;
-extern const GUID GUID_LBI_INPUTMODE;
-#endif
 
 #endif //IMCRVTIP_H

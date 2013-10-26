@@ -324,7 +324,7 @@ HANDLE StartSaveSKKUserDicEx()
 	{
 		bUserDicChg = FALSE;
 		USERDATA *userdata = new USERDATA();
-		userdata->userdic = userdic; 
+		userdata->userdic = userdic;
 		userdata->complements = complements;
 		userdata->accompaniments = accompaniments;
 

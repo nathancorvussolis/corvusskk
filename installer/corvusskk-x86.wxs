@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.3.2" ?>
+  <?define version="1.4.0" ?>
   <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="Nathan Corvus Solis" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
-    <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="200" InstallScope="perMachine" InstallPrivileges="elevated" />
+    <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
     <Media Id="1" Cabinet="corvusskk.cab" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
@@ -38,6 +38,13 @@
       <ComponentRef Id="RegistryRun" />
     </Feature>
 
+    <DirectoryRef Id="TARGETDIR">
+      <Merge Id="CRT_X86" SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x86.msm" DiskId="1" Language="0" />
+    </DirectoryRef>
+    <Feature Id="CRT" Title="VCRuntime" AllowAdvertise="no" Display="hidden" Level="1">
+      <MergeRef Id="CRT_X86"/>
+    </Feature>
+
     <UI />
     <WixVariable Id="WixUILicenseRtf" Value="ms-pl.rtf" />
     <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
@@ -62,7 +69,7 @@
       <![CDATA[NOT VersionNT64]]>
     </Condition>
     <Condition Message="This application does not support this version of Windows.">
-      <![CDATA[(VersionNT >= 600) OR ((VersionNT = 501) AND (ServicePackLevel >= 3))]]>
+      <![CDATA[VersionNT >= 600]]>
     </Condition>
 
   </Product>

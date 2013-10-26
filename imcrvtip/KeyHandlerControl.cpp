@@ -390,13 +390,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_HINT:
-		if(showentry)
+		if(inputkey)
 		{
-			candidx = 0;
-			showentry = FALSE;
-		}
-		if(inputkey && !showentry)
-		{
+			if(showentry)
+			{
+				candidx = 0;
+				showentry = FALSE;
+			}
 			_ConvN(WCHAR_MAX);
 			if(roman.empty() && !kana.empty() &&
 				kana.find_first_of(CHAR_SKK_HINT) == std::wstring::npos)
@@ -404,10 +404,6 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				hintmode = TRUE;
 				cursoridx = kana.size();
 				kana.insert(cursoridx, 1, CHAR_SKK_HINT);
-				if(cursoridx < accompidx)
-				{
-					accompidx++;
-				}
 				cursoridx++;
 			}
 			_Update(ec, pContext);

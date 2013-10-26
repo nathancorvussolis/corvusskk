@@ -172,13 +172,13 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"xre", L"ㇾ", L"ㇾ", L"ﾚ"},
 	{L"xro", L"ㇿ", L"ㇿ", L"ﾛ"},
 
-	{L"xnnse", L"セ", L"セ", L"ｾ"},
-	{L"xnntu", L"ツ", L"ツ", L"ﾂ"},
-	{L"xnnto", L"ト", L"ト", L"ﾄ"},
+	{L"xnnse", L"セ", L"セ", L"ｾ"},		//平仮名片仮名変換用
+	{L"xnntu", L"ツ", L"ツ", L"ﾂ"},		//〃
+	{L"xnnto", L"ト", L"ト", L"ﾄ"},		//〃
 
 	//濁点、半濁点
-	{L"v,", L"゛", L"゛", L"ﾞ"},	//濁点「う゛」→「ｳﾞ」
-	{L"v.", L"゜", L"゜", L"ﾟ"},	//半濁点
+	{L"v,", L"゛", L"゛", L"ﾞ"},			//濁点「う゛」→「ｳﾞ」
+	{L"v.", L"゜", L"゜", L"ﾟ"},			//半濁点
 	{L"x,", L"\x3099", L"\x3099", L"ﾞ"},	//結合文字用濁音
 	{L"x.", L"\x309A", L"\x309A", L"ﾟ"},	//結合文字用半濁音「か゚」→「ｶﾟ」
 
@@ -203,10 +203,10 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"*", L"*", L"*", L"*"},
 	{L"+", L"+", L"+", L"+"},
 	{L",", L"、", L"、", L"､"},		//full-width, half width katakana
-	{L"-", L"ー", L"ー", L"ｰ"}, 	//full-width, half width katakana
+	{L"-", L"ー", L"ー", L"ｰ"},		//full-width, half width katakana
 	{L".", L"。", L"。", L"｡"},		//full-width, half width katakana
 	{L"/", L"/", L"/", L"/"},
-	//	// [0-9] //
+	//   [0-9]   //
 	{L":", L":", L":", L":"},
 	{L";", L";", L";", L";"},
 	{L"<", L"<", L"<", L"<"},
@@ -214,25 +214,25 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L">", L">", L">", L">"},
 	{L"?", L"？", L"？", L"?"},		//full-width
 	{L"@", L"@", L"@", L"@"},
-	//	// [A-Z] //
+	//   [A-Z]   //
 	{L"[", L"「", L"「", L"｢"},		//full-width, half width katakana
 	{L"\\", L"\\", L"\\", L"\\"},
 	{L"]", L"」", L"」", L"｣"},		//full-width, half width katakana
 	{L"^", L"^", L"^", L"^"},
 	{L"_", L"_", L"_", L"_"},
 	{L"`", L"`", L"`", L"`"},
-	//	// [a-z] //
+	//   [a-z]   //
 	{L"{", L"{", L"{", L"{"},
 	{L"|", L"|", L"|", L"|"},
 	{L"}", L"}", L"}", L"}"},
 	{L"~", L"~", L"~", L"~"},
 
 	//z記号
-	{L"z\x20", L"　", L"　", L"　"},	//全角スペース
+	{L"z\x20", L"　", L"　", L"　"},	//full width space
 	{L"z,", L"‥", L"‥", L"‥"},
 	{L"z-", L"～", L"～", L"～"},
 	{L"z.", L"…", L"…", L"…"},
-	{L"z/", L"・", L"・", L"･"},	//half width katakana
+	{L"z/", L"・", L"・", L"･"},		//half width katakana
 	{L"z(", L"（", L"（", L"（"},
 	{L"z)", L"）", L"）", L"）"},
 	{L"z[", L"『", L"『", L"『"},
@@ -244,8 +244,8 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"zk", L"↑", L"↑", L"↑"},
 	{L"zl", L"→", L"→", L"→"},
 	{L"zL", L"⇒", L"⇒", L"⇒"},
-	{L"z;", L"゛", L"゛", L"ﾞ"},	//濁点
-	{L"z:", L"゜", L"゜", L"ﾟ"},	//半濁点
+	{L"z;", L"゛", L"゛", L"ﾞ"},		//濁点
+	{L"z:", L"゜", L"゜", L"ﾟ"},		//半濁点
 
 	{L"",L"",L"",L""}
 };

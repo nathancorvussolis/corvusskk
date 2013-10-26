@@ -39,12 +39,12 @@ const CONFIG_KEYMAP configkeymap[] =
 	{SKK_NULL,		L""}
 };
 
-static const TF_PRESERVEDKEY c_PreservedKey[] =
+static const TF_PRESERVEDKEY configpreservedkey[] =
 {
-	{ VK_OEM_3/*0xC0*/, TF_MOD_ALT },
-	{ VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER },
-	{ VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER },
-	{ VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER }
+	{VK_OEM_3/*0xC0*/, TF_MOD_ALT},
+	{VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
+	{VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
+	{VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER}
 };
 
 static struct {
@@ -235,9 +235,9 @@ void CTextService::_LoadPreservedKey()
 	}
 	else
 	{
-		for(i=0; i<_countof(c_PreservedKey); i++)
+		for(i=0; i<_countof(configpreservedkey); i++)
 		{
-			preservedkey[i] = c_PreservedKey[i];
+			preservedkey[i] = configpreservedkey[i];
 		}
 	}
 }

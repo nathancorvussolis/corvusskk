@@ -7,7 +7,7 @@
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -130,49 +130,51 @@
     <None Include="imcrvtip.def">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="Icon\CorvusSKK.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xAscii.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xDefault.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xHiragana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xJLatin.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xKatakana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\xKatakana1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zAscii.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zDefault.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zHiragana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zJLatin.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zKatakana.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Icon\zKatakana1.ico">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvtip.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Icon\CorvusSKK.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xAscii.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xDefault.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xHiragana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xJLatin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\xKatakana1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zAscii.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zDefault.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zHiragana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zJLatin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\zKatakana1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

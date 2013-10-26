@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.3.2
+     CorvusSKK version 1.4.0
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -9,7 +9,6 @@
   Windowsで動作するSKK風のIMEです。
 
   対応OS
-    ・Windows XP    (32-bit SP3 / 64-bit SP2)
     ・Windows Vista (32-bit / 64-bit)
     ・Windows 7     (32-bit / 64-bit)
     ・Windows 8     (32-bit / 64-bit)
@@ -24,17 +23,14 @@
 --------------------------------------------------------------------------------
 
 
-・必須ライブラリ のインストール
+・Windows Installer のインストール
 
-  32bit版 Windows では x86 の VC++ パッケージのみを、
-  64bit版 Windows では x86 と x64 の VC++ パッケージの両方を
-  予めインストールして下さい。
+  Windows Vista SPなし, SP1 では、Windows Installer 4.5 を予めインストールして
+  下さい。
+  Windows Vista SP2 または Windows 7 以降ではインストールは不要です。
 
-  Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x86)
-  http://www.microsoft.com/ja-jp/download/details.aspx?id=8328
-
-  Microsoft Visual C++ 2010 SP1 再頒布可能パッケージ (x64)
-  http://www.microsoft.com/ja-jp/download/details.aspx?id=13523
+  Windows Installer 4.5 Redistributable
+  http://www.microsoft.com/en-us/download/details.aspx?id=8483
 
 
 ・CorvusSKK のインストール
@@ -58,34 +54,12 @@
   OKボタンを押してみて下さい。
 
 
-・Windows XP
-
-  XPでは、SP3(x64はSP2) を予めインストールして下さい。
-
-  XPでの使用は動作が不安定な為、あまりお勧めしません。
-
-  「テキストサービスと入力言語」ダイアログで「詳細なテキストサービスのサポートを
-  プログラムのすべてに拡張する」にチェックを入れて下さい。
-
-  JIS X 0213 で追加された文字を表示するには、以下のような JIS X 0213:2004 対応
-  のフォントをインストールして下さい。
-
-  JIS2004 対応 MS ゴシック & MS 明朝フォントパッケージ
-  http://www.microsoft.com/ja-jp/windows/products/windowsvista/jp_font/jis04/default.aspx
-
-  Windows XP 向け ClearType 対応メイリオ バージョン 5.00
-  http://www.microsoft.com/ja-jp/download/details.aspx?id=10550
-
-  IPAフォント
-  http://ossipedia.ipa.go.jp/ipafont/index.html
-
-
 ・Windows Store アプリ
 
   Windows Store アプリで使用するには、設定ファイル（config.xml）に Windows Store
   アプリへのアクセス許可を付加させる必要があります。
-  Windows 8 以降で動作する設定ダイアログでOKボタンを押して保存を行うとアクセス許可の
-  付加が自動的に行われます。
+  Windows 8 以降で動作する設定ダイアログでOKボタンを押して保存を行うとアクセス
+  許可の付加が自動的に行われます。
 
 
 ・Adobe Reader XI
@@ -211,15 +185,15 @@
 
   IME ON/OFF のキーを指定します。
   仮想キーコード、Alt、Control、Shift の組合せを設定して下さい。
-  仮想キーコードの詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/dd375731
+  仮想キーコードの詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/dd375731(v=vs.85).aspx
   最大で8行です。
 
 
 ・キー設定（文字）、キー設定（仮想キー）
 
   各機能に対してキーを正規表現で設定して下さい。
-  Visual C++ 2010 の TR1 正規表現で、文法は ECMAScript を使用しています。
-  正規表現の詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/bb982727(v=vs.100).aspx
+  Visual C++ 2013 の TR1 正規表現で、文法は ECMAScript を使用しています。
+  正規表現の詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/bb982727(v=vs.120).aspx
 
   無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
   文字として認識される場合はキー設定（文字）のほうが優先されます。
@@ -282,10 +256,10 @@
   || 接辞       ||                        || 接頭辞・接尾辞
   || 次候補     ||                        || 辞書検索開始、次候補
   || 前候補     ||                        || 「後退」のキーも使用可
-  || 絞り込み   ||                        || 候補を絞り込む見出し語の入力開始
   || 辞書削除   ||                        || ユーザ辞書から候補を削除
   || 次補完     ||                        || 補完開始、次見出し語候補
   || 前補完     ||                        || 前見出し語候補
+  || 絞り込み   ||                        || 候補を絞り込む見出し語の入力開始
   || 変換位置   ||                        || 変換位置指定
   || 直接入力   ||                        || 見出し語入力でローマ字仮名変換しない（不使用）
   || 確定       ||                        || 
@@ -407,7 +381,8 @@
     comment-start ("//")
 
 
-・数値変換は、タイプ0～3,5,8,9、数値は0～1垓未満(10^20-1)までの整数に対応しています。
+・数値変換は、タイプ0～3,5,8,9、数値は0～1垓未満(10^20-1)までの整数に
+  対応しています。
   （見出し語として #｟ナンバーサイン｠を含み、候補として #0～#9 のいずれかを含む
   エントリが辞書に存在する必要があります。）
 
@@ -465,7 +440,6 @@
 
 ・開発環境
 
-  Visual C++ 2010 Express + SP1
-  Windows SDK 7.1
-  WiX 3.7
+  Visual Studio Express 2013 for Windows Desktop
+  WiX Toolset 3.7
   7-Zip 9.20

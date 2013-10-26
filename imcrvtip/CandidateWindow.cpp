@@ -480,11 +480,6 @@ void CCandidateWindow::_BeginUIElement()
 		_bShow = bShow;
 	}
 
-	if(!IsVersion6AndOver())
-	{
-		_bShow = TRUE;
-	}
-
 	if(_bShow)
 	{
 		if(_hwnd != NULL)

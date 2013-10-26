@@ -38,7 +38,7 @@ HRESULT CTextService::GetDescription(BSTR *pbstrDesc)
 }
 
 HRESULT CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
-{ 
+{
 	if(ppunk == NULL)
 	{
 		return E_INVALIDARG;

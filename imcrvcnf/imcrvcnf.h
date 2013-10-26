@@ -4,9 +4,6 @@
 
 #include "common.h"
 
-//for resource
-#define RC_FILE				"imcrvcnf"
-
 // imcrvcnf
 void CreateProperty(HINSTANCE hInst);
 

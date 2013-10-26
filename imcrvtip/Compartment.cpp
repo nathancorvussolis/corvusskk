@@ -20,6 +20,37 @@ HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)
 	return hr;
 }
 
+HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
+{
+	ITfCompartmentMgr *pCompartmentMgr;
+	ITfCompartment *pCompartment;
+	HRESULT hr = E_FAIL;
+
+	if(pvar == NULL)
+	{
+		return hr;
+	}
+
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+	{
+		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
+		{
+			VARIANT var;
+			if(pCompartment->GetValue(&var) == S_OK)
+			{
+				if(var.vt == VT_I4)
+				{
+					*pvar = var;
+					hr = S_OK;
+				}
+			}
+		}
+		pCompartmentMgr->Release();
+	}
+
+	return hr;
+}
+
 BOOL CTextService::_IsKeyboardDisabled()
 {
 	ITfDocumentMgr *pDocumentMgrFocus = NULL;
