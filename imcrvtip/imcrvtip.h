@@ -7,7 +7,7 @@
 //入力モード
 enum
 {
-	im_disable = 0,		//無効
+	im_disable = -1,	//無効
 	im_default,			//デフォルト
 	im_hiragana,		//ひらがな
 	im_katakana,		//カタカナ

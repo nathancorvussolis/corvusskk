@@ -366,12 +366,13 @@ void CTextService::_KeyboardOpenCloseChanged()
 
 void CTextService::_KeyboardInputConversionChanged()
 {
-	if(!_IsKeyboardDisabled() && _IsKeyboardOpen())
+	VARIANT var;
+	int inputmode_bak = inputmode;
+
+	if(_GetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var) == S_OK)
 	{
-		VARIANT var;
-		if(_GetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var) == S_OK)
+		if(_IsKeyboardOpen())
 		{
-			int inputmode_bak = inputmode;
 			LONG lval = var.lVal & (TF_CONVERSIONMODE_ALPHANUMERIC |
 				TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE);
 			switch(lval)
@@ -394,13 +395,20 @@ void CTextService::_KeyboardInputConversionChanged()
 			default:
 				break;
 			}
-			if(inputmode != inputmode_bak)
-			{
-				_ResetStatus();
-				_ClearComposition();
-				_UpdateLanguageBar();
-			}
 		}
+	}
+	else
+	{
+		var.vt = VT_I4;
+		var.lVal = TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE;
+		_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
+	}
+
+	if(inputmode != inputmode_bak)
+	{
+		_ResetStatus();
+		_ClearComposition();
+		_UpdateLanguageBar();
 	}
 }
 
