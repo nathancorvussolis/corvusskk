@@ -4,12 +4,10 @@
 #include "TextService.h"
 #include "convtype.h"
 
-// キー キー設定
-typedef struct {
+static const struct {
 	BYTE skkfunc;
 	LPCWSTR keyname;
-} CONFIG_KEYMAP;
-const CONFIG_KEYMAP configkeymap[] =
+} configkeymap[] =
 {
 	{SKK_KANA,		ValueKeyMapKana},
 	{SKK_CONV_CHAR,	ValueKeyMapConvChar},
@@ -41,13 +39,13 @@ const CONFIG_KEYMAP configkeymap[] =
 
 static const TF_PRESERVEDKEY configpreservedkey[] =
 {
-	{VK_OEM_3/*0xC0*/, TF_MOD_ALT},
-	{VK_KANJI/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
-	{VK_OEM_AUTO/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
-	{VK_OEM_ENLW/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER}
+	{VK_OEM_3		/*0xC0*/, TF_MOD_ALT},
+	{VK_KANJI		/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
+	{VK_OEM_AUTO	/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
+	{VK_OEM_ENLW	/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER}
 };
 
-static struct {
+static const struct {
 	LPCWSTR value;
 	COLORREF color;
 } colorsxmlvalue[8] = {
@@ -171,13 +169,15 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(ValueDispCandNo, c_dispcandnum);
 	_ReadBoolValue(ValueAnnotation, c_annotation);
 	_ReadBoolValue(ValueAnnotatLst, c_annotatlst);
+	_ReadBoolValue(ValueShowModeInl, c_showmodeinl);
+	_ReadBoolValue(ValueShowModeImm, c_showmodeimm);
 	_ReadBoolValue(ValueNoModeMark, c_nomodemark);
+
 	_ReadBoolValue(ValueNoOkuriConv, c_nookuriconv);
 	_ReadBoolValue(ValueDelCvPosCncl, c_delcvposcncl);
 	_ReadBoolValue(ValueDelOkuriCncl, c_delokuricncl);
 	_ReadBoolValue(ValueBackIncEnter, c_backincenter);
 	_ReadBoolValue(ValueAddCandKtkn, c_addcandktkn);
-	_ReadBoolValue(ValueShowModeImm, c_showmodeimm);
 }
 
 void CTextService::_LoadSelKey()

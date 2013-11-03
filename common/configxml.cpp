@@ -2,6 +2,7 @@
 #include "configxml.h"
 
 //tag
+
 LPCWSTR TagRoot = L"skk";
 LPCWSTR TagSection = L"section";
 LPCWSTR TagEntry = L"entry";
@@ -10,6 +11,7 @@ LPCWSTR TagList = L"list";
 LPCWSTR TagRow = L"row";
 
 //attribute
+
 LPCWSTR AttributeName = L"name";
 LPCWSTR AttributeValue = L"value";
 LPCWSTR AttributeCandidate = L"c";
@@ -29,17 +31,23 @@ LPCWSTR AttributeSpOp = L"so";
 LPCWSTR AttributeLatin = L"la";
 LPCWSTR AttributeJLatin = L"jl";
 
-//section
+//font section
+
 LPCWSTR SectionFont = L"font";
-//keys
+
+//font keys
+
 LPCWSTR ValueFontName = L"name";
 LPCWSTR ValueFontSize = L"size";
 LPCWSTR ValueFontWeight = L"weight";
 LPCWSTR ValueFontItalic = L"italic";
 
-//section
+//behavior section
+
 LPCWSTR SectionBehavior = L"behavior";
-//keys
+
+//behavior keys
+
 LPCWSTR ValueMaxWidth = L"maxwidth";
 LPCWSTR ValueColorBG = L"colorbg";
 LPCWSTR ValueColorFR = L"colorfr";
@@ -53,37 +61,50 @@ LPCWSTR ValueUntilCandList = L"untilcandlist";
 LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueAnnotation = L"annotation";
 LPCWSTR ValueAnnotatLst = L"annotatlst";
+LPCWSTR ValueShowModeInl = L"showmodeinl";
+LPCWSTR ValueShowModeImm = L"showmodeimm";
 LPCWSTR ValueNoModeMark = L"nomodemark";
+
 LPCWSTR ValueNoOkuriConv = L"nookuriconv";
 LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";
 LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";
 LPCWSTR ValueAddCandKtkn = L"addcandktkn";
-LPCWSTR ValueShowModeImm = L"showmodeimm";
 
-//section
+//dictionary section
+
 LPCWSTR SectionDictionary = L"dictionary";
 
-//section
+//server section
+
 LPCWSTR SectionServer = L"server";
-//keys
+
+//server keys
+
 LPCWSTR ValueServerServ = L"serv";
 LPCWSTR ValueServerHost = L"host";
 LPCWSTR ValueServerPort = L"port";
 LPCWSTR ValueServerEncoding = L"encoding";
 LPCWSTR ValueServerTimeOut = L"timeout";
 
-//section
+//selkey section
+
 LPCWSTR SectionSelKey = L"selkey";
 
-//section
+//preservedkey section
+
 LPCWSTR SectionPreservedKey = L"preservedkey";
 
-//section
+//keymap section
+
 LPCWSTR SectionKeyMap = L"keymap";
-//section
+
+//vkeymap section
+
 LPCWSTR SectionVKeyMap = L"vkeymap";
-//keys
+
+//keymap and vkeymap keys
+
 LPCWSTR ValueKeyMapKana = L"kana";
 LPCWSTR ValueKeyMapConvChar = L"convchar";
 LPCWSTR ValueKeyMapJLatin = L"jlatin";
@@ -110,13 +131,16 @@ LPCWSTR ValueKeyMapRight = L"right";
 LPCWSTR ValueKeyMapDown = L"down";
 LPCWSTR ValueKeyMapPaste = L"paste";
 
-//section
+//convpoint section
+
 LPCWSTR SectionConvPoint = L"convpoint";
 
-//section
+//kana section
+
 LPCWSTR SectionKana = L"kana";
 
-//section
+//jlatin section
+
 LPCWSTR SectionJLatin = L"jlatin";
 
 HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream)

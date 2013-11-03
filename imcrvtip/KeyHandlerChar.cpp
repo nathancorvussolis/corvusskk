@@ -3,7 +3,7 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, WCHAR ch, WCHAR chO)
+HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, WPARAM wParam, WCHAR ch, WCHAR chO)
 {
 	ROMAN_KANA_CONV rkc;
 	ASCII_JLATIN_CONV ajc;
@@ -80,6 +80,16 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 			}
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 			ret = _ConvRomanKana(&rkc);
+
+			if(wParam == VK_PACKET && ret == E_ABORT && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
+			{
+				rkc.hiragana[0] = rkc.katakana[0] = rkc.katakana_ank[0] = ch;
+				rkc.hiragana[1] = rkc.katakana[1] = rkc.katakana_ank[1] = L'\0';
+				rkc.soku = FALSE;
+				rkc.wait = FALSE;
+				ret = S_OK;
+			}
+
 			switch(ret)
 			{
 			case S_OK:	//一致
@@ -206,6 +216,14 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		roman.push_back(ch);
 		wcsncpy_s(ajc.ascii, roman.c_str(), _TRUNCATE);
 		ret = _ConvAsciiJLatin(&ajc);
+
+		if(wParam == VK_PACKET && ret == E_ABORT && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
+		{
+			ajc.jlatin[0] = ch;
+			ajc.jlatin[1] = L'\0';
+			ret = S_OK;
+		}
+
 		switch(ret)
 		{
 		case S_OK:		//一致
@@ -218,11 +236,15 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 			roman.clear();
 			_HandleCharReturn(ec, pContext);
 			break;
+		default:
+			break;
 		}
 		break;
 
 	case im_ascii:	//かなキーロックONのときのみ
-		kana.push_back(ch);
+		ajc.ascii[0] = ch;
+		ajc.ascii[1] = L'\0';
+		kana.assign(ajc.ascii);
 		cursoridx = kana.size();
 		_HandleCharReturn(ec, pContext);
 		break;

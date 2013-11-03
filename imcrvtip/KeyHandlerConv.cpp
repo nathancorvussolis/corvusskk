@@ -7,8 +7,8 @@
 WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 {
 	BYTE keystate[256];
-	WCHAR szU[4];
-	WCHAR u;
+	WCHAR ubuff;
+	WCHAR u = L'\0';
 	
 	GetKeyboardState(keystate);
 
@@ -35,14 +35,10 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 		break;
 	}
 
-	int retu = ToUnicode(vk, 0, keystate, szU, _countof(szU), 0);
-	if(retu != 1)
+	int retu = ToUnicode(vk, 0, keystate, &ubuff, 1, 0);
+	if(retu == 1)
 	{
-		u = L'\0';
-	}
-	else
-	{
-		u = szU[0];
+		u = ubuff;
 	}
 
 	return u;
@@ -85,6 +81,18 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 		default:
 			break;
 		}
+	}
+
+	switch(ch)
+	{
+	case TKB_NEXT_PAGE:
+		k = SKK_NEXT_CAND;
+		break;
+	case TKB_PREV_PAGE:
+		k = SKK_PREV_CAND;
+		break;
+	default:
+		break;
 	}
 
 	return k;

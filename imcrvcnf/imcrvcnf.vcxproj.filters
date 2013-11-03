@@ -41,7 +41,10 @@
     <ClCompile Include="convtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DlgProcBehavior.cpp">
+    <ClCompile Include="DlgProcBehavior1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcBehavior2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcConvPoint.cpp">

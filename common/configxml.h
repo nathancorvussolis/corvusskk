@@ -33,6 +33,7 @@ HRESULT WriterRow(IXmlWriter *pWriter, const APPDATAXMLROW &row);
 HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list, BOOL newline = FALSE);
 
 //tag
+
 extern LPCWSTR TagRoot;
 extern LPCWSTR TagSection;
 extern LPCWSTR TagKey;
@@ -41,6 +42,7 @@ extern LPCWSTR TagList;
 extern LPCWSTR TagRow;
 
 //attribute
+
 extern LPCWSTR AttributeName;
 extern LPCWSTR AttributeValue;
 extern LPCWSTR AttributeCandidate;
@@ -60,17 +62,23 @@ extern LPCWSTR AttributeSpOp;
 extern LPCWSTR AttributeLatin;
 extern LPCWSTR AttributeJLatin;
 
-//section
+//font section
+
 extern LPCWSTR SectionFont;
-//keys
+
+//font keys
+
 extern LPCWSTR ValueFontName;
 extern LPCWSTR ValueFontSize;
 extern LPCWSTR ValueFontWeight;
 extern LPCWSTR ValueFontItalic;
 
-//section
+//behavior section
+
 extern LPCWSTR SectionBehavior;
-//keys
+
+//behavior keys
+
 extern LPCWSTR ValueMaxWidth;
 extern LPCWSTR ValueColorBG;
 extern LPCWSTR ValueColorFR;
@@ -84,37 +92,50 @@ extern LPCWSTR ValueUntilCandList;
 extern LPCWSTR ValueDispCandNo;
 extern LPCWSTR ValueAnnotation;
 extern LPCWSTR ValueAnnotatLst;
+extern LPCWSTR ValueShowModeInl;
+extern LPCWSTR ValueShowModeImm;
 extern LPCWSTR ValueNoModeMark;
+
 extern LPCWSTR ValueNoOkuriConv;
 extern LPCWSTR ValueDelCvPosCncl;
 extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;
 extern LPCWSTR ValueAddCandKtkn;
-extern LPCWSTR ValueShowModeImm;
 
-//section
+//dictionary section
+
 extern LPCWSTR SectionDictionary;
 
-//section
+//server section
+
 extern LPCWSTR SectionServer;
-//keys
+
+//server keys
+
 extern LPCWSTR ValueServerServ;
 extern LPCWSTR ValueServerHost;
 extern LPCWSTR ValueServerPort;
 extern LPCWSTR ValueServerEncoding;
 extern LPCWSTR ValueServerTimeOut;
 
-//section
+//selkey section
+
 extern LPCWSTR SectionSelKey;
 
-//section
+//preservedkey section
+
 extern LPCWSTR SectionPreservedKey;
 
-//section
+//keymap section
+
 extern LPCWSTR SectionKeyMap;
-//section
+
+//vkeymap section
+
 extern LPCWSTR SectionVKeyMap;
-//keys
+
+//keymap and vkeymap keys
+
 extern LPCWSTR ValueKeyMapKana;
 extern LPCWSTR ValueKeyMapConvChar;
 extern LPCWSTR ValueKeyMapJLatin;
@@ -141,13 +162,16 @@ extern LPCWSTR ValueKeyMapRight;
 extern LPCWSTR ValueKeyMapDown;
 extern LPCWSTR ValueKeyMapPaste;
 
-//section
+//convpoint section
+
 extern LPCWSTR SectionConvPoint;
 
-//section
+//kana section
+
 extern LPCWSTR SectionKana;
 
-//section
+//jlatin section
+
 extern LPCWSTR SectionJLatin;
 
 #endif //CONFIGXML_H

@@ -63,6 +63,9 @@ typedef struct {
 
 #define CHAR_SKK_HINT	L'\x20'
 
+#define TKB_NEXT_PAGE	L'\uF003'	//next page key on touch-optimized keyboard
+#define TKB_PREV_PAGE	L'\uF004'	//previous page key on touch-optimized keyboard
+
 //候補一覧選択キー数
 #define MAX_SELKEY		7
 

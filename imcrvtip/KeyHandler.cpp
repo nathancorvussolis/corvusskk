@@ -232,7 +232,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			chO = roman[0];
 		}
 		romanN = roman;
-		if(_HandleChar(ec, pContext, composition, ch, chO) == E_ABORT)
+		if(_HandleChar(ec, pContext, composition, wParam, ch, chO) == E_ABORT)
 		{
 			//待機処理等
 			switch(inputmode)
@@ -267,7 +267,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						}
 						else
 						{
-							_HandleChar(ec, pContext, composition, ch, chO);
+							_HandleChar(ec, pContext, composition, wParam, ch, chO);
 						}
 					}
 					else
@@ -317,7 +317,7 @@ void CTextService::_KeyboardOpenCloseChanged()
 	BOOL fOpen = _IsKeyboardOpen();
 	if(fOpen)
 	{
-		//OnPreservedKey()経由ならひらがなモード
+		//OnPreservedKey(),CLangBarItemButton::OnClick()経由ならひらがなモード
 		//それ以外なら現在のモード
 		switch(inputmode)
 		{

@@ -60,6 +60,10 @@ HRESULT CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 	{
 		*ppunk = (ITfFnShowHelp *)this;
 	}
+	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
+	{
+		*ppunk = (ITfFnGetPreferredTouchKeyboardLayout *)this;
+	}
 	else
 	{
 		return E_INVALIDARG;
@@ -114,6 +118,21 @@ HRESULT CTextService::Show(HWND hwndParent, LANGID langid, REFGUID rguidProfile)
 HRESULT CTextService::Show(HWND hwndParent)
 {
 	_StartConfigure();
+	return S_OK;
+}
+
+HRESULT CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId)
+{
+	if(pTKBLayoutType != NULL && pwPreferredLayoutId != NULL)
+	{
+		*pTKBLayoutType = TKBLT_OPTIMIZED;
+		*pwPreferredLayoutId = TKBL_OPT_JAPANESE_ABC;
+	}
+	else
+	{
+		return E_INVALIDARG;
+	}
+
 	return S_OK;
 }
 

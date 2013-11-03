@@ -5,7 +5,8 @@
 HINSTANCE hInst;
 
 // static dialog procedure
-INT_PTR CALLBACK DlgProcBehavior(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcBehavior1(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcBehavior2(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DlgProcDictionary(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DlgProcSelKey(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK DlgProcPreservedKey(HWND, UINT, WPARAM, LPARAM);
@@ -49,8 +50,9 @@ void CreateProperty(HINSTANCE hInstance)
 		int id;
 		DLGPROC DlgProc;
 	} DlgPage[] = {
-		{IDD_DIALOG_BEHAVIOR,	DlgProcBehavior},
-		{IDD_DIALOG_DICTIONARY,	DlgProcDictionary},
+		{IDD_DIALOG_BEHAVIOR1,	DlgProcBehavior1},
+		{IDD_DIALOG_BEHAVIOR2,	DlgProcBehavior2},
+		{IDD_DIALOG_DICTIONARY, DlgProcDictionary},
 		{IDD_DIALOG_SELKEY,		DlgProcSelKey},
 		{IDD_DIALOG_PRSRVKEY,	DlgProcPreservedKey},
 		{IDD_DIALOG_KEYMAP1,	DlgProcKeyMap1},

@@ -3,7 +3,6 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-//デフォルト
 static LPCWSTR defaultHost = L"localhost";
 static LPCWSTR defaultPort = L"1178";
 static LPCWSTR defaultTimeOut = L"1000";

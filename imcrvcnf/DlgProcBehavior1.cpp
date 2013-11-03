@@ -20,7 +20,7 @@ static struct {
 
 void DrawColor(HWND hwnd, COLORREF col);
 
-INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwnd;
 	size_t i;
@@ -113,19 +113,22 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionBehavior, ValueDispCandNo);
+
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionBehavior, ValueAnnotation, L"1");
 		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionBehavior, ValueAnnotatLst);
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_ANNOTATLST))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_ANNOTATALL, BST_CHECKED);
 		}
+
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, SectionBehavior, ValueShowModeInl);
+		LoadCheckButton(hDlg, IDC_RADIO_SHOWMODEIMM, SectionBehavior, ValueShowModeImm, L"1");
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_SHOWMODEIMM))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_SHOWMODEALL, BST_CHECKED);
+		}
+
 		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, ValueNoModeMark);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, SectionBehavior, ValueNoOkuriConv);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, SectionBehavior, ValueDelCvPosCncl, L"1");
-		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter, L"1");
-		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEIMM, SectionBehavior, ValueShowModeImm);
 
 		return TRUE;
 
@@ -186,13 +189,10 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_ANNOTATION:
 		case IDC_RADIO_ANNOTATALL:
 		case IDC_RADIO_ANNOTATLST:
+		case IDC_CHECKBOX_SHOWMODEINL:
+		case IDC_RADIO_SHOWMODEALL:
+		case IDC_RADIO_SHOWMODEIMM:
 		case IDC_CHECKBOX_NOMODEMARK:
-		case IDC_CHECKBOX_NOOKURICONV:
-		case IDC_CHECKBOX_DELCVPOSCNCL:
-		case IDC_CHECKBOX_DELOKURICNCL:
-		case IDC_CHECKBOX_BACKINCENTER:
-		case IDC_CHECKBOX_ADDCANDKTKN:
-		case IDC_CHECKBOX_SHOWMODEIMM:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return TRUE;
 
@@ -259,7 +259,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			WriterStartElement(pXmlWriter, TagRoot);
 
-			WriterStartSection(pXmlWriter, SectionFont);
+			WriterStartSection(pXmlWriter, SectionFont);		//Start of SectionFont
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));
 			WriterKey(pXmlWriter, ValueFontName, fontname);
@@ -273,9 +273,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfItalic);
 			WriterKey(pXmlWriter, ValueFontItalic, num);
 
-			WriterEndSection(pXmlWriter);
+			WriterEndSection(pXmlWriter);						//End of SectionFont
 
-			WriterStartSection(pXmlWriter, SectionBehavior);
+			WriterStartSection(pXmlWriter, SectionBehavior);	//Start of SectionBehavior -> End at DlgProcBehavior2
 
 			GetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num, _countof(num));
 			w = _wtol(num);
@@ -301,15 +301,11 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, ValueDispCandNo);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
+			SaveCheckButton(hDlg, IDC_RADIO_SHOWMODEIMM, ValueShowModeImm);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, ValueNoModeMark);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOOKURICONV, ValueNoOkuriConv);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, ValueDelCvPosCncl);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, ValueDelOkuriCncl);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, ValueBackIncEnter);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, ValueAddCandKtkn);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEIMM, ValueShowModeImm);
 
-			WriterEndSection(pXmlWriter);
+			//WriterEndSection(pXmlWriter);						//-> DlgProcBehavior2
 
 			return TRUE;
 

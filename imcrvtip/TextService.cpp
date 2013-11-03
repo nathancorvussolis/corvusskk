@@ -90,6 +90,10 @@ STDAPI CTextService::QueryInterface(REFIID riid, void **ppvObj)
 	{
 		*ppvObj = (ITfFnShowHelp *)this;
 	}
+	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
+	{
+		*ppvObj = (ITfFnGetPreferredTouchKeyboardLayout *)this;
+	}
 
 	if(*ppvObj)
 	{

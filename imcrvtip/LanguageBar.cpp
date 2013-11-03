@@ -221,7 +221,11 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 		case TF_LBI_CLK_LEFT:
 			{
 				BOOL fOpen = _pTextService->_IsKeyboardOpen();
-				if(fOpen)
+				if(!fOpen)
+				{
+					_pTextService->inputmode = im_disable;
+				}
+				else
 				{
 					_pTextService->_ClearComposition();
 				}
@@ -577,7 +581,7 @@ void CTextService::_UpdateLanguageBar()
 		_pLangBarItemI->_Update();
 	}
 
-	if(c_showmodeimm && _ImmersiveMode && !_UILessMode)
+	if(c_showmodeinl && (!c_showmodeimm || (c_showmodeimm && _ImmersiveMode)))
 	{
 		std::wstring mode;
 		for(int i=0; i<_countof(menuItems); i++)

@@ -3,7 +3,6 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-//デフォルト
 static LPCWSTR listSelKey[MAX_SELKEY_C] = {L"Aa",L"Ss",L"Dd",L"Ff",L"Jj",L"Kk",L"Ll",L"Gg",L"Hh"};
 
 INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
