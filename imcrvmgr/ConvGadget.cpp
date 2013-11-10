@@ -178,7 +178,7 @@ static std::wstring plus(const _GPARAM &param)
 	int n = 0;
 	size_t i;
 
-	for(i = 0; i<param.size(); i++)
+	for(i = 0; i < param.size(); i++)
 	{
 		n += _wtoi(param[i].c_str());
 	}
@@ -201,7 +201,7 @@ static std::wstring minus(const _GPARAM &param)
 	else
 	{
 		n = _wtoi(param[0].c_str());
-		for(i = 1; i<param.size(); i++)
+		for(i = 1; i < param.size(); i++)
 		{
 			n -= _wtoi(param[i].c_str());
 		}
@@ -216,7 +216,7 @@ static std::wstring minus(const _GPARAM &param)
 static std::wstring mul(const _GPARAM &param)
 {
 	int n = 1;
-	for(size_t i = 0; i<param.size(); i++)
+	for(size_t i = 0; i < param.size(); i++)
 	{
 		n *= _wtoi(param[i].c_str());
 	}
@@ -298,11 +298,11 @@ static std::wstring skk_gadget_units_conversion(const _GPARAM &param)
 	std::wstring ret;
 	size_t i, j;
 
-	for(i=0; i<_countof(units); i++)
+	for(i = 0; i < _countof(units); i++)
 	{
 		if(ut1.compare(units[i].name) == 0)
 		{
-			for(j=0; j<_countof(units[i].u); j++)
+			for(j = 0; j < _countof(units[i].u); j++)
 			{
 				if(ut2.compare(units[i].u[j].name) == 0)
 				{
@@ -328,7 +328,7 @@ static std::wstring conv_ad_to_gengo(const std::wstring &num, const std::wstring
 	WCHAR ystr[32];
 	int year = _wtoi(num.c_str());
 
-	for(int i=0; i<_countof(gengo); i++)
+	for(int i = 0; i < _countof(gengo); i++)
 	{
 		if(year >= gengo[i].year)
 		{
@@ -375,7 +375,7 @@ static std::wstring conv_gengo_to_ad(const std::wstring &num, const std::wstring
 	WCHAR ystr[32];
 	int year = _wtoi(num.c_str());
 
-	for(int i=0; i<_countof(gengo); i++)
+	for(int i = 0; i < _countof(gengo); i++)
 	{
 		if(gengokana.compare(gengo[i].kana) == 0)
 		{
@@ -693,13 +693,13 @@ static std::wstring gadget_func(const std::wstring s)
 		ibracket = 0;
 		ibracketcnt = 0;
 		idqcnt = 0;
-		for(i=i+1; i<ss.size(); i++)
+		for(i = i + 1; i < ss.size(); i++)
 		{
 			if(ss[i] == L'\"' && idqcnt == 0)
 			{
 				idqcnt = 1;
 			}
-			else if(ss[i] == L'\"' && ss[i-1] != L'\\' && idqcnt == 1)
+			else if(ss[i] == L'\"' && ss[i - 1] != L'\\' && idqcnt == 1)
 			{
 				idqcnt = 0;
 			}
@@ -734,9 +734,9 @@ static std::wstring gadget_func(const std::wstring s)
 		}
 	}
 
-	for(i=0; i<param.size(); i++)
+	for(i = 0; i < param.size(); i++)
 	{
-		for(j=0; j<_countof(values); j++)
+		for(j = 0; j < _countof(values); j++)
 		{
 			if(param[i].compare(values[j].name) == 0)
 			{
@@ -746,7 +746,7 @@ static std::wstring gadget_func(const std::wstring s)
 		}
 	}
 
-	for(i=0; i<_countof(func); i++)
+	for(i = 0; i < _countof(func); i++)
 	{
 		if(funcname.compare(func[i].name) == 0)
 		{
@@ -774,7 +774,7 @@ std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate)
 	skk_num_list.clear();
 	std::wsmatch m;
 	std::regex_search(key, m, std::wregex(L"\\d+"));
-	for(i=0; i<m.size(); i++)
+	for(i = 0; i < m.size(); i++)
 	{
 		skk_num_list.push_back(m[i].str());
 	}

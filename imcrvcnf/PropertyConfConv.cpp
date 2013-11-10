@@ -104,7 +104,7 @@ void LoadPreservedKey(HWND hwnd)
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_PRSRVKEY);
 
-	for(i=0; i<MAX_PRESERVEDKEY; i++)
+	for(i = 0; i < MAX_PRESERVEDKEY; i++)
 	{
 		if(preservedkey[i].uVKey == 0 &&
 			preservedkey[i].uModifiers == 0)
@@ -147,7 +147,7 @@ void SavePreservedKey(HWND hwnd)
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_PRSRVKEY);
 	count = ListView_GetItemCount(hWndListView);
-	for(i=0; i<count && i<MAX_PRESERVEDKEY; i++)
+	for(i = 0; i < count && i < MAX_PRESERVEDKEY; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
 		preservedkey[i].uVKey = wcstoul(key, NULL, 0);
@@ -176,7 +176,7 @@ void SavePreservedKey(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionPreservedKey);
 
-	for(i=0; i<MAX_PRESERVEDKEY; i++)
+	for(i = 0; i < MAX_PRESERVEDKEY; i++)
 	{
 		if(preservedkey[i].uVKey == 0 &&
 			preservedkey[i].uModifiers == 0)
@@ -239,7 +239,7 @@ void LoadConfigConvPoint()
 	}
 	else if(hr != S_OK)
 	{
-		for(i=0; i<26; i++)
+		for(i = 0; i < 26; i++)
 		{
 			conv_point[i][0][0] = L'A' + (WCHAR)i;
 			conv_point[i][1][0] = L'a' + (WCHAR)i;
@@ -258,7 +258,7 @@ void LoadConvPoint(HWND hwnd)
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 
-	for(i=0; i<CONV_POINT_NUM; i++)
+	for(i = 0; i < CONV_POINT_NUM; i++)
 	{
 		if(conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
@@ -294,7 +294,7 @@ void SaveConvPoint(HWND hwnd)
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 	count = ListView_GetItemCount(hWndListView);
-	for(i=0; i<count && i<CONV_POINT_NUM; i++)
+	for(i = 0; i < count && i < CONV_POINT_NUM; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
 		wcsncpy_s(conv_point[i][0], key, _TRUNCATE);
@@ -312,7 +312,7 @@ void SaveConvPoint(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionConvPoint);
 
-	for(i=0; i<CONV_POINT_NUM; i++)
+	for(i = 0; i < CONV_POINT_NUM; i++)
 	{
 		if(conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
@@ -405,7 +405,7 @@ void LoadConfigKana()
 	}
 	else if(hr != S_OK)
 	{
-		for(i=0; i<ROMAN_KANA_TBL_DEF_NUM; i++)
+		for(i = 0; i < ROMAN_KANA_TBL_DEF_NUM; i++)
 		{
 			if(roman_kana_conv_default[i].roman[0] == L'\0')
 			{
@@ -428,7 +428,7 @@ void LoadKana(HWND hwnd)
 	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
 	count = (int)roman_kana_conv.size();
 
-	for(i=0; i<count; i++)
+	for(i = 0; i < count; i++)
 	{
 		item.mask = LVIF_TEXT;
 		item.pszText = roman_kana_conv[i].roman;
@@ -471,7 +471,7 @@ void SaveKana(HWND hwnd)
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
 
-	for(i=0; i<count && i<ROMAN_KANA_TBL_MAX; i++)
+	for(i = 0; i < count && i < ROMAN_KANA_TBL_MAX; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, rkc.roman, _countof(rkc.roman));
 		ListView_GetItemText(hWndListView, i, 1, rkc.hiragana, _countof(rkc.hiragana));
@@ -486,7 +486,7 @@ void SaveKana(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionKana);
 
-	for(i=0; i<count; i++)
+	for(i = 0; i < count; i++)
 	{
 		attr.first = AttributeRoman;
 		attr.second = roman_kana_conv[i].roman;
@@ -577,7 +577,7 @@ void LoadJLatin(HWND hwnd)
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_JLATTBL);
 
-	for(i=0; i<ASCII_JLATIN_TBL_NUM; i++)
+	for(i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
 	{
 		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
 			ascii_jlatin_conv[i].jlatin[0] == L'\0')
@@ -608,7 +608,7 @@ void SaveJLatin(HWND hwnd)
 
 	hWndListView = GetDlgItem(hwnd, IDC_LIST_JLATTBL);
 	count = ListView_GetItemCount(hWndListView);
-	for(i=0; i<count && i<ASCII_JLATIN_TBL_NUM; i++)
+	for(i = 0; i < count && i < ASCII_JLATIN_TBL_NUM; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, ajc.ascii, _countof(ajc.ascii));
 		ListView_GetItemText(hWndListView, i, 1, ajc.jlatin, _countof(ajc.jlatin));
@@ -622,7 +622,7 @@ void SaveJLatin(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionJLatin);
 
-	for(i=0; ; i++)
+	for(i = 0; ; i++)
 	{
 		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
 			ascii_jlatin_conv[i].jlatin[0] == L'\0')
@@ -728,7 +728,7 @@ void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 	ListView_DeleteAllItems(hWndList);
 	count = (int)roman_kana_conv.size();
 
-	for(i=0; i<count; i++)
+	for(i = 0; i < count; i++)
 	{
 		item.mask = LVIF_TEXT;
 		item.pszText = roman_kana_conv[i].roman;

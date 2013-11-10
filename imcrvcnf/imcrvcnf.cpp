@@ -69,7 +69,7 @@ void CreateProperty(HINSTANCE hInstance)
 	psp.dwFlags = PSP_PREMATURE;
 	psp.hInstance = hInst;
 
-	for(i=0; i<_countof(DlgPage); i++)
+	for(i = 0; i < _countof(DlgPage); i++)
 	{
 		psp.pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
 		psp.pfnDlgProc = DlgPage[i].DlgProc;

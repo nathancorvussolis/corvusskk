@@ -189,7 +189,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 				if(hMenu)
 				{
 					UINT check = IDM_DEFAULT;
-					for(int i=0; i<_countof(menuItems); i++)
+					for(int i = 0; i < _countof(menuItems); i++)
 					{
 						if(_pTextService->inputmode == menuItems[i].inputmode)
 						{
@@ -247,7 +247,7 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		return E_INVALIDARG;
 	}
 
-	for(int i=0; i<_countof(menuItems); i++)
+	for(int i = 0; i < _countof(menuItems); i++)
 	{
 		pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
 			(_pTextService->inputmode == menuItems[i].inputmode ? TF_LBMENUF_RADIOCHECKED : 0),
@@ -270,7 +270,7 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 	case IDM_KATAKANA_ANK:
 	case IDM_JLATIN:
 	case IDM_ASCII:
-		for(int i=0; i<_countof(menuItems); i++)
+		for(int i = 0; i < _countof(menuItems); i++)
 		{
 			if(wID == menuItems[i].id)
 			{
@@ -570,7 +570,7 @@ private:
 	std::wstring _mode;
 };
 
-void CTextService::_UpdateLanguageBar()
+void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 {
 	if(_pLangBarItem != NULL)
 	{
@@ -581,10 +581,10 @@ void CTextService::_UpdateLanguageBar()
 		_pLangBarItemI->_Update();
 	}
 
-	if(c_showmodeinl && (!c_showmodeimm || (c_showmodeimm && _ImmersiveMode)))
+	if(showinputmode && c_showmodeinl && (!c_showmodeimm || (c_showmodeimm && _ImmersiveMode)))
 	{
 		std::wstring mode;
-		for(int i=0; i<_countof(menuItems); i++)
+		for(int i = 0; i < _countof(menuItems); i++)
 		{
 			if(inputmode == menuItems[i].inputmode)
 			{

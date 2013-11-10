@@ -82,17 +82,31 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_FALSE;
 	}
 	
+	//補完
 	switch(sf)
 	{
 	case SKK_NEXT_COMP:
 	case SKK_PREV_COMP:
 		break;
+	case SKK_CANCEL:
+		if(complement)
+		{
+			complement = FALSE;	//補完終了
+			kana = kana.erase(cursoridx);
+			_Update(ec, pContext);
+			return S_OK;
+		}
+		break;
 	default:
-		complement = FALSE;	//補完終了
+		if(complement)
+		{
+			complement = FALSE;	//補完終了
+		}
 		break;
 	}
 
-	if(purgedicmode)	//辞書削除
+	//辞書削除
+	if(purgedicmode)
 	{
 		switch(sf)
 		{
@@ -174,7 +188,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 				if(_ConvRomanKana(&rkc) != E_ABORT)
 				{
-					for(i=0; i<CONV_POINT_NUM; i++)
+					for(i = 0; i < CONV_POINT_NUM; i++)
 					{
 						if(conv_point[i][0] == L'\0' &&
 							conv_point[i][1] == L'\0' &&
@@ -191,7 +205,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					break;
 				}
 
-				for(i=0; i<CONV_POINT_NUM; i++)
+				for(i = 0; i < CONV_POINT_NUM; i++)
 				{
 					if(conv_point[i][0] == L'\0' &&
 						conv_point[i][1] == L'\0' &&
@@ -234,7 +248,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		romanN = roman;
 		if(_HandleChar(ec, pContext, composition, wParam, ch, chO) == E_ABORT)
 		{
-			//待機処理等
+			//待機処理、「ん」の処理等
 			switch(inputmode)
 			{
 			case im_hiragana:

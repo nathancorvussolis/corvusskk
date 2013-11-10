@@ -105,7 +105,7 @@ HRESULT CTextService::_ConvRomanKana(ROMAN_KANA_CONV *pconv)
 
 	count = roman_kana_conv.size();
 
-	for(i=0; i<count; i++)
+	for(i = 0; i < count; i++)
 	{
 		if(roman_kana_conv[i].roman[0] == L'\0')
 		{
@@ -131,7 +131,7 @@ HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 	size_t i;
 	HRESULT ret = E_ABORT;	//一致する可能性なし
 
-	for(i=0; i<ASCII_JLATIN_TBL_NUM; i++)
+	for(i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
 	{
 		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
 			ascii_jlatin_conv[i].jlatin[0] == L'\0')
@@ -203,13 +203,13 @@ void CTextService::_StartConv()
 		for(candidates_hint_itr = candidates_hint.begin(); candidates_hint_itr != candidates_hint.end(); candidates_hint_itr++)
 		{
 			candidate = candidates_hint_itr->first.first;
-			for(i=0; i<candidate.size(); i++)
+			for(i = 0; i < candidate.size(); i++)
 			{
 				str.clear();
-				if(i+1 != candidate.size() && IS_SURROGATE_PAIR(candidate[i], candidate[i+1]))
+				if(i + 1 != candidate.size() && IS_SURROGATE_PAIR(candidate[i], candidate[i + 1]))
 				{
 					str.push_back(candidate[i]);
-					str.push_back(candidate[i+1]);
+					str.push_back(candidate[i + 1]);
 					i++;
 				}
 				else
@@ -380,6 +380,7 @@ void CTextService::_NextComp()
 {
 	if(!complement)
 	{
+		cursoridx = kana.size();
 		searchkey.clear();
 		searchkeyorg.clear();
 
@@ -415,12 +416,7 @@ void CTextService::_NextComp()
 	}
 	else
 	{
-		if(candidx >= candidates.size() - 1)
-		{
-			complement = FALSE;
-			_SetComp(searchkey);
-		}
-		else
+		if(candidx < candidates.size() - 1)
 		{
 			++candidx;
 			_SetComp(candidates[candidx].first.first);
@@ -508,7 +504,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 
 				chO = L'\0';
-				for(i=0; i<CONV_POINT_NUM; i++)
+				for(i = 0; i < CONV_POINT_NUM; i++)
 				{
 					if(conv_point[i][0] == L'\0' &&
 						conv_point[i][1] == L'\0' &&
@@ -695,7 +691,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 
 	count = roman_kana_conv.size();
 
-	for(i=0; i<src.size(); i++)
+	for(i = 0; i < src.size(); i++)
 	{
 		if(((i + 1) < src.size()) && IS_SURROGATE_PAIR(src[i], src[i + 1]))
 		{
@@ -711,7 +707,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 		}
 		exist = FALSE;
 
-		for(j=0; j<count; j++)
+		for(j = 0; j < count; j++)
 		{
 			if(roman_kana_conv[j].roman[0] == L'\0')
 			{

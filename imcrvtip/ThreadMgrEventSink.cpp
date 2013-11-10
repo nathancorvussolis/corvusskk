@@ -16,7 +16,7 @@ STDAPI CTextService::OnSetFocus(ITfDocumentMgr *pdim, ITfDocumentMgr *pdimPrevFo
 {
 	_InitTextEditSink(pdim);
 
-	_UpdateLanguageBar();
+	_UpdateLanguageBar(FALSE);
 
 	return S_OK;
 }

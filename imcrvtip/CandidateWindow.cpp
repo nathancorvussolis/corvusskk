@@ -184,12 +184,12 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 			GetCurrentPage(&page);
 			count = 0;
-			for(i=0; i<page; i++)
+			for(i = 0; i < page; i++)
 			{
 				count += _CandCount[i];
 			}
 
-			for(i=0; i<_CandCount[page]; i++)
+			for(i = 0; i < _CandCount[page]; i++)
 			{
 				_MakeCandidateString(s, page, count, i, -1);
 
@@ -216,7 +216,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 				rc.right = pt.x + r.right;
 				rc.bottom = pt.y + tm.tmHeight;
 
-				for(cycle=4; cycle>=0; cycle--)
+				for(cycle = 4; cycle >= 0; cycle--)
 				{
 					_PaintCandidate(hmemdc, &rc, page, count, i, cycle);
 				}
@@ -286,9 +286,15 @@ void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 	}
 
 	bracket.append(markNBSP);
-	for(i=0; i<_depth+1; i++) bracket.append(markRegL);
+	for(i = 0; i < _depth + 1; i++)
+	{
+		bracket.append(markRegL);
+	}
 	bracket.append(markReg);
-	for(i=0; i<_depth+1; i++) bracket.append(markRegR);
+	for(i = 0; i < _depth + 1; i++)
+	{
+		bracket.append(markRegR);
+	}
 	bracket.append(markNBSP);
 
 	s.append(bracket + searchkey_bak + markRegKeyEnd);
@@ -321,7 +327,7 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 
 	font = SelectObject(hdc, hFont);
 
-	for(cycle=2; cycle>=0; cycle--)
+	for(cycle = 2; cycle >= 0; cycle--)
 	{
 		_MakeRegWordString(s, cycle);
 
@@ -599,12 +605,13 @@ void CCandidateWindow::_CalcWindowRect()
 
 		GetCurrentPage(&page);
 		count = 0;
-		for(i=0; i<page; i++)
+		for(i = 0; i < page; i++)
 		{
 			count += _CandCount[i];
 		}
 
-		for(i=0; i<_CandCount[page]; i++)
+		//最大幅を算出
+		for(i = 0; i < _CandCount[page]; i++)
 		{
 			_MakeCandidateString(s, page, count, i, -1);
 
@@ -616,11 +623,41 @@ void CCandidateWindow::_CalcWindowRect()
 			DrawTextW(hdc, s.c_str(), -1, &r,
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-			if(pt.x == 0 && r.right > cx)
+			if(r.right > cx)
 			{
 				cx = r.right;
 			}
-			else if(pt.x + r.right > cx)
+		}
+
+		r.left = 0;
+		r.top = 0;
+		r.right = 1;
+		r.bottom = 1;
+
+		_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
+
+		DrawTextW(hdc, strPage, -1, &r,
+			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+		if(r.right > cx)
+		{
+			cx = r.right;
+		}
+
+		//実際の幅、高さを算出
+		for(i = 0; i < _CandCount[page]; i++)
+		{
+			_MakeCandidateString(s, page, count, i, -1);
+
+			r.left = 0;
+			r.top = 0;
+			r.right = 1;
+			r.bottom = 1;
+
+			DrawTextW(hdc, s.c_str(), -1, &r,
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+			if(pt.x + r.right > cx)
 			{
 				pt.x = 0;
 				pt.y += tm.tmHeight;
@@ -631,10 +668,6 @@ void CCandidateWindow::_CalcWindowRect()
 			if(pt.x > xmax)
 			{
 				xmax = pt.x;
-				if(xmax > cx)
-				{
-					cx = xmax;
-				}
 			}
 		}
 
@@ -648,11 +681,7 @@ void CCandidateWindow::_CalcWindowRect()
 		DrawTextW(hdc, strPage, -1, &r,
 			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-		if(pt.x == 0 && r.right > cx)
-		{
-			cx = r.right;
-		}
-		else if(pt.x + r.right > cx)
+		if(pt.x + r.right > cx)
 		{
 			pt.x = 0;
 			pt.y += tm.tmHeight;
@@ -663,16 +692,14 @@ void CCandidateWindow::_CalcWindowRect()
 		if(pt.x > xmax)
 		{
 			xmax = pt.x;
-			if(xmax > cx)
-			{
-				cx = xmax;
-			}
 		}
 
+		//候補ウィンドウの幅、高さ
 		cx = xmax + MERGIN_X * 2;
 		cy = pt.y + tm.tmHeight + MERGIN_Y * 2;
 	}
 
+	//表示位置を算出
 	if((rw.right - cx) < _rect.left)
 	{
 		x = rw.right - cx;
@@ -787,7 +814,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	default:
 		_GetChSf(uVKey, ch, sf, VK_KANA);
 
-		for(i=0; i<MAX_SELKEY_C; i++)
+		for(i = 0; i < MAX_SELKEY_C; i++)
 		{
 			if(ch == (L'1' + i) ||
 				(ch == _pTextService->selkey[i][0][0] && _pTextService->selkey[i][0][0] != L'\0') ||
@@ -916,16 +943,16 @@ void CCandidateWindow::_InitList()
 	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCount;
 
 	_CandStr.clear();
-	for(i=0; i<_uCount; i++)
+	for(i = 0; i < _uCount; i++)
 	{
 		_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
-		_CandStr[i].append(markNo + _pTextService->candidates[ _uShowedCount + i ].first.first);
+		_CandStr[i].append(markNo + _pTextService->candidates[_uShowedCount + i].first.first);
 
 		if(_pTextService->c_annotation &&
-			!_pTextService->candidates[ _uShowedCount + i ].first.second.empty())
+			!_pTextService->candidates[_uShowedCount + i].first.second.empty())
 		{
 			_CandStr[i].append(markAnnotation +
-				_pTextService->candidates[ _uShowedCount + i ].first.second);
+				_pTextService->candidates[_uShowedCount + i].first.second);
 		}
 	}
 
@@ -933,11 +960,11 @@ void CCandidateWindow::_InitList()
 
 	_PageIndex.clear();
 	_CandCount.clear();
-	for(i=0; i<_uPageCnt; i++)
+	for(i = 0; i < _uPageCnt; i++)
 	{
 		_PageIndex.push_back(i * MAX_SELKEY);
-		_CandCount.push_back( (i < (_uPageCnt - 1)) ? MAX_SELKEY :
-			(((_uCount % MAX_SELKEY) == 0) ? MAX_SELKEY : (_uCount % MAX_SELKEY)) );
+		_CandCount.push_back((i < (_uPageCnt - 1)) ? MAX_SELKEY :
+			(((_uCount % MAX_SELKEY) == 0) ? MAX_SELKEY : (_uCount % MAX_SELKEY)));
 	}
 
 	_uIndex = 0;

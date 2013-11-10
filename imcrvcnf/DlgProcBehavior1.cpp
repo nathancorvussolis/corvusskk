@@ -88,7 +88,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		ZeroMemory(&colCust, sizeof(colCust));
 
-		for(i=0; i<_countof(colors); i++)
+		for(i = 0; i < _countof(colors); i++)
 		{
 			ReadValue(pathconfigxml, SectionBehavior, colors[i].value, strxmlval);
 			if(!strxmlval.empty())
@@ -99,7 +99,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
-		for(i=0; i<=8; i++)
+		for(i = 0; i <= 8; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
 			SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
@@ -202,7 +202,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		break;
 
 	case WM_LBUTTONDOWN:
-		for(i=0; i<_countof(colors); i++)
+		for(i = 0; i < _countof(colors); i++)
 		{
 			hwnd = GetDlgItem(hDlg, colors[i].id);
 			GetWindowRect(hwnd, &rect);
@@ -236,7 +236,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(i=0; i<_countof(colors); i++)
+		for(i = 0; i < _countof(colors); i++)
 		{
 			DrawColor(GetDlgItem(hDlg, colors[i].id), colors[i].color);
 		}
@@ -287,7 +287,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 			WriterKey(pXmlWriter, ValueMaxWidth, num);
 
-			for(i=0; i<_countof(colors); i++)
+			for(i = 0; i < _countof(colors); i++)
 			{
 				_snwprintf_s(num, _TRUNCATE, L"0x%06X", colors[i].color);
 				WriterKey(pXmlWriter, colors[i].value, num);

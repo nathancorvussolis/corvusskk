@@ -51,9 +51,9 @@ void CreateConfigPath()
 	{
 		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
 		{
-			for(i=0; i<_countof(digest.digest); i++)
+			for(i = 0; i < _countof(digest.digest); i++)
 			{
-				_snwprintf_s(&szDigest[i*2], _countof(szDigest)-i*2, _TRUNCATE, L"%02x", digest.digest[i]);
+				_snwprintf_s(&szDigest[i * 2], _countof(szDigest) - i * 2, _TRUNCATE, L"%02x", digest.digest[i]);
 			}
 		}
 

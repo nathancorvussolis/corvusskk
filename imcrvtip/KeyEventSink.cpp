@@ -216,7 +216,7 @@ BOOL CTextService::_InitPreservedKey()
 
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
-		for(i=0; i<MAX_PRESERVEDKEY; i++)
+		for(i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
 			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
 			{
@@ -239,7 +239,7 @@ void CTextService::_UninitPreservedKey()
 
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
-		for(i=0; i<MAX_PRESERVEDKEY; i++)
+		for(i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
 			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
 			{

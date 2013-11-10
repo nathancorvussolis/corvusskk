@@ -69,7 +69,7 @@ void SaveDictionary(HWND hwnd)
 	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
 	count = ListView_GetItemCount(hWndList);
 
-	for(i=0; i<count; i++)
+	for(i = 0; i < count; i++)
 	{
 		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
 
@@ -147,7 +147,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
 	count = ListView_GetItemCount(hWndList);
 
-	for(ic=0; ic<count; ic++)
+	for(ic = 0; ic < count; ic++)
 	{
 		ListView_GetItemText(hWndList, ic, 0, path, _countof(path));
 		okuri = -1;

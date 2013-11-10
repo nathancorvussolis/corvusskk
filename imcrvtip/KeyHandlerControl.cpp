@@ -89,7 +89,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			roman = kana;
 			kana.clear();
 			cursoridx = 0;
-			for(i=0; i<roman.size(); i++)
+			for(i = 0; i < roman.size(); i++)
 			{
 				ajc.ascii[0] = roman[i];
 				ajc.ascii[1] = L'\0';

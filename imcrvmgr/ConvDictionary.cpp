@@ -149,7 +149,7 @@ std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate)
 	}
 	
 	//concat関数で"/"関数が\057にエスケープされる為2回実行する
-	for(int i=0; i<2; i++)
+	for(int i = 0; i < 2; i++)
 	{
 		if(candidate_tmp.size() > 2 &&
 			candidate_tmp[0] == L'(' && candidate_tmp[candidate_tmp.size() - 1] == L')')

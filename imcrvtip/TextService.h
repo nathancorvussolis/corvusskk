@@ -122,7 +122,7 @@ public:
 	void _ClearComposition();
 
 	// LanguageBar
-	void _UpdateLanguageBar();
+	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
 	
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);

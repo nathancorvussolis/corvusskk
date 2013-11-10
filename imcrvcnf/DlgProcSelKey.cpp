@@ -42,9 +42,9 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
 
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-		for(index=0; index<MAX_SELKEY_C; index++)
+		for(index = 0; index < MAX_SELKEY_C; index++)
 		{
-			_snwprintf_s(num, _TRUNCATE, L"%d", index+1);
+			_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
 
 			item.mask = LVIF_TEXT;
 			item.pszText = num;
@@ -129,14 +129,14 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			WriterStartSection(pXmlWriter, SectionSelKey);
 
 			hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-			for(index=0; index<MAX_SELKEY_C; index++)
+			for(index = 0; index < MAX_SELKEY_C; index++)
 			{
 				ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
 				key[0] = num[0];
 				ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
 				key[1] = num[0];
 				key[2] = L'\0';
-				_snwprintf_s(num, _TRUNCATE, L"%d", index+1);
+				_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
 				WriterKey(pXmlWriter, num, key);
 			}
 
