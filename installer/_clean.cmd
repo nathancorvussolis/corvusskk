@@ -2,9 +2,10 @@
 
 pushd %~dp0
 
-del *.7z
 del *.msi
 del *.wixobj
 del *.wixpdb
+
+del *.zip
 
 popd

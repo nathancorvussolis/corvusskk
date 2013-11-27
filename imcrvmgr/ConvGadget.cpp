@@ -14,9 +14,11 @@ static const struct {
 	{1912, L"たいしょう", {L"大正", L"T"}},
 	{1868, L"めいじ", {L"明治", L"M"}}
 };
-static const LPWSTR month_en[] = {L"Jan",L"Feb",L"Mar",L"Apr",L"May",L"Jun",L"Jul",L"Aug",L"Sep",L"Oct",L"Nov",L"Dec"};
-static const LPWSTR week_en[] = {L"Sun",L"Mon",L"Tue",L"Wed",L"Thu",L"Fri",L"Sat"};
-static const LPWSTR week_jp[] = {L"日",L"月",L"火",L"水",L"木",L"金",L"土"};
+static const LPWSTR month_en[] = {
+	L"Jan", L"Feb", L"Mar", L"Apr", L"May", L"Jun",
+	L"Jul", L"Aug", L"Sep", L"Oct", L"Nov", L"Dec"};
+static const LPWSTR week_en[] = {L"Sun", L"Mon", L"Tue", L"Wed", L"Thu", L"Fri", L"Sat"};
+static const LPWSTR week_jp[] = {L"日", L"月", L"火", L"水", L"木", L"金", L"土"};
 
 static const struct {
 	LPWSTR name;
@@ -31,7 +33,7 @@ static const struct {
 	{L"inch", {{L"cm", 2.54}, {L"feet", (1.0/12.0)}}}
 };
 
-static const LPWSTR omikuji[] = {L"大吉",L"中吉",L"小吉",L"吉",L"末吉",L"凶",L"大凶"};
+static const LPWSTR omikuji[] = {L"大吉", L"中吉", L"小吉", L"吉", L"末吉", L"凶", L"大凶"};
 
 static const LPWSTR s_window_width = L"80";
 static const LPWSTR s_fill_column = L"70";

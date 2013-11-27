@@ -279,26 +279,27 @@ public:
 	BOOL hintmode;			//ヒントモード
 
 	//動作設定
-	WCHAR fontname[LF_FACESIZE];	//候補一覧のフォント設定(フォント名)
-	int fontpoint;					//候補一覧のフォント設定(サイズ)
-	int fontweight;					//候補一覧のフォント設定(太さ)
-	BOOL fontitalic;				//候補一覧のフォント設定(イタリック)
+	WCHAR cx_fontname[LF_FACESIZE];	//候補一覧のフォント設定(フォント名)
+	int cx_fontpoint;				//候補一覧のフォント設定(サイズ)
+	int cx_fontweight;				//候補一覧のフォント設定(太さ)
+	BOOL cx_fontitalic;				//候補一覧のフォント設定(イタリック)
 
-	LONG maxwidth;			//候補一覧の最大幅
-	COLORREF colors[8];		//候補一覧の色
-	size_t c_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
-	BOOL c_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
-	BOOL c_annotation;		//注釈を表示する
-	BOOL c_annotatlst;		//注釈を表示する（候補一覧のみ）
-	BOOL c_showmodeinl;		//入力モードを表示する
-	BOOL c_showmodeimm;		//入力モードを表示する（没入型のみ）
-	BOOL c_nomodemark;		//▽▼*マークを表示しない
+	LONG cx_maxwidth;			//候補一覧の最大幅
+	COLORREF cx_colors[8];		//候補一覧の色
+	size_t cx_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
+	BOOL cx_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
+	BOOL cx_annotation;			//注釈を表示する
+	BOOL cx_annotatlst;			//注釈を表示する（候補一覧のみ）
+	BOOL cx_showmodeinl;		//入力モードを表示する
+	BOOL cx_showmodeimm;		//入力モードを表示する（没入型のみ）
+	BOOL cx_showmodemark;			//▽▼*マークを表示する
 
-	BOOL c_nookuriconv;		//送り仮名が決定したとき変換を開始しない
-	BOOL c_delcvposcncl;	//取消のとき変換位置を削除する
-	BOOL c_delokuricncl;	//取消のとき送り仮名を削除する
-	BOOL c_backincenter;	//後退に確定を含める
-	BOOL c_addcandktkn;		//候補に片仮名変換を追加する
+	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
+	BOOL cx_keepinputnor;		//ローマ字が無いとき最後の入力を残す
+	BOOL cx_delcvposcncl;		//取消のとき変換位置を削除する
+	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
+	BOOL cx_backincenter;		//後退に確定を含める
+	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

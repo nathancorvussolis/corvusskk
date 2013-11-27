@@ -65,12 +65,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 		hdc = GetDC(_hwnd);
 
-		logfont.lfHeight = -MulDiv(_pTextService->fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		logfont.lfHeight = -MulDiv(_pTextService->cx_fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 		logfont.lfWidth = 0;
 		logfont.lfEscapement = 0;
 		logfont.lfOrientation = 0;
-		logfont.lfWeight = _pTextService->fontweight;
-		logfont.lfItalic = _pTextService->fontitalic;
+		logfont.lfWeight = _pTextService->cx_fontweight;
+		logfont.lfItalic = _pTextService->cx_fontitalic;
 		logfont.lfUnderline = FALSE;
 		logfont.lfStrikeOut = FALSE;
 		logfont.lfCharSet = SHIFTJIS_CHARSET;
@@ -78,7 +78,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 		logfont.lfQuality = PROOF_QUALITY;
 		logfont.lfPitchAndFamily = DEFAULT_PITCH;
-		wcscpy_s(logfont.lfFaceName, _pTextService->fontname);
+		wcscpy_s(logfont.lfFaceName, _pTextService->cx_fontname);
 		hFont = CreateFontIndirectW(&logfont);
 
 		logfont.lfUnderline = TRUE;
@@ -151,9 +151,9 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
 		bmp = SelectObject(hmemdc, hmembmp);
 
-		npen = CreatePen(PS_SOLID, 1, _pTextService->colors[CL_COLOR_FR]);
+		npen = CreatePen(PS_SOLID, 1, _pTextService->cx_colors[CL_COLOR_FR]);
 		pen = SelectObject(hmemdc, npen);
-		nbrush = CreateSolidBrush(_pTextService->colors[CL_COLOR_BG]);
+		nbrush = CreateSolidBrush(_pTextService->cx_colors[CL_COLOR_BG]);
 		brush = SelectObject(hmemdc, nbrush);
 
 		Rectangle(hmemdc, 0, 0, cx, cy);
@@ -249,8 +249,8 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 			rc.right = pt.x + r.right;
 			rc.bottom = pt.y + tm.tmHeight;
 
-			SetTextColor(hmemdc, _pTextService->colors[CL_COLOR_NO]);
-			SetBkColor(hmemdc, _pTextService->colors[CL_COLOR_BG]);
+			SetTextColor(hmemdc, _pTextService->cx_colors[CL_COLOR_NO]);
+			SetBkColor(hmemdc, _pTextService->cx_colors[CL_COLOR_BG]);
 			DrawTextW(hmemdc, strPage, -1, &rc,
 				DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
@@ -332,8 +332,8 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 		_MakeRegWordString(s, cycle);
 
 		SelectObject(hdc, f[cycle]);
-		SetTextColor(hdc, _pTextService->colors[CL_COLOR_CA]);
-		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
+		SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_CA]);
+		SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
 
 		DrawTextW(hdc, s.c_str(), -1, lpr,
 			DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
@@ -373,15 +373,15 @@ void CCandidateWindow::_MakeCandidateString(std::wstring &s, UINT page, UINT cou
 
 	s.append(
 		std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.first,
-			std::wregex(markSP), std::wstring(markNBSP)));
+		std::wregex(markSP), std::wstring(markNBSP)));
 
 	if(cycle == 2)
 	{
 		return;
 	}
 
-	if(_pTextService->c_annotation &&
-		!_pTextService->candidates[ count + _uShowedCount + idx ].first.second.empty())
+	if(_pTextService->cx_annotation &&
+		!_pTextService->candidates[count + _uShowedCount + idx].first.second.empty())
 	{
 		s.append(markAnnotation);
 
@@ -391,8 +391,8 @@ void CCandidateWindow::_MakeCandidateString(std::wstring &s, UINT page, UINT cou
 		}
 
 		s.append(
-			std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.second,
-				std::wregex(markSP), std::wstring(markNBSP)));
+			std::regex_replace(_pTextService->candidates[count + _uShowedCount + idx].first.second,
+			std::wregex(markSP), std::wstring(markNBSP)));
 	}
 
 	if(cycle == 4)
@@ -411,8 +411,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 	if(cycle <= 4 && cycle >= 0)
 	{
-		SetTextColor(hdc, _pTextService->colors[cycle + 2]);
-		SetBkColor(hdc, _pTextService->colors[CL_COLOR_BG]);
+		SetTextColor(hdc, _pTextService->cx_colors[cycle + 2]);
+		SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
 		DrawTextW(hdc, s.c_str(), -1, lpr,
 			DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 	}
@@ -581,7 +581,7 @@ void CCandidateWindow::_CalcWindowRect()
 	font = SelectObject(hdc, hFont);
 
 	ZeroMemory(&r, sizeof(r));
-	r.right = _pTextService->maxwidth - MERGIN_X * 2;
+	r.right = _pTextService->cx_maxwidth - MERGIN_X * 2;
 	if(r.right <= 0)
 	{
 		r.right = 1;
@@ -823,7 +823,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 				GetCurrentPage(&page);
 				if(i < _CandCount[page])
 				{
-					index = (UINT)(_pTextService->c_untilcandlist - 1) + _PageIndex[page] + i;
+					index = (UINT)(_pTextService->cx_untilcandlist - 1) + _PageIndex[page] + i;
 					if(index < _pTextService->candidates.size())
 					{
 						if(!regword)
@@ -939,7 +939,7 @@ void CCandidateWindow::_InitList()
 {
 	UINT i;
 
-	_uShowedCount = (UINT)_pTextService->c_untilcandlist - 1;
+	_uShowedCount = (UINT)_pTextService->cx_untilcandlist - 1;
 	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCount;
 
 	_CandStr.clear();
@@ -948,7 +948,7 @@ void CCandidateWindow::_InitList()
 		_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
 		_CandStr[i].append(markNo + _pTextService->candidates[_uShowedCount + i].first.first);
 
-		if(_pTextService->c_annotation &&
+		if(_pTextService->cx_annotation &&
 			!_pTextService->candidates[_uShowedCount + i].first.second.empty())
 		{
 			_CandStr[i].append(markAnnotation +
@@ -1050,7 +1050,7 @@ void CCandidateWindow::_PrevPage()
 		{
 			if(!regword)
 			{
-				if(_pTextService->c_untilcandlist == 1)
+				if(_pTextService->cx_untilcandlist == 1)
 				{
 					if(_pCandidateWindowParent == NULL)
 					{
@@ -1071,7 +1071,7 @@ void CCandidateWindow::_PrevPage()
 				{
 					if(_pCandidateWindowParent == NULL)
 					{
-						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
+						_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
 						_EndCandidateList(SKK_PREV_CAND);
 					}
 					else
@@ -1081,7 +1081,7 @@ void CCandidateWindow::_PrevPage()
 							_RestoreStatusReg();
 						}
 						_PreEndReq();
-						_pTextService->candidx = _pTextService->c_untilcandlist - 1;
+						_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
 						_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 						_EndReq();
 					}
@@ -1089,13 +1089,13 @@ void CCandidateWindow::_PrevPage()
 			}
 			else
 			{
-				if(_pTextService->c_untilcandlist == 1)
+				if(_pTextService->cx_untilcandlist == 1)
 				{
 					_HandleKey(0, NULL, 0, SKK_CANCEL);
 				}
 				else
 				{
-					_pTextService->candidx = _pTextService->c_untilcandlist - 1;
+					_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
 					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
 				

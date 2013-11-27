@@ -84,12 +84,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	UpdateWindow(hWnd);
 #endif
 
-	while(GetMessage(&msg, NULL, 0, 0))
+	while(GetMessageW(&msg, NULL, 0, 0))
 	{
-		if(!TranslateAccelerator(msg.hwnd, NULL, &msg))
+		if(!TranslateAcceleratorW(msg.hwnd, NULL, &msg))
 		{
 			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			DispatchMessageW(&msg);
 		}
 	}
 
@@ -165,7 +165,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 
 	default:
-		return DefWindowProc(hWnd, message, wParam, lParam);
+		return DefWindowProcW(hWnd, message, wParam, lParam);
 		break;
 	}
 	return 0;

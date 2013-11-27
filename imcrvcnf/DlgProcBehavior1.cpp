@@ -99,14 +99,14 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
-		for(i = 0; i <= 8; i++)
+		for(i = 0; i <= 9; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
 			SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 		i = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
-		if(i > 8)
+		if(i > 9)
 		{
 			i = 5;
 		}
@@ -128,7 +128,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			CheckDlgButton(hDlg, IDC_RADIO_SHOWMODEALL, BST_CHECKED);
 		}
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, SectionBehavior, ValueNoModeMark);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionBehavior, ValueShowModeMark, L"1");
 
 		return TRUE;
 
@@ -192,7 +192,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case IDC_CHECKBOX_SHOWMODEINL:
 		case IDC_RADIO_SHOWMODEALL:
 		case IDC_RADIO_SHOWMODEIMM:
-		case IDC_CHECKBOX_NOMODEMARK:
+		case IDC_CHECKBOX_SHOWMODEMARK:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return TRUE;
 
@@ -303,7 +303,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
 			SaveCheckButton(hDlg, IDC_RADIO_SHOWMODEIMM, ValueShowModeImm);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_NOMODEMARK, ValueNoModeMark);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, ValueShowModeMark);
 
 			//WriterEndSection(pXmlWriter);						//-> DlgProcBehavior2
 

@@ -94,9 +94,10 @@ extern LPCWSTR ValueAnnotation;
 extern LPCWSTR ValueAnnotatLst;
 extern LPCWSTR ValueShowModeInl;
 extern LPCWSTR ValueShowModeImm;
-extern LPCWSTR ValueNoModeMark;
+extern LPCWSTR ValueShowModeMark;
 
-extern LPCWSTR ValueNoOkuriConv;
+extern LPCWSTR ValueBeginCvOkuri;
+extern LPCWSTR ValueKeepInputNoR;
 extern LPCWSTR ValueDelCvPosCncl;
 extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;

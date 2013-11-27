@@ -49,7 +49,7 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 	// The icon must be monochrome.
 	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_SHOWNINTRAY |
 		(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE) ? TF_LBI_STYLE_BTN_BUTTON : TF_LBI_STYLE_BTN_MENU) |
-		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used under Windows 8
+		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used on earlier than Windows 8
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 
@@ -581,7 +581,7 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 		_pLangBarItemI->_Update();
 	}
 
-	if(showinputmode && c_showmodeinl && (!c_showmodeimm || (c_showmodeimm && _ImmersiveMode)))
+	if(showinputmode && cx_showmodeinl && (!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode)))
 	{
 		std::wstring mode;
 		for(int i = 0; i < _countof(menuItems); i++)

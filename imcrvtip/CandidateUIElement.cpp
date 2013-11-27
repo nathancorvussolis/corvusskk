@@ -385,7 +385,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 	}
 	else
 	{
-		for(j = 0; j<uPageCnt - 1; j++)
+		for(j = 0; j < (uPageCnt - 1); j++)
 		{
 			uCandCnt = pIndex[j + 1] - pIndex[j];
 			if(uCandCnt > MAX_SELKEY_C)
@@ -424,7 +424,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 				_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
 				_CandStr[k].append(markNo + _pTextService->candidates[_uShowedCount + k].first.first);
 
-				if(_pTextService->c_annotation &&
+				if(_pTextService->cx_annotation &&
 					!_pTextService->candidates[_uShowedCount + k].first.second.empty())
 				{
 					_CandStr[k].append(markAnnotation +
@@ -474,7 +474,7 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 			return S_OK;
 		}
 
-		for(i = 1; i<_uPageCnt; i++)
+		for(i = 1; i < _uPageCnt; i++)
 		{
 			if(_PageIndex[i] > _uIndex)
 			{

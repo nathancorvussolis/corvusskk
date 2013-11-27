@@ -37,13 +37,14 @@
 #define IDC_CHECKBOX_SHOWMODEINL                1118
 #define IDC_RADIO_SHOWMODEALL                   1119
 #define IDC_RADIO_SHOWMODEIMM                   1120
-#define IDC_CHECKBOX_NOMODEMARK                 1121
+#define IDC_CHECKBOX_SHOWMODEMARK               1121
 
-#define IDC_CHECKBOX_NOOKURICONV                1201
-#define IDC_CHECKBOX_DELCVPOSCNCL               1202
-#define IDC_CHECKBOX_DELOKURICNCL               1203
-#define IDC_CHECKBOX_BACKINCENTER               1204
-#define IDC_CHECKBOX_ADDCANDKTKN                1205
+#define IDC_CHECKBOX_BEGINCVOKURI               1201
+#define IDC_CHECKBOX_KEEPINPUTNOR               1202
+#define IDC_CHECKBOX_DELCVPOSCNCL               1203
+#define IDC_CHECKBOX_DELOKURICNCL               1204
+#define IDC_CHECKBOX_BACKINCENTER               1205
+#define IDC_CHECKBOX_ADDCANDKTKN                1206
 
 #define IDC_LIST_SKK_DIC                        1301
 #define IDC_BUTTON_SKK_DIC_ADD                  1302

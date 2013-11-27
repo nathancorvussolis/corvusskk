@@ -87,7 +87,7 @@ void CTextService::_CreateConfigPath()
 
 	if(GetUserSid(&pszUserSid))
 	{
-		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid) * sizeof(WCHAR)))
 		{
 			for(i = 0; i < _countof(digest.digest); i++)
 			{
@@ -120,64 +120,65 @@ void CTextService::_LoadBehavior()
 	int i;
 
 	ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
-	wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
+	wcsncpy_s(cx_fontname, strxmlval.c_str(), _TRUNCATE);
 	
 	ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
-	fontpoint = _wtoi(strxmlval.c_str());
+	cx_fontpoint = _wtoi(strxmlval.c_str());
 	ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);
-	fontweight = _wtoi(strxmlval.c_str());
+	cx_fontweight = _wtoi(strxmlval.c_str());
 	ReadValue(pathconfigxml, SectionFont, ValueFontItalic, strxmlval);
-	fontitalic = _wtoi(strxmlval.c_str());
+	cx_fontitalic = _wtoi(strxmlval.c_str());
 
-	if(fontpoint < 8 || fontpoint > 72)
+	if(cx_fontpoint < 8 || cx_fontpoint > 72)
 	{
-		fontpoint = 12;
+		cx_fontpoint = 12;
 	}
-	if(fontweight < 0 || fontweight > 1000)
+	if(cx_fontweight < 0 || cx_fontweight > 1000)
 	{
-		fontweight = FW_NORMAL;
+		cx_fontweight = FW_NORMAL;
 	}
-	if(fontitalic != TRUE && fontitalic != FALSE)
+	if(cx_fontitalic != TRUE && cx_fontitalic != FALSE)
 	{
-		fontitalic = FALSE;
+		cx_fontitalic = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
-	maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
-	if(maxwidth < 0)
+	cx_maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
+	if(cx_maxwidth < 0)
 	{
-		maxwidth = MAX_WIDTH_DEFAULT;
+		cx_maxwidth = MAX_WIDTH_DEFAULT;
 	}
 
-	for(i = 0; i < _countof(colors); i++)
+	for(i = 0; i < _countof(cx_colors); i++)
 	{
-		colors[i] = colorsxmlvalue[i].color;
+		cx_colors[i] = colorsxmlvalue[i].color;
 		ReadValue(pathconfigxml, SectionBehavior, colorsxmlvalue[i].value, strxmlval);
 		if(!strxmlval.empty())
 		{
-			colors[i] = wcstoul(strxmlval.c_str(), NULL, 0);
+			cx_colors[i] = wcstoul(strxmlval.c_str(), NULL, 0);
 		}
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
-	c_untilcandlist = _wtoi(strxmlval.c_str());
-	if(c_untilcandlist > 8)
+	cx_untilcandlist = _wtoi(strxmlval.c_str());
+	if(cx_untilcandlist > 9)
 	{
-		c_untilcandlist = 4;
+		cx_untilcandlist = 5;
 	}
 
-	_ReadBoolValue(ValueDispCandNo, c_dispcandnum);
-	_ReadBoolValue(ValueAnnotation, c_annotation);
-	_ReadBoolValue(ValueAnnotatLst, c_annotatlst);
-	_ReadBoolValue(ValueShowModeInl, c_showmodeinl);
-	_ReadBoolValue(ValueShowModeImm, c_showmodeimm);
-	_ReadBoolValue(ValueNoModeMark, c_nomodemark);
+	_ReadBoolValue(ValueDispCandNo, cx_dispcandnum);
+	_ReadBoolValue(ValueAnnotation, cx_annotation);
+	_ReadBoolValue(ValueAnnotatLst, cx_annotatlst);
+	_ReadBoolValue(ValueShowModeInl, cx_showmodeinl);
+	_ReadBoolValue(ValueShowModeImm, cx_showmodeimm);
+	_ReadBoolValue(ValueShowModeMark, cx_showmodemark);
 
-	_ReadBoolValue(ValueNoOkuriConv, c_nookuriconv);
-	_ReadBoolValue(ValueDelCvPosCncl, c_delcvposcncl);
-	_ReadBoolValue(ValueDelOkuriCncl, c_delokuricncl);
-	_ReadBoolValue(ValueBackIncEnter, c_backincenter);
-	_ReadBoolValue(ValueAddCandKtkn, c_addcandktkn);
+	_ReadBoolValue(ValueBeginCvOkuri, cx_begincvokuri);
+	_ReadBoolValue(ValueKeepInputNoR, cx_keepinputnor);
+	_ReadBoolValue(ValueDelCvPosCncl, cx_delcvposcncl);
+	_ReadBoolValue(ValueDelOkuriCncl, cx_delokuricncl);
+	_ReadBoolValue(ValueBackIncEnter, cx_backincenter);
+	_ReadBoolValue(ValueAddCandKtkn, cx_addcandktkn);
 }
 
 void CTextService::_LoadSelKey()
@@ -296,7 +297,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 						}
 					}
 				}
-				catch(std::regex_error err)
+				catch(...)
 				{
 					break;
 				}
@@ -325,7 +326,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 						keymap.keyjmode[ch] = configkeymap[i].skkfunc;
 					}
 				}
-				catch(std::regex_error err)
+				catch(...)
 				{
 					break;
 				}
@@ -349,7 +350,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 						keymap.keyvoid[ch] = configkeymap[i].skkfunc;
 					}
 				}
-				catch(std::regex_error err)
+				catch(...)
 				{
 					break;
 				}

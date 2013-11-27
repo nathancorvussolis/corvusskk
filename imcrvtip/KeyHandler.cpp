@@ -287,7 +287,16 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					else
 					{
 						roman.clear();
-						_Update(ec, pContext);
+						if(cx_keepinputnor)
+						{
+							WCHAR nch = _GetCh((BYTE)wParam);
+							BYTE nsf = _GetSf((BYTE)wParam, nch);
+							return _HandleKey(ec, pContext, wParam, nsf);
+						}
+						else
+						{
+							_Update(ec, pContext);
+						}
 					}
 				}
 				break;

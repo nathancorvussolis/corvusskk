@@ -265,7 +265,7 @@ void CTextService::_StartSubConv()
 	_SearchDic(REQ_SEARCH);
 
 	//片仮名変換
-	if(c_addcandktkn && !abbrevmode)
+	if(cx_addcandktkn && !abbrevmode)
 	{
 		switch(inputmode)
 		{
@@ -361,13 +361,13 @@ void CTextService::_PrevConv()
 	else
 	{
 		showentry = FALSE;
-		if(c_delokuricncl && accompidx != 0)
+		if(cx_delokuricncl && accompidx != 0)
 		{
 			kana = kana.substr(0, accompidx);
 			accompidx = 0;
 			cursoridx = kana.size();
 		}
-		if(c_delcvposcncl && accompidx != 0)
+		if(cx_delcvposcncl && accompidx != 0)
 		{
 			kana.erase(accompidx, 1);
 			accompidx = 0;

@@ -103,9 +103,9 @@ private:
 
 	//候補一覧、辞書登録のウィンドウ
 	WNDPROC WndProcDef;
-	std::wstring disptext;
-	HFONT hFont;
-	HFONT hFontU;
+	std::wstring disptext;		//表示文字列
+	HFONT hFont;				//フォント
+	HFONT hFontU;				//フォント(下線あり)
 
 	BOOL _reg;		//初期表示から辞書登録
 
