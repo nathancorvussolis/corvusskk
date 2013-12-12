@@ -560,7 +560,7 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		_pTextService->_SetText(ec, _pContext, _mode, -(LONG)_mode.size(), FALSE);
+		_pTextService->_SetText(ec, _pContext, _mode, -(LONG)_mode.size(), 0, FALSE);
 		return S_OK;
 	}
 

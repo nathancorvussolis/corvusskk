@@ -6,7 +6,7 @@
 void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);
 std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate);
 
-//ユーザ辞書
+//ユーザー辞書
 USERDIC userdic;
 //補完あり
 KEYORDER complements;
@@ -21,13 +21,13 @@ void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkey
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
-	//ユーザ辞書
+	//ユーザー辞書
 	ConvUserDic(searchkey, candidates);
 
 	//SKK辞書
 	ConvSKKDic(searchkey, candidates);
 
-	//SKK辞書サーバ
+	//SKK辞書サーバー
 	if(serv)
 	{
 		ConvSKKServer(searchkey, candidates);

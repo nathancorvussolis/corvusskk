@@ -14,7 +14,7 @@
 #include <OleCtl.h>
 #include <msctf.h>
 #include <ctffunc.h>
+#include <xmllite.h>
+#include <Sddl.h>
 #include <Shlobj.h>
 #include <Shlwapi.h>
-#include <Sddl.h>
-#include <xmllite.h>

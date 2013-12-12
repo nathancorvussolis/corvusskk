@@ -15,6 +15,7 @@
 #include <Ws2tcpip.h>
 #include <Windows.h>
 #include <Windowsx.h>
-#include <Shlobj.h>
-#include <Sddl.h>
+#include <msctf.h>
 #include <xmllite.h>
+#include <Sddl.h>
+#include <Shlobj.h>

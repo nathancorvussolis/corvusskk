@@ -29,6 +29,8 @@ STDAPI CTextService::EnumDisplayAttributeInfo(IEnumTfDisplayAttributeInfo **ppEn
 
 STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeInfo **ppInfo)
 {
+	size_t i;
+
 	if(ppInfo == NULL)
 	{
 		return E_INVALIDARG;
@@ -36,34 +38,20 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 
 	*ppInfo = NULL;
 
-	if(IsEqualGUID(guid, c_guidDisplayAttributeInput))
+	for(i = 0; i < _countof(c_gdDisplayAttributeInfo); i++)
 	{
-		*ppInfo = new CDisplayAttributeInfoInput();
-
-		if(*ppInfo == NULL)
+		if(IsEqualGUID(guid, c_gdDisplayAttributeInfo[i].guid))
 		{
-			return E_OUTOFMEMORY;
+			*ppInfo = new CDisplayAttributeInfo(c_gdDisplayAttributeInfo[i].guid, &display_attribute_info[i]);
+			if(*ppInfo == NULL)
+			{
+				return E_OUTOFMEMORY;
+			}
+			break;
 		}
 	}
-	else if(IsEqualGUID(guid, c_guidDisplayAttributeCandidate))
-	{
-		*ppInfo = new CDisplayAttributeInfoCandidate();
 
-		if(*ppInfo == NULL)
-		{
-			return E_OUTOFMEMORY;
-		}
-	}
-	else if(IsEqualGUID(guid, c_guidDisplayAttributeAnnotation))
-	{
-		*ppInfo = new CDisplayAttributeInfoAnnotation();
-
-		if(*ppInfo == NULL)
-		{
-			return E_OUTOFMEMORY;
-		}
-	}
-	else
+	if(*ppInfo == NULL)
 	{
 		return E_INVALIDARG;
 	}
@@ -108,14 +96,50 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 {
 	ITfCategoryMgr *pCategoryMgr;
 	HRESULT hr = E_FAIL;
+	size_t i;
+	const struct {
+		const GUID guid;
+		TfGuidAtom *patom;
+	} displayAttributeAtom[] = {
+		{c_guidDisplayAttributeInputMark,	&_gaDisplayAttributeInputMark},
+		{c_guidDisplayAttributeInputText,	&_gaDisplayAttributeInputText},
+		{c_guidDisplayAttributeInputOkuri,	&_gaDisplayAttributeInputOkuri},
+		{c_guidDisplayAttributeConvMark,	&_gaDisplayAttributeConvMark},
+		{c_guidDisplayAttributeConvText,	&_gaDisplayAttributeConvText},
+		{c_guidDisplayAttributeConvOkuri,	&_gaDisplayAttributeConvOkuri},
+		{c_guidDisplayAttributeConvAnnot,	&_gaDisplayAttributeConvAnnot}
+	};
 
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
-		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeInput, &_gaDisplayAttributeInput);
-		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeCandidate, &_gaDisplayAttributeCandidate);
-		hr = pCategoryMgr->RegisterGUID(c_guidDisplayAttributeAnnotation, &_gaDisplayAttributeAnnotation);
+		for(i = 0; i < _countof(displayAttributeAtom); i++)
+		{
+			hr = pCategoryMgr->RegisterGUID(displayAttributeAtom[i].guid, displayAttributeAtom[i].patom);
+		}
 		pCategoryMgr->Release();
 	}
 
 	return (hr == S_OK);
 }
+
+BOOL CTextService::display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM] =
+{
+	c_gdDisplayAttributeInfo[0].se,
+	c_gdDisplayAttributeInfo[1].se,
+	c_gdDisplayAttributeInfo[2].se,
+	c_gdDisplayAttributeInfo[3].se,
+	c_gdDisplayAttributeInfo[4].se,
+	c_gdDisplayAttributeInfo[5].se,
+	c_gdDisplayAttributeInfo[6].se
+};
+
+TF_DISPLAYATTRIBUTE CTextService::display_attribute_info[DISPLAYATTRIBUTE_INFO_NUM] =
+{
+	c_gdDisplayAttributeInfo[0].da,
+	c_gdDisplayAttributeInfo[1].da,
+	c_gdDisplayAttributeInfo[2].da,
+	c_gdDisplayAttributeInfo[3].da,
+	c_gdDisplayAttributeInfo[4].da,
+	c_gdDisplayAttributeInfo[5].da,
+	c_gdDisplayAttributeInfo[6].da
+};

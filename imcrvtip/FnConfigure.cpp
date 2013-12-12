@@ -48,7 +48,8 @@ static const TF_PRESERVEDKEY configpreservedkey[] =
 static const struct {
 	LPCWSTR value;
 	COLORREF color;
-} colorsxmlvalue[8] = {
+} colorsxmlvalue[8] =
+{
 	{ValueColorBG, RGB(0xFF,0xFF,0xFF)},
 	{ValueColorFR, RGB(0x00,0x00,0x00)},
 	{ValueColorSE, RGB(0x00,0x00,0xFF)},
@@ -78,7 +79,7 @@ void CTextService::_CreateConfigPath()
 	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
 
 	LPWSTR pszUserSid;
-	WCHAR szDigest[32+1];
+	WCHAR szDigest[32 + 1];
 	MD5_DIGEST digest;
 	int i;
 
@@ -103,14 +104,14 @@ void CTextService::_CreateConfigPath()
 	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
 }
 
-void CTextService::_ReadBoolValue(LPCWSTR key, BOOL &value)
+void CTextService::_ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval)
 {
 	std::wstring strxmlval;
-	ReadValue(pathconfigxml, SectionBehavior, key, strxmlval);
+	ReadValue(pathconfigxml, section, key, strxmlval, (defval ? L"1" : L"0"));
 	value = _wtoi(strxmlval.c_str());
 	if(value != TRUE && value != FALSE)
 	{
-		value = FALSE;
+		value = defval;
 	}
 }
 
@@ -161,24 +162,52 @@ void CTextService::_LoadBehavior()
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
 	cx_untilcandlist = _wtoi(strxmlval.c_str());
-	if(cx_untilcandlist > 9)
+	if(cx_untilcandlist > 9 || strxmlval.empty())
 	{
 		cx_untilcandlist = 5;
 	}
 
-	_ReadBoolValue(ValueDispCandNo, cx_dispcandnum);
-	_ReadBoolValue(ValueAnnotation, cx_annotation);
-	_ReadBoolValue(ValueAnnotatLst, cx_annotatlst);
-	_ReadBoolValue(ValueShowModeInl, cx_showmodeinl);
-	_ReadBoolValue(ValueShowModeImm, cx_showmodeimm);
-	_ReadBoolValue(ValueShowModeMark, cx_showmodemark);
+	_ReadBoolValue(SectionDisplay, ValueDispCandNo, cx_dispcandnum, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueShowModeImm, cx_showmodeimm, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
 
-	_ReadBoolValue(ValueBeginCvOkuri, cx_begincvokuri);
-	_ReadBoolValue(ValueKeepInputNoR, cx_keepinputnor);
-	_ReadBoolValue(ValueDelCvPosCncl, cx_delcvposcncl);
-	_ReadBoolValue(ValueDelOkuriCncl, cx_delokuricncl);
-	_ReadBoolValue(ValueBackIncEnter, cx_backincenter);
-	_ReadBoolValue(ValueAddCandKtkn, cx_addcandktkn);
+	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueKeepInputNoR, cx_keepinputnor, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
+	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
+	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
+}
+
+void CTextService::_LoadDisplayAttr()
+{
+	int i;
+	std::wstring strxmlval;
+	BOOL se;
+	TF_DISPLAYATTRIBUTE da;
+
+	for(i = 0; i < DISPLAYATTRIBUTE_INFO_NUM; i++)
+	{
+		display_attribute_series[i] = c_gdDisplayAttributeInfo[i].se;
+		display_attribute_info[i] = c_gdDisplayAttributeInfo[i].da;
+
+		ReadValue(pathconfigxml, SectionDisplayAttr, c_gdDisplayAttributeInfo[i].key, strxmlval);
+		if(!strxmlval.empty())
+		{
+			if(swscanf_s(strxmlval.c_str(), L"%d,%d,0x%06X,%d,0x%06X,%d,%d,%d,0x%06X,%d",
+				&se, &da.crText.type, &da.crText.cr, &da.crBk.type, &da.crBk.cr,
+				&da.lsStyle, &da.fBoldLine, &da.crLine.type, &da.crLine.cr, &da.bAttr) == 10)
+			{
+				display_attribute_series[i] = se;
+				display_attribute_info[i] = da;
+			}
+		}
+	}
 }
 
 void CTextService::_LoadSelKey()

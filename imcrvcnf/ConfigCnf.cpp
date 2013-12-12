@@ -40,7 +40,7 @@ void CreateConfigPath()
 	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
 	LPWSTR pszUserSid;
-	WCHAR szDigest[32+1];
+	WCHAR szDigest[32 + 1];
 	MD5_DIGEST digest;
 	int i;
 
@@ -95,4 +95,20 @@ int GetScaledSizeX(HWND hwnd, int size)
 	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
 	ReleaseDC(hwnd, hdc);
 	return MulDiv(size, dpiX, 96);
+}
+
+void DrawSelectColor(HWND hDlg, int id, COLORREF col)
+{
+	RECT rect;
+	HDC hdc;
+	HWND hwnd;
+
+	hwnd = GetDlgItem(hDlg, id);
+	hdc = GetDC(hwnd);
+	SelectObject(hdc, GetStockObject(BLACK_PEN));
+	SetDCBrushColor(hdc, col);
+	SelectObject(hdc, GetStockObject(DC_BRUSH));
+	GetClientRect(hwnd, &rect);
+	Rectangle(hdc, rect.left, rect.top, rect.right, rect.bottom);
+	ReleaseDC(hwnd, hdc);
 }

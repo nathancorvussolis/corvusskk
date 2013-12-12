@@ -164,3 +164,7 @@ $RECYCLE.BIN/
 
 # Archive files
 *.zip
+
+# Backup files
+*.BAK
+*.bak

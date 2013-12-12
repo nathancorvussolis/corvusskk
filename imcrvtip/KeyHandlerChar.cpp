@@ -21,7 +21,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		_HandleCharReturn(ec, pContext);
 	}
 
-	if(accompidx != 0 && accompidx == kana.size() && chO != L'\0')
+	if(okuriidx != 0 && okuriidx == kana.size() && chO != L'\0')
 	{
 		kana.insert(cursoridx, 1, chO);
 		cursoridx++;
@@ -119,25 +119,25 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				{
 				case im_hiragana:
 					kana.insert(cursoridx, rkc.hiragana);
-					if(accompidx != 0 && cursoridx < accompidx)
+					if(okuriidx != 0 && cursoridx < okuriidx)
 					{
-						accompidx += wcslen(rkc.hiragana);
+						okuriidx += wcslen(rkc.hiragana);
 					}
 					cursoridx += wcslen(rkc.hiragana);
 					break;
 				case im_katakana:
 					kana.insert(cursoridx, rkc.katakana);
-					if(accompidx != 0 && cursoridx < accompidx)
+					if(okuriidx != 0 && cursoridx < okuriidx)
 					{
-						accompidx += wcslen(rkc.katakana);
+						okuriidx += wcslen(rkc.katakana);
 					}
 					cursoridx += wcslen(rkc.katakana);
 					break;
 				case im_katakana_ank:
 					kana.insert(cursoridx, rkc.katakana_ank);
-					if(accompidx != 0 && cursoridx < accompidx)
+					if(okuriidx != 0 && cursoridx < okuriidx)
 					{
-						accompidx += wcslen(rkc.katakana_ank);
+						okuriidx += wcslen(rkc.katakana_ank);
 					}
 					cursoridx += wcslen(rkc.katakana_ank);
 					break;
@@ -165,7 +165,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				else
 				{
 					_HandleCharTerminate(ec, pContext, composition);
-					if(!kana.empty() && accompidx != 0 && !rkc.soku && cx_begincvokuri && !hintmode && !rkc.wait)
+					if(!kana.empty() && okuriidx != 0 && !rkc.soku && cx_begincvokuri && !hintmode && !rkc.wait)
 					{
 						cursoridx = kana.size();
 						showentry = TRUE;
@@ -188,13 +188,13 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 			case E_ABORT:	//不一致
 				_HandleCharTerminate(ec, pContext, composition);
 				roman.clear();
-				if(accompidx != 0 && accompidx + 1 == cursoridx)
+				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 				{
 					kana.erase(cursoridx - 1, 1);	//送りローマ字削除
 					cursoridx--;
-					if(accompidx != kana.size())
+					if(okuriidx != kana.size())
 					{
-						accompidx = 0;
+						okuriidx = 0;
 					}
 				}
 				_Update(ec, pContext);

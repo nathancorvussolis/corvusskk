@@ -8,7 +8,7 @@
 typedef std::pair< std::wstring, std::wstring > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
 
-//ユーザ辞書   pair< key, candidates >
+//ユーザー辞書   pair< key, candidates >
 typedef std::map< std::wstring, CANDIDATES > USERDIC;
 typedef std::pair< std::wstring, CANDIDATES > USERDICENTRY;
 
@@ -73,7 +73,7 @@ extern KEYORDER accompaniments;
 
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
-extern WCHAR pathuserdic[MAX_PATH];		//ユーザ辞書
+extern WCHAR pathuserdic[MAX_PATH];		//ユーザー辞書
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
@@ -81,8 +81,8 @@ extern WCHAR krnlobjsddl[MAX_KRNLOBJNAME];	//SDDL
 extern WCHAR mgrpipename[MAX_KRNLOBJNAME];	//名前付きパイプ
 extern WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
-// 辞書サーバ設定
-extern BOOL serv;		//SKK辞書サーバを使用する
+// 辞書サーバー設定
+extern BOOL serv;		//SKK辞書サーバーを使用する
 extern WCHAR host[MAX_SKKSERVER_HOST];	//ホスト
 extern WCHAR port[MAX_SKKSERVER_PORT];	//ポート
 extern DWORD encoding;	//エンコーディング

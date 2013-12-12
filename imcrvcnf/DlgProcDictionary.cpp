@@ -20,6 +20,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR host[MAX_SKKSERVER_HOST];
 	WCHAR port[MAX_SKKSERVER_PORT];
 	std::wstring strxmlval;
+	FILE *fp;
 
 	switch(message)
 	{
@@ -178,13 +179,24 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
-			WriterStartSection(pXmlWriter, SectionDictionary);
+			_wfopen_s(&fp, pathconfigxml, L"ab");
+			if(fp != NULL)
+			{
+				fclose(fp);
+			}
+			SetFileDacl(pathconfigxml);
+
+			WriterInit(pathconfigxml, &pXmlWriter, &pXmlFileStream);
+
+			WriterStartElement(pXmlWriter, TagRoot);
+
+			WriterStartSection(pXmlWriter, SectionDictionary);	//Start of SectionDictionary
 
 			SaveDictionary(hDlg);
 
-			WriterEndSection(pXmlWriter);
+			WriterEndSection(pXmlWriter);	//End of SectionDictionary
 
-			WriterStartSection(pXmlWriter, SectionServer);
+			WriterStartSection(pXmlWriter, SectionServer);	//Start of SectionServer
 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, ValueServerServ);
 
@@ -199,7 +211,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
 			WriterKey(pXmlWriter, ValueServerTimeOut, num);
 
-			WriterEndSection(pXmlWriter);
+			WriterEndSection(pXmlWriter);	//End of SectionServer
 
 			return TRUE;
 		default:

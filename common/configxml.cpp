@@ -31,6 +31,36 @@ LPCWSTR AttributeSpOp = L"so";
 LPCWSTR AttributeLatin = L"la";
 LPCWSTR AttributeJLatin = L"jl";
 
+//dictionary section
+
+LPCWSTR SectionDictionary = L"dictionary";
+
+//server section
+
+LPCWSTR SectionServer = L"server";
+
+//server keys
+
+LPCWSTR ValueServerServ = L"serv";
+LPCWSTR ValueServerHost = L"host";
+LPCWSTR ValueServerPort = L"port";
+LPCWSTR ValueServerEncoding = L"encoding";
+LPCWSTR ValueServerTimeOut = L"timeout";
+
+//behavior section
+
+LPCWSTR SectionBehavior = L"behavior";
+
+//behavior keys
+
+LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
+LPCWSTR ValueKeepInputNoR = L"keepinputnor";
+LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";
+LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
+LPCWSTR ValueBackIncEnter = L"backincenter";
+LPCWSTR ValueAddCandKtkn = L"addcandktkn";
+LPCWSTR ValueShiftNNOkuri = L"shiftnnokuri";
+
 //font section
 
 LPCWSTR SectionFont = L"font";
@@ -42,11 +72,11 @@ LPCWSTR ValueFontSize = L"size";
 LPCWSTR ValueFontWeight = L"weight";
 LPCWSTR ValueFontItalic = L"italic";
 
-//behavior section
+//display section
 
-LPCWSTR SectionBehavior = L"behavior";
+LPCWSTR SectionDisplay = L"display";
 
-//behavior keys
+//display keys
 
 LPCWSTR ValueMaxWidth = L"maxwidth";
 LPCWSTR ValueColorBG = L"colorbg";
@@ -64,29 +94,21 @@ LPCWSTR ValueAnnotatLst = L"annotatlst";
 LPCWSTR ValueShowModeInl = L"showmodeinl";
 LPCWSTR ValueShowModeImm = L"showmodeimm";
 LPCWSTR ValueShowModeMark = L"showmodemark";
+LPCWSTR ValueShowRoman = L"showroman";
 
-LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
-LPCWSTR ValueKeepInputNoR = L"keepinputnor";
-LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";
-LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
-LPCWSTR ValueBackIncEnter = L"backincenter";
-LPCWSTR ValueAddCandKtkn = L"addcandktkn";
+//displayattr section
 
-//dictionary section
+LPCWSTR SectionDisplayAttr = L"displayattr";
 
-LPCWSTR SectionDictionary = L"dictionary";
+//displayattr keys
 
-//server section
-
-LPCWSTR SectionServer = L"server";
-
-//server keys
-
-LPCWSTR ValueServerServ = L"serv";
-LPCWSTR ValueServerHost = L"host";
-LPCWSTR ValueServerPort = L"port";
-LPCWSTR ValueServerEncoding = L"encoding";
-LPCWSTR ValueServerTimeOut = L"timeout";
+LPCWSTR ValueDisplayAttrInputMark = L"inputmark";
+LPCWSTR ValueDisplayAttrInputText = L"inputtext";
+LPCWSTR ValueDisplayAttrInputOkuri = L"inputokuri";
+LPCWSTR ValueDisplayAttrConvMark = L"convmark";
+LPCWSTR ValueDisplayAttrConvText = L"convtext";
+LPCWSTR ValueDisplayAttrConvOkuri = L"convokuri";
+LPCWSTR ValueDisplayAttrConvAnnot = L"convannot";
 
 //selkey section
 

@@ -142,7 +142,7 @@ std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate)
 				repcandidate.append(result.str());
 				break;
 			}
-			repcandidate.push_back((L'０'-L'0')/*(0xFF10-0x0030)*/ + keynum[j][0]);
+			repcandidate.push_back((L'０' - L'0')/*(0xFF10-0x0030)*/ + keynum[j][0]);
 			repcandidate.append(kannum3[(keynum[j][1] - L'0'/*0x0030*/)]);
 			break;
 		default:

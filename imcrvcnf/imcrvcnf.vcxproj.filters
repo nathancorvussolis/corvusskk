@@ -41,12 +41,6 @@
     <ClCompile Include="convtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DlgProcBehavior1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgProcBehavior2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DlgProcConvPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -59,10 +53,7 @@
     <ClCompile Include="DlgProcKana.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DlgProcKeyMap1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgProcKeyMap2.cpp">
+    <ClCompile Include="DlgProcKeyMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcPreservedKey.cpp">
@@ -75,6 +66,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PropertyConfDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcBehavior.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplay.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplayAttr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

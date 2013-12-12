@@ -11,6 +11,7 @@ void CreateProperty(HINSTANCE hInst);
 void CreateConfigPath();
 BOOL SetFileDacl(LPCWSTR path);
 int GetScaledSizeX(HWND hwnd, int size);
+void DrawSelectColor(HWND hDlg, int id, COLORREF col);
 
 // PropertyConfDictionary
 void LoadDictionary(HWND hwnd);
@@ -46,12 +47,5 @@ extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathskkdic[MAX_PATH];	//取込SKK辞書
 extern WCHAR pathskkidx[MAX_PATH];	//取込SKK辞書インデックス
-
-//キー設定
-typedef struct {
-	int idd;
-	LPCWSTR keyName;
-	LPCWSTR defaultValue;
-} KEYMAPCNF;
 
 #endif //IMCRVCNF_H

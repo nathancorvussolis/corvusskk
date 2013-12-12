@@ -12,6 +12,81 @@ LPCWSTR fnuserdic = L"userdict.txt";	//ユーザ辞書
 LPCWSTR fnskkdic = L"skkdict.dic";		//取込SKK辞書
 LPCWSTR fnskkidx = L"skkdict.idx";		//取込SKK辞書インデックス
 
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputMark =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_DOT,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_INPUT				// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputText =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_DOT,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_INPUT				// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputOkuri =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_DASH,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_INPUT				// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvMark =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_SOLID,				// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_TARGET_CONVERTED	// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvText =
+{
+	{TF_CT_COLORREF, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crText;
+	{TF_CT_COLORREF, RGB(0x00, 0x80, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_NONE,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_TARGET_CONVERTED	// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvOkuri =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_SOLID,				// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_FIXEDCONVERTED		// TF_DA_ATTR_INFO bAttr;
+};
+
+const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvAnnot =
+{
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	TF_LS_DASH,					// TF_DA_LINESTYLE lsStyle;
+	FALSE,						// BOOL fBoldLine;
+	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
+	TF_ATTR_CONVERTED			// TF_DA_ATTR_INFO bAttr;
+};
+
+const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM] =
+{
+	FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE
+};
+
 BOOL IsVersion62AndOver()
 {
 	OSVERSIONINFOEXW osvi;

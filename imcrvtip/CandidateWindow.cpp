@@ -1454,7 +1454,7 @@ void CCandidateWindow::_BackUpStatus()
 	inputmode_bak = _pTextService->inputmode;
 	abbrevmode_bak = _pTextService->abbrevmode;
 	kana_bak = _pTextService->kana;
-	accompidx_bak = _pTextService->accompidx;
+	okuriidx_bak = _pTextService->okuriidx;
 	cursoridx_bak = _pTextService->cursoridx;
 	searchkey_bak = _pTextService->searchkey;
 	searchkeyorg_bak = _pTextService->searchkeyorg;
@@ -1468,7 +1468,7 @@ void CCandidateWindow::_ClearStatus()
 	//_pTextService->inputmode //そのまま
 	_pTextService->abbrevmode = FALSE;
 	_pTextService->kana.clear();
-	_pTextService->accompidx = 0;
+	_pTextService->okuriidx = 0;
 	_pTextService->cursoridx = 0;
 	_pTextService->searchkey.clear();
 	_pTextService->searchkeyorg.clear();
@@ -1486,7 +1486,7 @@ void CCandidateWindow::_RestoreStatusReg()
 	_pTextService->_UpdateLanguageBar();
 	_pTextService->abbrevmode = abbrevmode_bak;
 	_pTextService->kana = kana_bak;
-	_pTextService->accompidx = accompidx_bak;
+	_pTextService->okuriidx = okuriidx_bak;
 	_pTextService->cursoridx = cursoridx_bak;
 	_pTextService->searchkey = searchkey_bak;
 	_pTextService->searchkeyorg = searchkeyorg_bak;
@@ -1503,7 +1503,7 @@ void CCandidateWindow::_ClearStatusReg()
 	inputmode_bak = im_default;
 	abbrevmode_bak = FALSE;
 	kana_bak.clear();
-	accompidx_bak = 0;
+	okuriidx_bak = 0;
 	cursoridx_bak = 0;
 	searchkey_bak.clear();
 	searchkeyorg_bak.clear();

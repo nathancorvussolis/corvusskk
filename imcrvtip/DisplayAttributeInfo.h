@@ -2,19 +2,19 @@
 #ifndef DISPLAYATTRIBUTEINFO_H
 #define DISPLAYATTRIBUTEINFO_H
 
-class CDisplayAttributeInfoBase : public ITfDisplayAttributeInfo
+class CDisplayAttributeInfo : public ITfDisplayAttributeInfo
 {
 public:
-	CDisplayAttributeInfoBase()
+	CDisplayAttributeInfo(const GUID &guid, const TF_DISPLAYATTRIBUTE *pDisplayAttribute)
 	{
 		DllAddRef();
 
-		_pguid = NULL;
-		_pDisplayAttribute = NULL;
+		_pguid = &guid;
+		_pDisplayAttribute = pDisplayAttribute;
 
 		_cRef = 1;
 	}
-	~CDisplayAttributeInfoBase()
+	~CDisplayAttributeInfo()
 	{
 		DllRelease();
 	}
@@ -122,36 +122,6 @@ protected:
 
 private:
 	LONG _cRef;
-};
-
-class CDisplayAttributeInfoInput : public CDisplayAttributeInfoBase
-{
-public:
-	CDisplayAttributeInfoInput()
-	{
-		_pguid = &c_guidDisplayAttributeInput;
-		_pDisplayAttribute = &c_daDisplayAttributeInput;
-	}
-};
-
-class CDisplayAttributeInfoCandidate : public CDisplayAttributeInfoBase
-{
-public:
-	CDisplayAttributeInfoCandidate()
-	{
-		_pguid = &c_guidDisplayAttributeCandidate;
-		_pDisplayAttribute = &c_daDisplayAttributeCandidate;
-	}
-};
-
-class CDisplayAttributeInfoAnnotation : public CDisplayAttributeInfoBase
-{
-public:
-	CDisplayAttributeInfoAnnotation()
-	{
-		_pguid = &c_guidDisplayAttributeAnnotation;
-		_pDisplayAttribute = &c_daDisplayAttributeAnnotation;
-	}
 };
 
 #endif //DISPLAYATTRIBUTEINFO_H

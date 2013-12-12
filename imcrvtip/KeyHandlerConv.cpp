@@ -165,7 +165,7 @@ void CTextService::_StartConv()
 	CANDIDATES::iterator candidates_hint_itr;
 	std::wstring keyhint, key, hint;
 	std::wstring candidate, str;
-	size_t accompidx_bak;
+	size_t okuriidx_bak;
 	size_t i;
 
 	size_t hintchidx = kana.find_first_of(CHAR_SKK_HINT);
@@ -179,13 +179,13 @@ void CTextService::_StartConv()
 		keyhint = kana;
 
 		key = keyhint.substr(0, hintchidx);
-		if(accompidx > key.size())
+		if(okuriidx > key.size())
 		{
-			keyhint = keyhint.substr(0, accompidx + 1);
-			accompidx = 0;
+			keyhint = keyhint.substr(0, okuriidx + 1);
+			okuriidx = 0;
 		}
-		accompidx_bak = accompidx;
-		accompidx = 0;
+		okuriidx_bak = okuriidx;
+		okuriidx = 0;
 		hint = keyhint.substr(hintchidx + 1);
 
 		//ヒント検索
@@ -194,7 +194,7 @@ void CTextService::_StartConv()
 		candidates_hint = candidates;
 
 		//通常検索
-		accompidx = accompidx_bak;
+		okuriidx = okuriidx_bak;
 		kana = key;
 		cursoridx = kana.size();
 		_StartSubConv();
@@ -248,9 +248,9 @@ void CTextService::_StartSubConv()
 	searchkeyorg.clear();
 
 	//仮名を平仮名にして検索
-	if(accompidx != 0)
+	if(okuriidx != 0)
 	{
-		_ConvKanaToKana(searchkey, im_hiragana, kana.substr(0, accompidx + 1), inputmode);
+		_ConvKanaToKana(searchkey, im_hiragana, kana.substr(0, okuriidx + 1), inputmode);
 	}
 	else
 	{
@@ -271,9 +271,9 @@ void CTextService::_StartSubConv()
 		{
 		case im_hiragana:
 		case im_katakana:
-			if(accompidx != 0)
+			if(okuriidx != 0)
 			{
-				_ConvKanaToKana(kanaconv, im_katakana, kana.substr(0, accompidx), inputmode);
+				_ConvKanaToKana(kanaconv, im_katakana, kana.substr(0, okuriidx), inputmode);
 			}
 			else
 			{
@@ -361,16 +361,16 @@ void CTextService::_PrevConv()
 	else
 	{
 		showentry = FALSE;
-		if(cx_delokuricncl && accompidx != 0)
+		if(cx_delokuricncl && okuriidx != 0)
 		{
-			kana = kana.substr(0, accompidx);
-			accompidx = 0;
+			kana = kana.substr(0, okuriidx);
+			okuriidx = 0;
 			cursoridx = kana.size();
 		}
-		if(cx_delcvposcncl && accompidx != 0)
+		if(cx_delcvposcncl && okuriidx != 0)
 		{
-			kana.erase(accompidx, 1);
-			accompidx = 0;
+			kana.erase(okuriidx, 1);
+			okuriidx = 0;
 			cursoridx--;
 		}
 	}
@@ -384,7 +384,7 @@ void CTextService::_NextComp()
 		searchkey.clear();
 		searchkeyorg.clear();
 
-		if(accompidx == 0)
+		if(okuriidx == 0)
 		{
 			if(abbrevmode)
 			{
@@ -485,7 +485,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 	case S_OK:	//一致
 		if(rkc.wait)	//待機
 		{
-			if(accompidx != 0 && accompidx == kana.size())
+			if(okuriidx != 0 && okuriidx == kana.size())
 			{
 				chN = L'\0';
 				switch(inputmode)
@@ -521,7 +521,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 
 				if(chO == L'\0')
 				{
-					accompidx = 0;
+					okuriidx = 0;
 				}
 				else
 				{
@@ -589,12 +589,18 @@ BOOL CTextService::_ConvN(WCHAR ch)
 			}
 			else
 			{
-				_ConvNN();
+				if(cx_shiftnnokuri || (!cx_shiftnnokuri && (!inputkey || (inputkey && okuriidx == 0))))
+				{
+					_ConvNN();
+				}
 				return TRUE;	//「ka,na,nn」etc.
 			}
 			break;
 		case E_PENDING:	//途中まで一致
-			_ConvNN();
+			if(cx_shiftnnokuri || (!cx_shiftnnokuri && (!inputkey || (inputkey && okuriidx == 0))))
+			{
+				_ConvNN();
+			}
 			return TRUE;		//「ky,ny」etc.
 			break;
 		default:

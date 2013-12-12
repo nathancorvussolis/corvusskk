@@ -26,6 +26,8 @@ CTextService::CTextService()
 	inputmode = im_default;
 
 	_ResetStatus();
+
+	_CreateConfigPath();
 }
 
 CTextService::~CTextService()
@@ -128,8 +130,6 @@ STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
 	//_wsetlocale(LC_ALL, L"JPN");
-	
-	_CreateConfigPath();
 
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();

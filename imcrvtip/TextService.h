@@ -144,7 +144,7 @@ public:
 	// KeyHandlerCompostion
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed = FALSE, BOOL back = FALSE);
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, BOOL fixed = FALSE, BOOL back = FALSE);
-	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchReq, BOOL fixed);
+	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed);
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg);
 
 	// KeyHandlerControl
@@ -180,8 +180,9 @@ public:
 
 	// FnConfigure
 	void _CreateConfigPath();
-	void _ReadBoolValue(LPCWSTR key, BOOL &value);
+	void _ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval);
 	void _LoadBehavior();
+	void _LoadDisplayAttr();
 	void _LoadSelKey();
 	void _LoadPreservedKey();
 	void _LoadKeyMap(LPCWSTR section, KEYMAP &keymap);
@@ -237,13 +238,18 @@ private:
 
 	CCandidateList *_pCandidateList;
 
-	TfGuidAtom _gaDisplayAttributeInput;
-	TfGuidAtom _gaDisplayAttributeCandidate;
-	TfGuidAtom _gaDisplayAttributeAnnotation;
+	TfGuidAtom _gaDisplayAttributeInputMark;
+	TfGuidAtom _gaDisplayAttributeInputText;
+	TfGuidAtom _gaDisplayAttributeInputOkuri;
+	TfGuidAtom _gaDisplayAttributeConvMark;
+	TfGuidAtom _gaDisplayAttributeConvText;
+	TfGuidAtom _gaDisplayAttributeConvOkuri;
+	TfGuidAtom _gaDisplayAttributeConvAnnot;
 
 private:
 	//ファイルパス
 	WCHAR pathconfigxml[MAX_PATH];	//設定
+	FILETIME ftconfigxml;			//更新時刻
 
 	//imcrvmgr.exe との名前付きパイプ
 	WCHAR mgrpipename[MAX_KRNLOBJNAME];
@@ -292,7 +298,8 @@ public:
 	BOOL cx_annotatlst;			//注釈を表示する（候補一覧のみ）
 	BOOL cx_showmodeinl;		//入力モードを表示する
 	BOOL cx_showmodeimm;		//入力モードを表示する（没入型のみ）
-	BOOL cx_showmodemark;			//▽▼*マークを表示する
+	BOOL cx_showmodemark;		//▽▼*マークを表示する
+	BOOL cx_showroman;			//ローマ字を表示する
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
 	BOOL cx_keepinputnor;		//ローマ字が無いとき最後の入力を残す
@@ -300,11 +307,12 @@ public:
 	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
+	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字
 	std::wstring kana;		//仮名
-	size_t accompidx;		//送り仮名インデックス
+	size_t okuriidx;		//送り仮名インデックス
 
 	//検索用見出し語
 	std::wstring searchkey;		//数値変換で数値→#
@@ -322,6 +330,10 @@ public:
 
 	//preserved key
 	TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
+
+	//表示属性   別のインスタンスからGetDisplayAttributeInfo()が呼ばれるのでstaticで
+	static BOOL display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM];
+	static TF_DISPLAYATTRIBUTE display_attribute_info[DISPLAYATTRIBUTE_INFO_NUM];
 };
 
 #endif //TEXTSERVICE_H

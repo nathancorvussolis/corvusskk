@@ -121,7 +121,7 @@ private:
 	int inputmode_bak;
 	BOOL abbrevmode_bak;
 	std::wstring kana_bak;
-	size_t accompidx_bak;
+	size_t okuriidx_bak;
 	size_t cursoridx_bak;
 	std::wstring searchkey_bak;
 	std::wstring searchkeyorg_bak;

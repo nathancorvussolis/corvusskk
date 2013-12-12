@@ -97,34 +97,16 @@ public:
 
 		while(cFetched < ulCount)
 		{
-			if(_iIndex > 2)
+			if(_iIndex >= _countof(c_gdDisplayAttributeInfo) || _iIndex < 0)
 			{
 				break;
 			}
 
-			if(_iIndex == 0)
+			pDisplayAttributeInfo = new CDisplayAttributeInfo(
+				c_gdDisplayAttributeInfo[_iIndex].guid, &CTextService::display_attribute_info[_iIndex]);
+			if(pDisplayAttributeInfo == NULL)
 			{
-				pDisplayAttributeInfo = new CDisplayAttributeInfoInput();
-				if(pDisplayAttributeInfo == NULL)
-				{
-					return E_OUTOFMEMORY;
-				}
-			}
-			else if(_iIndex == 1)
-			{
-				pDisplayAttributeInfo = new CDisplayAttributeInfoCandidate();
-				if(pDisplayAttributeInfo == NULL)
-				{
-					return E_OUTOFMEMORY;
-				}
-			}
-			else if(_iIndex == 2)
-			{
-				pDisplayAttributeInfo = new CDisplayAttributeInfoAnnotation();
-				if(pDisplayAttributeInfo == NULL)
-				{
-					return E_OUTOFMEMORY;
-				}
+				return E_OUTOFMEMORY;
 			}
 
 			*(rgInfo + cFetched) = pDisplayAttributeInfo;

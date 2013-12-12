@@ -62,6 +62,36 @@ extern LPCWSTR AttributeSpOp;
 extern LPCWSTR AttributeLatin;
 extern LPCWSTR AttributeJLatin;
 
+//dictionary section
+
+extern LPCWSTR SectionDictionary;
+
+//server section
+
+extern LPCWSTR SectionServer;
+
+//server keys
+
+extern LPCWSTR ValueServerServ;
+extern LPCWSTR ValueServerHost;
+extern LPCWSTR ValueServerPort;
+extern LPCWSTR ValueServerEncoding;
+extern LPCWSTR ValueServerTimeOut;
+
+//behavior section
+
+extern LPCWSTR SectionBehavior;
+
+//behavior keys
+
+extern LPCWSTR ValueBeginCvOkuri;
+extern LPCWSTR ValueKeepInputNoR;
+extern LPCWSTR ValueDelCvPosCncl;
+extern LPCWSTR ValueDelOkuriCncl;
+extern LPCWSTR ValueBackIncEnter;
+extern LPCWSTR ValueAddCandKtkn;
+extern LPCWSTR ValueShiftNNOkuri;
+
 //font section
 
 extern LPCWSTR SectionFont;
@@ -73,11 +103,11 @@ extern LPCWSTR ValueFontSize;
 extern LPCWSTR ValueFontWeight;
 extern LPCWSTR ValueFontItalic;
 
-//behavior section
+//display section
 
-extern LPCWSTR SectionBehavior;
+extern LPCWSTR SectionDisplay;
 
-//behavior keys
+//display keys
 
 extern LPCWSTR ValueMaxWidth;
 extern LPCWSTR ValueColorBG;
@@ -95,29 +125,21 @@ extern LPCWSTR ValueAnnotatLst;
 extern LPCWSTR ValueShowModeInl;
 extern LPCWSTR ValueShowModeImm;
 extern LPCWSTR ValueShowModeMark;
+extern LPCWSTR ValueShowRoman;
 
-extern LPCWSTR ValueBeginCvOkuri;
-extern LPCWSTR ValueKeepInputNoR;
-extern LPCWSTR ValueDelCvPosCncl;
-extern LPCWSTR ValueDelOkuriCncl;
-extern LPCWSTR ValueBackIncEnter;
-extern LPCWSTR ValueAddCandKtkn;
+//displayattr section
 
-//dictionary section
+extern LPCWSTR SectionDisplayAttr;
 
-extern LPCWSTR SectionDictionary;
+//displayattr keys
 
-//server section
-
-extern LPCWSTR SectionServer;
-
-//server keys
-
-extern LPCWSTR ValueServerServ;
-extern LPCWSTR ValueServerHost;
-extern LPCWSTR ValueServerPort;
-extern LPCWSTR ValueServerEncoding;
-extern LPCWSTR ValueServerTimeOut;
+extern LPCWSTR ValueDisplayAttrInputMark;
+extern LPCWSTR ValueDisplayAttrInputText;
+extern LPCWSTR ValueDisplayAttrInputOkuri;
+extern LPCWSTR ValueDisplayAttrConvMark;
+extern LPCWSTR ValueDisplayAttrConvText;
+extern LPCWSTR ValueDisplayAttrConvOkuri;
+extern LPCWSTR ValueDisplayAttrConvAnnot;
 
 //selkey section
 

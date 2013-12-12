@@ -5,7 +5,7 @@
 #include "common.h"
 
 //入力モード
-enum
+enum InputMode
 {
 	im_disable = -1,	//無効
 	im_default,			//デフォルト
@@ -83,22 +83,72 @@ extern LPCWSTR LangbarItemDesc;
 
 extern HINSTANCE g_hInst;
 
-extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInput;
-extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeCandidate;
-extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeAnnotation;
-
 extern const CLSID c_clsidTextService;
 extern const GUID c_guidProfile;
 extern const GUID c_guidPreservedKeyOnOff;
 extern const GUID c_guidLangBarItemButton;
-extern const GUID c_guidDisplayAttributeInput;
-extern const GUID c_guidDisplayAttributeCandidate;
-extern const GUID c_guidDisplayAttributeAnnotation;
 extern const GUID c_guidCandidateListUIElement;
+
+extern const GUID c_guidDisplayAttributeInputMark;
+extern const GUID c_guidDisplayAttributeInputText;
+extern const GUID c_guidDisplayAttributeInputOkuri;
+extern const GUID c_guidDisplayAttributeConvMark;
+extern const GUID c_guidDisplayAttributeConvText;
+extern const GUID c_guidDisplayAttributeConvOkuri;
+extern const GUID c_guidDisplayAttributeConvAnnot;
+
+typedef struct {
+	LPCWSTR key;
+	const GUID guid;
+	const BOOL se;
+	const TF_DISPLAYATTRIBUTE da;
+} DISPLAYATTRIBUTE_INFO;
+
+extern const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INFO_NUM];
 
 LONG DllAddRef();
 LONG DllRelease();
 
 #define IID_IUNK_ARGS(pType) __uuidof(*(pType)), (IUnknown *)pType
+
+// added in Windows 8 SDK
+#if (_WIN32_WINNT < 0x0602)
+
+#define EVENT_OBJECT_IME_SHOW               0x8027
+#define EVENT_OBJECT_IME_HIDE               0x8028
+#define EVENT_OBJECT_IME_CHANGE             0x8029
+
+#define TF_TMF_IMMERSIVEMODE          0x40000000
+
+#define TF_IPP_CAPS_IMMERSIVESUPPORT            0x00010000
+#define TF_IPP_CAPS_SYSTRAYSUPPORT              0x00020000
+
+extern const GUID GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT;
+extern const GUID GUID_TFCAT_TIPCAP_SYSTRAYSUPPORT;
+extern const GUID GUID_LBI_INPUTMODE;
+
+typedef DECLSPEC_UUID("E9967127-FB3C-4978-9008-FB3060D92730")
+enum __MIDL_ITfFnGetPreferredTouchKeyboardLayout_0001
+{
+	TKBLT_UNDEFINED = 0,
+	TKBLT_CLASSIC = 1,
+	TKBLT_OPTIMIZED = 2
+} TKBLayoutType;
+
+MIDL_INTERFACE("5F309A41-590A-4ACC-A97F-D8EFFF13FDFC")
+ITfFnGetPreferredTouchKeyboardLayout : public ITfFunction
+{
+public:
+	virtual HRESULT STDMETHODCALLTYPE GetLayout(
+		TKBLayoutType *pTKBLayoutType,
+		WORD *pwPreferredLayoutId) = 0;
+};
+
+#define TKBL_UNDEFINED                 0
+#define TKBL_OPT_JAPANESE_ABC                       0x0411
+
+extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
+
+#endif //(_WIN32_WINNT < 0x0602)
 
 #endif //IMCRVTIP_H

@@ -22,7 +22,7 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 {
 	CHAR key[KEYSIZE];
 	size_t size;
-	CHAR buf[SBUFSIZE*2];
+	CHAR buf[SBUFSIZE * 2];
 	size_t idxbuf = 0;
 	CHAR rbuf[RBUFSIZE];
 	int n, nn;
