@@ -120,6 +120,18 @@ void CTextService::_LoadBehavior()
 	std::wstring strxmlval;
 	int i;
 
+	//Behavior
+
+	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueKeepInputNoR, cx_keepinputnor, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
+	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
+	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
+
+	//Font
+
 	ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 	wcsncpy_s(cx_fontname, strxmlval.c_str(), _TRUNCATE);
 	
@@ -143,7 +155,9 @@ void CTextService::_LoadBehavior()
 		cx_fontitalic = FALSE;
 	}
 
-	ReadValue(pathconfigxml, SectionBehavior, ValueMaxWidth, strxmlval);
+	//Display
+
+	ReadValue(pathconfigxml, SectionDisplay, ValueMaxWidth, strxmlval);
 	cx_maxwidth = strxmlval.empty() ? -1 : _wtol(strxmlval.c_str());
 	if(cx_maxwidth < 0)
 	{
@@ -153,14 +167,14 @@ void CTextService::_LoadBehavior()
 	for(i = 0; i < _countof(cx_colors); i++)
 	{
 		cx_colors[i] = colorsxmlvalue[i].color;
-		ReadValue(pathconfigxml, SectionBehavior, colorsxmlvalue[i].value, strxmlval);
+		ReadValue(pathconfigxml, SectionDisplay, colorsxmlvalue[i].value, strxmlval);
 		if(!strxmlval.empty())
 		{
 			cx_colors[i] = wcstoul(strxmlval.c_str(), NULL, 0);
 		}
 	}
 
-	ReadValue(pathconfigxml, SectionBehavior, ValueUntilCandList, strxmlval);
+	ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
 	cx_untilcandlist = _wtoi(strxmlval.c_str());
 	if(cx_untilcandlist > 9 || strxmlval.empty())
 	{
@@ -174,14 +188,6 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueShowModeImm, cx_showmodeimm, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
-
-	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
-	_ReadBoolValue(SectionBehavior, ValueKeepInputNoR, cx_keepinputnor, TRUE);
-	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
-	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
-	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
-	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
-	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
 }
 
 void CTextService::_LoadDisplayAttr()
