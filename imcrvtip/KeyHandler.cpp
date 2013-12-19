@@ -140,7 +140,24 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	if(sf == SKK_CONV_POINT)
 	{
-		if(!abbrevmode || showentry)
+		if(inputkey && roman.empty() && (ch >= L'\x20') && (kana.empty() || okuriidx == kana.size()))
+		{
+			// ";;" -> ;
+			if(kana.empty())
+			{
+				kana.push_back(ch);
+				_HandleCharReturn(ec, pContext);
+			}
+			else if(okuriidx == kana.size())
+			{
+				kana.push_back(ch);
+				cursoridx++;
+				okuriidx = 0;
+				_Update(ec, pContext);
+			}
+			return S_OK;
+		}
+		if(!roman.empty() && (!abbrevmode || showentry))
 		{
 			//ローマ字仮名変換表を優先させる
 			ROMAN_KANA_CONV rkc;
@@ -152,6 +169,10 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			{
 				sf = SKK_NULL;
 			}
+		}
+		else
+		{
+			ch = L'\0';
 		}
 	}
 
@@ -180,29 +201,32 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		case im_katakana_ank:
 			if(!abbrevmode || showentry)
 			{
-				//ローマ字仮名変換表を優先させる
-				ROMAN_KANA_CONV rkc;
-				std::wstring roman_conv;
-				roman_conv = roman;
-				roman_conv.push_back(ch);
-				wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
-				if(_ConvRomanKana(&rkc) != E_ABORT)
+				if(!roman.empty())
 				{
-					for(i = 0; i < CONV_POINT_NUM; i++)
+					//ローマ字仮名変換表を優先させる
+					ROMAN_KANA_CONV rkc;
+					std::wstring roman_conv;
+					roman_conv = roman;
+					roman_conv.push_back(ch);
+					wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
+					if(_ConvRomanKana(&rkc) != E_ABORT)
 					{
-						if(conv_point[i][0] == L'\0' &&
-							conv_point[i][1] == L'\0' &&
-							conv_point[i][2] == L'\0')
+						for(i = 0; i < CONV_POINT_NUM; i++)
 						{
-							break;
+							if(conv_point[i][0] == L'\0' &&
+								conv_point[i][1] == L'\0' &&
+								conv_point[i][2] == L'\0')
+							{
+								break;
+							}
+							if(ch == conv_point[i][1])
+							{
+								chO = conv_point[i][2];
+								break;
+							}
 						}
-						if(ch == conv_point[i][1])
-						{
-							chO = conv_point[i][2];
-							break;
-						}
+						break;
 					}
-					break;
 				}
 
 				for(i = 0; i < CONV_POINT_NUM; i++)
@@ -340,18 +364,6 @@ void CTextService::_KeyboardOpenCloseChanged()
 	BOOL fOpen = _IsKeyboardOpen();
 	if(fOpen)
 	{
-		//OnPreservedKey(),CLangBarItemButton::OnClick()経由ならひらがなモード
-		//それ以外なら現在のモード
-		switch(inputmode)
-		{
-		case im_disable:
-			inputmode = im_hiragana;
-			break;
-		default:
-			_KeyboardInputConversionChanged();
-			break;
-		}
-
 		_StartManager();
 
 		_ResetStatus();
@@ -369,6 +381,18 @@ void CTextService::_KeyboardOpenCloseChanged()
 		_LoadConvPoint();
 		_LoadKana();
 		_LoadJLatin();
+
+		//OnPreservedKey(),CLangBarItemButton::OnClick()経由ならひらがなモード
+		//それ以外なら現在のモード
+		switch(inputmode)
+		{
+		case im_disable:
+			inputmode = im_hiragana;
+			break;
+		default:
+			_KeyboardInputConversionChanged();
+			break;
+		}
 	}
 	else
 	{

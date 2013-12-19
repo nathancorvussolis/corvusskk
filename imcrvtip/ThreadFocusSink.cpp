@@ -2,12 +2,18 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 STDAPI CTextService::OnSetThreadFocus()
 {
 	if(_pCandidateList)
 	{
 		_pCandidateList->_Show(TRUE);
+	}
+
+	if(_pInputModeWindow)
+	{
+		_pInputModeWindow->_Show(TRUE);
 	}
 
 	return S_OK;
@@ -20,6 +26,11 @@ STDAPI CTextService::OnKillThreadFocus()
 	if(_pCandidateList)
 	{
 		_pCandidateList->_Show(FALSE);
+	}
+
+	if(_pInputModeWindow)
+	{
+		_pInputModeWindow->_Show(FALSE);
 	}
 
 	return S_OK;

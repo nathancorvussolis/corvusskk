@@ -33,6 +33,7 @@ public:
 	STDMETHODIMP UnadviseSink(DWORD dwCookie);
 
 	STDMETHODIMP _Update();
+	STDMETHODIMP _GetIcon(HICON *phIcon, BOOL bNT62);
 
 private:
 	LONG _cRef;

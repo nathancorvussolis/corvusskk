@@ -2,6 +2,7 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 static LPCWSTR markMidashi = L"▽";
 static LPCWSTR markHenkan = L"▼";
@@ -380,6 +381,13 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 	if(!_IsComposing())
 	{
 		_StartComposition(pContext);
+	}
+
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
 	}
 
 	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK || cFetched != 1)

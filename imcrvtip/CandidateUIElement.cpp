@@ -17,6 +17,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 
 	_pCandidateWindow = NULL;
 	_pCandidateWindowParent = NULL;
+	_pInputModeWindow = NULL;
 
 	_hwnd = NULL;
 	_hwndParent = NULL;
@@ -184,6 +185,11 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 #ifndef _DEBUG
 	}
 #endif
+
+	if(_pInputModeWindow && regword)
+	{
+		_pInputModeWindow->_Show(bShow);
+	}
 
 	return S_OK;
 }

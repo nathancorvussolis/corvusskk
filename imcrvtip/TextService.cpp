@@ -2,6 +2,7 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 CTextService::CTextService()
 {
@@ -18,6 +19,7 @@ CTextService::CTextService()
 	_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	_pComposition = NULL;
 	_pCandidateList = NULL;
+	_pInputModeWindow = NULL;
 
 	_dwActiveFlags = 0;
 
@@ -201,6 +203,12 @@ STDAPI CTextService::Deactivate()
 	{
 		delete _pCandidateList;
 		_pCandidateList = NULL;
+	}
+
+	if(_pInputModeWindow != NULL)
+	{
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
 	}
 
 	_UninitFunctionProvider();

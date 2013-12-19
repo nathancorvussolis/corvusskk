@@ -3,6 +3,7 @@
 #include "TextService.h"
 #include "EditSession.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfComposition *pComposition)
 {
@@ -10,6 +11,13 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	{
 		_pCandidateList->_EndCandidateList();
 		_pCandidateList = NULL;
+	}
+
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
 	}
 
 	if(_pComposition != NULL)
@@ -217,7 +225,14 @@ void CTextService::_ClearComposition()
 		_pCandidateList->_EndCandidateList();
 		_pCandidateList = NULL;
 	}
-	
+
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
+	}
+
 	if(_pComposition != NULL)
 	{
 		if((_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK) && (pDocumentMgrFocus != NULL))

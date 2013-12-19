@@ -1,8 +1,9 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
-#include "CandidateWindow.h"
 #include "CandidateList.h"
+#include "CandidateWindow.h"
+#include "InputModeWindow.h"
 
 #define MERGIN_X 2
 #define MERGIN_Y 4
@@ -38,7 +39,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wc.cbWndExtra = sizeof(LONG_PTR);
 		wc.hInstance = g_hInst;
 		wc.hIcon = NULL;
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+		wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = TextServiceDesc;
@@ -86,6 +87,18 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 		ReleaseDC(_hwnd, hdc);
 	}
+	
+	if(_hwnd != NULL && _pTextService->cx_showmodeinl &&
+		(!_pTextService->cx_showmodeimm || (_pTextService->cx_showmodeimm && _pTextService->_ImmersiveMode)))
+	{
+		_pInputModeWindow = new CInputModeWindow();
+		if(!_pInputModeWindow->_Create(_pTextService, NULL, TRUE, _hwnd))
+		{
+			_pInputModeWindow->_Destroy();
+			delete _pInputModeWindow;
+			_pInputModeWindow = NULL;
+		}
+	}
 
 	_reg = reg;
 	if(reg)
@@ -103,8 +116,13 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 		_BackUpStatus();
 		_ClearStatus();
+
+		if(_pInputModeWindow)
+		{
+			_pInputModeWindow->_Show(TRUE);
+		}
 	}
-	
+
 	return TRUE;
 }
 
@@ -425,6 +443,13 @@ void CCandidateWindow::_Destroy()
 		DestroyWindow(_hwnd);
 		_hwnd = NULL;
 	}
+
+	if(_pInputModeWindow)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
+	}
 }
 
 void CCandidateWindow::_Move(LPCRECT lpr)
@@ -737,6 +762,11 @@ void CCandidateWindow::_CalcWindowRect()
 	ReleaseDC(_hwnd, hdc);
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
+	if(_pInputModeWindow)
+	{
+		_pInputModeWindow->_Move(x, y + cy + 1);
+	}
+
 	if(_pCandidateWindow == NULL)
 	{
 		NotifyWinEvent(EVENT_OBJECT_IME_CHANGE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
@@ -917,6 +947,10 @@ void CCandidateWindow::_End()
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 	}
+	if(_pInputModeWindow)
+	{
+		_pInputModeWindow->_Show(TRUE);
+	}
 #endif
 
 	if(_pCandidateWindow != NULL)
@@ -1012,6 +1046,11 @@ void CCandidateWindow::_NextPage()
 
 				_BackUpStatus();
 				_ClearStatus();
+
+				if(_pInputModeWindow)
+				{
+					_pInputModeWindow->_Show(TRUE);
+				}
 			}
 			else
 			{
@@ -1142,6 +1181,10 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
 	{
 		_pTextService->_UpdateLanguageBar();
+		if(_pInputModeWindow)
+		{
+			_pInputModeWindow->_Redraw();
+		}
 		if(sf == SKK_ENTER)
 		{
 			return;
@@ -1169,6 +1212,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				_uIndex = _PageIndex[_PageIndex.size() - 1];
 				_Update();
 				_UpdateUIElement();
+
+				if(_pInputModeWindow)
+				{
+					_pInputModeWindow->_Show(FALSE);
+				}
 			}
 			else
 			{
@@ -1258,6 +1306,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			_uIndex = _PageIndex[_PageIndex.size() - 1];
 			_Update();
 			_UpdateUIElement();
+
+			if(_pInputModeWindow)
+			{
+				_pInputModeWindow->_Show(FALSE);
+			}
 		}
 		else
 		{
@@ -1404,6 +1457,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	default:
 		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
 		_Update();
+
+		if(_pInputModeWindow)
+		{
+			_pInputModeWindow->_Redraw();
+		}
 		break;
 	}
 }
@@ -1554,6 +1612,11 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 		{
 			SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
+		}
+
+		if(_pInputModeWindow)
+		{
+			_pInputModeWindow->_Show(FALSE);
 		}
 #endif
 	}

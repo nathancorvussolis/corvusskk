@@ -327,7 +327,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		hdc = BeginPaint(hDlg, &ps);
 		for(i = 0; i < _countof(displayAttrColor[no]); i++)
 		{
-			for(j = 0; j < _countof(displayAttrColor[no][i]); j++)
+			for(j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != NULL; j++)
 			{
 				DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, *displayAttrColor[no][i][j].color);
 			}

@@ -4,6 +4,7 @@
 
 #include "TextService.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 class CCandidateWindow : public ITfCandidateListUIElementBehavior
 {
@@ -95,6 +96,7 @@ private:
 	CCandidateList *_pCandidateList;
 	CCandidateWindow *_pCandidateWindow;		//子
 	CCandidateWindow *_pCandidateWindowParent;	//親
+	CInputModeWindow *_pInputModeWindow;
 	HWND _hwnd;			//自分
 	HWND _hwndParent;	//親
 	BOOL _preEnd;		//親に対する終了要求

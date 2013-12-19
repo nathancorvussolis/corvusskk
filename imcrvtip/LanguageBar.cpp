@@ -4,6 +4,7 @@
 #include "EditSession.h"
 #include "CandidateList.h"
 #include "LanguageBar.h"
+#include "InputModeWindow.h"
 #include "resource.h"
 
 #define TEXTSERVICE_LANGBARITEMSINK_COOKIE 0x54ab516b
@@ -14,7 +15,8 @@ static const struct {
 	UINT id;
 	DWORD flag;
 	LPCWSTR text;
-} menuItems[] = {
+} menuItems[] =
+{
 	{im_hiragana,		IDM_HIRAGANA,		0, L"［かな］"},
 	{im_katakana,		IDM_KATAKANA,		0, L"［カナ］"},
 	{im_katakana_ank,	IDM_KATAKANA_ANK,	0, L"［－ｶﾅ］"},
@@ -305,55 +307,7 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
-	size_t iconindex = 0;
-	WORD iconid = 0;
-
-	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
-	{
-		switch(_pTextService->inputmode)
-		{
-		case im_hiragana:
-			iconindex = 1;
-			break;
-		case im_katakana:
-			iconindex = 2;
-			break;
-		case im_katakana_ank:
-			iconindex = 3;
-			break;
-		case im_jlatin:
-			iconindex = 4;
-			break;
-		case im_ascii:
-			iconindex = 5;
-			break;
-		default:
-			break;
-		}
-	}
-
-	if(IsVersion62AndOver())
-	{
-		if(iconindex < _countof(iconIDZ))
-		{
-			iconid = iconIDZ[iconindex];
-		}
-	}
-	else
-	{
-		if(iconindex < _countof(iconIDX))
-		{
-			iconid = iconIDX[iconindex];
-		}
-	}
-
-	//DPIを考慮
-	HDC hdc = GetDC(NULL);
-	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
-	ReleaseDC(NULL, hdc);
-	int size = MulDiv(16, dpiX, 96);
-
-	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
+	_GetIcon(phIcon, IsVersion62AndOver());
 
 	return (*phIcon != NULL) ? S_OK : E_FAIL;
 }
@@ -468,6 +422,61 @@ STDAPI CLangBarItemButton::_Update()
 	return _pLangBarItemSink->OnUpdate(TF_LBI_ICON | TF_LBI_STATUS);
 }
 
+STDAPI CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
+{
+	size_t iconindex = 0;
+	WORD iconid = 0;
+
+	if(!_pTextService->_IsKeyboardDisabled() && _pTextService->_IsKeyboardOpen())
+	{
+		switch(_pTextService->inputmode)
+		{
+		case im_hiragana:
+			iconindex = 1;
+			break;
+		case im_katakana:
+			iconindex = 2;
+			break;
+		case im_katakana_ank:
+			iconindex = 3;
+			break;
+		case im_jlatin:
+			iconindex = 4;
+			break;
+		case im_ascii:
+			iconindex = 5;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(bNT62)
+	{
+		if(iconindex < _countof(iconIDZ))
+		{
+			iconid = iconIDZ[iconindex];
+		}
+	}
+	else
+	{
+		if(iconindex < _countof(iconIDX))
+		{
+			iconid = iconIDX[iconindex];
+		}
+	}
+
+	//DPIを考慮
+	HDC hdc = GetDC(NULL);
+	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+	ReleaseDC(NULL, hdc);
+	int size = MulDiv(16, dpiX, 96);
+
+	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
+
+	return (*phIcon != NULL) ? S_OK : E_FAIL;
+}
+
 BOOL CTextService::_InitLanguageBar()
 {
 	ITfLangBarItemMgr *pLangBarItemMgr;
@@ -547,27 +556,25 @@ void CTextService::_UninitLanguageBar()
 	}
 }
 
-class CImmersiveInputModeEditSession : public CEditSessionBase
+class CInputModeEditSession : public CEditSessionBase
 {
 public:
-	CImmersiveInputModeEditSession(CTextService *pTextService, ITfContext *pContext, const std::wstring &mode) : CEditSessionBase(pTextService, pContext)
+	CInputModeEditSession(CTextService *pTextService, ITfContext *pContext) : CEditSessionBase(pTextService, pContext)
 	{
 		_pTextService = pTextService;
 		_pContext = pContext;
-		_mode = mode;
 	}
 
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		_pTextService->_SetText(ec, _pContext, _mode, -(LONG)_mode.size(), 0, FALSE);
+		_pTextService->_SetText(ec, _pContext, std::wstring(L"\x20"), 0, 0, FALSE);
 		return S_OK;
 	}
 
 private:
 	CTextService *_pTextService;
 	ITfContext *_pContext;
-	std::wstring _mode;
 };
 
 void CTextService::_UpdateLanguageBar(BOOL showinputmode)
@@ -581,54 +588,66 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 		_pLangBarItemI->_Update();
 	}
 
-	if(showinputmode && cx_showmodeinl && (!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode)))
+	ITfDocumentMgr *pDocumentMgrFocus;
+	ITfContext *pContext;
+	CInputModeEditSession *pEditSession;
+	HRESULT hr;
+
+	if(showinputmode && !_IsComposing() && !_UILessMode &&
+		cx_showmodeinl && (!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode)))
 	{
-		std::wstring mode;
-		for(int i = 0; i < _countof(menuItems); i++)
+		switch(inputmode)
 		{
-			if(inputmode == menuItems[i].inputmode)
+		case im_hiragana:
+		case im_katakana:
+		case im_katakana_ank:
+		case im_jlatin:
+		case im_ascii:
+			if(_pInputModeWindow != NULL)
 			{
-				mode = menuItems[i].text;
-				break;
+				_pInputModeWindow->_Destroy();
+				delete _pInputModeWindow;
+				_pInputModeWindow = NULL;
 			}
-		}
-
-		if(_pCandidateList && _pCandidateList->_IsShowCandidateWindow())
-		{
-			_pCandidateList->_SetText(mode, FALSE, FALSE, FALSE);
-		}
-		else if(!_IsComposing())
-		{
-			ITfDocumentMgr *pDocumentMgrFocus;
-			CImmersiveInputModeEditSession *pEditSession;
-			HRESULT hr;
-
-			switch(inputmode)
+			if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
 			{
-			case im_hiragana:
-			case im_katakana:
-			case im_katakana_ank:
-			case im_jlatin:
-			case im_ascii:
-				if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
+				if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
 				{
-					ITfContext *pContext;
-					if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
+					pEditSession = new CInputModeEditSession(this, pContext);
+					if(pEditSession != NULL)
 					{
-						pEditSession = new CImmersiveInputModeEditSession(this, pContext, mode);
-						if(pEditSession != NULL)
+						pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+						pEditSession->Release();
+					}
+					if(hr == S_OK)
+					{
+						_pInputModeWindow = new CInputModeWindow();
+						if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
 						{
-							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-							pEditSession->Release();
+							_pInputModeWindow->_Show(TRUE);
+						}
+						else
+						{
+							_pInputModeWindow->_Destroy();
+							delete _pInputModeWindow;
+							_pInputModeWindow = NULL;
 						}
 						pContext->Release();
 					}
-					pDocumentMgrFocus->Release();
 				}
-				break;
-			default:
-				break;
+				pDocumentMgrFocus->Release();
 			}
+			break;
+		default:
+			break;
 		}
+	}
+}
+
+void CTextService::_GetIcon(HICON *phIcon)
+{
+	if(_pLangBarItem != NULL)
+	{
+		_pLangBarItem->_GetIcon(phIcon, FALSE);
 	}
 }
