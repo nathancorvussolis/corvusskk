@@ -25,7 +25,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 
 	if(_IsComposing())
 	{
-		if(inputmode != im_ascii)
+		if(inputmode != im_ascii && !_pInputModeWindow)
 		{
 			return TRUE;
 		}
@@ -118,18 +118,21 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
 	{
-		//ASCIIモード
-		if(inputmode == im_ascii)
+		WCHAR ch = _GetCh((BYTE)wParam);
+
+		if(ch != L'\0')
 		{
-			WCHAR ch = _GetCh((BYTE)wParam);
-			//無効
-			if(_IsKeyVoid(ch, (BYTE)wParam))
-			{
-				_UpdateLanguageBar();
-			}
-			else if(ch != L'\0')
+			if(_pInputModeWindow)
 			{
 				_ClearComposition();
+			}
+
+			if(inputmode == im_ascii)
+			{
+				if(_IsKeyVoid(ch, (BYTE)wParam))
+				{
+					_UpdateLanguageBar();
+				}
 			}
 		}
 	}

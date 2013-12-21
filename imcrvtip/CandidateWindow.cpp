@@ -764,7 +764,8 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(_pInputModeWindow)
 	{
-		_pInputModeWindow->_Move(x, y + cy + 1);
+		_pInputModeWindow->_GetRect(&r);
+		_pInputModeWindow->_Move(x + cx - r.right, y + cy + 1);
 	}
 
 	if(_pCandidateWindow == NULL)
@@ -1175,16 +1176,23 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
 		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
 		_Update();
+
+		if(_pInputModeWindow)
+		{
+			_pInputModeWindow->_Redraw();
+		}
 		return;
 	}
 
 	if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
 	{
 		_pTextService->_UpdateLanguageBar();
+
 		if(_pInputModeWindow)
 		{
 			_pInputModeWindow->_Redraw();
 		}
+
 		if(sf == SKK_ENTER)
 		{
 			return;

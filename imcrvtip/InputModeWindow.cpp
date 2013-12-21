@@ -382,3 +382,15 @@ void CInputModeWindow::_Redraw()
 		UpdateWindow(_hwnd);
 	}
 }
+
+void CInputModeWindow::_GetRect(LPRECT lpRect)
+{
+	if(lpRect != NULL)
+	{
+		ZeroMemory(lpRect, sizeof(*lpRect));
+		if(_hwnd != NULL)
+		{
+			GetClientRect(_hwnd, lpRect);
+		}
+	}
+}

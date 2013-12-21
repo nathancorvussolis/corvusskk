@@ -26,6 +26,7 @@ public:
 	void _Move(int x, int y);
 	void _Show(BOOL bShow);
 	void _Redraw();
+	void _GetRect(LPRECT lpRect);
 
 private:
 	LONG _cRef;
