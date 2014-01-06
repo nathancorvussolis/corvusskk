@@ -146,6 +146,11 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	PTOKEN_USER pTokenUser;
 	DWORD dwLength;
 
+	if(ppszUserSid == NULL)
+	{
+		return FALSE;
+	}
+
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
@@ -158,6 +163,44 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 			}
 		}
 		LocalFree(pTokenUser);
+		CloseHandle(hToken);
+	}
+
+	return bRet;
+}
+
+BOOL GetLogonSid(LPWSTR *ppszLogonSid)
+{
+	BOOL bRet = FALSE;
+	HANDLE hToken;
+	PTOKEN_GROUPS pTokenGroup;
+	DWORD dwLength;
+	DWORD dwIndex;
+
+	if(ppszLogonSid == NULL)
+	{
+		return FALSE;
+	}
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenGroups, NULL, 0, &dwLength);
+		pTokenGroup = (PTOKEN_GROUPS)LocalAlloc(LPTR, dwLength);
+		if(GetTokenInformation(hToken, TokenGroups, pTokenGroup, dwLength, &dwLength))
+		{
+			for(dwIndex = 0; dwIndex < pTokenGroup->GroupCount; dwIndex++)
+			{
+				if((pTokenGroup->Groups[dwIndex].Attributes & SE_GROUP_LOGON_ID) == SE_GROUP_LOGON_ID)
+				{
+					if(ConvertSidToStringSidW(pTokenGroup->Groups[dwIndex].Sid, ppszLogonSid))
+					{
+						bRet = TRUE;
+					}
+					break;
+				}
+			}
+		}
+		LocalFree(pTokenGroup);
 		CloseHandle(hToken);
 	}
 

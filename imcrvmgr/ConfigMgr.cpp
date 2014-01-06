@@ -48,16 +48,19 @@ void CreateConfigPath()
 	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
 	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
-	LPWSTR pszUserSid;
-	WCHAR szDigest[32 + 1];
+	LPWSTR pszUserSid = NULL;
+	LPWSTR pszLogonSid = NULL;
 	MD5_DIGEST digest;
+	WCHAR szDigest[sizeof(digest.digest) * 2 + 1];
+	DWORD dwLSid;
+	PWSTR pLSid;
 	int i;
 
 	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(szDigest, sizeof(szDigest));
 
-	if(GetUserSid(&pszUserSid))
+	if(GetUserSid(&pszUserSid) && GetLogonSid(&pszLogonSid))
 	{
 		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:%s(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)",
 			(IsVersion62AndOver() ? L"(A;;GA;;;AC)" : L""), pszUserSid);
@@ -65,7 +68,11 @@ void CreateConfigPath()
 		// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
 		wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
 
-		if(GetMD5(&digest, (CONST BYTE *)pszUserSid, (DWORD)wcslen(pszUserSid)*sizeof(WCHAR)))
+		dwLSid = (DWORD)(wcslen(pszUserSid) * wcslen(pszLogonSid) + 2);
+		pLSid = (PWSTR)LocalAlloc(LPTR, dwLSid * sizeof(WCHAR));
+		_snwprintf_s(pLSid, dwLSid, _TRUNCATE, L"%s %s", pszUserSid, pszLogonSid);
+
+		if(GetMD5(&digest, (CONST BYTE *)pLSid, (dwLSid - 2) * sizeof(WCHAR)))
 		{
 			for(i = 0; i < _countof(digest.digest); i++)
 			{
@@ -73,7 +80,19 @@ void CreateConfigPath()
 			}
 		}
 
+		if(pLSid != NULL)
+		{
+			LocalFree(pLSid);
+		}
+	}
+
+	if(pszUserSid != NULL)
+	{
 		LocalFree(pszUserSid);
+	}
+	if(pszLogonSid != NULL)
+	{
+		LocalFree(pszLogonSid);
 	}
 
 	_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, szDigest);

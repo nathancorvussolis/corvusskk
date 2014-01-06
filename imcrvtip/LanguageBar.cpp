@@ -29,7 +29,7 @@ static const struct {
 	{im_disable,		IDM_NONE,			0, L"キャンセル"}
 };
 
-// monochrome icons
+// 16 colors (black only) icons
 static const WORD iconIDX[] =
 {
 	IDI_X_DEFAULT, IDI_X_HIRAGANA, IDI_X_KATAKANA, IDI_X_KATAKANA1, IDI_X_JLATIN, IDI_X_ASCII
@@ -46,12 +46,11 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 
 	_LangBarItemInfo.clsidService = c_clsidTextService;
 	_LangBarItemInfo.guidItem = guid;
-	//TF_LBI_STYLE_TEXTCOLORICON
-	// Any black pixel within the icon will be converted to the text color of the selected theme.
-	// The icon must be monochrome.
+	// GDI handle leak occurs when GetIcon function returns monochrome icon if TF_LBI_STYLE_TEXTCOLORICON flag is set.
+	// Use 16 colors (black only) icon instead of monochrome icon.
 	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_SHOWNINTRAY |
 		(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE) ? TF_LBI_STYLE_BTN_BUTTON : TF_LBI_STYLE_BTN_MENU) |
-		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//monochrome icon used on earlier than Windows 8
+		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//16 colors (black only) icon used on earlier than Windows 8
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 

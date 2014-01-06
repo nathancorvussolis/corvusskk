@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"1.5.3"
+#define TEXTSERVICE_VER		L"1.5.4"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"Nathan Corvus Solis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"1.5.3"
-#define RC_VERSION_D		1,5,3,0
+#define RC_VERSION			"1.5.4"
+#define RC_VERSION_D		1,5,4,0
 
 #define DICBUFSIZE			0x2000
 #define PIPEBUFSIZE			0x2000
@@ -83,5 +83,6 @@ extern const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM];
 BOOL IsVersion62AndOver();
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 BOOL GetUserSid(LPWSTR *ppszUserSid);
+BOOL GetLogonSid(LPWSTR *ppszLogonSid);
 
 #endif //COMMON_H
