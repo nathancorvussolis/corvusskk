@@ -118,21 +118,17 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
 	{
-		WCHAR ch = _GetCh((BYTE)wParam);
-
-		if(ch != L'\0')
+		if(_pInputModeWindow)
 		{
-			if(_pInputModeWindow)
-			{
-				_ClearComposition();
-			}
+			_ClearComposition();
+		}
 
-			if(inputmode == im_ascii)
+		if(inputmode == im_ascii)
+		{
+			WCHAR ch = _GetCh((BYTE)wParam);
+			if(_IsKeyVoid(ch, (BYTE)wParam))
 			{
-				if(_IsKeyVoid(ch, (BYTE)wParam))
-				{
-					_UpdateLanguageBar();
-				}
+				_UpdateLanguageBar();
 			}
 		}
 	}

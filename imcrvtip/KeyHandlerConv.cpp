@@ -396,11 +396,6 @@ void CTextService::_NextComp()
 			}
 		}
 
-		if(searchkey.empty())
-		{
-			return;
-		}
-
 		candidates.clear();
 		candidates.shrink_to_fit();
 

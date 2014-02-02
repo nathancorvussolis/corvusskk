@@ -88,6 +88,7 @@ LPCWSTR ValueColorSC = L"colorsc";
 LPCWSTR ValueColorAN = L"coloran";
 LPCWSTR ValueColorNO = L"colorno";
 LPCWSTR ValueUntilCandList = L"untilcandlist";
+LPCWSTR ValueVerticalCand = L"verticalcand";
 LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueAnnotation = L"annotation";
 LPCWSTR ValueAnnotatLst = L"annotatlst";

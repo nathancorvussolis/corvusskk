@@ -119,6 +119,7 @@ extern LPCWSTR ValueColorSC;
 extern LPCWSTR ValueColorAN;
 extern LPCWSTR ValueColorNO;
 extern LPCWSTR ValueUntilCandList;
+extern LPCWSTR ValueVerticalCand;
 extern LPCWSTR ValueDispCandNo;
 extern LPCWSTR ValueAnnotation;
 extern LPCWSTR ValueAnnotatLst;

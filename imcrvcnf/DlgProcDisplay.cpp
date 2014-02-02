@@ -117,6 +117,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
+		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionDisplay, ValueAnnotation, L"1");
@@ -191,6 +192,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			}
 			break;
 
+		case IDC_CHECKBOX_VERTICALCAND:
 		case IDC_CHECKBOX_DISPCANDNO:
 		case IDC_CHECKBOX_ANNOTATION:
 		case IDC_RADIO_ANNOTATALL:
@@ -294,6 +296,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
+			SaveCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, ValueVerticalCand);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, ValueDispCandNo);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);

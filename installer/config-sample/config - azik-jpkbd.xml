@@ -41,6 +41,7 @@
     <key name="coloran" value="0x808080" />
     <key name="colorno" value="0x000000" />
     <key name="untilcandlist" value="5" />
+    <key name="verticalcand" value="0" />
     <key name="dispcandno" value="0" />
     <key name="annotation" value="1" />
     <key name="annotatlst" value="0" />

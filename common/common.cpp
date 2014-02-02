@@ -103,6 +103,67 @@ BOOL IsVersion62AndOver()
 	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, mask);
 }
 
+BOOL GetSidMD5Digest(LPWSTR *ppszDigest)
+{
+	BOOL bRet = FALSE;
+	LPWSTR pszUserSid = NULL;
+	LPWSTR pszLogonSid = NULL;
+	MD5_DIGEST digest;
+	DWORD dwLSid;
+	LPWSTR pLSid;
+	int i;
+
+	if(ppszDigest == NULL)
+	{
+		return FALSE;
+	}
+
+	if(GetUserSid(&pszUserSid) && GetLogonSid(&pszLogonSid))
+	{
+		dwLSid = (DWORD)(wcslen(pszUserSid) + wcslen(pszLogonSid) + 2);
+		pLSid = (LPWSTR)LocalAlloc(LPTR, dwLSid * sizeof(WCHAR));
+
+		if(pLSid != NULL)
+		{
+			_snwprintf_s(pLSid, dwLSid, _TRUNCATE, L"%s %s", pszUserSid, pszLogonSid);
+
+			*ppszDigest = (LPWSTR)LocalAlloc(LPTR, (_countof(digest.digest) * 2 + 1) * sizeof(WCHAR));
+
+			if(*ppszDigest != NULL)
+			{
+				if(GetMD5(&digest, (CONST BYTE *)pLSid, dwLSid * sizeof(WCHAR)))
+				{
+					for(i = 0; i < _countof(digest.digest); i++)
+					{
+						_snwprintf_s(*ppszDigest + i * 2, (_countof(digest.digest) * 2 + 1) - i * 2,
+							_TRUNCATE, L"%02x", digest.digest[i]);
+					}
+
+					bRet = TRUE;
+				}
+				else
+				{
+					LocalFree(*ppszDigest);
+				}
+			}
+
+			LocalFree(pLSid);
+		}
+	}
+
+	if(pszUserSid != NULL)
+	{
+		LocalFree(pszUserSid);
+	}
+
+	if(pszLogonSid != NULL)
+	{
+		LocalFree(pszLogonSid);
+	}
+
+	return bRet;
+}
+
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 {
 	BOOL bRet = FALSE;

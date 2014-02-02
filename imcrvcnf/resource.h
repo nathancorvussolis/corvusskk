@@ -55,15 +55,16 @@
 #define IDC_COL_NO                              2011
 #define IDC_EDIT_MAXWIDTH                       2012
 #define IDC_COMBO_UNTILCANDLIST                 2013
-#define IDC_CHECKBOX_DISPCANDNO                 2014
-#define IDC_CHECKBOX_ANNOTATION                 2015
-#define IDC_RADIO_ANNOTATALL                    2016
-#define IDC_RADIO_ANNOTATLST                    2017
-#define IDC_CHECKBOX_SHOWMODEINL                2018
-#define IDC_RADIO_SHOWMODEALL                   2019
-#define IDC_RADIO_SHOWMODEIMM                   2020
-#define IDC_CHECKBOX_SHOWMODEMARK               2021
-#define IDC_CHECKBOX_SHOWROMAN                  2022
+#define IDC_CHECKBOX_VERTICALCAND               2014
+#define IDC_CHECKBOX_DISPCANDNO                 2015
+#define IDC_CHECKBOX_ANNOTATION                 2016
+#define IDC_RADIO_ANNOTATALL                    2017
+#define IDC_RADIO_ANNOTATLST                    2018
+#define IDC_CHECKBOX_SHOWMODEINL                2019
+#define IDC_RADIO_SHOWMODEALL                   2020
+#define IDC_RADIO_SHOWMODEIMM                   2021
+#define IDC_CHECKBOX_SHOWMODEMARK               2022
+#define IDC_CHECKBOX_SHOWROMAN                  2023
 
 #define IDC_CHECKBOX_SERIES_MARK                2101
 #define IDC_CHECKBOX_SERIES_TEXT                2102

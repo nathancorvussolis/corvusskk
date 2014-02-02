@@ -39,47 +39,16 @@ void CreateConfigPath()
 	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
 	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
-	LPWSTR pszUserSid = NULL;
-	LPWSTR pszLogonSid = NULL;
-	MD5_DIGEST digest;
-	WCHAR szDigest[sizeof(digest.digest) * 2 + 1];
-	DWORD dwLSid;
-	PWSTR pLSid;
-	int i;
-
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
-	ZeroMemory(szDigest, sizeof(szDigest));
 
-	if(GetUserSid(&pszUserSid) && GetLogonSid(&pszLogonSid))
+	LPWSTR pszDigest = NULL;
+
+	if(GetSidMD5Digest(&pszDigest))
 	{
-		dwLSid = (DWORD)(wcslen(pszUserSid) * wcslen(pszLogonSid) + 2);
-		pLSid = (PWSTR)LocalAlloc(LPTR, dwLSid * sizeof(WCHAR));
-		_snwprintf_s(pLSid, dwLSid, _TRUNCATE, L"%s %s", pszUserSid, pszLogonSid);
+		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, pszDigest);
 
-		if(GetMD5(&digest, (CONST BYTE *)pLSid, (dwLSid - 2) * sizeof(WCHAR)))
-		{
-			for(i = 0; i < _countof(digest.digest); i++)
-			{
-				_snwprintf_s(&szDigest[i * 2], _countof(szDigest) - i * 2, _TRUNCATE, L"%02x", digest.digest[i]);
-			}
-		}
-
-		if(pLSid != NULL)
-		{
-			LocalFree(pLSid);
-		}
+		LocalFree(pszDigest);
 	}
-
-	if(pszUserSid != NULL)
-	{
-		LocalFree(pszUserSid);
-	}
-	if(pszLogonSid != NULL)
-	{
-		LocalFree(pszLogonSid);
-	}
-
-	_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, szDigest);
 }
 
 BOOL SetFileDacl(LPCWSTR path)

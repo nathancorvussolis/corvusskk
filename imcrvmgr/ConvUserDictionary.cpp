@@ -54,8 +54,8 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	candidate_esc = candidate;
 
-	// "/" -> \057, ";" -> \073, "[" -> 133, "]" -> 135
-	re.assign(L"[/;\\[\\]]");
+	// "/" -> \057, ";" -> \073
+	re.assign(L"[/;]");
 	if(std::regex_search(candidate_esc, re))
 	{
 		// "\"" -> "\\\"", "\\" -> "\\\\"
@@ -69,14 +69,6 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 		re.assign(L";");
 		fmt.assign(L"\\073");
-		candidate_esc = std::regex_replace(candidate_esc, re, fmt);
-
-		re.assign(L"\\[");
-		fmt.assign(L"\\133");
-		candidate_esc = std::regex_replace(candidate_esc, re, fmt);
-
-		re.assign(L"\\]");
-		fmt.assign(L"\\135");
 		candidate_esc = std::regex_replace(candidate_esc, re, fmt);
 
 		candidate_esc = L"(concat \"" + candidate_esc + L"\")";

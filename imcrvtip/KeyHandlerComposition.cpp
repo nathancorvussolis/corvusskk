@@ -438,7 +438,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
 					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
 
-					if(cchCursor == 0)
+					if(cchCursor == 0 || !showentry)
 					{
 						if(inputkey)
 						{

@@ -567,7 +567,7 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		_pTextService->_SetText(ec, _pContext, std::wstring(L"\x20"), 0, 0, FALSE);
+		_pTextService->_SetText(ec, _pContext, std::wstring(L"\x20"), -1, 0, FALSE);
 		return S_OK;
 	}
 

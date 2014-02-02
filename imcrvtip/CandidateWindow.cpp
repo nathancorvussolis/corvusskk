@@ -219,14 +219,25 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 				DrawTextW(hmemdc, s.c_str(), -1, &r,
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-				if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
+				if(_pTextService->cx_verticalcand)
 				{
-					cx = r.right;
+					if(i != 0)
+					{
+						pt.x = MERGIN_X;
+						pt.y += tm.tmHeight;
+					}
 				}
-				else if(pt.x + r.right > cx - MERGIN_X)
+				else
 				{
-					pt.x = MERGIN_X;
-					pt.y += tm.tmHeight;
+					if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
+					{
+						cx = r.right;
+					}
+					else if(pt.x + r.right > cx - MERGIN_X)
+					{
+						pt.x = MERGIN_X;
+						pt.y += tm.tmHeight;
+					}
 				}
 
 				rc.left = pt.x;
@@ -252,14 +263,22 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 			DrawTextW(hmemdc, strPage, -1, &r,
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-			if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
-			{
-				cx = r.right;
-			}
-			else if(pt.x + r.right > cx - MERGIN_X)
+			if(_pTextService->cx_verticalcand)
 			{
 				pt.x = MERGIN_X;
 				pt.y += tm.tmHeight;
+			}
+			else
+			{
+				if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
+				{
+					cx = r.right;
+				}
+				else if(pt.x + r.right > cx - MERGIN_X)
+				{
+					pt.x = MERGIN_X;
+					pt.y += tm.tmHeight;
+				}
 			}
 
 			rc.left = pt.x;
@@ -682,10 +701,21 @@ void CCandidateWindow::_CalcWindowRect()
 			DrawTextW(hdc, s.c_str(), -1, &r,
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-			if(pt.x + r.right > cx)
+			if(_pTextService->cx_verticalcand)
 			{
-				pt.x = 0;
-				pt.y += tm.tmHeight;
+				if(i != 0)
+				{
+					pt.x = 0;
+					pt.y += tm.tmHeight;
+				}
+			}
+			else
+			{
+				if(pt.x + r.right > cx)
+				{
+					pt.x = 0;
+					pt.y += tm.tmHeight;
+				}
 			}
 
 			pt.x += r.right;
@@ -706,10 +736,18 @@ void CCandidateWindow::_CalcWindowRect()
 		DrawTextW(hdc, strPage, -1, &r,
 			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 
-		if(pt.x + r.right > cx)
+		if(_pTextService->cx_verticalcand)
 		{
 			pt.x = 0;
 			pt.y += tm.tmHeight;
+		}
+		else
+		{
+			if(pt.x + r.right > cx)
+			{
+				pt.x = 0;
+				pt.y += tm.tmHeight;
+			}
 		}
 
 		pt.x += r.right;
