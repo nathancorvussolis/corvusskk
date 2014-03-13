@@ -77,7 +77,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	// "/" -> ""
 	re.assign(L"/");
 	fmt.assign(L"");
-	annotation_esc = std::regex_replace(annotation, re, fmt);;
+	annotation_esc = std::regex_replace(annotation, re, fmt);
 
 	userdic_itr = userdic.find(searchkey);
 	if(userdic_itr == userdic.end())

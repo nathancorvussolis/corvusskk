@@ -1,61 +1,55 @@
 ﻿
 #include "imcrvmgr.h"
 
-static std::wstring num_to_kanji(std::wstring num, LPCWSTR kannum[], LPCWSTR kancl1[], LPCWSTR kancl2[])
+static std::wstring num_to_kanji(std::wstring num, LPCWSTR numtype[], LPCWSTR numtype_1k[], LPCWSTR numtype_10k[])
 {
-	size_t i, m, n, p, q, r;
-	std::vector< std::wstring > sepnum;
-	bool kancl2flg;
+	size_t i, j, k;
 	std::wstring ret;
 
-	r = num.size();
-	if((r % 4) != 0)
+	//0を付加して4の倍数の桁数にする
+	k = (4 - num.size() % 4) % 4;
+	for(i = 0; i < k; i++)
 	{
-		// 1234567890 -> "12" 34567890
-		sepnum.push_back(num.substr(0, (r % 4)));
+		num = L"0" + num;
 	}
-	m = ((r - (r % 4)) / 4);
-	for(i = 0; i < m; i++)
+
+	k = num.size() / 4;
+	for(i = 0; i < k; i++)
 	{
-		// 1234567890 -> 12 "3456" "7890"
-		sepnum.push_back(num.substr(((r % 4) + (i * 4)), 4));
-	}
-	m = sepnum.size();
-	for(p = 0; p < m; p++)
-	{
-		kancl2flg = false;
-		n = sepnum[p].size();
-		for(q = 0; q < n; q++)
+		for(j = 0; j < 4; j++)
 		{
-			if(sepnum[p][q] != L'0' || (m == 1 && n == 1))
+			if(num[i * 4 + j] != L'0')
 			{
 				//十の位と百の位の「一」は表記しない。
-				if((sepnum[p][q] != L'1') ||	//二～九
-					((n == 4) && (q == 0)) ||	//千の位
-					(q == n - 1))  				//一の位
+				if((num[i * 4 + j] != L'1') || (j == 0) || (j == 3))
 				{
-					ret.append(kannum[sepnum[p][q] - L'0']);
+					ret.append(numtype[num[i * 4 + j] - L'0']);
 				}
-				ret.append(kancl1[(n - q - 1) % 4]);
-				kancl2flg = true;
+				ret.append(numtype_1k[4 - j - 1]);
 			}
 		}
-		if(kancl2flg)
+		if(num.substr(i * 4, 4) != L"0000")
 		{
-			ret.append(kancl2[m - p - 1]);
+			ret.append(numtype_10k[k - i - 1]);
 		}
 	}
+
+	if(ret.empty())
+	{
+		ret = numtype[0];
+	}
+
 	return ret;
 }
 
 std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate)
 {
-	LPCWSTR kannum3[] = {L"〇", L"一", L"二", L"三", L"四", L"五", L"六", L"七", L"八", L"九"};
-	LPCWSTR kancl31[] = {L"",   L"十", L"百", L"千"};
-	LPCWSTR kancl32[] = {L"",   L"万", L"億", L"兆", L"京"};
-	LPCWSTR kannum5[] = {L"〇", L"壱", L"弐", L"参", L"四", L"五", L"六", L"七", L"八", L"九"};
-	LPCWSTR kancl51[] = {L"", L"拾", L"百", L"千"};
-	LPCWSTR kancl52[] = {L"", L"万", L"億", L"兆", L"京"};
+	LPCWSTR numtype3[] = {L"〇", L"一", L"二", L"三", L"四", L"五", L"六", L"七", L"八", L"九"};
+	LPCWSTR numtype5[] = {L"〇", L"壱", L"弐", L"参", L"四", L"五", L"六", L"七", L"八", L"九"};
+	LPCWSTR numtype3_1k[] = {L"", L"十", L"百", L"千"};
+	LPCWSTR numtype5_1k[] = {L"", L"拾", L"百", L"千"};
+	LPCWSTR numtype_10k[] = {L"", L"万", L"億", L"兆", L"京", L"垓",
+		L"𥝱", L"穣", L"溝", L"澗", L"正", L"載", L"極", L"恒河沙", L"阿僧祇", L"那由他", L"不可思議"};
 	LPCWSTR sep8 = L",";
 	const int sepnum8 = 3;
 	size_t i, j, k, r;
@@ -91,30 +85,30 @@ std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate)
 		case L'2':	//五五〇〇
 			for(k = 0; k<keynum[j].size(); k++)
 			{
-				repcandidate.append(kannum3[(keynum[j][k] - L'0'/*0x0030*/)]);
+				repcandidate.append(numtype3[(keynum[j][k] - L'0'/*0x0030*/)]);
 			}
 			break;
 		case L'3':	//五千五百
-			if(keynum[j].size() > 20)	// 10^20 < X
+			if(keynum[j].size() > (_countof(numtype_10k) * 4))
 			{
 				repcandidate.append(keynum[j]);
 			}
 			else
 			{
-				repcandidate.append(num_to_kanji(keynum[j], kannum3, kancl31, kancl32));
+				repcandidate.append(num_to_kanji(keynum[j], numtype3, numtype3_1k, numtype_10k));
 			}
 			break;
 		case L'4':
 			repcandidate.append(result.str());
 			break;
 		case L'5':
-			if(keynum[j].size() > 20)	// 10^20 < X
+			if(keynum[j].size() > (_countof(numtype_10k) * 4))
 			{
 				repcandidate.append(keynum[j]);
 			}
 			else
 			{
-				repcandidate.append(num_to_kanji(keynum[j], kannum5, kancl51, kancl52));
+				repcandidate.append(num_to_kanji(keynum[j], numtype5, numtype5_1k, numtype_10k));
 			}
 			break;
 		case L'6':
@@ -143,7 +137,7 @@ std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate)
 				break;
 			}
 			repcandidate.push_back((L'０' - L'0')/*(0xFF10-0x0030)*/ + keynum[j][0]);
-			repcandidate.append(kannum3[(keynum[j][1] - L'0'/*0x0030*/)]);
+			repcandidate.append(numtype3[(keynum[j][1] - L'0'/*0x0030*/)]);
 			break;
 		default:
 			repcandidate.append(keynum[j]);

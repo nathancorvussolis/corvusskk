@@ -5,14 +5,19 @@ typedef std::vector<std::wstring> _GPARAM;
 typedef std::wstring (*_GFUNC)(const _GPARAM &param);
 
 static const struct {
-	int year;
+	struct {
+		int year;
+		int month;
+		int day;
+		int gengo_year;
+	} gc;
 	LPWSTR kana;
 	LPWSTR gengo[2];
 } gengo[] = {
-	{1989, L"へいせい", {L"平成", L"H"}},
-	{1926, L"しょうわ", {L"昭和", L"S"}},
-	{1912, L"たいしょう", {L"大正", L"T"}},
-	{1868, L"めいじ", {L"明治", L"M"}}
+	{{1989,  1,  8, 1}, L"へいせい",	{L"平成", L"H"}}, // 1989/01/08
+	{{1926, 12, 25, 1}, L"しょうわ",	{L"昭和", L"S"}}, // 1926/12/25
+	{{1912,  7, 30, 1}, L"たいしょう",	{L"大正", L"T"}}, // 1912/07/30
+	{{1873,  1,  1, 6}, L"めいじ",		{L"明治", L"M"}}  // 1873/01/01 (グレゴリオ暦 明治6年)
 };
 static const LPWSTR month_en[] = {
 	L"Jan", L"Feb", L"Mar", L"Apr", L"May", L"Jun",
@@ -25,33 +30,44 @@ static const struct {
 	struct {
 		LPWSTR name;
 		double value;
-	} u[2];
+	} u[8];
 } units[] = {
-	{L"mile", {{L"km", 1.6093}, {L"yard", 1760}}},
-	{L"yard", {{L"cm", 91.44}, {L"feet", 3}}},
-	{L"feet", {{L"cm", 30.48}, {L"inch", 12}}},
-	{L"inch", {{L"cm", 2.54}, {L"feet", (1.0/12.0)}}}
+	{L"mile", {
+		{L"yard", 1760.0}, {L"feet", 5280.0}, {L"m", 1609.344}, {L"km", 1.609344}, {NULL, 0}}},
+	{L"yard", {
+		{L"feet", 3.0}, {L"inch", 36.0}, {L"m", 0.9144}, {L"cm", 91.44}, {L"mm", 914.4}, {NULL, 0}}},
+	{L"feet", {
+		{L"inch", 12.0}, {L"yard", (1.0 / 3.0)}, {L"m", 0.3048}, {L"cm", 30.48}, {L"mm", 304.8}, {NULL, 0}}},
+	{L"inch", {
+		{L"feet", (1.0 / 12.0)}, {L"yard", (1.0 / 36.0)}, {L"m", 0.0254}, {L"cm", 2.54}, {L"mm", 25.4}, {NULL, 0}}},
+	{L"pound", {
+		{L"g", 453.59237}, {L"ounce", 16.0}, {L"grain", 7000.0}, {NULL, 0}}},
+	{L"ounce", {
+		{L"g", 28.349523125}, {L"pound", (1.0 / 16.0)}, {L"grain", (7000.0 / 16.0)}, {NULL, 0}}},
+	{L"grain", {
+		{L"mg", 64.79891}, {L"g", 0.06479891}, {L"pound", (1.0 / 7000.0)}, {L"ounce", (16.0 / 7000.0)}, {NULL, 0}}}
 };
 
-static const LPWSTR omikuji[] = {L"大吉", L"中吉", L"小吉", L"吉", L"末吉", L"凶", L"大凶"};
+static const LPWSTR omikuji[] = {L"大吉", L"吉", L"中吉", L"小吉", L"末吉", L"凶", L"大凶"};
 
 static const LPWSTR s_window_width = L"80";
 static const LPWSTR s_fill_column = L"70";
-static const LPWSTR s_comment_start =L"//";
+static const LPWSTR s_comment_start = L"/*";
+static const LPWSTR s_comment_end = L"*/";
 static const struct {
 	LPWSTR name;
 	LPWSTR value;
 } values[] = {
-	{L"window-width", s_window_width},
 	{L"fill-column", s_fill_column},
-	{L"comment-start", s_comment_start}
+	{L"comment-start", s_comment_start},
+	{L"comment-end", s_comment_end}
 };
 
 static std::wstring gadgetkey;
 static std::vector<std::wstring> skk_num_list;
 static time_t gadgettime;
 
-static std::wstring gadget_func(const std::wstring s);
+static std::wstring gadget_interpret(const std::wstring s);
 
 
 
@@ -272,11 +288,6 @@ static std::wstring window_width(const _GPARAM &param)
 	return s_window_width;
 }
 
-static std::wstring fill_column(const _GPARAM &param)
-{
-	return s_fill_column;
-}
-
 
 
 static std::wstring skk_version(const _GPARAM &param)
@@ -306,6 +317,7 @@ static std::wstring skk_gadget_units_conversion(const _GPARAM &param)
 		{
 			for(j = 0; j < _countof(units[i].u); j++)
 			{
+				if(units[i].u[j].name == NULL) break;
 				if(ut2.compare(units[i].u[j].name) == 0)
 				{
 					double dbl = _wtof(num.c_str()) * units[i].u[j].value;
@@ -324,7 +336,9 @@ static std::wstring skk_gadget_units_conversion(const _GPARAM &param)
 
 
 
-static std::wstring conv_ad_to_gengo(const std::wstring &num, const std::wstring &gengotype, const std::wstring &type, const std::wstring &div)
+static std::wstring conv_ad_to_gengo(const std::wstring &num,
+	const std::wstring &gengotype, const std::wstring &type, const std::wstring &div,
+	bool not_gannen, int month, int day)
 {
 	std::wstring ret;
 	WCHAR ystr[32];
@@ -332,16 +346,19 @@ static std::wstring conv_ad_to_gengo(const std::wstring &num, const std::wstring
 
 	for(int i = 0; i < _countof(gengo); i++)
 	{
-		if(year >= gengo[i].year)
+		if((year >= gengo[i].gc.year && month == 0 && day == 0) ||
+			(year > gengo[i].gc.year) ||
+			(year == gengo[i].gc.year && month > gengo[i].gc.month) ||
+			(year == gengo[i].gc.year && month == gengo[i].gc.month && day >= gengo[i].gc.day))
 		{
 			ret = gengo[i].gengo[_wtoi(gengotype.c_str())] + div;
-			if(year - gengo[i].year == 0)
+			if((year - gengo[i].gc.year + gengo[i].gc.gengo_year == 1) && !not_gannen)
 			{
 				ret += L"元";
 			}
 			else
 			{
-				_snwprintf_s(ystr, _TRUNCATE, L"%d", year - gengo[i].year + 1);
+				_snwprintf_s(ystr, _TRUNCATE, L"%d", (year - gengo[i].gc.year + gengo[i].gc.gengo_year));
 				ret += ConvNum(ystr, type);
 			}
 			break;
@@ -361,8 +378,10 @@ static std::wstring skk_ad_to_gengo(const _GPARAM &param)
 	if(div.compare(L"nil") == 0) div.clear();
 	std::wstring tail = param[2];
 	if(tail.compare(L"nil") == 0) tail.clear();
+	bool not_gannen = false;
+	if(param.size() > 3 && param[3].compare(L"nil") != 0) not_gannen = true;
 
-	std::wstring ret = conv_ad_to_gengo(num, gengotype, L"#0", div);
+	std::wstring ret = conv_ad_to_gengo(num, gengotype, L"#0", div, not_gannen, 0, 0);
 	if(!ret.empty())
 	{
 		ret += tail;
@@ -371,7 +390,8 @@ static std::wstring skk_ad_to_gengo(const _GPARAM &param)
 	return ret;
 }
 
-static std::wstring conv_gengo_to_ad(const std::wstring &num, const std::wstring &gengokana, const std::wstring &head, const std::wstring &tail)
+static std::wstring conv_gengo_to_ad(const std::wstring &num,
+	const std::wstring &gengokana, const std::wstring &head, const std::wstring &tail)
 {
 	std::wstring ret;
 	WCHAR ystr[32];
@@ -381,7 +401,7 @@ static std::wstring conv_gengo_to_ad(const std::wstring &num, const std::wstring
 	{
 		if(gengokana.compare(gengo[i].kana) == 0)
 		{
-			_snwprintf_s(ystr, _TRUNCATE, L"%d", year + gengo[i].year - 1);
+			_snwprintf_s(ystr, _TRUNCATE, L"%d", year + gengo[i].gc.year - gengo[i].gc.gengo_year);
 			ret = head + ystr + tail;
 			break;
 		}
@@ -415,7 +435,7 @@ static std::wstring skk_current_date(const _GPARAM &param)
 		localtime_s(&d, &gadgettime);
 		WCHAR y[5];
 		_snwprintf_s(y, _TRUNCATE, L"%d", d.tm_year + 1900);
-		std::wstring gg = conv_ad_to_gengo(y, L"0", L"#1", L"");
+		std::wstring gg = conv_ad_to_gengo(y, L"0", L"#1", L"", false, d.tm_mon + 1, d.tm_mday);
 		if (gg.empty())
 		{
 			return L"";
@@ -431,7 +451,7 @@ static std::wstring skk_current_date(const _GPARAM &param)
 	}
 	else
 	{
-		ret = gadget_func(param[0]);
+		ret = gadget_interpret(param[0]);
 		//format param[1];
 		//and-time param[2];
 	}
@@ -466,7 +486,7 @@ static std::wstring skk_default_current_date(const _GPARAM &param)
 	}
 	else
 	{
-		year = conv_ad_to_gengo(yy, param[4], numtype, L"");
+		year = conv_ad_to_gengo(yy, param[4], numtype, L"", false, d.tm_mon + 1, d.tm_mday);
 		if (year == L"")
 		{
 			return L"";
@@ -568,7 +588,7 @@ static std::wstring skk_relative_date(const _GPARAM &param)
 	std::wstring ret;
 	if(gadgettime != (time_t)-1)
 	{
-		ret = gadget_func(func);
+		ret = gadget_interpret(func);
 	}
 
 	gadgettime = gadgettime_bak;
@@ -578,10 +598,10 @@ static std::wstring skk_relative_date(const _GPARAM &param)
 
 
 
-struct {
+static struct {
 	LPWSTR name;
 	_GFUNC func;
-} func[] ={
+} gadget_func[] ={
 	{L"substring", substring},
 	{L"concat", concat},
 	{L"make-string", make_string},
@@ -599,7 +619,6 @@ struct {
 	{L"%", mod},
 
 	{L"window-width", window_width},
-	{L"fill-column", fill_column},
 
 	{L"skk-version", skk_version},
 	{L"skk-omikuji", skk_omikuji},
@@ -655,111 +674,112 @@ static std::wstring parse_string(const std::wstring s)
 	return s;
 }
 
-static std::wstring gadget_func(const std::wstring s)
+static std::wstring gadget_interpret(const std::wstring s)
 {
-	std::wstring ret;
-	size_t i, j;
-	size_t is = s.find_first_of(L'(');
-	size_t ie = s.find_last_of(L')');
-	std::wstring trim;
-	std::wstring funcname;
-	_GPARAM param;
-	size_t iparam, ibracket, ibracketcnt, idqcnt;
+	std::wstring ret, ss, func;
+	_GPARAM param_tmp, param;
+	size_t i, j, iparam = 0, ibracket = 0, idquote = 0, ispace = 0;
+	WCHAR c, b;
 
-	if(is == std::wstring::npos || ie == std::wstring::npos)
-	{
-		return s;
-	}
-
-	std::wstring ss = s.substr(is + 1, ie - is - 1);
+	ss = std::regex_replace(s,
+		std::wregex(L"^\\s*\\(\\s*(.+)\\s*\\)\\s*$"), std::wstring(L"$1"));
 	if(ss.empty())
 	{
-		return s;
+		return L"";
 	}
 
-	i = ss.find_first_of(L'\x20');
-	if(i == std::wstring::npos)
+	for(i = 0; i < ss.size(); i++)
 	{
-		funcname = ss;
+		c = ss[i];
+		b = (i > 0) ? ss[i-1] : L'\0';
+
+		if((c == L'"') && (idquote == 0))
+		{
+			idquote = 1;
+		}
+		else if((c == L'"') && (idquote == 1) && (b != L'\\'))
+		{
+			idquote = 0;
+		}
+
+		if(idquote == 0)
+		{
+			if(c == L'(')
+			{
+				++ibracket;
+			}
+			else if(c == L')')
+			{
+				--ibracket;
+			}
+			else if(c == L'\x20')
+			{
+				if(ibracket == 0)
+				{
+					if(ispace == 0)
+					{
+						if(func.empty())
+						{
+							func = ss.substr(iparam, i - iparam);
+						}
+						else
+						{
+							param_tmp.push_back(ss.substr(iparam, i - iparam));
+						}
+					}
+					iparam = i + 1;
+					++ispace;
+				}
+			}
+			else
+			{
+				ispace = 0;
+			}
+		}
+	}
+
+	if(func.empty())
+	{
+		func = ss.substr(iparam);
 	}
 	else
 	{
-		funcname = ss.substr(0, i);
-		if(funcname == L"lambda")
-		{
-			return std::regex_replace(ss,
-				std::wregex(L"lambda\\s+\\(.*?\\)\\s+(\\(.+\\))"), std::wstring(L"$1"));
-		}
+		param_tmp.push_back(ss.substr(iparam));
+	}
 
-		iparam = i + 1;
-		ibracket = 0;
-		ibracketcnt = 0;
-		idqcnt = 0;
-		for(i = i + 1; i < ss.size(); i++)
-		{
-			if(ss[i] == L'\"' && idqcnt == 0)
-			{
-				idqcnt = 1;
-			}
-			else if(ss[i] == L'\"' && ss[i - 1] != L'\\' && idqcnt == 1)
-			{
-				idqcnt = 0;
-			}
+	if(func == L"lambda")
+	{
+		return (param_tmp.size() > 1 ? param_tmp[1] : L"");
+	}
 
-			if(idqcnt == 0)
+	for(i = 0; i < param_tmp.size(); i++)
+	{
+		if(std::regex_match(param_tmp[i], std::wregex(L"^\\(.+\\)$")))
+		{
+			param.push_back(gadget_interpret(param_tmp[i]));
+		}
+		else
+		{
+			std::wstring ps = parse_string(param_tmp[i]);
+			for(j = 0; j < _countof(values); j++)
 			{
-				if(ss[i] == L'(')
+				if(values[j].name == ps)
 				{
-					if(ibracketcnt == 0) ibracket = i;
-					ibracketcnt++;
-				}
-				else if(ss[i] == L')')
-				{
-					ibracketcnt--;
-					if(ibracketcnt == 0)
-					{
-						param.push_back(gadget_func(parse_string(ss.substr(ibracket, i - ibracket + 1))));
-						iparam = i + 2;
-						i++;
-					}
-				}
-				else if(ss[i] == L'\x20' && ibracketcnt == 0)
-				{
-					param.push_back(parse_string(ss.substr(iparam, i - iparam)));
-					iparam = i + 1;
+					ps = values[j].value;
+					break;
 				}
 			}
-		}
-		if(ss.size() > iparam)
-		{
-			param.push_back(parse_string(ss.substr(iparam)));
+			param.push_back(ps);
 		}
 	}
 
-	for(i = 0; i < param.size(); i++)
+	for(i = 0; i < _countof(gadget_func); i++)
 	{
-		for(j = 0; j < _countof(values); j++)
+		if(gadget_func[i].name == func)
 		{
-			if(param[i].compare(values[j].name) == 0)
-			{
-				param[i] = values[j].value;
-				break;
-			}
-		}
-	}
-
-	for(i = 0; i < _countof(func); i++)
-	{
-		if(funcname.compare(func[i].name) == 0)
-		{
-			ret = func[i].func(param);
+			ret = gadget_func[i].func(param);
 			break;
 		}
-	}
-
-	if(ret.empty())
-	{
-		ret = s;
 	}
 
 	return ret;
@@ -781,7 +801,7 @@ std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate)
 		skk_num_list.push_back(m[i].str());
 	}
 
-	ret = gadget_func(candidate);
+	ret = gadget_interpret(candidate);
 
 	if(ret.empty())
 	{

@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"1.5.5"
+#define TEXTSERVICE_VER		L"1.5.6"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -12,10 +12,10 @@
 #endif
 
 //for resource
-#define RC_AUTHOR			"Nathan Corvus Solis"
+#define RC_AUTHOR			"CorvusSKK Project"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"1.5.5"
-#define RC_VERSION_D		1,5,5,0
+#define RC_VERSION			"1.5.6"
+#define RC_VERSION_D		1,5,6,0
 
 #define DICBUFSIZE			0x2000
 #define PIPEBUFSIZE			0x2000

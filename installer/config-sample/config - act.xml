@@ -169,7 +169,7 @@
       <row st="Z" al="z" ok="z" />
 
       <row st="|" al="|" ok="" />		<!-- ACT -->
-      <row st="&quot;" al="'" ok="" />		<!-- ACT 「っ」 -->
+      <row st="&quot;" al="'" ok="t" />		<!-- ACT 「っ」 -->
       <row st=":" al=";" ok="" />		<!-- ACT 「あん」 -->
     </list>
   </section>
@@ -641,7 +641,7 @@
       <row ro="rc" hi="りゅう" ka="リュウ" an="ﾘｭｳ" so="0" />
       <row ro="rl" hi="りょう" ka="リョウ" an="ﾘｮｳ" so="0" />
       <row ro="ht" hi="ひゅう" ka="ヒュウ" an="ﾋｭｳ" so="0" />
-      <row ro="hd" hi="ひょう" ka="ヒョウ" an="ﾋｮｳ" so="0" />
+      <row ro="hs" hi="ひょう" ka="ヒョウ" an="ﾋｮｳ" so="0" />
       <row ro="tt" hi="ちゅう" ka="チュウ" an="ﾁｭｳ" so="0" />
       <row ro="ts" hi="ちょう" ka="チョウ" an="ﾁｮｳ" so="0" />
       <row ro="nt" hi="にゅう" ka="ニュウ" an="ﾆｭｳ" so="0" />

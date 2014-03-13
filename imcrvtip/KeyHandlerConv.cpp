@@ -694,7 +694,8 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 
 	for(i = 0; i < src.size(); i++)
 	{
-		if(((i + 1) < src.size()) && IS_SURROGATE_PAIR(src[i], src[i + 1]))
+		if(((i + 1) < src.size()) &&
+			(IS_SURROGATE_PAIR(src[i], src[i + 1]) || (src[i] == L'う' && src[i + 1] == L'゛')))
 		{
 			srckana[0] = src[i];
 			srckana[1] = src[i + 1];
