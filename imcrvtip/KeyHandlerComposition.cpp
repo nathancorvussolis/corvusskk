@@ -14,11 +14,11 @@ static LPCWSTR markCursor = L"|";
 
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
-	std::wstring composition;
-	return _Update(ec, pContext, composition, fixed, back);
+	std::wstring comptext;
+	return _Update(ec, pContext, comptext, fixed, back);
 }
 
-HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, BOOL fixed, BOOL back)
+HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, BOOL fixed, BOOL back)
 {
 	WCHAR candidatecount[16];
 	WCHAR useraddmode = REQ_USER_ADD_1;
@@ -42,47 +42,47 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 		{
 			if(!fixed && showmodemark)
 			{
-				composition.append(markHenkan);
+				comptext.append(markHenkan);
 			}
 
-			composition.append(candidates[candidx].first.first);
+			comptext.append(candidates[candidx].first.first);
 
 			if(okuriidx != 0)
 			{
-				cchOkuri = (LONG)composition.size();
-				composition.append(kana.substr(okuriidx + 1));
+				cchOkuri = (LONG)comptext.size();
+				comptext.append(kana.substr(okuriidx + 1));
 				useraddmode = REQ_USER_ADD_0;
 			}
 
-			cchCursor = (LONG)composition.size();
+			cchCursor = (LONG)comptext.size();
 
 			if(!fixed)
 			{
 				if(purgedicmode)
 				{
-					composition.append(L" [削除?(Y/n)]");
+					comptext.append(L" [削除?(Y/n)]");
 				}
 				else
 				{
 					if(cx_annotation && !cx_annotatlst && !candidates[candidx].first.second.empty())
 					{
-						composition.append(markAnnotation + candidates[candidx].first.second);
+						comptext.append(markAnnotation + candidates[candidx].first.second);
 					}
 
 					if(cx_untilcandlist == 0 && cx_dispcandnum)
 					{
-						composition.append(L" (");
+						comptext.append(L" (");
 						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
-						composition.append(candidatecount);
-						composition.append(L"/");
+						comptext.append(candidatecount);
+						comptext.append(L"/");
 						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidates.size());
-						composition.append(candidatecount);
-						composition.append(L")");
+						comptext.append(candidatecount);
+						comptext.append(L")");
 					}
 
-					if(!showmodemark && composition.empty())
+					if(!showmodemark && comptext.empty())
 					{
-						composition.append(markSP);
+						comptext.append(markSP);
 					}
 				}
 			}
@@ -103,36 +103,36 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 				{
 					if(kana.empty())
 					{
-						composition.append(markSP);
+						comptext.append(markSP);
 					}
 				}
 				else
 				{
-					composition.append(markHenkan);
+					comptext.append(markHenkan);
 				}
 			}
 
 			if(okuriidx == 0)
 			{
-				composition.append(kana);
+				comptext.append(kana);
 			}
 			else
 			{
-				composition.append(kana.substr(0, okuriidx));
-				cchOkuri = (LONG)composition.size();
+				comptext.append(kana.substr(0, okuriidx));
+				cchOkuri = (LONG)comptext.size();
 				if(!fixed && showmodemark)
 				{
-					composition.append(markOkuri);
+					comptext.append(markOkuri);
 				}
-				composition.append(kana.substr(okuriidx + 1));
+				comptext.append(kana.substr(okuriidx + 1));
 			}
 
-			cchCursor = (LONG)composition.size();
+			cchCursor = (LONG)comptext.size();
 
 			//辞書登録ウィンドウを表示可能なら表示する
 			if(pContext == NULL)	//辞書登録用
 			{
-				_pCandidateList->_SetText(composition, FALSE, FALSE, TRUE);
+				_pCandidateList->_SetText(comptext, FALSE, FALSE, TRUE);
 				return S_OK;
 			}
 
@@ -145,7 +145,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					if(cx_delokuricncl && okuriidx != 0)
 					{
 						kana = kana.substr(0, okuriidx);
-						cchOkuri = (LONG)composition.size();
+						cchOkuri = (LONG)comptext.size();
 						okuriidx = 0;
 					}
 					candidx = 0;
@@ -167,18 +167,18 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 				{
 					if(kana.empty() && roman.empty())
 					{
-						composition.append(markSP);
+						comptext.append(markSP);
 					}
 				}
 				else
 				{
 					if(showentry && (candidx + 1 == cx_untilcandlist))
 					{
-						composition.append(markHenkan);
+						comptext.append(markHenkan);
 					}
 					else
 					{
-						composition.append(markMidashi);
+						comptext.append(markMidashi);
 					}
 				}
 			}
@@ -187,23 +187,23 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 			{
 				if(okuriidx == 0)
 				{
-					composition.append(kana);
+					comptext.append(kana);
 					if(pContext == NULL && !fixed && cursoridx != kana.size())
 					{
-						composition.insert(cursoridx + (composition.size() - kana.size()), markCursor);
+						comptext.insert(cursoridx + (comptext.size() - kana.size()), markCursor);
 					}
 				}
 				else
 				{
-					composition.append(kana.substr(0, okuriidx));
-					cchOkuri = (LONG)composition.size();
+					comptext.append(kana.substr(0, okuriidx));
+					cchOkuri = (LONG)comptext.size();
 					if(!fixed && showmodemark)
 					{
-						composition.append(markOkuri);
+						comptext.append(markOkuri);
 					}
 					if(okuriidx + 1 < kana.size())
 					{
-						composition.append(kana.substr(okuriidx + 1));
+						comptext.append(kana.substr(okuriidx + 1));
 					}
 					if(pContext == NULL && !fixed && roman.empty() && cursoridx != kana.size())
 					{
@@ -211,16 +211,16 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						{
 							if(cursoridx < okuriidx)
 							{
-								composition.insert(cursoridx, markCursor);
+								comptext.insert(cursoridx, markCursor);
 							}
 							else
 							{
-								composition.insert(cursoridx - 1, markCursor);
+								comptext.insert(cursoridx - 1, markCursor);
 							}
 						}
 						else
 						{
-							composition.insert(cursoridx + 1, markCursor);
+							comptext.insert(cursoridx + 1, markCursor);
 						}
 					}
 				}
@@ -232,17 +232,17 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						{
 							if(pContext == NULL && cursoridx != kana.size())
 							{
-								composition.insert(cursoridx - 1, markCursor);
+								comptext.insert(cursoridx - 1, markCursor);
 							}
 							if(cx_showroman)
 							{
-								composition.insert(cursoridx - 1, roman);
+								comptext.insert(cursoridx - 1, roman);
 							}
 							else
 							{
 								for(i = 0; i < roman.size(); i++)
 								{
-									composition.insert(cursoridx - 1, markSP);
+									comptext.insert(cursoridx - 1, markSP);
 								}
 							}
 						}
@@ -250,17 +250,17 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						{
 							if(pContext == NULL && cursoridx != kana.size())
 							{
-								composition.insert(cursoridx, markCursor);
+								comptext.insert(cursoridx, markCursor);
 							}
 							if(cx_showroman)
 							{
-								composition.insert(cursoridx, roman);
+								comptext.insert(cursoridx, roman);
 							}
 							else
 							{
 								for(i = 0; i < roman.size(); i++)
 								{
-									composition.insert(cursoridx, markSP);
+									comptext.insert(cursoridx, markSP);
 								}
 							}
 						}
@@ -269,17 +269,17 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					{
 						if(pContext == NULL && cursoridx != kana.size())
 						{
-							composition.insert(cursoridx + 1, markCursor);
+							comptext.insert(cursoridx + 1, markCursor);
 						}
 						if(cx_showroman)
 						{
-							composition.insert(cursoridx + 1, roman);
+							comptext.insert(cursoridx + 1, roman);
 						}
 						else
 						{
 							for(i = 0; i < roman.size(); i++)
 							{
-								composition.insert(cursoridx + 1, markSP);
+								comptext.insert(cursoridx + 1, markSP);
 							}
 						}
 					}
@@ -288,14 +288,14 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 
 			if(showentry && (candidx + 1 == cx_untilcandlist))
 			{
-				cchCursor = (LONG)composition.size();
+				cchCursor = (LONG)comptext.size();
 			}
 		}
 		else
 		{
 			if(!kana.empty())
 			{
-				composition.append(kana);
+				comptext.append(kana);
 			}
 			else
 			{
@@ -303,13 +303,13 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 				{
 					if(cx_showroman)
 					{
-						composition.append(roman);
+						comptext.append(roman);
 					}
 					else
 					{
 						for(i = 0; i < roman.size(); i++)
 						{
-							composition.append(markSP);
+							comptext.append(markSP);
 						}
 					}
 				}
@@ -317,18 +317,18 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 		}
 	}
 
-	if(fixed && back && cx_backincenter && !composition.empty())
+	if(fixed && back && cx_backincenter && !comptext.empty())
 	{
 		// surrogate pair
-		if(composition.size() >= 2 &&
-			IS_SURROGATE_PAIR(composition[composition.size() - 2], composition[composition.size() - 1]))
+		if(comptext.size() >= 2 &&
+			IS_SURROGATE_PAIR(comptext[comptext.size() - 2], comptext[comptext.size() - 1]))
 		{
-			composition.pop_back();
-			composition.pop_back();
+			comptext.pop_back();
+			comptext.pop_back();
 		}
 		else
 		{
-			composition.pop_back();
+			comptext.pop_back();
 		}
 	}
 
@@ -340,12 +340,12 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 		{
 			showcandlist = TRUE;
 			candidx = 0;
-			_pCandidateList->_SetText(composition, FALSE, TRUE, FALSE);
+			_pCandidateList->_SetText(comptext, FALSE, TRUE, FALSE);
 			return S_OK;
 		}
 		else
 		{
-			_SetText(ec, pContext, composition, cchCursor, cchOkuri, fixed);
+			_SetText(ec, pContext, comptext, cchCursor, cchOkuri, fixed);
 			//候補一覧表示開始
 			showcandlist = TRUE;
 			candidx = 0;
@@ -355,12 +355,12 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 	{
-		_pCandidateList->_SetText(composition, fixed, FALSE, FALSE);
+		_pCandidateList->_SetText(comptext, fixed, FALSE, FALSE);
 		return S_OK;
 	}
 	else
 	{
-		return _SetText(ec, pContext, composition, cchCursor, cchOkuri, fixed);
+		return _SetText(ec, pContext, comptext, cchCursor, cchOkuri, fixed);
 	}
 }
 
@@ -380,7 +380,10 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 	if(!_IsComposing())
 	{
-		_StartComposition(pContext);
+		if(!_StartComposition(pContext))
+		{
+			return S_FALSE;
+		}
 	}
 
 	if(_pInputModeWindow != NULL)
@@ -400,7 +403,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		if(_IsRangeCovered(ec, tfSelection.range, pRangeComposition))
 		{
 			pRangeComposition->SetText(ec, 0, text.c_str(), (LONG)text.size());
-			
+
 			// shift from end to start.
 			// shift over mathematical operators (U+2200-U+22FF) is rejected by OneNote.
 			if(cchCursor == 0)
@@ -431,6 +434,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			tfSelection.range->Collapse(ec, TF_ANCHOR_START);
 			pContext->SetSelection(ec, 1, &tfSelection);
 
+			//composition attribute
 			if(!fixed)
 			{
 				if(pRangeComposition->Clone(&pRangeClone) == S_OK)

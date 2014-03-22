@@ -48,7 +48,7 @@ static const struct {
 		{IDC_EDIT_PREV_CAND,	ValueKeyMapPrevCand,	L""},
 		{IDC_EDIT_PURGE_DIC,	ValueKeyMapPurgeDic,	L""},
 		{IDC_EDIT_NEXT_COMP,	ValueKeyMapNextComp,	L""},
-		{IDC_EDIT_PREV_COMP,	ValueKeyMapPrevComp,	L""},
+		{IDC_EDIT_PREV_COMP,	ValueKeyMapPrevComp,	L"S\\x09"},
 		{IDC_EDIT_HINT,			ValueKeyMapHint,		L""},
 		{IDC_EDIT_CONV_POINT,	ValueKeyMapConvPoint,	L""},
 		{IDC_EDIT_DIRECT,		ValueKeyMapDirect,		L""},

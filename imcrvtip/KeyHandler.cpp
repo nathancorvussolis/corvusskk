@@ -62,7 +62,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	WCHAR ch;
 	WCHAR chO;
 	std::wstring romanN;
-	std::wstring composition;	//二重確定防止
+	std::wstring comptext;	//二重確定防止＆部分確定
 	
 	if(bSf == SKK_NULL)
 	{
@@ -270,7 +270,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			chO = roman[0];
 		}
 		romanN = roman;
-		if(_HandleChar(ec, pContext, composition, wParam, ch, chO) == E_ABORT)
+		if(_HandleChar(ec, pContext, comptext, wParam, ch, chO) == E_ABORT)
 		{
 			//待機処理、「ん」の処理等
 			switch(inputmode)
@@ -285,13 +285,12 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					{
 						if(!inputkey)
 						{
-							_Update(ec, pContext, composition, TRUE);
+							_Update(ec, pContext, comptext, TRUE);
 							if(pContext == NULL)	//辞書登録用
 							{
-								composition.clear();
+								comptext.clear();
 							}
 							_ResetStatus();
-							_HandleCharReturn(ec, pContext);
 						}
 						else
 						{
@@ -305,7 +304,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						}
 						else
 						{
-							_HandleChar(ec, pContext, composition, wParam, ch, chO);
+							_HandleChar(ec, pContext, comptext, wParam, ch, chO);
 						}
 					}
 					else
@@ -376,8 +375,8 @@ void CTextService::_KeyboardOpenCloseChanged()
 		_LoadPreservedKey();
 		_InitPreservedKey();
 
-		_LoadKeyMap(SectionKeyMap, ckeymap);
-		_LoadKeyMap(SectionVKeyMap, vkeymap);
+		_LoadCKeyMap(SectionKeyMap);
+		_LoadVKeyMap(SectionVKeyMap);
 		_LoadConvPoint();
 		_LoadKana();
 		_LoadJLatin();
@@ -448,7 +447,7 @@ void CTextService::_KeyboardInputConversionChanged()
 	else
 	{
 		var.vt = VT_I4;
-		var.lVal = TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE;
+		var.lVal = TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE | TF_CONVERSIONMODE_ROMAN;
 		_SetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var);
 	}
 
@@ -462,20 +461,37 @@ void CTextService::_KeyboardInputConversionChanged()
 
 BOOL CTextService::_IsKeyVoid(WCHAR ch, BYTE vk)
 {
-	if(ch < KEYMAPNUM)
+	if(vk < VKEYMAPNUM)
+	{
+		SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
+		SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+		BYTE k = SKK_NULL;
+		if(vk_shift)
+		{
+			k = vkeymap_shift.keyvoid[vk];
+		}
+		else if(vk_ctrl)
+		{
+			k = vkeymap_ctrl.keyvoid[vk];
+		}
+		else
+		{
+			k = vkeymap.keyvoid[vk];
+		}
+		if(k == SKK_VOID)
+		{
+			return TRUE;
+		}
+	}
+
+	if(ch < CKEYMAPNUM)
 	{
 		if(ckeymap.keyvoid[ch] == SKK_VOID)
 		{
 			return TRUE;
 		}
 	}
-	if(vk < KEYMAPNUM)
-	{
-		if(vkeymap.keyvoid[vk] == SKK_VOID)
-		{
-			return TRUE;
-		}
-	}
+
 	return FALSE;
 }
 

@@ -116,7 +116,7 @@ public:
 	BOOL _IsComposing();
 	void _SetComposition(ITfComposition *pComposition);
 	BOOL _IsRangeCovered(TfEditCookie ec, ITfRange *pRangeTest, ITfRange *pRangeCover);
-	void _StartComposition(ITfContext *pContext);
+	BOOL _StartComposition(ITfContext *pContext);
 	void _TerminateComposition(TfEditCookie ec, ITfContext *pContext);
 	void _EndComposition(ITfContext *pContext);
 	void _CancelComposition(TfEditCookie ec, ITfContext *pContext);
@@ -139,13 +139,14 @@ public:
 	void _ResetStatus();
 
 	// KeyHandlerChar
-	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, WPARAM wParam, WCHAR ch, WCHAR chO);
+	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, WPARAM wParam, WCHAR ch, WCHAR chO);
 	HRESULT _HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back = FALSE);
-	HRESULT _HandleCharTerminate(TfEditCookie ec, ITfContext *pContext, std::wstring &composition);
+	HRESULT _HandleCharShift(TfEditCookie ec, ITfContext *pContext);
+	HRESULT _HandleCharShift(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext);
 
 	// KeyHandlerCompostion
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed = FALSE, BOOL back = FALSE);
-	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, BOOL fixed = FALSE, BOOL back = FALSE);
+	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, BOOL fixed = FALSE, BOOL back = FALSE);
 	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed);
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg);
 
@@ -187,7 +188,8 @@ public:
 	void _LoadDisplayAttr();
 	void _LoadSelKey();
 	void _LoadPreservedKey();
-	void _LoadKeyMap(LPCWSTR section, KEYMAP &keymap);
+	void _LoadCKeyMap(LPCWSTR section);
+	void _LoadVKeyMap(LPCWSTR section);
 	void _LoadConvPoint();
 	void _LoadKana();
 	void _LoadJLatin();
@@ -263,8 +265,10 @@ private:
 	WCHAR cnfmutexname[MAX_KRNLOBJNAME];
 
 	//キーマップ
-	KEYMAP ckeymap;
-	KEYMAP vkeymap;
+	CKEYMAP ckeymap;		//文字
+	VKEYMAP vkeymap;		//仮想キー
+	VKEYMAP vkeymap_shift;	//仮想キー(+Shift)
+	VKEYMAP vkeymap_ctrl;	//仮想キー(+Ctrl)
 
 	//変換位置指定（開始,代替,送り）
 	WCHAR conv_point[CONV_POINT_NUM][3];

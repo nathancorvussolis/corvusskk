@@ -269,7 +269,7 @@ void CTextService::_LoadPreservedKey()
 	}
 }
 
-void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
+void CTextService::_LoadCKeyMap(LPCWSTR section)
 {
 	size_t i;
 	WCHAR ch;
@@ -279,7 +279,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 	std::wregex re;
 	std::wstring strxmlval;
 
-	ZeroMemory(&keymap, sizeof(keymap));
+	ZeroMemory(&ckeymap, sizeof(ckeymap));
 	key[1] = L'\0';
 
 	for(i = 0; i < _countof(configkeymap); i++)
@@ -308,7 +308,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 		case SKK_RIGHT:
 		case SKK_DOWN:
 		case SKK_PASTE:
-			for(ch = 0x01; ch < KEYMAPNUM; ch++)
+			for(ch = 0x01; ch < CKEYMAPNUM; ch++)
 			{
 				key[0] = ch;
 				s.assign(key);
@@ -317,9 +317,9 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						if(keymap.keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
+						if(ckeymap.keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
 						{
-							keymap.keylatin[ch] = configkeymap[i].skkfunc;
+							ckeymap.keylatin[ch] = configkeymap[i].skkfunc;
 						}
 					}
 				}
@@ -340,7 +340,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 		case SKK_VOID:
 			break;
 		default:
-			for(ch = 0x01; ch < KEYMAPNUM; ch++)
+			for(ch = 0x01; ch < CKEYMAPNUM; ch++)
 			{
 				key[0] = ch;
 				s.assign(key);
@@ -349,7 +349,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						keymap.keyjmode[ch] = configkeymap[i].skkfunc;
+						ckeymap.keyjmode[ch] = configkeymap[i].skkfunc;
 					}
 				}
 				catch(...)
@@ -364,7 +364,7 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 		switch(configkeymap[i].skkfunc)
 		{
 		case SKK_VOID:
-			for(ch = 0x01; ch < KEYMAPNUM; ch++)
+			for(ch = 0x01; ch < CKEYMAPNUM; ch++)
 			{
 				key[0] = ch;
 				s.assign(key);
@@ -373,12 +373,191 @@ void CTextService::_LoadKeyMap(LPCWSTR section, KEYMAP &keymap)
 					re.assign(keyre);
 					if(std::regex_match(s, re))
 					{
-						keymap.keyvoid[ch] = configkeymap[i].skkfunc;
+						ckeymap.keyvoid[ch] = configkeymap[i].skkfunc;
 					}
 				}
 				catch(...)
 				{
 					break;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+void CTextService::_LoadVKeyMap(LPCWSTR section)
+{
+	size_t i, j;
+	WCHAR ch;
+	WCHAR key[3];
+	WCHAR keyre[KEYRELEN];
+	std::wstring s;
+	std::wregex re;
+	std::wstring strxmlval;
+	VKEYMAP *pkeymaps[] = {&vkeymap, &vkeymap_shift, &vkeymap_ctrl};
+
+	for(j = 0; j < _countof(pkeymaps); j++)
+	{
+		ZeroMemory(pkeymaps[j], sizeof(*pkeymaps[j]));
+	}
+
+	for(i = 0; i < _countof(configkeymap); i++)
+	{
+		if(configkeymap[i].skkfunc == SKK_NULL)
+		{
+			break;
+		}
+		ReadValue(pathconfigxml, section, configkeymap[i].keyname, strxmlval);
+		wcsncpy_s(keyre, strxmlval.c_str(), _TRUNCATE);
+		if(keyre[0] == L'\0')
+		{
+			continue;
+		}
+
+		//全英/アスキーモード
+		switch(configkeymap[i].skkfunc)
+		{
+		case SKK_JMODE:
+		case SKK_ENTER:
+		case SKK_CANCEL:
+		case SKK_BACK:
+		case SKK_DELETE:
+		case SKK_LEFT:
+		case SKK_UP:
+		case SKK_RIGHT:
+		case SKK_DOWN:
+		case SKK_PASTE:
+			for(j = 0; j < _countof(pkeymaps); j++)
+			{
+				for(ch = 0x01; ch < VKEYMAPNUM; ch++)
+				{
+					switch(j)
+					{
+					case 0:
+						key[0] = ch;
+						key[1] = L'\0';
+						break;
+					case 1:
+						key[0] = L'S';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					case 2:
+						key[0] = L'C';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					}
+					s.assign(key);
+					try
+					{
+						re.assign(keyre);
+						if(std::regex_match(s, re))
+						{
+							if(pkeymaps[j]->keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
+							{
+								pkeymaps[j]->keylatin[ch] = configkeymap[i].skkfunc;
+							}
+						}
+					}
+					catch(...)
+					{
+						break;
+					}
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		//ひらがな/カタカナモード
+		switch(configkeymap[i].skkfunc)
+		{
+		case SKK_JMODE:
+		case SKK_VOID:
+			break;
+		default:
+			for(j = 0; j < _countof(pkeymaps); j++)
+			{
+				for(ch = 0x01; ch < VKEYMAPNUM; ch++)
+				{
+					switch(j)
+					{
+					case 0:
+						key[0] = ch;
+						key[1] = L'\0';
+						break;
+					case 1:
+						key[0] = L'S';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					case 2:
+						key[0] = L'C';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					}
+					s.assign(key);
+					try
+					{
+						re.assign(keyre);
+						if(std::regex_match(s, re))
+						{
+							pkeymaps[j]->keyjmode[ch] = configkeymap[i].skkfunc;
+						}
+					}
+					catch(...)
+					{
+						break;
+					}
+				}
+			}
+			break;
+		}
+
+		//無効
+		switch(configkeymap[i].skkfunc)
+		{
+		case SKK_VOID:
+			for(j = 0; j < _countof(pkeymaps); j++)
+			{
+				for(ch = 0x01; ch < VKEYMAPNUM; ch++)
+				{
+					switch(j)
+					{
+					case 0:
+						key[0] = ch;
+						key[1] = L'\0';
+						break;
+					case 1:
+						key[0] = L'S';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					case 2:
+						key[0] = L'C';
+						key[1] = ch;
+						key[2] = L'\0';
+						break;
+					}
+					s.assign(key);
+					try
+					{
+						re.assign(keyre);
+						if(std::regex_match(s, re))
+						{
+							pkeymaps[j]->keyvoid[ch] = configkeymap[i].skkfunc;
+						}
+					}
+					catch(...)
+					{
+						break;
+					}
 				}
 			}
 			break;

@@ -3,7 +3,7 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &composition, WPARAM wParam, WCHAR ch, WCHAR chO)
+HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, WPARAM wParam, WCHAR ch, WCHAR chO)
 {
 	ROMAN_KANA_CONV rkc;
 	ASCII_JLATIN_CONV ajc;
@@ -12,13 +12,12 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 
 	if(showentry)
 	{
-		_Update(ec, pContext, composition, TRUE);
+		_Update(ec, pContext, comptext, TRUE);
 		if(pContext == NULL)	//辞書登録用
 		{
-			composition.clear();
+			comptext.clear();
 		}
 		_ResetStatus();
-		_HandleCharReturn(ec, pContext);
 	}
 
 	if(okuriidx != 0 && okuriidx == kana.size() && chO != L'\0')
@@ -34,7 +33,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 	case im_katakana_ank:
 		if(abbrevmode)
 		{
-			_HandleCharTerminate(ec, pContext, composition);
+			_HandleCharShift(ec, pContext, comptext);
 			roman.clear();
 			kana.insert(cursoridx, 1, ch);
 			cursoridx++;
@@ -110,7 +109,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 						break;
 					}
 
-					_HandleCharTerminate(ec, pContext, composition);
+					_HandleCharShift(ec, pContext, comptext);
 					_Update(ec, pContext);
 					break;
 				}
@@ -147,24 +146,9 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 
 				roman.clear();
 
-				if(!inputkey)
+				if(inputkey)
 				{
-					_HandleCharTerminate(ec, pContext, composition);	//候補＋仮名
-					if(composition.empty())
-					{
-						_HandleCharReturn(ec, pContext);	//仮名のみ
-					}
-					kana.clear();
-					cursoridx = 0;
-					if(rkc.soku)
-					{
-						roman.push_back(ch);
-						_Update(ec, pContext);
-					}
-				}
-				else
-				{
-					_HandleCharTerminate(ec, pContext, composition);
+					_HandleCharShift(ec, pContext, comptext);
 					if(!kana.empty() && okuriidx != 0 && !rkc.soku && cx_begincvokuri && !hintmode && !rkc.wait)
 					{
 						cursoridx = kana.size();
@@ -177,16 +161,35 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					}
 					_Update(ec, pContext);
 				}
+				else
+				{
+					_HandleCharShift(ec, pContext, comptext);	//候補＋仮名
+					if(comptext.empty())
+					{
+						_HandleCharShift(ec, pContext);	//仮名のみ
+					}
+					kana.clear();
+					cursoridx = 0;
+					if(rkc.soku)
+					{
+						roman.push_back(ch);
+						_Update(ec, pContext);
+					}
+					else
+					{
+						_HandleCharReturn(ec, pContext);
+					}
+				}
 				break;
 			
 			case E_PENDING:	//途中まで一致
-				_HandleCharTerminate(ec, pContext, composition);
+				_HandleCharShift(ec, pContext, comptext);
 				roman.push_back(ch);
 				_Update(ec, pContext);
 				break;
 			
 			case E_ABORT:	//不一致
-				_HandleCharTerminate(ec, pContext, composition);
+				_HandleCharShift(ec, pContext, comptext);
 				roman.clear();
 				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 				{
@@ -258,6 +261,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 
 HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back)
 {
+	//terminate composition
 	_Update(ec, pContext, TRUE, back);
 	_TerminateComposition(ec, pContext);
 	_ResetStatus();
@@ -265,12 +269,32 @@ HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, B
 	return S_OK;
 }
 
-HRESULT CTextService::_HandleCharTerminate(TfEditCookie ec, ITfContext *pContext, std::wstring &composition)
+HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 {
-	if(!composition.empty())
+	std::wstring comptext;
+	_Update(ec, pContext, comptext, TRUE);
+	_ResetStatus();
+	if(pContext != NULL)
 	{
-		_Update(ec, pContext, composition, TRUE);
-		_TerminateComposition(ec, pContext);
+		_HandleCharShift(ec, pContext, comptext);
+	}
+
+	return S_OK;
+}
+
+HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext)
+{
+	ITfRange * pRange;
+	//leave composition
+	if(!comptext.empty())
+	{
+		_Update(ec, pContext, comptext, TRUE);
+		if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+		{
+			pRange->Collapse(ec, TF_ANCHOR_END);
+			_pComposition->ShiftStart(ec, pRange);
+			pRange->Release();
+		}
 	}
 
 	return S_OK;

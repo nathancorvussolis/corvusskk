@@ -48,24 +48,49 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 {
 	BYTE k = SKK_NULL;
 
-	if(ch == L'\0' && vk < KEYMAPNUM)
+	if(vk < VKEYMAPNUM)
 	{
+		SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
+		SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
 		switch(inputmode)
 		{
 		case im_ascii:
 		case im_jlatin:
-			k = vkeymap.keylatin[vk];
+			if(vk_shift)
+			{
+				k = vkeymap_shift.keylatin[vk];
+			}
+			else if(vk_ctrl)
+			{
+				k = vkeymap_ctrl.keylatin[vk];
+			}
+			else
+			{
+				k = vkeymap.keylatin[vk];
+			}
 			break;
 		case im_hiragana:
 		case im_katakana:
 		case im_katakana_ank:
-			k = vkeymap.keyjmode[vk];
+			if(vk_shift)
+			{
+				k = vkeymap_shift.keyjmode[vk];
+			}
+			else if(vk_ctrl)
+			{
+				k = vkeymap_ctrl.keyjmode[vk];
+			}
+			else
+			{
+				k = vkeymap.keyjmode[vk];
+			}
 			break;
 		default:
 			break;
 		}
 	}
-	else if(ch < KEYMAPNUM)
+	
+	if(k == SKK_NULL && ch < CKEYMAPNUM)
 	{
 		switch(inputmode)
 		{

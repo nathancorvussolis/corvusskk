@@ -20,15 +20,18 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 		_pInputModeWindow = NULL;
 	}
 
-	if(_pComposition != NULL)
+	if(pComposition != NULL)
 	{
 		ITfRange* pRangeComposition;
-		if(_pComposition->GetRange(&pRangeComposition) == S_OK)
+		if(pComposition->GetRange(&pRangeComposition) == S_OK)
 		{
 			pRangeComposition->SetText(ecWrite, 0, L"", 0);
 			pRangeComposition->Release();
 		}
-		_pComposition->EndComposition(ecWrite);
+	}
+
+	if(_pComposition != NULL)
+	{
 		_pComposition->Release();
 		_pComposition = NULL;
 	}
@@ -110,7 +113,7 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 	return hr;
 }
 
-void CTextService::_StartComposition(ITfContext *pContext)
+BOOL CTextService::_StartComposition(ITfContext *pContext)
 {
 	CStartCompositionEditSession *pStartCompositionEditSession;
 	HRESULT hr;
@@ -121,6 +124,8 @@ void CTextService::_StartComposition(ITfContext *pContext)
 		pContext->RequestEditSession(_ClientId, pStartCompositionEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
 		pStartCompositionEditSession->Release();
 	}
+
+	return (hr == S_OK);
 }
 
 class CEndCompositionEditSession : public CEditSessionBase

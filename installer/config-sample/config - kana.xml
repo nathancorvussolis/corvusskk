@@ -130,7 +130,7 @@
     <key name="prevcand" value="\x7A" />
     <key name="purgedic" value="\x7B" />
     <key name="nextcomp" value="" />
-    <key name="prevcomp" value="" />
+    <key name="prevcomp" value="S\x09" />
     <key name="hint" value="" />
     <key name="convpoint" value="\x70|\x1C|\x1D" />
     <key name="direct" value="" />

@@ -220,7 +220,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			_ConvN(WCHAR_MAX);
 			if((!inputkey && !abbrevmode && roman.empty()) || showentry)
 			{
-				_HandleCharReturn(ec, pContext);
+				_HandleCharShift(ec, pContext);
 				//見出し入力開始(abbrev)
 				inputkey = TRUE;
 				abbrevmode = TRUE;
@@ -242,7 +242,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			if(showentry)
 			{
-				_HandleCharReturn(ec, pContext);
+				_HandleCharShift(ec, pContext);
 			}
 			//見出し入力開始(接尾辞)
 			inputkey = TRUE;
@@ -418,7 +418,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		}
 		if(showentry)
 		{
-			_HandleCharReturn(ec, pContext);
+			_HandleCharShift(ec, pContext);
 		}
 
 		switch(inputmode)
@@ -431,7 +431,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				{
 					if(!kana.empty())
 					{
-						_HandleCharReturn(ec, pContext);
+						_HandleCharShift(ec, pContext);
 					}
 					//見出し入力開始
 					inputkey = TRUE;

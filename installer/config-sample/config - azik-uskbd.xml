@@ -121,7 +121,7 @@
     <key name="prevcand" value="" />
     <key name="purgedic" value="" />
     <key name="nextcomp" value="" />
-    <key name="prevcomp" value="" />
+    <key name="prevcomp" value="S\x09" />
     <key name="hint" value="" />
     <key name="convpoint" value="" />
     <key name="direct" value="" />
