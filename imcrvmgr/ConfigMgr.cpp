@@ -21,6 +21,8 @@ WCHAR port[MAX_SKKSERVER_PORT] = {L'\0'};	//ポート
 DWORD encoding = 0;		//エンコーディング
 DWORD timeout = 1000;	//タイムアウト
 
+BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
+
 void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
@@ -127,6 +129,13 @@ void LoadConfig()
 			ConnectSKKServer();
 			GetSKKServerVersion();
 		}
+	}
+
+	ReadValue(pathconfigxml, SectionBehavior, ValuePrecedeOkuri, strxmlval);
+	precedeokuri = _wtoi(strxmlval.c_str());
+	if(precedeokuri != TRUE && precedeokuri != FALSE)
+	{
+		servtmp = FALSE;
 	}
 }
 

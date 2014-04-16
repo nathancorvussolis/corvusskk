@@ -91,6 +91,7 @@ extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;
 extern LPCWSTR ValueAddCandKtkn;
 extern LPCWSTR ValueShiftNNOkuri;
+extern LPCWSTR ValuePrecedeOkuri;
 
 //font section
 

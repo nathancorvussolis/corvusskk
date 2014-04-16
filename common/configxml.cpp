@@ -60,6 +60,7 @@ LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";
 LPCWSTR ValueAddCandKtkn = L"addcandktkn";
 LPCWSTR ValueShiftNNOkuri = L"shiftnnokuri";
+LPCWSTR ValuePrecedeOkuri = L"precedeokuri";
 
 //font section
 

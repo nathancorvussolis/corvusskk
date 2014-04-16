@@ -36,6 +36,7 @@
     <key name="backincenter" value="1" />
     <key name="addcandktkn" value="0" />
     <key name="shiftnnokuri" value="1" />
+    <key name="precedeokuri" value="0" />
   </section>
   <section name="font">
     <key name="name" value="メイリオ" />

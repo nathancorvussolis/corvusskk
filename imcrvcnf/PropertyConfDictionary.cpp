@@ -142,6 +142,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	int okuri;
 	SKKDICCANDIDATES sc;
 	SKKDICCANDIDATES::iterator sc_itr;
+	SKKDICOKURIBLOCKS so;
 	int rl;
 
 	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
@@ -187,7 +188,7 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 		while(true)
 		{
-			rl = ReadSKKDicLine(fp, bom, okuri, key, sc);
+			rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
 			if(rl == -1)
 			{
 				break;

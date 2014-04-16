@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 // request and reply commands defined at common.h
 //
 //search candidate
-//	request	"1\n<key>\t<key(original)>\n"
+//	request	"1\n<key>\t<key(original)>\t<okuri>\n"
 //	reply	"1\n<candidate(display)>\t<candidate(regist)>\t<annotation>\n...\n":hit, "4":nothing
 //search key for complement
 //	request	"8\n<key>\n"
@@ -184,10 +184,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //	request	"9\n<candidate>\n"
 //	reply	"1\n<candidate converted>\n":hit, "4":nothing
 //add candidate (complement off)
-//	request	"A\n<key>\t<candidate>\t<annotation>\n"
+//	request	"A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
 //	reply	"1"
 //add candidate (complement on)
-//	request	"B\n<key>\t<candidate>\t<annotation>\n"
+//	request	"B\n<key>\t<candidate>\t<annotation>\t\n"
 //	reply	"1"
 //delete candidate (complement off)
 //	request	"C\n<key>\t<candidate>\n"
@@ -205,11 +205,12 @@ void SrvProc(WCHAR *wbuf, size_t size)
 	SEARCHRESULTS::iterator searchresults_itr;
 	CANDIDATES candidates;
 	CANDIDATES::iterator candidates_itr;
-	const wchar_t seps[]   = L"\t\n";
-	wchar_t *token = NULL;
-	wchar_t *next_token = NULL;
+	std::wstring bufdat(&wbuf[2]);
+	std::wregex re;
+	std::wstring fmt;
 	std::wstring keyorg;
 	std::wstring key;
+	std::wstring okuri;
 	std::wstring candidate;
 	std::wstring annotation;
 	std::wstring conv;
@@ -217,17 +218,16 @@ void SrvProc(WCHAR *wbuf, size_t size)
 	switch(wbuf[0])
 	{
 	case REQ_SEARCH:
-		token = wcstok_s(&wbuf[2], seps, &next_token);
-		if(token != NULL)
-		{
-			key.assign(token);
-			token = wcstok_s(NULL, seps, &next_token);
-		}
-		if(token != NULL)
-		{
-			keyorg.assign(token);
-		}
-		ConvDictionary(key, keyorg, searchresults);
+		re.assign(L"(.*)\t(.*)\t(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$2");
+		keyorg = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$3");
+		okuri = std::regex_replace(bufdat, re, fmt);
+
+		ConvDictionary(key, keyorg, okuri, searchresults);
+
 		if(!searchresults.empty())
 		{
 			wbuf[0] = REP_OK;
@@ -251,12 +251,12 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		break;
 
 	case REQ_COMPLEMENT:
-		token = wcstok_s(&wbuf[2], seps, &next_token);
-		if(token != NULL)
-		{
-			key.assign(token);
-		}
+		re.assign(L"(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+
 		ConvComplement(key, candidates);
+
 		if(!candidates.empty())
 		{
 			wbuf[0] = REP_OK;
@@ -276,17 +276,14 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		break;
 
 	case REQ_CONVERSION:
-		token = wcstok_s(&wbuf[2], seps, &next_token);
-		if(token != NULL)
-		{
-			key.assign(token);
-			token = wcstok_s(NULL, seps, &next_token);
-		}
-		if(token != NULL)
-		{
-			candidate.assign(token);
-		}
+		re.assign(L"(.*)\t(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$2");
+		candidate = std::regex_replace(bufdat, re, fmt);
+
 		ConvCandidate(key, candidate, conv);
+
 		if(!conv.empty())
 		{
 			wbuf[0] = REP_OK;
@@ -304,23 +301,17 @@ void SrvProc(WCHAR *wbuf, size_t size)
 
 	case REQ_USER_ADD_0:
 	case REQ_USER_ADD_1:
-		token = wcstok_s(&wbuf[2], seps, &next_token);
-		if(token != NULL)
-		{
-			key.assign(token);
-			token = wcstok_s(NULL, seps, &next_token);
-		}
-		if(token != NULL)
-		{
-			candidate.assign(token);
-			token = wcstok_s(NULL, seps, &next_token);
-		}
-		if(token != NULL)
-		{
-			annotation.assign(token);
-		}
+		re.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$2");
+		candidate = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$3");
+		annotation = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$4");
+		okuri = std::regex_replace(bufdat, re, fmt);
 
-		AddUserDic(wbuf[0], key, candidate, annotation);
+		AddUserDic(wbuf[0], key, candidate, annotation, okuri);
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
@@ -328,16 +319,11 @@ void SrvProc(WCHAR *wbuf, size_t size)
 
 	case REQ_USER_DEL_0:
 	case REQ_USER_DEL_1:
-		token = wcstok_s(&wbuf[2], seps, &next_token);
-		if(token != NULL)
-		{
-			key.assign(token);
-			token = wcstok_s(NULL, seps, &next_token);
-		}
-		if(token != NULL)
-		{
-			candidate.assign(token);
-		}
+		re.assign(L"(.*)\t(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+		fmt.assign(L"$2");
+		candidate = std::regex_replace(bufdat, re, fmt);
 
 		DelUserDic(wbuf[0], key, candidate);
 

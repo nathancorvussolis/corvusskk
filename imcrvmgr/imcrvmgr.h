@@ -8,6 +8,15 @@
 typedef std::pair< std::wstring, std::wstring > CANDIDATE;
 typedef std::vector< CANDIDATE > CANDIDATES;
 
+//送りありエントリのブロック
+typedef std::pair< std::wstring, CANDIDATES > OKURIBLOCK; //送り、候補
+typedef std::vector< OKURIBLOCK > OKURIBLOCKV;
+struct OKURIBLOCKS {
+	OKURIBLOCKV o;
+};
+typedef std::map< std::wstring, OKURIBLOCKS > USEROKURI; //見出し語、送りブロック
+typedef std::pair< std::wstring, OKURIBLOCKS > USEROKURIENTRY;
+
 //ユーザー辞書   pair< key, candidates >
 typedef std::map< std::wstring, CANDIDATES > USERDIC;
 typedef std::pair< std::wstring, CANDIDATES > USERDICENTRY;
@@ -22,6 +31,7 @@ typedef std::vector< SEARCHRESULT > SEARCHRESULTS;
 
 typedef struct {
 	USERDIC userdic;
+	USEROKURI userokuri;
 	KEYORDER complements;
 	KEYORDER accompaniments;
 } USERDATA;
@@ -36,7 +46,8 @@ void ConvUnicode(const std::wstring &text, CANDIDATES &candidates);
 void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates);
 
 // ConvDictionary
-void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg, SEARCHRESULTS &searchresults);
+void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg,
+	 const std::wstring &okuri, SEARCHRESULTS &searchresults);
 void InitSKKDic();
 void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv);
 
@@ -47,9 +58,9 @@ std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate);
 std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);
 
 // ConvUserDictionary
-void ConvUserDic(const std::wstring &searchkey, CANDIDATES &candidates);
+void ConvUserDic(const std::wstring &searchkey,  const std::wstring &okuri, CANDIDATES &candidates);
 void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates);
-void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation);
+void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadSKKUserDic();
 BOOL SaveSKKUserDic(USERDATA* userdata);
@@ -68,6 +79,7 @@ extern CRITICAL_SECTION csUserDataSave;
 extern BOOL bUserDicChg;
 
 extern USERDIC userdic;
+extern USEROKURI userokuri;
 extern KEYORDER complements;
 extern KEYORDER accompaniments;
 
@@ -87,5 +99,7 @@ extern WCHAR host[MAX_SKKSERVER_HOST];	//ホスト
 extern WCHAR port[MAX_SKKSERVER_PORT];	//ポート
 extern DWORD encoding;	//エンコーディング
 extern DWORD timeout;	//タイムアウト
+
+extern BOOL precedeokuri;	//送り仮名が一致した候補を優先する
 
 #endif //IMCRVMGR_H

@@ -6,7 +6,8 @@
 LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
 LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 
-int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCANDIDATES &c)
+int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
+	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o)
 {
 	CHAR buf[DICBUFSIZE*2];
 	WCHAR wbuf[DICBUFSIZE];
@@ -15,8 +16,14 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	std::wstring s;
 	std::wregex re;
 	std::wstring fmt;
+	std::wsmatch m;
+	std::wregex reb;
+	std::wstring so;
+	std::wstring okurik;
+	std::wstring okuric;
 
 	c.clear();
+	o.clear();
 
 	switch(bom)
 	{
@@ -72,10 +79,17 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	re.assign(L"[\\x00-\\x19]");
 	fmt.assign(L"");
 	s = std::regex_replace(s, re, fmt);
-	//送りありエントリのブロック形式を除去
-	re.assign(L"\\[.+?/.+?/\\]/");
-	fmt.assign(L"");
-	s = std::regex_replace(s, re, fmt);
+
+	if(okuri == 1)
+	{
+		//送りありエントリのブロック形式
+		ParseSKKDicOkuriBlock(s, o);
+
+		//送りありエントリのブロック形式を除去
+		re.assign(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
+		fmt.assign(L"");
+		s = std::regex_replace(s, re, fmt);
+	}
 
 	is = s.find_first_of(L'\x20');
 	if(is == std::wstring::npos)
@@ -96,7 +110,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key, SKKDICCAN
 	return 0;
 }
 
-void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &d)
+void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 {
 	size_t i, is, ie, ia;
 	std::wstring candidate;
@@ -127,6 +141,39 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &d)
 			candidate = candidate.substr(0, ia);
 		}
 
-		d.push_back(SKKDICCANDIDATE(candidate, annotation));
+		c.push_back(SKKDICCANDIDATE(candidate, annotation));
+	}
+}
+
+void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
+{
+	std::wregex re, reb;
+	std::wstring so, okurik, okuric;
+	std::wsmatch m;
+	SKKDICCANDIDATES okuricc;
+	SKKDICCANDIDATES okuriccr;
+	SKKDICCANDIDATES::reverse_iterator c_ritr;
+
+	re.assign(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
+	reb.assign(L"\\[([^\\[\\]]+?)(/[^\\[\\]]+?/)\\]/");
+	so = s;
+
+	while(std::regex_search(so, m, re))
+	{
+		okuricc.clear();
+		okuriccr.clear();
+
+		okurik = std::regex_replace(m.str(), reb, std::wstring(L"$1"));
+		okuric = std::regex_replace(m.str(), reb, std::wstring(L"$2"));
+
+		ParseSKKDicCandiate(okuric, okuricc);
+
+		for(c_ritr = okuricc.rbegin(); c_ritr != okuricc.rend(); c_ritr ++)
+		{
+			okuriccr.push_back(*c_ritr);
+		}
+
+		o.insert(o.begin(), SKKDICOKURIBLOCK(okurik, okuriccr));
+		so = m.suffix();
 	}
 }

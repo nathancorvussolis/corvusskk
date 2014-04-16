@@ -8,12 +8,14 @@ std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate);
 
 //ユーザー辞書
 USERDIC userdic;
+USEROKURI userokuri;
 //補完あり
 KEYORDER complements;
 //補完なし
 KEYORDER accompaniments;
 
-void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg, SEARCHRESULTS &searchresults)
+void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg,
+	 const std::wstring &okuri, SEARCHRESULTS &searchresults)
 {
 	CANDIDATES::iterator candidates_itrf;
 	CANDIDATES::iterator candidates_itrb;
@@ -22,7 +24,7 @@ void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkey
 	std::wstring fmt(L"");
 
 	//ユーザー辞書
-	ConvUserDic(searchkey, candidates);
+	ConvUserDic(searchkey, okuri, candidates);
 
 	//SKK辞書
 	ConvSKKDic(searchkey, candidates);

@@ -15,7 +15,8 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHIFTNNOKURI, SectionBehavior, ValueShiftNNOkuri, L"1");
-
+		LoadCheckButton(hDlg, IDC_CHECKBOX_PRECEDEOKURI, SectionBehavior, ValuePrecedeOkuri);
+		
 		return TRUE;
 
 	case WM_COMMAND:
@@ -28,6 +29,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_BACKINCENTER:
 		case IDC_CHECKBOX_ADDCANDKTKN:
 		case IDC_CHECKBOX_SHIFTNNOKURI:
+		case IDC_CHECKBOX_PRECEDEOKURI:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return TRUE;
 
@@ -49,6 +51,7 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, ValueBackIncEnter);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, ValueAddCandKtkn);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHIFTNNOKURI, ValueShiftNNOkuri);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_PRECEDEOKURI, ValuePrecedeOkuri);
 
 			WriterEndSection(pXmlWriter);	//End of SectionBehavior
 

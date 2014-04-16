@@ -36,7 +36,7 @@ void CTextService::_SearchDic(WCHAR command)
 	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 	size_t i, icd, icr, ia;
-	std::wstring s, scd, scr, sa;
+	std::wstring s, scd, scr, sa, okurikey;
 
 	_StartManager();
 
@@ -44,8 +44,22 @@ void CTextService::_SearchDic(WCHAR command)
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
-		command, searchkey.c_str(), searchkeyorg.c_str());
+	if(okuriidx != 0)
+	{
+		okurikey = kana.substr(okuriidx + 1);
+		if(okurikey.size() >= 2 &&
+			IS_SURROGATE_PAIR(okurikey.c_str()[0], okurikey.c_str()[1]))
+		{
+			okurikey = okurikey.substr(0, 2);
+		}
+		else
+		{
+			okurikey = okurikey.substr(0, 1);
+		}
+	}
+
+	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
+		command, searchkey.c_str(), searchkeyorg.c_str(), okurikey.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
@@ -148,8 +162,9 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
-		command, key.c_str(), candidate.c_str(), annotation.c_str());
+	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\t%s\n",
+		command, key.c_str(), candidate.c_str(), annotation.c_str(),
+		((okuriidx == 0) ? L"" : kana.substr(okuriidx + 1, 1).c_str()));
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{
