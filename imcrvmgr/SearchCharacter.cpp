@@ -2,42 +2,48 @@
 #include "eucjis2004.h"
 #include "imcrvmgr.h"
 
-void ConvUnicode(const std::wstring &text, CANDIDATES &candidates)
+std::wstring SearchUnicode(const std::wstring &searchkey)
 {
+	std::wstring candidate;
 	//Unicode Code Point
 	UCSCHAR ucp = 0;
 	WCHAR utf16[3];
 
 	// U+XXXXXX (XXXXXX : 0000-FFFF,10000-10FFFF)
-	if(std::regex_match(text, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
+	if(std::regex_match(searchkey, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
 	{
-		if(swscanf_s(text.c_str(), L"U+%X", &ucp) != 1)
+		if(swscanf_s(searchkey.c_str(), L"U+%X", &ucp) != 1)
 		{
-			return;
+			return candidate;
 		}
 	}
 	// uxxxxxx (xxxxxx : 0000-ffff,10000-10ffff)
-	else if(std::regex_match(text, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
+	else if(std::regex_match(searchkey, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
 	{
-		if(swscanf_s(text.c_str(), L"u%x", &ucp) != 1)
+		if(swscanf_s(searchkey.c_str(), L"u%x", &ucp) != 1)
 		{
-			return;
+			return candidate;
 		}
 	}
 	else
 	{
-		return;
+		return candidate;
 	}
 
 	ZeroMemory(utf16, sizeof(utf16));
 	if(UcpToWideChar(ucp, &utf16[0], &utf16[1]) != 0)
 	{
-		candidates.push_back(CANDIDATE(utf16, L""));
+		candidate = L"/";
+		candidate += utf16;
+		candidate += L"/\n";
 	}
+
+	return candidate;
 }
 
-void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates)
+std::wstring SearchJISX0213(const std::wstring &searchkey)
 {
+	std::wstring candidate;
 	//JIS X 0213 面区点番号
 	int men, ku, ten;
 	size_t size;
@@ -48,14 +54,14 @@ void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates)
 	UCSCHAR ucp[2];
 	WCHAR sucp[32];
 
-	if(!std::regex_match(text, std::wregex(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
+	if(!std::regex_match(searchkey, std::wregex(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
 	{
-		return;
+		return candidate;
 	}
 
-	if(swscanf_s(text.c_str(), L"%d-%d-%d", &men, &ku, &ten) != 3)
+	if(swscanf_s(searchkey.c_str(), L"%d-%d-%d", &men, &ku, &ten) != 3)
 	{
-		return;
+		return candidate;
 	}
 
 	switch(men)
@@ -72,7 +78,7 @@ void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates)
 		euc[3] = L'\0';
 		break;
 	default:
-		return;
+		return candidate;
 		break;
 	}
 	
@@ -91,6 +97,12 @@ void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates)
 	size = _countof(utf16);
 	if(EucJis2004ToWideChar(euc, NULL, utf16, &size))
 	{
-		candidates.push_back(CANDIDATE(utf16, sucp));
+		candidate = L"/";
+		candidate += utf16;
+		candidate += L";";
+		candidate += sucp;
+		candidate += L"/\n";
 	}
+
+	return candidate;
 }

@@ -35,8 +35,8 @@ void CTextService::_SearchDic(WCHAR command)
 {
 	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
-	size_t i, icd, icr, ia;
-	std::wstring s, scd, scr, sa, okurikey;
+	size_t i, icd, icr, iad, iar;
+	std::wstring s, scd, scr, sad, sar, okurikey;
 
 	_StartManager();
 
@@ -93,21 +93,31 @@ void CTextService::_SearchDic(WCHAR command)
 		{
 			break;
 		}
-		ia = s.find_first_of(L'\n', icr + 1);
-		if(ia == std::wstring::npos)
+		iad = s.find_first_of(L'\t', icr + 1);
+		if(iad == std::wstring::npos)
+		{
+			break;
+		}
+		iar = s.find_first_of(L'\n', iad + 1);
+		if(iar == std::wstring::npos)
 		{
 			break;
 		}
 		scd = s.substr(i + 1, icd - (i + 1));
 		scr = s.substr(icd + 1, icr - (icd + 1));
-		sa = s.substr(icr + 1, ia - (icr + 1));
+		sad = s.substr(icr + 1, iad - (icr + 1));
+		sar = s.substr(iad + 1, iar - (iad + 1));
 		if(scd.empty())
 		{
 			scd = scr;
 		}
+		if(sad.empty())
+		{
+			sad = sar;
+		}
 
-		candidates.push_back(CANDIDATE(CANDIDATEBASE(scd, sa), CANDIDATEBASE(scr, sa)));
-		i = ia;
+		candidates.push_back(CANDIDATE(CANDIDATEBASE(scd, sad), CANDIDATEBASE(scr, sar)));
+		i = iar;
 	}
 
 exit:
@@ -157,14 +167,28 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 {
 	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
+	std::wstring okurikey;
 
 	_ConnectDic();
 
 	ZeroMemory(wbuf, sizeof(wbuf));
 
+	if(okuriidx != 0)
+	{
+		okurikey = kana.substr(okuriidx + 1);
+		if(okurikey.size() >= 2 &&
+			IS_SURROGATE_PAIR(okurikey.c_str()[0], okurikey.c_str()[1]))
+		{
+			okurikey = okurikey.substr(0, 2);
+		}
+		else
+		{
+			okurikey = okurikey.substr(0, 1);
+		}
+	}
+
 	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\t%s\n",
-		command, key.c_str(), candidate.c_str(), annotation.c_str(),
-		((okuriidx == 0) ? L"" : kana.substr(okuriidx + 1, 1).c_str()));
+		command, key.c_str(), candidate.c_str(), annotation.c_str(), okurikey.c_str());
 
 	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
 	{

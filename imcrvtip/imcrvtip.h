@@ -16,13 +16,6 @@ enum InputMode
 	im_ascii			//ASCII
 };
 
-//候補   pair< candidate, annotation >
-typedef std::pair< std::wstring, std::wstring > CANDIDATEBASE;
-//		pair< CANDIDATEBASE(表示用), CANDIDATEBASE(辞書登録用) >
-//		例）数値変換の場合 < < "明治四五年", "年号(1868-1912)" >, < "明治#2年", "年号(1868-1912)" > >
-typedef std::pair< CANDIDATEBASE, CANDIDATEBASE > CANDIDATE;
-typedef std::vector< CANDIDATE > CANDIDATES;
-
 #define CKEYMAPNUM		0x80	// 0x00-0x7F
 #define VKEYMAPNUM		0x100	// 0x00-0xFF
 

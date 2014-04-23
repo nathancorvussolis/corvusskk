@@ -4,6 +4,7 @@
 
 #include "imcrvtip.h"
 #include "convtype.h"
+#include "parseskkdic.h"
 
 class CLangBarItemButton;
 class CCandidateList;

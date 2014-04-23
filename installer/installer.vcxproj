@@ -90,6 +90,10 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -100,6 +104,10 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -115,9 +123,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>"%WIX%bin\candle.exe" corvusskk-x86.wxs -nologo
-"%WIX%bin\light.exe" corvusskk-x86.wixobj -nologo -ext WixUIExtension -sw1056
-</Command>
+      <Command>_build_x86.cmd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,9 +140,7 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PostBuildEvent>
-      <Command>"%WIX%bin\candle.exe" corvusskk-x64.wxs -nologo
-"%WIX%bin\light.exe" corvusskk-x64.wixobj -nologo -ext WixUIExtension -sw1056
-</Command>
+      <Command>_build_x64.cmd</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -147,6 +151,13 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="ms-pl.rtf" />
+    <None Include="_build.cmd" />
+    <None Include="_build_x64.cmd" />
+    <None Include="_build_x86.cmd" />
+    <None Include="_clean.cmd" />
+    <None Include="_debug_reg.cmd" />
+    <None Include="_debug_unreg.cmd" />
+    <None Include="_mkarc.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />

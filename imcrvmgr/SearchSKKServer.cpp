@@ -4,7 +4,6 @@
 #include "imcrvmgr.h"
 
 void GetSKKServerVersion();
-void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
 
 #define SBUFSIZE	0x2000
 #define RBUFSIZE	0x800
@@ -18,8 +17,9 @@ void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates);
 
 SOCKET sock = INVALID_SOCKET;
 
-void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
+std::wstring SearchSKKServer(const std::wstring &searchkey)
 {
+	std::wstring candidate;
 	CHAR key[KEYSIZE];
 	size_t size;
 	CHAR buf[SBUFSIZE * 2];
@@ -28,11 +28,16 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 	int n, nn;
 	WCHAR wbuf[SBUFSIZE];
 
+	if(!serv)
+	{
+		return candidate;
+	}
+
 	switch(encoding)
 	{
 	case 0:
 		size = _countof(key) - 2;
-		if(WideCharToEucJis2004(text.c_str(), NULL, key + 1, &size))
+		if(WideCharToEucJis2004(searchkey.c_str(), NULL, key + 1, &size))
 		{
 			key[0] = SKK_REQ;
 			key[size + 0] = 0x20;
@@ -41,11 +46,11 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 		}
 		else
 		{
-			return;
+			return candidate;
 		}
 		break;
 	case 1:
-		if((size = WideCharToMultiByte(CP_UTF8, 0, text.c_str(), -1, key + 1, _countof(key) - 2, NULL, NULL)) != 0)
+		if((size = WideCharToMultiByte(CP_UTF8, 0, searchkey.c_str(), -1, key + 1, _countof(key) - 2, NULL, NULL)) != 0)
 		{
 			key[0] = SKK_REQ;
 			key[size + 0] = 0x20;
@@ -54,11 +59,11 @@ void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates)
 		}
 		else
 		{
-			return;
+			return candidate;
 		}
 		break;
 	default:
-		return;
+		return candidate;
 		break;
 	}
 
@@ -130,13 +135,11 @@ end:
 		}
 		if(ret)
 		{
-			std::wstring res(&wbuf[1]);
-			if(!res.empty())
-			{
-				AnalyzeSKKServer(res, candidates);
-			}
+			candidate = &wbuf[1];
 		}
 	}
+
+	return candidate;
 }
 
 void ConnectSKKServer()
@@ -245,18 +248,5 @@ void GetSKKServerVersion()
 			DisconnectSKKServer();
 			ConnectSKKServer();
 		}
-	}
-}
-
-void AnalyzeSKKServer(const std::wstring &res, CANDIDATES &candidates)
-{
-	SKKDICCANDIDATES sc;
-	SKKDICCANDIDATES::iterator sc_itr;
-
-	ParseSKKDicCandiate(res, sc);
-
-	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
-	{
-		candidates.push_back(CANDIDATE(sc_itr->first, sc_itr->second));
 	}
 }

@@ -4,16 +4,8 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-//候補   pair< candidate, annotation >
-typedef std::pair< std::wstring, std::wstring > CANDIDATE;
-typedef std::vector< CANDIDATE > CANDIDATES;
-
-//辞書   pair< key, candidates >
-typedef std::map< std::wstring, CANDIDATES > SKKDIC;
-typedef std::pair< std::wstring, CANDIDATES > SKKDICENTRY;
-
 //見出し語位置
-typedef std::map< std::wstring, long > KEYPOS;
+typedef std::map< std::wstring, long > KEYPOS; //見出し語、ファイル位置
 
 struct {
 	HWND parent;
@@ -88,7 +80,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 {
 	SKKDIC::iterator skkdic_itr;
 	SKKDICENTRY skkdicentry;
-	CANDIDATES::iterator candidates_itr;
+	SKKDICCANDIDATES::iterator sc_itr;
 	LPCWSTR seps = L",";
 	std::wstring annotation_seps;
 
@@ -101,32 +93,32 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	if(skkdic_itr == skkdic.end())
 	{
 		skkdicentry.first = key;
-		skkdicentry.second.push_back(CANDIDATE(candidate, annotation_seps));
+		skkdicentry.second.push_back(SKKDICCANDIDATE(candidate, annotation_seps));
 		skkdic.insert(skkdicentry);
 	}
 	else
 	{
-		for(candidates_itr = skkdic_itr->second.begin(); candidates_itr != skkdic_itr->second.end(); candidates_itr++)
+		for(sc_itr = skkdic_itr->second.begin(); sc_itr != skkdic_itr->second.end(); sc_itr++)
 		{
-			if(candidates_itr->first == candidate)
+			if(sc_itr->first == candidate)
 			{
-				if(candidates_itr->second.find(annotation_seps) == std::wstring::npos)
+				if(sc_itr->second.find(annotation_seps) == std::wstring::npos)
 				{
-					if(candidates_itr->second.empty())
+					if(sc_itr->second.empty())
 					{
-						candidates_itr->second.append(annotation_seps);
+						sc_itr->second.append(annotation_seps);
 					}
 					else
 					{
-						candidates_itr->second.append(annotation + seps);
+						sc_itr->second.append(annotation + seps);
 					}
 				}
 				break;
 			}
 		}
-		if(candidates_itr == skkdic_itr->second.end())
+		if(sc_itr == skkdic_itr->second.end())
 		{
-			skkdic_itr->second.push_back(CANDIDATE(candidate, annotation_seps));
+			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, annotation_seps));
 		}
 	}
 }
@@ -208,18 +200,18 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	}
 }
 
-void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const CANDIDATES &candidates)
+void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc)
 {
-	CANDIDATES::const_iterator candidates_itr;
+	SKKDICCANDIDATES::const_iterator sc_itr;
 	std::wstring line;
 
 	line = key + L" /";
-	for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
+	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 	{
-		line += candidates_itr->first;
-		if(candidates_itr->second.size() > 2)
+		line += sc_itr->first;
+		if(sc_itr->second.size() > 2)
 		{
-			line += L";" + candidates_itr->second.substr(1, candidates_itr->second.size() - 2);
+			line += L";" + sc_itr->second.substr(1, sc_itr->second.size() - 2);
 		}
 		line += L"/";
 	}

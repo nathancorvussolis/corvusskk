@@ -82,10 +82,10 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 
 	if(okuri == 1)
 	{
-		//送りありエントリのブロック形式
+		//送りありエントリのブロック
 		ParseSKKDicOkuriBlock(s, o);
 
-		//送りありエントリのブロック形式を除去
+		//送りありエントリのブロックを除去
 		re.assign(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
 		fmt.assign(L"");
 		s = std::regex_replace(s, re, fmt);

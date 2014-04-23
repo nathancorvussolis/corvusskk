@@ -3,74 +3,70 @@
 #include "parseskkdic.h"
 #include "imcrvmgr.h"
 
-void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates);
-std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate);
-
 //ユーザー辞書
-USERDIC userdic;
+SKKDIC userdic;
 USEROKURI userokuri;
 //補完あり
 KEYORDER complements;
 //補完なし
 KEYORDER accompaniments;
 
-void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg,
-	 const std::wstring &okuri, SEARCHRESULTS &searchresults)
+void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
-	CANDIDATES::iterator candidates_itrf;
-	CANDIDATES::iterator candidates_itrb;
-	CANDIDATES candidates;
-	std::wregex re(L"[\\x00-\\x19]");
-	std::wstring fmt(L"");
+    std::wstring candidate;
+	SKKDICCANDIDATES::iterator sc_itrf;
+	SKKDICCANDIDATES::iterator sc_itrb;
+	std::wregex re;
+	std::wstring fmt;
 
 	//ユーザー辞書
-	ConvUserDic(searchkey, okuri, candidates);
-
+	candidate += SearchUserDic(searchkey, okuri);
+	
 	//SKK辞書
-	ConvSKKDic(searchkey, candidates);
-
+	candidate += SearchSKKDic(searchkey);
+	
 	//SKK辞書サーバー
-	if(serv)
-	{
-		ConvSKKServer(searchkey, candidates);
-	}
+	candidate += SearchSKKServer(searchkey);
 
 	//Unicodeコードポイント
-	ConvUnicode(searchkey, candidates);
-
+	candidate += SearchUnicode(searchkey);
+	
 	//JIS X 0213 面区点番号
-	ConvJISX0213(searchkey, candidates);
+	candidate += SearchJISX0213(searchkey);
+
+	re.assign(L"/\n/");
+	fmt.assign(L"/");
+	candidate = std::regex_replace(candidate, re, fmt);
+
+	re.assign(L"[\\x00-\\x19]");
+	fmt.assign(L"");
+	candidate = std::regex_replace(candidate, re, fmt);
+
+	ParseSKKDicCandiate(candidate, sc);
 
 	//重複候補を削除
-	if(candidates.size() > 1)
+	if(sc.size() > 1)
 	{
-		for(candidates_itrf = candidates.begin(); candidates_itrf != candidates.end(); candidates_itrf++)
+		for(sc_itrf = sc.begin(); sc_itrf != sc.end(); sc_itrf++)
 		{
-			for(candidates_itrb = candidates_itrf + 1; candidates_itrb != candidates.end(); )
+			for(sc_itrb = sc_itrf + 1; sc_itrb != sc.end(); )
 			{
-				if(candidates_itrf->first == candidates_itrb->first)
+				if(sc_itrf->first == sc_itrb->first)
 				{
-					candidates_itrb = candidates.erase(candidates_itrb);
+					sc_itrb = sc.erase(sc_itrb);
 				}
 				else
 				{
-					candidates_itrb++;
+					sc_itrb++;
 				}
 			}
 		}
 	}
-
-	//候補を変換、結果にセット
-	for(candidates_itrf = candidates.begin(); candidates_itrf != candidates.end(); candidates_itrf++)
-	{
-		searchresults.push_back(SEARCHRESULT(CANDIDATEPAIR(
-			std::regex_replace(ConvMisc(searchkeyorg, candidates_itrf->first), re, fmt),
-			candidates_itrf->first), candidates_itrf->second));
-	}
 }
 
-void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
+std::wstring SearchSKKDic(const std::wstring &searchkey)
 {
+	std::wstring candidate;
 	FILE *fpdic, *fpidx;
 	std::wstring key;
 	long pos, left, mid, right;
@@ -81,13 +77,13 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	_wfopen_s(&fpidx, pathskkidx, RB);
 	if(fpidx == NULL)
 	{
-		return;
+		return candidate;
 	}
 	_wfopen_s(&fpdic, pathskkdic, RB);
 	if(fpdic == NULL)
 	{
 		fclose(fpidx);
-		return;
+		return candidate;
 	}
 
 	key = searchkey + L"\x20";
@@ -113,7 +109,7 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 			{
 				if((p = wcschr(p, L'/')) != NULL)
 				{
-					ParseSKKDicCandiate(p, candidates);
+					candidate = p;
 				}
 			}
 			break;
@@ -130,14 +126,11 @@ void ConvSKKDic(const std::wstring &searchkey, CANDIDATES &candidates)
 	
 	fclose(fpdic);
 	fclose(fpidx);
+
+	return candidate;
 }
 
-void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv)
-{
-	conv = ConvMisc(searchkey, candidate);
-}
-
-std::wstring ConvMisc(const std::wstring &key, const std::wstring &candidate)
+std::wstring ConvertCandidate(const std::wstring &key, const std::wstring &candidate)
 {
 	std::wstring ret;
 	std::wstring candidate_tmp = candidate;

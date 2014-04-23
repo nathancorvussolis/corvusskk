@@ -32,22 +32,22 @@
     <ClCompile Include="ConfigMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConvCharacter.cpp">
+    <ClCompile Include="SearchCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ConvDictionary.cpp">
+    <ClCompile Include="SearchDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchSKKServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SearchUserDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConvGadget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ConvNum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConvSKKServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ConvUserDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

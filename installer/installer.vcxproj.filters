@@ -1,20 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <None Include="corvusskk-x64.wxs" />
-    <None Include="corvusskk-x86.wxs" />
-    <None Include="ms-pl.rtf" />
+    <None Include="_build.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_clean.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_debug_reg.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_debug_unreg.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_mkarc.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="corvusskk-x64.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="corvusskk-x86.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="ms-pl.rtf">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_x64.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_x86.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="README.TXT" />
-    <Text Include="..\LICENSE.TXT" />
     <Text Include="config-sample\kanatable.txt">
       <Filter>config-sample</Filter>
+    </Text>
+    <Text Include="..\LICENSE.TXT">
+      <Filter>Installer Files</Filter>
+    </Text>
+    <Text Include="README.TXT">
+      <Filter>Installer Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="config-sample">
       <UniqueIdentifier>{c4466d8c-cea1-4736-b1d8-34a91eb61c2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Installer Files">
+      <UniqueIdentifier>{8aeb9929-7b32-4ee4-8f6c-f410d0103e39}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

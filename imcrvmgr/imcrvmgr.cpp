@@ -1,5 +1,6 @@
 ﻿
 #include "imcrvmgr.h"
+#include "parseskkdic.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HANDLE SrvStart();
@@ -116,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY,
 			0, 0, r.right, r.bottom, hWnd, NULL, hInst, NULL);
 		hDC = GetDC(hwndEdit);
-		hFont = CreateFontW(-MulDiv(12, GetDeviceCaps(hDC, LOGPIXELSY), 72), 0, 0, 0,
+		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72), 0, 0, 0,
 			FW_NORMAL, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 			L"Meiryo");
@@ -176,12 +177,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //
 //search candidate
 //	request	"1\n<key>\t<key(original)>\t<okuri>\n"
-//	reply	"1\n<candidate(display)>\t<candidate(regist)>\t<annotation>\n...\n":hit, "4":nothing
+//	reply	"1\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit, "4":nothing
 //search key for complement
-//	request	"8\n<key>\n"
-//	reply	"1\n<key>\t\t\n...\n":hit, "4":nothing
+//	request	"8\n<key>\t\t\n"
+//	reply	"1\n<key>\t\t\t\n...\n":hit, "4":nothing
 //convert candidate
-//	request	"9\n<candidate>\n"
+//	request	"9\n<key>\t<candidate>\n"
 //	reply	"1\n<candidate converted>\n":hit, "4":nothing
 //add candidate (complement off)
 //	request	"A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
@@ -201,10 +202,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 void SrvProc(WCHAR *wbuf, size_t size)
 {
-	SEARCHRESULTS searchresults;
-	SEARCHRESULTS::iterator searchresults_itr;
-	CANDIDATES candidates;
-	CANDIDATES::iterator candidates_itr;
+	SKKDICCANDIDATES sc;
+	SKKDICCANDIDATES::iterator sc_itr;
 	std::wstring bufdat(&wbuf[2]);
 	std::wregex re;
 	std::wstring fmt;
@@ -226,20 +225,22 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		fmt.assign(L"$3");
 		okuri = std::regex_replace(bufdat, re, fmt);
 
-		ConvDictionary(key, keyorg, okuri, searchresults);
+		SearchDictionary(key, okuri, sc);
 
-		if(!searchresults.empty())
+		if(!sc.empty())
 		{
 			wbuf[0] = REP_OK;
 			wbuf[1] = L'\n';
 			wbuf[2] = L'\0';
-			for(searchresults_itr = searchresults.begin(); searchresults_itr != searchresults.end(); searchresults_itr++)
+			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 			{
-				wcsncat_s(wbuf, size, searchresults_itr->first.first.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, ConvertCandidate(keyorg, sc_itr->first).c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, searchresults_itr->first.second.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, sc_itr->first.c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, searchresults_itr->second.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, ConvertCandidate(keyorg, sc_itr->second).c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
+				wcsncat_s(wbuf, size, sc_itr->second.c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
 			}
 		}
@@ -251,21 +252,21 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		break;
 
 	case REQ_COMPLEMENT:
-		re.assign(L"(.*)\n");
+		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(bufdat, re, fmt);
 
-		ConvComplement(key, candidates);
+		SearchComplement(key, sc);
 
-		if(!candidates.empty())
+		if(!sc.empty())
 		{
 			wbuf[0] = REP_OK;
 			wbuf[1] = L'\n';
 			wbuf[2] = L'\0';
-			for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
+			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 			{
-				wcsncat_s(wbuf, size, candidates_itr->first.c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t\t\n", _TRUNCATE);
+				wcsncat_s(wbuf, size, sc_itr->first.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, L"\t\t\t\n", _TRUNCATE);
 			}
 		}
 		else
@@ -282,7 +283,7 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		fmt.assign(L"$2");
 		candidate = std::regex_replace(bufdat, re, fmt);
 
-		ConvCandidate(key, candidate, conv);
+		conv = ConvertCandidate(key, candidate);
 
 		if(!conv.empty())
 		{

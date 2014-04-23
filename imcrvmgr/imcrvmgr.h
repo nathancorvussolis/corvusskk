@@ -3,34 +3,10 @@
 #define IMCRVMGR_H
 
 #include "common.h"
-
-//候補   pair< candidate, annotation >
-typedef std::pair< std::wstring, std::wstring > CANDIDATE;
-typedef std::vector< CANDIDATE > CANDIDATES;
-
-//送りありエントリのブロック
-typedef std::pair< std::wstring, CANDIDATES > OKURIBLOCK; //送り、候補
-typedef std::vector< OKURIBLOCK > OKURIBLOCKV;
-struct OKURIBLOCKS {
-	OKURIBLOCKV o;
-};
-typedef std::map< std::wstring, OKURIBLOCKS > USEROKURI; //見出し語、送りブロック
-typedef std::pair< std::wstring, OKURIBLOCKS > USEROKURIENTRY;
-
-//ユーザー辞書   pair< key, candidates >
-typedef std::map< std::wstring, CANDIDATES > USERDIC;
-typedef std::pair< std::wstring, CANDIDATES > USERDICENTRY;
-
-//見出し語順序
-typedef std::vector< std::wstring > KEYORDER;
-
-//検索結果
-typedef std::pair< std::wstring, std::wstring > CANDIDATEPAIR; //表示用候補、辞書登録用候補
-typedef std::pair< CANDIDATEPAIR, std::wstring > SEARCHRESULT; //候補、注釈
-typedef std::vector< SEARCHRESULT > SEARCHRESULTS;
+#include "parseskkdic.h"
 
 typedef struct {
-	USERDIC userdic;
+	SKKDIC userdic;
 	USEROKURI userokuri;
 	KEYORDER complements;
 	KEYORDER accompaniments;
@@ -41,25 +17,24 @@ void CreateConfigPath();
 void LoadConfig();
 BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft);
 
-// ConvCharacter
-void ConvUnicode(const std::wstring &text, CANDIDATES &candidates);
-void ConvJISX0213(const std::wstring &text, CANDIDATES &candidates);
-
-// ConvDictionary
-void ConvDictionary(const std::wstring &searchkey, const std::wstring &searchkeyorg,
-	 const std::wstring &okuri, SEARCHRESULTS &searchresults);
-void InitSKKDic();
-void ConvCandidate(const std::wstring &searchkey, const std::wstring &candidate, std::wstring &conv);
-
 // ConvGadget
 std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate);
 
 // ConvNum
 std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);
 
-// ConvUserDictionary
-void ConvUserDic(const std::wstring &searchkey,  const std::wstring &okuri, CANDIDATES &candidates);
-void ConvComplement(const std::wstring &searchkey, CANDIDATES &candidates);
+// SearchCharacter
+std::wstring SearchUnicode(const std::wstring &searchkey);
+std::wstring SearchJISX0213(const std::wstring &searchkey);
+
+// SearchDictionary
+void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);
+std::wstring SearchSKKDic(const std::wstring &searchkey);
+std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate);
+
+// SearchUserDictionary
+std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri);
+void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadSKKUserDic();
@@ -67,8 +42,8 @@ BOOL SaveSKKUserDic(USERDATA* userdata);
 HANDLE StartSaveSKKUserDicEx();
 void StartSaveSKKUserDic();
 
-// ConvSKKServer
-void ConvSKKServer(const std::wstring &text, CANDIDATES &candidates);
+// SearchSKKServer
+std::wstring SearchSKKServer(const std::wstring &searchkey);
 void ConnectSKKServer();
 void DisconnectSKKServer();
 void GetSKKServerVersion();
@@ -78,7 +53,7 @@ extern LPCWSTR TextServiceDesc;
 extern CRITICAL_SECTION csUserDataSave;
 extern BOOL bUserDicChg;
 
-extern USERDIC userdic;
+extern SKKDIC userdic;
 extern USEROKURI userokuri;
 extern KEYORDER complements;
 extern KEYORDER accompaniments;

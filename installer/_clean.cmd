@@ -1,11 +1,11 @@
 @echo off
+setlocal
+set TARGETDIR=build
 
 pushd %~dp0
 
-del *.msi
-del *.wixobj
-del *.wixpdb
-
-del *.zip
+rd /s /q %TARGETDIR%
 
 popd
+
+endlocal
