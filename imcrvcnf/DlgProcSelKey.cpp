@@ -69,7 +69,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			ListView_SetItem(hWndListView, &item);
 		}
 		return TRUE;
-		
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 		switch(LOWORD(wParam))

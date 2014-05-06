@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.5.9" ?>
+  <?define version="1.6.0" ?>
   <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="CorvusSKK Project" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x64" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
@@ -20,6 +20,15 @@
             <Component Guid="CBC6E637-0EF3-4E97-B7C3-2A6430CADE72" Id="TIP_X86">
               <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
             </Component>
+            <Component Guid="493A7BCB-BF97-47C7-B739-23A92837984D" Id="LUAEXE_X86">
+              <File Id="F_luaexe_x86" Name="lua.exe" Source="..\Win32\Release\lua.exe" />
+            </Component>
+            <Component Guid="93ED8DC7-9C63-4950-9BCE-3846F9C9BBB9" Id="LUADLL_X86">
+              <File Id="F_luadll_x86" Name="lua52.dll" Source="..\Win32\Release\lua52.dll" />
+            </Component>
+            <Component Guid="23966B7A-73A0-4E98-8509-02DF0EC3DB7E" Id="LUAINIT_X86">
+              <File Id="F_luainit_x86" Name="init.lua" Source="config-lua\init.lua" />
+            </Component>
           </Directory>
         </Directory>
       </Directory>
@@ -34,6 +43,15 @@
             </Component>
             <Component Guid="010DBC18-3C6C-491D-9236-C68B94905C81" Id="TIP_X64" Win64="yes">
               <File Id="F_imcrvtip_x64" Name="imcrvtip.dll" Source="..\x64\Release\imcrvtip.dll" SelfRegCost="1" />
+            </Component>
+            <Component Guid="603A9A91-D244-4AA7-A8AD-56B2563C0C25" Id="LUAEXE_X64" Win64="yes">
+              <File Id="F_luaexe_x64" Name="lua.exe" Source="..\x64\Release\lua.exe" />
+            </Component>
+            <Component Guid="39B37C2E-8821-47E8-98FE-00503A54894C" Id="LUADLL_X64" Win64="yes">
+              <File Id="F_luadll_x64" Name="lua52.dll" Source="..\x64\Release\lua52.dll" />
+            </Component>
+            <Component Guid="055AA272-77FB-46CD-AB50-34DA50625ABB" Id="INITLUA_X64" Win64="yes">
+              <File Id="F_initlua_x64" Name="init.lua" Source="config-lua\init.lua" />
             </Component>
           </Directory>
         </Directory>
@@ -50,9 +68,15 @@
       <ComponentRef Id="CNF_X86" />
       <ComponentRef Id="MGR_X86" />
       <ComponentRef Id="TIP_X86" />
+      <ComponentRef Id="LUAEXE_X86" />
+      <ComponentRef Id="LUADLL_X86" />
+      <ComponentRef Id="LUAINIT_X86" />
       <ComponentRef Id="CNF_X64" />
       <ComponentRef Id="MGR_X64" />
       <ComponentRef Id="TIP_X64" />
+      <ComponentRef Id="LUAEXE_X64" />
+      <ComponentRef Id="LUADLL_X64" />
+      <ComponentRef Id="INITLUA_X64" />
       <ComponentRef Id="RegistryRun" />
     </Feature>
 

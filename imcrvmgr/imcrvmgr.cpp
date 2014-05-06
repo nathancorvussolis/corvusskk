@@ -1,5 +1,6 @@
 ﻿
 #include "imcrvmgr.h"
+#include "utf8.h"
 #include "parseskkdic.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -16,6 +17,7 @@ HINSTANCE hInst;
 HANDLE hMutex;
 HANDLE hThreadSrv;
 BOOL bSrvThreadExit;
+lua_State *lua;
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
@@ -52,6 +54,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		LoadConfig();
 	}
 
+	InitLua();
+
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(WNDCLASSEX);
 	wcex.style			= CS_HREDRAW | CS_VREDRAW;
@@ -67,7 +71,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 #ifdef _DEBUG
 	hWnd = CreateWindowW(TextServiceDesc, TextServiceDesc,
 		WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX,
-		0, 0, 400, 800, NULL, NULL, hInstance, NULL);
+		0, 0, 600, 800, NULL, NULL, hInstance, NULL);
 #else
 	hWnd = CreateWindowW(TextServiceDesc, TextServiceDesc, WS_POPUP,
 		0, 0, 0, 0, NULL, NULL, hInstance, NULL);
@@ -177,28 +181,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //
 //search candidate
 //	request	"1\n<key>\t<key(original)>\t<okuri>\n"
-//	reply	"1\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit, "4":nothing
+//	reply	"T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit, "F":nothing
 //search key for complement
-//	request	"8\n<key>\t\t\n"
-//	reply	"1\n<key>\t\t\t\n...\n":hit, "4":nothing
+//	request	"4\n<key>\t\t\n"
+//	reply	"T\n<key>\t\t\t\n...\n":hit, "F":nothing
+//convert key
+//	request	"5\n<key>\t\n"
+//	reply	"T\n<key converted>\n...\n":hit, "F":nothing
 //convert candidate
-//	request	"9\n<key>\t<candidate>\n"
-//	reply	"1\n<candidate converted>\n":hit, "4":nothing
+//	request	"6\n<key>\t<candidate>\n"
+//	reply	"T\n<candidate converted>\n":hit, "F":nothing
 //add candidate (complement off)
 //	request	"A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
-//	reply	"1"
+//	reply	"T"
 //add candidate (complement on)
 //	request	"B\n<key>\t<candidate>\t<annotation>\t\n"
-//	reply	"1"
+//	reply	"T"
 //delete candidate (complement off)
 //	request	"C\n<key>\t<candidate>\n"
-//	reply	"1"
+//	reply	"T"
 //delete candidate (complement on)
 //	request	"D\n<key>\t<candidate>\n"
-//	reply	"1"
+//	reply	"T"
 //save user dictionary
 //	request	"S\n"
-//	reply	"1"
+//	reply	"T"
 
 void SrvProc(WCHAR *wbuf, size_t size)
 {
@@ -256,7 +263,24 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		fmt.assign(L"$1");
 		key = std::regex_replace(bufdat, re, fmt);
 
-		SearchComplement(key, sc);
+		if(lua != NULL)
+		{
+			lua_getglobal(lua,"lua_skk_complement");
+			lua_pushstring(lua, WCTOU8(key.c_str()));
+			if(lua_pcall(lua, 1, 1, 0) == LUA_OK)
+			{
+				if(lua_isstring(lua, -1))
+				{
+					candidate = U8TOWC(lua_tostring(lua, -1));
+					ParseSKKDicCandiate(candidate, sc);
+				}
+			}
+			lua_pop(lua, 1);
+		}
+		else
+		{
+			SearchComplement(key, sc);
+		}
 
 		if(!sc.empty())
 		{
@@ -276,7 +300,29 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		}
 		break;
 
-	case REQ_CONVERSION:
+	case REQ_CONVERTKEY:
+		re.assign(L"(.*)\t(.*)\n");
+		fmt.assign(L"$1");
+		key = std::regex_replace(bufdat, re, fmt);
+
+		conv = ConvertKey(key);
+
+		if(!conv.empty())
+		{
+			wbuf[0] = REP_OK;
+			wbuf[1] = L'\n';
+			wbuf[2] = L'\0';
+			wcsncat_s(wbuf, size, conv.c_str(), _TRUNCATE);
+			wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
+		}
+		else
+		{
+			wbuf[0] = REP_FALSE;
+			wbuf[1] = L'\0';
+		}
+		break;
+
+	case REQ_CONVERTCND:
 		re.assign(L"(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(bufdat, re, fmt);
@@ -312,7 +358,20 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		fmt.assign(L"$4");
 		okuri = std::regex_replace(bufdat, re, fmt);
 
-		AddUserDic(wbuf[0], key, candidate, annotation, okuri);
+		if(lua != NULL)
+		{
+			lua_getglobal(lua, "lua_skk_add");
+			lua_pushboolean(lua, (wbuf[0] == REQ_USER_ADD_0 ? 1 : 0));
+			lua_pushstring(lua, WCTOU8(key.c_str()));
+			lua_pushstring(lua, WCTOU8(candidate.c_str()));
+			lua_pushstring(lua, WCTOU8(annotation.c_str()));
+			lua_pushstring(lua, WCTOU8(okuri.c_str()));
+			lua_pcall(lua, 5, 1, 0);
+		}
+		else
+		{
+			AddUserDic(wbuf[0], key, candidate, annotation, okuri);
+		}
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
@@ -326,14 +385,33 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		fmt.assign(L"$2");
 		candidate = std::regex_replace(bufdat, re, fmt);
 
-		DelUserDic(wbuf[0], key, candidate);
+		if(lua != NULL)
+		{
+			lua_getglobal(lua, "lua_skk_delete");
+			lua_pushboolean(lua, (wbuf[0] == REQ_USER_DEL_0 ? 1 : 0));
+			lua_pushstring(lua, WCTOU8(key.c_str()));
+			lua_pushstring(lua, WCTOU8(candidate.c_str()));
+			lua_pcall(lua, 3, 0, 0);
+		}
+		else
+		{
+			DelUserDic(wbuf[0], key, candidate);
+		}
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
 		break;
 
 	case REQ_USER_SAVE:
-		StartSaveSKKUserDic();
+		if(lua != NULL)
+		{
+			lua_getglobal(lua, "lua_skk_save");
+			lua_pcall(lua, 0, 0, 0);
+		}
+		else
+		{
+			StartSaveSKKUserDic();
+		}
 
 		wbuf[0] = REP_OK;
 		wbuf[1] = L'\0';
@@ -353,9 +431,9 @@ unsigned int __stdcall SrvThread(void *p)
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
 #ifdef _DEBUG
-	std::wstring dedit;
-	std::wregex re(L"\n");
-	std::wstring fmt(L"\r\n");
+	std::wstring dedit, tedit;
+	std::wregex re;
+	std::wstring fmt;
 #endif
 
 	while(true)
@@ -389,18 +467,39 @@ unsigned int __stdcall SrvThread(void *p)
 		}
 
 #ifdef _DEBUG
-		dedit.assign(wbuf);
-		dedit.append(L"\n");
+		if(wbuf[0] == REQ_USER_SAVE)
+		{
+			dedit.clear();
+		}
+
+		tedit.assign(wbuf);
+		tedit.append(L"\n");
+		re.assign(L"\n");
+		fmt.assign(L"\r\n");
+		tedit = std::regex_replace(tedit, re, fmt);
+		re.assign(L"\t");
+		fmt.assign(L"»");
+		tedit = std::regex_replace(tedit, re, fmt);
+
+		dedit.append(tedit);
 		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
 		SrvProc(wbuf, _countof(wbuf));
 
 #ifdef _DEBUG
-		dedit.append(wbuf);
-		dedit.append(L"\n");
-		dedit = std::regex_replace(dedit, re, fmt);
+		tedit.assign(wbuf);
+		tedit.append(L"\n");
+		re.assign(L"\n");
+		fmt.assign(L"\r\n");
+		tedit = std::regex_replace(tedit, re, fmt);
+		re.assign(L"\t");
+		fmt.assign(L"»");
+		tedit = std::regex_replace(tedit, re, fmt);
+
+		dedit.append(tedit);
 		SetWindowTextW(hwndEdit, dedit.c_str());
+		SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
 #endif
 
 		bRet = WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL);
@@ -414,7 +513,7 @@ unsigned int __stdcall SrvThread(void *p)
 	}
 
 	CloseHandle(hPipe);
-	
+
 	return 0;
 }
 

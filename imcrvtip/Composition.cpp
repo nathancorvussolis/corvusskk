@@ -204,7 +204,7 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 		if(_IsRangeCovered(ec, tfSelection.range, pRangeComposition))
 		{
 			pRangeComposition->SetText(ec, 0, L"", 0);
-			
+
 			tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
 			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
 

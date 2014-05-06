@@ -81,7 +81,7 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 		return candidate;
 		break;
 	}
-	
+
 	if(EucJis2004ToUcp(euc, _countof(euc), &ucp[0], &ucp[1]) != 0)
 	{
 		if(ucp[1] == 0)

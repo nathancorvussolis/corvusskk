@@ -11,15 +11,8 @@ struct {
 	HWND parent;
 	HWND child;
 	HRESULT hr;
+	BOOL cancel;
 } SkkDicInfo;
-
-struct {
-	HWND parent;
-	HWND child;
-	HRESULT hr;
-	WCHAR command;
-	WCHAR path[MAX_PATH];
-} SkkUserDicInfo;
 
 void LoadDictionary(HWND hwnd)
 {
@@ -83,10 +76,11 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	SKKDICCANDIDATES::iterator sc_itr;
 	LPCWSTR seps = L",";
 	std::wstring annotation_seps;
+	std::wstring annotation_esc;
 
 	if(!annotation.empty())
 	{
-		annotation_seps = seps + annotation + seps;
+		annotation_seps = seps + ParseConcat(annotation) + seps;
 	}
 
 	skkdic_itr = skkdic.find(key);
@@ -102,15 +96,17 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		{
 			if(sc_itr->first == candidate)
 			{
-				if(sc_itr->second.find(annotation_seps) == std::wstring::npos)
+				annotation_esc = ParseConcat(sc_itr->second);
+				if(annotation_esc.find(annotation_seps) == std::wstring::npos)
 				{
-					if(sc_itr->second.empty())
+					if(annotation_esc.empty())
 					{
-						sc_itr->second.append(annotation_seps);
+						sc_itr->second.assign(MakeConcat(annotation_seps));
 					}
 					else
 					{
-						sc_itr->second.append(annotation + seps);
+						annotation_esc.append(ParseConcat(annotation) + seps);
+						sc_itr->second.assign(MakeConcat(annotation_esc));
 					}
 				}
 				break;
@@ -118,12 +114,12 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		}
 		if(sc_itr == skkdic_itr->second.end())
 		{
-			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, annotation_seps));
+			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, MakeConcat(annotation_seps)));
 		}
 	}
 }
 
-void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
+HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	HWND hWndList;
 	WCHAR path[MAX_PATH];
@@ -142,6 +138,11 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 	for(ic = 0; ic < count; ic++)
 	{
+		if(SkkDicInfo.cancel)
+		{
+			return E_ABORT;
+		}
+
 		ListView_GetItemText(hWndList, ic, 0, path, _countof(path));
 		okuri = -1;
 
@@ -180,6 +181,12 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 		while(true)
 		{
+			if(SkkDicInfo.cancel)
+			{
+				fclose(fp);
+				return E_ABORT;
+			}
+
 			rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
 			if(rl == -1)
 			{
@@ -192,18 +199,27 @@ void LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 			{
+				if(SkkDicInfo.cancel)
+				{
+					fclose(fp);
+					return E_ABORT;
+				}
+
 				LoadSKKDicAdd((okuri == 0 ? entries_n : entries_a), key, sc_itr->first, sc_itr->second);
 			}
 		}
 
 		fclose(fp);
 	}
+
+	return S_OK;
 }
 
 void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc)
 {
 	SKKDICCANDIDATES::const_iterator sc_itr;
 	std::wstring line;
+	std::wstring annotation_esc;
 
 	line = key + L" /";
 	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
@@ -211,7 +227,8 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES 
 		line += sc_itr->first;
 		if(sc_itr->second.size() > 2)
 		{
-			line += L";" + sc_itr->second.substr(1, sc_itr->second.size() - 2);
+			annotation_esc = ParseConcat(sc_itr->second);
+			line += L";" + MakeConcat(annotation_esc.substr(1, annotation_esc.size() - 2));
 		}
 		line += L"/";
 	}
@@ -245,6 +262,12 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	for(entries_ritr = entries_a.rbegin(); entries_ritr != entries_a.rend(); entries_ritr++)
 	{
+		if(SkkDicInfo.cancel)
+		{
+			fclose(fp);
+			return E_ABORT;
+		}
+
 		pos = ftell(fp);
 		keypos.insert(KEYPOS::value_type(entries_ritr->first, pos));
 
@@ -258,6 +281,12 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	for(entries_itr = entries_n.begin(); entries_itr != entries_n.end(); entries_itr++)
 	{
+		if(SkkDicInfo.cancel)
+		{
+			fclose(fp);
+			return E_ABORT;
+		}
+
 		pos = ftell(fp);
 		keypos.insert(KEYPOS::value_type(entries_itr->first, pos));
 
@@ -275,6 +304,12 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	for(keypos_itr = keypos.begin(); keypos_itr != keypos.end(); keypos_itr++)
 	{
+		if(SkkDicInfo.cancel)
+		{
+			fclose(fp);
+			return E_ABORT;
+		}
+
 		fwrite(&keypos_itr->second, sizeof(keypos_itr->second), 1, fp);
 	}
 
@@ -287,8 +322,12 @@ unsigned int __stdcall MakeSKKDicThread(void *p)
 {
 	SKKDIC entries_a, entries_n;
 
-	LoadSKKDic(SkkDicInfo.parent, entries_a, entries_n);
-	SkkDicInfo.hr = WriteSKKDic(entries_a, entries_n);
+	SkkDicInfo.hr = LoadSKKDic(SkkDicInfo.parent, entries_a, entries_n);
+	if(SkkDicInfo.hr == S_OK)
+	{
+		SkkDicInfo.hr = WriteSKKDic(entries_a, entries_n);
+	}
+
 	return 0;
 }
 
@@ -296,7 +335,7 @@ void MakeSKKDicWaitThread(void *p)
 {
 	WCHAR num[32];
 	HANDLE hThread;
-	
+
 	hThread = (HANDLE)_beginthreadex(NULL, 0, MakeSKKDicThread, NULL, 0, NULL);
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
@@ -307,8 +346,18 @@ void MakeSKKDicWaitThread(void *p)
 	{
 		MessageBoxW(SkkDicInfo.parent, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 	}
+	else if(SkkDicInfo.hr == E_ABORT)
+	{
+		_wremove(pathskkidx);
+		_wremove(pathskkdic);
+
+		MessageBoxW(SkkDicInfo.parent, L"中断しました。", TextServiceDesc, MB_OK | MB_ICONWARNING);
+	}
 	else
 	{
+		_wremove(pathskkidx);
+		_wremove(pathskkdic);
+
 		_snwprintf_s(num, _countof(num), L"失敗しました。0x%08X", SkkDicInfo.hr);
 		MessageBoxW(SkkDicInfo.parent, num, TextServiceDesc, MB_OK | MB_ICONERROR);
 	}
@@ -322,7 +371,15 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 	switch(message)
 	{
+	case WM_COMMAND:
+		if(LOWORD(wParam) == IDC_BUTTON_ABORT_DIC_MAKE)
+		{
+			SkkDicInfo.cancel = TRUE;
+		}
+		break;
 	case WM_INITDIALOG:
+		SkkDicInfo.cancel = FALSE;
+		SkkDicInfo.hr = S_FALSE;
 		SkkDicInfo.child = hDlg;
 		_beginthread(MakeSKKDicWaitThread, 0, NULL);
 		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);

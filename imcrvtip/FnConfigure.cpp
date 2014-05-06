@@ -124,7 +124,7 @@ void CTextService::_LoadBehavior()
 
 	ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 	wcsncpy_s(cx_fontname, strxmlval.c_str(), _TRUNCATE);
-	
+
 	ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
 	cx_fontpoint = _wtoi(strxmlval.c_str());
 	ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);

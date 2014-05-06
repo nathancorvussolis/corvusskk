@@ -1,10 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="Installer Files">
+      <UniqueIdentifier>{e310d37e-24d5-4eb8-b088-2fe2aa5b345c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config-lua">
+      <UniqueIdentifier>{d18340a9-2f90-446e-a016-5c017ad0c446}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="config-sample">
+      <UniqueIdentifier>{a4c9d6dd-8349-4e02-b744-23321ddbb9f3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="_build.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_build_x64.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_x86.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="_clean.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_clean_x64.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_clean_x86.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_debug_reg.cmd">
@@ -25,31 +48,38 @@
     <None Include="ms-pl.rtf">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_x64.cmd">
-      <Filter>Installer Files</Filter>
+    <None Include="config-lua\init.lua">
+      <Filter>config-lua</Filter>
     </None>
-    <None Include="_build_x86.cmd">
-      <Filter>Installer Files</Filter>
+    <None Include="config-lua\test_c.lua">
+      <Filter>config-lua</Filter>
+    </None>
+    <None Include="config-lua\test_gadget.lua">
+      <Filter>config-lua</Filter>
+    </None>
+    <None Include="config-lua\test_num.lua">
+      <Filter>config-lua</Filter>
+    </None>
+    <None Include="config-lua\test_search.lua">
+      <Filter>config-lua</Filter>
+    </None>
+    <None Include="config-lua\test_tarai.lua">
+      <Filter>config-lua</Filter>
+    </None>
+    <None Include="config-lua\test_time.lua">
+      <Filter>config-lua</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="config-sample\kanatable.txt">
-      <Filter>config-sample</Filter>
+    <Text Include="README.TXT">
+      <Filter>Installer Files</Filter>
     </Text>
     <Text Include="..\LICENSE.TXT">
       <Filter>Installer Files</Filter>
     </Text>
-    <Text Include="README.TXT">
-      <Filter>Installer Files</Filter>
+    <Text Include="config-sample\kanatable.txt">
+      <Filter>config-sample</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <Filter Include="config-sample">
-      <UniqueIdentifier>{c4466d8c-cea1-4736-b1d8-34a91eb61c2a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Installer Files">
-      <UniqueIdentifier>{8aeb9929-7b32-4ee4-8f6c-f410d0103e39}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml">

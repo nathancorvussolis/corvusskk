@@ -3,6 +3,14 @@
 #include "parseskkdic.h"
 #include "imcrvmgr.h"
 
+//ユーザー辞書
+SKKDIC userdic;
+USEROKURI userokuri;
+//補完あり
+KEYORDER complements;
+//補完なし
+KEYORDER accompaniments;
+
 void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
 void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
 
@@ -58,7 +66,7 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 			}
 		}
 	}
-	
+
 	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
 	{
 		if(!sc_itr->first.empty())
@@ -90,35 +98,6 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 	}
 }
 
-std::wstring EscapeDicChar(const std::wstring &s)
-{
-	std::wstring ret = s;
-	std::wregex re;
-	std::wstring fmt;
-
-	// "/" -> \057, ";" -> \073
-	re.assign(L"[/;]");
-	if(std::regex_search(ret, re))
-	{
-		// "\"" -> "\\\"", "\\" -> "\\\\"
-		re.assign(L"([\\\"|\\\\])");
-		fmt.assign(L"\\$1");
-		ret = std::regex_replace(ret, re, fmt);
-
-		re.assign(L"/");
-		fmt.assign(L"\\057");
-		ret = std::regex_replace(ret, re, fmt);
-
-		re.assign(L";");
-		fmt.assign(L"\\073");
-		ret = std::regex_replace(ret, re, fmt);
-
-		ret = L"(concat \"" + ret + L"\")";
-	}
-
-	return ret;
-}
-
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri)
 {
 	SKKDIC::iterator userdic_itr;
@@ -132,8 +111,8 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	SKKDICCANDIDATES okuric;
 	SKKDICOKURIBLOCKS::iterator so_itr;
 
-	candidate_esc = EscapeDicChar(candidate);
-	annotation_esc = EscapeDicChar(annotation);
+	candidate_esc = MakeConcat(candidate);
+	annotation_esc = MakeConcat(annotation);
 
 	//ユーザー辞書
 	userdic_itr = userdic.find(searchkey);
@@ -602,7 +581,7 @@ HANDLE StartSaveSKKUserDicEx()
 void SaveSKKUserDicThreadExWaitThread(void *p)
 {
 	HANDLE hThread;
-	
+
 	hThread = StartSaveSKKUserDicEx();
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);

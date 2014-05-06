@@ -37,7 +37,7 @@ size_t UcpToWideChar(UCSCHAR ucp, PWCHAR first, PWCHAR second)
 
 	*first = L'\0';
 	*second = L'\0';
-	
+
 	if(ucp < SURROGATEPAIR_UCPMIN)
 	{
 		*first = (WCHAR)ucp;
@@ -267,7 +267,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 	WCHAR first, second;
 	UCSCHAR ucp;
 	BOOL exist;
-	
+
 	if(src == NULL || dstsize == NULL)
 	{
 		return FALSE;
@@ -480,7 +480,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 			}
 		}
 	}
-	
+
 	if(srcsize != NULL)
 	{
 		*srcsize = si;

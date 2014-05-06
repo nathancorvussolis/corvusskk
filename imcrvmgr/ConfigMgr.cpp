@@ -1,5 +1,6 @@
 ﻿
 #include "configxml.h"
+#include "utf8.h"
 #include "imcrvmgr.h"
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
@@ -9,6 +10,7 @@ WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathuserdic[MAX_PATH];	//ユーザー辞書
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
+WCHAR pathinitlua[MAX_PATH];	//init.lua
 
 WCHAR krnlobjsddl[MAX_KRNLOBJNAME];		//SDDL
 WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
@@ -23,6 +25,20 @@ DWORD timeout = 1000;	//タイムアウト
 
 BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
 
+const luaL_Reg luaFuncs[] =
+{
+	{"search_skk_dictionary", lua_search_skk_dictionary},
+	{"search_user_dictionary", lua_search_user_dictionary},
+	{"search_skk_server", lua_search_skk_server},
+	{"search_jisx0213", lua_search_jisx0213},
+	{"search_unicode", lua_search_unicode},
+	{"complement", lua_complement},
+	{"add", lua_add},
+	{"delete", lua_delete},
+	{"save", lua_save},
+	{NULL, NULL}
+};
+
 void CreateConfigPath()
 {
 	WCHAR appdata[MAX_PATH];
@@ -31,6 +47,7 @@ void CreateConfigPath()
 	pathuserdic[0] = L'\0';
 	pathskkdic[0] = L'\0';
 	pathskkidx[0] = L'\0';
+	pathinitlua[0] = L'\0';
 
 	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
 	{
@@ -49,6 +66,7 @@ void CreateConfigPath()
 	_snwprintf_s(pathuserdic, _TRUNCATE, L"%s%s", appdata, fnuserdic);
 	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
 	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
+	_snwprintf_s(pathinitlua, _TRUNCATE, L"%s%s", appdata, fninitlua);
 
 	LPWSTR pszUserSid = NULL;
 	LPWSTR pszDigest = NULL;
@@ -163,4 +181,51 @@ BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft)
 	}
 
 	return ret;
+}
+
+void InitLua()
+{
+	CHAR version[64];
+
+	lua = luaL_newstate();
+	if(lua == NULL)
+	{
+		return;
+	}
+
+	luaL_openlibs(lua);
+
+	luaL_newlib(lua, luaFuncs);
+	lua_setglobal(lua, "crvmgr");
+
+	//skk-version
+	_snprintf_s(version, _TRUNCATE, "%s / %s",
+		WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER), LUA_RELEASE);
+	lua_pushstring(lua, version);
+	lua_setglobal(lua, "SKK_VERSION");
+
+	//%AppData%\CorvusSKK\init.lua
+	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+	{
+		return;
+	}
+
+	//%SystemRoot%\System32\IMCRVSKK\init.lua
+	// or %SystemRoot%\SysWOW64\IMCRVSKK\init.lua
+	if(GetModuleFileNameW(NULL, pathinitlua, _countof(pathinitlua)) != 0)
+	{
+		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
+		if(pdir != NULL)
+		{
+			*(pdir + 1) = L'\0';
+			wcscat_s(pathinitlua, fninitlua);
+		}
+	}
+	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+	{
+		return;
+	}
+
+	lua_close(lua);
+	lua = NULL;
 }

@@ -53,7 +53,7 @@ BOOL CTextService::_InitThreadFocusSink()
 		}
 		pSource->Release();
 	}
-	
+
 	return fRet;
 }
 

@@ -69,7 +69,7 @@ BOOL CTextService::_IsKeyboardDisabled()
 		fDisabled = TRUE;
 		goto exit;
 	}
-	
+
 	if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		ITfCompartment *pCompartmentDisabled;
@@ -139,7 +139,7 @@ BOOL CTextService::_IsKeyboardOpen()
 		}
 		pCompartmentMgr->Release();
 	}
-	
+
 	return fOpen;
 }
 
@@ -160,6 +160,6 @@ HRESULT CTextService::_SetKeyboardOpen(BOOL fOpen)
 		}
 		pCompartmentMgr->Release();
 	}
-	
+
 	return hr;
 }

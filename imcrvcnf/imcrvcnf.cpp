@@ -40,7 +40,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	InitCommonControlsEx(&icex);
 
 	CreateProperty(hInstance);
-	
+
 	return 0;
 }
 

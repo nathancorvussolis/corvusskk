@@ -177,3 +177,72 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 		so = m.suffix();
 	}
 }
+
+std::wstring ParseConcat(const std::wstring &s)
+{
+	std::wstring ret = s;
+	std::wregex re;
+	std::wsmatch res;
+	std::wstring numstr, tmpstr, fmt;
+	wchar_t u;
+
+	tmpstr = s;
+	re.assign(L"^\\(concat \".+?\"\\)$");
+	if(std::regex_search(tmpstr, re))
+	{
+		ret.clear();
+		fmt = L"$1";
+
+		re.assign(L"\\(concat \"(.+)\"\\)");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+
+		re.assign(L"\\\\([\\\"|\\\\])");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+
+		re.assign(L"\\\\[0-3][0-7]{2}");
+		while(std::regex_search(tmpstr, res, re))
+		{
+			ret += res.prefix();
+			numstr = res.str();
+			numstr[0] = L'0';
+			u = (wchar_t)wcstoul(numstr.c_str(), NULL, 0);
+			if(u >= L'\x20' && u <= L'\x7E')
+			{
+				ret.append(1, u);
+			}
+			tmpstr = res.suffix();
+		}
+		ret += tmpstr;
+	}
+
+	return ret;
+}
+
+std::wstring MakeConcat(const std::wstring &s)
+{
+	std::wstring ret = s;
+	std::wregex re;
+	std::wstring fmt;
+
+	// "/" -> \057, ";" -> \073
+	re.assign(L"[/;]");
+	if(std::regex_search(ret, re))
+	{
+		// "\"" -> "\\\"", "\\" -> "\\\\"
+		re.assign(L"([\\\"|\\\\])");
+		fmt.assign(L"\\$1");
+		ret = std::regex_replace(ret, re, fmt);
+
+		re.assign(L"/");
+		fmt.assign(L"\\057");
+		ret = std::regex_replace(ret, re, fmt);
+
+		re.assign(L";");
+		fmt.assign(L"\\073");
+		ret = std::regex_replace(ret, re, fmt);
+
+		ret = L"(concat \"" + ret + L"\")";
+	}
+
+	return ret;
+}

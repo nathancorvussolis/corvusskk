@@ -27,7 +27,7 @@ class CTextService :
 public:
 	CTextService();
 	~CTextService();
-	
+
 	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj);
 	STDMETHODIMP_(ULONG) AddRef(void);
@@ -126,7 +126,7 @@ public:
 	// LanguageBar
 	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
 	void _GetIcon(HICON *phIcon);
-	
+
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);
 	BOOL _SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, ITfRange *pRange, TfGuidAtom gaDisplayAttribute);
@@ -174,7 +174,7 @@ public:
 	void _ConnectDic();
 	void _DisconnectDic();
 	void _SearchDic(WCHAR command);
-	void _ConvertCandidate(std::wstring &conv, const std::wstring &key, const std::wstring &candidate);
+	void _ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, std::wstring &conv);
 	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
 	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();

@@ -181,13 +181,13 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					}
 				}
 				break;
-			
+
 			case E_PENDING:	//途中まで一致
 				_HandleCharShift(ec, pContext, comptext);
 				roman.push_back(ch);
 				_Update(ec, pContext);
 				break;
-			
+
 			case E_ABORT:	//不一致
 				_HandleCharShift(ec, pContext, comptext);
 				roman.clear();

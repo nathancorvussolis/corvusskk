@@ -63,7 +63,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	WCHAR chO;
 	std::wstring romanN;
 	std::wstring comptext;	//二重確定防止＆部分確定
-	
+
 	if(bSf == SKK_NULL)
 	{
 		ch = _GetCh((BYTE)wParam);
@@ -81,7 +81,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	{
 		return S_FALSE;
 	}
-	
+
 	//補完
 	switch(sf)
 	{

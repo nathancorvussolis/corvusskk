@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.5.9
+     CorvusSKK version 1.6.0
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -62,10 +62,10 @@
   許可の付加が自動的に行われます。
 
 
-・Adobe Reader XI
+・Adobe Reader X, XI
 
-  Adobe Reader で使用するには、設定ファイル（config.xml）に Adobe Reader への
-  アクセス許可を付加させる必要があります。
+  Adobe Reader X または XI で使用するには、設定ファイル（config.xml）に
+  Adobe Reader へのアクセス許可を付加させる必要があります。
   設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に
   行われます。
 
@@ -370,6 +370,25 @@
 --------------------------------------------------------------------------------
 
 
+・Lua拡張
+
+  サーバープロセス(imcrvmgr.exe)の各機能の拡張、プログラム実行変換もどき、
+  数値変換をLuaスクリプトで実装しています。
+  サーバープロセスのカレントディレクトリは、%AppData%\CorvusSKK になっています。
+  サーバープロセスの起動時にスクリプトファイル(init.lua)が1つだけ
+  下記の優先順位でロードされます。
+
+    1. %AppData%\CorvusSKK\init.lua
+	2. サーバープロセスと同じディレクトリのinit.lua
+	   通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
+	   または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
+
+  スクリプトファイルの文字コードは、UTF-8のみ対応しています。
+  内部の文字コードをUTF-8としたコンソールプログラムのlua.exeが
+  %SystemRoot%\System32\IME\IMCRVSKK と、%SystemRoot%\SysWOW64\IME\IMCRVSKK に
+  あるので、カスタマイズする際のデバッグ用に使って下さい。
+
+
 ・プログラム実行変換もどき
 
   以下の見出し語の候補としてSKK辞書に記載のあるEmacs Lispのプログラム実行変換に
@@ -396,6 +415,7 @@
     skk-current-date
     skk-default-current-date
     skk-relative-date
+    skk-ignore-dic-word (デフォルト無効)
     skk-omikuji (引数なし、独自実装。おみくじを引くことができます)
     window-width (80で固定)
     fill-column (70で固定)

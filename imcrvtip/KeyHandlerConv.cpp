@@ -9,7 +9,7 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 	BYTE keystate[256];
 	WCHAR ubuff;
 	WCHAR u = L'\0';
-	
+
 	GetKeyboardState(keystate);
 
 	switch(inputmode)
@@ -89,7 +89,7 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 			break;
 		}
 	}
-	
+
 	if(k == SKK_NULL && ch < CKEYMAPNUM)
 	{
 		switch(inputmode)
@@ -319,11 +319,12 @@ void CTextService::_StartSubConv()
 
 	searchkeyorg = searchkey;	//オリジナルバックアップ
 
-	//数値を#に置換
-	searchkey = std::regex_replace(searchkey, std::wregex(L"[0-9]+"), std::wstring(L"#"));
-	if(searchkey != searchkeyorg)
+	//見出し語変換
+	_ConvertWord(REQ_CONVERTKEY, searchkeyorg, std::wstring(L""), searchkey);
+
+	if(!searchkey.empty() && searchkey != searchkeyorg)
 	{
-		//数値変換検索
+		//変換済み見出し語検索
 		_SearchDic(REQ_SEARCH);
 	}
 

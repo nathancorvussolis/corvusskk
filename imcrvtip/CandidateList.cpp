@@ -251,7 +251,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		{
 			goto exit;
 		}
-		
+
 		if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
 		{
 			if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == NULL)

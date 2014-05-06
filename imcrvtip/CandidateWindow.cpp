@@ -87,7 +87,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 		ReleaseDC(_hwnd, hdc);
 	}
-	
+
 	if(_hwnd != NULL && _pTextService->cx_showmodeinl &&
 		(!_pTextService->cx_showmodeimm || (_pTextService->cx_showmodeimm && _pTextService->_ImmersiveMode)))
 	{
@@ -1176,7 +1176,7 @@ void CCandidateWindow::_PrevPage()
 					_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
 					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
 				}
-				
+
 				_Update();
 				_UpdateUIElement();
 			}
@@ -1247,6 +1247,8 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		regwordul = FALSE;
 		regword = FALSE;
 
+		regwordtext = std::regex_replace(regwordtext, std::wregex(L"^\\s+|\\s+$"), std::wstring(L""));
+
 		if(regwordtext.empty())	//空のときはキャンセル扱い
 		{
 			regwordtext.clear();
@@ -1306,15 +1308,16 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				regwordtextannotation.clear();
 			}
 
-			//変換
-			_pTextService->_ConvertCandidate(regwordtextconv, _pTextService->searchkeyorg, regwordtextcandidate);
+			//候補変換
+			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, regwordtextcandidate, regwordtextconv);
 			if(regwordtextconv.empty() || regwordtextconv == regwordtextcandidate)
 			{
+				//変換済み候補が空文字列または変化なしであれば未変換見出し語を見出し語とする
 				_pTextService->searchkey = _pTextService->searchkeyorg;
 			}
 
-			_pTextService->candidates.push_back(CANDIDATE(
-				CANDIDATEBASE(regwordtextconv, regwordtextannotation),
+			_pTextService->candidates.push_back(CANDIDATE
+				(CANDIDATEBASE(regwordtextconv, regwordtextannotation),
 				(CANDIDATEBASE(regwordtextcandidate, regwordtextannotation))));
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
 			_pTextService->candorgcnt = 0;
@@ -1345,7 +1348,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 
 		regwordtext.clear();
 		regwordtextpos = 0;
-		
+
 		if(!_reg)
 		{
 			_InitList();

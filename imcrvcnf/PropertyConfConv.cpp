@@ -664,7 +664,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	{
 		return;
 	}
-	
+
 	ZeroMemory(b, sizeof(b));
 
 	while(fgetws(b, CONFKANALEN, fp) != NULL)

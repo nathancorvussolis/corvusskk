@@ -136,7 +136,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
-	
+
 	if(!_InitThreadMgrEventSink())
 	{
 		goto exit;
@@ -180,7 +180,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	{
 		goto exit;
 	}
-	
+
 	if(!_InitFunctionProvider())
 	{
 		goto exit;

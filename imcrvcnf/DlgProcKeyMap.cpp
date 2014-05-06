@@ -91,7 +91,7 @@ INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			LoadKeyMap(hDlg, KeyMap[no][i].idd, SectionName[no], KeyMap[no][i].keyName, KeyMap[no][i].defaultValue);
 		}
 		return TRUE;
-		
+
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{

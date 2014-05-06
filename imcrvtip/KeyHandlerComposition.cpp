@@ -24,7 +24,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 	WCHAR useraddmode = REQ_USER_ADD_1;
 	LONG cchCursor = 0;
 	LONG cchOkuri = 0;
-	size_t i;
 	BOOL showmodemark = cx_showmodemark;
 
 	if(pContext == NULL)
@@ -240,10 +239,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 							}
 							else
 							{
-								for(i = 0; i < roman.size(); i++)
-								{
-									comptext.insert(cursoridx - 1, markSP);
-								}
+								comptext.insert(cursoridx - 1, markSP);
 							}
 						}
 						else
@@ -258,10 +254,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 							}
 							else
 							{
-								for(i = 0; i < roman.size(); i++)
-								{
-									comptext.insert(cursoridx, markSP);
-								}
+								comptext.insert(cursoridx, markSP);
 							}
 						}
 					}
@@ -277,10 +270,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						}
 						else
 						{
-							for(i = 0; i < roman.size(); i++)
-							{
-								comptext.insert(cursoridx + 1, markSP);
-							}
+							comptext.insert(cursoridx + 1, markSP);
 						}
 					}
 				}
@@ -307,10 +297,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					}
 					else
 					{
-						for(i = 0; i < roman.size(); i++)
-						{
-							comptext.append(markSP);
-						}
+						comptext.append(markSP);
 					}
 				}
 			}

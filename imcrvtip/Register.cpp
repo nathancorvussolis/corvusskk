@@ -45,15 +45,15 @@ BOOL RegisterProfiles()
 	{
 		goto exit_r;
 	}
-	
+
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
-	
+
 	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
 
 exit_r:
 	pInputProcessProfiles->Release();
-	
+
 exit:
 	return (hr == S_OK);
 }

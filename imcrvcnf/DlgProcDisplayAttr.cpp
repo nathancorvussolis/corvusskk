@@ -322,7 +322,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			}
 		}
 		break;
-		
+
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
 		for(i = 0; i < _countof(displayAttrColor[no]); i++)

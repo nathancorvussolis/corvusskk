@@ -242,7 +242,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			}
 		}
 		break;
-		
+
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
 		for(i = 0; i < _countof(displayColor); i++)

@@ -197,7 +197,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 					ListView_GetItemText(hWndListView, index, 2, key, _countof(key));
 					CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL, key[0] == L'1' ? BST_CHECKED : BST_UNCHECKED);
 					ListView_GetItemText(hWndListView, index, 3, key, _countof(key));
-					CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT, key[0] == L'1' ? BST_CHECKED : BST_UNCHECKED);					
+					CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT, key[0] == L'1' ? BST_CHECKED : BST_UNCHECKED);
 				}
 				return TRUE;
 			}

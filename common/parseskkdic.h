@@ -34,5 +34,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o);
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c);
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o);
+std::wstring ParseConcat(const std::wstring &s);
+std::wstring MakeConcat(const std::wstring &s);
 
 #endif //PARSESKKDIC_H

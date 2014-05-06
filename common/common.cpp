@@ -11,6 +11,7 @@ LPCWSTR fnconfigxml = L"config.xml";	//設定
 LPCWSTR fnuserdic = L"userdict.txt";	//ユーザ辞書
 LPCWSTR fnskkdic = L"skkdict.dic";		//取込SKK辞書
 LPCWSTR fnskkidx = L"skkdict.idx";		//取込SKK辞書インデックス
+LPCWSTR fninitlua = L"init.lua";		//init.lua
 
 const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputMark =
 {
