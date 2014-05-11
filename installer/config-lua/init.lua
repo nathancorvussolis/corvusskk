@@ -93,8 +93,9 @@
 			SKK_VERSION
 				"CorvusSKK X.Y.Z / Lua A.B.C" string
 
+
 	スクリプトinit.luaの文字コード
-	
+
 		UTF-8のみ対応
 --]]
 
@@ -172,6 +173,9 @@ local skk_gadget_const_table = {
 	{"comment-start", "/*"},
 	{"comment-end", "*/"},
 }
+
+-- (window-width)
+local window_width_val = "80"
 
 
 
@@ -318,6 +322,11 @@ local function skk_convert_num_type(num, type)
 	return ret
 end
 
+-- S式解析もどき (後で再定義)
+local function skk_convert_gadget_interpret(s)
+	return ""
+end
+
 -- concat
 local function concat(t)
 	local ret = ""
@@ -367,7 +376,7 @@ end
 
 -- window-width
 local function window_width(t)
-	return "80"
+	return window_width_val
 end
 
 -- car
@@ -578,8 +587,8 @@ local function skk_relative_date(t)
 	local ret = ""
 
 	local pp_function = t[1]
-	local format = t[2]
-	local and_time = t[3]
+	-- local format = t[2]
+	-- local and_time = t[3]
 	local ymd = t[4]
 	local diff = t[5]
 
@@ -704,8 +713,8 @@ local function parse_string(s)
 	return ret
 end
 
--- S式解析もどき (global)
-function skk_convert_gadget_interpret(s)
+-- S式解析もどき
+skk_convert_gadget_interpret = function(s)
 	local ret = ""
 	local pt = {}
 	local ps = {}
@@ -835,14 +844,14 @@ local function skk_ignore_dic_word(candidates)
 end
 
 -- 候補全体を数値変換
-local function skk_convert_num(input, candidate)
+local function skk_convert_num(key, candidate)
 	local ret = ""
-	local inputtemp = input
+	local keytemp = key
 
 	ret = string.gsub(candidate, "#%d+",
 		function(type)
-			local num = string.match(inputtemp, "%d+")
-			inputtemp = string.gsub(inputtemp, "%d+", "#", 1)
+			local num = string.match(keytemp, "%d+")
+			keytemp = string.gsub(keytemp, "%d+", "#", 1)
 			if (num) then
 				return skk_convert_num_type(num, string.sub(type, 2))
 			else
@@ -854,14 +863,14 @@ local function skk_convert_num(input, candidate)
 end
 
 -- 実行変換
-local function skk_convert_gadget(input, candidate)
+local function skk_convert_gadget(key, candidate)
 
 	-- skk-henkan-key
-	skk_henkan_key = input
+	skk_henkan_key = key
 
 	-- skk-num-list
 	skk_num_list = {}
-	string.gsub(input, "%d+",
+	string.gsub(key, "%d+",
 		function(n)
 			table.insert(skk_num_list, n)
 		end)
@@ -984,9 +993,45 @@ end
 function lua_skk_add(okuriari, key, candidate, annotation, okuri)
 
 	--[[
-		-- 例:送りありのときユーザー辞書に登録しない、とか…
+		-- 例 : 送りありのときユーザー辞書に登録しない
 		if (okuriari) then
 			return
+		end
+	--]]
+
+	--[[
+		-- 例 : 送り仮名ブロックを登録しない
+		if (okuriari) then
+			okuri = ""
+		end
+	--]]
+
+	--[[
+		-- 例 : Unicode, JIS X 0213変換のときユーザー辞書に登録しない
+		if not (okuriari) then
+			if (string.match(key, "^U%+[0-9A-F]+$") or string.match(key, "^u[0-9a-f]+$")) then
+				if (string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+XXXX
+					string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or	-- U+XXXXX
+					string.match(key, "^U%+10[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+10XXXX
+					string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or				-- uxxxx
+					string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or		-- uxxxxx
+					string.match(key, "^u10[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$")) then		-- u10xxxx
+					return
+				end
+			end
+			if (string.match(key, "^[12]%-[0-9][0-9]%-[0-9][0-9]$")) then
+				if (string.match(key, "^[12]%-0[1-9]%-0[1-9]$") or			-- [12]-01-01 - [12]-09-94
+					string.match(key, "^[12]%-0[1-9]%-[1-8][0-9]$") or		-- 〃
+					string.match(key, "^[12]%-0[1-9]%-9[0-4]$") or			-- 〃
+					string.match(key, "^[12]%-[1-8][0-9]%-0[1-9]$") or		-- [12]-10-01 - [12]-89-94
+					string.match(key, "^[12]%-[1-8][0-9]%-[1-8][0-9]$") or	-- 〃
+					string.match(key, "^[12]%-[1-8][0-9]%-9[0-4]$") or		-- 〃
+					string.match(key, "^[12]%-9[0-4]%-0[1-9]$") or			-- [12]-90-01 - [12]-94-94
+					string.match(key, "^[12]%-9[0-4]%-[1-8][0-9]$") or		-- 〃
+					string.match(key, "^[12]%-9[0-4]%-9[0-4]$")) then		-- 〃
+					return
+				end
+			end
 		end
 	--]]
 

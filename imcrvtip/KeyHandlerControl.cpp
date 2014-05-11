@@ -816,7 +816,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 								}
 							}
 							std::wstring s = pwCB;
-							s = std::regex_replace(s, std::wregex(L"[\\x00-\\x20]"), std::wstring(L""));
+							s = std::regex_replace(s, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
 							kana.insert(cursoridx, s);
 							if(okuriidx != 0 && cursoridx <= okuriidx)
 							{

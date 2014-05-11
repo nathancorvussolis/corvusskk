@@ -366,17 +366,11 @@ void MakeSKKDicWaitThread(void *p)
 
 INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	LPCWSTR pw[] = {L"／",L"─",L"＼",L"│"};
+	LPCWSTR pw[] = {L"／", L"─", L"＼", L"│"};
 	static int ipw = 0;
 
 	switch(message)
 	{
-	case WM_COMMAND:
-		if(LOWORD(wParam) == IDC_BUTTON_ABORT_DIC_MAKE)
-		{
-			SkkDicInfo.cancel = TRUE;
-		}
-		break;
 	case WM_INITDIALOG:
 		SkkDicInfo.cancel = FALSE;
 		SkkDicInfo.hr = S_FALSE;
@@ -384,6 +378,18 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		_beginthread(MakeSKKDicWaitThread, 0, NULL);
 		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
 		return TRUE;
+	case WM_CTLCOLORDLG:
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLORBTN:
+		SetBkMode((HDC)wParam, TRANSPARENT);
+		SetTextColor((HDC)wParam, GetSysColor(COLOR_WINDOWTEXT));
+		return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
+	case WM_COMMAND:
+		if(LOWORD(wParam) == IDC_BUTTON_ABORT_DIC_MAKE)
+		{
+			SkkDicInfo.cancel = TRUE;
+		}
+		break;
 	case WM_TIMER:
 		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
 		if(++ipw >= _countof(pw))

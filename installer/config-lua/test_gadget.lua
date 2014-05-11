@@ -1,4 +1,7 @@
-﻿exe = require("test_c")
+﻿package.path = ".\\?.lua;" .. package.path
+package.cpath = ".\\?.dll;" .. package.cpath
+
+crvmgr = require("test_c")
 require("init")
 
 

@@ -312,7 +312,6 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 {
-	std::wstring bracket;
 	size_t i;
 
 	s.clear();
@@ -322,19 +321,19 @@ void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 		return;
 	}
 
-	bracket.append(markNBSP);
+	s.append(markNBSP);
 	for(i = 0; i < _depth + 1; i++)
 	{
-		bracket.append(markRegL);
+		s.append(markRegL);
 	}
-	bracket.append(markReg);
+	s.append(markReg);
 	for(i = 0; i < _depth + 1; i++)
 	{
-		bracket.append(markRegR);
+		s.append(markRegR);
 	}
-	bracket.append(markNBSP);
+	s.append(markNBSP);
 
-	s.append(bracket + searchkey_bak + markRegKeyEnd);
+	s.append((searchkey_bak.empty() ? searchkeyorg_bak : searchkey_bak) + markRegKeyEnd);
 	s.append(regwordtext.substr(0, regwordtextpos));
 
 	if(cycle == 0)
@@ -1247,7 +1246,10 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		regwordul = FALSE;
 		regword = FALSE;
 
-		regwordtext = std::regex_replace(regwordtext, std::wregex(L"^\\s+|\\s+$"), std::wstring(L""));
+		if(std::regex_match(regwordtext, std::wregex(L"^\\s+$")))
+		{
+			regwordtext.clear();
+		}
 
 		if(regwordtext.empty())	//空のときはキャンセル扱い
 		{
