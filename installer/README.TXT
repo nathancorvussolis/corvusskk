@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.6.1
+     CorvusSKK version 1.6.2
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -9,7 +9,7 @@
   Windowsで動作するSKK風のIMEです。
 
   対応OS
-    ・Windows Vista (32-bit / 64-bit)
+    ・Windows Vista (32-bit / 64-bit) SP2
     ・Windows 7     (32-bit / 64-bit)
     ・Windows 8     (32-bit / 64-bit)
     ・Windows 8.1   (32-bit / 64-bit)
@@ -23,14 +23,23 @@
 --------------------------------------------------------------------------------
 
 
-・Windows Installer のインストール
+・DirectX 9 以上をサポートしたGPU (推奨)
 
-  Windows Vista SPなし, SP1 では、Windows Installer 4.5 を予めインストールして
-  下さい。
-  Windows Vista SP2 または Windows 7 以降ではインストールは不要です。
+  表示オプションでDirec2Dを使用するには、DirectX 9 以上をサポートしたGPUが
+  必要です。
+  サポートしていない場合は自動的にGDIで描画されます。(多分)
 
-  Windows Installer 4.5 Redistributable
-  http://www.microsoft.com/en-us/download/details.aspx?id=8483
+
+・Vista 用更新プログラムのインストール
+
+  Windows Vista SP2 では、以下のいずれかのプラットフォーム更新プログラムを
+  予めインストールして下さい。
+  Windows 7 以降ではインストールは不要です。
+
+  ・KB971644 (Windows Update から)
+  ・KB971512
+      (x64) http://www.microsoft.com/ja-JP/download/details.aspx?id=4390
+      (x86) http://www.microsoft.com/ja-JP/download/details.aspx?id=3274
 
 
 ・CorvusSKK のインストール
@@ -141,6 +150,8 @@
 
 ・SKK辞書サーバー
 
+  別途用意されたSKK辞書サーバーと通信して、skkservプロトコルのクライアントとして
+  辞書検索を行います。
   同時に１つのみ使用可能です。IPv4、IPv6 に対応しています。
   通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応していますが、
   通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用して下さい。
@@ -168,6 +179,8 @@
   || 候補一覧のフォント                        || 候補一覧に表示するフォントの種類、スタイル、サイズを指定します。
   || 候補一覧の最大幅                          || 候補一覧の最大幅のサイズを指定します。
   || 候補一覧の色                              || 候補一覧の色を指定します。
+  || 候補一覧の描画API                         || 候補一覧の描画を行うAPIを指定します。
+  ||                                           || Direct2Dと彩色の指定でカラーフォントをその色で表示します。(Windows8.1以降)
   || 候補一覧表示に要する変換回数(0は表示無し) || 指定した回数変換すると候補一覧が表示されます。
   || 候補一覧を縦に表示する                    || 候補一覧で候補を縦に並べて表示します。
   || 候補一覧が表示無しのとき候補数を表示する  || (<現在の候補の番号>/<候補数>) の形式を追加して表示します。
@@ -379,9 +392,9 @@
   下記の優先順位でロードされます。
 
     1. %AppData%\CorvusSKK\init.lua
-	2. サーバープロセスと同じディレクトリのinit.lua
-	   通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
-	   または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
+    2. サーバープロセスと同じディレクトリのinit.lua
+       通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
+       または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
 
   スクリプトファイルの文字コードは、UTF-8のみ対応しています。
   内部の文字コードをUTF-8としたコンソールプログラムのlua.exeが
@@ -502,5 +515,5 @@
 
 ・開発環境
 
-  Visual Studio Express 2013 for Windows Desktop Update 1
+  Visual Studio Express 2013 for Windows Desktop Update 2
   WiX Toolset v3.8

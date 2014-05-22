@@ -164,6 +164,9 @@ void CTextService::_LoadBehavior()
 		}
 	}
 
+	_ReadBoolValue(SectionDisplay, ValueDrawAPI, cx_drawapi, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueColorFont, cx_colorfont, FALSE);
+
 	ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
 	cx_untilcandlist = _wtoi(strxmlval.c_str());
 	if(cx_untilcandlist > 9 || strxmlval.empty())

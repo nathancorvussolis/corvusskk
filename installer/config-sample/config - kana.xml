@@ -54,6 +54,8 @@
     <key name="colorsc" value="0x808080" />
     <key name="coloran" value="0x808080" />
     <key name="colorno" value="0x000000" />
+    <key name="drawapi" value="0" />
+    <key name="colorfont" value="0" />
     <key name="untilcandlist" value="5" />
     <key name="verticalcand" value="0" />
     <key name="dispcandno" value="0" />

@@ -253,6 +253,10 @@ private:
 	TfGuidAtom _gaDisplayAttributeConvOkuri;
 	TfGuidAtom _gaDisplayAttributeConvAnnot;
 
+	//dummy
+	ID2D1Factory *_pDummyD2DFactory;
+	ID2D1DCRenderTarget *_pDummyD2DDCRT;
+
 private:
 	//ファイルパス
 	WCHAR pathconfigxml[MAX_PATH];	//設定
@@ -301,13 +305,15 @@ public:
 
 	LONG cx_maxwidth;			//候補一覧の最大幅
 	COLORREF cx_colors[8];		//候補一覧の色
+	BOOL cx_drawapi;			//候補一覧の描画API(FALSE:GDI/TRUE:Direct2D)
+	BOOL cx_colorfont;			//候補一覧の描画API 彩色(Direct2Dのときカラーフォントにする)
 	size_t cx_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
 	BOOL cx_verticalcand;		//候補一覧を縦に表示する
 	BOOL cx_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL cx_annotation;			//注釈を表示する
-	BOOL cx_annotatlst;			//注釈を表示する（候補一覧のみ）
+	BOOL cx_annotatlst;			//注釈を表示する(FALSE:全て/TRUE:候補一覧のみ)
 	BOOL cx_showmodeinl;		//入力モードを表示する
-	BOOL cx_showmodeimm;		//入力モードを表示する（没入型のみ）
+	BOOL cx_showmodeimm;		//入力モードを表示する(FALSE:全て/TRUE:没入型のみ)
 	BOOL cx_showmodemark;		//▽▼*マークを表示する
 	BOOL cx_showroman;			//ローマ字を表示する
 

@@ -8,6 +8,8 @@
 #define MERGIN_X 2
 #define MERGIN_Y 4
 
+#define SWAPRGB(rgb) (((rgb & 0x0000FF) << 16) | (rgb & 0x00FF00) | ((rgb >> 16) & 0x0000FF))
+
 static LPCWSTR markNo = L":";
 static LPCWSTR markAnnotation = L";";
 static LPCWSTR markCandEnd = L"\u3000";
@@ -23,6 +25,10 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 {
 	HDC hdc;
 	LOGFONTW logfont;
+	UINT i;
+	HRESULT hr;
+	IDWriteGdiInterop* pDWGI = NULL;
+	IDWriteFont* pDWFont = NULL;
 
 	_hwndParent = hwndParent;
 	_pCandidateWindowParent = pCandidateWindowParent;
@@ -46,8 +52,9 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wc.hIconSm = NULL;
 		RegisterClassExW(&wc);
 
-		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, TextServiceDesc,
-			NULL, WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
+			TextServiceDesc, NULL, WS_POPUP,
+			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 			_hwndParent, NULL, g_hInst, NULL);
 
 		if(_hwnd == NULL)
@@ -82,8 +89,96 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wcscpy_s(logfont.lfFaceName, _pTextService->cx_fontname);
 		hFont = CreateFontIndirectW(&logfont);
 
-		logfont.lfUnderline = TRUE;
-		hFontU = CreateFontIndirectW(&logfont);
+		if(_pTextService->cx_drawapi)
+		{
+			_drawtext_option = (IsVersion63AndOver() && _pTextService->cx_colorfont) ?
+				D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT :
+				D2D1_DRAW_TEXT_OPTIONS_NONE;
+
+			hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
+
+			if(hr == S_OK)
+			{
+				hr = _pD2DFactory->CreateDCRenderTarget(&c_d2dprops, &_pD2DDCRT);
+			}
+
+			if(hr == S_OK)
+			{
+				for(i = 0; i < 8; i++)
+				{
+					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(_pTextService->cx_colors[i])), &_pD2DBrush[i]);
+					if(hr != S_OK)
+					{
+						break;
+					}
+				}
+			}
+
+			if(hr == S_OK)
+			{
+				hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
+			}
+
+			if(hr == S_OK)
+			{
+				hr = _pDWFactory->GetGdiInterop(&pDWGI);
+			}
+
+			if(hr == S_OK)
+			{
+				hr = pDWGI->CreateFontFromLOGFONT(&logfont, &pDWFont);
+				if(hr != S_OK)
+				{
+					pDWGI->Release();
+				}
+			}
+
+			if(hr == S_OK)
+			{
+				hr = _pDWFactory->CreateTextFormat(_pTextService->cx_fontname, NULL,
+					pDWFont->GetWeight(), pDWFont->GetStyle(), pDWFont->GetStretch(),
+					(FLOAT)-logfont.lfHeight, L"ja-jp", &_pDWTF);
+				pDWFont->Release();
+				pDWGI->Release();
+			}
+
+			if(hr == S_OK)
+			{
+				hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+			}
+
+			if(hr != S_OK)
+			{
+				for(i = 0; i < 8; i++)
+				{
+					if(_pD2DBrush[i] != NULL)
+					{
+						_pD2DBrush[i]->Release();
+						_pD2DBrush[i] = NULL;
+					}
+				}
+				if(_pD2DDCRT != NULL)
+				{
+					_pD2DDCRT->Release();
+					_pD2DDCRT = NULL;
+				}
+				if(_pD2DFactory != NULL)
+				{
+					_pD2DFactory->Release();
+					_pD2DFactory = NULL;
+				}
+				if(_pDWTF != NULL)
+				{
+					_pDWTF->Release();
+					_pDWTF = NULL;
+				}
+				if(_pDWFactory != NULL)
+				{
+					_pDWFactory->Release();
+					_pDWFactory = NULL;
+				}
+			}
+		}
 
 		ReleaseDC(_hwnd, hdc);
 	}
@@ -141,20 +236,22 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	HDC hmemdc;
-	HBITMAP hmembmp;
+	HDC hmemdc = NULL;
+	HBITMAP hmembmp = NULL;
 	HPEN npen;
 	HBRUSH nbrush;
-	RECT r;
-	int cx, cy;
-	std::wstring s;
-	RECT rc;
+	HGDIOBJ bmp = NULL, font, pen, brush;
+	RECT r, rc;
 	POINT pt;
-	TEXTMETRICW tm;
+	int cx, cy, cycle;
 	UINT page, count, i;
-	int cycle;
+	std::wstring s;
 	WCHAR strPage[32];
-	HGDIOBJ bmp, font, pen, brush;
+	TEXTMETRICW tm;
+	HRESULT hr;
+	D2D1_RECT_F rd2d;
+	IDWriteTextLayout* pdwTL = NULL;
+	DWRITE_TEXT_METRICS dwTM;
 
 	switch(uMsg)
 	{
@@ -165,24 +262,40 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		cx = r.right;
 		cy = r.bottom;
 
-		hmemdc = CreateCompatibleDC(hdc);
-		hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
-		bmp = SelectObject(hmemdc, hmembmp);
+		if(_pD2DDCRT)
+		{
+			hmemdc = hdc;
+			_pD2DDCRT->BindDC(hdc, &r);
+			_pD2DDCRT->BeginDraw();
+			_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
+			_pD2DDCRT->Clear(D2D1::ColorF(SWAPRGB(_pTextService->cx_colors[CL_COLOR_BG])));
+			rd2d = D2D1::RectF(0.5F, 0.5F, ((FLOAT)cx) - 0.5F, ((FLOAT)cy) - 0.5F);
+			_pD2DDCRT->DrawRectangle(rd2d, _pD2DBrush[CL_COLOR_FR]);
+		}
+		else
+		{
+			hmemdc = CreateCompatibleDC(hdc);
+			hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
+			bmp = SelectObject(hmemdc, hmembmp);
 
-		npen = CreatePen(PS_SOLID, 1, _pTextService->cx_colors[CL_COLOR_FR]);
-		pen = SelectObject(hmemdc, npen);
-		nbrush = CreateSolidBrush(_pTextService->cx_colors[CL_COLOR_BG]);
-		brush = SelectObject(hmemdc, nbrush);
+			npen = CreatePen(PS_SOLID, 1, _pTextService->cx_colors[CL_COLOR_FR]);
+			pen = SelectObject(hmemdc, npen);
+			nbrush = CreateSolidBrush(_pTextService->cx_colors[CL_COLOR_BG]);
+			brush = SelectObject(hmemdc, nbrush);
 
-		Rectangle(hmemdc, 0, 0, cx, cy);
+			Rectangle(hmemdc, 0, 0, cx, cy);
 
-		SelectObject(hmemdc, pen);
-		SelectObject(hmemdc, brush);
+			SelectObject(hmemdc, pen);
+			SelectObject(hmemdc, brush);
 
-		DeleteObject(npen);
-		DeleteObject(nbrush);
+			DeleteObject(npen);
+			DeleteObject(nbrush);
+
+			SetBkMode(hmemdc, TRANSPARENT);
+		}
 
 		font = SelectObject(hmemdc, hFont);
+		GetTextMetricsW(hmemdc, &tm);
 
 		if(regwordul || regword)
 		{
@@ -195,8 +308,6 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		}
 		else if(_CandCount.size() != 0)
 		{
-			GetTextMetricsW(hmemdc, &tm);
-
 			pt.x = MERGIN_X;
 			pt.y = MERGIN_Y;
 
@@ -209,15 +320,36 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 			for(i = 0; i < _CandCount[page]; i++)
 			{
-				_MakeCandidateString(s, page, count, i, -1);
+				s.clear();
+				for(cycle = 0; cycle <= 4; cycle++)
+				{
+					s += _MakeCandidateString(page, count, i, cycle);
+				}
 
 				r.left = 0;
 				r.top = 0;
 				r.right = 1;
 				r.bottom = 1;
 
-				DrawTextW(hmemdc, s.c_str(), -1, &r,
-					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+				if(_pDWFactory)
+				{
+					hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
+					if(hr == S_OK)
+					{
+						hr = pdwTL->GetMetrics(&dwTM);
+						pdwTL->Release();
+					}
+					if(hr == S_OK)
+					{
+						r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+						r.bottom = (LONG)ceil(dwTM.height);
+					}
+				}
+				else
+				{
+					DrawTextW(hmemdc, s.c_str(), -1, &r,
+						DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+				}
 
 				if(_pTextService->cx_verticalcand)
 				{
@@ -245,10 +377,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 				rc.right = pt.x + r.right;
 				rc.bottom = pt.y + tm.tmHeight;
 
-				for(cycle = 4; cycle >= 0; cycle--)
-				{
-					_PaintCandidate(hmemdc, &rc, page, count, i, cycle);
-				}
+				_PaintCandidate(hmemdc, &rc, page, count, i);
 
 				pt.x += r.right;
 			}
@@ -260,8 +389,25 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 			r.right = 1;
 			r.bottom = 1;
 
-			DrawTextW(hmemdc, strPage, -1, &r,
-				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			if(_pDWFactory)
+			{
+				hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
+				if(hr == S_OK)
+				{
+					hr = pdwTL->GetMetrics(&dwTM);
+					pdwTL->Release();
+				}
+				if(hr == S_OK)
+				{
+					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					r.bottom = (LONG)ceil(dwTM.height);
+				}
+			}
+			else
+			{
+				DrawTextW(hmemdc, strPage, -1, &r,
+					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			}
 
 			if(_pTextService->cx_verticalcand)
 			{
@@ -286,19 +432,37 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 			rc.right = pt.x + r.right;
 			rc.bottom = pt.y + tm.tmHeight;
 
-			SetTextColor(hmemdc, _pTextService->cx_colors[CL_COLOR_NO]);
-			SetBkColor(hmemdc, _pTextService->cx_colors[CL_COLOR_BG]);
-			DrawTextW(hmemdc, strPage, -1, &rc,
-				DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			if(_pD2DDCRT && _pDWTF)
+			{
+				rd2d = D2D1::RectF((FLOAT)rc.left, (FLOAT)rc.top, (FLOAT)rc.right, (FLOAT)rc.bottom);
+
+				_pD2DDCRT->DrawText(strPage, (UINT32)wcslen(strPage), _pDWTF, &rd2d, _pD2DBrush[CL_COLOR_NO], _drawtext_option);
+			}
+			else
+			{
+				SetTextColor(hmemdc, _pTextService->cx_colors[CL_COLOR_NO]);
+
+				DrawTextW(hmemdc, strPage, -1, &rc,
+					DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			}
 		}
 
-		BitBlt(hdc, 0, 0, cx, cy, hmemdc, 0, 0, SRCCOPY);
+		if(_pD2DDCRT)
+		{
+			SelectObject(hmemdc, font);
 
-		SelectObject(hmemdc, font);
-		SelectObject(hmemdc, bmp);
+			_pD2DDCRT->EndDraw();
+		}
+		else
+		{
+			BitBlt(hdc, 0, 0, cx, cy, hmemdc, 0, 0, SRCCOPY);
 
-		DeleteObject(hmembmp);
-		DeleteObject(hmemdc);
+			SelectObject(hmemdc, font);
+			SelectObject(hmemdc, bmp);
+
+			DeleteObject(hmembmp);
+			DeleteObject(hmemdc);
+		}
 
 		EndPaint(hWnd, &ps);
 		break;
@@ -310,16 +474,10 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	return 0;
 }
 
-void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
+std::wstring CCandidateWindow::_MakeRegWordString()
 {
-	size_t i;
-
-	s.clear();
-
-	if(cycle > 2)
-	{
-		return;
-	}
+	std::wstring s;
+	UINT i;
 
 	s.append(markNBSP);
 	for(i = 0; i < _depth + 1; i++)
@@ -334,128 +492,145 @@ void CCandidateWindow::_MakeRegWordString(std::wstring &s, int cycle)
 	s.append(markNBSP);
 
 	s.append((searchkey_bak.empty() ? searchkeyorg_bak : searchkey_bak) + markRegKeyEnd);
+
 	s.append(regwordtext.substr(0, regwordtextpos));
 
-	if(cycle == 0)
-	{
-		return;
-	}
+	s.append(comptext + markCursor);
 
-	if(!comptext.empty())
-	{
-		s.append(comptext);
-	}
+	s.append(regwordtext.substr(regwordtextpos) + markNBSP);
 
-	if(cycle == 1)
-	{
-		return;
-	}
-
-	s.append(markCursor + regwordtext.substr(regwordtextpos) + markNBSP);
+	return s;
 }
 
 void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 {
 	std::wstring s;
-	int cycle;
-	HFONT f[3] = {hFont, hFontU, hFont};
-	HGDIOBJ font;
+	D2D1_RECT_F rd2d;
 
-	font = SelectObject(hdc, hFont);
+	s = _MakeRegWordString();
 
-	for(cycle = 2; cycle >= 0; cycle--)
+	if(_pD2DDCRT && _pDWTF)
 	{
-		_MakeRegWordString(s, cycle);
+		rd2d = D2D1::RectF((FLOAT)lpr->left, (FLOAT)lpr->top, (FLOAT)lpr->right, (FLOAT)lpr->bottom);
 
-		SelectObject(hdc, f[cycle]);
+		_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(), _pDWTF, &rd2d, _pD2DBrush[CL_COLOR_CA], _drawtext_option);
+	}
+	else
+	{
 		SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_CA]);
-		SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
 
 		DrawTextW(hdc, s.c_str(), -1, lpr,
 			DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 	}
-
-	SelectObject(hdc, font);
 }
 
-void CCandidateWindow::_MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle)
-{
-	s.clear();
-
-	if(_pTextService->candidates.size() <= count + _uShowedCount + idx)
-	{
-		return;
-	}
-
-	if(cycle > 4)
-	{
-		return;
-	}
-
-	s.append(markNBSP);
-	s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)][0]);
-
-	if(cycle == 0)
-	{
-		return;
-	}
-
-	s.append(markNo);
-
-	if(cycle == 1)
-	{
-		return;
-	}
-
-	s.append(
-		std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.first,
-		std::wregex(markSP), std::wstring(markNBSP)));
-
-	if(cycle == 2)
-	{
-		return;
-	}
-
-	if(_pTextService->cx_annotation &&
-		!_pTextService->candidates[count + _uShowedCount + idx].first.second.empty())
-	{
-		s.append(markAnnotation);
-
-		if(cycle == 3)
-		{
-			return;
-		}
-
-		s.append(
-			std::regex_replace(_pTextService->candidates[count + _uShowedCount + idx].first.second,
-			std::wregex(markSP), std::wstring(markNBSP)));
-	}
-
-	if(cycle == 4)
-	{
-		return;
-	}
-
-	s.append(markCandEnd);
-}
-
-void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx, int cycle)
+std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT idx, int cycle)
 {
 	std::wstring s;
 
-	_MakeCandidateString(s, page, count, idx, cycle);
-
-	if(cycle <= 4 && cycle >= 0)
+	switch(cycle)
 	{
-		SetTextColor(hdc, _pTextService->cx_colors[cycle + 2]);
-		SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
-		DrawTextW(hdc, s.c_str(), -1, lpr,
-			DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+	case 0:
+		s.append(markNBSP);
+		s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)][0]);
+		break;
+	case 1:
+		s.append(markNo);
+		break;
+	case 2:
+		s.append(
+			std::regex_replace(_pTextService->candidates[ count + _uShowedCount + idx ].first.first,
+			std::wregex(markSP), std::wstring(markNBSP)));
+		break;
+	case 3:
+		if(_pTextService->cx_annotation &&
+			!_pTextService->candidates[count + _uShowedCount + idx].first.second.empty())
+		{
+			s.append(markAnnotation);
+		}
+		break;
+	case 4:
+		if(_pTextService->cx_annotation &&
+			!_pTextService->candidates[count + _uShowedCount + idx].first.second.empty())
+		{
+			s.append(
+				std::regex_replace(_pTextService->candidates[count + _uShowedCount + idx].first.second,
+				std::wregex(markSP), std::wstring(markNBSP)));
+		}
+		s.append(markCandEnd);
+		break;
+	default:
+		break;
+	}
+
+	return s;
+}
+
+void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx)
+{
+	int cycle;
+	std::wstring s;
+	RECT r, r_ex;
+	HRESULT hr;
+	D2D1_RECT_F rd2d;
+	IDWriteTextLayout* pdwTL = NULL;
+	DWRITE_TEXT_METRICS dwTM;
+
+	r = *lpr;
+	r_ex = *lpr;
+	r_ex.right = r_ex.left;
+
+	for(cycle = 0; cycle <= 4; cycle++)
+	{
+		s = _MakeCandidateString(page, count, idx, cycle);
+
+		if(_pD2DDCRT && _pDWTF)
+		{
+			hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
+			if(hr == S_OK)
+			{
+				hr = pdwTL->GetMetrics(&dwTM);
+				pdwTL->Release();
+			}
+			if(hr == S_OK)
+			{
+				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+				r.bottom = (LONG)ceil(dwTM.height);
+			}
+
+			r.left = r_ex.right;
+			r.top = lpr->top;
+			r.right = r_ex.right + r.right;
+			r.bottom = lpr->bottom;
+
+			rd2d = D2D1::RectF((FLOAT)r.left, (FLOAT)r.top, (FLOAT)r.right, (FLOAT)r.bottom);
+
+			_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(), _pDWTF, &rd2d, _pD2DBrush[cycle + 2], _drawtext_option);
+
+			r_ex.right = r.right;
+		}
+		else
+		{
+			r.left = r_ex.right;
+			r.right = r_ex.right + 1;
+
+			DrawTextW(hdc, s.c_str(), -1, &r,
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+
+			r_ex.right = r.right;
+
+			SetTextColor(hdc, _pTextService->cx_colors[cycle + 2]);
+
+			DrawTextW(hdc, s.c_str(), -1, &r,
+				DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		}
 	}
 }
 
 void CCandidateWindow::_Destroy()
 {
+	UINT i;
+
 	if(_hwnd != NULL)
 	{
 		DestroyWindow(_hwnd);
@@ -467,6 +642,35 @@ void CCandidateWindow::_Destroy()
 		_pInputModeWindow->_Destroy();
 		delete _pInputModeWindow;
 		_pInputModeWindow = NULL;
+	}
+
+	if(hFont != NULL)
+	{
+		DeleteObject(hFont);
+	}
+
+	for(i = 0; i < 8; i++)
+	{
+		if(_pD2DBrush[i] != NULL)
+		{
+			_pD2DBrush[i]->Release();
+		}
+	}
+	if(_pD2DDCRT != NULL)
+	{
+		_pD2DDCRT->Release();
+	}
+	if(_pD2DFactory != NULL)
+	{
+		_pD2DFactory->Release();
+	}
+	if(_pDWTF != NULL)
+	{
+		_pDWTF->Release();
+	}
+	if(_pDWFactory != NULL)
+	{
+		_pDWFactory->Release();
 	}
 }
 
@@ -566,15 +770,6 @@ void CCandidateWindow::_EndUIElement()
 		}
 	}
 
-	if(hFont != NULL)
-	{
-		DeleteObject(hFont);
-	}
-	if(hFontU != NULL)
-	{
-		DeleteObject(hFontU);
-	}
-
 	_bShow = FALSE;
 }
 
@@ -595,18 +790,20 @@ BOOL CCandidateWindow::_CanShowUIElement()
 
 void CCandidateWindow::_CalcWindowRect()
 {
-	RECT r, rw;
-	HDC hdc;
-	int x, y, cx = 0, cy = 0;
 	HMONITOR hMonitor;
 	MONITORINFO mi;
+	HDC hdc;
+	HGDIOBJ font;
+	RECT r, rw;
+	POINT pt;
+	int x, y, cx = 0, cy = 0, xmax = 0, cycle;
 	UINT page, count, i;
 	std::wstring s;
-	POINT pt;
-	TEXTMETRICW tm;
-	int xmax = 0;
 	WCHAR strPage[32];
-	HGDIOBJ font;
+	TEXTMETRICW tm;
+	HRESULT hr;
+	IDWriteTextLayout* pdwTL = NULL;
+	DWRITE_TEXT_METRICS dwTM;
 
 	if(_hwnd == NULL)
 	{
@@ -621,7 +818,15 @@ void CCandidateWindow::_CalcWindowRect()
 	rw = mi.rcWork;
 
 	hdc = GetDC(_hwnd);
+
+	if(_pD2DDCRT)
+	{
+		_pD2DDCRT->BindDC(hdc, &rw);
+		_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
+	}
+
 	font = SelectObject(hdc, hFont);
+	GetTextMetricsW(hdc, &tm);
 
 	ZeroMemory(&r, sizeof(r));
 	r.right = _pTextService->cx_maxwidth - MERGIN_X * 2;
@@ -632,16 +837,31 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(regwordul || regword)
 	{
-		DrawTextW(hdc, disptext.c_str(), -1, &r,
-			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		if(_pDWFactory)
+		{
+			hr = _pDWFactory->CreateTextLayout(disptext.c_str(), (UINT32)disptext.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
+			if(hr == S_OK)
+			{
+				hr = pdwTL->GetMetrics(&dwTM);
+				pdwTL->Release();
+			}
+			if(hr == S_OK)
+			{
+				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+				r.bottom = (LONG)ceil(dwTM.height);
+			}
+		}
+		else
+		{
+			DrawTextW(hdc, disptext.c_str(), -1, &r,
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		}
 
 		cx = r.right + MERGIN_X * 2;
 		cy = r.bottom + MERGIN_Y * 2;
 	}
 	else if(_CandCount.size() != 0)
 	{
-		GetTextMetricsW(hdc, &tm);
-
 		pt.x = 0;
 		pt.y = 0;
 		cx = r.right;
@@ -656,15 +876,36 @@ void CCandidateWindow::_CalcWindowRect()
 		//最大幅を算出
 		for(i = 0; i < _CandCount[page]; i++)
 		{
-			_MakeCandidateString(s, page, count, i, -1);
+			s.clear();
+			for(cycle = 0; cycle <= 4; cycle++)
+			{
+				s += _MakeCandidateString(page, count, i, cycle);
+			}
 
 			r.left = 0;
 			r.top = 0;
 			r.right = 1;
 			r.bottom = 1;
 
-			DrawTextW(hdc, s.c_str(), -1, &r,
-				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			if(_pDWFactory)
+			{
+				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
+				if(hr == S_OK)
+				{
+					hr = pdwTL->GetMetrics(&dwTM);
+					pdwTL->Release();
+				}
+				if(hr == S_OK)
+				{
+					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					r.bottom = (LONG)ceil(dwTM.height);
+				}
+			}
+			else
+			{
+				DrawTextW(hdc, s.c_str(), -1, &r,
+					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			}
 
 			if(r.right > cx)
 			{
@@ -679,8 +920,25 @@ void CCandidateWindow::_CalcWindowRect()
 
 		_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
 
-		DrawTextW(hdc, strPage, -1, &r,
-			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		if(_pDWFactory)
+		{
+			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
+			if(hr == S_OK)
+			{
+				hr = pdwTL->GetMetrics(&dwTM);
+				pdwTL->Release();
+			}
+			if(hr == S_OK)
+			{
+				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+				r.bottom = (LONG)ceil(dwTM.height);
+			}
+		}
+		else
+		{
+			DrawTextW(hdc, strPage, -1, &r,
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		}
 
 		if(r.right > cx)
 		{
@@ -690,15 +948,36 @@ void CCandidateWindow::_CalcWindowRect()
 		//実際の幅、高さを算出
 		for(i = 0; i < _CandCount[page]; i++)
 		{
-			_MakeCandidateString(s, page, count, i, -1);
+			s.clear();
+			for(cycle = 0; cycle <= 4; cycle++)
+			{
+				s += _MakeCandidateString(page, count, i, cycle);
+			}
 
 			r.left = 0;
 			r.top = 0;
 			r.right = 1;
 			r.bottom = 1;
 
-			DrawTextW(hdc, s.c_str(), -1, &r,
-				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			if(_pDWFactory)
+			{
+				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
+				if(hr == S_OK)
+				{
+					hr = pdwTL->GetMetrics(&dwTM);
+					pdwTL->Release();
+				}
+				if(hr == S_OK)
+				{
+					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					r.bottom = (LONG)ceil(dwTM.height);
+				}
+			}
+			else
+			{
+				DrawTextW(hdc, s.c_str(), -1, &r,
+					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+			}
 
 			if(_pTextService->cx_verticalcand)
 			{
@@ -732,8 +1011,25 @@ void CCandidateWindow::_CalcWindowRect()
 		r.right = 1;
 		r.bottom = 1;
 
-		DrawTextW(hdc, strPage, -1, &r,
-			DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		if(_pDWFactory)
+		{
+			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
+			if(hr == S_OK)
+			{
+				hr = pdwTL->GetMetrics(&dwTM);
+				pdwTL->Release();
+			}
+			if(hr == S_OK)
+			{
+				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+				r.bottom = (LONG)ceil(dwTM.height);
+			}
+		}
+		else
+		{
+			DrawTextW(hdc, strPage, -1, &r,
+				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
+		}
 
 		if(_pTextService->cx_verticalcand)
 		{
@@ -796,7 +1092,9 @@ void CCandidateWindow::_CalcWindowRect()
 	}
 
 	SelectObject(hdc, font);
+
 	ReleaseDC(_hwnd, hdc);
+
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
 	if(_pInputModeWindow)
@@ -1521,7 +1819,7 @@ void CCandidateWindow::_Update()
 {
 	if(regwordul || regword)
 	{
-		_MakeRegWordString(disptext, -1);
+		disptext = _MakeRegWordString();
 	}
 
 	if(regwordul)

@@ -392,9 +392,43 @@ void CTextService::_KeyboardOpenCloseChanged()
 			_KeyboardInputConversionChanged();
 			break;
 		}
+
+		//参照カウントの有無で多量のDLLがロード/アンロードされるのでダミーのオブジェクトを作成しておく
+		if(cx_drawapi)
+		{
+			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pDummyD2DFactory);
+			if(hr == S_OK)
+			{
+				hr = _pDummyD2DFactory->CreateDCRenderTarget(&c_d2dprops, &_pDummyD2DDCRT);
+			}
+			if(hr != S_OK)
+			{
+				if(_pDummyD2DDCRT)
+				{
+					_pDummyD2DDCRT->Release();
+					_pDummyD2DDCRT = NULL;
+				}
+				if(_pDummyD2DFactory)
+				{
+					_pDummyD2DFactory->Release();
+					_pDummyD2DFactory = NULL;
+				}
+			}
+		}
 	}
 	else
 	{
+		if(_pDummyD2DDCRT)
+		{
+			_pDummyD2DDCRT->Release();
+			_pDummyD2DDCRT = NULL;
+		}
+		if(_pDummyD2DFactory)
+		{
+			_pDummyD2DFactory->Release();
+			_pDummyD2DFactory = NULL;
+		}
+
 		inputmode = im_default;
 
 		_SaveUserDic();

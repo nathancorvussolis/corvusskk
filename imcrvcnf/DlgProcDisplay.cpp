@@ -102,6 +102,13 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			}
 		}
 
+		LoadCheckButton(hDlg, IDC_RADIO_API_D2D, SectionDisplay, ValueDrawAPI);
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_API_GDI, BST_CHECKED);
+		}
+		LoadCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, SectionDisplay, ValueColorFont);
+
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
 		for(i = 0; i <= 9; i++)
@@ -192,6 +199,9 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			}
 			break;
 
+		case IDC_RADIO_API_GDI:
+		case IDC_RADIO_API_D2D:
+		case IDC_CHECKBOX_COLOR_FONT:
 		case IDC_CHECKBOX_VERTICALCAND:
 		case IDC_CHECKBOX_DISPCANDNO:
 		case IDC_CHECKBOX_ANNOTATION:
@@ -290,6 +300,9 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 				_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayColor[i].color);
 				WriterKey(pXmlWriter, displayColor[i].value, num);
 			}
+
+			SaveCheckButton(hDlg, IDC_RADIO_API_D2D, ValueDrawAPI);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, ValueColorFont);
 
 			hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 			num[0] = L'0' + (WCHAR)SendMessage(hwnd, CB_GETCURSEL, 0, 0);

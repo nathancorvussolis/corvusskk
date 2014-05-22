@@ -106,10 +106,13 @@ typedef struct {
 
 extern const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INFO_NUM];
 
+extern const D2D1_RENDER_TARGET_PROPERTIES c_d2dprops;
+
 LONG DllAddRef();
 LONG DllRelease();
 
-#define IID_IUNK_ARGS(pType) __uuidof(*(pType)), (IUnknown *)pType
+#define IID_IUNK_ARGS(pType) __uuidof(*(pType)), reinterpret_cast<IUnknown*>(pType)
+#define IID_PUNK_ARGS(pType) __uuidof(*(pType)), reinterpret_cast<IUnknown**>(pType)
 
 // added in Windows 8 SDK
 #if (_WIN32_WINNT < 0x0602)
@@ -150,5 +153,12 @@ public:
 extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
 
 #endif //(_WIN32_WINNT < 0x0602)
+
+// added in Windows 8.1 SDK ?
+#if (_WIN32_WINNT < 0x0603)
+
+#define D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT (static_cast<D2D1_DRAW_TEXT_OPTIONS>(0x00000004))
+
+#endif //(_WIN32_WINNT < 0x0603)
 
 #endif //IMCRVTIP_H

@@ -21,6 +21,9 @@ CTextService::CTextService()
 	_pCandidateList = NULL;
 	_pInputModeWindow = NULL;
 
+	_pDummyD2DFactory = NULL;
+	_pDummyD2DDCRT = NULL;
+
 	_dwActiveFlags = 0;
 
 	hPipe = INVALID_HANDLE_VALUE;

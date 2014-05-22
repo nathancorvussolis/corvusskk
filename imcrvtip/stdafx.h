@@ -18,3 +18,5 @@
 #include <Sddl.h>
 #include <Shlobj.h>
 #include <Shlwapi.h>
+#include <d2d1.h>
+#include <dwrite.h>

@@ -41,10 +41,10 @@ public:
 	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg);
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	void _MakeRegWordString(std::wstring &s, int stage);
+	std::wstring _MakeRegWordString();
 	void _PaintRegWord(HDC hdc, LPRECT lpr);
-	void _MakeCandidateString(std::wstring &s, UINT page, UINT count, UINT idx, int cycle);
-	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx, int cycle);
+	std::wstring _MakeCandidateString(UINT page, UINT count, UINT idx, int cycle);
+	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
 	void _Destroy();
 	void _Move(LPCRECT lpr);
 	void _BeginUIElement();
@@ -107,7 +107,13 @@ private:
 	WNDPROC WndProcDef;
 	std::wstring disptext;		//表示文字列
 	HFONT hFont;				//フォント
-	HFONT hFontU;				//フォント(下線あり)
+
+	ID2D1Factory *_pD2DFactory;
+	ID2D1DCRenderTarget *_pD2DDCRT;
+	ID2D1SolidColorBrush *_pD2DBrush[8];
+	IDWriteFactory *_pDWFactory;
+	IDWriteTextFormat *_pDWTF;
+	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 
 	BOOL _reg;		//初期表示から辞書登録
 
