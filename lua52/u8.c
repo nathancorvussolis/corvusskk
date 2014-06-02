@@ -402,3 +402,21 @@ u8api int u8rename(const char *oldfname, const char *newfname)
 
 	return r;
 }
+
+u8api char* u8setlocale(int category, const char *locale)
+{
+	wchar_t *r;
+	wchar_t *wl;
+	char *l = NULL;
+
+	wl = u8wstr(locale);
+	r = _wsetlocale(category, wl);
+	if(r != NULL) {
+		l = (char *)locale;
+	}
+	if(wl) {
+		free(wl);
+	}
+
+	return l;
+}

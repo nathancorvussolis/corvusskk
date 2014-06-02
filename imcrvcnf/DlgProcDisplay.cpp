@@ -7,7 +7,7 @@ static struct {
 	int id;
 	LPCWSTR value;
 	COLORREF color;
-} displayColor[8] =
+} displayColor[DISPLAY_COLOR_NUM] =
 {
 	{IDC_COL_BG, ValueColorBG, RGB(0xFF,0xFF,0xFF)},
 	{IDC_COL_FR, ValueColorFR, RGB(0x00,0x00,0x00)},
@@ -124,8 +124,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionDisplay, ValueAnnotation, L"1");
 		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionDisplay, ValueAnnotatLst);
@@ -202,8 +202,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		case IDC_RADIO_API_GDI:
 		case IDC_RADIO_API_D2D:
 		case IDC_CHECKBOX_COLOR_FONT:
-		case IDC_CHECKBOX_VERTICALCAND:
 		case IDC_CHECKBOX_DISPCANDNO:
+		case IDC_CHECKBOX_VERTICALCAND:
 		case IDC_CHECKBOX_ANNOTATION:
 		case IDC_RADIO_ANNOTATALL:
 		case IDC_RADIO_ANNOTATLST:
@@ -309,8 +309,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, ValueVerticalCand);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, ValueDispCandNo);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, ValueVerticalCand);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);

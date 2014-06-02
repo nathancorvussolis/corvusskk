@@ -110,22 +110,28 @@ enable_skk_ignore_dic_word = false
 
 
 
--- 数値変換タイプ1
+-- 数値変換タイプ1 (全角数字)
 local skk_num_type1_table = {"０", "１", "２", "３", "４", "５", "６", "７", "８", "９"}
 
--- 数値変換タイプ3
+-- 数値変換タイプ2, 3 (漢数字)
 local skk_num_type3_table = {"〇", "一", "二", "三", "四", "五", "六", "七", "八", "九"}
 local skk_num_type3_1k_table = {"", "十", "百", "千"}
 local skk_num_type3_10k_table = {"", "万", "億", "兆", "京", "垓",
 	"𥝱", "穣", "溝", "澗", "正", "載", "極", "恒河沙", "阿僧祇", "那由他", "不可思議"}
 
--- 数値変換タイプ5
+-- 数値変換タイプ5 (漢数字、大字)
 local skk_num_type5_table = {"零", "壱", "弐", "参", "四", "五", "六", "七", "八", "九"}
 local skk_num_type5_1k_table = {"", "拾", "百", "千"}
 local skk_num_type5_10k_table = {"", "万", "億", "兆", "京", "垓",
 	"𥝱", "穣", "溝", "澗", "正", "載", "極", "恒河沙", "阿僧祇", "那由他", "不可思議"}
 
--- 数値変換タイプ8
+-- 数値変換タイプ6 (独自拡張、ローマ数字)
+local skk_num_type6_table_I = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
+local skk_num_type6_table_X = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}
+local skk_num_type6_table_C = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}
+local skk_num_type6_table_M = {"", "M", "MM", "MMM"}
+
+-- 数値変換タイプ8 (桁区切り)
 local skk_num_type8_sep = ","
 local skk_num_type8_sepnum = 3
 
@@ -216,7 +222,7 @@ local function skk_num_type_n(num, len)
 	return num
 end
 
--- 数値変換タイプ1
+-- 数値変換タイプ1 (全角数字)
 local function skk_num_type_1(num, len)
 	local ret = ""
 
@@ -227,7 +233,7 @@ local function skk_num_type_1(num, len)
 	return ret
 end
 
--- 数値変換タイプ2
+-- 数値変換タイプ2 (漢数字、位取りあり)
 local function skk_num_type_2(num, len)
 	local ret = ""
 
@@ -238,7 +244,7 @@ local function skk_num_type_2(num, len)
 	return ret
 end
 
--- 数値変換タイプ3
+-- 数値変換タイプ3 (漢数字、位取りなし)
 local function skk_num_type_3(num, len)
 	local ret = ""
 
@@ -251,7 +257,7 @@ local function skk_num_type_3(num, len)
 	return ret
 end
 
--- 数値変換タイプ5
+-- 数値変換タイプ5 (漢数字、大字)
 local function skk_num_type_5(num, len)
 	local ret = ""
 
@@ -264,7 +270,22 @@ local function skk_num_type_5(num, len)
 	return ret
 end
 
--- 数値変換タイプ8
+-- 数値変換タイプ6 (独自拡張、ローマ数字)
+local function skk_num_type_6(num, len)
+	local ret = ""
+	local n = tonumber(num)
+
+	if (n >= 1 and n <= 3999) then
+		ret = skk_num_type6_table_M[((n - (n % 1000)) / 1000) + 1] ..
+			skk_num_type6_table_C[(((n - (n % 100)) / 100) % 10) + 1] ..
+			skk_num_type6_table_X[(((n - (n % 10)) / 10) % 10) + 1] ..
+			skk_num_type6_table_I[(n % 10) + 1]
+	end
+
+	return ret
+end
+
+-- 数値変換タイプ8 (桁区切り)
 local function skk_num_type_8(num, len)
 	local ret = ""
 
@@ -301,7 +322,7 @@ local skk_num_type_func_table = {
 	skk_num_type_3,
 	skk_num_type_n,
 	skk_num_type_5,
-	skk_num_type_n,
+	skk_num_type_6,
 	skk_num_type_n,
 	skk_num_type_8,
 	skk_num_type_9

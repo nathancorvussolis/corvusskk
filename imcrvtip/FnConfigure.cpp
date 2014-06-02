@@ -174,8 +174,8 @@ void CTextService::_LoadBehavior()
 		cx_untilcandlist = 5;
 	}
 
-	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueDispCandNo, cx_dispcandnum, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, FALSE);

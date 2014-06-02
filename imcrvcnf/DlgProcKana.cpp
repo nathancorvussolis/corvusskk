@@ -70,7 +70,8 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			ofn.nMaxFile = _countof(path);
 			ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 			ofn.lpstrTitle = L"Load Kana Table File";
-			if(GetOpenFileName(&ofn))
+			ofn.lpstrFilter = L"*.txt\0*.txt\0" L"*.*\0*.*\0\0";
+			if(GetOpenFileNameW(&ofn))
 			{
 				LoadKanaTxt(hDlg, ofn.lpstrFile);
 				PropSheet_Changed(GetParent(hDlg), hDlg);

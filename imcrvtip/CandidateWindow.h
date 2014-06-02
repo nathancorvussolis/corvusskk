@@ -110,7 +110,7 @@ private:
 
 	ID2D1Factory *_pD2DFactory;
 	ID2D1DCRenderTarget *_pD2DDCRT;
-	ID2D1SolidColorBrush *_pD2DBrush[8];
+	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_COLOR_NUM];
 	IDWriteFactory *_pDWFactory;
 	IDWriteTextFormat *_pDWTF;
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;

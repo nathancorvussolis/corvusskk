@@ -79,8 +79,8 @@
     <key name="drawapi" value="0" />
     <key name="colorfont" value="0" />
     <key name="untilcandlist" value="5" />
-    <key name="verticalcand" value="0" />
     <key name="dispcandno" value="0" />
+    <key name="verticalcand" value="0" />
     <key name="annotation" value="1" />
     <key name="annotatlst" value="0" />
     <key name="showmodeinl" value="0" />

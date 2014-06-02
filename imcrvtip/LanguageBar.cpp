@@ -186,7 +186,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 		{
 		case TF_LBI_CLK_RIGHT:
 			{
-				HMENU hMenu = LoadMenuW(g_hInst, MAKEINTRESOURCE(IDR_SYSTRAY_MENU));
+				HMENU hMenu = LoadMenuW(g_hInst, MAKEINTRESOURCEW(IDR_SYSTRAY_MENU));
 				if(hMenu)
 				{
 					UINT check = IDM_DEFAULT;

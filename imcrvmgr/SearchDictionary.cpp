@@ -84,6 +84,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	int comp;
 	WCHAR wbuf[DICBUFSIZE];
 	WCHAR *p;
+	size_t plen;
 
 	_wfopen_s(&fpidx, pathskkidx, RB);
 	if(fpidx == NULL)
@@ -120,6 +121,12 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 			{
 				if((p = wcschr(p, L'/')) != NULL)
 				{
+					plen = wcslen(p);
+					if((plen >= 2) && (*(p + plen - 2) == L'\r') && (*(p + plen - 1) == L'\n'))
+					{
+						*(p + plen - 2) = L'\n';
+						*(p + plen - 1) = L'\0';
+					}
 					candidate = p;
 				}
 			}

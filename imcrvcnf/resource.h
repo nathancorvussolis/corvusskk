@@ -60,8 +60,8 @@
 #define IDC_RADIO_API_D2D                       2022
 #define IDC_CHECKBOX_COLOR_FONT                 2023
 #define IDC_COMBO_UNTILCANDLIST                 2031
-#define IDC_CHECKBOX_VERTICALCAND               2032
-#define IDC_CHECKBOX_DISPCANDNO                 2033
+#define IDC_CHECKBOX_DISPCANDNO                 2032
+#define IDC_CHECKBOX_VERTICALCAND               2033
 #define IDC_CHECKBOX_ANNOTATION                 2034
 #define IDC_RADIO_ANNOTATALL                    2035
 #define IDC_RADIO_ANNOTATLST                    2036

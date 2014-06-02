@@ -45,7 +45,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wc.cbWndExtra = sizeof(LONG_PTR);
 		wc.hInstance = g_hInst;
 		wc.hIcon = NULL;
-		wc.hCursor = LoadCursorW(NULL, IDC_ARROW);
+		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 		wc.lpszMenuName = NULL;
 		wc.lpszClassName = TextServiceDesc;
@@ -104,7 +104,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 			if(hr == S_OK)
 			{
-				for(i = 0; i < 8; i++)
+				for(i = 0; i < DISPLAY_COLOR_NUM; i++)
 				{
 					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(_pTextService->cx_colors[i])), &_pD2DBrush[i]);
 					if(hr != S_OK)
@@ -149,7 +149,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 			if(hr != S_OK)
 			{
-				for(i = 0; i < 8; i++)
+				for(i = 0; i < DISPLAY_COLOR_NUM; i++)
 				{
 					if(_pD2DBrush[i] != NULL)
 					{
@@ -649,7 +649,7 @@ void CCandidateWindow::_Destroy()
 		DeleteObject(hFont);
 	}
 
-	for(i = 0; i < 8; i++)
+	for(i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
 		if(_pD2DBrush[i] != NULL)
 		{

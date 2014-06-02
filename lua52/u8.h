@@ -35,6 +35,7 @@ u8api char* u8tmpnam(char *buf);
 u8api int u8system(const char *command);
 u8api int u8remove(const char *fname);
 u8api int u8rename(const char *oldfname, const char *newfname);
+u8api char* u8setlocale(int category, const char *locale);
 
 #undef LoadString
 
@@ -54,5 +55,6 @@ u8api int u8rename(const char *oldfname, const char *newfname);
 #define system u8system
 #define remove u8remove
 #define rename u8rename
+#define setlocale u8setlocale
 
 #endif //U8_H

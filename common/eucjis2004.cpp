@@ -169,7 +169,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 
 BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
 {
-	size_t i, si, di = 0, ss = -1;
+	size_t i, j, si, di = 0, ss = -1;
 	UCSCHAR ucp[2];
 	WCHAR utf16[2][2];
 	size_t utf16num[2];
@@ -236,7 +236,10 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		{
 			if(dst != NULL)
 			{
-				wmemcpy_s(dst + di, 2, utf16[i], utf16num[i]);
+				for(j = 0; j < utf16num[i] && j < 2; j++)
+				{
+					*(dst + di + j) = utf16[i][j];
+				}
 			}
 			di += utf16num[i];
 		}

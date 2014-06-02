@@ -304,7 +304,7 @@ public:
 	BOOL cx_fontitalic;				//候補一覧のフォント設定(イタリック)
 
 	LONG cx_maxwidth;			//候補一覧の最大幅
-	COLORREF cx_colors[8];		//候補一覧の色
+	COLORREF cx_colors[DISPLAY_COLOR_NUM];		//候補一覧の色
 	BOOL cx_drawapi;			//候補一覧の描画API(FALSE:GDI/TRUE:Direct2D)
 	BOOL cx_colorfont;			//候補一覧の描画API 彩色(Direct2Dのときカラーフォントにする)
 	size_t cx_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
