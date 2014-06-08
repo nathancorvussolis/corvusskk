@@ -140,9 +140,10 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	if(sf == SKK_CONV_POINT)
 	{
-		if(inputkey && roman.empty() && (ch >= L'\x20') && (kana.empty() || okuriidx == kana.size()))
+		if(inputkey && roman.empty() && !abbrevmode &&
+			(ch >= L'\x20') && (kana.empty() || okuriidx == kana.size()))
 		{
-			// ";;" -> ;
+			// ";;" -> ";"
 			if(kana.empty())
 			{
 				kana.push_back(ch);
@@ -157,7 +158,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			}
 			return S_OK;
 		}
-		if(!roman.empty() && (!abbrevmode || showentry))
+		if((!roman.empty() && !showentry) || abbrevmode)
 		{
 			//ローマ字仮名変換表を優先させる
 			ROMAN_KANA_CONV rkc;

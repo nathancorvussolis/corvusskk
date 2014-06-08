@@ -143,7 +143,7 @@ BOOL CTextService::_InitFunctionProvider()
 
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
 	{
-		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_ITfFunctionProvider, (ITfFnConfigure *)this);
+		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS((ITfFunctionProvider *)this));
 		pSourceSingle->Release();
 	}
 
