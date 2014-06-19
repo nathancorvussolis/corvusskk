@@ -1,7 +1,7 @@
 ﻿
-#include "imcrvmgr.h"
-#include "utf8.h"
 #include "parseskkdic.h"
+#include "utf8.h"
+#include "imcrvmgr.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 HANDLE SrvStart();
@@ -210,7 +210,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void SrvProc(WCHAR *wbuf, size_t size)
 {
 	SKKDICCANDIDATES sc;
-	SKKDICCANDIDATES::iterator sc_itr;
 	std::wstring bufdat(&wbuf[2]);
 	std::wregex re;
 	std::wstring fmt;
@@ -239,7 +238,7 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			wbuf[0] = REP_OK;
 			wbuf[1] = L'\n';
 			wbuf[2] = L'\0';
-			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
+			FORWARD_ITERATION_I(sc_itr, sc)
 			{
 				wcsncat_s(wbuf, size, ConvertCandidate(keyorg, sc_itr->first).c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
@@ -287,9 +286,9 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			wbuf[0] = REP_OK;
 			wbuf[1] = L'\n';
 			wbuf[2] = L'\0';
-			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
+			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				wcsncat_s(wbuf, size, sc_itr->first.c_str(), _TRUNCATE);
+				wcsncat_s(wbuf, size, ParseConcat(sc_itr->first).c_str(), _TRUNCATE);
 				wcsncat_s(wbuf, size, L"\t\t\t\n", _TRUNCATE);
 			}
 		}

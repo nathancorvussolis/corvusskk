@@ -1,6 +1,6 @@
 ﻿
-#include "configxml.h"
 #include "parseskkdic.h"
+#include "configxml.h"
 #include "imcrvcnf.h"
 #include "resource.h"
 
@@ -20,12 +20,11 @@ void LoadDictionary(HWND hwnd)
 	int i = 0;
 	LVITEMW item;
 	APPDATAXMLLIST list;
-	APPDATAXMLLIST::iterator l_itr;
 
 	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK && list.size() != 0)
 	{
 		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-		for(l_itr = list.begin(); l_itr != list.end(); l_itr++)
+		FORWARD_ITERATION_I(l_itr, list)
 		{
 			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
 			{
@@ -71,9 +70,7 @@ void SaveDictionary(HWND hwnd)
 
 void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
-	SKKDIC::iterator skkdic_itr;
 	SKKDICENTRY skkdicentry;
-	SKKDICCANDIDATES::iterator sc_itr;
 	LPCWSTR seps = L",";
 	std::wstring annotation_seps;
 	std::wstring annotation_esc;
@@ -83,7 +80,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		annotation_seps = seps + ParseConcat(annotation) + seps;
 	}
 
-	skkdic_itr = skkdic.find(key);
+	auto skkdic_itr = skkdic.find(key);
 	if(skkdic_itr == skkdic.end())
 	{
 		skkdicentry.first = key;
@@ -92,7 +89,8 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	}
 	else
 	{
-		for(sc_itr = skkdic_itr->second.begin(); sc_itr != skkdic_itr->second.end(); sc_itr++)
+		bool hit = false;
+		FORWARD_ITERATION_I(sc_itr, skkdic_itr->second)
 		{
 			if(sc_itr->first == candidate)
 			{
@@ -109,10 +107,11 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 						sc_itr->second.assign(MakeConcat(annotation_esc));
 					}
 				}
+				hit = true;
 				break;
 			}
 		}
-		if(sc_itr == skkdic_itr->second.end())
+		if(!hit)
 		{
 			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, MakeConcat(annotation_seps)));
 		}
@@ -129,7 +128,6 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	std::wstring key;
 	int okuri;
 	SKKDICCANDIDATES sc;
-	SKKDICCANDIDATES::iterator sc_itr;
 	SKKDICOKURIBLOCKS so;
 	int rl;
 
@@ -197,7 +195,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 				continue;
 			}
 
-			for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
+			FORWARD_ITERATION_I(sc_itr, sc)
 			{
 				if(SkkDicInfo.cancel)
 				{
@@ -217,12 +215,11 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc)
 {
-	SKKDICCANDIDATES::const_iterator sc_itr;
 	std::wstring line;
 	std::wstring annotation_esc;
 
 	line = key + L" /";
-	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
+	FORWARD_ITERATION_I(sc_itr, sc)
 	{
 		line += sc_itr->first;
 		if(sc_itr->second.size() > 2)
@@ -240,11 +237,8 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES 
 HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 {
 	FILE *fp;
-	SKKDIC::const_iterator entries_itr;
-	SKKDIC::const_reverse_iterator entries_ritr;
 	long pos;
 	KEYPOS keypos;
-	KEYPOS::const_iterator keypos_itr;
 
 	_wfopen_s(&fp, pathskkdic, WB);
 	if(fp == NULL)
@@ -260,7 +254,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	fseek(fp, -2, SEEK_END);
 	fwrite(L"\r\n", 4, 1, fp);
 
-	for(entries_ritr = entries_a.rbegin(); entries_ritr != entries_a.rend(); entries_ritr++)
+	REVERSE_ITERATION_I(entries_ritr, entries_a)
 	{
 		if(SkkDicInfo.cancel)
 		{
@@ -279,7 +273,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	fseek(fp, -2, SEEK_END);
 	fwrite(L"\r\n", 4, 1, fp);
 
-	for(entries_itr = entries_n.begin(); entries_itr != entries_n.end(); entries_itr++)
+	FORWARD_ITERATION_I(entries_itr, entries_n)
 	{
 		if(SkkDicInfo.cancel)
 		{
@@ -302,7 +296,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 		return S_FALSE;
 	}
 
-	for(keypos_itr = keypos.begin(); keypos_itr != keypos.end(); keypos_itr++)
+	FORWARD_ITERATION_I(keypos_itr, keypos)
 	{
 		if(SkkDicInfo.cancel)
 		{

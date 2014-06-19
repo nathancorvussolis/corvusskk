@@ -94,17 +94,17 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeBuildCommandLine>copy /y config-lua\init.lua $(SolutionDir)$(Platform)\$(Configuration)\</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f $(SolutionDir)$(Platform)\$(Configuration)\init.lua</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>copy /y config-lua\init.lua $(SolutionDir)$(Platform)\$(Configuration)\</NMakeReBuildCommandLine>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeBuildCommandLine>copy /y config-lua\init.lua $(SolutionDir)$(Platform)\$(Configuration)\</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f $(SolutionDir)$(Platform)\$(Configuration)\init.lua</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>copy /y config-lua\init.lua $(SolutionDir)$(Platform)\$(Configuration)\</NMakeReBuildCommandLine>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua"</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>

@@ -186,8 +186,6 @@ void CTextService::_StartConv()
 {
 	CANDIDATES candidates_sel;
 	CANDIDATES candidates_hint;
-	CANDIDATES::iterator candidates_itr;
-	CANDIDATES::iterator candidates_hint_itr;
 	std::wstring keyhint, key, hint;
 	std::wstring candidate, str;
 	size_t okuriidx_bak;
@@ -225,13 +223,13 @@ void CTextService::_StartConv()
 		_StartSubConv();
 
 		//ヒント候補の文字を含む通常候補をヒント候補順で抽出
-		for(candidates_hint_itr = candidates_hint.begin(); candidates_hint_itr != candidates_hint.end(); candidates_hint_itr++)
+		FORWARD_ITERATION_I(candidates_hint_itr, candidates_hint)
 		{
 			candidate = candidates_hint_itr->first.first;
 			for(i = 0; i < candidate.size(); i++)
 			{
 				str.clear();
-				if(i + 1 != candidate.size() && IS_SURROGATE_PAIR(candidate[i], candidate[i + 1]))
+				if((i + 1) != candidate.size() && IS_SURROGATE_PAIR(candidate[i], candidate[i + 1]))
 				{
 					str.push_back(candidate[i]);
 					str.push_back(candidate[i + 1]);
@@ -242,7 +240,7 @@ void CTextService::_StartConv()
 					str.push_back(candidate[i]);
 				}
 
-				for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); )
+				FORWARD_ITERATION(candidates_itr, candidates)
 				{
 					if(candidates_itr->first.first.find(str) != std::wstring::npos)
 					{
@@ -251,7 +249,7 @@ void CTextService::_StartConv()
 					}
 					else
 					{
-						candidates_itr++;
+						++candidates_itr;
 					}
 				}
 			}
@@ -264,7 +262,6 @@ void CTextService::_StartConv()
 
 void CTextService::_StartSubConv()
 {
-	CANDIDATES::iterator candidates_itr;
 	CANDIDATES candidates_bak;
 	CANDIDATES candidates_num;
 	std::wstring kanaconv;
@@ -334,21 +331,15 @@ void CTextService::_StartSubConv()
 
 	if(!candidates_bak.empty())
 	{
-		for(candidates_itr = candidates_bak.begin(); candidates_itr != candidates_bak.end(); candidates_itr++)
-		{
-			candidates.push_back(*candidates_itr);
-		}
+		candidates.insert(candidates.end(), candidates_bak.begin(), candidates_bak.end());
 	}
 	if(!candidates_num.empty())
 	{
-		for(candidates_itr = candidates_num.begin(); candidates_itr != candidates_num.end(); candidates_itr++)
-		{
-			candidates.push_back(*candidates_itr);
-		}
+		candidates.insert(candidates.end(), candidates_num.begin(), candidates_num.end());
 	}
 	if(!kanaconv.empty())
 	{
-		for(candidates_itr = candidates.begin(); candidates_itr != candidates.end(); candidates_itr++)
+		FORWARD_ITERATION_I(candidates_itr, candidates)
 		{
 			if(candidates_itr->first.first == kanaconv)
 			{

@@ -153,7 +153,7 @@ void LoadConfig()
 	precedeokuri = _wtoi(strxmlval.c_str());
 	if(precedeokuri != TRUE && precedeokuri != FALSE)
 	{
-		servtmp = FALSE;
+		precedeokuri = FALSE;
 	}
 }
 

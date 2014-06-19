@@ -1,14 +1,12 @@
 ﻿
-#include "configxml.h"
 #include "parseskkdic.h"
+#include "configxml.h"
 #include "utf8.h"
 #include "imcrvmgr.h"
 
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
     std::wstring candidate;
-	SKKDICCANDIDATES::iterator sc_itrf;
-	SKKDICCANDIDATES::iterator sc_itrb;
 	std::wregex re;
 	std::wstring fmt;
 
@@ -58,9 +56,9 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	//重複候補を削除
 	if(sc.size() > 1)
 	{
-		for(sc_itrf = sc.begin(); sc_itrf != sc.end(); sc_itrf++)
+		FORWARD_ITERATION_I(sc_itrf, sc)
 		{
-			for(sc_itrb = sc_itrf + 1; sc_itrb != sc.end(); )
+			for(auto sc_itrb = sc_itrf + 1; sc_itrb != sc.end(); )
 			{
 				if(sc_itrf->first == sc_itrb->first)
 				{
@@ -68,7 +66,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 				}
 				else
 				{
-					sc_itrb++;
+					++sc_itrb;
 				}
 			}
 		}
@@ -253,14 +251,13 @@ int lua_complement(lua_State *lua)
 {
 	std::wstring candidate;
 	SKKDICCANDIDATES sc;
-	SKKDICCANDIDATES::iterator sc_itr;
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
 	SearchComplement(searchkey, sc);
 
-	for(sc_itr = sc.begin(); sc_itr != sc.end(); sc_itr++)
+	FORWARD_ITERATION_I(sc_itr, sc)
 	{
-		candidate += L"/" + sc_itr->first;
+		candidate += L"/" + MakeConcat(sc_itr->first);
 	}
 	if(!candidate.empty())
 	{

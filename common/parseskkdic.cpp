@@ -13,14 +13,8 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	WCHAR wbuf[DICBUFSIZE];
 	size_t size, is;
 	void *rp;
-	std::wstring s;
+	std::wstring s, fmt;
 	std::wregex re;
-	std::wstring fmt;
-	std::wsmatch m;
-	std::wregex reb;
-	std::wstring so;
-	std::wstring okurik;
-	std::wstring okuric;
 
 	c.clear();
 	o.clear();
@@ -113,8 +107,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 {
 	size_t i, is, ie, ia;
-	std::wstring candidate;
-	std::wstring annotation;
+	std::wstring candidate, annotation;
 
 	i = 0;
 	while(i < s.size())
@@ -141,18 +134,19 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 			candidate = candidate.substr(0, ia);
 		}
 
-		c.push_back(SKKDICCANDIDATE(candidate, annotation));
+		if(!candidate.empty())
+		{
+			c.push_back(SKKDICCANDIDATE(candidate, annotation));
+		}
 	}
 }
 
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 {
-	std::wregex re, reb;
 	std::wstring so, okurik, okuric;
+	std::wregex re, reb;
 	std::wsmatch m;
-	SKKDICCANDIDATES okuricc;
-	SKKDICCANDIDATES okuriccr;
-	SKKDICCANDIDATES::reverse_iterator c_ritr;
+	SKKDICCANDIDATES okurics;
 
 	re.assign(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
 	reb.assign(L"\\[([^\\[\\]]+?)(/[^\\[\\]]+?/)\\]/");
@@ -160,31 +154,28 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 	while(std::regex_search(so, m, re))
 	{
-		okuricc.clear();
-		okuriccr.clear();
+		okurics.clear();
 
 		okurik = std::regex_replace(m.str(), reb, std::wstring(L"$1"));
 		okuric = std::regex_replace(m.str(), reb, std::wstring(L"$2"));
 
-		ParseSKKDicCandiate(okuric, okuricc);
+		ParseSKKDicCandiate(okuric, okurics);
 
-		for(c_ritr = okuricc.rbegin(); c_ritr != okuricc.rend(); c_ritr ++)
-		{
-			okuriccr.push_back(*c_ritr);
-		}
+		std::reverse(okurics.begin(), okurics.end());
 
-		o.insert(o.begin(), SKKDICOKURIBLOCK(okurik, okuriccr));
+		o.insert(o.begin(), SKKDICOKURIBLOCK(okurik, okurics));
 		so = m.suffix();
 	}
 }
 
 std::wstring ParseConcat(const std::wstring &s)
 {
-	std::wstring ret = s;
+	std::wstring ret, numstr, tmpstr, fmt;
 	std::wregex re;
 	std::wsmatch res;
-	std::wstring numstr, tmpstr, fmt;
 	wchar_t u;
+
+	ret = s;
 
 	tmpstr = s;
 	re.assign(L"^\\(concat \".+?\"\\)$");
@@ -220,9 +211,10 @@ std::wstring ParseConcat(const std::wstring &s)
 
 std::wstring MakeConcat(const std::wstring &s)
 {
-	std::wstring ret = s;
+	std::wstring ret, fmt;
 	std::wregex re;
-	std::wstring fmt;
+
+	ret = s;
 
 	// "/" -> \057, ";" -> \073
 	re.assign(L"[/;]");

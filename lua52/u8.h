@@ -37,6 +37,7 @@ u8api int u8remove(const char *fname);
 u8api int u8rename(const char *oldfname, const char *newfname);
 u8api char* u8setlocale(int category, const char *locale);
 
+#if defined(U8EXT) || defined(lua_c)
 #undef LoadString
 
 #define GetModuleFileNameA u8GetModuleFileName
@@ -56,5 +57,6 @@ u8api char* u8setlocale(int category, const char *locale);
 #define remove u8remove
 #define rename u8rename
 #define setlocale u8setlocale
+#endif //U8EXT or lua_c
 
 #endif //U8_H

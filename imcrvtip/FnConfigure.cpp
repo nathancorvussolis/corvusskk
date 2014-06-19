@@ -233,17 +233,20 @@ void CTextService::_LoadSelKey()
 void CTextService::_LoadPreservedKey()
 {
 	APPDATAXMLLIST list;
-	APPDATAXMLLIST::iterator l_itr;
-	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 
 	ZeroMemory(preservedkey, sizeof(preservedkey));
 
 	if(ReadList(pathconfigxml, SectionPreservedKey, list) == S_OK && list.size() != 0)
 	{
-		for(l_itr = list.begin(); l_itr != list.end() && i < MAX_PRESERVEDKEY; l_itr++)
+		FORWARD_ITERATION_I(l_itr, list)
 		{
-			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			if(i >= MAX_PRESERVEDKEY)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				if(r_itr->first == AttributeVKey)
 				{
@@ -573,17 +576,20 @@ void CTextService::_LoadVKeyMap(LPCWSTR section)
 void CTextService::_LoadConvPoint()
 {
 	APPDATAXMLLIST list;
-	APPDATAXMLLIST::iterator l_itr;
-	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 
 	ZeroMemory(conv_point, sizeof(conv_point));
 
 	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK && list.size() != 0)
 	{
-		for(l_itr = list.begin(); l_itr != list.end() && i < CONV_POINT_NUM; l_itr++)
+		FORWARD_ITERATION_I(l_itr, list)
 		{
-			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			if(i >= CONV_POINT_NUM)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				if(r_itr->first == AttributeCPStart)
 				{
@@ -607,8 +613,6 @@ void CTextService::_LoadConvPoint()
 void CTextService::_LoadKana()
 {
 	APPDATAXMLLIST list;
-	APPDATAXMLLIST::iterator l_itr;
-	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 	ROMAN_KANA_CONV rkc;
 	WCHAR *pszb;
@@ -621,11 +625,16 @@ void CTextService::_LoadKana()
 
 	if(ReadList(pathconfigxml, SectionKana, list) == S_OK && list.size() != 0)
 	{
-		for(l_itr = list.begin(); l_itr != list.end() && i < ROMAN_KANA_TBL_MAX; l_itr++)
+		FORWARD_ITERATION_I(l_itr, list)
 		{
+			if(i >= ROMAN_KANA_TBL_MAX)
+			{
+				break;
+			}
+
 			ZeroMemory(&rkc, sizeof(rkc));
 
-			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				pszb = NULL;
 
@@ -670,8 +679,6 @@ void CTextService::_LoadKana()
 void CTextService::_LoadJLatin()
 {
 	APPDATAXMLLIST list;
-	APPDATAXMLLIST::iterator l_itr;
-	APPDATAXMLROW::iterator r_itr;
 	int i = 0;
 	WCHAR *pszb;
 	size_t blen = 0;
@@ -682,9 +689,14 @@ void CTextService::_LoadJLatin()
 
 	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK && list.size() != 0)
 	{
-		for(l_itr = list.begin(); l_itr != list.end() && i < ASCII_JLATIN_TBL_NUM; l_itr++)
+		FORWARD_ITERATION_I(l_itr, list)
 		{
-			for(r_itr = l_itr->begin(); r_itr != l_itr->end(); r_itr++)
+			if(i >= ASCII_JLATIN_TBL_NUM)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				pszb = NULL;
 

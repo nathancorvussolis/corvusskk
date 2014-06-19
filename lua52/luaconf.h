@@ -11,7 +11,6 @@
 #include <limits.h>
 #include <stddef.h>
 
-#define U8EXT
 #include "u8.h"
 
 /*
