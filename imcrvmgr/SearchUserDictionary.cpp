@@ -59,6 +59,10 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 	FORWARD_ITERATION_I(sc_itr, sc)
 	{
 		candidate.append(L"/" + sc_itr->first);
+		if(!sc_itr->second.empty())
+		{
+			candidate.append(L";" + sc_itr->second);
+		}
 	}
 	if(!candidate.empty())
 	{
@@ -343,14 +347,16 @@ BOOL LoadSKKUserDic()
 				//送り仮名を1文字に限定する
 				FORWARD_ITERATION_I(so_itr, so)
 				{
-					if(so_itr->first.size() >= 2 &&
-						IS_SURROGATE_PAIR(so_itr->first.c_str()[0], so_itr->first.c_str()[1]))
+					if(so_itr->first.size() >= 2)
 					{
-						so_itr->first = so_itr->first.substr(0, 2);
-					}
-					else
-					{
-						so_itr->first = so_itr->first.substr(0, 1);
+						if(IS_SURROGATE_PAIR(so_itr->first[0], so_itr->first[1]))
+						{
+							so_itr->first.erase(2);
+						}
+						else
+						{
+							so_itr->first.erase(1);
+						}
 					}
 				}
 
