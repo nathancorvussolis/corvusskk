@@ -230,7 +230,7 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	//z記号
 	{L"z\x20", L"　", L"　", L"　"},	//full width space
 	{L"z,", L"‥", L"‥", L"‥"},
-	{L"z-", L"～", L"～", L"～"},
+	{L"z-", L"〜", L"〜", L"〜"},
 	{L"z.", L"…", L"…", L"…"},
 	{L"z/", L"・", L"・", L"･"},		//half width katakana
 	{L"z(", L"（", L"（", L"（"},

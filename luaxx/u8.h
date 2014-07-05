@@ -57,6 +57,6 @@ u8api char* u8setlocale(int category, const char *locale);
 #define remove u8remove
 #define rename u8rename
 #define setlocale u8setlocale
-#endif //U8EXT or lua_c
+#endif /* U8EXT or lua_c */
 
-#endif //U8_H
+#endif /* U8_H */

@@ -777,7 +777,7 @@
 
       <row ro="` " hi="　" ka="　" an=" " so="0" />		<!-- ACT -->
       <row ro="`," hi="‥" ka="‥" an="‥" so="0" />		<!-- ACT -->
-      <row ro="`-" hi="～" ka="～" an="～" so="0" />		<!-- ACT -->
+      <row ro="`-" hi="〜" ka="〜" an="〜" so="0" />		<!-- ACT -->
       <row ro="`." hi="…" ka="…" an="…" so="0" />		<!-- ACT -->
       <row ro="`/" hi="・" ka="・" an="･" so="0" />		<!-- ACT -->
       <row ro="`(" hi="（" ka="（" an="（" so="0" />		<!-- ACT -->

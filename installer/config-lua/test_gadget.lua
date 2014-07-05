@@ -33,6 +33,7 @@ el_test_gadget_table = {
 --{"#x#",		"(skk-times)"},
 
 
+
 for i, v in ipairs(el_test_gadget_table) do
 	print("<= \"" .. v[1] .. "\" \"".. v[2] .. "\"")
 	local s = lua_skk_convert_candidate(v[1], v[2])

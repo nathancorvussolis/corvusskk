@@ -4,7 +4,7 @@
 #include "LanguageBar.h"
 #include "convtype.h"
 
-HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR &ch)
+HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch)
 {
 	size_t i;
 	ASCII_JLATIN_CONV ajc;

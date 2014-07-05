@@ -212,7 +212,7 @@
 */
 #if defined(LUA_LIB) || defined(lua_c)
 #include <stdio.h>
-//#define luai_writestring(s,l)	fwrite((s), sizeof(char), (l), stdout)
+/*#define luai_writestring(s,l)	fwrite((s), sizeof(char), (l), stdout)*/
 #define luai_writestring(s,l)	fprintf(stdout, "%s", s)
 #define luai_writeline()	(luai_writestring("\n", 1), fflush(stdout))
 #endif

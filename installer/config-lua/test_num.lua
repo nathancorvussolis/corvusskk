@@ -4,7 +4,7 @@ package.cpath = ".\\?.dll;" .. package.cpath
 crvmgr = require("test_c")
 require("init")
 
-print(x)
+
 
 el_test_num_table = {
 
@@ -232,6 +232,8 @@ el_test_num_table = {
 
 }
 
+
+
 for i, v in ipairs(el_test_num_table) do
 	print("<= \"" .. v[1] .. "\" \"".. v[2] .. "\"")
 	local s = lua_skk_convert_candidate(v[1], v[2])
@@ -242,4 +244,3 @@ for i, v in ipairs(el_test_num_table) do
 		print("=> nil\n")
 	end
 end
-

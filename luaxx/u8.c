@@ -11,7 +11,6 @@
 
 #include <Windows.h>
 
-#define U8EXT
 #include "u8.h"
 
 static wchar_t* u8wstr(const char* s)
@@ -21,7 +20,7 @@ static wchar_t* u8wstr(const char* s)
 
 	len = MultiByteToWideChar(CP_UTF8, 0, s, -1, NULL, 0);
 	if(len) {
-		wbuf = (wchar_t*)calloc(len, sizeof(wchar_t));
+		wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
 		if(wbuf) {
 			MultiByteToWideChar(CP_UTF8, 0, s, -1, wbuf, len);
 		}
@@ -37,7 +36,7 @@ static char* u8str(const wchar_t* s)
 
 	len = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
 	if(len) {
-		buf = (char*)calloc(len, sizeof(char));
+		buf = (char *)calloc(len, sizeof(char));
 		if(buf) {
 			WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, len, NULL, NULL);
 		}
@@ -73,7 +72,7 @@ u8api DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, 
 	if(nSize == 0) return 0;
 	lpBuffer[0] = '\0';
 
-	wbuf = (wchar_t*)calloc(nSize, sizeof(wchar_t));
+	wbuf = (wchar_t *)calloc(nSize, sizeof(wchar_t));
 	if(wbuf){
 		FormatMessageW(dwFlags, lpSource, dwMessageId, dwLanguageId, wbuf, nSize, NULL);
 		b = u8str(wbuf);
@@ -162,37 +161,27 @@ u8api int u8fprintf(FILE *file, const char* format, ...)
 {
 	int ret = 0;
 	va_list argptr;
-	char *buf = NULL;
+	char *buf;
+	int buflen;
 	wchar_t *wbuf;
-	int i, clen, wlen;
 
 	va_start(argptr, format);
 
-	for(i = 1; i <= 32; i++) {
-		buf = (char *)calloc(i * i * 1024, sizeof(char)); //MAX 1MB
-		if(buf == NULL) {
-			return -1;
-		}
-		clen = vsnprintf_s(buf, i * i * 1024, _TRUNCATE, format, argptr);
-		if(clen == -1) {
-			free(buf);
-			buf = NULL;
-		}
-		else {
-			break;
-		}
+	buflen = _vscprintf(format, argptr) + 1;
+	if(buflen <= 0) {
+		return -1;
 	}
 
+	buf = (char *)calloc(buflen, sizeof(char));
 	if(buf == NULL) {
 		return -1;
 	}
 
+	vsnprintf_s(buf, buflen, _TRUNCATE, format, argptr);
+
 	if(file == stdout || file == stderr) {
-		wlen = MultiByteToWideChar(CP_UTF8, 0, buf, -1, NULL, 0);
-		wbuf = (wchar_t*)calloc(wlen, sizeof(wchar_t));
-		if(wbuf != NULL)
-		{
-			MultiByteToWideChar(CP_UTF8, 0, buf, -1, wbuf, wlen);
+		wbuf = u8wstr(buf);
+		if(wbuf) {
 			ret = fwprintf(file, L"%s", wbuf);
 			free(wbuf);
 		}
@@ -210,33 +199,27 @@ u8api int u8printf(const char* format, ...)
 {
 	int ret = 0;
 	va_list argptr;
-	char *buf = NULL;
+	char *buf;
+	int buflen;
 	wchar_t *wbuf;
-	int i, clen, wlen;
 
 	va_start(argptr, format);
 
-	for(i = 1; i <= 32; i++) {
-		buf = (char *)calloc(i * i * 1024, sizeof(char)); //MAX 1MB
-		if(buf == NULL) {
-			return -1;
-		}
-		clen = vsnprintf_s(buf, i * i * 1024, _TRUNCATE, format, argptr);
-		if(clen == -1) {
-			free(buf);
-			buf = NULL;
-		}
-		else {
-			break;
-		}
+	buflen = _vscprintf(format, argptr) + 1;
+	if(buflen <= 0) {
+		return -1;
 	}
 
-	wlen = MultiByteToWideChar(CP_UTF8, 0, buf, -1, NULL, 0);
-	wbuf = (wchar_t*)calloc(wlen, sizeof(wchar_t));
-	if(wbuf != NULL)
-	{
-		MultiByteToWideChar(CP_UTF8, 0, buf, -1, wbuf, wlen);
-		ret = fwprintf(stdout, L"%s", wbuf);
+	buf = (char *)calloc(buflen, sizeof(char));
+	if(buf == NULL) {
+		return -1;
+	}
+
+	vsnprintf_s(buf, buflen, _TRUNCATE, format, argptr);
+
+	wbuf = u8wstr(buf);
+	if(wbuf) {
+		ret = wprintf(L"%s", wbuf);
 		free(wbuf);
 	}
 

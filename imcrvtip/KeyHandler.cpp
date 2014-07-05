@@ -59,10 +59,8 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 {
 	size_t i;
 	BYTE sf;
-	WCHAR ch;
-	WCHAR chO;
-	std::wstring romanN;
-	std::wstring comptext;	//二重確定防止＆部分確定
+	WCHAR ch, chO = L'\0';
+	HRESULT hrc = E_ABORT;
 
 	if(bSf == SKK_NULL)
 	{
@@ -74,8 +72,6 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		ch = WCHAR_MAX;
 		sf = bSf;
 	}
-
-	chO = L'\0';
 
 	if(ch == L'\0' && sf == SKK_NULL)
 	{
@@ -138,45 +134,54 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	BOOL iscomp = _IsComposing();
 
-	if(sf == SKK_CONV_POINT)
+	//ローマ字仮名変換表を優先させる
+	switch(inputmode)
 	{
-		if(inputkey && roman.empty() && !abbrevmode &&
-			(ch >= L'\x20') && (kana.empty() || okuriidx == kana.size()))
+	case im_hiragana:
+	case im_katakana:
+	case im_katakana_ank:
+		if(!abbrevmode && !roman.empty())
 		{
-			// ";;" -> ";"
-			if(kana.empty())
-			{
-				kana.push_back(ch);
-				_HandleCharReturn(ec, pContext);
-			}
-			else if(okuriidx == kana.size())
-			{
-				kana.push_back(ch);
-				cursoridx++;
-				okuriidx = 0;
-				_Update(ec, pContext);
-			}
-			return S_OK;
-		}
-		if((!roman.empty() && !showentry) || abbrevmode)
-		{
-			//ローマ字仮名変換表を優先させる
 			ROMAN_KANA_CONV rkc;
-			std::wstring roman_conv;
-			roman_conv = roman;
+			std::wstring roman_conv = roman;
 			roman_conv.push_back(ch);
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
-			if(_ConvRomanKana(&rkc) != E_ABORT)
+			hrc = _ConvRomanKana(&rkc);
+			if(hrc != E_ABORT)
 			{
 				sf = SKK_NULL;
 			}
 		}
-		else
+		break;
+	default:
+		break;
+	}
+
+	//skk-sticky-key
+	if(sf == SKK_CONV_POINT)
+	{
+		if(!abbrevmode)
 		{
-			ch = L'\0';
+			if(inputkey && roman.empty() &&
+				(kana.empty() || okuriidx == kana.size()))
+			{
+				//";;" -> ";"
+				if(kana.empty() && ch >= L'\x20')
+				{
+					kana.push_back(ch);
+					_HandleCharReturn(ec, pContext);
+				}
+				return S_OK;
+			}
+			//"n;" -> "ん▽"
+			if(_ConvN(WCHAR_MAX))
+			{
+				ch = L'\0';
+			}
 		}
 	}
 
+	//機能処理
 	if(_HandleControl(ec, pContext, sf, ch) == S_OK)
 	{
 		if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
@@ -202,32 +207,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		case im_katakana_ank:
 			if(!abbrevmode || showentry)
 			{
-				if(!roman.empty())
+				if(hrc != E_ABORT)
 				{
-					//ローマ字仮名変換表を優先させる
-					ROMAN_KANA_CONV rkc;
-					std::wstring roman_conv;
-					roman_conv = roman;
-					roman_conv.push_back(ch);
-					wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
-					if(_ConvRomanKana(&rkc) != E_ABORT)
-					{
-						for(i = 0; i < CONV_POINT_NUM; i++)
-						{
-							if(conv_point[i][0] == L'\0' &&
-								conv_point[i][1] == L'\0' &&
-								conv_point[i][2] == L'\0')
-							{
-								break;
-							}
-							if(ch == conv_point[i][1])
-							{
-								chO = conv_point[i][2];
-								break;
-							}
-						}
-						break;
-					}
+					break;
 				}
 
 				for(i = 0; i < CONV_POINT_NUM; i++)
@@ -266,11 +248,15 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	if(ch >= L'\x20')
 	{
+		std::wstring comptext;	//二重確定防止＆部分確定
+		std::wstring romanN = roman;
+
 		if(!roman.empty() && chO != L'\0')
 		{
 			chO = roman[0];
 		}
-		romanN = roman;
+
+		//文字処理
 		if(_HandleChar(ec, pContext, comptext, wParam, ch, chO) == E_ABORT)
 		{
 			//待機処理、「ん」の処理等
