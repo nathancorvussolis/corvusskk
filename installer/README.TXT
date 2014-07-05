@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.6.7
+     CorvusSKK version 1.6.8
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com

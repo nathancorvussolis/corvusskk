@@ -821,7 +821,8 @@
 
       <row ro="z " hi="　" ka="　" an="　" so="0" />
       <row ro="z," hi="‥" ka="‥" an="‥" so="0" />
-      <row ro="z-" hi="〜" ka="〜" an="〜" so="0" />
+      <row ro="z-" hi="～" ka="～" an="～" so="0" />		<!-- チルダ -->
+      <row ro="z~" hi="〜" ka="〜" an="〜" so="0" />		<!-- 波ダッシュ -->
       <row ro="z." hi="…" ka="…" an="…" so="0" />
       <row ro="z/" hi="・" ka="・" an="･" so="0" />
       <row ro="z(" hi="（" ka="（" an="（" so="0" />
