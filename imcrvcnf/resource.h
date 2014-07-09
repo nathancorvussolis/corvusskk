@@ -186,6 +186,7 @@
 #define IDC_BUTTON_KANATBL_W                    4210
 #define IDC_BUTTON_KANATBL_D                    4211
 #define IDC_BUTTON_LOADKANA                     4212
+#define IDC_BUTTON_SAVEKANA                     4213
 
 #define IDC_LIST_JLATTBL                        4301
 #define IDC_EDIT_JLATTBL_A                      4302

@@ -23,19 +23,19 @@ u8api DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, 
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments);
 u8api HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
 
-u8api FILE* u8fopen(const char* fname, const char* mode);
-u8api FILE* u8freopen(const char* fname, const char* mode, FILE* oldfp);
-u8api FILE* u8popen(const char* command, const char* mode);
-u8api int u8fprintf(FILE *file, const char* format, ...);
-u8api int u8printf(const char* format, ...);
-u8api char* u8fgets(char* buf, int len, FILE* file);
-u8api int u8fputs(const char* buf, FILE* file);
-u8api char* u8getenv(const char *varname);	/* needs "if (env != NULL) free((void*)env);" */
-u8api char* u8tmpnam(char *buf);
+u8api FILE *u8fopen(const char *fname, const char *mode);
+u8api FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp);
+u8api FILE *u8popen(const char *command, const char *mode);
+u8api int u8fprintf(FILE *file, const char *format, ...);
+u8api int u8printf(const char *format, ...);
+u8api char *u8fgets(char *buf, int len, FILE *file);
+u8api int u8fputs(const char *buf, FILE *file);
+u8api char *u8getenv(const char *varname);	/* needs "if (env != NULL) free((void*)env);" */
+u8api char *u8tmpnam(char *buf);
 u8api int u8system(const char *command);
 u8api int u8remove(const char *fname);
 u8api int u8rename(const char *oldfname, const char *newfname);
-u8api char* u8setlocale(int category, const char *locale);
+u8api char *u8setlocale(int category, const char *locale);
 
 #if defined(U8EXT) || defined(lua_c)
 #undef LoadString

@@ -68,13 +68,31 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
 			ofn.nMaxFile = _countof(path);
-			ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 			ofn.lpstrTitle = L"Load Kana Table File";
 			ofn.lpstrFilter = L"*.txt\0*.txt\0" L"*.*\0*.*\0\0";
 			if(GetOpenFileNameW(&ofn))
 			{
 				LoadKanaTxt(hDlg, ofn.lpstrFile);
 				PropSheet_Changed(GetParent(hDlg), hDlg);
+			}
+			break;
+
+		case IDC_BUTTON_SAVEKANA:
+			path[0] = L'\0';
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.hwndOwner = hDlg;
+			ofn.lpstrFile = path;
+			ofn.nMaxFile = _countof(path);
+			ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
+			ofn.lpstrTitle = L"Save Kana Table File";
+			ofn.lpstrFilter = L"*.txt\0*.txt\0" L"*.*\0*.*\0\0";
+			ofn.lpstrDefExt = L"txt";
+			if(GetSaveFileNameW(&ofn))
+			{
+				SaveKanaTxt(hDlg, ofn.lpstrFile);
+				MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 			}
 			break;
 

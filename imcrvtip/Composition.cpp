@@ -22,7 +22,7 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 
 	if(pComposition != NULL)
 	{
-		ITfRange* pRangeComposition;
+		ITfRange *pRangeComposition;
 		if(pComposition->GetRange(&pRangeComposition) == S_OK)
 		{
 			pRangeComposition->SetText(ecWrite, 0, L"", 0);

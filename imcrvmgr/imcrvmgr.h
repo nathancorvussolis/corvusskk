@@ -50,7 +50,7 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadSKKUserDic();
-BOOL SaveSKKUserDic(USERDATA* userdata);
+BOOL SaveSKKUserDic(USERDATA *userdata);
 HANDLE StartSaveSKKUserDicEx();
 void StartSaveSKKUserDic();
 

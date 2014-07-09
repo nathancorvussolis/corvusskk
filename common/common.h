@@ -3,7 +3,7 @@
 #define COMMON_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"1.6.8"
+#define TEXTSERVICE_VER		L"1.6.9"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -14,8 +14,8 @@
 //for resource
 #define RC_AUTHOR			"nathancorvussolis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"1.6.8"
-#define RC_VERSION_D		1,6,8,0
+#define RC_VERSION			"1.6.9"
+#define RC_VERSION_D		1,6,9,0
 
 #define DICBUFSIZE			0x2000
 #define PIPEBUFSIZE			0x2000
@@ -62,6 +62,8 @@ typedef struct {
 
 extern LPCWSTR RccsUNICODE;
 extern LPCWSTR WccsUNICODE;
+extern LPCWSTR RccsUTF8;
+extern LPCWSTR WccsUTF8;
 extern LPCWSTR RB;
 extern LPCWSTR WB;
 

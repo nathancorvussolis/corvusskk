@@ -20,10 +20,9 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 		_ResetStatus();
 	}
 
-	if(okuriidx != 0 && okuriidx == kana.size() && chO != L'\0')
+	if((okuriidx != 0) && (okuriidx + 1 == cursoridx) && (chO != L'\0'))
 	{
-		kana.insert(cursoridx, 1, chO);
-		cursoridx++;
+		kana.replace(okuriidx, 1, 1, chO);
 	}
 
 	switch(inputmode)
@@ -118,7 +117,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				{
 				case im_hiragana:
 					kana.insert(cursoridx, rkc.hiragana);
-					if(okuriidx != 0 && cursoridx < okuriidx)
+					if(okuriidx != 0 && cursoridx <= okuriidx)
 					{
 						okuriidx += wcslen(rkc.hiragana);
 					}
@@ -126,7 +125,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					break;
 				case im_katakana:
 					kana.insert(cursoridx, rkc.katakana);
-					if(okuriidx != 0 && cursoridx < okuriidx)
+					if(okuriidx != 0 && cursoridx <= okuriidx)
 					{
 						okuriidx += wcslen(rkc.katakana);
 					}
@@ -134,7 +133,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 					break;
 				case im_katakana_ank:
 					kana.insert(cursoridx, rkc.katakana_ank);
-					if(okuriidx != 0 && cursoridx < okuriidx)
+					if(okuriidx != 0 && cursoridx <= okuriidx)
 					{
 						okuriidx += wcslen(rkc.katakana_ank);
 					}
@@ -193,11 +192,12 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				roman.clear();
 				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 				{
-					kana.erase(cursoridx - 1, 1);	//送りローマ字削除
-					cursoridx--;
-					if(okuriidx != kana.size())
+					kana.replace(okuriidx, 1, 1, L'\x20');	//送りローマ字削除
+					if(!cx_keepinputnor)
 					{
+						kana.erase(okuriidx, 1);
 						okuriidx = 0;
+						cursoridx--;
 					}
 				}
 				_Update(ec, pContext);
@@ -284,7 +284,7 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 
 HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext)
 {
-	ITfRange * pRange;
+	ITfRange *pRange;
 	//leave composition
 	if(!comptext.empty())
 	{

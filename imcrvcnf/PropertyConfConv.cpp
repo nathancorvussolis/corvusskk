@@ -671,7 +671,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
 
-	_wfopen_s(&fp, path, RccsUNICODE);
+	_wfopen_s(&fp, path, RccsUTF8);
 	if(fp == NULL)
 	{
 		return;
@@ -765,5 +765,58 @@ void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 		item.iItem = i;
 		item.iSubItem = 4;
 		ListView_SetItem(hWndList, &item);
+	}
+}
+
+void SaveKanaTxt(HWND hwnd, LPCWSTR path)
+{
+	int i, count;
+	HWND hWndListView;
+	ROMAN_KANA_CONV rkc;
+	WCHAR soku[2];
+	FILE *fp;
+
+	roman_kana_conv.clear();
+	roman_kana_conv.shrink_to_fit();
+
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_KANATBL);
+	count = ListView_GetItemCount(hWndListView);
+
+	for(i = 0; i < count && i < ROMAN_KANA_TBL_MAX; i++)
+	{
+		ListView_GetItemText(hWndListView, i, 0, rkc.roman, _countof(rkc.roman));
+		ListView_GetItemText(hWndListView, i, 1, rkc.hiragana, _countof(rkc.hiragana));
+		ListView_GetItemText(hWndListView, i, 2, rkc.katakana, _countof(rkc.katakana));
+		ListView_GetItemText(hWndListView, i, 3, rkc.katakana_ank, _countof(rkc.katakana_ank));
+		ListView_GetItemText(hWndListView, i, 4, soku, _countof(soku));
+		((soku[0] - L'0') & 1) ? rkc.soku = TRUE : rkc.soku = FALSE;
+		((soku[0] - L'0') & 2) ? rkc.wait = TRUE : rkc.wait = FALSE;
+
+		roman_kana_conv.push_back(rkc);
+	}
+
+	_wfopen_s(&fp, path, WccsUTF8);
+	if(fp != NULL)
+	{
+		count = (int)roman_kana_conv.size();
+
+		for(i = 0; i < count; i++)
+		{
+			if(roman_kana_conv[i].roman[0] == L'\0' &&
+					roman_kana_conv[i].hiragana[0] == L'\0' &&
+					roman_kana_conv[i].katakana[0] == L'\0' &&
+					roman_kana_conv[i].katakana_ank[0] == L'\0')
+			{
+					continue;
+			}
+			fwprintf(fp, L"%s\t%s\t%s\t%s\t%d\n",
+								roman_kana_conv[i].roman,
+								roman_kana_conv[i].hiragana,
+								roman_kana_conv[i].katakana,
+								roman_kana_conv[i].katakana_ank,
+								roman_kana_conv[i].soku | (roman_kana_conv[i].wait << 1));
+		}
+
+		fclose(fp);
 	}
 }

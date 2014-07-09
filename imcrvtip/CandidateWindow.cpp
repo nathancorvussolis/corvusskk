@@ -27,8 +27,8 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	LOGFONTW logfont;
 	UINT i;
 	HRESULT hr;
-	IDWriteGdiInterop* pDWGI = NULL;
-	IDWriteFont* pDWFont = NULL;
+	IDWriteGdiInterop *pDWGI = NULL;
+	IDWriteFont *pDWFont = NULL;
 
 	_hwndParent = hwndParent;
 	_pCandidateWindowParent = pCandidateWindowParent;
@@ -250,7 +250,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	TEXTMETRICW tm;
 	HRESULT hr;
 	D2D1_RECT_F rd2d;
-	IDWriteTextLayout* pdwTL = NULL;
+	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
 
 	switch(uMsg)
@@ -573,7 +573,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	RECT r, r_ex;
 	HRESULT hr;
 	D2D1_RECT_F rd2d;
-	IDWriteTextLayout* pdwTL = NULL;
+	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
 
 	r = *lpr;
@@ -802,7 +802,7 @@ void CCandidateWindow::_CalcWindowRect()
 	WCHAR strPage[32];
 	TEXTMETRICW tm;
 	HRESULT hr;
-	IDWriteTextLayout* pdwTL = NULL;
+	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
 
 	if(_hwnd == NULL)

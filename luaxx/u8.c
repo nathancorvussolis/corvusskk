@@ -13,7 +13,7 @@
 
 #include "u8.h"
 
-static wchar_t* u8wstr(const char* s)
+static wchar_t *u8wstr(const char *s)
 {
 	int len;
 	wchar_t *wbuf = NULL;
@@ -29,7 +29,7 @@ static wchar_t* u8wstr(const char* s)
 	return wbuf;
 }
 
-static char* u8str(const wchar_t* s)
+static char *u8str(const wchar_t *s)
 {
 	int len;
 	char *buf = NULL;
@@ -100,7 +100,7 @@ u8api HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
 	return lib;
 }
 
-u8api FILE* u8fopen(const char* fname, const char* mode)
+u8api FILE *u8fopen(const char *fname, const char *mode)
 {
 	wchar_t *wfname = u8wstr(fname);
 	wchar_t *wmode = u8wstr(mode);
@@ -119,7 +119,7 @@ u8api FILE* u8fopen(const char* fname, const char* mode)
 	return fp;
 }
 
-u8api FILE* u8freopen(const char* fname, const char* mode, FILE* oldfp)
+u8api FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp)
 {
 	wchar_t *wfname = u8wstr(fname);
 	wchar_t *wmode = u8wstr(mode);
@@ -138,7 +138,7 @@ u8api FILE* u8freopen(const char* fname, const char* mode, FILE* oldfp)
 	return fp;
 }
 
-u8api FILE* u8popen(const char* command, const char* mode)
+u8api FILE *u8popen(const char *command, const char *mode)
 {
 	wchar_t *wcommand = u8wstr(command);
 	wchar_t *wmode = u8wstr(mode);
@@ -157,7 +157,7 @@ u8api FILE* u8popen(const char* command, const char* mode)
 	return fp;
 }
 
-u8api int u8fprintf(FILE *file, const char* format, ...)
+u8api int u8fprintf(FILE *file, const char *format, ...)
 {
 	int ret = 0;
 	va_list argptr;
@@ -195,7 +195,7 @@ u8api int u8fprintf(FILE *file, const char* format, ...)
 	return ret;
 }
 
-u8api int u8printf(const char* format, ...)
+u8api int u8printf(const char *format, ...)
 {
 	int ret = 0;
 	va_list argptr;
@@ -228,11 +228,11 @@ u8api int u8printf(const char* format, ...)
 	return ret;
 }
 
-u8api char* u8fgets(char* buf, int len, FILE* file)
+u8api char *u8fgets(char *buf, int len, FILE *file)
 {
 	wchar_t wc, ws[2 + 1];
 	char cc[4 + 1];
-	char* dst = NULL;
+	char *dst = NULL;
 
 	if(file == stdin) {
 		if(buf == NULL || len <= 0) return NULL;
@@ -281,7 +281,7 @@ u8api char* u8fgets(char* buf, int len, FILE* file)
 	return dst;
 }
 
-u8api int u8fputs(const char* buf, FILE* file)
+u8api int u8fputs(const char *buf, FILE *file)
 {
 	wchar_t *wbuf;
 	int ret = 0;
@@ -300,7 +300,7 @@ u8api int u8fputs(const char* buf, FILE* file)
 	return ret;
 }
 
-u8api char* u8getenv(const char *varname)
+u8api char *u8getenv(const char *varname)
 {
 	wchar_t *wvarname;
 	wchar_t *wenv;
@@ -318,7 +318,7 @@ u8api char* u8getenv(const char *varname)
 	return env;	/* need "if (env != NULL) free((void*)env);" */
 }
 
-u8api char* u8tmpnam(char *str)
+u8api char *u8tmpnam(char *str)
 {
 	wchar_t *wbuf;
 	wchar_t *w;
@@ -386,7 +386,7 @@ u8api int u8rename(const char *oldfname, const char *newfname)
 	return r;
 }
 
-u8api char* u8setlocale(int category, const char *locale)
+u8api char *u8setlocale(int category, const char *locale)
 {
 	wchar_t *r;
 	wchar_t *wl;

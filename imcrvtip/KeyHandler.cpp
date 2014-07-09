@@ -147,7 +147,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			roman_conv.push_back(ch);
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 			hrc = _ConvRomanKana(&rkc);
-			if(hrc != E_ABORT)
+			if(hrc != E_ABORT && !rkc.wait)
 			{
 				sf = SKK_NULL;
 			}
@@ -162,8 +162,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	{
 		if(!abbrevmode)
 		{
-			if(inputkey && roman.empty() &&
-				(kana.empty() || okuriidx == kana.size()))
+			if(inputkey && roman.empty() && kana.empty())
 			{
 				//";;" -> ";"
 				if(kana.empty() && ch >= L'\x20')

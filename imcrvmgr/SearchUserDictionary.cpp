@@ -472,7 +472,7 @@ void WriteSKKUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDA
 	fwprintf(fp, L"%s\n", line.c_str());
 }
 
-BOOL SaveSKKUserDic(USERDATA* userdata)
+BOOL SaveSKKUserDic(USERDATA *userdata)
 {
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;

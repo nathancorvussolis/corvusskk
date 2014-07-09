@@ -2,8 +2,11 @@
 #include "common.h"
 
 #define CCSUNICODE L",ccs=UNICODE"
+#define CCSUTF8 L",ccs=UTF-8"
 LPCWSTR RccsUNICODE = L"r" CCSUNICODE;
 LPCWSTR WccsUNICODE = L"w" CCSUNICODE;
+LPCWSTR RccsUTF8 = L"r" CCSUTF8;
+LPCWSTR WccsUTF8 = L"w" CCSUTF8;
 LPCWSTR RB = L"rb";
 LPCWSTR WB = L"wb";
 
