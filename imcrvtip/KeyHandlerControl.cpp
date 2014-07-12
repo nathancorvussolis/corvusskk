@@ -7,7 +7,6 @@
 HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch)
 {
 	size_t i;
-	ASCII_JLATIN_CONV ajc;
 
 	switch(sf)
 	{
@@ -19,63 +18,50 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		switch(inputmode)
 		{
 		case im_hiragana:
-			if(inputkey && !showentry)
-			{
-				if(_ConvN(WCHAR_MAX))
-				{
-					//カタカナに変換
-					_ConvKanaToKana(kana, im_katakana, kana, inputmode);
-					_HandleCharReturn(ec, pContext);
-					return S_OK;
-				}
-			}
-			else
-			{
-				_ConvN(WCHAR_MAX);
-			}
-			if(roman.empty())
-			{
-				//カタカナモードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_katakana;
-				_UpdateLanguageBar();
-				return S_OK;
-			}
-			break;
 		case im_katakana:
+			_ConvRoman();
 			if(inputkey && !showentry)
 			{
-				if(_ConvN(WCHAR_MAX))
+				if(okuriidx != 0)
 				{
-					//ひらがなに変換
-					_ConvKanaToKana(kana, im_hiragana, kana, inputmode);
-					_HandleCharReturn(ec, pContext);
-					return S_OK;
+					kana.erase(okuriidx, 1);
+					okuriidx = 0;
 				}
+				//ひらがな/カタカナに変換
+				_ConvKanaToKana(kana, (inputmode == im_hiragana ? im_katakana : im_hiragana),
+					kana, inputmode);
+				_HandleCharReturn(ec, pContext);
 			}
 			else
 			{
-				_ConvN(WCHAR_MAX);
-			}
-			if(roman.empty())
-			{
-				//ひらがなモードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_hiragana;
+				if(_ShowInputModeWindow)
+				{
+					_HandleCharShift(ec, pContext);
+				}
+				else
+				{
+					_HandleCharReturn(ec, pContext);
+				}
+				//ひらがな/カタカナモードへ
+				inputmode = (inputmode == im_hiragana ? im_katakana : im_hiragana);
 				_UpdateLanguageBar();
-				return S_OK;
 			}
+			return S_OK;
 			break;
 		case im_katakana_ank:
-			_ConvN(WCHAR_MAX);
-			if(roman.empty())
+			_ConvRoman();
+			if(_ShowInputModeWindow)
 			{
-				//ひらがなモードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_hiragana;
-				_UpdateLanguageBar();
-				return S_OK;
+				_HandleCharShift(ec, pContext);
 			}
+			else
+			{
+				_HandleCharReturn(ec, pContext);
+			}
+			//ひらがなモードへ
+			inputmode = im_hiragana;
+			_UpdateLanguageBar();
+			return S_OK;
 			break;
 		default:
 			break;
@@ -86,17 +72,17 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		if(abbrevmode)
 		{
 			//全英に変換
+			ASCII_JLATIN_CONV ajc;
+			ajc.ascii[1] = L'\0';
 			roman = kana;
 			kana.clear();
 			cursoridx = 0;
 			for(i = 0; i < roman.size(); i++)
 			{
 				ajc.ascii[0] = roman[i];
-				ajc.ascii[1] = L'\0';
 				if(_ConvAsciiJLatin(&ajc) == S_OK)
 				{
-					kana.insert(cursoridx, ajc.jlatin);
-					cursoridx += wcslen(ajc.jlatin);
+					kana.append(ajc.jlatin);
 				}
 			}
 			_HandleCharReturn(ec, pContext);
@@ -107,39 +93,48 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 		case im_hiragana:
 		case im_katakana:
+			_ConvRoman();
 			if(inputkey && !showentry)
 			{
-				if(_ConvN(WCHAR_MAX))
+				if(okuriidx != 0)
 				{
-					//半角ｶﾀｶﾅに変換
-					_ConvKanaToKana(kana, im_katakana_ank, kana, inputmode);
-					_HandleCharReturn(ec, pContext);
-					return S_OK;
+					kana.erase(okuriidx, 1);
+					okuriidx = 0;
 				}
+				//半角ｶﾀｶﾅに変換
+				_ConvKanaToKana(kana, im_katakana_ank, kana, inputmode);
+				_HandleCharReturn(ec, pContext);
 			}
 			else
 			{
-				_ConvN(WCHAR_MAX);
-			}
-			if(roman.empty())
-			{
+				if(_ShowInputModeWindow)
+				{
+					_HandleCharShift(ec, pContext);
+				}
+				else
+				{
+					_HandleCharReturn(ec, pContext);
+				}
 				//半角ｶﾀｶﾅモードへ
-				_HandleCharReturn(ec, pContext);
 				inputmode = im_katakana_ank;
 				_UpdateLanguageBar();
-				return S_OK;
 			}
+			return S_OK;
 			break;
 		case im_katakana_ank:
-			_ConvN(WCHAR_MAX);
-			if(roman.empty())
+			_ConvRoman();
+			if(_ShowInputModeWindow)
 			{
-				//ひらがなモードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_hiragana;
-				_UpdateLanguageBar();
-				return S_OK;
+				_HandleCharShift(ec, pContext);
 			}
+			else
+			{
+				_HandleCharReturn(ec, pContext);
+			}
+			//ひらがなモードへ
+			inputmode = im_hiragana;
+			_UpdateLanguageBar();
+			return S_OK;
 			break;
 		default:
 			break;
@@ -147,30 +142,6 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_JLATIN:
-		if(abbrevmode)
-		{
-			break;
-		}
-		switch(inputmode)
-		{
-		case im_hiragana:
-		case im_katakana:
-		case im_katakana_ank:
-			_ConvN(WCHAR_MAX);
-			if(roman.empty())
-			{
-				//全英モードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_jlatin;
-				_UpdateLanguageBar();
-				return S_OK;
-			}
-			break;
-		default:
-			break;
-		}
-		break;
-
 	case SKK_ASCII:
 		if(abbrevmode)
 		{
@@ -181,15 +152,19 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		case im_hiragana:
 		case im_katakana:
 		case im_katakana_ank:
-			_ConvN(WCHAR_MAX);
-			if(roman.empty())
+			_ConvRoman();
+			if(_ShowInputModeWindow)
 			{
-				//アスキーモードへ
-				_HandleCharReturn(ec, pContext);
-				inputmode = im_ascii;
-				_UpdateLanguageBar();
-				return S_OK;
+				_HandleCharShift(ec, pContext);
 			}
+			else
+			{
+				_HandleCharReturn(ec, pContext);
+			}
+			//アスキー/全英モードへ
+			inputmode = (sf == SKK_ASCII ? im_ascii : im_jlatin);
+			_UpdateLanguageBar();
+			return S_OK;
 			break;
 		default:
 			break;
@@ -202,14 +177,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		case im_jlatin:
 		case im_ascii:
 			//ひらがなモードへ
-			_HandleCharReturn(ec, pContext);
 			inputmode = im_hiragana;
 			_UpdateLanguageBar();
+			return S_OK;
 			break;
 		default:
 			break;
 		}
-		return S_OK;
 		break;
 
 	case SKK_ABBREV:
@@ -217,16 +191,16 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 		case im_hiragana:
 		case im_katakana:
-			_ConvN(WCHAR_MAX);
-			if((!inputkey && !abbrevmode && roman.empty()) || showentry)
+			_ConvRoman();
+			if(!inputkey || showentry)
 			{
 				_HandleCharShift(ec, pContext);
 				//見出し入力開始(abbrev)
 				inputkey = TRUE;
 				abbrevmode = TRUE;
-				_Update(ec, pContext);
-				return S_OK;
 			}
+			_Update(ec, pContext);
+			return S_OK;
 			break;
 		default:
 			break;
@@ -234,7 +208,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_AFFIX:
-		if(abbrevmode && !showentry)
+		if(!inputkey || (abbrevmode && !showentry))
 		{
 			break;
 		}
@@ -252,38 +226,23 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			_Update(ec, pContext);
 			return S_OK;
 		}
-
 		switch(inputmode)
 		{
 		case im_hiragana:
 		case im_katakana:
-			if(!inputkey)
+			_ConvRoman();
+			if(!kana.empty() && okuriidx == 0)
 			{
-				break;
-			}
-			if(okuriidx != 0)
-			{
-				return S_OK;
-			}
-			if(!_ConvN(WCHAR_MAX))
-			{
+				ch = L'>';
 				roman.clear();
-			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-
-			ch = L'>';
-			roman.clear();
-			kana.push_back(ch);
-			cursoridx = kana.size();
-			if(cx_begincvokuri && !hintmode)
-			{
-				//辞書検索開始(接頭辞)
-				showentry = TRUE;
-				_StartConv();
+				kana.push_back(ch);
+				cursoridx = kana.size();
+				if(cx_begincvokuri && !hintmode)
+				{
+					//辞書検索開始(接頭辞)
+					showentry = TRUE;
+					_StartConv();
+				}
 			}
 			_Update(ec, pContext);
 			return S_OK;
@@ -298,38 +257,21 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			_NextConv();
 			_Update(ec, pContext);
+			return S_OK;
 		}
 		else if(inputkey)
 		{
-			if(!_ConvN(WCHAR_MAX))
+			_ConvRoman();
+			if(!kana.empty())
 			{
-				roman.clear();
+				//候補表示開始
+				cursoridx = kana.size();
+				showentry = TRUE;
+				_StartConv();
 			}
-			if(okuriidx != 0)
-			{
-				if(okuriidx + 1 == cursoridx)
-				{
-					kana.erase(cursoridx - 1, 1);
-					cursoridx--;
-					okuriidx = 0;
-				}
-			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			//候補表示開始
-			cursoridx = kana.size();
-			showentry = TRUE;
-			_StartConv();
 			_Update(ec, pContext);
+			return S_OK;
 		}
-		else
-		{
-			return E_PENDING;
-		}
-		return S_OK;
 		break;
 
 	case SKK_PREV_CAND:
@@ -369,7 +311,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_NEXT_COMP:
 		if(inputkey && !showentry)
 		{
-			_ConvN(WCHAR_MAX);
+			_ConvRoman();
 			_NextComp();
 			_Update(ec, pContext);
 			return S_OK;
@@ -386,29 +328,26 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_HINT:
-		if(inputkey && !abbrevmode)
+		if(!inputkey || abbrevmode)
 		{
-			if(showentry)
-			{
-				candidx = 0;
-				showentry = FALSE;
-			}
-			_ConvN(WCHAR_MAX);
-			if(!roman.empty())
-			{
-				break;
-			}
-			if(!kana.empty() &&
-				kana.find_first_of(CHAR_SKK_HINT) == std::wstring::npos)
-			{
-				hintmode = TRUE;
-				cursoridx = kana.size();
-				kana.insert(cursoridx, 1, CHAR_SKK_HINT);
-				cursoridx++;
-			}
-			_Update(ec, pContext);
-			return S_OK;
+			break;
 		}
+		if(showentry)
+		{
+			candidx = 0;
+			showentry = FALSE;
+		}
+		_ConvRoman();
+		if(!kana.empty() &&
+			kana.find_first_of(CHAR_SKK_HINT) == std::wstring::npos)
+		{
+			hintmode = TRUE;
+			cursoridx = kana.size();
+			kana.insert(cursoridx, 1, CHAR_SKK_HINT);
+			cursoridx++;
+		}
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_CONV_POINT:
@@ -416,15 +355,14 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			break;
 		}
-		if(showentry)
-		{
-			_HandleCharShift(ec, pContext);
-		}
-
 		switch(inputmode)
 		{
 		case im_hiragana:
 		case im_katakana:
+			if(showentry)
+			{
+				_HandleCharShift(ec, pContext);
+			}
 			if(!inputkey)
 			{
 				if(_ConvN(ch))
@@ -460,20 +398,17 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_DIRECT:
-		if(inputkey && !showentry)
+		if(inputkey && !showentry && roman.empty())
 		{
-			if(roman.empty())
-			{
-				kana.insert(cursoridx, 1, ch);
-				cursoridx++;
-				_Update(ec, pContext);
-				return S_OK;
-			}
+			kana.insert(cursoridx, 1, ch);
+			cursoridx++;
+			_Update(ec, pContext);
+			return S_OK;
 		}
 		break;
 
 	case SKK_ENTER:
-		_ConvN(WCHAR_MAX);
+		_ConvRoman();
 		_HandleCharReturn(ec, pContext, (_GetSf(0, ch) == SKK_BACK ? TRUE : FALSE));
 		return S_OK;
 		break;
@@ -520,102 +455,102 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			_HandleCharReturn(ec, pContext);
 			return S_OK;
 		}
-		if(roman.empty() && okuriidx != 0 && okuriidx + 1 == cursoridx)
-		{
-			kana.erase(cursoridx - 1, 1);
-			cursoridx--;
-			okuriidx = 0;
-			_Update(ec, pContext);
-			return S_OK;
-		}
 		if(!roman.empty())
 		{
 			roman.pop_back();
 		}
-		else
+		else if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 		{
-			if(!kana.empty())
+			kana.erase(cursoridx - 1, 1);
+			cursoridx--;
+			okuriidx = 0;
+		}
+		else if(!kana.empty())
+		{
+			// surrogate pair
+			if(cursoridx >= 2 &&
+				IS_SURROGATE_PAIR(kana[cursoridx - 2], kana[cursoridx - 1]))
 			{
-				// surrogate pair
-				if(cursoridx >= 2 && IS_SURROGATE_PAIR(kana[cursoridx - 2], kana[cursoridx - 1]))
+				kana.erase(cursoridx - 2, 2);
+				cursoridx -= 2;
+				if(okuriidx != 0 && cursoridx < okuriidx)
 				{
-					kana.erase(cursoridx - 2, 2);
-					cursoridx -= 2;
-					if(cursoridx < okuriidx)
+					okuriidx -= 2;
+					if(okuriidx == 0)
 					{
-						okuriidx -= 2;
-					}
-				}
-				else if(cursoridx >= 1)
-				{
-					kana.erase(cursoridx - 1, 1);
-					cursoridx--;
-					if(okuriidx != 0 && cursoridx < okuriidx)
-					{
-						okuriidx--;
-						if(okuriidx == 0)
-						{
-							kana.erase(0, 1);
-						}
+						kana.erase(0, 1);
 					}
 				}
 			}
+			else if(cursoridx >= 1)
+			{
+				kana.erase(cursoridx - 1, 1);
+				cursoridx--;
+				if(okuriidx != 0 && cursoridx < okuriidx)
+				{
+					okuriidx--;
+					if(okuriidx == 0)
+					{
+						kana.erase(0, 1);
+					}
+				}
+			}
+			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
+			{
+				kana.erase(cursoridx - 1, 1);
+				cursoridx--;
+				okuriidx = 0;
+			}
 		}
-		if(okuriidx != 0 && okuriidx + 1 == cursoridx && roman.empty())
-		{
-			okuriidx = 0;
-			kana.erase(cursoridx - 1, 1);
-			cursoridx--;
-		}
-
-		_Update(ec, pContext);
-
 		if(!inputkey && roman.empty() && kana.empty())
 		{
 			_HandleCharReturn(ec, pContext);
+		}
+		else
+		{
+			_Update(ec, pContext);
 		}
 		return S_OK;
 		break;
 
 	case SKK_DELETE:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry || kana.empty())
 		{
-			if(!kana.empty())
+			break;
+		}
+		if(okuriidx != 0 && okuriidx == cursoridx)
+		{
+			kana.erase(cursoridx, 1);
+			okuriidx = 0;
+		}
+		// surrogate pair
+		if(kana.size() - cursoridx >= 2 &&
+			IS_SURROGATE_PAIR(kana[cursoridx], kana[cursoridx + 1]))
+		{
+			kana.erase(cursoridx, 2);
+			if(okuriidx >= 2 && cursoridx < okuriidx)
 			{
-				if(okuriidx != 0 && okuriidx == cursoridx)
+				okuriidx -= 2;
+				if(okuriidx == 0)
 				{
 					kana.erase(cursoridx, 1);
-					okuriidx = 0;
-				}
-				// surrogate pair
-				if(kana.size() - cursoridx >= 2 && IS_SURROGATE_PAIR(kana[cursoridx], kana[cursoridx + 1]))
-				{
-					kana.erase(cursoridx, 2);
-					if(okuriidx >= 2 && cursoridx < okuriidx)
-					{
-						okuriidx -= 2;
-						if(okuriidx == 0)
-						{
-							kana.erase(cursoridx, 1);
-						}
-					}
-				}
-				else
-				{
-					kana.erase(cursoridx, 1);
-					if(okuriidx >= 1 && cursoridx < okuriidx)
-					{
-						okuriidx--;
-						if(okuriidx == 0)
-						{
-							kana.erase(cursoridx, 1);
-						}
-					}
 				}
 			}
-			_Update(ec, pContext);
-			return S_OK;
 		}
+		else
+		{
+			kana.erase(cursoridx, 1);
+			if(okuriidx >= 1 && cursoridx < okuriidx)
+			{
+				okuriidx--;
+				if(okuriidx == 0)
+				{
+					kana.erase(cursoridx, 1);
+				}
+			}
+		}
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_VOID:
@@ -623,172 +558,110 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_LEFT:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry)
 		{
-			if(!_ConvN(WCHAR_MAX))
+			break;
+		}
+		_ConvRoman();
+		if(!kana.empty() && cursoridx > 0)
+		{
+			// surrogate pair
+			if(cursoridx >= 2 &&
+				IS_SURROGATE_PAIR(kana[cursoridx - 2], kana[cursoridx - 1]))
 			{
-				roman.clear();
+				cursoridx -= 2;
+			}
+			else
+			{
+				cursoridx--;
 			}
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
-				kana.erase(cursoridx - 1, 1);
 				cursoridx--;
-				okuriidx = 0;
 			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			if(cursoridx > 0)
-			{
-				// surrogate pair
-				if(cursoridx >= 2 && IS_SURROGATE_PAIR(kana[cursoridx - 2], kana[cursoridx - 1]))
-				{
-					cursoridx -= 2;
-				}
-				else
-				{
-					cursoridx--;
-				}
-				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-				{
-					cursoridx--;
-				}
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			_Update(ec, pContext);
-			return S_OK;
 		}
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_UP:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry)
 		{
-			if(!_ConvN(WCHAR_MAX))
-			{
-				roman.clear();
-			}
-			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-			{
-				kana.erase(cursoridx - 1, 1);
-				cursoridx--;
-				okuriidx = 0;
-			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			cursoridx = 0;
-			_Update(ec, pContext);
-			return S_OK;
+			break;
 		}
+		_ConvRoman();
+		cursoridx = 0;
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_RIGHT:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry)
 		{
-			if(!_ConvN(WCHAR_MAX))
+			break;
+		}
+		_ConvRoman();
+		if(!kana.empty() && cursoridx < kana.size())
+		{
+			// surrogate pair
+			if(kana.size() - cursoridx >= 2 &&
+				IS_SURROGATE_PAIR(kana[cursoridx], kana[cursoridx + 1]))
 			{
-				roman.clear();
+				cursoridx += 2;
+			}
+			else
+			{
+				cursoridx++;
 			}
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
-				kana.erase(cursoridx - 1, 1);
-				cursoridx--;
-				okuriidx = 0;
+				cursoridx++;
 			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			if(cursoridx < kana.size())
-			{
-				// surrogate pair
-				if(kana.size() - cursoridx >= 2 && IS_SURROGATE_PAIR(kana[cursoridx], kana[cursoridx + 1]))
-				{
-					cursoridx += 2;
-				}
-				else
-				{
-					cursoridx++;
-				}
-				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-				{
-					cursoridx++;
-				}
-			}
-			_Update(ec, pContext);
-			return S_OK;
 		}
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_DOWN:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry)
 		{
-			if(!_ConvN(WCHAR_MAX))
-			{
-				roman.clear();
-			}
-			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-			{
-				kana.erase(cursoridx - 1, 1);
-				cursoridx--;
-				okuriidx = 0;
-			}
-			if(kana.empty())
-			{
-				_Update(ec, pContext);
-				return S_OK;
-			}
-			cursoridx = kana.size();
-			_Update(ec, pContext);
-			return S_OK;
+			break;
 		}
+		_ConvRoman();
+		cursoridx = kana.size();
+		_Update(ec, pContext);
+		return S_OK;
 		break;
 
 	case SKK_PASTE:
-		if(inputkey && !showentry)
+		if(!inputkey || showentry)
 		{
-			if(IsClipboardFormatAvailable(CF_UNICODETEXT))
+			break;
+		}
+		if(IsClipboardFormatAvailable(CF_UNICODETEXT))
+		{
+			if(OpenClipboard(NULL))
 			{
-				HANDLE hCB;
-				PWCHAR pwCB;
-				if(OpenClipboard(NULL))
+				HANDLE hCB = GetClipboardData(CF_UNICODETEXT);
+				if(hCB != NULL)
 				{
-					hCB = GetClipboardData(CF_UNICODETEXT);
-					if(hCB != NULL)
+					PWCHAR pwCB = (PWCHAR)GlobalLock(hCB);
+					if(pwCB != NULL)
 					{
-						pwCB = (PWCHAR)GlobalLock(hCB);
-						if(pwCB != NULL)
+						_ConvRoman();
+						std::wstring s = std::regex_replace(std::wstring(pwCB),
+							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
+						kana.insert(cursoridx, s);
+						if(okuriidx != 0 && cursoridx <= okuriidx)
 						{
-							if(!_ConvN(WCHAR_MAX))
-							{
-								roman.clear();
-							}
-							if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-							{
-								kana.erase(cursoridx - 1, 1);
-								cursoridx--;
-								okuriidx = 0;
-							}
-							std::wstring s = pwCB;
-							s = std::regex_replace(s, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
-							kana.insert(cursoridx, s);
-							if(okuriidx != 0 && cursoridx <= okuriidx)
-							{
-								okuriidx += s.size();
-							}
-							cursoridx += s.size();
-							_Update(ec, pContext);
-							GlobalUnlock(hCB);
+							okuriidx += s.size();
 						}
+						cursoridx += s.size();
+						_Update(ec, pContext);
+						GlobalUnlock(hCB);
 					}
-					CloseClipboard();
 				}
+				CloseClipboard();
 			}
 		}
 		break;

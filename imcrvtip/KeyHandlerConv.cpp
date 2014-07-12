@@ -272,7 +272,8 @@ void CTextService::_StartSubConv()
 	//仮名を平仮名にして検索
 	if(okuriidx != 0)
 	{
-		_ConvKanaToKana(searchkey, im_hiragana, kana.substr(0, okuriidx + 1), inputmode);
+		_ConvKanaToKana(searchkey, im_hiragana, kana.substr(0, okuriidx), inputmode);
+		searchkey += kana.substr(okuriidx, 1);
 	}
 	else
 	{
@@ -399,20 +400,22 @@ void CTextService::_NextComp()
 {
 	if(!complement)
 	{
+		if(okuriidx != 0)
+		{
+			return;
+		}
+
 		cursoridx = kana.size();
 		searchkey.clear();
 		searchkeyorg.clear();
 
-		if(okuriidx == 0)
+		if(abbrevmode)
 		{
-			if(abbrevmode)
-			{
-				searchkey = kana;
-			}
-			else
-			{
-				_ConvKanaToKana(searchkey, im_hiragana, kana, inputmode);
-			}
+			searchkey = kana;
+		}
+		else
+		{
+			_ConvKanaToKana(searchkey, im_hiragana, kana, inputmode);
 		}
 
 		candidates.clear();
@@ -474,6 +477,21 @@ void CTextService::_SetComp(const std::wstring &candidate)
 	if(cursoridx > kana.size())
 	{
 		cursoridx = kana.size();
+	}
+}
+
+void CTextService::_ConvRoman()
+{
+	if(!_ConvN(WCHAR_MAX))
+	{
+		roman.clear();
+	}
+
+	if(okuriidx != 0 && okuriidx + 1 == cursoridx)
+	{
+		kana.erase(cursoridx - 1, 1);
+		cursoridx--;
+		okuriidx = 0;
 	}
 }
 

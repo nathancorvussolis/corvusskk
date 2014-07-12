@@ -8,6 +8,12 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	switch(message)
 	{
 	case WM_INITDIALOG:
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DEFAULTMODE, SectionBehavior, ValueDefaultMode);
+		LoadCheckButton(hDlg, IDC_RADIO_DEFMODEASCII, SectionBehavior, ValueDefModeAscii);
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_DEFMODEASCII))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_DEFMODEHIRA, BST_CHECKED);
+		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BEGINCVOKURI, SectionBehavior, ValueBeginCvOkuri, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_KEEPINPUTNOR, SectionBehavior, ValueKeepInputNoR, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, SectionBehavior, ValueDelCvPosCncl, L"1");
@@ -22,6 +28,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
+		case IDC_CHECKBOX_DEFAULTMODE:
+		case IDC_RADIO_DEFMODEHIRA:
+		case IDC_RADIO_DEFMODEASCII:
 		case IDC_CHECKBOX_BEGINCVOKURI:
 		case IDC_CHECKBOX_KEEPINPUTNOR:
 		case IDC_CHECKBOX_DELCVPOSCNCL:
@@ -44,6 +53,8 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case PSN_APPLY:
 			WriterStartSection(pXmlWriter, SectionBehavior);	//Start of SectionBehavior
 
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DEFAULTMODE, ValueDefaultMode);
+			SaveCheckButton(hDlg, IDC_RADIO_DEFMODEASCII, ValueDefModeAscii);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_BEGINCVOKURI, ValueBeginCvOkuri);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_KEEPINPUTNOR, ValueKeepInputNoR);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, ValueDelCvPosCncl);

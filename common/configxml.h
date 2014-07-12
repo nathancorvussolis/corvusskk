@@ -84,6 +84,8 @@ extern LPCWSTR SectionBehavior;
 
 //behavior keys
 
+extern LPCWSTR ValueDefaultMode;
+extern LPCWSTR ValueDefModeAscii;
 extern LPCWSTR ValueBeginCvOkuri;
 extern LPCWSTR ValueKeepInputNoR;
 extern LPCWSTR ValueDelCvPosCncl;

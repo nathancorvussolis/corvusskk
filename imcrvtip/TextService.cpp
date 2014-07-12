@@ -140,6 +140,8 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
 
+	_KeyboardSetDefaultMode();
+
 	if(!_InitThreadMgrEventSink())
 	{
 		goto exit;
@@ -189,7 +191,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 		goto exit;
 	}
 
-	_KeyboardOpenCloseChanged();
+	_KeyboardOpenCloseChanged(FALSE);
 
 	return S_OK;
 

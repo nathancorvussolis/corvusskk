@@ -262,6 +262,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back)
 {
 	//terminate composition
+	cursoridx = kana.size();
 	_Update(ec, pContext, TRUE, back);
 	_TerminateComposition(ec, pContext);
 	_ResetStatus();
@@ -272,6 +273,7 @@ HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, B
 HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 {
 	std::wstring comptext;
+
 	_Update(ec, pContext, comptext, TRUE);
 	_ResetStatus();
 	if(pContext != NULL)
@@ -285,9 +287,11 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext)
 {
 	ITfRange *pRange;
-	//leave composition
+
 	if(!comptext.empty())
 	{
+		//leave composition
+		cursoridx = kana.size();
 		_Update(ec, pContext, comptext, TRUE);
 		if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 		{

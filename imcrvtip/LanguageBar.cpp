@@ -581,6 +581,11 @@ private:
 
 void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 {
+	ITfDocumentMgr *pDocumentMgrFocus;
+	ITfContext *pContext;
+	CInputModeEditSession *pEditSession;
+	HRESULT hr;
+
 	if(_pLangBarItem != NULL)
 	{
 		_pLangBarItem->_Update();
@@ -590,13 +595,8 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 		_pLangBarItemI->_Update();
 	}
 
-	ITfDocumentMgr *pDocumentMgrFocus;
-	ITfContext *pContext;
-	CInputModeEditSession *pEditSession;
-	HRESULT hr;
-
-	if(showinputmode && !_IsComposing() && !_UILessMode &&
-		cx_showmodeinl && (!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode)))
+	if(_ShowInputModeWindow && showinputmode &&
+		(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow()))
 	{
 		switch(inputmode)
 		{

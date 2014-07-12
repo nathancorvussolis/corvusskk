@@ -54,6 +54,8 @@ LPCWSTR SectionBehavior = L"behavior";
 
 //behavior keys
 
+LPCWSTR ValueDefaultMode = L"defaultmode";
+LPCWSTR ValueDefModeAscii = L"defmodeascii";
 LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
 LPCWSTR ValueKeepInputNoR = L"keepinputnor";
 LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";

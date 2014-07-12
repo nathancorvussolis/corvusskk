@@ -134,8 +134,9 @@ public:
 	// KeyHandler
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
-	void _KeyboardOpenCloseChanged();
+	void _KeyboardOpenCloseChanged(BOOL showinputmode = TRUE);
 	void _KeyboardInputConversionChanged();
+	BOOL _KeyboardSetDefaultMode();
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
 
@@ -166,6 +167,7 @@ public:
 	void _NextComp();
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
+	void _ConvRoman();
 	BOOL _ConvN(WCHAR ch);
 	BOOL _ConvNN();
 	void _ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode);
@@ -286,6 +288,7 @@ public:
 	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
+	BOOL _ShowInputModeWindow;	//InputModeWindow
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
