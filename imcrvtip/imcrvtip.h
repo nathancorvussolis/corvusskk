@@ -62,6 +62,7 @@ typedef struct {	//キー設定(仮想キー)
 } VKEYMAP;
 
 #define CHAR_SKK_HINT	L'\x20'
+#define CHAR_SKK_OKURI	L'\x20'
 
 #define TKB_NEXT_PAGE	L'\uF003'	//next page key on touch-optimized keyboard
 #define TKB_PREV_PAGE	L'\uF004'	//previous page key on touch-optimized keyboard

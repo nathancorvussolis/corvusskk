@@ -384,7 +384,7 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		}
 
 		//参照カウントの有無で多量のDLLがロード/アンロードされるのでダミーのオブジェクトを作成しておく
-		if(cx_drawapi)
+		if(cx_drawapi && (_pDummyD2DFactory == NULL) && (_pDummyD2DDCRT == NULL))
 		{
 			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pDummyD2DFactory);
 			if(hr == S_OK)

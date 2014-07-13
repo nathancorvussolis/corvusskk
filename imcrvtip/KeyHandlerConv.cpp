@@ -557,7 +557,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 				else
 				{
-					kana.replace(okuriidx, 1, 1, chO);
+					kana.replace(okuriidx, 1, 1, chO);	//送りローマ字
 				}
 			}
 

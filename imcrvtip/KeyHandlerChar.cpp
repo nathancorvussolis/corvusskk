@@ -22,7 +22,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 
 	if((okuriidx != 0) && (okuriidx + 1 == cursoridx) && (chO != L'\0'))
 	{
-		kana.replace(okuriidx, 1, 1, chO);
+		kana.replace(okuriidx, 1, 1, chO);	//送りローマ字
 	}
 
 	switch(inputmode)
@@ -192,7 +192,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, std::ws
 				roman.clear();
 				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 				{
-					kana.replace(okuriidx, 1, 1, L'\x20');	//送りローマ字削除
+					kana.replace(okuriidx, 1, 1, CHAR_SKK_OKURI);	//送りローマ字
 					if(!cx_keepinputnor)
 					{
 						kana.erase(okuriidx, 1);
