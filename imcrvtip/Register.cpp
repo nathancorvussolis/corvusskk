@@ -83,7 +83,7 @@ BOOL RegisterCategories()
 		// for Windows 8 or later
 		if(IsVersion62AndOver())
 		{
-			for(i=0; i<_countof(c_guidCategory8); i++)
+			for(i = 0; i < _countof(c_guidCategory8); i++)
 			{
 				pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}

@@ -139,6 +139,7 @@ public:
 	BOOL _KeyboardSetDefaultMode();
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
+	void _GetActiveFlags();
 
 	// KeyHandlerChar
 	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, WPARAM wParam, WCHAR ch, WCHAR chO);

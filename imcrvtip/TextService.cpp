@@ -25,6 +25,9 @@ CTextService::CTextService()
 	_pDummyD2DDCRT = NULL;
 
 	_dwActiveFlags = 0;
+	_ImmersiveMode = FALSE;
+	_UILessMode = FALSE;
+	_ShowInputModeWindow = FALSE;
 
 	hPipe = INVALID_HANDLE_VALUE;
 

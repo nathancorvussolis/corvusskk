@@ -18,6 +18,14 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 				_EndComposition(pic);
 			}
 		}
+		else
+		{
+			if(!inputkey && roman.empty() && kana.empty())
+			{
+				// clear for input mode window
+				pRangeComposition->SetText(ecReadOnly, 0, L"", 0);
+			}
+		}
 
 		// reposition candidate window
 		if(_pCandidateList != NULL)

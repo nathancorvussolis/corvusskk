@@ -78,6 +78,8 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_FALSE;
 	}
 
+	_GetActiveFlags();
+
 	//補完
 	switch(sf)
 	{
@@ -320,33 +322,6 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 {
-	if(_pThreadMgr == NULL)
-	{
-		return;
-	}
-
-	_dwActiveFlags = 0;
-	_ImmersiveMode = FALSE;
-	_UILessMode = FALSE;
-	_ShowInputModeWindow = FALSE;
-
-	ITfThreadMgrEx *pThreadMgrEx;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx)) == S_OK)
-	{
-		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
-		pThreadMgrEx->Release();
-	}
-
-	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
-	{
-		_ImmersiveMode = TRUE;
-	}
-
-	if((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0)
-	{
-		_UILessMode = TRUE;
-	}
-
 	BOOL fOpen = _IsKeyboardOpen();
 	if(fOpen)
 	{
@@ -368,8 +343,7 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		_LoadKana();
 		_LoadJLatin();
 
-		_ShowInputModeWindow = !_UILessMode && cx_showmodeinl &&
-			(!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode));
+		_GetActiveFlags();
 
 		//OnPreservedKey(),CLangBarItemButton::OnClick()経由ならひらがなモード
 		//それ以外なら現在のモード
@@ -578,4 +552,36 @@ void CTextService::_ResetStatus()
 	okuriidx = 0;
 
 	cursoridx = 0;
+}
+
+void CTextService::_GetActiveFlags()
+{
+	if(_pThreadMgr == NULL)
+	{
+		return;
+	}
+
+	_dwActiveFlags = 0;
+	_ImmersiveMode = FALSE;
+	_UILessMode = FALSE;
+
+	ITfThreadMgrEx *pThreadMgrEx;
+	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx)) == S_OK)
+	{
+		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
+		pThreadMgrEx->Release();
+	}
+
+	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
+	{
+		_ImmersiveMode = TRUE;
+	}
+
+	if((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0)
+	{
+		_UILessMode = TRUE;
+	}
+
+	_ShowInputModeWindow = !_UILessMode && cx_showmodeinl &&
+		(!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode));
 }

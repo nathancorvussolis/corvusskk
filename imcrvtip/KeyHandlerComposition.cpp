@@ -319,6 +319,13 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 		}
 	}
 
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
+	}
+
 	if(inputkey && !fixed && !showcandlist && showentry &&
 		(((cx_untilcandlist != 1) && (candidx + 1 == cx_untilcandlist)) || (cx_untilcandlist == 1)) &&
 		(candidates.size() + 1 != cx_untilcandlist))
@@ -371,13 +378,6 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		{
 			return S_FALSE;
 		}
-	}
-
-	if(_pInputModeWindow != NULL)
-	{
-		_pInputModeWindow->_Destroy();
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
 	}
 
 	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK || cFetched != 1)
