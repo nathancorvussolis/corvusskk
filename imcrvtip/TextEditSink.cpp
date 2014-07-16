@@ -20,7 +20,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 		}
 		else
 		{
-			if(!inputkey && roman.empty() && kana.empty())
+			if(_pInputModeWindow != NULL && !inputkey && roman.empty() && kana.empty())
 			{
 				// clear for input mode window
 				pRangeComposition->SetText(ecReadOnly, 0, L"", 0);
