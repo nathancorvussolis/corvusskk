@@ -41,27 +41,18 @@ public:
 	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg);
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	std::wstring _MakeRegWordString();
-	void _PaintRegWord(HDC hdc, LPRECT lpr);
-	std::wstring _MakeCandidateString(UINT page, UINT count, UINT idx, int cycle);
-	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
 	void _Destroy();
 	void _Move(LPCRECT lpr);
 	void _BeginUIElement();
 	void _EndUIElement();
 	BOOL _CanShowUIElement();
-	void _CalcWindowRect();
 	void _Redraw();
-
 	HRESULT _OnKeyDown(UINT uVKey);
-
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 	void _PreEnd();
 	void _End();
 
 private:
-	LONG _cRef;
-
 	void _InitList();
 	void _UpdateUIElement();
 	void _NextPage();
@@ -71,15 +62,21 @@ private:
 	void _EndCandidateList(BYTE sf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
 	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
-
 	void _BackUpStatus();
 	void _ClearStatus();
 	void _RestoreStatusReg();
 	void _ClearStatusReg();
-
 	void _PreEndReq();
 	void _EndReq();
 	void _CreateNext(BOOL reg);
+
+	//Paint
+	void _WindowProcPaint(HWND hWnd);
+	std::wstring _MakeRegWordString();
+	void _PaintRegWord(HDC hdc, LPRECT lpr);
+	std::wstring _MakeCandidateString(UINT page, UINT count, UINT idx, int cycle);
+	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
+	void _CalcWindowRect();
 
 	DWORD _dwUIElementId;
 	BOOL _bShow;
@@ -92,6 +89,7 @@ private:
 	std::vector< UINT > _PageIndex;
 	std::vector< std::wstring > _CandStr;
 
+	LONG _cRef;
 	CTextService *_pTextService;
 	CCandidateList *_pCandidateList;
 	CCandidateWindow *_pCandidateWindow;		//子
@@ -111,9 +109,9 @@ private:
 	ID2D1Factory *_pD2DFactory;
 	ID2D1DCRenderTarget *_pD2DDCRT;
 	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_COLOR_NUM];
+	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 	IDWriteFactory *_pDWFactory;
 	IDWriteTextFormat *_pDWTF;
-	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 
 	BOOL _reg;		//初期表示から辞書登録
 

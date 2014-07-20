@@ -9,8 +9,6 @@ static LPCWSTR markAnnotation = L";";
 
 CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 {
-	UINT i;
-
 	_pTextService = pTextService;
 	_pTextService->AddRef();
 
@@ -41,10 +39,11 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 
 	_pD2DFactory = NULL;
 	_pD2DDCRT = NULL;
-	for(i = 0; i < 8; i++)
+	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
 		_pD2DBrush[i] = NULL;
 	}
+	_drawtext_option = D2D1_DRAW_TEXT_OPTIONS_NONE;
 	_pDWFactory = NULL;
 	_pDWTF = NULL;
 

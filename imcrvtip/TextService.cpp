@@ -21,8 +21,16 @@ CTextService::CTextService()
 	_pCandidateList = NULL;
 	_pInputModeWindow = NULL;
 
-	_pDummyD2DFactory = NULL;
-	_pDummyD2DDCRT = NULL;
+	hFont = NULL;
+	_pD2DFactory = NULL;
+	_pD2DDCRT = NULL;
+	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	{
+		_pD2DBrush[i] = NULL;
+	}
+	_drawtext_option = D2D1_DRAW_TEXT_OPTIONS_NONE;
+	_pDWFactory = NULL;
+	_pDWTF = NULL;
 
 	_dwActiveFlags = 0;
 	_ImmersiveMode = FALSE;

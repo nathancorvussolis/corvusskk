@@ -140,16 +140,16 @@ public:
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
 	void _GetActiveFlags();
+	void _InitFont();
+	void _UninitFont();
 
 	// KeyHandlerChar
-	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, WPARAM wParam, WCHAR ch, WCHAR chO);
+	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, WCHAR ch, WCHAR chO);
 	HRESULT _HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back = FALSE);
 	HRESULT _HandleCharShift(TfEditCookie ec, ITfContext *pContext);
-	HRESULT _HandleCharShift(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext);
 
 	// KeyHandlerCompostion
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed = FALSE, BOOL back = FALSE);
-	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, BOOL fixed = FALSE, BOOL back = FALSE);
 	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed);
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg);
 
@@ -256,10 +256,6 @@ private:
 	TfGuidAtom _gaDisplayAttributeConvOkuri;
 	TfGuidAtom _gaDisplayAttributeConvAnnot;
 
-	//dummy
-	ID2D1Factory *_pDummyD2DFactory;
-	ID2D1DCRenderTarget *_pDummyD2DDCRT;
-
 private:
 	//ファイルパス
 	WCHAR pathconfigxml[MAX_PATH];	//設定
@@ -286,6 +282,15 @@ private:
 	ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 
 public:
+	ID2D1Factory *_pD2DFactory;
+	ID2D1DCRenderTarget *_pD2DDCRT;
+	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_COLOR_NUM];
+	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
+	IDWriteFactory *_pDWFactory;
+	IDWriteTextFormat *_pDWTF;
+
+	HFONT hFont;
+
 	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode

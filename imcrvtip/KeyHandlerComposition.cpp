@@ -4,29 +4,16 @@
 #include "CandidateList.h"
 #include "InputModeWindow.h"
 
-static LPCWSTR markMidashi = L"▽";
-static LPCWSTR markHenkan = L"▼";
-static LPCWSTR markOkuri = L"*";
-
-static LPCWSTR markSP = L"\x20";
-static LPCWSTR markAnnotation = L";";
-static LPCWSTR markCursor = L"|";
-
 HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed, BOOL back)
 {
 	std::wstring comptext;
-	return _Update(ec, pContext, comptext, fixed, back);
-}
-
-HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstring &comptext, BOOL fixed, BOOL back)
-{
 	WCHAR candidatecount[16];
 	WCHAR useraddmode = REQ_USER_ADD_1;
 	LONG cchCursor = 0;
 	LONG cchOkuri = 0;
 	BOOL showmodemark = cx_showmodemark;
 
-	if(pContext == NULL)
+	if(pContext == NULL)	//辞書登録用
 	{
 		showmodemark = TRUE;
 	}
@@ -187,7 +174,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 				if(okuriidx == 0)
 				{
 					comptext.append(kana);
-					if(pContext == NULL && !fixed && cursoridx != kana.size())
+					if(pContext == NULL && !fixed && cursoridx != kana.size())	//辞書登録用
 					{
 						comptext.insert(cursoridx + (comptext.size() - kana.size()), markCursor);
 					}
@@ -204,7 +191,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					{
 						comptext.append(kana.substr(okuriidx + 1));
 					}
-					if(pContext == NULL && !fixed && roman.empty() && cursoridx != kana.size())
+					if(pContext == NULL && !fixed && roman.empty() && cursoridx != kana.size())	//辞書登録用
 					{
 						if(!showmodemark)
 						{
@@ -229,7 +216,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					{
 						if(okuriidx != 0 && okuriidx < cursoridx)
 						{
-							if(pContext == NULL && cursoridx != kana.size())
+							if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
 							{
 								comptext.insert(cursoridx - 1, markCursor);
 							}
@@ -244,7 +231,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 						}
 						else
 						{
-							if(pContext == NULL && cursoridx != kana.size())
+							if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
 							{
 								comptext.insert(cursoridx, markCursor);
 							}
@@ -260,7 +247,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, std::wstrin
 					}
 					else
 					{
-						if(pContext == NULL && cursoridx != kana.size())
+						if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
 						{
 							comptext.insert(cursoridx + 1, markCursor);
 						}
@@ -516,6 +503,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						case im_hiragana:
 						case im_katakana:
 						case im_katakana_ank:
+							//接辞
 							if(!abbrevmode && kana.size() >= 2)
 							{
 								if(kana.front() == L'>')

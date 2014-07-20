@@ -249,16 +249,16 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 	if(ch >= L'\x20')
 	{
-		std::wstring comptext;	//二重確定防止＆部分確定
 		std::wstring romanN = roman;
 
+		//2文字目以降のローマ字で変換位置指定
 		if(!roman.empty() && chO != L'\0')
 		{
 			chO = roman[0];
 		}
 
 		//文字処理
-		if(_HandleChar(ec, pContext, comptext, wParam, ch, chO) == E_ABORT)
+		if(_HandleChar(ec, pContext, wParam, ch, chO) == E_ABORT)
 		{
 			//待機処理、「ん」の処理等
 			switch(inputmode)
@@ -273,18 +273,14 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					{
 						if(!inputkey)
 						{
-							_Update(ec, pContext, comptext, TRUE);
-							if(pContext == NULL)	//辞書登録用
-							{
-								comptext.clear();
-							}
-							_ResetStatus();
+							_HandleCharShift(ec, pContext);
 						}
 						else
 						{
 							_Update(ec, pContext);
 						}
-						if(sf == SKK_DIRECT && inputkey && !showentry)
+						if(sf == SKK_DIRECT && inputkey && !showentry &&
+							((okuriidx == 0) || ((okuriidx != 0) && (okuriidx + 1 != cursoridx))))
 						{
 							kana.insert(cursoridx, 1, ch);
 							cursoridx++;
@@ -292,7 +288,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						}
 						else
 						{
-							_HandleChar(ec, pContext, comptext, wParam, ch, chO);
+							_HandleChar(ec, pContext, wParam, ch, chO);
 						}
 					}
 					else
@@ -357,41 +353,11 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 			break;
 		}
 
-		//参照カウントの有無で多量のDLLがロード/アンロードされるのでダミーのオブジェクトを作成しておく
-		if(cx_drawapi && (_pDummyD2DFactory == NULL) && (_pDummyD2DDCRT == NULL))
-		{
-			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pDummyD2DFactory);
-			if(hr == S_OK)
-			{
-				hr = _pDummyD2DFactory->CreateDCRenderTarget(&c_d2dprops, &_pDummyD2DDCRT);
-			}
-			if(hr != S_OK)
-			{
-				if(_pDummyD2DDCRT)
-				{
-					_pDummyD2DDCRT->Release();
-					_pDummyD2DDCRT = NULL;
-				}
-				if(_pDummyD2DFactory)
-				{
-					_pDummyD2DFactory->Release();
-					_pDummyD2DFactory = NULL;
-				}
-			}
-		}
+		_InitFont();
 	}
 	else
 	{
-		if(_pDummyD2DDCRT)
-		{
-			_pDummyD2DDCRT->Release();
-			_pDummyD2DDCRT = NULL;
-		}
-		if(_pDummyD2DFactory)
-		{
-			_pDummyD2DFactory->Release();
-			_pDummyD2DFactory = NULL;
-		}
+		_UninitFont();
 
 		inputmode = im_default;
 
@@ -584,4 +550,141 @@ void CTextService::_GetActiveFlags()
 
 	_ShowInputModeWindow = !_UILessMode && cx_showmodeinl &&
 		(!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode));
+}
+
+void CTextService::_InitFont()
+{
+	LOGFONTW logfont;
+	IDWriteGdiInterop *pDWGI = NULL;
+	IDWriteFont *pDWFont = NULL;
+
+	if(hFont == NULL)
+	{
+		HDC hdc = GetDC(NULL);
+
+		logfont.lfHeight = -MulDiv(cx_fontpoint, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+		logfont.lfWidth = 0;
+		logfont.lfEscapement = 0;
+		logfont.lfOrientation = 0;
+		logfont.lfWeight = cx_fontweight;
+		logfont.lfItalic = cx_fontitalic;
+		logfont.lfUnderline = FALSE;
+		logfont.lfStrikeOut = FALSE;
+		logfont.lfCharSet = SHIFTJIS_CHARSET;
+		logfont.lfOutPrecision = OUT_DEFAULT_PRECIS;
+		logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+		logfont.lfQuality = PROOF_QUALITY;
+		logfont.lfPitchAndFamily = DEFAULT_PITCH;
+		wcscpy_s(logfont.lfFaceName, cx_fontname);
+		hFont = CreateFontIndirectW(&logfont);
+
+		ReleaseDC(NULL, hdc);
+	}
+
+	if(cx_drawapi && !_UILessMode && (_pD2DFactory == NULL))
+	{
+		_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
+			D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
+
+		HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
+
+		if(hr == S_OK)
+		{
+			hr = _pD2DFactory->CreateDCRenderTarget(&c_d2dprops, &_pD2DDCRT);
+		}
+
+		if(hr == S_OK)
+		{
+			for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+			{
+				hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
+				if(hr != S_OK)
+				{
+					break;
+				}
+			}
+		}
+
+		if(hr == S_OK)
+		{
+			hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
+		}
+
+		if(hr == S_OK)
+		{
+			hr = _pDWFactory->GetGdiInterop(&pDWGI);
+		}
+
+		if(hr == S_OK)
+		{
+			hr = pDWGI->CreateFontFromLOGFONT(&logfont, &pDWFont);
+			if(hr != S_OK)
+			{
+				pDWGI->Release();
+			}
+		}
+
+		if(hr == S_OK)
+		{
+			hr = _pDWFactory->CreateTextFormat(cx_fontname, NULL,
+				pDWFont->GetWeight(), pDWFont->GetStyle(), pDWFont->GetStretch(),
+				(FLOAT)-logfont.lfHeight, L"ja-jp", &_pDWTF);
+			pDWFont->Release();
+			pDWGI->Release();
+		}
+
+		if(hr == S_OK)
+		{
+			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+		}
+
+		if(hr != S_OK)
+		{
+			_UninitFont();
+
+			hFont = CreateFontIndirectW(&logfont);
+		}
+	}
+}
+
+void CTextService::_UninitFont()
+{
+	if(hFont != NULL)
+	{
+		DeleteObject(hFont);
+		hFont = NULL;
+	}
+
+	if(_pDWTF != NULL)
+	{
+		_pDWTF->Release();
+		_pDWTF = NULL;
+	}
+
+	if(_pDWFactory != NULL)
+	{
+		_pDWFactory->Release();
+		_pDWFactory = NULL;
+	}
+
+	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	{
+		if(_pD2DBrush[i] != NULL)
+		{
+			_pD2DBrush[i]->Release();
+			_pD2DBrush[i] = NULL;
+		}
+	}
+
+	if(_pD2DDCRT)
+	{
+		_pD2DDCRT->Release();
+		_pD2DDCRT = NULL;
+	}
+
+	if(_pD2DFactory)
+	{
+		_pD2DFactory->Release();
+		_pD2DFactory = NULL;
+	}
 }

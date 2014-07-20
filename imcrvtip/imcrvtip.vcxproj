@@ -195,6 +195,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CandidateList.cpp" />
+    <ClCompile Include="CandidatePaint.cpp" />
     <ClCompile Include="CandidateUIElement.cpp" />
     <ClCompile Include="CandidateWindow.cpp" />
     <ClCompile Include="Compartment.cpp" />

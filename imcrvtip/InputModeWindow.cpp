@@ -378,7 +378,7 @@ void CInputModeWindow::_Redraw()
 {
 	if(_hwnd != NULL)
 	{
-		InvalidateRect(_hwnd, NULL, TRUE);
+		InvalidateRect(_hwnd, NULL, FALSE);
 		UpdateWindow(_hwnd);
 	}
 }

@@ -570,7 +570,6 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		//OnEndEditにて空にする
 		_pTextService->_SetText(ec, _pContext, std::wstring(L"\x20"), -1, 0, FALSE);
 		return S_OK;
 	}

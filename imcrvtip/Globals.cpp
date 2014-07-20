@@ -109,6 +109,20 @@ const GUID c_guidDisplayAttributeConvAnnot =
 
 #endif
 
+LPCWSTR markNo = L":";
+LPCWSTR markAnnotation = L";";
+LPCWSTR markCandEnd = L"\u3000";
+LPCWSTR markCursor = L"|";
+LPCWSTR markReg = L"登録";
+LPCWSTR markRegL = L"[";
+LPCWSTR markRegR = L"]";
+LPCWSTR markRegKeyEnd = L"：";
+LPCWSTR markSP = L"\x20";
+LPCWSTR markNBSP = L"\u00A0";
+LPCWSTR markMidashi = L"▽";
+LPCWSTR markHenkan = L"▼";
+LPCWSTR markOkuri = L"*";
+
 const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INFO_NUM] =
 {
 	{

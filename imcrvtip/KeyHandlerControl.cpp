@@ -402,7 +402,8 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_DIRECT:
-		if(inputkey && !showentry && roman.empty())
+		if(inputkey && !showentry && roman.empty() &&
+			((okuriidx == 0) || ((okuriidx != 0) && (okuriidx + 1 != cursoridx))))
 		{
 			kana.insert(cursoridx, 1, ch);
 			cursoridx++;

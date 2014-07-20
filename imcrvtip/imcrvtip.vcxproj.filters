@@ -56,6 +56,9 @@
     <ClCompile Include="CandidateList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CandidatePaint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="CandidateUIElement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
