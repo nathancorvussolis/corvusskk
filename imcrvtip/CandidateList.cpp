@@ -36,6 +36,10 @@ private:
 
 CCandidateList::CCandidateList(CTextService *pTextService)
 {
+	DllAddRef();
+
+	_cRef = 1;
+
 	_pTextService = pTextService;
 
 	_hwndParent = NULL;
@@ -47,15 +51,12 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 
 	_dwCookieContextKeyEventSink = TF_INVALID_COOKIE;
 	_dwCookieTextLayoutSink = TF_INVALID_COOKIE;
-
-	_cRef = 1;
-
-	DllAddRef();
 }
 
 CCandidateList::~CCandidateList()
 {
 	_EndCandidateList();
+
 	DllRelease();
 }
 

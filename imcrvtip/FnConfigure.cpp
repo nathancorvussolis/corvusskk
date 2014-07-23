@@ -113,7 +113,6 @@ void CTextService::_LoadBehavior()
 	//Behavior
 
 	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
-	_ReadBoolValue(SectionBehavior, ValueKeepInputNoR, cx_keepinputnor, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);

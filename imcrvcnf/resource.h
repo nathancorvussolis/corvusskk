@@ -39,13 +39,12 @@
 #define IDC_RADIO_DEFMODEHIRA                   1102
 #define IDC_RADIO_DEFMODEASCII                  1103
 #define IDC_CHECKBOX_BEGINCVOKURI               1104
-#define IDC_CHECKBOX_KEEPINPUTNOR               1105
-#define IDC_CHECKBOX_DELCVPOSCNCL               1106
-#define IDC_CHECKBOX_DELOKURICNCL               1107
-#define IDC_CHECKBOX_BACKINCENTER               1108
-#define IDC_CHECKBOX_ADDCANDKTKN                1109
-#define IDC_CHECKBOX_SHIFTNNOKURI               1110
-#define IDC_CHECKBOX_PRECEDEOKURI               1111
+#define IDC_CHECKBOX_DELCVPOSCNCL               1105
+#define IDC_CHECKBOX_DELOKURICNCL               1106
+#define IDC_CHECKBOX_BACKINCENTER               1107
+#define IDC_CHECKBOX_ADDCANDKTKN                1108
+#define IDC_CHECKBOX_SHIFTNNOKURI               1109
+#define IDC_CHECKBOX_PRECEDEOKURI               1110
 
 #define IDC_EDIT_FONTNAME                       2001
 #define IDC_EDIT_FONTPOINT                      2002

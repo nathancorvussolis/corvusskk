@@ -9,10 +9,10 @@ public:
 	{
 		DllAddRef();
 
+		_cRef = 1;
+
 		_pguid = &guid;
 		_pDisplayAttribute = pDisplayAttribute;
-
-		_cRef = 1;
 	}
 	~CDisplayAttributeInfo()
 	{

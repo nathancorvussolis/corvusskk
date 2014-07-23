@@ -57,7 +57,6 @@ LPCWSTR SectionBehavior = L"behavior";
 LPCWSTR ValueDefaultMode = L"defaultmode";
 LPCWSTR ValueDefModeAscii = L"defmodeascii";
 LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
-LPCWSTR ValueKeepInputNoR = L"keepinputnor";
 LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";
 LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";

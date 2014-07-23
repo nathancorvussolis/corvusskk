@@ -8,7 +8,6 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 	ROMAN_KANA_CONV rkc;
 	ASCII_JLATIN_CONV ajc;
 	HRESULT ret = S_OK;
-	std::wstring roman_conv;
 
 	if(showentry)
 	{
@@ -67,7 +66,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			}
 
 			//ローマ字仮名変換
-			roman_conv = roman;
+			std::wstring roman_conv = roman;
 			if(ch != L'\0')
 			{
 				roman_conv.push_back(ch);
@@ -106,67 +105,65 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 
 					_HandleCharShift(ec, pContext);
 					_Update(ec, pContext);
-					break;
-				}
-
-				switch(inputmode)
-				{
-				case im_hiragana:
-					kana.insert(cursoridx, rkc.hiragana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.hiragana);
-					}
-					cursoridx += wcslen(rkc.hiragana);
-					break;
-				case im_katakana:
-					kana.insert(cursoridx, rkc.katakana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana);
-					}
-					cursoridx += wcslen(rkc.katakana);
-					break;
-				case im_katakana_ank:
-					kana.insert(cursoridx, rkc.katakana_ank);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana_ank);
-					}
-					cursoridx += wcslen(rkc.katakana_ank);
-					break;
-				default:
-					break;
-				}
-
-				roman.clear();
-
-				if(inputkey)
-				{
-					_HandleCharShift(ec, pContext);
-					if(!kana.empty() && okuriidx != 0 && !rkc.soku && cx_begincvokuri && !hintmode && !rkc.wait)
-					{
-						cursoridx = kana.size();
-						showentry = TRUE;
-						_StartConv();
-					}
-					else if(rkc.soku)
-					{
-						roman.push_back(ch);
-					}
-					_Update(ec, pContext);
 				}
 				else
 				{
-					_HandleCharShift(ec, pContext);
-					if(rkc.soku)
+					std::wstring kana_ins;
+					switch(inputmode)
 					{
-						roman.push_back(ch);
+					case im_hiragana:
+						kana_ins = rkc.hiragana;
+						break;
+					case im_katakana:
+						kana_ins = rkc.katakana;
+						break;
+					case im_katakana_ank:
+						kana_ins = rkc.katakana_ank;
+						break;
+					default:
+						break;
+					}
+
+					if(!kana_ins.empty())
+					{
+						kana.insert(cursoridx, kana_ins);
+						if(okuriidx != 0 && cursoridx <= okuriidx)
+						{
+							okuriidx += kana_ins.size();
+						}
+						cursoridx += kana_ins.size();
+					}
+
+					roman.clear();
+
+					if(inputkey)
+					{
+						_HandleCharShift(ec, pContext);
+						if(cx_begincvokuri && !hintmode &&
+							!kana.empty() && okuriidx != 0 && !rkc.soku && !rkc.wait)
+						{
+							cursoridx = kana.size();
+							showentry = TRUE;
+							_StartConv();
+						}
+						else if(rkc.soku)
+						{
+							roman.push_back(ch);
+						}
 						_Update(ec, pContext);
 					}
 					else
 					{
-						_HandleCharReturn(ec, pContext);
+						_HandleCharShift(ec, pContext);
+						if(rkc.soku)
+						{
+							roman.push_back(ch);
+							_Update(ec, pContext);
+						}
+						else
+						{
+							_HandleCharReturn(ec, pContext);
+						}
 					}
 				}
 				break;
@@ -183,20 +180,10 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 				{
 					kana.replace(okuriidx, 1, 1, CHAR_SKK_OKURI);	//送りローマ字
-					if(!cx_keepinputnor)
-					{
-						kana.erase(okuriidx, 1);
-						okuriidx = 0;
-						cursoridx--;
-					}
 				}
 				_Update(ec, pContext);
-				if(!inputkey)
-				{
-					//OnCompositionTerminatedを呼ばないアプリの為にコンポジションを終了
-					_HandleCharReturn(ec, pContext);
-				}
 				break;
+
 			default:
 				break;
 			}

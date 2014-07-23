@@ -499,9 +499,6 @@ BOOL CTextService::_ConvN(WCHAR ch)
 {
 	ROMAN_KANA_CONV rkc;
 	HRESULT ret;
-	WCHAR chN;
-	WCHAR chO;
-	std::wstring roman_conv;
 	size_t i;
 
 	if(roman.empty())
@@ -519,7 +516,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		{
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
-				chN = L'\0';
+				WCHAR chN = L'\0';
 				switch(inputmode)
 				{
 				case im_hiragana:
@@ -535,7 +532,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 					break;
 				}
 
-				chO = L'\0';
+				WCHAR chO = L'\0';
 				for(i = 0; i < CONV_POINT_NUM; i++)
 				{
 					if(conv_point[i][0] == L'\0' &&
@@ -561,35 +558,32 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 			}
 
+			std::wstring kana_ins;
 			switch(inputmode)
 			{
 			case im_hiragana:
-				kana.insert(cursoridx, rkc.hiragana);
-				if(okuriidx != 0 && cursoridx <= okuriidx)
-				{
-					okuriidx += wcslen(rkc.hiragana);
-				}
-				cursoridx += wcslen(rkc.hiragana);
+				kana_ins = rkc.hiragana;
 				break;
 			case im_katakana:
-				kana.insert(cursoridx, rkc.katakana);
-				if(okuriidx != 0 && cursoridx <= okuriidx)
-				{
-					okuriidx += wcslen(rkc.katakana);
-				}
-				cursoridx += wcslen(rkc.katakana);
+				kana_ins = rkc.katakana;
 				break;
 			case im_katakana_ank:
-				kana.insert(cursoridx, rkc.katakana_ank);
-				if(okuriidx != 0 && cursoridx <= okuriidx)
-				{
-					okuriidx += wcslen(rkc.katakana_ank);
-				}
-				cursoridx += wcslen(rkc.katakana_ank);
+				kana_ins = rkc.katakana_ank;
 				break;
 			default:
 				break;
 			}
+
+			if(!kana_ins.empty())
+			{
+				kana.insert(cursoridx, kana_ins);
+				if(okuriidx != 0 && cursoridx <= okuriidx)
+				{
+					okuriidx += kana_ins.size();
+				}
+				cursoridx += kana_ins.size();
+			}
+
 			roman.clear();
 			return TRUE;
 		}
@@ -601,7 +595,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 	// ( <"n*", ""> -> <"", "ん"> ) SKK_CONV_POINTのみ
 	if(ch != L'\0' && ch != WCHAR_MAX)
 	{
-		roman_conv = roman;
+		std::wstring roman_conv = roman;
 		roman_conv.push_back(ch);
 		wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 		ret = _ConvRomanKana(&rkc);
@@ -610,35 +604,32 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		case S_OK:		//一致
 			if(rkc.soku)	//「n* soku==1」
 			{
+				std::wstring kana_ins;
 				switch(inputmode)
 				{
 				case im_hiragana:
-					kana.insert(cursoridx, rkc.hiragana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.hiragana);
-					}
-					cursoridx += wcslen(rkc.hiragana);
+					kana_ins = rkc.hiragana;
 					break;
 				case im_katakana:
-					kana.insert(cursoridx, rkc.katakana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana);
-					}
-					cursoridx += wcslen(rkc.katakana);
+					kana_ins = rkc.katakana;
 					break;
 				case im_katakana_ank:
-					kana.insert(cursoridx, rkc.katakana_ank);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana_ank);
-					}
-					cursoridx += wcslen(rkc.katakana_ank);
+					kana_ins = rkc.katakana_ank;
 					break;
 				default:
 					break;
 				}
+
+				if(!kana_ins.empty())
+				{
+					kana.insert(cursoridx, kana_ins);
+					if(okuriidx != 0 && cursoridx <= okuriidx)
+					{
+						okuriidx += kana_ins.size();
+					}
+					cursoridx += kana_ins.size();
+				}
+
 				roman.clear();
 				return TRUE;	//「nk」etc.
 			}
@@ -675,12 +666,11 @@ BOOL CTextService::_ConvNN()
 {
 	ROMAN_KANA_CONV rkc;
 	HRESULT ret;
-	WCHAR chN;
 
 	// ( <"nn", ""> -> <"", "ん"> )
 	if(roman.size() == 1)
 	{
-		chN = roman[0];
+		WCHAR chN = roman[0];
 		rkc.roman[0] = chN;
 		rkc.roman[1] = chN;
 		rkc.roman[2] = L'\0';
@@ -693,35 +683,32 @@ BOOL CTextService::_ConvNN()
 				wcscmp(rkc.katakana, L"ン") == 0 &&
 				wcscmp(rkc.katakana_ank, L"ﾝ") == 0)	//「nn soku==0」
 			{
+				std::wstring kana_ins;
 				switch(inputmode)
 				{
 				case im_hiragana:
-					kana.insert(cursoridx, rkc.hiragana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.hiragana);
-					}
-					cursoridx += wcslen(rkc.hiragana);
+					kana_ins = rkc.hiragana;
 					break;
 				case im_katakana:
-					kana.insert(cursoridx, rkc.katakana);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana);
-					}
-					cursoridx += wcslen(rkc.katakana);
+					kana_ins = rkc.katakana;
 					break;
 				case im_katakana_ank:
-					kana.insert(cursoridx, rkc.katakana_ank);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += wcslen(rkc.katakana_ank);
-					}
-					cursoridx += wcslen(rkc.katakana_ank);
+					kana_ins = rkc.katakana_ank;
 					break;
 				default:
 					break;
 				}
+
+				if(!kana_ins.empty())
+				{
+					kana.insert(cursoridx, kana_ins);
+					if(okuriidx != 0 && cursoridx <= okuriidx)
+					{
+						okuriidx += kana_ins.size();
+					}
+					cursoridx += kana_ins.size();
+				}
+
 				roman.clear();
 				return TRUE;	//「nn」
 			}

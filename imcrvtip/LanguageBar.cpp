@@ -44,6 +44,8 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 {
 	DllAddRef();
 
+	_cRef = 1;
+
 	_LangBarItemInfo.clsidService = c_clsidTextService;
 	_LangBarItemInfo.guidItem = guid;
 	// GDI handle leak occurs when GetIcon function returns monochrome icon if TF_LBI_STYLE_TEXTCOLORICON flag is set.
@@ -58,8 +60,6 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 
 	_pTextService = pTextService;
 	_pTextService->AddRef();
-
-	_cRef = 1;
 }
 
 CLangBarItemButton::~CLangBarItemButton()
@@ -558,91 +558,22 @@ void CTextService::_UninitLanguageBar()
 	}
 }
 
-class CInputModeEditSession : public CEditSessionBase
-{
-public:
-	CInputModeEditSession(CTextService *pTextService, ITfContext *pContext) : CEditSessionBase(pTextService, pContext)
-	{
-		_pTextService = pTextService;
-		_pContext = pContext;
-	}
-
-	// ITfEditSession
-	STDMETHODIMP DoEditSession(TfEditCookie ec)
-	{
-		_pTextService->_SetText(ec, _pContext, std::wstring(L"\x20"), -1, 0, FALSE);
-		return S_OK;
-	}
-
-private:
-	CTextService *_pTextService;
-	ITfContext *_pContext;
-};
-
 void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 {
-	ITfDocumentMgr *pDocumentMgrFocus;
-	ITfContext *pContext;
-	CInputModeEditSession *pEditSession;
-	HRESULT hr;
-
 	if(_pLangBarItem != NULL)
 	{
 		_pLangBarItem->_Update();
 	}
+
 	if(_pLangBarItemI != NULL)
 	{
 		_pLangBarItemI->_Update();
 	}
 
-	if(_ShowInputModeWindow && showinputmode &&
+	if(_ShowInputMode && showinputmode &&
 		(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow()))
 	{
-		switch(inputmode)
-		{
-		case im_hiragana:
-		case im_katakana:
-		case im_katakana_ank:
-		case im_jlatin:
-		case im_ascii:
-			if(_pInputModeWindow != NULL)
-			{
-				_pInputModeWindow->_Destroy();
-				delete _pInputModeWindow;
-				_pInputModeWindow = NULL;
-			}
-			if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
-			{
-				if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
-				{
-					pEditSession = new CInputModeEditSession(this, pContext);
-					if(pEditSession != NULL)
-					{
-						pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-						pEditSession->Release();
-					}
-					if(hr == S_OK)
-					{
-						_pInputModeWindow = new CInputModeWindow();
-						if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
-						{
-							_pInputModeWindow->_Show(TRUE);
-						}
-						else
-						{
-							_pInputModeWindow->_Destroy();
-							delete _pInputModeWindow;
-							_pInputModeWindow = NULL;
-						}
-						pContext->Release();
-					}
-				}
-				pDocumentMgrFocus->Release();
-			}
-			break;
-		default:
-			break;
-		}
+		_ShowInputModeWindow(FALSE);
 	}
 }
 
@@ -651,5 +582,98 @@ void CTextService::_GetIcon(HICON *phIcon)
 	if(_pLangBarItem != NULL)
 	{
 		_pLangBarItem->_GetIcon(phIcon, FALSE);
+	}
+}
+
+class CInputModeEditSession : public CEditSessionBase
+{
+public:
+	CInputModeEditSession(CTextService *pTextService, ITfContext *pContext, CInputModeWindow *pInputModeWindow) : CEditSessionBase(pTextService, pContext)
+	{
+		_pTextService = pTextService;
+		_pContext = pContext;
+		_pInputModeWindow = pInputModeWindow;
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		ITfContextView *pContextView;
+		CIMGetTextExtEditSession *pEditSession;
+		HRESULT hr;
+
+		_pTextService->_SetText(ec, _pContext, std::wstring(L""), -1, 0, FALSE);
+
+		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		{
+			pEditSession = new CIMGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow);
+			if(pEditSession != NULL)
+			{
+				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
+				pEditSession->Release();
+			}
+			pContextView->Release();
+		}
+
+		return S_OK;
+	}
+
+private:
+	CTextService *_pTextService;
+	ITfContext *_pContext;
+	CInputModeWindow *_pInputModeWindow;
+};
+
+void CTextService::_ShowInputModeWindow(BOOL term)
+{
+	ITfDocumentMgr *pDocumentMgrFocus;
+	ITfContext *pContext;
+	CInputModeEditSession *pEditSession;
+	HRESULT hr;
+
+	switch(inputmode)
+	{
+	case im_hiragana:
+	case im_katakana:
+	case im_katakana_ank:
+	case im_jlatin:
+	case im_ascii:
+		if(_pInputModeWindow != NULL)
+		{
+			_pInputModeWindow->_Destroy();
+			delete _pInputModeWindow;
+			_pInputModeWindow = NULL;
+		}
+		if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
+		{
+			if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
+			{
+				_pInputModeWindow = new CInputModeWindow();
+				_pInputModeWindow->_term = term;
+
+				if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
+				{
+					pEditSession = new CInputModeEditSession(this, pContext, _pInputModeWindow);
+					if(pEditSession != NULL)
+					{
+						// Asynchronous
+						pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hr);
+						pEditSession->Release();
+					}
+
+					if(hr != TF_S_ASYNC)
+					{
+						_pInputModeWindow->_Destroy();
+						delete _pInputModeWindow;
+						_pInputModeWindow = NULL;
+					}
+					pContext->Release();
+				}
+			}
+			pDocumentMgrFocus->Release();
+		}
+		break;
+	default:
+		break;
 	}
 }

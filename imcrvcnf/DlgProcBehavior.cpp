@@ -15,7 +15,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			CheckDlgButton(hDlg, IDC_RADIO_DEFMODEHIRA, BST_CHECKED);
 		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BEGINCVOKURI, SectionBehavior, ValueBeginCvOkuri, L"1");
-		LoadCheckButton(hDlg, IDC_CHECKBOX_KEEPINPUTNOR, SectionBehavior, ValueKeepInputNoR, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, SectionBehavior, ValueDelCvPosCncl, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter, L"1");
@@ -32,7 +31,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_RADIO_DEFMODEHIRA:
 		case IDC_RADIO_DEFMODEASCII:
 		case IDC_CHECKBOX_BEGINCVOKURI:
-		case IDC_CHECKBOX_KEEPINPUTNOR:
 		case IDC_CHECKBOX_DELCVPOSCNCL:
 		case IDC_CHECKBOX_DELOKURICNCL:
 		case IDC_CHECKBOX_BACKINCENTER:
@@ -56,7 +54,6 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DEFAULTMODE, ValueDefaultMode);
 			SaveCheckButton(hDlg, IDC_RADIO_DEFMODEASCII, ValueDefModeAscii);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_BEGINCVOKURI, ValueBeginCvOkuri);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_KEEPINPUTNOR, ValueKeepInputNoR);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DELCVPOSCNCL, ValueDelCvPosCncl);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, ValueDelOkuriCncl);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, ValueBackIncEnter);

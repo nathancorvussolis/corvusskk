@@ -3,6 +3,10 @@
 #define INPUTMODEWINDOW_H
 
 #include "TextService.h"
+#include "EditSession.h"
+
+#define IM_MERGIN_X 2
+#define IM_MERGIN_Y 2
 
 class CInputModeWindow : public ITfTextLayoutSink
 {
@@ -27,6 +31,8 @@ public:
 	void _Show(BOOL bShow);
 	void _Redraw();
 	void _GetRect(LPRECT lpRect);
+	
+	BOOL _term;
 
 private:
 	LONG _cRef;
@@ -45,6 +51,42 @@ private:
 	BOOL _bCandidateWindow;
 
 	int _size;
+};
+
+class CIMGetTextExtEditSession : public CEditSessionBase
+{
+public:
+	CIMGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext, ITfContextView *pContextView, CInputModeWindow *pInputModeWindow) : CEditSessionBase(pTextService, pContext)
+	{
+		_pContextView = pContextView;
+		_pInputModeWindow = pInputModeWindow;
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		RECT rc;
+		BOOL fClipped;
+		ITfComposition *pComposition = _pTextService->_GetComposition();
+		if(pComposition != NULL)
+		{
+			ITfRange *pRange;
+			if(pComposition->GetRange(&pRange) == S_OK)
+			{
+				if(_pContextView->GetTextExt(ec, pRange, &rc, &fClipped) == S_OK)
+				{
+					_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
+					_pInputModeWindow->_Show(TRUE);
+				}
+				pRange->Release();
+			}
+		}
+		return S_OK;
+	}
+
+private:
+	ITfContextView *_pContextView;
+	CInputModeWindow *_pInputModeWindow;
 };
 
 #endif //INPUTMODEWINDOW_H

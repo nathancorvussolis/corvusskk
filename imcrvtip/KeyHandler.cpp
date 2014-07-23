@@ -260,7 +260,6 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		//文字処理
 		if(_HandleChar(ec, pContext, wParam, ch, chO) == E_ABORT)
 		{
-			//待機処理、「ん」の処理等
 			switch(inputmode)
 			{
 			case im_hiragana:
@@ -268,6 +267,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			case im_katakana_ank:
 				if(!abbrevmode && !romanN.empty())
 				{
+					//「ん」または待機中の文字を送り出し
 					roman = romanN;
 					if(_ConvN(WCHAR_MAX))
 					{
@@ -279,30 +279,17 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						{
 							_Update(ec, pContext);
 						}
-						if(sf == SKK_DIRECT && inputkey && !showentry &&
-							((okuriidx == 0) || ((okuriidx != 0) && (okuriidx + 1 != cursoridx))))
-						{
-							kana.insert(cursoridx, 1, ch);
-							cursoridx++;
-							_Update(ec, pContext);
-						}
-						else
-						{
-							_HandleChar(ec, pContext, wParam, ch, chO);
-						}
 					}
 					else
 					{
 						roman.clear();
-						if(cx_keepinputnor)
+					}
+					//最後の入力で再処理
+					if(_HandleChar(ec, pContext, wParam, ch, chO) == E_ABORT)
+					{
+						if(!inputkey)
 						{
-							WCHAR nch = _GetCh((BYTE)wParam);
-							BYTE nsf = _GetSf((BYTE)wParam, nch);
-							return _HandleKey(ec, pContext, wParam, nsf);
-						}
-						else
-						{
-							_Update(ec, pContext);
+							_HandleCharReturn(ec, pContext);
 						}
 					}
 				}
@@ -548,7 +535,7 @@ void CTextService::_GetActiveFlags()
 		_UILessMode = TRUE;
 	}
 
-	_ShowInputModeWindow = !_UILessMode && cx_showmodeinl &&
+	_ShowInputMode = !_UILessMode && cx_showmodeinl &&
 		(!cx_showmodeimm || (cx_showmodeimm && _ImmersiveMode));
 }
 

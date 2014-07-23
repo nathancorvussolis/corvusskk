@@ -69,7 +69,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		}
 	}
 
-	if(_hwnd != NULL && _pTextService->_ShowInputModeWindow)
+	if(_hwnd != NULL && _pTextService->_ShowInputMode)
 	{
 		_pInputModeWindow = new CInputModeWindow();
 		if(!_pInputModeWindow->_Create(_pTextService, NULL, TRUE, _hwnd))
@@ -742,6 +742,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		regwordul = FALSE;
 		regword = FALSE;
 
+		//スペースのみのとき空として扱う
 		if(std::regex_match(regwordtext, std::wregex(L"^\\s+$")))
 		{
 			regwordtext.clear();
@@ -888,11 +889,10 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		}
 		break;
 
-	// surrogate pair
-
 	case SKK_BACK:
 		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
+			// surrogate pair
 			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
 				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
@@ -912,6 +912,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_DELETE:
 		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
+			// surrogate pair
 			if(regwordtext.size() >= regwordtextpos + 2 &&
 				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
@@ -929,6 +930,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_LEFT:
 		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
 		{
+			// surrogate pair
 			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
 				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
 			{
@@ -953,6 +955,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_RIGHT:
 		if(comptext.empty() && regwordtextpos < regwordtext.size())
 		{
+			// surrogate pair
 			if(regwordtext.size() >= regwordtextpos + 2 &&
 				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
 			{
