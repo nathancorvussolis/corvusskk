@@ -64,7 +64,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 
 CCandidateWindow::~CCandidateWindow()
 {
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
@@ -158,7 +158,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		return E_UNEXPECTED;
 	}
 
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->Show(bShow);
 	}
@@ -195,7 +195,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	}
 #endif
 
-	if(_pInputModeWindow && regword)
+	if(_pInputModeWindow != NULL && regword)
 	{
 		_pInputModeWindow->_Show(bShow);
 	}
@@ -205,7 +205,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 
 STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 {
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		return _pCandidateWindow->IsShown(pbShow);
 	}
@@ -222,7 +222,7 @@ STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 
 STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 {
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		return _pCandidateWindow->GetUpdatedFlags(pdwFlags);
 	}
@@ -541,7 +541,7 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 
 STDAPI CCandidateWindow::Finalize()
 {
-	if(_pCandidateList)
+	if(_pCandidateList != NULL)
 	{
 		_pCandidateList->_EndCandidateList();
 	}
@@ -550,7 +550,7 @@ STDAPI CCandidateWindow::Finalize()
 
 STDAPI CCandidateWindow::Abort()
 {
-	if(_pCandidateList)
+	if(_pCandidateList != NULL)
 	{
 		_pCandidateList->_EndCandidateList();
 	}

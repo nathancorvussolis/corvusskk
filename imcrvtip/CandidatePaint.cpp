@@ -705,7 +705,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
-	if(_pInputModeWindow)
+	if(_pInputModeWindow != NULL)
 	{
 		_pInputModeWindow->_GetRect(&r);
 		_pInputModeWindow->_Move(x + cx - r.right, y + cy + 1);

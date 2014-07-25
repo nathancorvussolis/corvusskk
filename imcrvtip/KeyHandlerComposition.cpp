@@ -306,12 +306,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		}
 	}
 
-	if(_pInputModeWindow != NULL)
-	{
-		_pInputModeWindow->_Destroy();
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
-	}
+	_EndInputModeWindow();
 
 	if(inputkey && !fixed && !showcandlist && showentry &&
 		(((cx_untilcandlist != 1) && (candidx + 1 == cx_untilcandlist)) || (cx_untilcandlist == 1)) &&

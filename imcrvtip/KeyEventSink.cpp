@@ -121,7 +121,7 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
 	{
-		if(_pInputModeWindow)
+		if(_pInputModeWindow != NULL)
 		{
 			_ClearComposition();
 		}

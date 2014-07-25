@@ -125,8 +125,9 @@ public:
 
 	// LanguageBar
 	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
-	void _ShowInputModeWindow(BOOL term);
 	void _GetIcon(HICON *phIcon);
+	void _StartInputModeWindow(BOOL term);
+	void _EndInputModeWindow();
 
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);

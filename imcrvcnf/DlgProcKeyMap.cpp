@@ -14,7 +14,7 @@ static const struct {
 		{IDC_EDIT_CONV_CHAR,	ValueKeyMapConvChar,	L"\\cq"},
 		{IDC_EDIT_JLATIN,		ValueKeyMapJLatin,		L"L"},
 		{IDC_EDIT_ASCII,		ValueKeyMapAscii,		L"l"},
-		{IDC_EDIT_JMODE,		ValueKeyMapJMode,		L"\\cj|\\cq"},
+		{IDC_EDIT_JMODE,		ValueKeyMapJMode,		L"\\cj"},
 		{IDC_EDIT_ABBREV,		ValueKeyMapAbbrev,		L"/"},
 		{IDC_EDIT_AFFIX,		ValueKeyMapAffix,		L"<|>"},
 		{IDC_EDIT_NEXT_CAND,	ValueKeyMapNextCand,	L"\\x20|\\cn"},

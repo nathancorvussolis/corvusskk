@@ -3,6 +3,9 @@
 #include "TextService.h"
 #include "InputModeWindow.h"
 
+#define IMPUTMODE_TIMER_ID		0x54ab516b
+#define IMPUTMODE_TIMEOUT_MSEC	3000
+
 CInputModeWindow::CInputModeWindow()
 {
 	DllAddRef();
@@ -204,6 +207,10 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
 		SetWindowPos(_hwnd, NULL, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+		if(!_bCandidateWindow)
+		{
+			SetTimer(_hwnd, IMPUTMODE_TIMER_ID, IMPUTMODE_TIMEOUT_MSEC, NULL);
+		}
 	}
 
 	hdc = GetDC(NULL);
@@ -220,7 +227,6 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 
 	SetWindowPos(_hwnd, HWND_TOPMOST, pt.x, pt.y + IM_MERGIN_Y,
 		_size + IM_MERGIN_X * 2, _size + IM_MERGIN_Y * 2, SWP_NOACTIVATE);
-
 
 	return TRUE;
 }
@@ -250,6 +256,19 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 	switch(uMsg)
 	{
+	case WM_TIMER:
+		if(wParam == IMPUTMODE_TIMER_ID)
+		{
+			// CAUTION! killing self
+			_pTextService->_ClearComposition();
+		}
+		break;
+	case WM_DESTROY:
+		if(!_bCandidateWindow)
+		{
+			KillTimer(hWnd, IMPUTMODE_TIMER_ID);
+		}
+		break;
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
@@ -300,14 +319,14 @@ void CInputModeWindow::_Destroy()
 		_hwnd = NULL;
 	}
 
-	if(_pContext)
+	if(_pContext != NULL)
 	{
 		_UnadviseTextLayoutSink();
 		_pContext->Release();
 		_pContext = NULL;
 	}
 
-	if(_pTextService)
+	if(_pTextService != NULL)
 	{
 		_pTextService->Release();
 		_pTextService = NULL;

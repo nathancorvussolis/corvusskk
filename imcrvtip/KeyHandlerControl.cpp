@@ -11,7 +11,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	switch(sf)
 	{
 	case SKK_KANA:
-		if(abbrevmode)
+		if(abbrevmode && !showentry)
 		{
 			break;
 		}
@@ -69,7 +69,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_CONV_CHAR:
-		if(abbrevmode)
+		if(abbrevmode && !showentry)
 		{
 			//全英に変換
 			ASCII_JLATIN_CONV ajc;
@@ -143,7 +143,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 
 	case SKK_JLATIN:
 	case SKK_ASCII:
-		if(abbrevmode)
+		if(abbrevmode && !showentry)
 		{
 			break;
 		}
@@ -196,7 +196,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_ABBREV:
-		if(abbrevmode)
+		if(abbrevmode && !showentry)
 		{
 			break;
 		}

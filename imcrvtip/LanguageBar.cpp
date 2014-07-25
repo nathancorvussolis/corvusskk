@@ -573,7 +573,7 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 	if(_ShowInputMode && showinputmode &&
 		(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow()))
 	{
-		_ShowInputModeWindow(FALSE);
+		_StartInputModeWindow(FALSE);
 	}
 }
 
@@ -624,7 +624,7 @@ private:
 	CInputModeWindow *_pInputModeWindow;
 };
 
-void CTextService::_ShowInputModeWindow(BOOL term)
+void CTextService::_StartInputModeWindow(BOOL term)
 {
 	ITfDocumentMgr *pDocumentMgrFocus;
 	ITfContext *pContext;
@@ -638,12 +638,8 @@ void CTextService::_ShowInputModeWindow(BOOL term)
 	case im_katakana_ank:
 	case im_jlatin:
 	case im_ascii:
-		if(_pInputModeWindow != NULL)
-		{
-			_pInputModeWindow->_Destroy();
-			delete _pInputModeWindow;
-			_pInputModeWindow = NULL;
-		}
+		_EndInputModeWindow();
+
 		if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
 		{
 			if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
@@ -663,9 +659,7 @@ void CTextService::_ShowInputModeWindow(BOOL term)
 
 					if(hr != TF_S_ASYNC)
 					{
-						_pInputModeWindow->_Destroy();
-						delete _pInputModeWindow;
-						_pInputModeWindow = NULL;
+						_EndInputModeWindow();
 					}
 					pContext->Release();
 				}
@@ -675,5 +669,15 @@ void CTextService::_ShowInputModeWindow(BOOL term)
 		break;
 	default:
 		break;
+	}
+}
+
+void CTextService::_EndInputModeWindow()
+{
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+		delete _pInputModeWindow;
+		_pInputModeWindow = NULL;
 	}
 }

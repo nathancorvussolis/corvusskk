@@ -35,13 +35,11 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	{
 		if(_pInputModeWindow->_term)
 		{
-			_pInputModeWindow->_Destroy();
-			delete _pInputModeWindow;
-			_pInputModeWindow = NULL;
+			_EndInputModeWindow();
 		}
 		else
 		{
-			_ShowInputModeWindow(TRUE);
+			_StartInputModeWindow(TRUE);
 		}
 	}
 
@@ -238,12 +236,7 @@ void CTextService::_ClearComposition()
 		_pCandidateList = NULL;
 	}
 
-	if(_pInputModeWindow != NULL)
-	{
-		_pInputModeWindow->_Destroy();
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
-	}
+	_EndInputModeWindow();
 
 	if(_pComposition != NULL)
 	{

@@ -47,11 +47,11 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 {
 	BYTE k = SKK_NULL;
+	SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
+	SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
 
 	if(vk < VKEYMAPNUM)
 	{
-		SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
-		SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
 		switch(inputmode)
 		{
 		case im_ascii:
@@ -106,6 +106,33 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 		default:
 			break;
 		}
+	}
+
+	//カタカナ/ｶﾀｶﾅモードかつ確定入力モードのとき「ひらがな」を有効にする
+	switch(inputmode)
+	{
+	case im_katakana:
+	case im_katakana_ank:
+		if(!inputkey)
+		{
+			if(vk < VKEYMAPNUM)
+			{
+				if((vkeymap.keylatin[vk] == SKK_JMODE) ||
+					(vk_shift && (vkeymap_shift.keylatin[vk] == SKK_JMODE)) ||
+					(vk_ctrl && (vkeymap_ctrl.keylatin[vk] == SKK_JMODE)))
+				{
+					k = SKK_KANA;
+				}
+			}
+			if(k != SKK_KANA && ch < CKEYMAPNUM)
+			{
+				if(ckeymap.keylatin[ch] == SKK_JMODE)
+				{
+					k = SKK_KANA;
+				}
+			}
+		}
+		break;
 	}
 
 	switch(ch)

@@ -122,7 +122,7 @@
     <key name="convchar" value="\cq" />
     <key name="jlatin" value="\|" />	<!-- gACT10 -->
     <key name="ascii" value="\\" />	<!-- gACT10 -->
-    <key name="jmode" value="\cj|\cq" />
+    <key name="jmode" value="\cj" />
     <key name="abbrev" value="=|\^" />	<!-- gACT10 -->
     <key name="affix" value="~" />	<!-- gACT10 -->
     <key name="nextcand" value="\x20|\cn" />
