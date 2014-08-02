@@ -1,6 +1,4 @@
 ﻿
-#include "common.h"
-
 std::string wstring_to_utf8_string(const std::wstring &s)
 {
 	std::string ret;

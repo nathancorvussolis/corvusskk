@@ -177,90 +177,84 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 //
-// request and reply commands defined at common.h
+// request and reply commands
 //
 //search candidate
-//	request	"1\n<key>\t<key(original)>\t<okuri>\n"
-//	reply	"T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit, "F":nothing
+//  request "1\n<key>\t<key(original)>\t<okuri>\n"
+//  reply   "T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit
+//          "F\n":nothing
 //search key for complement
-//	request	"4\n<key>\t\t\n"
-//	reply	"T\n<key>\t\t\t\n...\n":hit, "F":nothing
+//  request "4\n<key>\t\t\n"
+//  reply   "T\n<key>\t\t\t\n...\n":hit
+//          "F\n":nothing
 //convert key
-//	request	"5\n<key>\t\n"
-//	reply	"T\n<key converted>\n...\n":hit, "F":nothing
+//  request "5\n<key>\t\n"
+//  reply   "T\n<key converted>\n...\n":hit
+//          "F\n":nothing
 //convert candidate
-//	request	"6\n<key>\t<candidate>\n"
-//	reply	"T\n<candidate converted>\n":hit, "F":nothing
+//  request "6\n<key>\t<candidate>\n"
+//  reply   "T\n<candidate converted>\n":hit
+//          "F\n":nothing
 //add candidate (complement off)
-//	request	"A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
-//	reply	"T"
+//  request "A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
+//  reply   "T\n"
 //add candidate (complement on)
-//	request	"B\n<key>\t<candidate>\t<annotation>\t\n"
-//	reply	"T"
+//  request "B\n<key>\t<candidate>\t<annotation>\t\n"
+//  reply   "T\n"
 //delete candidate (complement off)
-//	request	"C\n<key>\t<candidate>\n"
-//	reply	"T"
+//  request "C\n<key>\t<candidate>\n"
+//  reply   "T\n"
 //delete candidate (complement on)
-//	request	"D\n<key>\t<candidate>\n"
-//	reply	"T"
+//  request "D\n<key>\t<candidate>\n"
+//  reply   "T\n"
 //save user dictionary
-//	request	"S\n"
-//	reply	"T"
+//  request "S\n"
+//  reply   "T\n"
 
-void SrvProc(WCHAR *wbuf, size_t size)
+void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 {
 	SKKDICCANDIDATES sc;
-	std::wstring bufdat(&wbuf[2]);
+	std::wstring fmt, key, keyorg, okuri, candidate, annotation, conv;
 	std::wregex re;
-	std::wstring fmt;
-	std::wstring keyorg;
-	std::wstring key;
-	std::wstring okuri;
-	std::wstring candidate;
-	std::wstring annotation;
-	std::wstring conv;
 
-	switch(wbuf[0])
+	result.clear();
+
+	switch(command)
 	{
 	case REQ_SEARCH:
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$2");
-		keyorg = std::regex_replace(bufdat, re, fmt);
+		keyorg = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$3");
-		okuri = std::regex_replace(bufdat, re, fmt);
+		okuri = std::regex_replace(argument, re, fmt);
 
 		SearchDictionary(key, okuri, sc);
 
 		if(!sc.empty())
 		{
-			wbuf[0] = REP_OK;
-			wbuf[1] = L'\n';
-			wbuf[2] = L'\0';
+			result = REP_OK;
+			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				wcsncat_s(wbuf, size, ConvertCandidate(keyorg, sc_itr->first).c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, sc_itr->first.c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, ConvertCandidate(keyorg, sc_itr->second).c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t", _TRUNCATE);
-				wcsncat_s(wbuf, size, sc_itr->second.c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
+				result += ConvertCandidate(keyorg, sc_itr->first) + L"\t" +
+					sc_itr->first + L"\t" +
+					ConvertCandidate(keyorg, sc_itr->second) + L"\t" +
+					sc_itr->second + L"\n";
 			}
 		}
 		else
 		{
-			wbuf[0] = REP_FALSE;
-			wbuf[1] = L'\0';
+			result = REP_FALSE;
+			result += L"\n";
 		}
 		break;
 
 	case REQ_COMPLEMENT:
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 
 		if(lua != NULL)
 		{
@@ -283,65 +277,59 @@ void SrvProc(WCHAR *wbuf, size_t size)
 
 		if(!sc.empty())
 		{
-			wbuf[0] = REP_OK;
-			wbuf[1] = L'\n';
-			wbuf[2] = L'\0';
+			result = REP_OK;
+			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				wcsncat_s(wbuf, size, ParseConcat(sc_itr->first).c_str(), _TRUNCATE);
-				wcsncat_s(wbuf, size, L"\t\t\t\n", _TRUNCATE);
+				result += ParseConcat(sc_itr->first) + L"\t\t\t\n";
 			}
 		}
 		else
 		{
-			wbuf[0] = REP_FALSE;
-			wbuf[1] = L'\0';
+			result = REP_FALSE;
+			result += L"\n";
 		}
 		break;
 
 	case REQ_CONVERTKEY:
 		re.assign(L"(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 
 		conv = ConvertKey(key);
 
 		if(!conv.empty())
 		{
-			wbuf[0] = REP_OK;
-			wbuf[1] = L'\n';
-			wbuf[2] = L'\0';
-			wcsncat_s(wbuf, size, conv.c_str(), _TRUNCATE);
-			wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
+			result = REP_OK;
+			result += L"\n";
+			result += conv + L"\n";
 		}
 		else
 		{
-			wbuf[0] = REP_FALSE;
-			wbuf[1] = L'\0';
+			result = REP_FALSE;
+			result += L"\n";
 		}
 		break;
 
 	case REQ_CONVERTCND:
 		re.assign(L"(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$2");
-		candidate = std::regex_replace(bufdat, re, fmt);
+		candidate = std::regex_replace(argument, re, fmt);
 
 		conv = ConvertCandidate(key, candidate);
 
 		if(!conv.empty())
 		{
-			wbuf[0] = REP_OK;
-			wbuf[1] = L'\n';
-			wbuf[2] = L'\0';
-			wcsncat_s(wbuf, size, conv.c_str(), _TRUNCATE);
-			wcsncat_s(wbuf, size, L"\n", _TRUNCATE);
+			result = REP_OK;
+			result += L"\n";
+			result += conv + L"\n";
 		}
 		else
 		{
-			wbuf[0] = REP_FALSE;
-			wbuf[1] = L'\0';
+			result = REP_FALSE;
+			result += L"\n";
 		}
 		break;
 
@@ -349,18 +337,18 @@ void SrvProc(WCHAR *wbuf, size_t size)
 	case REQ_USER_ADD_1:
 		re.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$2");
-		candidate = std::regex_replace(bufdat, re, fmt);
+		candidate = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$3");
-		annotation = std::regex_replace(bufdat, re, fmt);
+		annotation = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$4");
-		okuri = std::regex_replace(bufdat, re, fmt);
+		okuri = std::regex_replace(argument, re, fmt);
 
 		if(lua != NULL)
 		{
 			lua_getglobal(lua, "lua_skk_add");
-			lua_pushboolean(lua, (wbuf[0] == REQ_USER_ADD_0 ? 1 : 0));
+			lua_pushboolean(lua, (command == REQ_USER_ADD_0 ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key.c_str()));
 			lua_pushstring(lua, WCTOU8(candidate.c_str()));
 			lua_pushstring(lua, WCTOU8(annotation.c_str()));
@@ -369,36 +357,36 @@ void SrvProc(WCHAR *wbuf, size_t size)
 		}
 		else
 		{
-			AddUserDic(wbuf[0], key, candidate, annotation, okuri);
+			AddUserDic(command, key, candidate, annotation, okuri);
 		}
 
-		wbuf[0] = REP_OK;
-		wbuf[1] = L'\0';
+		result = REP_OK;
+		result += L"\n";
 		break;
 
 	case REQ_USER_DEL_0:
 	case REQ_USER_DEL_1:
 		re.assign(L"(.*)\t(.*)\n");
 		fmt.assign(L"$1");
-		key = std::regex_replace(bufdat, re, fmt);
+		key = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$2");
-		candidate = std::regex_replace(bufdat, re, fmt);
+		candidate = std::regex_replace(argument, re, fmt);
 
 		if(lua != NULL)
 		{
 			lua_getglobal(lua, "lua_skk_delete");
-			lua_pushboolean(lua, (wbuf[0] == REQ_USER_DEL_0 ? 1 : 0));
+			lua_pushboolean(lua, (command == REQ_USER_DEL_0 ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key.c_str()));
 			lua_pushstring(lua, WCTOU8(candidate.c_str()));
 			lua_pcall(lua, 3, 0, 0);
 		}
 		else
 		{
-			DelUserDic(wbuf[0], key, candidate);
+			DelUserDic(command, key, candidate);
 		}
 
-		wbuf[0] = REP_OK;
-		wbuf[1] = L'\0';
+		result = REP_OK;
+		result += L"\n";
 		break;
 
 	case REQ_USER_SAVE:
@@ -412,13 +400,13 @@ void SrvProc(WCHAR *wbuf, size_t size)
 			StartSaveSKKUserDic();
 		}
 
-		wbuf[0] = REP_OK;
-		wbuf[1] = L'\0';
+		result = REP_OK;
+		result += L"\n";
 		break;
 
 	default:
-		wbuf[0] = L'0';
-		wbuf[1] = L'\0';
+		result = REP_FALSE;
+		result += L"\n";
 		break;
 	}
 }
@@ -426,9 +414,10 @@ void SrvProc(WCHAR *wbuf, size_t size)
 unsigned int __stdcall SrvThread(void *p)
 {
 	HANDLE hPipe = (HANDLE)p;
-	WCHAR wbuf[PIPEBUFSIZE];
+	WCHAR pipebuf[PIPEBUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
+	std::wstring wspipebuf;
 #ifdef _DEBUG
 	std::wstring dedit, tedit;
 	std::wregex re;
@@ -454,11 +443,10 @@ unsigned int __stdcall SrvThread(void *p)
 			LoadConfig();
 		}
 
+		ZeroMemory(pipebuf, sizeof(pipebuf));
+
 		bytesRead = 0;
-		ZeroMemory(wbuf, sizeof(wbuf));
-
-		bRet = ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL);
-
+		bRet = ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL);
 		if(bRet == FALSE || bytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe);
@@ -466,12 +454,12 @@ unsigned int __stdcall SrvThread(void *p)
 		}
 
 #ifdef _DEBUG
-		if(wbuf[0] == REQ_USER_SAVE)
+		if(pipebuf[0] == REQ_USER_SAVE)
 		{
 			dedit.clear();
 		}
 
-		tedit.assign(wbuf);
+		tedit.assign(pipebuf);
 		tedit.append(L"\n");
 		re.assign(L"\n");
 		fmt.assign(L"\r\n");
@@ -484,10 +472,11 @@ unsigned int __stdcall SrvThread(void *p)
 		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
-		SrvProc(wbuf, _countof(wbuf));
+		SrvProc(pipebuf[0], &pipebuf[2], wspipebuf);
+		wcsncpy_s(pipebuf, wspipebuf.c_str(), _TRUNCATE);
 
 #ifdef _DEBUG
-		tedit.assign(wbuf);
+		tedit.assign(pipebuf);
 		tedit.append(L"\n");
 		re.assign(L"\n");
 		fmt.assign(L"\r\n");
@@ -501,8 +490,8 @@ unsigned int __stdcall SrvThread(void *p)
 		SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
 #endif
 
-		bRet = WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL);
-
+		bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+		bRet = WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL);
 		if(bRet)
 		{
 			FlushFileBuffers(hPipe);
@@ -530,7 +519,7 @@ HANDLE SrvStart()
 
 	hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
 		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
-		1, PIPEBUFSIZE*sizeof(WCHAR), PIPEBUFSIZE*sizeof(WCHAR), 0, &sa);
+		1, PIPEBUFSIZE * sizeof(WCHAR), PIPEBUFSIZE * sizeof(WCHAR), 0, &sa);
 
 	LocalFree(psd);
 

@@ -35,7 +35,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 	cx = r.right;
 	cy = r.bottom;
 
-	if(_pD2DDCRT)
+	if(_pD2DDCRT != NULL)
 	{
 		hmemdc = hdc;
 		_pD2DDCRT->BindDC(hdc, &r);
@@ -104,7 +104,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory)
+			if(_pDWFactory != NULL)
 			{
 				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
 				if(hr == S_OK)
@@ -162,7 +162,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		r.right = 1;
 		r.bottom = 1;
 
-		if(_pDWFactory)
+		if(_pDWFactory != NULL)
 		{
 			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
 			if(hr == S_OK)
@@ -205,7 +205,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		rc.right = pt.x + r.right;
 		rc.bottom = pt.y + tm.tmHeight;
 
-		if(_pD2DDCRT && _pDWTF)
+		if(_pD2DDCRT != NULL && _pDWTF != NULL)
 		{
 			rd2d = D2D1::RectF((FLOAT)rc.left, (FLOAT)rc.top, (FLOAT)rc.right, (FLOAT)rc.bottom);
 
@@ -221,7 +221,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		}
 	}
 
-	if(_pD2DDCRT)
+	if(_pD2DDCRT != NULL)
 	{
 		SelectObject(hmemdc, font);
 
@@ -276,7 +276,7 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 
 	s = _MakeRegWordString();
 
-	if(_pD2DDCRT && _pDWTF)
+	if(_pD2DDCRT != NULL && _pDWTF != NULL)
 	{
 		rd2d = D2D1::RectF((FLOAT)lpr->left, (FLOAT)lpr->top, (FLOAT)lpr->right, (FLOAT)lpr->bottom);
 
@@ -352,7 +352,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	{
 		s = _MakeCandidateString(page, count, idx, cycle);
 
-		if(_pD2DDCRT && _pDWTF)
+		if(_pD2DDCRT != NULL && _pDWTF != NULL)
 		{
 			hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
 			if(hr == S_OK)
@@ -427,7 +427,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	hdc = GetDC(_hwnd);
 
-	if(_pD2DDCRT)
+	if(_pD2DDCRT != NULL)
 	{
 		_pD2DDCRT->BindDC(hdc, &rw);
 		_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
@@ -445,7 +445,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(regwordul || regword)
 	{
-		if(_pDWFactory)
+		if(_pDWFactory != NULL)
 		{
 			hr = _pDWFactory->CreateTextLayout(disptext.c_str(), (UINT32)disptext.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
 			if(hr == S_OK)
@@ -495,7 +495,7 @@ void CCandidateWindow::_CalcWindowRect()
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory)
+			if(_pDWFactory != NULL)
 			{
 				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
 				if(hr == S_OK)
@@ -528,7 +528,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
 
-		if(_pDWFactory)
+		if(_pDWFactory != NULL)
 		{
 			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
 			if(hr == S_OK)
@@ -567,7 +567,7 @@ void CCandidateWindow::_CalcWindowRect()
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory)
+			if(_pDWFactory != NULL)
 			{
 				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
 				if(hr == S_OK)
@@ -619,7 +619,7 @@ void CCandidateWindow::_CalcWindowRect()
 		r.right = 1;
 		r.bottom = 1;
 
-		if(_pDWFactory)
+		if(_pDWFactory != NULL)
 		{
 			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
 			if(hr == S_OK)

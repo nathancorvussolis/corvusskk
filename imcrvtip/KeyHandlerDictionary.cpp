@@ -33,7 +33,6 @@ void CTextService::_DisconnectDic()
 
 void CTextService::_SearchDic(WCHAR command)
 {
-	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 	size_t i, icd, icr, iad, iar;
 	std::wstring s, scd, scr, sad, sar, okurikey;
@@ -42,7 +41,7 @@ void CTextService::_SearchDic(WCHAR command)
 
 	_ConnectDic();
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	if(okuriidx != 0)
 	{
@@ -58,27 +57,29 @@ void CTextService::_SearchDic(WCHAR command)
 		}
 	}
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
+	_snwprintf_s(pipebuf, _TRUNCATE, L"%c\n%s\t%s\t%s\n",
 		command, searchkey.c_str(), searchkeyorg.c_str(), okurikey.c_str());
 
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
+	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
+	bytesRead = 0;
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	if(wbuf[0] != REP_OK)
+	if(pipebuf[0] != REP_OK)
 	{
 		goto exit;
 	}
 
-	s.assign(wbuf);
+	s.assign(pipebuf);
 	i = 1;
 
 	while(true)
@@ -121,57 +122,61 @@ void CTextService::_SearchDic(WCHAR command)
 	}
 
 exit:
+	ZeroMemory(pipebuf, sizeof(pipebuf));
+
 	_DisconnectDic();
 }
 
 void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, std::wstring &conv)
 {
-	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
 	_StartManager();
 
 	_ConnectDic();
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
+	_snwprintf_s(pipebuf, _TRUNCATE, L"%c\n%s\t%s\n",
 		command, key.c_str(), candidate.c_str());
 
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
+	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
+	bytesRead = 0;
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	if(wbuf[0] != REP_OK)
+	if(pipebuf[0] != REP_OK)
 	{
 		conv = candidate;
 		goto exit;
 	}
 
-	wbuf[wcslen(wbuf) - 1] = L'\0';
-	conv.assign(&wbuf[2]);
+	pipebuf[wcslen(pipebuf) - 1] = L'\0';
+	conv.assign(&pipebuf[2]);
 
 exit:
+	ZeroMemory(pipebuf, sizeof(pipebuf));
+
 	_DisconnectDic();
 }
 
 void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
-	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 	std::wstring okurikey;
 
 	_ConnectDic();
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	if(okuriidx != 0)
 	{
@@ -187,73 +192,86 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 		}
 	}
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\t%s\t%s\n",
+	_snwprintf_s(pipebuf, _TRUNCATE, L"%c\n%s\t%s\t%s\t%s\n",
 		command, key.c_str(), candidate.c_str(), annotation.c_str(), okurikey.c_str());
 
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
+	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
+	bytesRead = 0;
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
 exit:
+	ZeroMemory(pipebuf, sizeof(pipebuf));
+
 	_DisconnectDic();
 }
 
 void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate)
 {
-	WCHAR wbuf[PIPEBUFSIZE];
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	_snwprintf_s(wbuf, _TRUNCATE, L"%c\n%s\t%s\n",
+	_snwprintf_s(pipebuf, _TRUNCATE, L"%c\n%s\t%s\n",
 		command, key.c_str(), candidate.c_str());
 
-	if(WriteFile(hPipe, wbuf, (DWORD)(wcslen(wbuf)*sizeof(WCHAR)), &bytesWrite, NULL) == FALSE)
+	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	ZeroMemory(wbuf, sizeof(wbuf));
+	ZeroMemory(pipebuf, sizeof(pipebuf));
 
-	if(ReadFile(hPipe, wbuf, sizeof(wbuf), &bytesRead, NULL) == FALSE)
+	bytesRead = 0;
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
 exit:
+	ZeroMemory(pipebuf, sizeof(pipebuf));
+
 	_DisconnectDic();
 }
 
 void CTextService::_SaveUserDic()
 {
-	WCHAR buf[2];
-	DWORD bytes;
+	WCHAR buf[3];
+	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();
 
 	buf[0] = REQ_USER_SAVE;
 	buf[1] = L'\n';
-	if(WriteFile(hPipe, &buf, 4, &bytes, NULL) == FALSE)
+	buf[2] = L'\0';
+
+	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
+	if(WriteFile(hPipe, &buf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
-	if(ReadFile(hPipe, &buf, 2, &bytes, NULL) == FALSE)
+	bytesRead = 0;
+	if(ReadFile(hPipe, &buf, 4, &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
 exit:
+	ZeroMemory(pipebuf, sizeof(pipebuf));
+
 	_DisconnectDic();
 }
 

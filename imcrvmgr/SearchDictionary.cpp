@@ -75,14 +75,12 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 std::wstring SearchSKKDic(const std::wstring &searchkey)
 {
-	std::wstring candidate;
 	FILE *fpdic, *fpidx;
-	std::wstring key;
+	std::wstring key, candidate, wsbuf;
+	WCHAR wbuf[DICBUFSIZE];
 	long pos, left, mid, right;
 	int comp;
-	WCHAR wbuf[DICBUFSIZE];
-	WCHAR *p;
-	size_t plen;
+	size_t pidx;
 
 	_wfopen_s(&fpidx, pathskkidx, RB);
 	if(fpidx == NULL)
@@ -110,22 +108,24 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 
 		fseek(fpdic, pos, SEEK_SET);
 		memset(wbuf, 0, sizeof(wbuf));
+		
 		fgetws(wbuf, _countof(wbuf), fpdic);
+		wsbuf = wbuf;
 
-		comp = wcsncmp(key.c_str(), wbuf, key.size());
+		comp = wcsncmp(key.c_str(), wsbuf.c_str(), key.size());
 		if(comp == 0)
 		{
-			if((p = wcschr(wbuf, L'\x20')) != NULL)
+			if((pidx = wsbuf.find_last_of(L'/')) != std::string::npos)
 			{
-				if((p = wcschr(p, L'/')) != NULL)
+				wsbuf.erase(pidx);
+				wsbuf.append(L"/\n");
+			}
+
+			if((pidx = wsbuf.find_first_of(L'\x20')) != std::string::npos)
+			{
+				if((pidx = wsbuf.find_first_of(L'/', pidx)) != std::string::npos)
 				{
-					plen = wcslen(p);
-					if((plen >= 2) && (*(p + plen - 2) == L'\r') && (*(p + plen - 1) == L'\n'))
-					{
-						*(p + plen - 2) = L'\n';
-						*(p + plen - 1) = L'\0';
-					}
-					candidate = p;
+					candidate = wsbuf.substr(pidx);
 				}
 			}
 			break;

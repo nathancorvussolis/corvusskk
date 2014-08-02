@@ -162,9 +162,9 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	//skk-sticky-key
 	if(sf == SKK_CONV_POINT)
 	{
-		if(!abbrevmode)
+		if(!abbrevmode || showentry)
 		{
-			if(inputkey && roman.empty() && kana.empty())
+			if(inputkey && !showentry && roman.empty() && kana.empty())
 			{
 				//";;" -> ";"
 				if(kana.empty() && ch >= L'\x20')
@@ -663,13 +663,13 @@ void CTextService::_UninitFont()
 		}
 	}
 
-	if(_pD2DDCRT)
+	if(_pD2DDCRT != NULL)
 	{
 		_pD2DDCRT->Release();
 		_pD2DDCRT = NULL;
 	}
 
-	if(_pD2DFactory)
+	if(_pD2DFactory != NULL)
 	{
 		_pD2DFactory->Release();
 		_pD2DFactory = NULL;

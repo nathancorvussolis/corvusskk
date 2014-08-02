@@ -174,8 +174,14 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	WCHAR utf16[2][2];
 	size_t utf16num[2];
 
-	if(src == NULL || dstsize == NULL)
+	if(dstsize == NULL)
 	{
+		return FALSE;
+	}
+
+	if(src == NULL)
+	{
+		*dstsize = 0;
 		return FALSE;
 	}
 
@@ -271,8 +277,14 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 	UCSCHAR ucp;
 	BOOL exist;
 
-	if(src == NULL || dstsize == NULL)
+	if(dstsize == NULL)
 	{
+		return FALSE;
+	}
+
+	if(src == NULL)
+	{
+		*dstsize = 0;
 		return FALSE;
 	}
 
@@ -494,4 +506,50 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		*(dst + di) = 0;
 	}
 	return TRUE;
+}
+
+std::string wstring_to_eucjis2004_string(const std::wstring &s)
+{
+	std::string ret;
+	size_t len = -1;
+
+	WideCharToEucJis2004(s.c_str(), NULL, NULL, &len);
+	if(len > 0)
+	{
+		try
+		{
+			LPSTR euc = new CHAR[len];
+			WideCharToEucJis2004(s.c_str(), NULL, euc, &len);
+			ret = euc;
+			delete[] euc;
+		}
+		catch(...)
+		{
+		}
+	}
+
+	return ret;
+}
+
+std::wstring eucjis2004_string_to_wstring(const std::string &s)
+{
+	std::wstring ret;
+	size_t len = -1;
+
+	EucJis2004ToWideChar(s.c_str(), NULL, NULL, &len);
+	if(len > 0)
+	{
+		try
+		{
+			LPWSTR wcs = new WCHAR[len];
+			EucJis2004ToWideChar(s.c_str(), NULL, wcs, &len);
+			ret = wcs;
+			delete[] wcs;
+		}
+		catch(...)
+		{
+		}
+	}
+
+	return ret;
 }

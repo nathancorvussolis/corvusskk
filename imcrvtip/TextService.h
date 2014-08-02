@@ -266,6 +266,7 @@ private:
 	//imcrvmgr.exe との名前付きパイプ
 	WCHAR mgrpipename[MAX_KRNLOBJNAME];
 	HANDLE hPipe;
+	WCHAR pipebuf[PIPEBUFSIZE];
 	//ミューテックス
 	WCHAR mgrmutexname[MAX_KRNLOBJNAME];
 	WCHAR cnfmutexname[MAX_KRNLOBJNAME];

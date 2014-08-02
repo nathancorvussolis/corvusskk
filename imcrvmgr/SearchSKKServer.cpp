@@ -1,73 +1,47 @@
 ﻿
 #include "eucjis2004.h"
+#include "utf8.h"
 #include "parseskkdic.h"
 #include "imcrvmgr.h"
 
-void GetSKKServerVersion();
-
-#define SBUFSIZE	0x2000
-#define RBUFSIZE	0x800
-#define KEYSIZE		0x100
-
 //client
-#define SKK_REQ		0x31 //'1'
-#define SKK_VER		0x32 //'2'
+#define SKK_REQ		'1'
+#define SKK_VER		'2'
 //server
-#define SKK_HIT		0x31 //'1'
+#define SKK_HIT		'1'
+
+void GetSKKServerVersion();
 
 SOCKET sock = INVALID_SOCKET;
 
 std::wstring SearchSKKServer(const std::wstring &searchkey)
 {
 	std::wstring candidate;
-	CHAR key[KEYSIZE];
-	size_t size;
-	CHAR buf[SBUFSIZE * 2];
-	size_t idxbuf = 0;
-	CHAR rbuf[RBUFSIZE];
-	int n, nn;
-	WCHAR wbuf[SBUFSIZE];
+	std::string key;
+	std::string buf;
+	size_t pidx;
+	CHAR rbuf[RECVBUFSIZE];
+	int n;
 
 	if(!serv)
 	{
 		return candidate;
 	}
 
+	key.push_back(SKK_REQ);
 	switch(encoding)
 	{
 	case 0:
-		size = _countof(key) - 2;
-		if(WideCharToEucJis2004(searchkey.c_str(), NULL, key + 1, &size))
-		{
-			key[0] = SKK_REQ;
-			key[size + 0] = 0x20;
-			key[size + 1] = 0x00;
-			size++;
-		}
-		else
-		{
-			return candidate;
-		}
+		key.append(wstring_to_eucjis2004_string(searchkey));
 		break;
 	case 1:
-		if((size = WideCharToMultiByte(CP_UTF8, 0, searchkey.c_str(), -1, key + 1, _countof(key) - 2, NULL, NULL)) != 0)
-		{
-			key[0] = SKK_REQ;
-			key[size + 0] = 0x20;
-			key[size + 1] = 0x00;
-			size++;
-		}
-		else
-		{
-			return candidate;
-		}
+		key.append(wstring_to_utf8_string(searchkey));
 		break;
 	default:
 		return candidate;
 		break;
 	}
-
-	ZeroMemory(buf, sizeof(buf));
+	key.push_back('\x20'/*SP*/);
 
 	if(sock == INVALID_SOCKET)
 	{
@@ -76,7 +50,7 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 
 	GetSKKServerVersion();
 
-	if(send(sock, key, (int)size, 0) == SOCKET_ERROR)
+	if(send(sock, key.c_str(), (int)key.size(), 0) == SOCKET_ERROR)
 	{
 		DisconnectSKKServer();
 		goto end;
@@ -85,57 +59,62 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 	while(true)
 	{
 		ZeroMemory(rbuf, sizeof(rbuf));
-		n = recv(sock, rbuf, sizeof(rbuf), 0);
-		if(n == SOCKET_ERROR || n == 0)
+		n = recv(sock, rbuf, sizeof(rbuf) - 1, 0);
+		if(n == SOCKET_ERROR || n <= 0)
 		{
 			DisconnectSKKServer();
 			goto end;
 		}
 
-		nn = n;
+		buf += rbuf;
 
-		if((sizeof(buf) - idxbuf) < (size_t)n)
+		if(n <= _countof(rbuf) && rbuf[n - 1] == '\n'/*LF*/)
 		{
-			n = (int)(sizeof(buf) - idxbuf);
-		}
-
-		if(n > 0)
-		{
-			memcpy_s(buf + idxbuf, sizeof(buf) - idxbuf, rbuf, n);
-			idxbuf += n;
-		}
-
-		if(nn < sizeof(rbuf))
-		{
-			if(rbuf[nn - 1] == 0x0A/*LF*/)
-			{
-				break;
-			}
+			break;
 		}
 	}
 
 end:
-	if(idxbuf > 0 && buf[0] == SKK_HIT)
+	if(buf.size() > 1 && buf.front() == SKK_HIT)
 	{
-		BOOL ret = FALSE;
-		switch(encoding)
+		std::string s;
+		std::smatch m;
+		std::regex r;
+		size_t ds;
+
+		s = buf.substr(1);
+		r.assign("/[^/]+");
+		while(std::regex_search(s, m, r))
 		{
-		case 0:
-			size = _countof(wbuf);
-			ret = EucJis2004ToWideChar(buf, NULL, wbuf, &size);
-			break;
-		case 1:
-			if(MultiByteToWideChar(CP_UTF8, 0, buf, -1, wbuf, _countof(wbuf)) != 0)
+			switch(encoding)
 			{
-				ret = TRUE;
+			case 0:
+				ds = -1;
+				if(EucJis2004ToWideChar(m.str().c_str(), NULL, NULL, &ds))
+				{
+					candidate += eucjis2004_string_to_wstring(m.str());
+				}
+				break;
+			case 1:
+				candidate += utf8_string_to_wstring(m.str());
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
-		}
-		if(ret)
-		{
-			candidate = &wbuf[1];
+
+			if(candidate.size() >= DICBUFSIZE)
+			{
+				candidate.erase(DICBUFSIZE);
+
+				if((pidx = candidate.find_last_of(L'/')) != std::string::npos)
+				{
+					candidate.erase(pidx);
+					candidate.append(L"/\n");
+					break;
+				}
+			}
+
+			s = m.suffix();
 		}
 	}
 
@@ -230,23 +209,33 @@ void DisconnectSKKServer()
 
 void GetSKKServerVersion()
 {
+	CHAR req = SKK_VER;
+	std::string buf;
+	CHAR rbuf[RECVBUFSIZE];
 	int n;
-	CHAR rbuf[RBUFSIZE];
-	CHAR sbuf = SKK_VER;
 
-	if(send(sock, &sbuf, 1, 0) == SOCKET_ERROR)
+	if(send(sock, &req, 1, 0) == SOCKET_ERROR)
 	{
 		DisconnectSKKServer();
 		ConnectSKKServer();
 	}
 	else
 	{
-		ZeroMemory(rbuf, sizeof(rbuf));
-		n = recv(sock, rbuf, sizeof(rbuf), 0);
-		if(n == SOCKET_ERROR || n == 0)
+		while(true)
 		{
-			DisconnectSKKServer();
-			ConnectSKKServer();
+			ZeroMemory(rbuf, sizeof(rbuf));
+			n = recv(sock, rbuf, sizeof(rbuf) - 1, 0);
+			if(n == SOCKET_ERROR || n <= 0)
+			{
+				DisconnectSKKServer();
+				ConnectSKKServer();
+				break;
+			}
+
+			if(rbuf[n - 1] == '\x20'/*SP*/)
+			{
+				break;
+			}
 		}
 	}
 }

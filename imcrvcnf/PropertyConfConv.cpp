@@ -667,6 +667,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	size_t sidx, eidx;
 	ROMAN_KANA_CONV rkc;
 	wchar_t soku[2];
+	int i;
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
@@ -690,26 +691,45 @@ void LoadConfigKanaTxt(LPCWSTR path)
 
 		sidx = 0;
 		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(rkc.roman, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(rkc.hiragana, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(rkc.katakana, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(rkc.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
-		sidx += eidx + 1;
-		eidx = wcscspn(&b[sidx], seps);
-		b[sidx + eidx] = L'\0';
-		_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
-		rkc.soku = (_wtoi(soku) & 0x1) ? TRUE : FALSE;
-		rkc.wait = (_wtoi(soku) & 0x2) ? TRUE : FALSE;
+
+		for(i = 0; i <= 4; i++)
+		{
+			if(sidx + eidx >= _countof(b))
+			{
+				break;
+			}
+			b[sidx + eidx] = L'\0';
+
+			switch(i)
+			{
+			case 0:
+				_snwprintf_s(rkc.roman, _TRUNCATE, L"%s", &b[sidx]);
+				break;
+			case 1:
+				_snwprintf_s(rkc.hiragana, _TRUNCATE, L"%s", &b[sidx]);
+				break;
+			case 2:
+				_snwprintf_s(rkc.katakana, _TRUNCATE, L"%s", &b[sidx]);
+				break;
+			case 3:
+				_snwprintf_s(rkc.katakana_ank, _TRUNCATE, L"%s", &b[sidx]);
+				break;
+			case 4:
+				_snwprintf_s(soku, _TRUNCATE, L"%s", &b[sidx]);
+				rkc.soku = (_wtoi(soku) & 0x1) ? TRUE : FALSE;
+				rkc.wait = (_wtoi(soku) & 0x2) ? TRUE : FALSE;
+				break;
+			default:
+				break;
+			}
+
+			sidx += eidx + 1;
+			if(sidx >= _countof(b))
+			{
+				break;
+			}
+			eidx = wcscspn(&b[sidx], seps);
+		}
 
 		ZeroMemory(b, sizeof(b));
 

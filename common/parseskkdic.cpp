@@ -9,9 +9,11 @@ LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o)
 {
-	CHAR buf[DICBUFSIZE*2];
-	WCHAR wbuf[DICBUFSIZE];
-	size_t size, is;
+	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
+	std::string sbuf;
+	WCHAR wbuf[READBUFSIZE];
+	std::wstring wsbuf;
+	size_t ds, is;
 	void *rp;
 	std::wstring s, fmt;
 	std::wregex re;
@@ -22,12 +24,29 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	switch(bom)
 	{
 	case 0xFEFF:
-		rp = fgetws(wbuf, _countof(wbuf), fp);
+		while((rp = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
+		{
+			wsbuf += wbuf;
+
+			if(!wsbuf.empty() && wsbuf.back() == L'\n')
+			{
+				break;
+			}
+		}
 		break;
 	default:
-		rp = fgets(buf, _countof(buf), fp);
+		while((rp = fgets(buf, _countof(buf), fp)) != NULL)
+		{
+			sbuf += buf;
+
+			if(!sbuf.empty() && sbuf.back() == '\n')
+			{
+				break;
+			}
+		}
 		break;
 	}
+
 	if(rp == NULL)
 	{
 		return -1;
@@ -38,27 +57,33 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	case 0xFEFF:
 		break;
 	default:
-		size = _countof(wbuf);
-		if(!EucJis2004ToWideChar(buf, NULL, wbuf, &size))
+		ds = -1;
+		if(!EucJis2004ToWideChar(sbuf.c_str(), NULL, NULL, &ds))
 		{
 			return 1;
 		}
+		wsbuf = eucjis2004_string_to_wstring(sbuf);
 		break;
 	}
 
-	if(wcscmp(wbuf, EntriesAri) == 0)
+	if(wsbuf.empty())
+	{
+		return 1;
+	}
+
+	if(wsbuf.compare(EntriesAri) == 0)
 	{
 		okuri = 1;
 		return 1;
 	}
-	else if(wcscmp(wbuf, EntriesNasi) == 0)
+	else if(wsbuf.compare(EntriesNasi) == 0)
 	{
 		okuri = 0;
 		return 1;
 	}
 	else
 	{
-		if(L'\0' <= wbuf[0] && wbuf[0] <= L'\x20')
+		if(L'\0' <= wsbuf.front() && wsbuf.front() <= L'\x20')
 		{
 			return 1;
 		}
@@ -69,7 +94,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		return 1;
 	}
 
-	s.assign(wbuf);
+	s = wsbuf;
 	re.assign(L"[\\x00-\\x19]");
 	fmt.assign(L"");
 	s = std::regex_replace(s, re, fmt);

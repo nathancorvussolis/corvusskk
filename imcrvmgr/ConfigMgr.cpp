@@ -218,7 +218,7 @@ void InitLua()
 		if(pdir != NULL)
 		{
 			*(pdir + 1) = L'\0';
-			wcscat_s(pathinitlua, fninitlua);
+			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
 		}
 	}
 	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
