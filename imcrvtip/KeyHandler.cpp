@@ -119,7 +119,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		default:
 			switch(ch)
 			{
-			case L'Y': case 'y':
+			case L'Y': case L'y':
 				sf = SKK_PURGE_DIC;
 				break;
 			case L'N': case L'n':
@@ -142,7 +142,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	case im_hiragana:
 	case im_katakana:
 	case im_katakana_ank:
-		if(!abbrevmode && !roman.empty())
+		if(!abbrevmode && !roman.empty() && ch != L'\0')
 		{
 			ROMAN_KANA_CONV rkc;
 			std::wstring roman_conv = roman;

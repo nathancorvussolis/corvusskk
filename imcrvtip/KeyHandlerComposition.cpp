@@ -115,31 +115,16 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 			cchCursor = (LONG)comptext.size();
 
-			//辞書登録ウィンドウを表示可能なら表示する
-			if(pContext == NULL)	//辞書登録用
+			if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
 			{
 				_pCandidateList->_SetText(comptext, FALSE, FALSE, TRUE);
 				return S_OK;
 			}
-
-			if(_ShowCandidateList(ec, pContext, TRUE) != S_OK)
+			else
 			{
-				//表示不可のとき▽モードに戻す
-				//ただし候補無しのとき１回だけ▼で表示させる(_NextConv()にて、candidx = 0 となる)
-				if(!candidates.empty())
-				{
-					if(cx_delokuricncl && okuriidx != 0)
-					{
-						kana = kana.substr(0, okuriidx);
-						cchOkuri = (LONG)comptext.size();
-						okuriidx = 0;
-					}
-					candidx = 0;
-					cursoridx = kana.size();
-					showentry = FALSE;
-					_Update(ec, pContext, fixed);
-					return S_OK;
-				}
+				_SetText(ec, pContext, comptext, cchCursor, cchOkuri, FALSE);
+				//辞書登録表示開始
+				return _ShowCandidateList(ec, pContext, TRUE);
 			}
 		}
 	}
@@ -216,10 +201,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					{
 						if(okuriidx != 0 && okuriidx < cursoridx)
 						{
-							if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
-							{
-								comptext.insert(cursoridx - 1, markCursor);
-							}
 							if(cx_showroman)
 							{
 								comptext.insert(cursoridx - 1, roman);
@@ -231,10 +212,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 						}
 						else
 						{
-							if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
-							{
-								comptext.insert(cursoridx, markCursor);
-							}
 							if(cx_showroman)
 							{
 								comptext.insert(cursoridx, roman);
@@ -247,10 +224,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					}
 					else
 					{
-						if(pContext == NULL && cursoridx != kana.size())	//辞書登録用
-						{
-							comptext.insert(cursoridx + 1, markCursor);
-						}
 						if(cx_showroman)
 						{
 							comptext.insert(cursoridx + 1, roman);
@@ -258,6 +231,17 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 						else
 						{
 							comptext.insert(cursoridx + 1, markSP);
+						}
+					}
+					if(okuriidx != 0 && cursoridx <= okuriidx)
+					{
+						if(cx_showroman)
+						{
+							cchOkuri += (LONG)roman.size();
+						}
+						else
+						{
+							cchOkuri += 1;
 						}
 					}
 				}

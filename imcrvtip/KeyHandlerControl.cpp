@@ -34,7 +34,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(_ShowInputMode)
+				if(_ShowInputMode && pContext != NULL)
 				{
 					_HandleCharShift(ec, pContext);
 				}
@@ -50,7 +50,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode)
+			if(_ShowInputMode && pContext != NULL)
 			{
 				_HandleCharShift(ec, pContext);
 			}
@@ -107,7 +107,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(_ShowInputMode)
+				if(_ShowInputMode && pContext != NULL)
 				{
 					_HandleCharShift(ec, pContext);
 				}
@@ -123,7 +123,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode)
+			if(_ShowInputMode && pContext != NULL)
 			{
 				_HandleCharShift(ec, pContext);
 			}
@@ -153,7 +153,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		case im_katakana:
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode)
+			if(_ShowInputMode && pContext != NULL)
 			{
 				if(!showentry)
 				{
@@ -555,7 +555,6 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			break;
 		}
-		_ConvRoman();
 		if(okuriidx != 0 && okuriidx == cursoridx)
 		{
 			kana.erase(cursoridx, 1);
@@ -596,12 +595,16 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_LEFT:
-		if(!inputkey || showentry)
+		if(showentry)
 		{
 			break;
 		}
-		_ConvRoman();
-		if(!kana.empty() && cursoridx > 0)
+		if(!roman.empty())
+		{
+			_ConvRoman();
+			_HandleCharShift(ec, pContext);
+		}
+		else if(!kana.empty() && cursoridx > 0)
 		{
 			// surrogate pair
 			if(cursoridx >= 2 &&
@@ -623,23 +626,34 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_UP:
-		if(!inputkey || showentry)
+		if(showentry)
 		{
 			break;
 		}
-		_ConvRoman();
-		cursoridx = 0;
+		if(!roman.empty())
+		{
+			_ConvRoman();
+			_HandleCharShift(ec, pContext);
+		}
+		else
+		{
+			cursoridx = 0;
+		}
 		_Update(ec, pContext);
 		return S_OK;
 		break;
 
 	case SKK_RIGHT:
-		if(!inputkey || showentry)
+		if(showentry)
 		{
 			break;
 		}
-		_ConvRoman();
-		if(!kana.empty() && cursoridx < kana.size())
+		if(!roman.empty())
+		{
+			_ConvRoman();
+			_HandleCharShift(ec, pContext);
+		}
+		else if(!kana.empty() && cursoridx < kana.size())
 		{
 			// surrogate pair
 			if(kana.size() - cursoridx >= 2 &&
@@ -661,12 +675,19 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		break;
 
 	case SKK_DOWN:
-		if(!inputkey || showentry)
+		if(showentry)
 		{
 			break;
 		}
-		_ConvRoman();
-		cursoridx = kana.size();
+		if(!roman.empty())
+		{
+			_ConvRoman();
+			_HandleCharShift(ec, pContext);
+		}
+		else
+		{
+			cursoridx = kana.size();
+		}
 		_Update(ec, pContext);
 		return S_OK;
 		break;

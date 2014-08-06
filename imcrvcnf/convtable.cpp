@@ -233,7 +233,7 @@ const ROMAN_KANA_CONV roman_kana_conv_default[ROMAN_KANA_TBL_DEF_NUM] =
 	{L"z-", L"～", L"～", L"～"},		//full width tilde
 	{L"z~", L"〜", L"〜", L"〜"},		//full width wave dash
 	{L"z.", L"…", L"…", L"…"},
-	{L"z/", L"・", L"・", L"･"},		//half width katakana
+	{L"z/", L"・", L"・", L"･"},		//full-width, half width katakana
 	{L"z(", L"（", L"（", L"（"},
 	{L"z)", L"）", L"）", L"）"},
 	{L"z[", L"『", L"『", L"『"},

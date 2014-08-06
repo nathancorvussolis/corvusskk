@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.7.3" ?>
+  <?define version="1.7.4" ?>
   <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="CorvusSKK Project" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x64" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
@@ -85,8 +85,8 @@
       <Merge Id="CRT_X64" SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x64.msm" DiskId="1" Language="0" />
     </DirectoryRef>
     <Feature Id="CRT" Title="VCRuntime" AllowAdvertise="no" Display="hidden" Level="1">
-      <MergeRef Id="CRT_X86"/>
-      <MergeRef Id="CRT_X64"/>
+      <MergeRef Id="CRT_X86" />
+      <MergeRef Id="CRT_X64" />
     </Feature>
 
     <UI />

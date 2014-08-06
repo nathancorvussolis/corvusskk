@@ -490,16 +490,73 @@ static int pmain (lua_State *L) {
 }
 
 
-int main (int argc, char **argv) {
+#ifdef U8_H
+int wmain(int argc, wchar_t **wargv) {
+  char **argv;
+  int i, n;
   int status, result;
-  lua_State *L = luaL_newstate();  /* create state */
-  if (L == NULL) {
+  lua_State *L;
+
+  setlocale(LC_ALL, "");
+
+  argv = (char **)calloc(argc + 1, sizeof(void *));
+  if(argv == NULL) {
+    return EXIT_FAILURE;
+  } else {
+    for(i = 0; i < argc; i++) {
+      n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, NULL, 0, NULL, NULL);
+      if(n > 0) {
+        argv[i] = (char *)calloc(n, sizeof(char));
+        if(argv[i] != NULL) {
+          n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, argv[i], n, NULL, NULL);
+        }
+      }
+      if(n <= 0 || argv[i] == NULL) {
+        for(i = 0; i < argc; i++) {
+          if(argv && argv[i]) free(argv[i]);
+        }
+        if(argv) free(argv);
+        return EXIT_FAILURE;
+      }
+    }
+  }
+
+  L = luaL_newstate();  /* create state */
+  if(L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
+
+    for(i = 0; i < argc; i++) {
+      if(argv && argv[i]) free(argv[i]);
+    }
+    if(argv) free(argv);
+
     return EXIT_FAILURE;
   }
-#ifdef U8_H
-  setlocale(LC_ALL, "");
-#endif
+
+  /* call 'pmain' in protected mode */
+  lua_pushcfunction(L, &pmain);
+  lua_pushinteger(L, argc);  /* 1st argument */
+  lua_pushlightuserdata(L, argv); /* 2nd argument */
+  status = lua_pcall(L, 2, 1, 0);
+  result = lua_toboolean(L, -1);  /* get result */
+  finalreport(L, status);
+  lua_close(L);
+
+  for(i = 0; i < argc; i++) {
+    if(argv && argv[i]) free(argv[i]);
+  }
+  if(argv) free(argv);
+
+  return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+#else
+int main(int argc, char **argv) {
+  int status, result;
+  lua_State *L = luaL_newstate();  /* create state */
+  if(L == NULL) {
+    l_message(argv[0], "cannot create state: not enough memory");
+	return EXIT_FAILURE;
+  }
   /* call 'pmain' in protected mode */
   lua_pushcfunction(L, &pmain);
   lua_pushinteger(L, argc);  /* 1st argument */
@@ -510,4 +567,5 @@ int main (int argc, char **argv) {
   lua_close(L);
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+#endif
 
