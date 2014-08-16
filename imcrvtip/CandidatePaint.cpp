@@ -16,7 +16,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 	HBITMAP hmembmp = NULL;
 	HPEN npen;
 	HBRUSH nbrush;
-	HGDIOBJ bmp = NULL, font, pen, brush;
+	HGDIOBJ bmp = NULL, font = NULL, pen, brush;
 	RECT r, rc;
 	POINT pt;
 	int cx, cy, cycle;
@@ -24,10 +24,9 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 	std::wstring s;
 	WCHAR strPage[32];
 	TEXTMETRICW tm;
-	HRESULT hr;
 	D2D1_RECT_F rd2d;
-	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
+	LONG height = 0;
 
 	hdc = BeginPaint(hWnd, &ps);
 
@@ -37,13 +36,17 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 
 	if(_pD2DDCRT != NULL)
 	{
-		hmemdc = hdc;
 		_pD2DDCRT->BindDC(hdc, &r);
 		_pD2DDCRT->BeginDraw();
 		_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
 		_pD2DDCRT->Clear(D2D1::ColorF(SWAPRGB(_pTextService->cx_colors[CL_COLOR_BG])));
 		rd2d = D2D1::RectF(0.5F, 0.5F, ((FLOAT)cx) - 0.5F, ((FLOAT)cy) - 0.5F);
 		_pD2DDCRT->DrawRectangle(rd2d, _pD2DBrush[CL_COLOR_FR]);
+
+		if(_GetTextMetrics(L"\x20", &dwTM) == S_OK)
+		{
+			height = (LONG)ceil(dwTM.height);
+		}
 	}
 	else
 	{
@@ -65,10 +68,11 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		DeleteObject(nbrush);
 
 		SetBkMode(hmemdc, TRANSPARENT);
-	}
 
-	font = SelectObject(hmemdc, hFont);
-	GetTextMetricsW(hmemdc, &tm);
+		font = SelectObject(hmemdc, hFont);
+		GetTextMetricsW(hmemdc, &tm);
+		height = tm.tmHeight;
+	}
 
 	if(regwordul || regword)
 	{
@@ -106,16 +110,9 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 
 			if(_pDWFactory != NULL)
 			{
-				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
-				if(hr == S_OK)
-				{
-					hr = pdwTL->GetMetrics(&dwTM);
-					pdwTL->Release();
-				}
-				if(hr == S_OK)
+				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-					r.bottom = (LONG)ceil(dwTM.height);
 				}
 			}
 			else
@@ -129,7 +126,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 				if(i != 0)
 				{
 					pt.x = MERGIN_X;
-					pt.y += tm.tmHeight;
+					pt.y += height;
 				}
 			}
 			else
@@ -141,14 +138,14 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 				else if(pt.x + r.right > cx - MERGIN_X)
 				{
 					pt.x = MERGIN_X;
-					pt.y += tm.tmHeight;
+					pt.y += height;
 				}
 			}
 
 			rc.left = pt.x;
 			rc.top = pt.y;
 			rc.right = pt.x + r.right;
-			rc.bottom = pt.y + tm.tmHeight;
+			rc.bottom = pt.y + height;
 
 			_PaintCandidate(hmemdc, &rc, page, count, i);
 
@@ -164,16 +161,9 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 
 		if(_pDWFactory != NULL)
 		{
-			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
-			if(hr == S_OK)
-			{
-				hr = pdwTL->GetMetrics(&dwTM);
-				pdwTL->Release();
-			}
-			if(hr == S_OK)
+			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-				r.bottom = (LONG)ceil(dwTM.height);
 			}
 		}
 		else
@@ -185,7 +175,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		if(_pTextService->cx_verticalcand)
 		{
 			pt.x = MERGIN_X;
-			pt.y += tm.tmHeight;
+			pt.y += height;
 		}
 		else
 		{
@@ -196,14 +186,14 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 			else if(pt.x + r.right > cx - MERGIN_X)
 			{
 				pt.x = MERGIN_X;
-				pt.y += tm.tmHeight;
+				pt.y += height;
 			}
 		}
 
 		rc.left = pt.x;
 		rc.top = pt.y;
 		rc.right = pt.x + r.right;
-		rc.bottom = pt.y + tm.tmHeight;
+		rc.bottom = pt.y + height;
 
 		if(_pD2DDCRT != NULL && _pDWTF != NULL)
 		{
@@ -223,8 +213,6 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 
 	if(_pD2DDCRT != NULL)
 	{
-		SelectObject(hmemdc, font);
-
 		_pD2DDCRT->EndDraw();
 	}
 	else
@@ -339,9 +327,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	int cycle;
 	std::wstring s;
 	RECT r, r_ex;
-	HRESULT hr;
 	D2D1_RECT_F rd2d;
-	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
 
 	r = *lpr;
@@ -354,16 +340,9 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 		if(_pD2DDCRT != NULL && _pDWTF != NULL)
 		{
-			hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
-			if(hr == S_OK)
-			{
-				hr = pdwTL->GetMetrics(&dwTM);
-				pdwTL->Release();
-			}
-			if(hr == S_OK)
+			if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-				r.bottom = (LONG)ceil(dwTM.height);
 			}
 
 			r.left = r_ex.right;
@@ -371,12 +350,12 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			r.right = r_ex.right + r.right;
 			r.bottom = lpr->bottom;
 
+			r_ex.right = r.right;
+
 			rd2d = D2D1::RectF((FLOAT)r.left, (FLOAT)r.top, (FLOAT)r.right, (FLOAT)r.bottom);
 
 			_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(),
 				_pDWTF, &rd2d, _pD2DBrush[cycle + 2], _drawtext_option);
-
-			r_ex.right = r.right;
 		}
 		else
 		{
@@ -400,8 +379,8 @@ void CCandidateWindow::_CalcWindowRect()
 {
 	HMONITOR hMonitor;
 	MONITORINFO mi;
-	HDC hdc;
-	HGDIOBJ font;
+	HDC hdc = NULL;
+	HGDIOBJ font = NULL;
 	RECT r, rw;
 	POINT pt;
 	int x, y, cx = 0, cy = 0, xmax = 0, cycle;
@@ -409,9 +388,8 @@ void CCandidateWindow::_CalcWindowRect()
 	std::wstring s;
 	WCHAR strPage[32];
 	TEXTMETRICW tm;
-	HRESULT hr;
-	IDWriteTextLayout *pdwTL = NULL;
 	DWRITE_TEXT_METRICS dwTM;
+	LONG height = 0;
 
 	if(_hwnd == NULL)
 	{
@@ -421,20 +399,26 @@ void CCandidateWindow::_CalcWindowRect()
 	pt.x = _rect.left;
 	pt.y = _rect.bottom;
 	hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+	ZeroMemory(&mi, sizeof(mi));
 	mi.cbSize = sizeof(mi);
 	GetMonitorInfoW(hMonitor, &mi);
 	rw = mi.rcWork;
 
-	hdc = GetDC(_hwnd);
-
-	if(_pD2DDCRT != NULL)
+	if(_pDWFactory != NULL)
 	{
-		_pD2DDCRT->BindDC(hdc, &rw);
-		_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
+		if(_GetTextMetrics(L"\x20", &dwTM) == S_OK)
+		{
+			height = (LONG)ceil(dwTM.height);
+		}
 	}
+	else
+	{
+		hdc = GetDC(_hwnd);
 
-	font = SelectObject(hdc, hFont);
-	GetTextMetricsW(hdc, &tm);
+		font = SelectObject(hdc, hFont);
+		GetTextMetricsW(hdc, &tm);
+		height = tm.tmHeight;
+	}
 
 	ZeroMemory(&r, sizeof(r));
 	r.right = _pTextService->cx_maxwidth - MERGIN_X * 2;
@@ -447,16 +431,9 @@ void CCandidateWindow::_CalcWindowRect()
 	{
 		if(_pDWFactory != NULL)
 		{
-			hr = _pDWFactory->CreateTextLayout(disptext.c_str(), (UINT32)disptext.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
-			if(hr == S_OK)
-			{
-				hr = pdwTL->GetMetrics(&dwTM);
-				pdwTL->Release();
-			}
-			if(hr == S_OK)
+			if(_GetTextMetrics(disptext.c_str(), &dwTM) == S_OK)
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-				r.bottom = (LONG)ceil(dwTM.height);
 			}
 		}
 		else
@@ -466,7 +443,7 @@ void CCandidateWindow::_CalcWindowRect()
 		}
 
 		cx = r.right + MERGIN_X * 2;
-		cy = r.bottom + MERGIN_Y * 2;
+		cy = height + MERGIN_Y * 2;
 	}
 	else if(_CandCount.size() != 0)
 	{
@@ -497,16 +474,9 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != NULL)
 			{
-				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
-				if(hr == S_OK)
-				{
-					hr = pdwTL->GetMetrics(&dwTM);
-					pdwTL->Release();
-				}
-				if(hr == S_OK)
+				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-					r.bottom = (LONG)ceil(dwTM.height);
 				}
 			}
 			else
@@ -530,16 +500,9 @@ void CCandidateWindow::_CalcWindowRect()
 
 		if(_pDWFactory != NULL)
 		{
-			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
-			if(hr == S_OK)
-			{
-				hr = pdwTL->GetMetrics(&dwTM);
-				pdwTL->Release();
-			}
-			if(hr == S_OK)
+			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-				r.bottom = (LONG)ceil(dwTM.height);
 			}
 		}
 		else
@@ -569,16 +532,9 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != NULL)
 			{
-				hr = _pDWFactory->CreateTextLayout(s.c_str(), (UINT32)s.size(), _pDWTF, 0.0F, 0.0F, &pdwTL);
-				if(hr == S_OK)
-				{
-					hr = pdwTL->GetMetrics(&dwTM);
-					pdwTL->Release();
-				}
-				if(hr == S_OK)
+				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-					r.bottom = (LONG)ceil(dwTM.height);
 				}
 			}
 			else
@@ -592,7 +548,7 @@ void CCandidateWindow::_CalcWindowRect()
 				if(i != 0)
 				{
 					pt.x = 0;
-					pt.y += tm.tmHeight;
+					pt.y += height;
 				}
 			}
 			else
@@ -600,7 +556,7 @@ void CCandidateWindow::_CalcWindowRect()
 				if(pt.x + r.right > cx)
 				{
 					pt.x = 0;
-					pt.y += tm.tmHeight;
+					pt.y += height;
 				}
 			}
 
@@ -621,16 +577,9 @@ void CCandidateWindow::_CalcWindowRect()
 
 		if(_pDWFactory != NULL)
 		{
-			hr = _pDWFactory->CreateTextLayout(strPage, (UINT32)wcslen(strPage), _pDWTF, 0.0F, 0.0F, &pdwTL);
-			if(hr == S_OK)
-			{
-				hr = pdwTL->GetMetrics(&dwTM);
-				pdwTL->Release();
-			}
-			if(hr == S_OK)
+			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
-				r.bottom = (LONG)ceil(dwTM.height);
 			}
 		}
 		else
@@ -642,14 +591,14 @@ void CCandidateWindow::_CalcWindowRect()
 		if(_pTextService->cx_verticalcand)
 		{
 			pt.x = 0;
-			pt.y += tm.tmHeight;
+			pt.y += height;
 		}
 		else
 		{
 			if(pt.x + r.right > cx)
 			{
 				pt.x = 0;
-				pt.y += tm.tmHeight;
+				pt.y += height;
 			}
 		}
 
@@ -662,7 +611,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		//候補ウィンドウの幅、高さ
 		cx = xmax + MERGIN_X * 2;
-		cy = pt.y + tm.tmHeight + MERGIN_Y * 2;
+		cy = pt.y + height + MERGIN_Y * 2;
 	}
 
 	//表示位置を算出
@@ -699,9 +648,11 @@ void CCandidateWindow::_CalcWindowRect()
 		y = _rect.bottom;
 	}
 
-	SelectObject(hdc, font);
-
-	ReleaseDC(_hwnd, hdc);
+	if(_pDWFactory == NULL)
+	{
+		SelectObject(hdc, font);
+		ReleaseDC(_hwnd, hdc);
+	}
 
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
@@ -715,4 +666,22 @@ void CCandidateWindow::_CalcWindowRect()
 	{
 		NotifyWinEvent(EVENT_OBJECT_IME_CHANGE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
 	}
+}
+
+HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *metrics)
+{
+	HRESULT hr = E_FAIL;
+	IDWriteTextLayout *pdwTL;
+
+	if(metrics != NULL && _pDWFactory != NULL && _pDWTF != NULL)
+	{
+		hr = _pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL);
+		if(hr == S_OK)
+		{
+			hr = pdwTL->GetMetrics(metrics);
+			pdwTL->Release();
+		}
+	}
+
+	return hr;
 }

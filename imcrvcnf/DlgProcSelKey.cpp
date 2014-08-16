@@ -38,8 +38,8 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		lvc.pszText = L"予備";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 
-		SetDlgItemText(hDlg, IDC_EDIT_SELKEY_DISP, L"");
-		SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
 
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 		for(index = 0; index < MAX_SELKEY_C; index++)
@@ -80,16 +80,16 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				GetDlgItemText(hDlg, IDC_EDIT_SELKEY_DISP, num, _countof(num));
+				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num, _countof(num));
 				if(num[0] == L'\0')
 				{
 					num[0] = L'1' + index;
 					num[1] = L'\0';
 				}
-				SetDlgItemText(hDlg, IDC_EDIT_SELKEY_DISP, num);
+				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 				ListView_SetItemText(hWndListView, index, 1, num);
-				GetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, num, _countof(num));
-				SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, num);
+				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num, _countof(num));
+				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num);
 				ListView_SetItemText(hWndListView, index, 2, num);
 
 				return TRUE;
@@ -111,15 +111,15 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				if(index == -1)
 				{
-					SetDlgItemText(hDlg, IDC_EDIT_SELKEY_DISP, L"");
-					SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
 				}
 				else
 				{
 					ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
-					SetDlgItemText(hDlg, IDC_EDIT_SELKEY_DISP, num);
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 					ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
-					SetDlgItemText(hDlg, IDC_EDIT_SELKEY_SPARE, num);
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num);
 				}
 				return TRUE;
 			}

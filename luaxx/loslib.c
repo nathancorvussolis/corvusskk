@@ -114,7 +114,7 @@ static int os_tmpname (lua_State *L) {
 
 
 static int os_getenv (lua_State *L) {
-#ifdef U8_H
+#ifdef U8W_H
   const char *env = getenv(luaL_checkstring(L, 1));
   lua_pushstring(L, env);  /* if NULL push nil */
   free((void*)env);

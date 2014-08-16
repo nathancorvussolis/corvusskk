@@ -34,9 +34,9 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		lvc.pszText = L"送り";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 
-		SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, L"");
-		SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, L"");
-		SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, L"");
 
 		LoadConvPoint(hDlg);
 
@@ -53,14 +53,14 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key);
 				ListView_SetItemText(hWndListView, index, 0, key);
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key);
 				ListView_SetItemText(hWndListView, index, 1, key);
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				ListView_SetItemText(hWndListView, index, 2, key);
 			}
 			else if(count < CONV_POINT_NUM)
@@ -68,20 +68,20 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				item.mask = LVIF_TEXT;
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key);
 				item.pszText = key;
 				item.iItem = count;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key);
 				item.pszText = key;
 				item.iItem = count;
 				item.iSubItem = 1;
 				ListView_SetItem(hWndListView, &item);
-				GetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
-				SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key);
+				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
+				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				item.pszText = key;
 				item.iItem = count;
 				item.iSubItem = 2;
@@ -166,18 +166,18 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				if(index == -1)
 				{
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, L"");
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, L"");
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, L"");
 				}
 				else
 				{
 					ListView_GetItemText(hWndListView, index, 0, key, _countof(key));
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_ST, key);
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key);
 					ListView_GetItemText(hWndListView, index, 1, key, _countof(key));
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_AL, key);
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key);
 					ListView_GetItemText(hWndListView, index, 2, key, _countof(key));
-					SetDlgItemText(hDlg, IDC_EDIT_CONVPOINT_OK, key);
+					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				}
 				return TRUE;
 			}

@@ -410,35 +410,64 @@ end
 
 -- 1+
 local function plus_1(t)
+	if (not tonumber(t[1])) then
+		return ""
+	end
 	return tonumber(t[1]) + 1
 end
 
 -- 1-
 local function minus_1(t)
+	if (not tonumber(t[1])) then
+		return ""
+	end
 	return tonumber(t[1]) - 1
 end
 
 -- +
 local function plus(t)
+	if (not tonumber(t[1]) or not tonumber(t[2])) then
+		return ""
+	end
 	return tonumber(t[1]) + tonumber(t[2])
 end
 
 -- -
 local function minus(t)
+	if (not tonumber(t[1]) or not tonumber(t[2])) then
+		return ""
+	end
 	return tonumber(t[1]) - tonumber(t[2])
 end
 
--- /
+-- *
 local function mul(t)
+	if (not tonumber(t[1]) or not tonumber(t[2])) then
+		return ""
+	end
 	return tonumber(t[1]) * tonumber(t[2])
 end
 
--- *
+-- /
 local function div(t)
+	if (not tonumber(t[1]) or not tonumber(t[2])) then
+		return ""
+	end
 	if (tonumber(t[2]) == 0) then
 		return ""
 	end
 	return tonumber(t[1]) / tonumber(t[2])
+end
+
+-- %
+local function mod(t)
+	if (not tonumber(t[1]) or not tonumber(t[2])) then
+		return ""
+	end
+	if (tonumber(t[2]) == 0) then
+		return ""
+	end
+	return tonumber(t[1]) % tonumber(t[2])
 end
 
 -- skk-version
@@ -690,6 +719,7 @@ local skk_gadget_func_table = {
 	{"-", minus},
 	{"*", mul},
 	{"/", div},
+	{"%", mod},
 	{"skk-version", skk_version},
 	{"skk-ad-to-gengo", skk_ad_to_gengo},
 	{"skk-gengo-to-ad", skk_gengo_to_ad},
@@ -925,10 +955,13 @@ local function skk_convert_candidate(key, candidate)
 			ret = temp
 		end
 
-		-- concat関数で"/"関数が\057にエスケープされる為2回実行する
+		-- concat関数で"/"関数が\057にエスケープされる為再度実行する
 		if (string.match(temp, "^%(.+%)$")) then
 			temp = skk_convert_gadget(key, temp)
-			ret = temp
+			-- 正常な実行結果であれば上書きする
+			if (temp ~= "") then
+				ret = temp
+			end
 		end
 	end
 
@@ -1028,7 +1061,7 @@ function lua_skk_add(okuriari, key, candidate, annotation, okuri)
 	--]]
 
 	--[[
-		-- 例 : Unicode, JIS X 0213変換のときユーザー辞書に登録しない
+		-- 例 : Unicode変換のときユーザー辞書に登録しない
 		if not (okuriari) then
 			if (string.match(key, "^U%+[0-9A-F]+$") or string.match(key, "^u[0-9a-f]+$")) then
 				if (string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+XXXX
@@ -1040,6 +1073,12 @@ function lua_skk_add(okuriari, key, candidate, annotation, okuri)
 					return
 				end
 			end
+		end
+	--]]
+
+	--[[
+		-- 例 : JIS X 0213変換のときユーザー辞書に登録しない
+		if not (okuriari) then
 			if (string.match(key, "^[12]%-[0-9][0-9]%-[0-9][0-9]$")) then
 				if (string.match(key, "^[12]%-0[1-9]%-0[1-9]$") or			-- [12]-01-01 - [12]-09-94
 					string.match(key, "^[12]%-0[1-9]%-[1-8][0-9]$") or		-- 〃

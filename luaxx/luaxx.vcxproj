@@ -178,7 +178,7 @@
     <ClInclude Include="lvm.h" />
     <ClInclude Include="lzio.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="u8.h" />
+    <ClInclude Include="u8w.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lapi.c" />
@@ -219,7 +219,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="u8.c" />
+    <ClCompile Include="u8w.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

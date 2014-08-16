@@ -214,7 +214,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	}
 
 	hdc = GetDC(NULL);
-	_size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSX), 96);
+	_size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
 	ReleaseDC(NULL, hdc);
 
 	if(_bCandidateWindow)

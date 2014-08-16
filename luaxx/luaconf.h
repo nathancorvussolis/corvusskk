@@ -11,7 +11,7 @@
 #include <limits.h>
 #include <stddef.h>
 
-#include "u8.h"
+#include "u8w.h"
 
 /*
 ** ==================================================================

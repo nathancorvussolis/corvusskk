@@ -125,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			FW_NORMAL, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 			L"Meiryo");
-		SendMessage(hwndEdit, WM_SETFONT, (WPARAM)hFont, 0);
+		SendMessageW(hwndEdit, WM_SETFONT, (WPARAM)hFont, 0);
 		ReleaseDC(hwndEdit, hDC);
 #endif
 		InitializeCriticalSection(&csUserDataSave);

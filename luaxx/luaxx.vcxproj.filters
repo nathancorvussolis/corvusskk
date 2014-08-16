@@ -90,7 +90,7 @@
     <ClInclude Include="lzio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="u8.h">
+    <ClInclude Include="u8w.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -194,7 +194,7 @@
     <ClCompile Include="lzio.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="u8.c">
+    <ClCompile Include="u8w.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

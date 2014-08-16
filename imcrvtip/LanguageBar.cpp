@@ -470,9 +470,9 @@ STDAPI CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
 
 	//DPIを考慮
 	HDC hdc = GetDC(NULL);
-	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 	ReleaseDC(NULL, hdc);
-	int size = MulDiv(16, dpiX, 96);
+	int size = MulDiv(16, dpi, 96);
 
 	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
 

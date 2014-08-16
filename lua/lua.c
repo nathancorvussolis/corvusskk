@@ -428,7 +428,7 @@ static int handle_luainit (lua_State *L) {
     init = getenv(name + 1);  /* try alternative name */
   }
   if (init == NULL) return LUA_OK;
-#ifndef U8_H
+#ifndef U8W_H
   else if (init[0] == '@')
     return dofile(L, init+1);
   else
@@ -490,7 +490,7 @@ static int pmain (lua_State *L) {
 }
 
 
-#ifdef U8_H
+#ifdef U8W_H
 int wmain(int argc, wchar_t **wargv) {
   char **argv;
   int i, n;

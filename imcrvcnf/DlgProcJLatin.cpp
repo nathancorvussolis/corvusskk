@@ -31,8 +31,8 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		lvc.pszText = L"全英";
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 
-		SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, L"");
-		SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, L"");
 
 		LoadJLatin(hDlg);
 
@@ -49,10 +49,10 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				GetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
-				GetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
-				SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
-				SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
+				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
+				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
+				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
+				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
 				ListView_SetItemText(hWndListView, index, 0, ajc.ascii);
 				ListView_SetItemText(hWndListView, index, 1, ajc.jlatin);
 			}
@@ -60,10 +60,10 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				GetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
-				GetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
-				SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
-				SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
+				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
+				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
+				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
+				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
 				item.mask = LVIF_TEXT;
 				item.pszText = ajc.ascii;
 				item.iItem = count;
@@ -139,15 +139,15 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				if(index == -1)
 				{
-					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, L"");
-					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, L"");
 				}
 				else
 				{
 					ListView_GetItemText(hWndListView, index, 0, ajc.ascii, _countof(ajc.ascii));
 					ListView_GetItemText(hWndListView, index, 1, ajc.jlatin, _countof(ajc.jlatin));
-					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
-					SetDlgItemText(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
+					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
+					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
 				}
 				return TRUE;
 			}

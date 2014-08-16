@@ -121,8 +121,6 @@ typedef struct {
 
 extern const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INFO_NUM];
 
-extern const D2D1_RENDER_TARGET_PROPERTIES c_d2dprops;
-
 #define SWAPRGB(rgb) (((rgb & 0x0000FF) << 16) | (rgb & 0x00FF00) | ((rgb >> 16) & 0x0000FF))
 
 LONG DllAddRef();

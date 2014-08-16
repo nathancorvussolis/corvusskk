@@ -80,9 +80,9 @@ BOOL SetFileDacl(LPCWSTR path)
 int GetScaledSizeX(HWND hwnd, int size)
 {
 	HDC hdc = GetDC(hwnd);
-	int dpiX = GetDeviceCaps(hdc, LOGPIXELSX);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 	ReleaseDC(hwnd, hdc);
-	return MulDiv(size, dpiX, 96);
+	return MulDiv(size, dpi, 96);
 }
 
 void DrawSelectColor(HWND hDlg, int id, COLORREF col)

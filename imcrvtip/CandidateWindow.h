@@ -77,6 +77,7 @@ private:
 	std::wstring _MakeCandidateString(UINT page, UINT count, UINT idx, int cycle);
 	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
 	void _CalcWindowRect();
+	HRESULT _GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *metrics);
 
 	DWORD _dwUIElementId;
 	BOOL _bShow;

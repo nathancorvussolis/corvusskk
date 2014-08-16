@@ -139,9 +139,9 @@ void CTextService::_LoadBehavior()
 	{
 		cx_fontweight = FW_NORMAL;
 	}
-	if(cx_fontitalic != TRUE && cx_fontitalic != FALSE)
+	if(cx_fontitalic != FALSE)
 	{
-		cx_fontitalic = FALSE;
+		cx_fontitalic = TRUE;
 	}
 
 	//Display
@@ -718,5 +718,132 @@ void CTextService::_LoadJLatin()
 
 			i++;
 		}
+	}
+}
+
+void CTextService::_InitFont()
+{
+	LOGFONTW logfont;
+
+	HDC hdc = GetDC(NULL);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	ReleaseDC(NULL, hdc);
+
+	logfont.lfHeight = -MulDiv(cx_fontpoint, dpi, 72);
+	logfont.lfWidth = 0;
+	logfont.lfEscapement = 0;
+	logfont.lfOrientation = 0;
+	logfont.lfWeight = cx_fontweight;
+	logfont.lfItalic = cx_fontitalic;
+	logfont.lfUnderline = FALSE;
+	logfont.lfStrikeOut = FALSE;
+	logfont.lfCharSet = SHIFTJIS_CHARSET;
+	logfont.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+	logfont.lfQuality = PROOF_QUALITY;
+	logfont.lfPitchAndFamily = DEFAULT_PITCH;
+	wcscpy_s(logfont.lfFaceName, cx_fontname);
+
+	if(hFont == NULL)
+	{
+		hFont = CreateFontIndirectW(&logfont);
+	}
+
+	if(cx_drawapi && !_UILessMode && (_pD2DFactory == NULL))
+	{
+		_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
+		D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
+
+		HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
+
+		if(hr == S_OK)
+		{
+			D2D1_RENDER_TARGET_PROPERTIES d2dprops = D2D1::RenderTargetProperties(
+				D2D1_RENDER_TARGET_TYPE_DEFAULT,
+				D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+				0.0F, 0.0F, D2D1_RENDER_TARGET_USAGE_NONE, D2D1_FEATURE_LEVEL_DEFAULT);
+
+			hr = _pD2DFactory->CreateDCRenderTarget(&d2dprops, &_pD2DDCRT);
+		}
+
+		if(hr == S_OK)
+		{
+			for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+			{
+				hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
+				if(hr != S_OK)
+				{
+					break;
+				}
+			}
+		}
+
+		if(hr == S_OK)
+		{
+			hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
+		}
+
+		if(hr == S_OK)
+		{
+			hr = _pDWFactory->CreateTextFormat(cx_fontname, NULL,
+				static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
+				cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
+				DWRITE_FONT_STRETCH_NORMAL,
+				(FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"ja-jp", &_pDWTF);
+		}
+
+		if(hr == S_OK)
+		{
+			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+		}
+
+		if(hr != S_OK)
+		{
+			_UninitFont();
+
+			hFont = CreateFontIndirectW(&logfont);
+		}
+	}
+}
+
+void CTextService::_UninitFont()
+{
+	if(hFont != NULL)
+	{
+		DeleteObject(hFont);
+		hFont = NULL;
+	}
+
+	if(_pDWTF != NULL)
+	{
+		_pDWTF->Release();
+		_pDWTF = NULL;
+	}
+
+	if(_pDWFactory != NULL)
+	{
+		_pDWFactory->Release();
+		_pDWFactory = NULL;
+	}
+
+	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	{
+		if(_pD2DBrush[i] != NULL)
+		{
+			_pD2DBrush[i]->Release();
+			_pD2DBrush[i] = NULL;
+		}
+	}
+
+	if(_pD2DDCRT != NULL)
+	{
+		_pD2DDCRT->Release();
+		_pD2DDCRT = NULL;
+	}
+
+	if(_pD2DFactory != NULL)
+	{
+		_pD2DFactory->Release();
+		_pD2DFactory = NULL;
 	}
 }

@@ -1,17 +1,16 @@
 /*
   Conversion from UTF-8 to UTF-16 and vice versa for Windows API and C runtime
-
-  Put '#include "u8.h"' after standard header files include directive.
+  Put '#include "u8w.h"' after standard header files include directive.
   Call setlocale function before using following functions.
 */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <io.h>
-
+#include <locale.h>
 #include <Windows.h>
 
-#include "u8.h"
+#include "u8w.h"
 
 static wchar_t *u8wstr(const char *s)
 {
@@ -315,7 +314,7 @@ u8api char *u8getenv(const char *varname)
 		free(wvarname);
 	}
 
-	return env;	/* need "if (env != NULL) free((void*)env);" */
+	return env;	/* call free function to deallocate */
 }
 
 u8api char *u8tmpnam(char *str)

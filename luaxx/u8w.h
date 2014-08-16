@@ -1,18 +1,16 @@
 /*
   Conversion from UTF-8 to UTF-16 and vice versa for Windows API and C runtime
-
-  Put '#include "u8.h"' after standard header files include directive.
+  Put '#include "u8w.h"' after standard header files include directive.
   Call setlocale function before using following functions.
 */
 
-#ifndef U8_H
-#define U8_H
+#ifndef U8W_H
+#define U8W_H
 
-#include <Windows.h>
 #include <stdio.h>
-#include <locale.h>
+#include <Windows.h>
 
-#ifdef U8EXT
+#ifdef U8W_EXT
 #define u8api __declspec(dllexport)
 #else
 #define u8api __declspec(dllimport)
@@ -30,14 +28,14 @@ u8api int u8fprintf(FILE *file, const char *format, ...);
 u8api int u8printf(const char *format, ...);
 u8api char *u8fgets(char *buf, int len, FILE *file);
 u8api int u8fputs(const char *buf, FILE *file);
-u8api char *u8getenv(const char *varname);	/* needs "if (env != NULL) free((void*)env);" */
+u8api char *u8getenv(const char *varname);	/* call free function to deallocate */
 u8api char *u8tmpnam(char *buf);
 u8api int u8system(const char *command);
 u8api int u8remove(const char *fname);
 u8api int u8rename(const char *oldfname, const char *newfname);
 u8api char *u8setlocale(int category, const char *locale);
 
-#if defined(U8EXT) || defined(lua_c)
+#if defined(U8W_EXT) || defined(lua_c)
 #undef LoadString
 
 #define GetModuleFileNameA u8GetModuleFileName
@@ -57,6 +55,6 @@ u8api char *u8setlocale(int category, const char *locale);
 #define remove u8remove
 #define rename u8rename
 #define setlocale u8setlocale
-#endif /* U8EXT or lua_c */
+#endif /* U8W_EXT or lua_c */
 
-#endif /* U8_H */
+#endif /* U8W_H */

@@ -30,7 +30,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	int fontpoint, fontweight, x, y;
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
-	LOGFONT lf;
+	LOGFONTW lf;
 	HFONT hFont;
 	RECT rect;
 	POINT pt;
@@ -64,9 +64,9 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		{
 			fontweight = FW_NORMAL;
 		}
-		if(fontitalic != TRUE && fontitalic != FALSE)
+		if(fontitalic != FALSE)
 		{
-			fontitalic = FALSE;
+			fontitalic = TRUE;
 		}
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname);
@@ -74,7 +74,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
 			fontweight, fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, fontname);
-		SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
+		SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
 		ReleaseDC(hDlg, hdc);
 
 		SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, fontpoint, FALSE);
@@ -114,7 +114,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		for(i = 0; i <= 9; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
-			SendMessage(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
+			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
 		i = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
@@ -122,7 +122,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		{
 			i = 5;
 		}
-		SendMessage(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
+		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
@@ -152,8 +152,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		case IDC_BUTTON_CHOOSEFONT:
 			hdc = GetDC(hDlg);
 
-			hFont = (HFONT)SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
-			GetObject(hFont, sizeof(LOGFONT), &lf);
+			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
+			GetObjectW(hFont, sizeof(LOGFONTW), &lf);
 			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
 			lf.lfCharSet = SHIFTJIS_CHARSET;
 
@@ -167,10 +167,10 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				SetDlgItemText(hDlg, IDC_EDIT_FONTNAME, lf.lfFaceName);
+				SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, lf.lfFaceName);
 				lf.lfHeight = -MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 				hFont = CreateFontIndirect(&lf);
-				SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
+				SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
 				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / 10, FALSE);
 			}
 
@@ -272,13 +272,13 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));
 			WriterKey(pXmlWriter, ValueFontName, fontname);
 
-			hFont = (HFONT)SendMessage(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
-			GetObject(hFont, sizeof(LOGFONT), &lf);
+			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
+			GetObjectW(hFont, sizeof(LOGFONTW), &lf);
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTPOINT, num, _countof(num));
 			WriterKey(pXmlWriter, ValueFontSize, num);
 			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfWeight);
 			WriterKey(pXmlWriter, ValueFontWeight, num);
-			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfItalic);
+			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfItalic == FALSE ? 0 : 1);
 			WriterKey(pXmlWriter, ValueFontItalic, num);
 
 			WriterEndSection(pXmlWriter);	//End of SectionFont
@@ -305,7 +305,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, ValueColorFont);
 
 			hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
-			num[0] = L'0' + (WCHAR)SendMessage(hwnd, CB_GETCURSEL, 0, 0);
+			num[0] = L'0' + (WCHAR)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
