@@ -18,4 +18,4 @@
 
 #include <windows.h>
 
-#define U8W_EXT
+#define U8W_EXP

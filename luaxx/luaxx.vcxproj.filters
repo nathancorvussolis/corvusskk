@@ -75,6 +75,9 @@
     <ClInclude Include="lua.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lua.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="luaconf.h">
       <Filter>Header Files</Filter>
     </ClInclude>

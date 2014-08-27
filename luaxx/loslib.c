@@ -117,7 +117,7 @@ static int os_getenv (lua_State *L) {
 #ifdef U8W_H
   const char *env = getenv(luaL_checkstring(L, 1));
   lua_pushstring(L, env);  /* if NULL push nil */
-  free((void*)env);
+  free((void *)env);
 #else
   lua_pushstring(L, getenv(luaL_checkstring(L, 1)));  /* if NULL push nil */
 #endif

@@ -643,14 +643,14 @@ static void setpath (lua_State *L, const char *fieldname, const char *envname1,
     lua_pushstring(L, def);  /* use default */
   else {
 #ifdef U8W_H
-	const char *path_env = path;
+    const char *path_env = path;
 #endif
     /* replace ";;" by ";AUXMARK;" and then AUXMARK by default path */
     path = luaL_gsub(L, path, LUA_PATH_SEP LUA_PATH_SEP,
                               LUA_PATH_SEP AUXMARK LUA_PATH_SEP);
     luaL_gsub(L, path, AUXMARK, def);
 #ifdef U8W_H
-	free((void*)path_env);
+    free((void *)path_env);
 #endif
     lua_remove(L, -2);
   }

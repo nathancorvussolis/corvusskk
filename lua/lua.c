@@ -421,6 +421,9 @@ static int runargs (lua_State *L, char **argv, int n) {
 
 
 static int handle_luainit (lua_State *L) {
+#ifdef U8W_H
+  int d;
+#endif
   const char *name = "=" LUA_INITVERSION;
   const char *init = getenv(name + 1);
   if (init == NULL) {
@@ -428,22 +431,20 @@ static int handle_luainit (lua_State *L) {
     init = getenv(name + 1);  /* try alternative name */
   }
   if (init == NULL) return LUA_OK;
-#ifndef U8W_H
+#ifdef U8W_H
+  else if(init[0] == '@') {
+    d = dofile(L, init + 1);
+  }
+  else {
+    d = dostring(L, init, name);
+  }
+  free((void *)init);
+  return d;
+#else
   else if (init[0] == '@')
     return dofile(L, init+1);
   else
     return dostring(L, init, name);
-#else
-  else if(init[0] == '@') {
-	  int d = dofile(L, init + 1);
-	  free((void*)init);
-	  return d;
-  }
-  else {
-	  int d = dostring(L, init, name);
-	  free((void*)init);
-	  return d;
-  }
 #endif
 }
 
@@ -491,17 +492,19 @@ static int pmain (lua_State *L) {
 
 
 #ifdef U8W_H
-int wmain(int argc, wchar_t **wargv) {
-  char **argv;
+void free_u8argv(int argc, char **argv) {
+  int i;
+  for(i = 0; i < argc; i++) {
+    if(argv && argv[i]) free(argv[i]);
+  }
+  if(argv) free(argv);
+}
+
+char **make_u8argv(int argc, wchar_t **wargv) {
   int i, n;
-  int status, result;
-  lua_State *L;
-
-  setlocale(LC_ALL, "");
-
-  argv = (char **)calloc(argc + 1, sizeof(void *));
+  char **argv = (char **)calloc(argc + 1, sizeof(void *));
   if(argv == NULL) {
-    return EXIT_FAILURE;
+    return NULL;
   } else {
     for(i = 0; i < argc; i++) {
       n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, NULL, 0, NULL, NULL);
@@ -512,23 +515,29 @@ int wmain(int argc, wchar_t **wargv) {
         }
       }
       if(n <= 0 || argv[i] == NULL) {
-        for(i = 0; i < argc; i++) {
-          if(argv && argv[i]) free(argv[i]);
-        }
-        if(argv) free(argv);
-        return EXIT_FAILURE;
+        free_u8argv(argc, argv);
+        return NULL;
       }
     }
   }
+  return argv;
+}
+
+int wmain(int argc, wchar_t **wargv) {
+  char **argv;
+  int status, result;
+  lua_State *L;
+
+  setlocale(LC_ALL, "");
+
+  argv = make_u8argv(argc, wargv);
+  if(argv == NULL) return EXIT_FAILURE;
 
   L = luaL_newstate();  /* create state */
   if(L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
 
-    for(i = 0; i < argc; i++) {
-      if(argv && argv[i]) free(argv[i]);
-    }
-    if(argv) free(argv);
+    free_u8argv(argc, argv);
 
     return EXIT_FAILURE;
   }
@@ -542,10 +551,7 @@ int wmain(int argc, wchar_t **wargv) {
   finalreport(L, status);
   lua_close(L);
 
-  for(i = 0; i < argc; i++) {
-    if(argv && argv[i]) free(argv[i]);
-  }
-  if(argv) free(argv);
+  free_u8argv(argc, argv);
 
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
@@ -553,9 +559,9 @@ int wmain(int argc, wchar_t **wargv) {
 int main(int argc, char **argv) {
   int status, result;
   lua_State *L = luaL_newstate();  /* create state */
-  if(L == NULL) {
+  if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
-	return EXIT_FAILURE;
+    return EXIT_FAILURE;
   }
   /* call 'pmain' in protected mode */
   lua_pushcfunction(L, &pmain);

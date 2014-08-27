@@ -172,6 +172,7 @@
     <ClInclude Include="ltable.h" />
     <ClInclude Include="ltm.h" />
     <ClInclude Include="lua.h" />
+    <ClInclude Include="lua.hpp" />
     <ClInclude Include="luaconf.h" />
     <ClInclude Include="lualib.h" />
     <ClInclude Include="lundump.h" />
