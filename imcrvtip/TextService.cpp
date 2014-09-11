@@ -151,7 +151,10 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
 
-	_KeyboardSetDefaultMode();
+	if (!_IsKeyboardOpen())
+	{
+		_KeyboardSetDefaultMode();
+	}
 
 	if(!_InitThreadMgrEventSink())
 	{
@@ -248,6 +251,8 @@ STDAPI CTextService::Deactivate()
 		_pThreadMgr->Release();
 		_pThreadMgr = NULL;
 	}
+
+	_UninitFont();
 
 	_ClientId = TF_CLIENTID_NULL;
 

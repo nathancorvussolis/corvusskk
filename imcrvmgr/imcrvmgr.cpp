@@ -79,6 +79,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	if(!hWnd)
 	{
+		UninitLua();
 		WSACleanup();
 		return 0;
 	}
@@ -98,6 +99,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		}
 	}
 
+	UninitLua();
 	WSACleanup();
 
 	return (int) msg.wParam;

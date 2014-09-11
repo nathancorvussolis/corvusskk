@@ -31,7 +31,6 @@ u8api char *u8tmpnam(char *str);
 u8api int u8system(const char *command);
 u8api int u8remove(const char *fname);
 u8api int u8rename(const char *oldfname, const char *newfname);
-u8api char *u8setlocale(int category, const char *locale);
 
 #ifndef U8W_C
 #if defined(U8W_EXT) || defined(U8W_EXP) || defined(lua_c)
@@ -53,7 +52,6 @@ u8api char *u8setlocale(int category, const char *locale);
 #define system u8system
 #define remove u8remove
 #define rename u8rename
-#define setlocale u8setlocale
 #endif /* U8W_EXT or U8W_EXP or lua_c */
 #endif /* U8W_C */
 

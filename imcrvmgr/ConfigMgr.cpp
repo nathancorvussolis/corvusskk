@@ -226,6 +226,14 @@ void InitLua()
 		return;
 	}
 
-	lua_close(lua);
-	lua = NULL;
+	UninitLua();
+}
+
+void UninitLua()
+{
+	if(lua != NULL)
+	{
+		lua_close(lua);
+		lua = NULL;
+	}
 }

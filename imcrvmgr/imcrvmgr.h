@@ -18,6 +18,7 @@ void CreateConfigPath();
 void LoadConfig();
 BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft);
 void InitLua();
+void UninitLua();
 
 // ConvGadget
 std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate);

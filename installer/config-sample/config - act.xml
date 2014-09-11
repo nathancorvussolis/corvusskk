@@ -179,6 +179,9 @@
   </section>
   <section name="kana">
     <list>
+
+<!-- 母音(あ行)、とその撥音拡張 -->
+
       <row ro="a" hi="あ" ka="ア" an="ｱ" so="0" />
       <row ro="i" hi="い" ka="イ" an="ｲ" so="0" />
       <row ro="u" hi="う" ka="ウ" an="ｳ" so="0" />
@@ -189,6 +192,8 @@
       <row ro="k" hi="うん" ka="ウン" an="ｳﾝ" so="0" />
       <row ro="j" hi="えん" ka="エン" an="ｴﾝ" so="0" />
       <row ro="q" hi="おん" ka="オン" an="ｵﾝ" so="0" />
+
+<!-- 清音、濁音、撥音拡張、二重母音拡張 -->
 
       <row ro="ca" hi="か" ka="カ" an="ｶ" so="0" />
       <row ro="ci" hi="き" ka="キ" an="ｷ" so="0" />
@@ -412,6 +417,8 @@
       <row ro="p," hi="ぽう" ka="ポウ" an="ﾎﾟｳ" so="0" />
       <row ro="py" hi="ぷい" ka="プイ" an="ﾌﾟｲ" so="0" />
 
+<!-- 拗音、撥音拡張、二重母音拡張 -->
+
       <row ro="cga" hi="きゃ" ka="キャ" an="ｷｬ" so="0" />
       <row ro="cgi" hi="きぃ" ka="キィ" an="ｷｨ" so="0" />
       <row ro="cgu" hi="きゅ" ka="キュ" an="ｷｭ" so="0" />
@@ -604,6 +611,8 @@
       <row ro="pn," hi="ぴょう" ka="ピョウ" an="ﾋﾟｮｳ" so="0" />
       <row ro="pny" hi="ぴゅい" ka="ピュイ" an="ﾋﾟｭｲ" so="0" />
 
+<!-- 拗音(2ストローク系)、撥音拡張、二重母音拡張 -->
+
       <row ro="fa" hi="ふぁ" ka="ファ" an="ﾌｧ" so="0" />
       <row ro="fi" hi="ふぃ" ka="フィ" an="ﾌｨ" so="0" />
       <row ro="fu" hi="ふ" ka="フ" an="ﾌ" so="0" />
@@ -634,6 +643,8 @@
       <row ro="v." hi="ヴぇい" ka="ヴェイ" an="ｳﾞｪｲ" so="0" />
       <row ro="v," hi="ヴぉー" ka="ヴォー" an="ｳﾞｫｰ" so="0" />
 
+<!-- 頻出拗音の省略打ち -->
+
       <row ro="pc" hi="ぴゅう" ka="ピュウ" an="ﾋﾟｭｳ" so="0" />
       <row ro="pl" hi="ぴょう" ka="ピョウ" an="ﾋﾟｮｳ" so="0" />
       <row ro="fc" hi="ふゅー" ka="フュー" an="ﾌｭｰ" so="0" />
@@ -661,6 +672,9 @@
       <row ro="vz" hi="ヴぉー" ka="ヴォー" an="ｳﾞｫｰ" so="0" />
       <row ro="zw" hi="じゅう" ka="ジュウ" an="ｼﾞｭｳ" so="0" />
       <row ro="zz" hi="じょう" ka="ジョウ" an="ｼﾞｮｳ" so="0" />
+
+<!-- 拗音＋ク・ツの省略打ち -->
+
       <row ro="grr" hi="ぎょく" ka="ギョク" an="ｷﾞｮｸ" so="0" />
       <row ro="grl" hi="ぎゃく" ka="ギャク" an="ｷﾞｬｸ" so="0" />
       <row ro="cgr" hi="きょく" ka="キョク" an="ｷｮｸ" so="0" />
@@ -683,11 +697,17 @@
       <row ro="zmv" hi="じょく" ka="ジョク" an="ｼﾞｮｸ" so="0" />
       <row ro="zmz" hi="じゃく" ka="ジャク" an="ｼﾞｬｸ" so="0" />
       <row ro="zmw" hi="じゅつ" ka="ジュツ" an="ｼﾞｭﾂ" so="0" />
+
+<!-- ヤ行の互換キー -->
+
       <row ro="yg" hi="ゆう" ka="ユウ" an="ﾕｳ" so="0" />
       <row ro="yh" hi="ゆ" ka="ユ" an="ﾕ" so="0" />
       <row ro="ym" hi="ゆん" ka="ユン" an="ﾕﾝ" so="0" />
       <row ro="yv" hi="よん" ka="ヨン" an="ﾖﾝ" so="0" />
       <row ro="yz" hi="やん" ka="ヤン" an="ﾔﾝ" so="0" />
+
+<!-- パ行の互換キー -->
+
       <row ro="ps" hi="ぱ" ka="パ" an="ﾊﾟ" so="0" />
       <row ro="pd" hi="ぴ" ka="ピ" an="ﾋﾟ" so="0" />
       <row ro="ph" hi="ぷ" ka="プ" an="ﾌﾟ" so="0" />
@@ -697,6 +717,9 @@
       <row ro="pm" hi="ぷん" ka="プン" an="ﾌﾟﾝ" so="0" />
       <row ro="pw" hi="ぺん" ka="ペン" an="ﾍﾟﾝ" so="0" />
       <row ro="pv" hi="ぽん" ka="ポン" an="ﾎﾟﾝ" so="0" />
+
+<!-- ヤ行頻出文字列の省略打ち -->
+
       <row ro="yf" hi="より" ka="ヨリ" an="ﾖﾘ" so="0" />
       <row ro="yc" hi="いう" ka="イウ" an="ｲｳ" so="0" />
       <row ro="yr" hi="よる" ka="ヨル" an="ﾖﾙ" so="0" />
@@ -708,11 +731,120 @@
       <row ro="yb" hi="ゆび" ka="ユビ" an="ﾕﾋﾞ" so="0" />
       <row ro="yw" hi="いわれ" ka="イワレ" an="ｲﾜﾚ" so="0" />
 
-      <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" />
+<!-- その他の頻出文字列の省略打ち -->
 
-<!-- nn=ん以外の、その他の頻出文字列の省略打ちは省略 -->
+      <!-- <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" /> -->
+
+      <row ro="ff" hi="ふり" ka="フリ" an="ﾌﾘ" so="0" />
+      <row ro="fg" hi="ふる" ka="フル" an="ﾌﾙ" so="0" />
+      <row ro="fr" hi="ふる" ka="フル" an="ﾌﾙ" so="0" />
+      <row ro="fn" hi="ふぁん" ka="ファン" an="ﾌｧﾝ" so="0" />
+      <row ro="fm" hi="ふむ" ka="フム" an="ﾌﾑ" so="0" />
+
+      <row ro="gt" hi="ごと" ka="ゴト" an="ｺﾞﾄ" so="0" />
+      <row ro="gn" hi="ごく" ka="ゴク" an="ｺﾞｸ" so="0" />
+      <row ro="gs" hi="がく" ka="ガク" an="ｶﾞｸ" so="0" />
+
+      <row ro="cr" hi="から" ka="カラ" an="ｶﾗ" so="0" />
+      <row ro="cd" hi="かた" ka="カタ" an="ｶﾀ" so="0" />
+      <row ro="ct" hi="こと" ka="コト" an="ｺﾄ" so="0" />
+      <row ro="cn" hi="こく" ka="コク" an="ｺｸ" so="0" />
+      <row ro="cs" hi="かく" ka="カク" an="ｶｸ" so="0" />
+      <row ro="cb" hi="かんがえ" ka="カンガエ" an="ｶﾝｶﾞｴ" so="0" />
+
+      <row ro="rr" hi="られ" ka="ラレ" an="ﾗﾚ" so="0" />
+      <row ro="rn" hi="らん" ka="ラン" an="ﾗﾝ" so="0" />
+
+      <row ro="dg" hi="だが" ka="ダガ" an="ﾀﾞｶﾞ" so="0" />
+      <row ro="dc" hi="でき" ka="デキ" an="ﾃﾞｷ" so="0" />
+      <row ro="dr" hi="である" ka="デアル" an="ﾃﾞｱﾙ" so="0" />
+      <row ro="dl" hi="でしょう" ka="デショウ" an="ﾃﾞｼｮｳ" so="0" />
+      <row ro="dd" hi="ので" ka="ノデ" an="ﾉﾃﾞ" so="0" />
+      <row ro="dt" hi="だち" ka="ダチ" an="ﾀﾞﾁ" so="0" />
+      <row ro="ds" hi="です" ka="デス" an="ﾃﾞｽ" so="0" />
+      <row ro="dm" hi="でも" ka="デモ" an="ﾃﾞﾓ" so="0" />
+
+      <row ro="hg" hi="ふる" ka="フル" an="ﾌﾙ" so="0" />
+      <row ro="hc" hi="ひゅう" ka="ヒュウ" an="ﾋｭｳ" so="0" />
+      <row ro="hr" hi="ひとり" ka="ヒトリ" an="ﾋﾄﾘ" so="0" />
+      <row ro="hl" hi="ひょう" ka="ヒョウ" an="ﾋｮｳ" so="0" />
+      <row ro="hd" hi="ほど" ka="ホド" an="ﾎﾄﾞ" so="0" />
+      <row ro="hh" hi="ひと" ka="ヒト" an="ﾋﾄ" so="0" />
+      <row ro="hz" hi="ひじょう" ka="ヒジョウ" an="ﾋｼﾞｮｳ" so="0" />
+
+      <row ro="tf" hi="とり" ka="トリ" an="ﾄﾘ" so="0" />
+      <row ro="tg" hi="として" ka="トシテ" an="ﾄｼﾃ" so="0" />
+      <row ro="tc" hi="ついて" ka="ツイテ" an="ﾂｲﾃ" so="0" />
+      <row ro="tr" hi="ところ" ka="トコロ" an="ﾄｺﾛ" so="0" />
+      <row ro="tl" hi="とく" ka="トク" an="ﾄｸ" so="0" />
+      <row ro="td" hi="という" ka="トイウ" an="ﾄｲｳ" so="0" />
+      <row ro="tn" hi="との" ka="トノ" an="ﾄﾉ" so="0" />
+      <row ro="tb" hi="たび" ka="タビ" an="ﾀﾋﾞ" so="0" />
+      <row ro="tm" hi="ため" ka="タメ" an="ﾀﾒ" so="0" />
+      <row ro="tv" hi="とき" ka="トキ" an="ﾄｷ" so="0" />
+      <row ro="tz" hi="てき" ka="テキ" an="ﾃｷ" so="0" />
+
+      <row ro="nf" hi="なり" ka="ナリ" an="ﾅﾘ" so="0" />
+      <row ro="nc" hi="について" ka="ニツイテ" an="ﾆﾂｲﾃ" so="0" />
+      <row ro="nr" hi="なる" ka="ナル" an="ﾅﾙ" so="0" />
+      <row ro="nl" hi="なった" ka="ナッタ" an="ﾅｯﾀ" so="0" />
+      <row ro="nd" hi="など" ka="ナド" an="ﾅﾄﾞ" so="0" />
+      <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" />		<!-- 撥音 -->
+      <row ro="nb" hi="なければ" ka="ナケレバ" an="ﾅｹﾚﾊﾞ" so="0" />
+      <row ro="nm" hi="なくても" ka="ナクテモ" an="ﾅｸﾃﾓ" so="0" />
+      <row ro="nw" hi="なくては" ka="ナクテハ" an="ﾅｸﾃﾊ" so="0" />
+      <row ro="nz" hi="なく" ka="ナク" an="ﾅｸ" so="0" />
+
+      <row ro="snt" hi="しなくて" ka="シナクテ" an="ｼﾅｸﾃ" so="0" />
+      <row ro="snb" hi="しなければ" ka="シナケレバ" an="ｼﾅｹﾚﾊﾞ" so="0" />
+      <row ro="snm" hi="しなくても" ka="シナクテモ" an="ｼﾅｸﾃﾓ" so="0" />
+      <row ro="snw" hi="しなくては" ka="シナクテハ" an="ｼﾅｸﾃﾊ" so="0" />
+
+      <row ro="sf" hi="さり" ka="サリ" an="ｻﾘ" so="0" />
+      <row ro="sg" hi="され" ka="サレ" an="ｻﾚ" so="0" />
+      <row ro="sc" hi="した" ka="シタ" an="ｼﾀ" so="0" />
+      <row ro="sr" hi="する" ka="スル" an="ｽﾙ" so="0" />
+      <row ro="sd" hi="され" ka="サレ" an="ｻﾚ" so="0" />
+      <row ro="sm" hi="しも" ka="シモ" an="ｼﾓ" so="0" />
+      <row ro="sz" hi="それぞれ" ka="ソレゾレ" an="ｿﾚｿﾞﾚ" so="0" />
+
+      <row ro="bc" hi="びゅう" ka="ビュウ" an="ﾋﾞｭｳ" so="0" />
+      <row ro="br" hi="ばら" ka="バラ" an="ﾊﾞﾗ" so="0" />
+      <row ro="bl" hi="びょう" ka="ビョウ" an="ﾋﾞｮｳ" so="0" />
+      <row ro="bh" hi="ぶつ" ka="ブツ" an="ﾌﾞﾂ" so="0" />
+      <row ro="bt" hi="べつ" ka="ベツ" an="ﾍﾞﾂ" so="0" />
+
+      <row ro="mc" hi="みゅー" ka="ミュー" an="ﾐｭｰ" so="0" />
+      <row ro="mr" hi="まる" ka="マル" an="ﾏﾙ" so="0" />
+      <row ro="ml" hi="みょう" ka="ミョウ" an="ﾐｮｳ" so="0" />
+      <row ro="md" hi="まで" ka="マデ" an="ﾏﾃﾞ" so="0" />
+      <row ro="mt" hi="また" ka="マタ" an="ﾏﾀ" so="0" />
+      <row ro="mn" hi="もの" ka="モノ" an="ﾓﾉ" so="0" />
+      <row ro="ms" hi="ます" ka="マス" an="ﾏｽ" so="0" />
+      <row ro="mm" hi="おも" ka="オモ" an="ｵﾓ" so="0" />
+
+      <row ro="wr" hi="われ" ka="ワレ" an="ﾜﾚ" so="0" />
+      <row ro="wt" hi="わたし" ka="ワタシ" an="ﾜﾀｼ" so="0" />
+      <row ro="wn" hi="われわれ" ka="ワレワレ" an="ﾜﾚﾜﾚ" so="0" />
+
+      <row ro="vm" hi="ことな" ka="コトナ" an="ｺﾄﾅ" so="0" />
+      <row ro="vv" hi="おなじ" ka="オナジ" an="ｵﾅｼﾞ" so="0" />
+
+      <row ro="zc" hi="じゅう" ka="ジュウ" an="ｼﾞｭｳ" so="0" />
+      <row ro="zr" hi="ざる" ka="ザル" an="ｻﾞﾙ" so="0" />
+      <row ro="zt" hi="ずつ" ka="ズツ" an="ｽﾞﾂ" so="0" />
+      <row ro="zn" hi="ぞく" ka="ゾク" an="ｿﾞｸ" so="0" />
+      <row ro="zs" hi="ざく" ka="ザク" an="ｻﾞｸ" so="0" />
+
+      <row ro="pf" hi="ぷり" ka="プリ" an="ﾌﾟﾘ" so="0" />
+      <row ro="pg" hi="ぷる" ka="プル" an="ﾌﾟﾙ" so="0" />
+      <row ro="pr" hi="ぷろ" ka="プロ" an="ﾌﾟﾛ" so="0" />
+
+<!-- 促音 -->
 
       <row ro="'" hi="っ" ka="ッ" an="ｯ" so="0" />
+
+<!-- 小書き -->
 
       <row ro="`a" hi="ぁ" ka="ァ" an="ｧ" so="0" />
       <row ro="`i" hi="ぃ" ka="ィ" an="ｨ" so="0" />
@@ -731,6 +863,8 @@
       <row ro="`wo" hi="お" ka="オ" an="ｵ" so="0" />
       <row ro="`ca" hi="ゕ" ka="ヵ" an="ｶ" so="0" />
       <row ro="`ce" hi="ゖ" ka="ヶ" an="ｹ" so="0" />
+
+<!-- 数字、記号 -->
 
       <row ro="0" hi="0" ka="0" an="0" so="0" />
       <row ro="1" hi="1" ka="1" an="1" so="0" />
