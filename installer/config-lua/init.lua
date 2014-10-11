@@ -52,16 +52,20 @@
 			crvmgr.search_skk_dictionary(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
-		SKKサーバー検索
+		SKK辞書サーバー検索
 			crvmgr.search_skk_server(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
-		Unicode Code Point 変換
+		Unicodeコードポイント変換
 			crvmgr.search_unicode(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
-		JIS X 0213 変換
+		JIS X 0213面区点番号変換
 			crvmgr.search_jisx0213(key)
+				key : 見出し語 string
+				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
+		文字コード表記変換 (ASCII, JIS X 0201(8bit), JIS X 0213 / Unicode)
+			crvmgr.search_character_code(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
 		補完
@@ -94,7 +98,7 @@
 				"CorvusSKK X.Y.Z / Lua A.B.C" string
 
 
-	スクリプトinit.luaの文字コード
+	スクリプトファイルinit.luaの文字コード
 
 		UTF-8のみ対応
 --]]
@@ -182,6 +186,9 @@ local skk_gadget_const_table = {
 
 -- (window-width)
 local window_width_val = "80"
+
+-- 文字コード表記変換プレフィックス
+local charcode_conv_prefix = "?"
 
 
 
@@ -408,66 +415,97 @@ local function car(t)
 	return skk_num_list[1]
 end
 
+-- convert float to integer (remove .0 suffix for compatibility with Lua 5.2)
+local function float_to_integer(value)
+	if (_VERSION == "Lua 5.2") then
+		return value
+	end
+	local ivalue = math.tointeger(value)
+	if ivalue then
+		return ivalue
+	end
+	return value
+end
+
 -- 1+
 local function plus_1(t)
-	if (not tonumber(t[1])) then
+	local n1 = tonumber(t[1])
+
+	if (not n1) then
 		return ""
 	end
-	return tonumber(t[1]) + 1
+	return float_to_integer(n1 + 1)
 end
 
 -- 1-
 local function minus_1(t)
-	if (not tonumber(t[1])) then
+	local n1 = tonumber(t[1])
+
+	if (not n1) then
 		return ""
 	end
-	return tonumber(t[1]) - 1
+	return float_to_integer(n1 - 1)
 end
 
 -- +
 local function plus(t)
-	if (not tonumber(t[1]) or not tonumber(t[2])) then
+	local n1 = tonumber(t[1])
+	local n2 = tonumber(t[2])
+
+	if (not n1 or not n2) then
 		return ""
 	end
-	return tonumber(t[1]) + tonumber(t[2])
+	return float_to_integer(n1 + n2)
 end
 
 -- -
 local function minus(t)
-	if (not tonumber(t[1]) or not tonumber(t[2])) then
+	local n1 = tonumber(t[1])
+	local n2 = tonumber(t[2])
+
+	if (not n1 or not n2) then
 		return ""
 	end
-	return tonumber(t[1]) - tonumber(t[2])
+	return float_to_integer(n1 - n2)
 end
 
 -- *
 local function mul(t)
-	if (not tonumber(t[1]) or not tonumber(t[2])) then
+	local n1 = tonumber(t[1])
+	local n2 = tonumber(t[2])
+
+	if (not n1 or not n2) then
 		return ""
 	end
-	return tonumber(t[1]) * tonumber(t[2])
+	return float_to_integer(n1 * n2)
 end
 
 -- /
 local function div(t)
-	if (not tonumber(t[1]) or not tonumber(t[2])) then
+	local n1 = tonumber(t[1])
+	local n2 = tonumber(t[2])
+
+	if (not n1 or not n2) then
 		return ""
 	end
-	if (tonumber(t[2]) == 0) then
+	if (n2 == 0) then
 		return ""
 	end
-	return tonumber(t[1]) / tonumber(t[2])
+	return float_to_integer(n1 / n2)
 end
 
 -- %
 local function mod(t)
-	if (not tonumber(t[1]) or not tonumber(t[2])) then
+	local n1 = tonumber(t[1])
+	local n2 = tonumber(t[2])
+
+	if (not n1 or not n2) then
 		return ""
 	end
-	if (tonumber(t[2]) == 0) then
+	if (n2 == 0) then
 		return ""
 	end
-	return tonumber(t[1]) % tonumber(t[2])
+	return float_to_integer(n1 % n2)
 end
 
 -- skk-version
@@ -687,7 +725,7 @@ local function skk_gadget_units_conversion(t)
 		if (value_from[1] == unit_from) then
 			for j, value_to in ipairs(value_from[2]) do
 				if (value_to[1] == unit_to) then
-						ret = tostring(tonumber(number) * value_to[2]) .. unit_to
+					ret = tostring(float_to_integer(tonumber(number) * value_to[2])) .. unit_to
 					break
 				end
 			end
@@ -988,21 +1026,32 @@ end
 local function skk_search(key, okuri)
 	local ret = ""
 
-	-- ユーザー辞書
+	-- ユーザー辞書検索
 	ret = ret .. crvmgr.search_user_dictionary(key, okuri)
 
-	-- SKK辞書
+	-- SKK辞書検索
 	ret = ret .. crvmgr.search_skk_dictionary(key)
 
-	-- SKK辞書サーバー
+	-- SKK辞書サーバー検索
 	ret = ret .. crvmgr.search_skk_server(key)
 
-	-- Unicode Code Point
-	ret = ret .. crvmgr.search_unicode(key)
+	if okuri == "" then
+		-- Unicodeコードポイント変換
+		ret = ret .. crvmgr.search_unicode(key)
 
-	-- JIS X 0213
-	ret = ret .. crvmgr.search_jisx0213(key)
+		-- JIS X 0213面区点番号変換
+		ret = ret .. crvmgr.search_jisx0213(key)
 
+		local cccplen = string.len(charcode_conv_prefix)
+		if (cccplen < string.len(key) and string.sub(key, 1, cccplen) == charcode_conv_prefix) then
+			local subkey = string.sub(key, cccplen + 1)
+
+			-- 文字コード表記変換
+			ret = ret .. crvmgr.search_character_code(subkey)
+		end
+	end
+
+	-- 余計な"/\n"を削除
 	ret = string.gsub(ret, "/\n/", "/")
 
 	return ret
@@ -1047,52 +1096,62 @@ end
 function lua_skk_add(okuriari, key, candidate, annotation, okuri)
 
 	--[[
-		-- 例 : 送りありのときユーザー辞書に登録しない
-		if (okuriari) then
+	-- 例) 送りありのときユーザー辞書に登録しない
+	if (okuriari) then
+		return
+	end
+	--]]
+
+	--[[
+	-- 例) 送り仮名ブロックを登録しない
+	if (okuriari) then
+		okuri = ""
+	end
+	--]]
+
+	--[[
+	-- 例) Unicodeコードポイント変換のときユーザー辞書に登録しない
+	if not (okuriari) then
+		if (string.match(key, "^U%+[0-9A-F]+$") or string.match(key, "^u[0-9a-f]+$")) then
+			if (string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+XXXX
+				string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or	-- U+XXXXX
+				string.match(key, "^U%+10[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+10XXXX
+				string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or				-- uxxxx
+				string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or		-- uxxxxx
+				string.match(key, "^u10[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$")) then		-- u10xxxx
+				return
+			end
+		end
+	end
+	--]]
+
+	--[[
+	-- 例) JIS X 0213面区点番号変換のときユーザー辞書に登録しない
+	if not (okuriari) then
+		if (string.match(key, "^[12]%-[0-9][0-9]%-[0-9][0-9]$")) then
+			if (string.match(key, "^[12]%-0[1-9]%-0[1-9]$") or			-- [12]-01-01 - [12]-09-94
+				string.match(key, "^[12]%-0[1-9]%-[1-8][0-9]$") or		-- 〃
+				string.match(key, "^[12]%-0[1-9]%-9[0-4]$") or			-- 〃
+				string.match(key, "^[12]%-[1-8][0-9]%-0[1-9]$") or		-- [12]-10-01 - [12]-89-94
+				string.match(key, "^[12]%-[1-8][0-9]%-[1-8][0-9]$") or	-- 〃
+				string.match(key, "^[12]%-[1-8][0-9]%-9[0-4]$") or		-- 〃
+				string.match(key, "^[12]%-9[0-4]%-0[1-9]$") or			-- [12]-90-01 - [12]-94-94
+				string.match(key, "^[12]%-9[0-4]%-[1-8][0-9]$") or		-- 〃
+				string.match(key, "^[12]%-9[0-4]%-9[0-4]$")) then		-- 〃
+				return
+			end
+		end
+	end
+	--]]
+
+	--[[
+	-- 例) 文字コード表記変換のときユーザー辞書に登録しない
+	if not (okuriari) then
+		local cccplen = string.len(charcode_conv_prefix)
+		if (cccplen < string.len(key) and string.sub(key, 1, cccplen) == charcode_conv_prefix) then
 			return
 		end
-	--]]
-
-	--[[
-		-- 例 : 送り仮名ブロックを登録しない
-		if (okuriari) then
-			okuri = ""
-		end
-	--]]
-
-	--[[
-		-- 例 : Unicode変換のときユーザー辞書に登録しない
-		if not (okuriari) then
-			if (string.match(key, "^U%+[0-9A-F]+$") or string.match(key, "^u[0-9a-f]+$")) then
-				if (string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+XXXX
-					string.match(key, "^U%+[0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or	-- U+XXXXX
-					string.match(key, "^U%+10[0-9A-F][0-9A-F][0-9A-F][0-9A-F]$") or			-- U+10XXXX
-					string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or				-- uxxxx
-					string.match(key, "^u[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$") or		-- uxxxxx
-					string.match(key, "^u10[0-9a-f][0-9a-f][0-9a-f][0-9a-f]$")) then		-- u10xxxx
-					return
-				end
-			end
-		end
-	--]]
-
-	--[[
-		-- 例 : JIS X 0213変換のときユーザー辞書に登録しない
-		if not (okuriari) then
-			if (string.match(key, "^[12]%-[0-9][0-9]%-[0-9][0-9]$")) then
-				if (string.match(key, "^[12]%-0[1-9]%-0[1-9]$") or			-- [12]-01-01 - [12]-09-94
-					string.match(key, "^[12]%-0[1-9]%-[1-8][0-9]$") or		-- 〃
-					string.match(key, "^[12]%-0[1-9]%-9[0-4]$") or			-- 〃
-					string.match(key, "^[12]%-[1-8][0-9]%-0[1-9]$") or		-- [12]-10-01 - [12]-89-94
-					string.match(key, "^[12]%-[1-8][0-9]%-[1-8][0-9]$") or	-- 〃
-					string.match(key, "^[12]%-[1-8][0-9]%-9[0-4]$") or		-- 〃
-					string.match(key, "^[12]%-9[0-4]%-0[1-9]$") or			-- [12]-90-01 - [12]-94-94
-					string.match(key, "^[12]%-9[0-4]%-[1-8][0-9]$") or		-- 〃
-					string.match(key, "^[12]%-9[0-4]%-9[0-4]$")) then		-- 〃
-					return
-				end
-			end
-		end
+	end
 	--]]
 
 	crvmgr.add(okuriari, key, candidate, annotation, okuri)

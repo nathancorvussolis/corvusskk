@@ -106,3 +106,94 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 
 	return candidate;
 }
+
+#define SURROGATEPAIR_UCPMAX	0x10FFFF
+#define SURROGATEPAIR_UCPMIN	0x10000
+#define SURROGATEPAIR_MASK		0xFC00
+#define SURROGATEPAIR_HIGH_MASK	0xD800
+#define SURROGATEPAIR_LOW_MASK	0xDC00
+#define SURROGATEPAIR_SEPBIT	10
+#define SURROGATEPAIR_SEPMASK	0x3FF
+
+std::wstring SearchCharacterCode(const std::wstring &searchkey)
+{
+	std::wstring candidate;
+	//文字コード表記
+	std::wstring e, u;
+	WCHAR b[16];
+	size_t i, len;
+	UCSCHAR ucp;
+	CONST CHAR as = 0x00;
+	CONST CHAR ae = 0x7F;
+	CONST CHAR mask = 0x7F;
+	CONST CHAR ejs = 0x21;
+	CONST CHAR ss2 = 0x0E;
+	CONST CHAR ss3 = 0x0F;
+
+	//ASCII, JIS X 0201 (8bit), JIS X 0213 面区点番号
+	len = -1;
+	if(WideCharToEucJis2004(searchkey.c_str(), NULL, NULL, &len))
+	{
+		std::string euc = WCTOEUC(searchkey);
+
+		for(i = 0; i < euc.size(); i++)
+		{
+			if(as <= euc[i] && euc[i] <= ae)
+			{
+				_snwprintf_s(b, _TRUNCATE, L"%02X", euc[i]);
+			}
+			else if((euc[i] & mask) == ss3)
+			{
+				_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d",
+					(euc[i + 1] & mask) - ejs + 1, (euc[i + 2] & mask) - ejs + 1);
+				i += 2;
+			}
+			else if((euc[i] & mask) == ss2)
+			{
+				_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
+				i++;
+			}
+			else
+			{
+				_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d",
+					(euc[i] & mask) - ejs + 1, (euc[i + 1] & mask) - ejs + 1);
+				i++;
+			}
+
+			if(!e.empty())
+			{
+				e += L",";
+			}
+			e += b;
+		}
+
+		candidate += L"/" + e;
+	}
+
+	//Unicodeコードポイント
+	for(i = 0; i < searchkey.size(); i++)
+	{
+		if((i + 1 < searchkey.size()) && IS_SURROGATE_PAIR(searchkey[i], searchkey[i + 1]))
+		{
+			ucp = SURROGATEPAIR_UCPMIN +
+				((((UCSCHAR)searchkey[i] & SURROGATEPAIR_SEPMASK) << SURROGATEPAIR_SEPBIT) |
+				((UCSCHAR)searchkey[i + 1] & SURROGATEPAIR_SEPMASK));
+			i++;
+		}
+		else
+		{
+			ucp = (UCSCHAR)searchkey[i];
+		}
+		_snwprintf_s(b, _TRUNCATE, L"U+%04X", ucp);
+
+		if(!u.empty())
+		{
+			u += L",";
+		}
+		u += b;
+	}
+
+	candidate += L"/" + u + L"/\n";
+
+	return candidate;
+}

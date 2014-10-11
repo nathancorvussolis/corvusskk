@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="config-lua\init.lua" />
+    <None Include="config-lua\test_acp.lua" />
     <None Include="config-lua\test_c.lua" />
     <None Include="config-lua\test_gadget.lua" />
     <None Include="config-lua\test_num.lua" />

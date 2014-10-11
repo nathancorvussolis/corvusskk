@@ -752,7 +752,7 @@ void CTextService::_InitFont()
 	if(cx_drawapi && !_UILessMode && (_pD2DFactory == NULL))
 	{
 		_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
-		D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
+			D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
 
 		HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
 

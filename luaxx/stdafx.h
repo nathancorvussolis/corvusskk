@@ -17,5 +17,3 @@
 #include <string.h>
 
 #include <windows.h>
-
-#define U8W_EXP

@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <locale.h>
 
 #define lua_c
 
@@ -501,20 +502,14 @@ void free_u8argv(int argc, char **argv) {
 }
 
 char **make_u8argv(int argc, wchar_t **wargv) {
-  int i, n;
+  int i;
   char **argv = (char **)calloc(argc + 1, sizeof(void *));
   if(argv == NULL) {
     return NULL;
   } else {
     for(i = 0; i < argc; i++) {
-      n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, NULL, 0, NULL, NULL);
-      if(n > 0) {
-        argv[i] = (char *)calloc(n, sizeof(char));
-        if(argv[i] != NULL) {
-          n = WideCharToMultiByte(CP_UTF8, 0, wargv[i], -1, argv[i], n, NULL, NULL);
-        }
-      }
-      if(n <= 0 || argv[i] == NULL) {
+      argv[i] = u8wstos(wargv[i]);
+      if(argv[i] == NULL) {
         free_u8argv(argc, argv);
         return NULL;
       }
@@ -534,7 +529,7 @@ int wmain(int argc, wchar_t **wargv) {
   if(argv == NULL) return EXIT_FAILURE;
 
   L = luaL_newstate();  /* create state */
-  if(L == NULL) {
+  if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
 
     free_u8argv(argc, argv);
@@ -555,7 +550,19 @@ int wmain(int argc, wchar_t **wargv) {
 
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-#else
+#ifdef __GNUC__
+int main(int argc, char **argv) {
+  int ret, wargc = 0;
+  wchar_t** wargv;
+
+  wargv = CommandLineToArgvW(GetCommandLineW(), &wargc);
+  ret = wmain(wargc, wargv);
+  LocalFree(wargv);
+
+  return ret;
+}
+#endif /* __GNUC__ */
+#else /* U8W_H */
 int main(int argc, char **argv) {
   int status, result;
   lua_State *L = luaL_newstate();  /* create state */
@@ -573,5 +580,5 @@ int main(int argc, char **argv) {
   lua_close(L);
   return (result && status == LUA_OK) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-#endif
+#endif /* U8W_H */
 

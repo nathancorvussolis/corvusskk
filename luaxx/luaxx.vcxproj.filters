@@ -72,6 +72,9 @@
     <ClInclude Include="ltm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lu8w.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="lua.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -91,9 +94,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lzio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="u8w.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -188,6 +188,12 @@
     <ClCompile Include="ltm.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lu8w.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lu8wlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="lundump.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -195,9 +201,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="lzio.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="u8w.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

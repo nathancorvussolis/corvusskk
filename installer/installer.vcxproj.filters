@@ -51,6 +51,9 @@
     <None Include="config-lua\init.lua">
       <Filter>config-lua</Filter>
     </None>
+    <None Include="config-lua\test_acp.lua">
+      <Filter>config-lua</Filter>
+    </None>
     <None Include="config-lua\test_c.lua">
       <Filter>config-lua</Filter>
     </None>

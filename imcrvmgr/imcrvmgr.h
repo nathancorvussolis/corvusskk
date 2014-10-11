@@ -29,6 +29,7 @@ std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);
 // SearchCharacter
 std::wstring SearchUnicode(const std::wstring &searchkey);
 std::wstring SearchJISX0213(const std::wstring &searchkey);
+std::wstring SearchCharacterCode(const std::wstring &searchkey);
 
 // SearchDictionary
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);
@@ -38,8 +39,9 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 int lua_search_skk_dictionary(lua_State *lua);
 int lua_search_user_dictionary(lua_State *lua);
 int lua_search_skk_server(lua_State *lua);
-int lua_search_jisx0213(lua_State *lua);
 int lua_search_unicode(lua_State *lua);
+int lua_search_jisx0213(lua_State *lua);
+int lua_search_character_code(lua_State *lua);
 int lua_complement(lua_State *lua);
 int lua_add(lua_State *lua);
 int lua_delete(lua_State *lua);
