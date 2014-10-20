@@ -172,7 +172,13 @@ std::wstring ConvertKey(const std::wstring &key)
 	}
 	else
 	{
-		//数値変換のみ
+		//文字コード表記変換のとき見出し語変換しない
+		if(key.size() > 1 && key[0] == L'?')
+		{
+			return std::wstring(L"");
+		}
+
+		//数値変換
 		ret = std::regex_replace(key, std::wregex(L"[0-9]+"), std::wstring(L"#"));
 	}
 

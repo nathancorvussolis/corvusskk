@@ -31,6 +31,10 @@ function _M.search_jisx0213(key)
 	return ""
 end
 
+function _M.search_character_code(key)
+	return ""
+end
+
 function _M.complement(key)
 	return "/きあい/きけん/きき/きかい/\n"
 end

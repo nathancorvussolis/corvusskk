@@ -751,56 +751,66 @@ void CTextService::_InitFont()
 
 	if(cx_drawapi && !_UILessMode && (_pD2DFactory == NULL))
 	{
-		_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
-			D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
-
-		HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
-
-		if(hr == S_OK)
+		//try delay load
+		__try
 		{
-			D2D1_RENDER_TARGET_PROPERTIES d2dprops = D2D1::RenderTargetProperties(
-				D2D1_RENDER_TARGET_TYPE_DEFAULT,
-				D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
-				0.0F, 0.0F, D2D1_RENDER_TARGET_USAGE_NONE, D2D1_FEATURE_LEVEL_DEFAULT);
+			_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
+				D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
 
-			hr = _pD2DFactory->CreateDCRenderTarget(&d2dprops, &_pD2DDCRT);
-		}
+			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
 
-		if(hr == S_OK)
-		{
-			for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+			if(hr == S_OK)
 			{
-				hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
-				if(hr != S_OK)
+				D2D1_RENDER_TARGET_PROPERTIES d2dprops = D2D1::RenderTargetProperties(
+					D2D1_RENDER_TARGET_TYPE_DEFAULT,
+					D2D1::PixelFormat(DXGI_FORMAT_B8G8R8A8_UNORM, D2D1_ALPHA_MODE_IGNORE),
+					0.0F, 0.0F, D2D1_RENDER_TARGET_USAGE_NONE, D2D1_FEATURE_LEVEL_DEFAULT);
+
+				hr = _pD2DFactory->CreateDCRenderTarget(&d2dprops, &_pD2DDCRT);
+			}
+
+			if(hr == S_OK)
+			{
+				for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 				{
-					break;
+					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
+					if(hr != S_OK)
+					{
+						break;
+					}
 				}
 			}
-		}
 
-		if(hr == S_OK)
-		{
-			hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
-		}
+			if(hr == S_OK)
+			{
+				hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
+			}
 
-		if(hr == S_OK)
-		{
-			hr = _pDWFactory->CreateTextFormat(cx_fontname, NULL,
-				static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
-				cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
-				DWRITE_FONT_STRETCH_NORMAL,
-				(FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"ja-jp", &_pDWTF);
-		}
+			if(hr == S_OK)
+			{
+				hr = _pDWFactory->CreateTextFormat(cx_fontname, NULL,
+					static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
+					cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
+					DWRITE_FONT_STRETCH_NORMAL,
+					(FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"ja-jp", &_pDWTF);
+			}
 
-		if(hr == S_OK)
-		{
-			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-		}
+			if(hr == S_OK)
+			{
+				hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+			}
 
-		if(hr != S_OK)
+			if(hr != S_OK)
+			{
+				_UninitFont();
+
+				hFont = CreateFontIndirectW(&logfont);
+			}
+		}
+		__except(EXCEPTION_EXECUTE_HANDLER)
 		{
 			_UninitFont();
-
+			//use GDI font
 			hFont = CreateFontIndirectW(&logfont);
 		}
 	}

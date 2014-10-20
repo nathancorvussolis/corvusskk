@@ -417,13 +417,12 @@ end
 
 -- convert float to integer (remove .0 suffix for compatibility with Lua 5.2)
 local function float_to_integer(value)
-	if (_VERSION == "Lua 5.2") then
-		return value
-	end
-	local ivalue = math.tointeger(value)
+	--[[ Lua 5.3 から有効にする予定
+	local ivalue = math.tointeger(value)   -- math.tointeger : Lua 5.3
 	if ivalue then
 		return ivalue
 	end
+	--]]
 	return value
 end
 
@@ -1009,6 +1008,12 @@ end
 -- 見出し語変換処理
 local function skk_convert_key(key)
 	local ret = ""
+
+	-- 文字コード表記変換のとき見出し語変換しない
+	local cccplen = string.len(charcode_conv_prefix)
+	if (cccplen < string.len(key) and string.sub(key, 1, cccplen) == charcode_conv_prefix) then
+		return "";
+	end
 
 	-- 数値変換
 	if (enable_skk_convert_num) then
