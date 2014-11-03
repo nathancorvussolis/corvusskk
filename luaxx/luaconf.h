@@ -11,6 +11,7 @@
 #include <limits.h>
 #include <stddef.h>
 
+#include "lu8w.h"
 
 /*
 ** ==================================================================
@@ -203,8 +204,6 @@
 */
 #define LUA_IDSIZE	60
 
-
-#include "lu8w.h"
 
 /*
 @@ luai_writestring/luai_writeline define how 'print' prints its results.
@@ -550,6 +549,7 @@
 ** Local configuration. You can use this space to add your redefinitions
 ** without modifying the main part of the file.
 */
+
 
 
 #endif

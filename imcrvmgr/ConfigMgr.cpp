@@ -30,6 +30,7 @@ const luaL_Reg luaFuncs[] =
 	{"search_skk_dictionary", lua_search_skk_dictionary},
 	{"search_user_dictionary", lua_search_user_dictionary},
 	{"search_skk_server", lua_search_skk_server},
+	{"search_skk_server_info", lua_search_skk_server_info},
 	{"search_unicode", lua_search_unicode},
 	{"search_jisx0213", lua_search_jisx0213},
 	{"search_character_code", lua_search_character_code},
@@ -146,7 +147,7 @@ void LoadConfig()
 		if(serv)
 		{
 			ConnectSKKServer();
-			GetSKKServerVersion();
+			GetSKKServerInfo(SKK_VER);
 		}
 	}
 

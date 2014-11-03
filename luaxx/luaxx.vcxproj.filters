@@ -191,9 +191,6 @@
     <ClCompile Include="lu8w.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lu8wlib.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lundump.c">
       <Filter>Source Files</Filter>
     </ClCompile>

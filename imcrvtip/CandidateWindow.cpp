@@ -809,8 +809,10 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 
 			//候補変換
 			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, regwordtextcandidate, regwordtextconv);
-			if(regwordtextconv.empty() || regwordtextconv == regwordtextcandidate)
+			if(_pTextService->searchkey.empty() ||
+				regwordtextconv.empty() || regwordtextconv == regwordtextcandidate)
 			{
+				//変換見出し語が空文字列または
 				//変換済み候補が空文字列または変化なしであれば未変換見出し語を見出し語とする
 				_pTextService->searchkey = _pTextService->searchkeyorg;
 			}

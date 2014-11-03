@@ -212,7 +212,6 @@
     <ClCompile Include="ltablib.c" />
     <ClCompile Include="ltm.c" />
     <ClCompile Include="lu8w.c" />
-    <ClCompile Include="lu8wlib.c" />
     <ClCompile Include="lundump.c" />
     <ClCompile Include="lvm.c" />
     <ClCompile Include="lzio.c" />

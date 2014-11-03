@@ -39,6 +39,7 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 int lua_search_skk_dictionary(lua_State *lua);
 int lua_search_user_dictionary(lua_State *lua);
 int lua_search_skk_server(lua_State *lua);
+int lua_search_skk_server_info(lua_State *lua);
 int lua_search_unicode(lua_State *lua);
 int lua_search_jisx0213(lua_State *lua);
 int lua_search_character_code(lua_State *lua);
@@ -61,7 +62,14 @@ void StartSaveSKKUserDic();
 std::wstring SearchSKKServer(const std::wstring &searchkey);
 void ConnectSKKServer();
 void DisconnectSKKServer();
-void GetSKKServerVersion();
+std::wstring GetSKKServerInfo(CHAR req);
+
+//client
+#define SKK_REQ		'1'
+#define SKK_VER		'2'
+#define SKK_HST		'3'
+//server
+#define SKK_HIT		'1'
 
 extern LPCWSTR TextServiceDesc;
 

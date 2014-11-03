@@ -56,6 +56,10 @@
 			crvmgr.search_skk_server(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
+		SKK辞書サーバー情報検索
+			crvmgr.search_skk_server_info()
+				戻り値 : SKK Serverプロトコル"2"の結果 バージョン番号 string
+						SKK Serverプロトコル"3"の結果 ホスト名 string 
 		Unicodeコードポイント変換
 			crvmgr.search_unicode(key)
 				key : 見出し語 string
@@ -512,6 +516,16 @@ local function skk_version(t)
 	return SKK_VERSION
 end
 
+-- skk-server-version
+local function skk_server_version(t)
+	local v, h = crvmgr.search_skk_server_info()
+
+	if (v == "" or h == "") then
+		return ""
+	end
+	return "SKK SERVER version " .. v .. "running on HOST " .. h
+end
+
 -- 西暦元号変換
 --    引数    1:西暦文字列, 2:元号表記タイプ(1:漢字/2:英字頭文字), 3:変換タイプ([0-9]),
 --            4:区切り, 5:末尾, 6:NOT"元"年, 7:月, 8:日
@@ -758,6 +772,7 @@ local skk_gadget_func_table = {
 	{"/", div},
 	{"%", mod},
 	{"skk-version", skk_version},
+	{"skk-server-version", skk_server_version},
 	{"skk-ad-to-gengo", skk_ad_to_gengo},
 	{"skk-gengo-to-ad", skk_gengo_to_ad},
 	{"skk-default-current-date", skk_default_current_date},

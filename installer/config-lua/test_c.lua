@@ -23,6 +23,10 @@ function _M.search_skk_server(key)
 	return ""
 end
 
+function _M.search_skk_server_info()
+	return "", ""
+end
+
 function _M.search_unicode(key)
 	return ""
 end

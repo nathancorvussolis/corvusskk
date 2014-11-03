@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.7.9
+     CorvusSKK version 1.7.10
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -449,20 +449,6 @@
   %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用
   に使って下さい。
 
-  追加ライブラリ
-
-    u8w.getacp()
-      システム定義のANSIコードページ識別子を返します。
-      参照 : http://msdn.microsoft.com/en-us/library/dd317756
-
-    u8w.acptoutf8(s [, codepage])
-      ANSIコードページ文字列を変換してUTF-8文字列を返します。
-      codepageのデフォルト値はシステム定義のANSIコードページ識別子です。
-
-    u8w.utf8toacp(s [, codepage])
-      UTF-8文字列を変換してANSIコードページ文字列を返します。
-      codepageのデフォルト値はシステム定義のANSIコードページ識別子です。
-
 
 ・プログラム実行変換もどき
 
@@ -484,6 +470,7 @@
     lambda
     1+, 1-, +, -, *, /, %
     skk-version
+	skk-server-version
     skk-gadget-units-conversion
     skk-ad-to-gengo
     skk-gengo-to-ad
@@ -535,7 +522,7 @@
 ・文字コード表記変換
 
   「?X」( X : 任意の1文字以上の文字列 ) のフォーマットで変換して下さい。
-  ASCII(hex), JIS X 0201(8bit, hex), JIS X 0213面区点番号のカンマ区切りの候補および
+  ASCII(hex), JIS X 0201(片仮名, 8bit, hex), JIS X 0213面区点番号のカンマ区切りの候補および
   Unicodeコードポイントのカンマ区切りの候補に変換されます。
   ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場合、
   Unicodeコードポイントの候補のみとなります。
@@ -587,4 +574,4 @@
 ・開発環境
 
   Visual Studio Express 2013 for Windows Desktop Update 3
-  WiX Toolset v3.8
+  WiX Toolset v3.9

@@ -8,38 +8,31 @@
 #include <stdio.h>
 #include <windows.h>
 
-#include "lua.h"
-
-/* from ansi code page to utf-16 */
-LUA_API wchar_t *u8lmbtolwc(const char *s, UINT codepage);	/* call free function to deallocate */
-/* from utf-16 to ansi code page */
-LUA_API char *u8lwctolmb(const wchar_t *s, UINT codepage);	/* call free function to deallocate */
-
 /* from utf-8 to utf-16 */
-LUA_API wchar_t *u8stows(const char *s);	/* call free function to deallocate */
+wchar_t *u8stows(const char *s);	/* call free function to deallocate */
 /* from utf-16 to utf-8 */
-LUA_API char *u8wstos(const wchar_t *s);	/* call free function to deallocate */
+char *u8wstos(const wchar_t *s);	/* call free function to deallocate */
 
-LUA_API DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
-LUA_API DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
+DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
+DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments);
-LUA_API HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
+HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags);
 
-LUA_API FILE *u8fopen(const char *fname, const char *mode);
-LUA_API FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp);
-LUA_API FILE *u8popen(const char *command, const char *mode);
-LUA_API int u8fprintf(FILE *file, const char *format, ...);
-LUA_API int u8printf(const char *format, ...);
-LUA_API char *u8fgets(char *buf, int len, FILE *file);
-LUA_API int u8fputs(const char *buf, FILE *file);
-LUA_API char *u8getenv(const char *varname);	/* call free function to deallocate */
-LUA_API char *u8tmpnam(char *str);
-LUA_API int u8system(const char *command);
-LUA_API int u8remove(const char *fname);
-LUA_API int u8rename(const char *oldfname, const char *newfname);
+FILE *u8fopen(const char *fname, const char *mode);
+FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp);
+FILE *u8popen(const char *command, const char *mode);
+int u8fprintf(FILE *file, const char *format, ...);
+int u8printf(const char *format, ...);
+char *u8fgets(char *buf, int len, FILE *file);
+int u8fputs(const char *buf, FILE *file);
+char *u8getenv(const char *varname);	/* call free function to deallocate */
+char *u8tmpnam(char *str);
+int u8system(const char *command);
+int u8remove(const char *fname);
+int u8rename(const char *oldfname, const char *newfname);
 
 #if !defined(lu8w_c)
-#if defined(LUA_CORE) || defined(LUA_LIB) || defined(lua_c) || defined(luac_c)
+#if defined(LUA_U8W) || defined(LUA_CORE) || defined(LUA_LIB) || defined(lua_c) || defined(luac_c)
 #undef LoadString
 
 #define GetModuleFileNameA u8GetModuleFileName

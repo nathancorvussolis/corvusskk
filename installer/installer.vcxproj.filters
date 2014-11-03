@@ -51,9 +51,6 @@
     <None Include="config-lua\init.lua">
       <Filter>config-lua</Filter>
     </None>
-    <None Include="config-lua\test_acp.lua">
-      <Filter>config-lua</Filter>
-    </None>
     <None Include="config-lua\test_c.lua">
       <Filter>config-lua</Filter>
     </None>
@@ -64,9 +61,6 @@
       <Filter>config-lua</Filter>
     </None>
     <None Include="config-lua\test_search.lua">
-      <Filter>config-lua</Filter>
-    </None>
-    <None Include="config-lua\test_tarai.lua">
       <Filter>config-lua</Filter>
     </None>
     <None Include="config-lua\test_time.lua">

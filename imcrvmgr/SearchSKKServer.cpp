@@ -4,14 +4,6 @@
 #include "parseskkdic.h"
 #include "imcrvmgr.h"
 
-//client
-#define SKK_REQ		'1'
-#define SKK_VER		'2'
-//server
-#define SKK_HIT		'1'
-
-void GetSKKServerVersion();
-
 SOCKET sock = INVALID_SOCKET;
 
 std::wstring SearchSKKServer(const std::wstring &searchkey)
@@ -48,7 +40,7 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 		ConnectSKKServer();
 	}
 
-	GetSKKServerVersion();
+	GetSKKServerInfo(SKK_VER);
 
 	if(send(sock, key.c_str(), (int)key.size(), 0) == SOCKET_ERROR)
 	{
@@ -207,9 +199,10 @@ void DisconnectSKKServer()
 	}
 }
 
-void GetSKKServerVersion()
+std::wstring GetSKKServerInfo(CHAR req)
 {
-	CHAR req = SKK_VER;
+	std::wstring ret;
+	std::string sbuf;
 	std::string buf;
 	CHAR rbuf[RECVBUFSIZE];
 	int n;
@@ -232,10 +225,26 @@ void GetSKKServerVersion()
 				break;
 			}
 
+			sbuf += rbuf;
+
 			if(rbuf[n - 1] == '\x20'/*SP*/)
 			{
 				break;
 			}
 		}
+
+		switch(encoding)
+		{
+		case 0:
+			ret = eucjis2004_string_to_wstring(sbuf);
+			break;
+		case 1:
+			ret = utf8_string_to_wstring(sbuf);
+			break;
+		default:
+			break;
+		}
 	}
+
+	return ret;
 }

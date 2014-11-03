@@ -9,23 +9,19 @@
 #include <windows.h>
 
 #define lu8w_c
-#define LUA_CORE
-
-#include "lua.h"
-
 #include "lu8w.h"
 
-/* from ansi code page to utf-16 */
-LUA_API wchar_t *u8lmbtolwc(const char *s, UINT codepage)
+/* from utf-8 to utf-16 */
+wchar_t *u8stows(const char *s)
 {
 	int len;
 	wchar_t *wbuf = NULL;
 
-	len = MultiByteToWideChar(codepage, 0, s, -1, NULL, 0);
+	len = MultiByteToWideChar(CP_UTF8, 0, s, -1, NULL, 0);
 	if(len) {
 		wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
 		if(wbuf) {
-			MultiByteToWideChar(codepage, 0, s, -1, wbuf, len);
+			MultiByteToWideChar(CP_UTF8, 0, s, -1, wbuf, len);
 		}
 	}
 
@@ -33,17 +29,17 @@ LUA_API wchar_t *u8lmbtolwc(const char *s, UINT codepage)
 	return wbuf;
 }
 
-/* from utf-16 to ansi code page */
-LUA_API char *u8lwctolmb(const wchar_t *s, UINT codepage)
+/* from utf-16 to utf-8 */
+char *u8wstos(const wchar_t *s)
 {
 	int len;
 	char *buf = NULL;
 
-	len = WideCharToMultiByte(codepage, 0, s, -1, NULL, 0, NULL, NULL);
+	len = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
 	if(len) {
 		buf = (char *)calloc(len, sizeof(char));
 		if(buf) {
-			WideCharToMultiByte(codepage, 0, s, -1, buf, len, NULL, NULL);
+			WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, len, NULL, NULL);
 		}
 	}
 
@@ -51,21 +47,7 @@ LUA_API char *u8lwctolmb(const wchar_t *s, UINT codepage)
 	return buf;
 }
 
-/* from utf-8 to utf-16 */
-LUA_API wchar_t *u8stows(const char *s)
-{
-	/* call free function to deallocate */
-	return u8lmbtolwc(s, CP_UTF8);
-}
-
-/* from utf-16 to utf-8 */
-LUA_API char *u8wstos(const wchar_t *s)
-{
-	/* call free function to deallocate */
-	return u8lwctolmb(s, CP_UTF8);
-}
-
-LUA_API DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
+DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 {
 	wchar_t wfname[MAX_PATH];
 	char *b;
@@ -85,7 +67,7 @@ LUA_API DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize
 	return (DWORD)strlen(lpFilename);
 }
 
-LUA_API DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
+DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments)
 {
 	wchar_t *wbuf;
@@ -110,7 +92,7 @@ LUA_API DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId
 	return (DWORD)strlen(lpBuffer);
 }
 
-LUA_API HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
+HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
 {
 	wchar_t *wfname;
 	HMODULE lib = NULL;
@@ -124,7 +106,7 @@ LUA_API HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlag
 	return lib;
 }
 
-LUA_API FILE *u8fopen(const char *fname, const char *mode)
+FILE *u8fopen(const char *fname, const char *mode)
 {
 	wchar_t *wfname = u8stows(fname);
 	wchar_t *wmode = u8stows(mode);
@@ -143,7 +125,7 @@ LUA_API FILE *u8fopen(const char *fname, const char *mode)
 	return fp;
 }
 
-LUA_API FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp)
+FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp)
 {
 	wchar_t *wfname = u8stows(fname);
 	wchar_t *wmode = u8stows(mode);
@@ -162,7 +144,7 @@ LUA_API FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp)
 	return fp;
 }
 
-LUA_API FILE *u8popen(const char *command, const char *mode)
+FILE *u8popen(const char *command, const char *mode)
 {
 	wchar_t *wcommand = u8stows(command);
 	wchar_t *wmode = u8stows(mode);
@@ -181,7 +163,7 @@ LUA_API FILE *u8popen(const char *command, const char *mode)
 	return fp;
 }
 
-LUA_API int u8fprintf(FILE *file, const char *format, ...)
+int u8fprintf(FILE *file, const char *format, ...)
 {
 	int ret = 0;
 	va_list argptr;
@@ -219,7 +201,7 @@ LUA_API int u8fprintf(FILE *file, const char *format, ...)
 	return ret;
 }
 
-LUA_API int u8printf(const char *format, ...)
+int u8printf(const char *format, ...)
 {
 	int ret = 0;
 	va_list argptr;
@@ -252,7 +234,7 @@ LUA_API int u8printf(const char *format, ...)
 	return ret;
 }
 
-LUA_API char *u8fgets(char *buf, int len, FILE *file)
+char *u8fgets(char *buf, int len, FILE *file)
 {
 	wint_t c, c0;
 	wchar_t ws[2 + 1];
@@ -316,7 +298,7 @@ LUA_API char *u8fgets(char *buf, int len, FILE *file)
 	return dst;
 }
 
-LUA_API int u8fputs(const char *buf, FILE *file)
+int u8fputs(const char *buf, FILE *file)
 {
 	wchar_t *wbuf;
 	int ret = 0;
@@ -335,7 +317,7 @@ LUA_API int u8fputs(const char *buf, FILE *file)
 	return ret;
 }
 
-LUA_API char *u8getenv(const char *varname)
+char *u8getenv(const char *varname)
 {
 	wchar_t *wvarname;
 	wchar_t *wenv;
@@ -354,7 +336,7 @@ LUA_API char *u8getenv(const char *varname)
 	return env;
 }
 
-LUA_API char *u8tmpnam(char *str)
+char *u8tmpnam(char *str)
 {
 	static char buf[L_tmpnam];
 	wchar_t wbuf[L_tmpnam];
@@ -381,7 +363,7 @@ LUA_API char *u8tmpnam(char *str)
 	return t;
 }
 
-LUA_API int u8system(const char *command)
+int u8system(const char *command)
 {
 	wchar_t *wbuf;
 	int r = -1;
@@ -395,7 +377,7 @@ LUA_API int u8system(const char *command)
 	return r;
 }
 
-LUA_API int u8remove(const char *fname)
+int u8remove(const char *fname)
 {
 	wchar_t *wfname;
 	int r = -1;
@@ -409,7 +391,7 @@ LUA_API int u8remove(const char *fname)
 	return r;
 }
 
-LUA_API int u8rename(const char *oldfname, const char *newfname)
+int u8rename(const char *oldfname, const char *newfname)
 {
 	wchar_t *woldfname;
 	wchar_t *wnewfname;
