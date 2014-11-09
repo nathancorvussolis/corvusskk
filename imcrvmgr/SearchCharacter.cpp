@@ -130,7 +130,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	CONST CHAR ss2 = 0x0E;
 	CONST CHAR ss3 = 0x0F;
 
-	//ASCII, JIS X 0201 (8bit), JIS X 0213 面区点番号
+	//ASCII, JIS X 0201 (片仮名, 8bit), JIS X 0213 面区点番号
 	len = -1;
 	if(WideCharToEucJis2004(searchkey.c_str(), NULL, NULL, &len))
 	{

@@ -68,7 +68,7 @@
 			crvmgr.search_jisx0213(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
-		文字コード表記変換 (ASCII, JIS X 0201(8bit), JIS X 0213 / Unicode)
+		文字コード表記変換 (ASCII, JIS X 0201(片仮名, 8bit), JIS X 0213 / Unicode)
 			crvmgr.search_character_code(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string

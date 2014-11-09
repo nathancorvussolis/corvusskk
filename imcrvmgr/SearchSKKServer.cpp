@@ -207,6 +207,11 @@ std::wstring GetSKKServerInfo(CHAR req)
 	CHAR rbuf[RECVBUFSIZE];
 	int n;
 
+	if(!serv)
+	{
+		return ret;
+	}
+
 	if(send(sock, &req, 1, 0) == SOCKET_ERROR)
 	{
 		DisconnectSKKServer();
