@@ -3,6 +3,7 @@
 #define IMCRVTIP_H
 
 #include "common.h"
+#include "convtype.h"
 
 //入力モード
 enum InputMode
@@ -61,8 +62,25 @@ typedef struct {	//キー設定(仮想キー)
 	BYTE keyvoid[VKEYMAPNUM];	//無効
 } VKEYMAP;
 
-#define CHAR_SKK_HINT	L'\x20'
-#define CHAR_SKK_OKURI	L'\x20'
+typedef struct {	//変換位置指定(0:開始,1:代替,2:送り)
+	WCHAR ch[3];
+} CONV_POINT;
+
+//ローマ字仮名ノード
+typedef struct _ROMAN_KANA_NODE {
+	//探索対象、ローマ字1文字分、ルートノードはL'\0'
+	WCHAR ch;
+	//ローマ字仮名変換
+	// ルートノードの各メンバーは空文字列
+	// 仮名があるとき、最短で探索したchとconv.romanは等しい
+	// 仮名がないとき、各メンバーは空文字列
+	ROMAN_KANA_CONV conv;
+	//子ノード、メンバーchで昇順ソート
+	std::vector<_ROMAN_KANA_NODE> nodes;
+} ROMAN_KANA_NODE;
+
+#define CHAR_SKK_HINT	L'\x20'		//絞り込みの区切り
+#define CHAR_SKK_OKURI	L'\x20'		//送り仮名がまだ無い時点での送りローマ字
 
 #define TKB_NEXT_PAGE	L'\uF003'	//next page key on touch-optimized keyboard
 #define TKB_PREV_PAGE	L'\uF004'	//previous page key on touch-optimized keyboard

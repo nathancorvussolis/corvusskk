@@ -733,8 +733,6 @@
 
 <!-- その他の頻出文字列の省略打ち -->
 
-      <!-- <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" /> -->
-
       <row ro="ff" hi="ふり" ka="フリ" an="ﾌﾘ" so="0" />
       <row ro="fg" hi="ふる" ka="フル" an="ﾌﾙ" so="0" />
       <row ro="fr" hi="ふる" ka="フル" an="ﾌﾙ" so="0" />
@@ -789,7 +787,7 @@
       <row ro="nr" hi="なる" ka="ナル" an="ﾅﾙ" so="0" />
       <row ro="nl" hi="なった" ka="ナッタ" an="ﾅｯﾀ" so="0" />
       <row ro="nd" hi="など" ka="ナド" an="ﾅﾄﾞ" so="0" />
-      <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" />		<!-- 撥音 -->
+      <row ro="nn" hi="ん" ka="ン" an="ﾝ" so="0" />
       <row ro="nb" hi="なければ" ka="ナケレバ" an="ﾅｹﾚﾊﾞ" so="0" />
       <row ro="nm" hi="なくても" ka="ナクテモ" an="ﾅｸﾃﾓ" so="0" />
       <row ro="nw" hi="なくては" ka="ナクテハ" an="ﾅｸﾃﾊ" so="0" />

@@ -57,7 +57,6 @@ HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPA
 
 HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf)
 {
-	size_t i;
 	BYTE sf;
 	WCHAR ch, chO = L'\0';
 	HRESULT hrc = E_ABORT;
@@ -175,7 +174,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				return S_OK;
 			}
 			//"n;" -> "ん▽"
-			if(_ConvN(WCHAR_MAX))
+			if(_ConvShift(WCHAR_MAX))
 			{
 				ch = L'\0';
 			}
@@ -213,31 +212,29 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 					break;
 				}
 
-				for(i = 0; i < CONV_POINT_NUM; i++)
+				auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
+					ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
+
+				if(vs_itr != conv_point_s.end() && ch == vs_itr->ch[0])
 				{
-					if(conv_point[i][0] == L'\0' &&
-						conv_point[i][1] == L'\0' &&
-						conv_point[i][2] == L'\0')
+					ch = vs_itr->ch[1];
+					if(!inputkey || !kana.empty())
 					{
-						break;
-					}
-					if(ch == conv_point[i][0])
-					{
-						ch = conv_point[i][1];
-						if(!inputkey || !kana.empty())
+						chO = vs_itr->ch[2];
+						if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
 						{
-							chO = conv_point[i][2];
-							if(_HandleControl(ec, pContext, SKK_CONV_POINT, ch) == S_OK)
-							{
-								return S_OK;
-							}
+							return S_OK;
 						}
-						break;
 					}
-					else if(ch == conv_point[i][1])
+				}
+				else
+				{
+					auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
+						ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+
+					if(va_itr != conv_point_a.end() && ch == va_itr->ch[1])
 					{
-						chO = conv_point[i][2];
-						break;
+						chO = va_itr->ch[2];
 					}
 				}
 			}
@@ -250,11 +247,18 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	if(ch >= L'\x20')
 	{
 		std::wstring romanN = roman;
+		WCHAR chON = chO;
 
 		//2文字目以降のローマ字で変換位置指定
 		if(!roman.empty() && chO != L'\0')
 		{
-			chO = roman[0];
+			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
+				roman[0], [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+
+			if(va_itr != conv_point_a.end() && roman[0] == va_itr->ch[1])
+			{
+				chO = va_itr->ch[2];
+			}
 		}
 
 		//文字処理
@@ -269,7 +273,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				{
 					//「ん」または待機中の文字を送り出し
 					roman = romanN;
-					if(_ConvN(WCHAR_MAX))
+					if(_ConvShift(WCHAR_MAX))
 					{
 						if(!inputkey)
 						{
@@ -285,6 +289,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 						roman.clear();
 					}
 					//最後の入力で再処理
+					chO = chON;
 					if(_HandleChar(ec, pContext, wParam, ch, chO) == E_ABORT)
 					{
 						if(!inputkey)

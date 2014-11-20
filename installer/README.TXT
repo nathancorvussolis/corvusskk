@@ -1,6 +1,6 @@
 ﻿
 ================================================================================
-     CorvusSKK version 1.7.11
+     CorvusSKK version 1.7.12
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -573,5 +573,5 @@
 
 ・開発環境
 
-  Visual Studio Express 2013 for Windows Desktop Update 3
+  Visual Studio Express 2013 for Windows Desktop Update 4
   WiX Toolset v3.9

@@ -152,27 +152,48 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 
 HRESULT CTextService::_ConvRomanKana(ROMAN_KANA_CONV *pconv)
 {
-	size_t i, count;
-	HRESULT ret = E_ABORT;	//一致する可能性なし
+	HRESULT ret = _SearchRomanKanaNode(roman_kana_tree, pconv, 0);
 
-	count = roman_kana_conv.size();
+	return ret;
+}
 
-	for(i = 0; i < count; i++)
+HRESULT CTextService::_SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV *pconv, int depth)
+{
+	HRESULT ret = E_ABORT;	//一致なし
+
+	if((pconv == NULL) ||
+		(_countof(pconv->roman) <= depth) || (pconv->roman[depth] == L'\0'))
 	{
-		if(roman_kana_conv[i].roman[0] == L'\0')
+		return ret;
+	}
+
+	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
+		pconv->roman[depth], [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+
+	if(v_itr != tree.nodes.end() && v_itr->ch == pconv->roman[depth])
+	{
+		if(pconv->roman[depth + 1] == L'\0')
 		{
-			continue;
-		}
-		if(wcsncmp(roman_kana_conv[i].roman, pconv->roman, wcslen(pconv->roman)) == 0)
-		{
-			if(wcsncmp(roman_kana_conv[i].roman, pconv->roman, ROMAN_NUM) == 0)
+			*pconv = v_itr->conv;
+			if(v_itr->nodes.empty())
 			{
-				*pconv = roman_kana_conv[i];
-				ret = S_OK;		//一致
-				break;
+				ret = S_OK;	//一致 葉ノード
 			}
-			ret = E_PENDING;	//途中まで一致
+			else
+			{
+				ret = E_PENDING;	//途中まで一致 内部ノード
+			}
 		}
+		else
+		{
+			//子ノードを探索
+			ret = _SearchRomanKanaNode(*v_itr, pconv, depth + 1);
+		}
+	}
+
+	if(ret == E_ABORT)
+	{
+		ZeroMemory(pconv, sizeof(*pconv));
 	}
 
 	return ret;
@@ -180,30 +201,25 @@ HRESULT CTextService::_ConvRomanKana(ROMAN_KANA_CONV *pconv)
 
 HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 {
-	size_t i;
-	HRESULT ret = E_ABORT;	//一致する可能性なし
+	HRESULT ret = E_ABORT;	//一致なし
 
-	for(i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
+	if(pconv == NULL)
 	{
-		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
-			ascii_jlatin_conv[i].jlatin[0] == L'\0')
-		{
-			break;
-		}
-		if(ascii_jlatin_conv[i].ascii[0] == L'\0')
-		{
-			continue;
-		}
-		if(wcsncmp(ascii_jlatin_conv[i].ascii, pconv->ascii, wcslen(pconv->ascii)) == 0)
-		{
-			if(wcsncmp(ascii_jlatin_conv[i].ascii, pconv->ascii, JLATIN_NUM) == 0)
-			{
-				*pconv = ascii_jlatin_conv[i];
-				ret = S_OK;		//一致
-				break;
-			}
-			ret = E_PENDING;	//途中まで一致
-		}
+		return ret;
+	}
+
+	auto v_itr = std::lower_bound(ascii_jlatin_conv.begin(), ascii_jlatin_conv.end(),
+		pconv->ascii[0], [] (ASCII_JLATIN_CONV m, WCHAR v) { return (m.ascii[0] < v); });
+
+	if(v_itr != ascii_jlatin_conv.end() && v_itr->ascii[0] == pconv->ascii[0])
+	{
+		*pconv = *v_itr;
+		ret = S_OK;	//一致
+	}
+
+	if(ret == E_ABORT)
+	{
+		ZeroMemory(pconv, sizeof(*pconv));
 	}
 
 	return ret;
@@ -509,7 +525,7 @@ void CTextService::_SetComp(const std::wstring &candidate)
 
 void CTextService::_ConvRoman()
 {
-	if(!_ConvN(WCHAR_MAX))
+	if(!_ConvShift(WCHAR_MAX))
 	{
 		roman.clear();
 	}
@@ -522,24 +538,23 @@ void CTextService::_ConvRoman()
 	}
 }
 
-BOOL CTextService::_ConvN(WCHAR ch)
+BOOL CTextService::_ConvShift(WCHAR ch)
 {
 	ROMAN_KANA_CONV rkc;
 	HRESULT ret;
-	size_t i;
 
 	if(roman.empty())
 	{
 		return TRUE;
 	}
 
-	//「ん etc.」
 	wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
 	ret = _ConvRomanKana(&rkc);
 	switch(ret)
 	{
 	case S_OK:	//一致
-		if(rkc.wait)	//待機
+	case E_PENDING:	//途中まで一致
+		if(rkc.roman != L'\0' && rkc.wait)	//待機
 		{
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
@@ -560,19 +575,13 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 
 				WCHAR chO = L'\0';
-				for(i = 0; i < CONV_POINT_NUM; i++)
+
+				auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
+					chN, [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+
+				if(va_itr != conv_point_a.end() && chN == va_itr->ch[1])
 				{
-					if(conv_point[i][0] == L'\0' &&
-						conv_point[i][1] == L'\0' &&
-						conv_point[i][2] == L'\0')
-					{
-						break;
-					}
-					if(chN == conv_point[i][1])
-					{
-						chO = conv_point[i][2];
-						break;
-					}
+					chO = va_itr->ch[2];
 				}
 
 				if(chO == L'\0')
@@ -619,7 +628,7 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		break;
 	}
 
-	// ( <"n*", ""> -> <"", "ん"> ) SKK_CONV_POINTのみ
+	// SKK_CONV_POINTのみ
 	if(ch != L'\0' && ch != WCHAR_MAX)
 	{
 		std::wstring roman_conv = roman;
@@ -629,7 +638,8 @@ BOOL CTextService::_ConvN(WCHAR ch)
 		switch(ret)
 		{
 		case S_OK:		//一致
-			if(rkc.soku)	//「n* soku==1」
+		case E_PENDING:	//途中まで一致
+			if(rkc.roman != L'\0' && rkc.soku)
 			{
 				std::wstring kana_ins;
 				switch(inputmode)
@@ -658,30 +668,23 @@ BOOL CTextService::_ConvN(WCHAR ch)
 				}
 
 				roman.clear();
-				return TRUE;	//「nk」etc.
+				return TRUE;	//「nk, ss」etc.
 			}
 			else
 			{
 				if(cx_shiftnnokuri || (!cx_shiftnnokuri && (!inputkey || (inputkey && okuriidx == 0))))
 				{
-					_ConvNN();
+					_ConvN();
 				}
-				return TRUE;	//「ka,na,nn」etc.
+				return TRUE;	//「ka, na, nn」etc.「ky, ny」etc.
 			}
-			break;
-		case E_PENDING:	//途中まで一致
-			if(cx_shiftnnokuri || (!cx_shiftnnokuri && (!inputkey || (inputkey && okuriidx == 0))))
-			{
-				_ConvNN();
-			}
-			return TRUE;		//「ky,ny」etc.
 			break;
 		default:
 			break;
 		}
 	}
 
-	if(_ConvNN())
+	if(_ConvN())
 	{
 		return TRUE;
 	}
@@ -689,60 +692,49 @@ BOOL CTextService::_ConvN(WCHAR ch)
 	return FALSE;
 }
 
-BOOL CTextService::_ConvNN()
+BOOL CTextService::_ConvN()
 {
 	ROMAN_KANA_CONV rkc;
 	HRESULT ret;
 
-	// ( <"nn", ""> -> <"", "ん"> )
-	if(roman.size() == 1)
+	wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
+	ret = _ConvRomanKana(&rkc);
+	switch(ret)
 	{
-		WCHAR chN = roman[0];
-		rkc.roman[0] = chN;
-		rkc.roman[1] = chN;
-		rkc.roman[2] = L'\0';
-		ret = _ConvRomanKana(&rkc);
-		switch(ret)
+	case S_OK:	//一致
+	case E_PENDING:	//途中まで一致
+		if(rkc.roman[0] != L'\0')
 		{
-		case S_OK:	//一致
-			if(!rkc.soku &&
-				wcscmp(rkc.hiragana, L"ん") == 0 &&
-				wcscmp(rkc.katakana, L"ン") == 0 &&
-				wcscmp(rkc.katakana_ank, L"ﾝ") == 0)	//「nn soku==0」
+			std::wstring kana_ins;
+			switch(inputmode)
 			{
-				std::wstring kana_ins;
-				switch(inputmode)
-				{
-				case im_hiragana:
-					kana_ins = rkc.hiragana;
-					break;
-				case im_katakana:
-					kana_ins = rkc.katakana;
-					break;
-				case im_katakana_ank:
-					kana_ins = rkc.katakana_ank;
-					break;
-				default:
-					break;
-				}
-
-				if(!kana_ins.empty())
-				{
-					kana.insert(cursoridx, kana_ins);
-					if(okuriidx != 0 && cursoridx <= okuriidx)
-					{
-						okuriidx += kana_ins.size();
-					}
-					cursoridx += kana_ins.size();
-				}
-
-				roman.clear();
-				return TRUE;	//「nn」
+			case im_hiragana:
+				kana_ins = rkc.hiragana;
+				break;
+			case im_katakana:
+				kana_ins = rkc.katakana;
+				break;
+			case im_katakana_ank:
+				kana_ins = rkc.katakana_ank;
+				break;
+			default:
+				break;
 			}
-			break;
-		default:
-			break;
+
+			if(!kana_ins.empty())
+			{
+				kana.insert(cursoridx, kana_ins);
+				if(okuriidx != 0 && cursoridx <= okuriidx)
+				{
+					okuriidx += kana_ins.size();
+				}
+				cursoridx += kana_ins.size();
+			}
+
+			roman.clear();
+			return TRUE;
 		}
+		break;
 	}
 
 	return FALSE;
@@ -750,7 +742,7 @@ BOOL CTextService::_ConvNN()
 
 void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode)
 {
-	size_t i, j, count;
+	size_t i;
 	BOOL exist;
 	WCHAR *convkana = NULL;
 	WCHAR srckana[3];
@@ -776,10 +768,9 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 		break;
 	}
 
-	count = roman_kana_conv.size();
-
 	for(i = 0; i < src.size(); i++)
 	{
+		// surrogate pair, 「う゛」
 		if(((i + 1) < src.size()) &&
 			(IS_SURROGATE_PAIR(src[i], src[i + 1]) || (src[i] == L'う' && src[i + 1] == L'゛')))
 		{
@@ -793,47 +784,8 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 			srckana[0] = src[i];
 			srckana[1] = L'\0';
 		}
-		exist = FALSE;
 
-		for(j = 0; j < count; j++)
-		{
-			if(roman_kana_conv[j].roman[0] == L'\0')
-			{
-				break;
-			}
-
-			switch(srcmode)
-			{
-			case im_hiragana:
-				convkana = roman_kana_conv[j].hiragana;
-				break;
-			case im_katakana:
-				convkana = roman_kana_conv[j].katakana;
-				break;
-			default:
-				break;
-			}
-
-			if(wcsncmp(convkana, srckana, KANA_NUM) == 0)
-			{
-				exist = TRUE;
-				switch(dstmode)
-				{
-				case im_hiragana:
-					dsttmp.append(roman_kana_conv[j].hiragana);
-					break;
-				case im_katakana:
-					dsttmp.append(roman_kana_conv[j].katakana);
-					break;
-				case im_katakana_ank:
-					dsttmp.append(roman_kana_conv[j].katakana_ank);
-					break;
-				default:
-					break;
-				}
-				break;
-			}
-		}
+		exist = _SearchKanaByKana(roman_kana_tree, srcmode, srckana, dstmode, dsttmp);
 
 		if(!exist)	//ローマ字仮名変換表に無ければそのまま
 		{
@@ -842,4 +794,63 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 	}
 
 	dst.assign(dsttmp);
+}
+
+BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, int srcmode, const WCHAR *src, int dstmode, std::wstring &dst)
+{
+	ROMAN_KANA_CONV rkc;
+	BOOL exist = FALSE;
+
+	FORWARD_ITERATION_I(v_itr, tree.nodes)
+	{
+		switch(srcmode)
+		{
+		case im_hiragana:
+			if(wcscmp(src, v_itr->conv.hiragana) == 0)
+			{
+				rkc = v_itr->conv;
+				exist = TRUE;
+			}
+			break;
+		case im_katakana:
+			if(wcscmp(src, v_itr->conv.katakana) == 0)
+			{
+				rkc = v_itr->conv;
+				exist = TRUE;
+			}
+			break;
+		default:
+			break;
+		}
+
+		if(exist)
+		{
+			switch(dstmode)
+			{
+			case im_hiragana:
+				dst.append(rkc.hiragana);
+				break;
+			case im_katakana:
+				dst.append(rkc.katakana);
+				break;
+			case im_katakana_ank:
+				dst.append(rkc.katakana_ank);
+				break;
+			default:
+				break;
+			}
+			break;
+		}
+		else if(!v_itr->nodes.empty())
+		{
+			exist = _SearchKanaByKana(*v_itr, srcmode, src, dstmode, dst);
+
+			if(exist)
+			{
+				break;
+			}
+		}
+	}
+
+	return exist;
 }

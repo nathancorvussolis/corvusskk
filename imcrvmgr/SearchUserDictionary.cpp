@@ -369,16 +369,16 @@ BOOL LoadSKKUserDic()
 						{
 							FORWARD_ITERATION_I(sc_itr1, so_itr1->second)
 							{
-								bool hit = false;
+								bool exist = false;
 								FORWARD_ITERATION_I(sc_itr, so_itr->second)
 								{
 									if(sc_itr->first == sc_itr1->first)
 									{
-										hit = true;
+										exist = true;
 										break;
 									}
 								}
-								if(!hit)
+								if(!exist)
 								{
 									so_itr->second.push_back(*sc_itr1);
 								}
@@ -397,16 +397,16 @@ BOOL LoadSKKUserDic()
 				{
 					FORWARD_ITERATION(sc_itr, so_itr->second)
 					{
-						bool hit = false;
+						bool exist = false;
 						REVERSE_ITERATION_I(sc_ritr, sc)
 						{
 							if(sc_itr->first == sc_ritr->first)
 							{
-								hit = true;
+								exist = true;
 								break;
 							}
 						}
-						if(!hit)
+						if(!exist)
 						{
 							sc_itr = so_itr->second.erase(sc_itr);
 						}

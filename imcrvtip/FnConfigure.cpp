@@ -576,8 +576,12 @@ void CTextService::_LoadConvPoint()
 {
 	APPDATAXMLLIST list;
 	int i = 0;
+	CONV_POINT cp;
 
-	ZeroMemory(conv_point, sizeof(conv_point));
+	conv_point_s.clear();
+	conv_point_s.shrink_to_fit();
+	conv_point_a.clear();
+	conv_point_a.shrink_to_fit();
 
 	if(ReadList(pathconfigxml, SectionConvPoint, list) == S_OK && list.size() != 0)
 	{
@@ -588,20 +592,38 @@ void CTextService::_LoadConvPoint()
 				break;
 			}
 
+			ZeroMemory(&cp, sizeof(cp));
+
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				if(r_itr->first == AttributeCPStart)
 				{
-					conv_point[i][0] = r_itr->second.c_str()[0];
+					cp.ch[0] = r_itr->second.c_str()[0];
 				}
 				else if(r_itr->first == AttributeCPAlter)
 				{
-					conv_point[i][1] = r_itr->second.c_str()[0];
+					cp.ch[1] = r_itr->second.c_str()[0];
 				}
 				else if(r_itr->first == AttributeCPOkuri)
 				{
-					conv_point[i][2] = r_itr->second.c_str()[0];
+					cp.ch[2] = r_itr->second.c_str()[0];
 				}
+			}
+
+			auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
+				cp.ch[0], [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
+
+			if(vs_itr == conv_point_s.end() || cp.ch[0] != vs_itr->ch[0])
+			{
+				conv_point_s.insert(vs_itr, cp);
+			}
+
+			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
+				cp.ch[1], [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+
+			if(va_itr == conv_point_a.end() || cp.ch[1] != va_itr->ch[1])
+			{
+				conv_point_a.insert(va_itr, cp);
 			}
 
 			i++;
@@ -619,8 +641,10 @@ void CTextService::_LoadKana()
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
-	roman_kana_conv.clear();
-	roman_kana_conv.shrink_to_fit();
+	roman_kana_tree.ch = L'\0';
+	ZeroMemory(&roman_kana_tree.conv, sizeof(roman_kana_tree.conv));
+	roman_kana_tree.nodes.clear();
+	roman_kana_tree.nodes.shrink_to_fit();
 
 	if(ReadList(pathconfigxml, SectionKana, list) == S_OK && list.size() != 0)
 	{
@@ -669,9 +693,81 @@ void CTextService::_LoadKana()
 				}
 			}
 
-			roman_kana_conv.push_back(rkc);
+			_AddKanaTree(roman_kana_tree, rkc, 0);
+
 			i++;
 		}
+	}
+}
+
+BOOL CTextService::_AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth)
+{
+	BOOL added = FALSE;
+
+	if((_countof(rkc.roman) <= depth) || (rkc.roman[depth] == L'\0'))
+	{
+		return FALSE;
+	}
+
+	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
+		rkc.roman[depth], [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+
+	if(v_itr != tree.nodes.end() && v_itr->ch == rkc.roman[depth])
+	{
+		if(rkc.roman[depth + 1] == L'\0')
+		{
+			if(v_itr->conv.roman[0] == L'\0')
+			{
+				//ローマ字探索最後のノードにローマ字仮名変換がなければ更新
+				v_itr->conv = rkc;
+			}
+			added = TRUE;
+		}
+		else
+		{
+			//子ノードを探索
+			added = _AddKanaTree(*v_itr, rkc, depth + 1);
+		}
+	}
+
+	if(!added)
+	{
+		//子ノードを追加
+		_AddKanaTreeItem(tree, rkc, depth);
+		added = TRUE;
+	}
+
+	return added;
+}
+
+void CTextService::_AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth)
+{
+	ROMAN_KANA_NODE rkn;
+
+	ZeroMemory(&rkn, sizeof(rkn));
+
+	if((_countof(rkc.roman) <= depth) || (rkc.roman[depth] == L'\0'))
+	{
+		return;
+	}
+
+	rkn.ch = rkc.roman[depth];
+
+	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
+		rkn.ch, [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+
+	if(rkc.roman[depth + 1] == L'\0')
+	{
+		//ローマ字探索最後のノードにローマ字仮名変換ありの子ノードを追加
+		rkn.conv = rkc;
+		tree.nodes.insert(v_itr, rkn);
+	}
+	else
+	{
+		//ローマ字探索途中のノードに探索対象のローマ字のみの子ノードを追加
+		v_itr = tree.nodes.insert(v_itr, rkn);
+		//子ノードを探索
+		_AddKanaTreeItem(*v_itr, rkc, depth + 1);
 	}
 }
 
@@ -683,8 +779,10 @@ void CTextService::_LoadJLatin()
 	size_t blen = 0;
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
+	ASCII_JLATIN_CONV ajc;
 
-	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
+	ascii_jlatin_conv.clear();
+	ascii_jlatin_conv.shrink_to_fit();
 
 	if(ReadList(pathconfigxml, SectionJLatin, list) == S_OK && list.size() != 0)
 	{
@@ -695,25 +793,35 @@ void CTextService::_LoadJLatin()
 				break;
 			}
 
+			ZeroMemory(&ajc, sizeof(ajc));
+
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
 				pszb = NULL;
 
 				if(r_itr->first == AttributeLatin)
 				{
-					pszb = ascii_jlatin_conv[i].ascii;
-					blen = _countof(ascii_jlatin_conv[i].ascii);
+					pszb = ajc.ascii;
+					blen = _countof(ajc.ascii);
 				}
 				else if(r_itr->first == AttributeJLatin)
 				{
-					pszb = ascii_jlatin_conv[i].jlatin;
-					blen = _countof(ascii_jlatin_conv[i].jlatin);
+					pszb = ajc.jlatin;
+					blen = _countof(ajc.jlatin);
 				}
 
 				if(pszb != NULL)
 				{
 					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, re, fmt).c_str(), _TRUNCATE);
 				}
+			}
+
+			auto v_itr = std::lower_bound(ascii_jlatin_conv.begin(), ascii_jlatin_conv.end(),
+				ajc.ascii[0], [] (ASCII_JLATIN_CONV m, WCHAR v) { return (m.ascii[0] < v); });
+
+			if(v_itr == ascii_jlatin_conv.end() || ajc.ascii[0] != v_itr->ascii[0])
+			{
+				ascii_jlatin_conv.insert(v_itr, ajc);
 			}
 
 			i++;

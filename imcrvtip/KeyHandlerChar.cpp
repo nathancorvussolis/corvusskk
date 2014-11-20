@@ -42,7 +42,8 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			switch(ret)
 			{
 			case S_OK:	//一致
-				if(rkc.wait)	//待機
+			case E_PENDING:	//途中まで一致
+				if(rkc.roman[0] != L'\0' && rkc.wait)	//待機
 				{
 					ch = L'\0';
 					switch(inputmode)
@@ -74,10 +75,13 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 			ret = _ConvRomanKana(&rkc);
 
-			if(wParam == VK_PACKET && ret == E_ABORT && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
+			//Windows8以降のタッチキーボード
+			if(ret == E_ABORT && wParam == VK_PACKET &&
+				(ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE) &&
+				(ch != L'次' && ch != L'前' && ch != L'頁'))
 			{
-				rkc.hiragana[0] = rkc.katakana[0] = rkc.katakana_ank[0] = ch;
-				rkc.hiragana[1] = rkc.katakana[1] = rkc.katakana_ank[1] = L'\0';
+				rkc.roman[0] = rkc.hiragana[0] = rkc.katakana[0] = rkc.katakana_ank[0] = ch;
+				rkc.roman[1] = rkc.hiragana[1] = rkc.katakana[1] = rkc.katakana_ank[1] = L'\0';
 				rkc.soku = FALSE;
 				rkc.wait = FALSE;
 				ret = S_OK;
@@ -86,8 +90,10 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			switch(ret)
 			{
 			case S_OK:	//一致
-				if(rkc.wait)	//待機
+				if(rkc.roman[0] != L'\0' && rkc.wait)	//待機
 				{
+					_HandleCharShift(ec, pContext);
+
 					switch(inputmode)
 					{
 					case im_hiragana:
@@ -103,7 +109,6 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 						break;
 					}
 
-					_HandleCharShift(ec, pContext);
 					_Update(ec, pContext);
 				}
 				else
@@ -169,9 +174,33 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 				break;
 
 			case E_PENDING:	//途中まで一致
-				_HandleCharShift(ec, pContext);
-				roman.push_back(ch);
-				_Update(ec, pContext);
+				if(rkc.roman[0] != L'\0' && rkc.wait)	//待機
+				{
+					_HandleCharShift(ec, pContext);
+
+					switch(inputmode)
+					{
+					case im_hiragana:
+						roman.assign(rkc.hiragana);
+						break;
+					case im_katakana:
+						roman.assign(rkc.katakana);
+						break;
+					case im_katakana_ank:
+						roman.assign(rkc.katakana_ank);
+						break;
+					default:
+						break;
+					}
+
+					_Update(ec, pContext);
+				}
+				else
+				{
+					_HandleCharShift(ec, pContext);
+					roman.push_back(ch);
+					_Update(ec, pContext);
+				}
 				break;
 
 			case E_ABORT:	//不一致

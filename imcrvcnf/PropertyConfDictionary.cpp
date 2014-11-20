@@ -89,7 +89,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	}
 	else
 	{
-		bool hit = false;
+		bool exist = false;
 		FORWARD_ITERATION_I(sc_itr, skkdic_itr->second)
 		{
 			if(sc_itr->first == candidate)
@@ -107,11 +107,11 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 						sc_itr->second.assign(MakeConcat(annotation_esc));
 					}
 				}
-				hit = true;
+				exist = true;
 				break;
 			}
 		}
-		if(!hit)
+		if(!exist)
 		{
 			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, MakeConcat(annotation_seps)));
 		}

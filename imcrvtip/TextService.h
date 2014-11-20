@@ -162,6 +162,7 @@ public:
 	WCHAR _GetCh(BYTE vk, BYTE vkoff = 0);
 	BYTE _GetSf(BYTE vk, WCHAR ch);
 	HRESULT _ConvRomanKana(ROMAN_KANA_CONV *pconv);
+	HRESULT _SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV *pconv, int depth);
 	HRESULT _ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv);
 	void _StartConv();
 	void _StartSubConv();
@@ -171,9 +172,10 @@ public:
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
 	void _ConvRoman();
-	BOOL _ConvN(WCHAR ch);
-	BOOL _ConvNN();
+	BOOL _ConvShift(WCHAR ch);
+	BOOL _ConvN();
 	void _ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode);
+	BOOL _SearchKanaByKana(const ROMAN_KANA_NODE &tree, int srcmode, const WCHAR *src, int dstmode, std::wstring &dst);
 
 	// KeyHandlerDictionary
 	void _ConnectDic();
@@ -198,6 +200,8 @@ public:
 	void _LoadVKeyMap(LPCWSTR section);
 	void _LoadConvPoint();
 	void _LoadKana();
+	BOOL _AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth);
+	void _AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth);
 	void _LoadJLatin();
 
 private:
@@ -277,12 +281,15 @@ private:
 	VKEYMAP vkeymap_shift;	//仮想キー(+Shift)
 	VKEYMAP vkeymap_ctrl;	//仮想キー(+Ctrl)
 
-	//変換位置指定（開始,代替,送り）
-	WCHAR conv_point[CONV_POINT_NUM][3];
+	//変換位置指定(0:開始,1:代替,2:送り)
+	std::vector<CONV_POINT> conv_point_s;	//開始で昇順ソート
+	std::vector<CONV_POINT> conv_point_a;	//代替で昇順ソート
 
-	//変換テーブル
-	std::vector<ROMAN_KANA_CONV> roman_kana_conv;
-	ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
+	//ローマ字仮名変換木
+	ROMAN_KANA_NODE roman_kana_tree;
+	//ASCII全英変換テーブル
+	// メンバーasciiで昇順ソート
+	std::vector<ASCII_JLATIN_CONV> ascii_jlatin_conv;
 
 public:
 	ID2D1Factory *_pD2DFactory;
