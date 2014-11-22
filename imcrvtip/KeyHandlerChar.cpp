@@ -75,10 +75,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 			ret = _ConvRomanKana(&rkc);
 
-			//Windows8以降のタッチキーボード
-			if(ret == E_ABORT && wParam == VK_PACKET &&
-				(ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE) &&
-				(ch != L'次' && ch != L'前' && ch != L'頁'))
+			if(ret == E_ABORT && wParam == VK_PACKET && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
 			{
 				rkc.roman[0] = rkc.hiragana[0] = rkc.katakana[0] = rkc.katakana_ank[0] = ch;
 				rkc.roman[1] = rkc.hiragana[1] = rkc.katakana[1] = rkc.katakana_ank[1] = L'\0';
@@ -226,7 +223,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 		wcsncpy_s(ajc.ascii, roman.c_str(), _TRUNCATE);
 		ret = _ConvAsciiJLatin(&ajc);
 
-		if(wParam == VK_PACKET && ret == E_ABORT && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
+		if(ret == E_ABORT && wParam == VK_PACKET && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
 		{
 			ajc.jlatin[0] = ch;
 			ajc.jlatin[1] = L'\0';

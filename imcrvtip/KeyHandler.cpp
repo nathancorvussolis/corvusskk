@@ -77,6 +77,12 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_FALSE;
 	}
 
+	//Windows8以降のタッチキーボードのバグ対応
+	if(ch == L'次' || ch == L'前' || ch == L'頁')
+	{
+		return S_FALSE;
+	}
+
 	_GetActiveFlags();
 
 	//補完
