@@ -32,48 +32,40 @@ static const GUID c_guidCategory8[] =
 
 BOOL RegisterProfiles()
 {
-	ITfInputProcessorProfiles *pInputProcessProfiles;
-	WCHAR fileName[MAX_PATH];
 	HRESULT hr = E_FAIL;
+	WCHAR fileName[MAX_PATH];
 
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) != S_OK)
+	ITfInputProcessorProfiles *pInputProcessProfiles;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) == S_OK)
 	{
-		goto exit;
+		if(pInputProcessProfiles->Register(c_clsidTextService) == S_OK)
+		{
+			GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
+
+			hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
+					c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
+		}
+		SafeRelease(&pInputProcessProfiles);
 	}
 
-	if(pInputProcessProfiles->Register(c_clsidTextService) != S_OK)
-	{
-		goto exit_r;
-	}
-
-	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
-
-	hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
-			c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
-
-exit_r:
-	pInputProcessProfiles->Release();
-
-exit:
 	return (hr == S_OK);
 }
 
 void UnregisterProfiles()
 {
 	ITfInputProcessorProfiles *pInputProcessProfiles;
-
 	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) == S_OK)
 	{
 		pInputProcessProfiles->Unregister(c_clsidTextService);
-		pInputProcessProfiles->Release();
+		SafeRelease(&pInputProcessProfiles);
 	}
 }
 
 BOOL RegisterCategories()
 {
-	ITfCategoryMgr *pCategoryMgr;
 	int i;
 
+	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(i = 0; i < _countof(c_guidCategory); i++)
@@ -89,7 +81,7 @@ BOOL RegisterCategories()
 			}
 		}
 
-		pCategoryMgr->Release();
+		SafeRelease(&pCategoryMgr);
 	}
 	else
 	{
@@ -101,9 +93,9 @@ BOOL RegisterCategories()
 
 void UnregisterCategories()
 {
-	ITfCategoryMgr *pCategoryMgr;
 	int i;
 
+	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(i = 0; i < _countof(c_guidCategory); i++)
@@ -119,7 +111,7 @@ void UnregisterCategories()
 			}
 		}
 
-		pCategoryMgr->Release();
+		SafeRelease(&pCategoryMgr);
 	}
 }
 

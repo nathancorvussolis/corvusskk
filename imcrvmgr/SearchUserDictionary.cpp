@@ -543,13 +543,26 @@ HANDLE StartSaveSKKUserDicEx()
 	if(bUserDicChg)
 	{
 		bUserDicChg = FALSE;
-		USERDATA *userdata = new USERDATA();
-		userdata->userdic = userdic;
-		userdata->userokuri = userokuri;
-		userdata->complements = complements;
-		userdata->accompaniments = accompaniments;
+		try
+		{
+			USERDATA *userdata = new USERDATA();
+			try
+			{
+				userdata->userdic = userdic;
+				userdata->userokuri = userokuri;
+				userdata->complements = complements;
+				userdata->accompaniments = accompaniments;
 
-		hThread = (HANDLE)_beginthreadex(NULL, 0, SaveSKKUserDicThreadEx, userdata, 0, NULL);
+				hThread = (HANDLE)_beginthreadex(NULL, 0, SaveSKKUserDicThreadEx, userdata, 0, NULL);
+			}
+			catch(...)
+			{
+				delete userdata;
+			}
+		}
+		catch(...)
+		{
+		}
 	}
 
 	return hThread;

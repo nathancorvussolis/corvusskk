@@ -5,12 +5,12 @@
 
 STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEditRecord *pEditRecord)
 {
-	ITfRange *pRangeComposition;
-	if(_IsComposing() && _pComposition->GetRange(&pRangeComposition) == S_OK)
+	ITfRange *pRange;
+	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 	{
 		// clear when auto completion
 		BOOL fEmpty = FALSE;
-		if(pRangeComposition->IsEmpty(ecReadOnly, &fEmpty) == S_OK && fEmpty)
+		if(pRange->IsEmpty(ecReadOnly, &fEmpty) == S_OK && fEmpty)
 		{
 			if(!roman.empty() || !kana.empty())
 			{
@@ -27,15 +27,15 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 			{
 				RECT rc;
 				BOOL fClipped;
-				if(pContextView->GetTextExt(ecReadOnly, pRangeComposition, &rc, &fClipped) == S_OK)
+				if(pContextView->GetTextExt(ecReadOnly, pRange, &rc, &fClipped) == S_OK)
 				{
 					_pCandidateList->_Move(&rc);
 				}
-				pContextView->Release();
+				SafeRelease(&pContextView);
 			}
 		}
 
-		pRangeComposition->Release();
+		SafeRelease(&pRange);
 	}
 
 	return S_OK;
@@ -43,19 +43,18 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 
 BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 {
-	ITfSource *pSource;
 	BOOL fRet;
+	ITfSource *pSource;
 
 	if(_dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
 		if(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			pSource->UnadviseSink(_dwTextEditSinkCookie);
-			pSource->Release();
+			SafeRelease(&pSource);
 		}
 
-		_pTextEditSinkContext->Release();
-		_pTextEditSinkContext = NULL;
+		SafeRelease(&_pTextEditSinkContext);
 		_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	}
 
@@ -86,13 +85,12 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		{
 			_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 		}
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 
 	if(fRet == FALSE)
 	{
-		_pTextEditSinkContext->Release();
-		_pTextEditSinkContext = NULL;
+		SafeRelease(&_pTextEditSinkContext);
 	}
 
 	return fRet;

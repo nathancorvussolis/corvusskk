@@ -192,13 +192,13 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 
 BOOL CTextService::_InitKeyEventSink()
 {
-	ITfKeystrokeMgr *pKeystrokeMgr;
 	HRESULT hr = E_FAIL;
 
+	ITfKeystrokeMgr *pKeystrokeMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, (ITfKeyEventSink *)this, TRUE);
-		pKeystrokeMgr->Release();
+		SafeRelease(&pKeystrokeMgr);
 	}
 
 	return (hr == S_OK);
@@ -207,23 +207,21 @@ BOOL CTextService::_InitKeyEventSink()
 void CTextService::_UninitKeyEventSink()
 {
 	ITfKeystrokeMgr *pKeystrokeMgr;
-
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		pKeystrokeMgr->UnadviseKeyEventSink(_ClientId);
-		pKeystrokeMgr->Release();
+		SafeRelease(&pKeystrokeMgr);
 	}
 }
 
 BOOL CTextService::_InitPreservedKey()
 {
-	ITfKeystrokeMgr *pKeystrokeMgr;
 	HRESULT hr = E_FAIL;
-	int i;
 
+	ITfKeystrokeMgr *pKeystrokeMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
-		for(i = 0; i < MAX_PRESERVEDKEY; i++)
+		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
 			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
 			{
@@ -232,8 +230,7 @@ BOOL CTextService::_InitPreservedKey()
 			hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff,
 				&preservedkey[i], c_PreservedKeyDesc, (ULONG)wcslen(c_PreservedKeyDesc));
 		}
-
-		pKeystrokeMgr->Release();
+		SafeRelease(&pKeystrokeMgr);
 	}
 
 	return (hr == S_OK);
@@ -242,11 +239,9 @@ BOOL CTextService::_InitPreservedKey()
 void CTextService::_UninitPreservedKey()
 {
 	ITfKeystrokeMgr *pKeystrokeMgr;
-	int i;
-
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
-		for(i = 0; i < MAX_PRESERVEDKEY; i++)
+		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
 			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
 			{
@@ -254,7 +249,6 @@ void CTextService::_UninitPreservedKey()
 			}
 			pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff, &preservedkey[i]);
 		}
-
-		pKeystrokeMgr->Release();
+		SafeRelease(&pKeystrokeMgr);
 	}
 }

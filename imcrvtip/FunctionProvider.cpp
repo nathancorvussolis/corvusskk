@@ -138,13 +138,13 @@ HRESULT CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferred
 
 BOOL CTextService::_InitFunctionProvider()
 {
-	ITfSourceSingle *pSourceSingle;
 	HRESULT hr = E_FAIL;
 
+	ITfSourceSingle *pSourceSingle;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
 	{
 		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS((ITfFunctionProvider *)this));
-		pSourceSingle->Release();
+		SafeRelease(&pSourceSingle);
 	}
 
 	return (hr == S_OK);
@@ -153,10 +153,9 @@ BOOL CTextService::_InitFunctionProvider()
 void CTextService::_UninitFunctionProvider()
 {
 	ITfSourceSingle *pSourceSingle;
-
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
 	{
 		pSourceSingle->UnadviseSingleSink(_ClientId, IID_ITfFunctionProvider);
-		pSourceSingle->Release();
+		SafeRelease(&pSourceSingle);
 	}
 }

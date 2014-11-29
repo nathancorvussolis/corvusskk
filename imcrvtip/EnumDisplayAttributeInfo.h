@@ -67,9 +67,11 @@ public:
 
 		*ppEnum = NULL;
 
-		pClone = new CEnumDisplayAttributeInfo();
-
-		if(pClone == NULL)
+		try
+		{
+			pClone = new CEnumDisplayAttributeInfo();
+		}
+		catch(...)
 		{
 			return E_OUTOFMEMORY;
 		}
@@ -82,8 +84,8 @@ public:
 	}
 	STDMETHODIMP Next(ULONG ulCount, ITfDisplayAttributeInfo **rgInfo, ULONG *pcFetched)
 	{
-		ITfDisplayAttributeInfo *pDisplayAttributeInfo = NULL;
 		ULONG cFetched = 0;
+		ITfDisplayAttributeInfo *pDisplayAttributeInfo;
 
 		if(rgInfo == NULL)
 		{
@@ -97,15 +99,23 @@ public:
 
 		while(cFetched < ulCount)
 		{
-			if(_iIndex >= _countof(c_gdDisplayAttributeInfo) || _iIndex < 0)
+			if(_iIndex >= DISPLAYATTRIBUTE_INFO_NUM)
 			{
 				break;
 			}
 
-			pDisplayAttributeInfo = new CDisplayAttributeInfo(
-				c_gdDisplayAttributeInfo[_iIndex].guid, &CTextService::display_attribute_info[_iIndex]);
-			if(pDisplayAttributeInfo == NULL)
+			try
 			{
+				pDisplayAttributeInfo = new CDisplayAttributeInfo(
+					c_gdDisplayAttributeInfo[_iIndex].guid, &CTextService::display_attribute_info[_iIndex]);
+			}
+			catch(...)
+			{
+				for(ULONG i = 0; i < cFetched; i++)
+				{
+					delete *(rgInfo + i);
+				}
+				cFetched = 0;
 				return E_OUTOFMEMORY;
 			}
 
@@ -128,11 +138,15 @@ public:
 	}
 	STDMETHODIMP Skip(ULONG ulCount)
 	{
-		if(ulCount > 0 && _iIndex == 0)
+		if((ulCount < DISPLAYATTRIBUTE_INFO_NUM) &&
+			((_iIndex + ulCount) < DISPLAYATTRIBUTE_INFO_NUM))
 		{
-			_iIndex++;
+			_iIndex += ulCount;
+			return S_OK;
 		}
-		return S_OK;
+
+		_iIndex = DISPLAYATTRIBUTE_INFO_NUM;
+		return S_FALSE;
 	}
 
 private:

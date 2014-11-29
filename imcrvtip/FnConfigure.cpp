@@ -97,6 +97,7 @@ void CTextService::_CreateConfigPath()
 void CTextService::_ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval)
 {
 	std::wstring strxmlval;
+
 	ReadValue(pathconfigxml, section, key, strxmlval, (defval ? L"1" : L"0"));
 	value = _wtoi(strxmlval.c_str());
 	if(value != TRUE && value != FALSE)
@@ -108,7 +109,6 @@ void CTextService::_ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOO
 void CTextService::_LoadBehavior()
 {
 	std::wstring strxmlval;
-	int i;
 
 	//Behavior
 
@@ -153,7 +153,7 @@ void CTextService::_LoadBehavior()
 		cx_maxwidth = MAX_WIDTH_DEFAULT;
 	}
 
-	for(i = 0; i < _countof(cx_colors); i++)
+	for(int i = 0; i < _countof(cx_colors); i++)
 	{
 		cx_colors[i] = colorsxmlvalue[i].color;
 		ReadValue(pathconfigxml, SectionDisplay, colorsxmlvalue[i].value, strxmlval);
@@ -185,12 +185,11 @@ void CTextService::_LoadBehavior()
 
 void CTextService::_LoadDisplayAttr()
 {
-	int i;
 	std::wstring strxmlval;
 	BOOL se;
 	TF_DISPLAYATTRIBUTE da;
 
-	for(i = 0; i < DISPLAYATTRIBUTE_INFO_NUM; i++)
+	for(int i = 0; i < DISPLAYATTRIBUTE_INFO_NUM; i++)
 	{
 		display_attribute_series[i] = c_gdDisplayAttributeInfo[i].se;
 		display_attribute_info[i] = c_gdDisplayAttributeInfo[i].da;
@@ -276,7 +275,6 @@ void CTextService::_LoadPreservedKey()
 
 void CTextService::_LoadCKeyMap(LPCWSTR section)
 {
-	size_t i;
 	WCHAR ch;
 	WCHAR key[2];
 	WCHAR keyre[KEYRELEN];
@@ -287,7 +285,7 @@ void CTextService::_LoadCKeyMap(LPCWSTR section)
 	ZeroMemory(&ckeymap, sizeof(ckeymap));
 	key[1] = L'\0';
 
-	for(i = 0; i < _countof(configkeymap); i++)
+	for(int i = 0; i < _countof(configkeymap); i++)
 	{
 		if(configkeymap[i].skkfunc == SKK_NULL)
 		{
@@ -395,7 +393,7 @@ void CTextService::_LoadCKeyMap(LPCWSTR section)
 
 void CTextService::_LoadVKeyMap(LPCWSTR section)
 {
-	size_t i, j;
+	int i, j;
 	WCHAR ch;
 	WCHAR key[3];
 	WCHAR keyre[KEYRELEN];
@@ -404,9 +402,9 @@ void CTextService::_LoadVKeyMap(LPCWSTR section)
 	std::wstring strxmlval;
 	VKEYMAP *pkeymaps[] = {&vkeymap, &vkeymap_shift, &vkeymap_ctrl};
 
-	for(j = 0; j < _countof(pkeymaps); j++)
+	for(i = 0; i < _countof(pkeymaps); i++)
 	{
-		ZeroMemory(pkeymaps[j], sizeof(*pkeymaps[j]));
+		ZeroMemory(pkeymaps[i], sizeof(*pkeymaps[i]));
 	}
 
 	for(i = 0; i < _countof(configkeymap); i++)
@@ -932,36 +930,12 @@ void CTextService::_UninitFont()
 		hFont = NULL;
 	}
 
-	if(_pDWTF != NULL)
-	{
-		_pDWTF->Release();
-		_pDWTF = NULL;
-	}
-
-	if(_pDWFactory != NULL)
-	{
-		_pDWFactory->Release();
-		_pDWFactory = NULL;
-	}
-
+	SafeRelease(&_pDWTF);
+	SafeRelease(&_pDWFactory);
 	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
-		if(_pD2DBrush[i] != NULL)
-		{
-			_pD2DBrush[i]->Release();
-			_pD2DBrush[i] = NULL;
-		}
+		SafeRelease(&_pD2DBrush[i]);
 	}
-
-	if(_pD2DDCRT != NULL)
-	{
-		_pD2DDCRT->Release();
-		_pD2DDCRT = NULL;
-	}
-
-	if(_pD2DFactory != NULL)
-	{
-		_pD2DFactory->Release();
-		_pD2DFactory = NULL;
-	}
+	SafeRelease(&_pD2DDCRT);
+	SafeRelease(&_pD2DFactory);
 }

@@ -671,15 +671,14 @@ void CCandidateWindow::_CalcWindowRect()
 HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *metrics)
 {
 	HRESULT hr = E_FAIL;
-	IDWriteTextLayout *pdwTL;
 
 	if(metrics != NULL && _pDWFactory != NULL && _pDWTF != NULL)
 	{
-		hr = _pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL);
-		if(hr == S_OK)
+		IDWriteTextLayout *pdwTL;
+		if(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL) == S_OK)
 		{
 			hr = pdwTL->GetMetrics(metrics);
-			pdwTL->Release();
+			SafeRelease(&pdwTL);
 		}
 	}
 

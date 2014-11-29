@@ -67,7 +67,7 @@ typedef struct {	//変換位置指定(0:開始,1:代替,2:送り)
 } CONV_POINT;
 
 //ローマ字仮名ノード
-typedef struct _ROMAN_KANA_NODE {
+typedef struct ROMAN_KANA_NODE {
 	//探索対象、ローマ字1文字分、ルートノードはL'\0'
 	WCHAR ch;
 	//ローマ字仮名変換
@@ -76,7 +76,7 @@ typedef struct _ROMAN_KANA_NODE {
 	// 仮名がないとき、各メンバーは空文字列
 	ROMAN_KANA_CONV conv;
 	//子ノード、メンバーchで昇順ソート
-	std::vector<_ROMAN_KANA_NODE> nodes;
+	std::vector<ROMAN_KANA_NODE> nodes;
 } ROMAN_KANA_NODE;
 
 #define CHAR_SKK_HINT	L'\x20'		//絞り込みの区切り

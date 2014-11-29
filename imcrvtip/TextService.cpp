@@ -145,8 +145,6 @@ STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 
 STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
-	//_wsetlocale(LC_ALL, L"JPN");
-
 	_pThreadMgr = ptim;
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
@@ -171,11 +169,11 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 		goto exit;
 	}
 
-	ITfDocumentMgr *pDocumentMgrFocus;
-	if((_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK) && (pDocumentMgrFocus != NULL))
+	ITfDocumentMgr *pDocumentMgr;
+	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
 	{
-		_InitTextEditSink(pDocumentMgrFocus);
-		pDocumentMgrFocus->Release();
+		_InitTextEditSink(pDocumentMgr);
+		SafeRelease(&pDocumentMgr);
 	}
 
 	if(!_InitLanguageBar())
@@ -218,17 +216,9 @@ STDAPI CTextService::Deactivate()
 {
 	_SaveUserDic();
 
-	if(_pCandidateList != NULL)
-	{
-		delete _pCandidateList;
-		_pCandidateList = NULL;
-	}
+	SafeRelease(&_pCandidateList);
 
-	if(_pInputModeWindow != NULL)
-	{
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
-	}
+	SafeRelease(&_pInputModeWindow);
 
 	_UninitFunctionProvider();
 
@@ -246,11 +236,7 @@ STDAPI CTextService::Deactivate()
 
 	_UninitThreadMgrEventSink();
 
-	if(_pThreadMgr != NULL)
-	{
-		_pThreadMgr->Release();
-		_pThreadMgr = NULL;
-	}
+	SafeRelease(&_pThreadMgr);
 
 	_UninitFont();
 

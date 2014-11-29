@@ -8,10 +8,10 @@
 class CGetTextExtEditSession : public CEditSessionBase
 {
 public:
-	CGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext, ITfContextView *pContextView, ITfRange *pRangeComposition, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
+	CGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext, ITfContextView *pContextView, ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
 	{
 		_pContextView = pContextView;
-		_pRangeComposition = pRangeComposition;
+		_pRangeComposition = pRange;
 		_pCandidateWindow = pCandidateWindow;
 	}
 
@@ -166,7 +166,6 @@ STDAPI CCandidateList::OnTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 
 STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, ITfContextView *pContextView)
 {
-	CGetTextExtEditSession *pEditSession;
 	HRESULT hr;
 
 	if(pContext != _pContextDocument)
@@ -182,11 +181,15 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 	case TF_LC_CHANGE:
 		if(_pCandidateWindow != NULL)
 		{
-			pEditSession = new CGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow);
-			if(pEditSession != NULL)
+			try
 			{
+				CGetTextExtEditSession *pEditSession =
+					new CGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow);
 				pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-				pEditSession->Release();
+				SafeRelease(&pEditSession);
+			}
+			catch(...)
+			{
 			}
 		}
 		break;
@@ -203,7 +206,7 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 }
 
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
-	ITfContext *pContextDocument, TfEditCookie ec, ITfRange *pRangeComposition, BOOL reg)
+	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg)
 {
 	HRESULT hr = E_FAIL;
 	TfEditCookie ecTextStore;
@@ -227,10 +230,10 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	_pDocumentMgr = pDocumentMgr;
 	_pDocumentMgr->AddRef();
 
-	_pContextDocument = pContextDocument;
+	_pContextDocument = pContext;
 	_pContextDocument->AddRef();
 
-	_pRangeComposition = pRangeComposition;
+	_pRangeComposition = pRange;
 	_pRangeComposition->AddRef();
 
 	_ec = ec;
@@ -245,10 +248,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		goto exit;
 	}
 
-	_pCandidateWindow = new CCandidateWindow(_pTextService);
-	if(_pCandidateWindow != NULL)
+	try
 	{
-		if(pContextDocument->GetActiveView(&pContextView) != S_OK)
+		_pCandidateWindow = new CCandidateWindow(_pTextService);
+
+		if(pContext->GetActiveView(&pContextView) != S_OK)
 		{
 			goto exit;
 		}
@@ -268,9 +272,9 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_OPENCANDIDATE, 1);
 		}
 
-		pContextView->GetTextExt(ec, pRangeComposition, &rc, &fClipped);
+		pContextView->GetTextExt(ec, pRange, &rc, &fClipped);
 
-		pContextView->Release();
+		SafeRelease(&pContextView);
 
 		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg))
 		{
@@ -282,6 +286,9 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		_pCandidateWindow->_Redraw();
 
 		hr = S_OK;
+	}
+	catch(...)
+	{
 	}
 
 exit:
@@ -310,40 +317,26 @@ void CCandidateList::_EndCandidateList()
 		_hwndParent = NULL;
 	}
 
-	if(_pCandidateWindow)
+	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
-		_pCandidateWindow->Release();
-		_pCandidateWindow = NULL;
 	}
+	SafeRelease(&_pCandidateWindow);
 
-	if(_pRangeComposition)
-	{
-		_pRangeComposition->Release();
-		_pRangeComposition = NULL;
-	}
+	SafeRelease(&_pRangeComposition);
 
-	if(_pContextCandidateWindow)
-	{
-		_UnadviseContextKeyEventSink();
-		_pContextCandidateWindow->Release();
-		_pContextCandidateWindow = NULL;
-	}
+	_UnadviseContextKeyEventSink();
+	SafeRelease(&_pContextCandidateWindow);
 
-	if(_pContextDocument)
-	{
-		_UnadviseTextLayoutSink();
-		_pContextDocument->Release();
-		_pContextDocument = NULL;
-	}
+	_UnadviseTextLayoutSink();
+	SafeRelease(&_pContextDocument);
 
-	if(_pDocumentMgr)
+	if(_pDocumentMgr != NULL)
 	{
 		_pDocumentMgr->Pop(0);
-		_pDocumentMgr->Release();
-		_pDocumentMgr = NULL;
 	}
+	SafeRelease(&_pDocumentMgr);
 }
 
 BOOL CCandidateList::_IsShowCandidateWindow()
@@ -358,13 +351,13 @@ BOOL CCandidateList::_IsContextCandidateWindow(ITfContext *pContext)
 
 HRESULT CCandidateList::_AdviseContextKeyEventSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
+	ITfSource *pSource;
 	if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfContextKeyEventSink *)this), &_dwCookieContextKeyEventSink);
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 
 	return hr;
@@ -372,15 +365,15 @@ HRESULT CCandidateList::_AdviseContextKeyEventSink()
 
 HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
+	ITfSource *pSource;
 	if(_pContextCandidateWindow != NULL)
 	{
 		if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			hr = pSource->UnadviseSink(_dwCookieContextKeyEventSink);
-			pSource->Release();
+			SafeRelease(&pSource);
 		}
 	}
 
@@ -389,13 +382,13 @@ HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 
 HRESULT CCandidateList::_AdviseTextLayoutSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
+	ITfSource *pSource;
 	if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 
 	return hr;
@@ -403,15 +396,15 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 
 HRESULT CCandidateList::_UnadviseTextLayoutSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
 	if(_pContextDocument != NULL)
 	{
+		ITfSource *pSource;
 		if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
-			pSource->Release();
+			SafeRelease(&pSource);
 		}
 	}
 

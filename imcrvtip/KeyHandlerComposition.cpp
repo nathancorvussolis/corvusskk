@@ -327,9 +327,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed)
 {
 	TF_SELECTION tfSelection;
-	ITfRange *pRangeComposition;
-	ITfRange *pRangeClone;
-	ULONG cFetched;
+	ULONG cFetched = 0;
 	LONG cch, cchRes;
 
 	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
@@ -346,16 +344,23 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		}
 	}
 
-	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK || cFetched != 1)
+	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
 	{
 		return S_FALSE;
 	}
 
-	if(_pComposition->GetRange(&pRangeComposition) == S_OK)
+	if(cFetched > 1)
 	{
-		if(_IsRangeCovered(ec, tfSelection.range, pRangeComposition))
+		SafeRelease(&tfSelection.range);
+		return S_FALSE;
+	}
+
+	ITfRange *pRange;
+	if(_pComposition->GetRange(&pRange) == S_OK)
+	{
+		if(_IsRangeCovered(ec, tfSelection.range, pRange))
 		{
-			pRangeComposition->SetText(ec, 0, text.c_str(), (LONG)text.size());
+			pRange->SetText(ec, 0, text.c_str(), (LONG)text.size());
 
 			// shift from end to start.
 			// shift over mathematical operators (U+2200-U+22FF) is rejected by OneNote.
@@ -380,8 +385,8 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 				}
 			}
 
-			tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
-			tfSelection.range->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_END);
+			tfSelection.range->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
+			tfSelection.range->ShiftStartToRange(ec, pRange, TF_ANCHOR_END);
 			tfSelection.range->ShiftStart(ec, cchRes, &cch, NULL);
 			//decide cursor position
 			tfSelection.range->Collapse(ec, TF_ANCHOR_START);
@@ -390,10 +395,11 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			//composition attribute
 			if(!fixed)
 			{
-				if(pRangeComposition->Clone(&pRangeClone) == S_OK)
+				ITfRange *pRangeClone;
+				if(pRange->Clone(&pRangeClone) == S_OK)
 				{
-					pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
-					pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+					pRangeClone->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
+					pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
 
 					if(cchCursor == 0 || !showentry)
 					{
@@ -413,7 +419,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 						if(cchOkuri != 0)
 						{
-							pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+							pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
 							pRangeClone->ShiftStart(ec, cchOkuri, &cch, NULL);
 							if(!display_attribute_series[2])
 							{
@@ -425,7 +431,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 								LONG hintpos = (LONG)text.find_first_of(CHAR_SKK_HINT);
 								if(cchOkuri < hintpos)
 								{
-									pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+									pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
 									pRangeClone->ShiftStart(ec, hintpos, &cch, NULL);
 									_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInputText);
 								}
@@ -447,7 +453,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 						if(cchOkuri != 0)
 						{
-							pRangeClone->ShiftStartToRange(ec, pRangeComposition, TF_ANCHOR_START);
+							pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
 							pRangeClone->ShiftStart(ec, cchOkuri, &cch, NULL);
 							if(!display_attribute_series[5])
 							{
@@ -455,14 +461,14 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 							}
 						}
 
-						pRangeClone->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+						pRangeClone->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
 						pRangeClone->ShiftStartToRange(ec, tfSelection.range, TF_ANCHOR_END);
 						if(!display_attribute_series[6])
 						{
 							_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeConvAnnot);
 						}
 					}
-					pRangeClone->Release();
+					SafeRelease(&pRangeClone);
 				}
 			}
 
@@ -513,18 +519,18 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 					if(!phone.empty())
 					{
 						var.bstrVal = SysAllocString(phone.c_str());
-						pProperty->SetValue(ec, pRangeComposition, &var);
+						pProperty->SetValue(ec, pRange, &var);
 						SysFreeString(var.bstrVal);
 					}
-					pProperty->Release();
+					SafeRelease(&pProperty);
 				}
 			}
 		}
 
-		pRangeComposition->Release();
+		SafeRelease(&pRange);
 	}
 
-	tfSelection.range->Release();
+	SafeRelease(&tfSelection.range);
 
 	return S_OK;
 }
@@ -533,21 +539,28 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 {
 	HRESULT hr = E_FAIL;
 
-	if(_pCandidateList == NULL)
+	try
 	{
-		_pCandidateList = new CCandidateList(this);
+		if(_pCandidateList == NULL)
+		{
+			_pCandidateList = new CCandidateList(this);
+		}
+
+		ITfDocumentMgr *pDocumentMgr;
+		if(pContext->GetDocumentMgr(&pDocumentMgr) == S_OK)
+		{
+			ITfRange *pRange;
+			if(_pComposition->GetRange(&pRange) == S_OK)
+			{
+				hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, reg);
+				SafeRelease(&pRange);
+			}
+			SafeRelease(&pDocumentMgr);
+		}
+	}
+	catch(...)
+	{
 	}
 
-	ITfDocumentMgr *pDocumentMgr;
-	if(pContext->GetDocumentMgr(&pDocumentMgr) == S_OK)
-	{
-		ITfRange *pRange;
-		if(_pComposition->GetRange(&pRange) == S_OK)
-		{
-			hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, reg);
-			pRange->Release();
-		}
-		pDocumentMgr->Release();
-	}
 	return hr;
 }

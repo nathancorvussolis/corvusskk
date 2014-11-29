@@ -11,6 +11,7 @@ public:
 	CEditSessionBase(CTextService *pTextService, ITfContext *pContext)
 	{
 		_cRef = 1;
+
 		_pContext = pContext;
 		_pContext->AddRef();
 
@@ -19,8 +20,8 @@ public:
 	}
 	virtual ~CEditSessionBase()
 	{
-		_pContext->Release();
-		_pTextService->Release();
+		SafeRelease(&_pContext);
+		SafeRelease(&_pTextService);
 	}
 
 	// IUnknown

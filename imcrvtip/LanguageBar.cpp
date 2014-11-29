@@ -64,9 +64,9 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 
 CLangBarItemButton::~CLangBarItemButton()
 {
-	DllRelease();
+	SafeRelease(&_pTextService);
 
-	_pTextService->Release();
+	DllRelease();
 }
 
 STDAPI CLangBarItemButton::QueryInterface(REFIID riid, void **ppvObj)
@@ -369,8 +369,7 @@ STDAPI CLangBarItemButton::UnadviseSink(DWORD dwCookie)
 		return CONNECT_E_NOCONNECTION;
 	}
 
-	_pLangBarItemSink->Release();
-	_pLangBarItemSink = NULL;
+	SafeRelease(&_pLangBarItemSink);
 
 	return S_OK;
 }
@@ -490,34 +489,38 @@ BOOL CTextService::_InitLanguageBar()
 
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 	{
-		_pLangBarItem = new CLangBarItemButton(this, c_guidLangBarItemButton);
-		if(_pLangBarItem != NULL)
+		try
 		{
+			_pLangBarItem = new CLangBarItemButton(this, c_guidLangBarItemButton);
 			if(pLangBarItemMgr->AddItem(_pLangBarItem) == S_OK)
 			{
 				fRet = TRUE;
 			}
 			else
 			{
-				_pLangBarItem->Release();
-				_pLangBarItem = NULL;
+				SafeRelease(&_pLangBarItem);
 			}
+		}
+		catch(...)
+		{
 		}
 
 		if(IsVersion62AndOver())
 		{
-			_pLangBarItemI = new CLangBarItemButton(this, GUID_LBI_INPUTMODE);
-			if(_pLangBarItemI != NULL)
+			try
 			{
+				_pLangBarItemI = new CLangBarItemButton(this, GUID_LBI_INPUTMODE);
 				if(pLangBarItemMgr->AddItem(_pLangBarItemI) == S_OK)
 				{
 					fRetI = TRUE;
 				}
 				else
 				{
-					_pLangBarItemI->Release();
-					_pLangBarItemI = NULL;
+					SafeRelease(&_pLangBarItemI);
 				}
+			}
+			catch(...)
+			{
 			}
 		}
 		else
@@ -525,7 +528,7 @@ BOOL CTextService::_InitLanguageBar()
 			fRetI = TRUE;
 		}
 
-		pLangBarItemMgr->Release();
+		SafeRelease(&pLangBarItemMgr);
 	}
 
 	return (fRet && fRetI);
@@ -540,22 +543,20 @@ void CTextService::_UninitLanguageBar()
 		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 		{
 			pLangBarItemMgr->RemoveItem(_pLangBarItem);
-			pLangBarItemMgr->Release();
+			SafeRelease(&pLangBarItemMgr);
 		}
-		_pLangBarItem->Release();
-		_pLangBarItem = NULL;
 	}
+	SafeRelease(&_pLangBarItem);
 
 	if(_pLangBarItemI != NULL)
 	{
 		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr)) == S_OK)
 		{
 			pLangBarItemMgr->RemoveItem(_pLangBarItemI);
-			pLangBarItemMgr->Release();
+			SafeRelease(&pLangBarItemMgr);
 		}
-		_pLangBarItemI->Release();
-		_pLangBarItemI = NULL;
 	}
+	SafeRelease(&_pLangBarItemI);
 }
 
 void CTextService::_UpdateLanguageBar(BOOL showinputmode)
@@ -598,21 +599,25 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		ITfContextView *pContextView;
-		CIMGetTextExtEditSession *pEditSession;
 		HRESULT hr;
 
 		_pTextService->_SetText(ec, _pContext, std::wstring(L""), -1, 0, FALSE);
 
+		ITfContextView *pContextView;
 		if(_pContext->GetActiveView(&pContextView) == S_OK)
 		{
-			pEditSession = new CIMGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow);
-			if(pEditSession != NULL)
+			try
 			{
+				CIMGetTextExtEditSession *pEditSession =
+					new CIMGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow);
 				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-				pEditSession->Release();
+				SafeRelease(&pEditSession);
 			}
-			pContextView->Release();
+			catch(...)
+			{
+			}
+
+			SafeRelease(&pContextView);
 		}
 
 		return S_OK;
@@ -626,10 +631,7 @@ private:
 
 void CTextService::_StartInputModeWindow(BOOL term)
 {
-	ITfDocumentMgr *pDocumentMgrFocus;
-	ITfContext *pContext;
-	CInputModeEditSession *pEditSession;
-	HRESULT hr;
+	HRESULT hr = E_FAIL;
 
 	switch(inputmode)
 	{
@@ -640,31 +642,43 @@ void CTextService::_StartInputModeWindow(BOOL term)
 	case im_ascii:
 		_EndInputModeWindow();
 
-		if(_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK && pDocumentMgrFocus != NULL)
+		ITfDocumentMgr *pDocumentMgr;
+		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != NULL)
 		{
-			if(pDocumentMgrFocus->GetTop(&pContext) == S_OK && pContext != NULL)
+			ITfContext *pContext;
+			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != NULL)
 			{
-				_pInputModeWindow = new CInputModeWindow();
-				_pInputModeWindow->_term = term;
-
-				if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
+				try
 				{
-					pEditSession = new CInputModeEditSession(this, pContext, _pInputModeWindow);
-					if(pEditSession != NULL)
-					{
-						// Asynchronous
-						pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hr);
-						pEditSession->Release();
-					}
+					_pInputModeWindow = new CInputModeWindow();
+					_pInputModeWindow->_term = term;
 
-					if(hr != TF_S_ASYNC)
+					if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
 					{
-						_EndInputModeWindow();
+						try
+						{
+							CInputModeEditSession *pEditSession = new CInputModeEditSession(this, pContext, _pInputModeWindow);
+							// Asynchronous
+							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hr);
+							SafeRelease(&pEditSession);
+						}
+						catch(...)
+						{
+						}
+
+						if(hr != TF_S_ASYNC)
+						{
+							_EndInputModeWindow();
+						}
 					}
-					pContext->Release();
 				}
+				catch(...)
+				{
+				}
+
+				SafeRelease(&pContext);
 			}
-			pDocumentMgrFocus->Release();
+			SafeRelease(&pDocumentMgr);
 		}
 		break;
 	default:
@@ -677,7 +691,6 @@ void CTextService::_EndInputModeWindow()
 	if(_pInputModeWindow != NULL)
 	{
 		_pInputModeWindow->_Destroy();
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
 	}
+	SafeRelease(&_pInputModeWindow);
 }

@@ -10,24 +10,19 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	if(_pCandidateList != NULL)
 	{
 		_pCandidateList->_EndCandidateList();
-		_pCandidateList = NULL;
 	}
+	SafeRelease(&_pCandidateList);
 
 	if(pComposition != NULL)
 	{
-		ITfRange *pRangeComposition;
-		if(pComposition->GetRange(&pRangeComposition) == S_OK)
+		ITfRange *pRange;
+		if(pComposition->GetRange(&pRange) == S_OK)
 		{
-			pRangeComposition->SetText(ecWrite, 0, L"", 0);
-			pRangeComposition->Release();
+			pRange->SetText(ecWrite, 0, L"", 0);
+			SafeRelease(&pRange);
 		}
 	}
-
-	if(_pComposition != NULL)
-	{
-		_pComposition->Release();
-		_pComposition = NULL;
-	}
+	SafeRelease(&_pComposition);
 
 	_ResetStatus();
 
@@ -86,33 +81,33 @@ public:
 
 STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 {
-	ITfInsertAtSelection *pInsertAtSelection;
-	ITfRange *pRangeInsert;
-	ITfContextComposition *pContextComposition;
-	ITfComposition *pComposition = NULL;
 	HRESULT hr = E_FAIL;
 
+	ITfInsertAtSelection *pInsertAtSelection;
 	if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
 	{
-		if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRangeInsert) == S_OK)
+		ITfRange *pRange;
+		if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRange) == S_OK)
 		{
+			ITfContextComposition *pContextComposition;
 			if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
 			{
-				if((pContextComposition->StartComposition(ec, pRangeInsert, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
+				ITfComposition *pComposition;
+				if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
 				{
 					_pTextService->_SetComposition(pComposition);
 
 					TF_SELECTION tfSelection;
-					tfSelection.range = pRangeInsert;
+					tfSelection.range = pRange;
 					tfSelection.style.ase = TF_AE_NONE;
 					tfSelection.style.fInterimChar = FALSE;
 					hr = _pContext->SetSelection(ec, 1, &tfSelection);
 				}
-				pContextComposition->Release();
+				SafeRelease(&pContextComposition);
 			}
-			pRangeInsert->Release();
+			SafeRelease(&pRange);
 		}
-		pInsertAtSelection->Release();
+		SafeRelease(&pInsertAtSelection);
 	}
 
 	return hr;
@@ -120,14 +115,16 @@ STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
 
 BOOL CTextService::_StartComposition(ITfContext *pContext)
 {
-	CStartCompositionEditSession *pStartCompositionEditSession;
-	HRESULT hr;
+	HRESULT hr = E_FAIL;
 
-	pStartCompositionEditSession = new CStartCompositionEditSession(this, pContext);
-	if(pStartCompositionEditSession != NULL)
+	try
 	{
-		pContext->RequestEditSession(_ClientId, pStartCompositionEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-		pStartCompositionEditSession->Release();
+		CStartCompositionEditSession *pEditSession = new CStartCompositionEditSession(this, pContext);
+		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+		SafeRelease(&pEditSession);
+	}
+	catch(...)
+	{
 	}
 
 	return (hr == S_OK);
@@ -158,23 +155,23 @@ void CTextService::_TerminateComposition(TfEditCookie ec, ITfContext *pContext)
 	if(_pComposition != NULL)
 	{
 		_ClearCompositionDisplayAttributes(ec, pContext);
-
 		_pComposition->EndComposition(ec);
-		_pComposition->Release();
-		_pComposition = NULL;
 	}
+	SafeRelease(&_pComposition);
 }
 
 void CTextService::_EndComposition(ITfContext *pContext)
 {
-	CEndCompositionEditSession *pEditSession;
 	HRESULT hr;
 
-	pEditSession = new CEndCompositionEditSession(this, pContext);
-	if(pEditSession != NULL)
+	try
 	{
+		CEndCompositionEditSession *pEditSession = new CEndCompositionEditSession(this, pContext);
 		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
-		pEditSession->Release();
+		SafeRelease(&pEditSession);
+	}
+	catch(...)
+	{
 	}
 }
 
@@ -196,65 +193,74 @@ public:
 void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 {
 	TF_SELECTION tfSelection;
-	ITfRange *pRangeComposition;
-	ULONG cFetched;
+	ULONG cFetched = 0;
 
-	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK || cFetched != 1)
+	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
 	{
 		return;
 	}
 
-	if(_pComposition->GetRange(&pRangeComposition) == S_OK)
+	if(cFetched > 1)
 	{
-		if(_IsRangeCovered(ec, tfSelection.range, pRangeComposition))
-		{
-			pRangeComposition->SetText(ec, 0, L"", 0);
+		SafeRelease(&tfSelection.range);
+		return;
+	}
 
-			tfSelection.range->ShiftEndToRange(ec, pRangeComposition, TF_ANCHOR_END);
+	ITfRange *pRange;
+	if(_pComposition->GetRange(&pRange) == S_OK)
+	{
+		if(_IsRangeCovered(ec, tfSelection.range, pRange))
+		{
+			pRange->SetText(ec, 0, L"", 0);
+
+			tfSelection.range->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
 			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
 
 			pContext->SetSelection(ec, 1, &tfSelection);
 		}
-		pRangeComposition->Release();
+		SafeRelease(&pRange);
 	}
 
-	tfSelection.range->Release();
+	SafeRelease(&tfSelection.range);
 
 	_TerminateComposition(ec, pContext);
 }
 
 void CTextService::_ClearComposition()
 {
-	ITfDocumentMgr *pDocumentMgrFocus = NULL;
-	ITfContext *pContext = NULL;
-	CClearCompositionEditSession *pEditSession;
 	HRESULT hr;
 
 	if(_pCandidateList != NULL)
 	{
 		_pCandidateList->_EndCandidateList();
-		_pCandidateList = NULL;
 	}
+	SafeRelease(&_pCandidateList);
 
 	_EndInputModeWindow();
 
 	if(_pComposition != NULL)
 	{
-		if((_pThreadMgr->GetFocus(&pDocumentMgrFocus) == S_OK) && (pDocumentMgrFocus != NULL))
+		ITfDocumentMgr *pDocumentMgr;
+		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
 		{
-			if((pDocumentMgrFocus->GetTop(&pContext) == S_OK) && (pContext != NULL))
+			ITfContext *pContext;
+			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != NULL))
 			{
 				_ResetStatus();
 
-				pEditSession = new CClearCompositionEditSession(this, pContext);
-				if(pEditSession != NULL)
+				try
 				{
+					CClearCompositionEditSession *pEditSession = new CClearCompositionEditSession(this, pContext);
 					pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
-					pEditSession->Release();
+					SafeRelease(&pEditSession);
 				}
-				pContext->Release();
+				catch(...)
+				{
+				}
+
+				SafeRelease(&pContext);
 			}
-			pDocumentMgrFocus->Release();
+			SafeRelease(&pDocumentMgr);
 		}
 	}
 }

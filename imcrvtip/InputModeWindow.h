@@ -78,7 +78,7 @@ public:
 					_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
 					_pInputModeWindow->_Show(TRUE);
 				}
-				pRange->Release();
+				SafeRelease(&pRange);
 			}
 		}
 		return S_OK;

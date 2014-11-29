@@ -212,8 +212,8 @@ void InitLua()
 		return;
 	}
 
-	//%SystemRoot%\System32\IMCRVSKK\init.lua
-	// or %SystemRoot%\SysWOW64\IMCRVSKK\init.lua
+	//%SystemRoot%\System32\IME\IMCRVSKK\init.lua
+	// or %SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
 	if(GetModuleFileNameW(NULL, pathinitlua, _countof(pathinitlua)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');

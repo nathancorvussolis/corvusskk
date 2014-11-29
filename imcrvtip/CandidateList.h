@@ -27,7 +27,7 @@ public:
 	STDMETHODIMP OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, ITfContextView *pContextView);
 
 	HRESULT _StartCandidateList(TfClientId tid, ITfDocumentMgr *pDocumentMgr,
-		ITfContext *pContextDocument, TfEditCookie ec, ITfRange *pRangeComposition, BOOL regdic);
+		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL regdic);
 	void _EndCandidateList();
 
 	BOOL _IsShowCandidateWindow();

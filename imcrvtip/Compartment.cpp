@@ -4,17 +4,18 @@
 
 HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)
 {
-	ITfCompartmentMgr *pCompartmentMgr;
-	ITfCompartment *pCompartment;
 	HRESULT hr = E_FAIL;
 
+	ITfCompartmentMgr *pCompartmentMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
+		ITfCompartment *pCompartment;
 		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
 		{
 			hr = pCompartment->SetValue(_ClientId, pvar);
+			SafeRelease(&pCompartment);
 		}
-		pCompartmentMgr->Release();
+		SafeRelease(&pCompartmentMgr);
 	}
 
 	return hr;
@@ -22,8 +23,6 @@ HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)
 
 HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 {
-	ITfCompartmentMgr *pCompartmentMgr;
-	ITfCompartment *pCompartment;
 	HRESULT hr = E_FAIL;
 
 	if(pvar == NULL)
@@ -31,8 +30,10 @@ HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 		return hr;
 	}
 
+	ITfCompartmentMgr *pCompartmentMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
+		ITfCompartment *pCompartment;
 		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
 		{
 			VARIANT var;
@@ -44,8 +45,9 @@ HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 					hr = S_OK;
 				}
 			}
+			SafeRelease(&pCompartment);
 		}
-		pCompartmentMgr->Release();
+		SafeRelease(&pCompartmentMgr);
 	}
 
 	return hr;
@@ -53,66 +55,55 @@ HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 
 BOOL CTextService::_IsKeyboardDisabled()
 {
-	ITfDocumentMgr *pDocumentMgrFocus = NULL;
-	ITfContext *pContext = NULL;
-	ITfCompartmentMgr *pCompartmentMgr = NULL;
 	BOOL fDisabled = FALSE;
 
-	if((_pThreadMgr->GetFocus(&pDocumentMgrFocus) != S_OK) || (pDocumentMgrFocus == NULL))
+	ITfDocumentMgr *pDocumentMgr;
+	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
+	{
+		ITfContext *pContext;
+		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != NULL))
+		{
+			ITfCompartmentMgr *pCompartmentMgr;
+			if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+			{
+				ITfCompartment *pCompartment;
+				if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_DISABLED, &pCompartment) == S_OK)
+				{
+					VARIANT var;
+					if(pCompartment->GetValue(&var) == S_OK)
+					{
+						if(var.vt == VT_I4)
+						{
+							fDisabled = (BOOL)var.lVal;
+						}
+					}
+					SafeRelease(&pCompartment);
+				}
+				if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_EMPTYCONTEXT, &pCompartment) == S_OK)
+				{
+					VARIANT var;
+					if(pCompartment->GetValue(&var) == S_OK)
+					{
+						if(var.vt == VT_I4)
+						{
+							fDisabled = (BOOL)var.lVal;
+						}
+					}
+					SafeRelease(&pCompartment);
+				}
+				SafeRelease(&pCompartmentMgr);
+			}
+			SafeRelease(&pContext);
+		}
+		else
+		{
+			fDisabled = TRUE;
+		}
+		SafeRelease(&pDocumentMgr);
+	}
+	else
 	{
 		fDisabled = TRUE;
-		goto exit;
-	}
-
-	if((pDocumentMgrFocus->GetTop(&pContext) != S_OK) || (pContext == NULL))
-	{
-		fDisabled = TRUE;
-		goto exit;
-	}
-
-	if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
-	{
-		ITfCompartment *pCompartmentDisabled;
-		ITfCompartment *pCompartmentEmptyContext;
-
-		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_DISABLED, &pCompartmentDisabled) == S_OK)
-		{
-			VARIANT var;
-			if(pCompartmentDisabled->GetValue(&var) == S_OK)
-			{
-				if(var.vt == VT_I4)
-				{
-					fDisabled = (BOOL)var.lVal;
-				}
-			}
-			pCompartmentDisabled->Release();
-		}
-
-		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_EMPTYCONTEXT, &pCompartmentEmptyContext) == S_OK)
-		{
-			VARIANT var;
-			if(pCompartmentEmptyContext->GetValue(&var) == S_OK)
-			{
-				if(var.vt == VT_I4)
-				{
-					fDisabled = (BOOL)var.lVal;
-				}
-			}
-			pCompartmentEmptyContext->Release();
-		}
-
-		pCompartmentMgr->Release();
-	}
-
-exit:
-	if(pContext)
-	{
-		pContext->Release();
-	}
-
-	if(pDocumentMgrFocus)
-	{
-		pDocumentMgrFocus->Release();
 	}
 
 	return fDisabled;
@@ -120,9 +111,9 @@ exit:
 
 BOOL CTextService::_IsKeyboardOpen()
 {
-	ITfCompartmentMgr *pCompartmentMgr;
 	BOOL fOpen = FALSE;
 
+	ITfCompartmentMgr *pCompartmentMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
 		ITfCompartment *pCompartment;
@@ -136,8 +127,9 @@ BOOL CTextService::_IsKeyboardOpen()
 					fOpen = (BOOL)var.lVal;
 				}
 			}
+			SafeRelease(&pCompartment);
 		}
-		pCompartmentMgr->Release();
+		SafeRelease(&pCompartmentMgr);
 	}
 
 	return fOpen;
@@ -145,20 +137,21 @@ BOOL CTextService::_IsKeyboardOpen()
 
 HRESULT CTextService::_SetKeyboardOpen(BOOL fOpen)
 {
-	ITfCompartmentMgr *pCompartmentMgr;
-	ITfCompartment *pCompartment;
 	HRESULT hr = E_FAIL;
 
+	ITfCompartmentMgr *pCompartmentMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
 	{
+		ITfCompartment *pCompartment;
 		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
 		{
 			VARIANT var;
 			var.vt = VT_I4;
 			var.lVal = fOpen;
 			hr = pCompartment->SetValue(_ClientId, &var);
+			SafeRelease(&pCompartment);
 		}
-		pCompartmentMgr->Release();
+		SafeRelease(&pCompartmentMgr);
 	}
 
 	return hr;

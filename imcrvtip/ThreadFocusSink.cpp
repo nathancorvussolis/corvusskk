@@ -38,9 +38,9 @@ STDAPI CTextService::OnKillThreadFocus()
 
 BOOL CTextService::_InitThreadFocusSink()
 {
-	ITfSource *pSource;
 	BOOL fRet = FALSE;
 
+	ITfSource *pSource;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
 		if(pSource->AdviseSink(IID_IUNK_ARGS((ITfThreadFocusSink *)this), &_dwThreadFocusSinkCookie) == S_OK)
@@ -51,7 +51,7 @@ BOOL CTextService::_InitThreadFocusSink()
 		{
 			_dwThreadFocusSinkCookie = TF_INVALID_COOKIE;
 		}
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 
 	return fRet;
@@ -60,10 +60,9 @@ BOOL CTextService::_InitThreadFocusSink()
 void CTextService::_UninitThreadFocusSink()
 {
 	ITfSource *pSource;
-
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
 		pSource->UnadviseSink(_dwThreadFocusSinkCookie);
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 }

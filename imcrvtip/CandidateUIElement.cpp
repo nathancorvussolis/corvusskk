@@ -9,6 +9,10 @@ static LPCWSTR markAnnotation = L";";
 
 CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 {
+	DllAddRef();
+
+	_cRef = 1;
+
 	_pTextService = pTextService;
 	_pTextService->AddRef();
 
@@ -58,8 +62,6 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	comptext.clear();
 
 	_ClearStatusReg();
-
-	_cRef = 1;
 }
 
 CCandidateWindow::~CCandidateWindow()
@@ -68,10 +70,13 @@ CCandidateWindow::~CCandidateWindow()
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
-		_pCandidateWindow->Release();
 	}
-	_pCandidateList->Release();
-	_pTextService->Release();
+	SafeRelease(&_pCandidateWindow);
+
+	SafeRelease(&_pCandidateList);
+	SafeRelease(&_pTextService);
+
+	DllRelease();
 }
 
 STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
@@ -330,8 +335,8 @@ STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
 
 STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 {
-	UINT i;
 	HRESULT hr = S_OK;
+	UINT i;
 
 	if(_pCandidateWindow)
 	{

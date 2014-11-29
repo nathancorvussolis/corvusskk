@@ -30,7 +30,6 @@ public:
 			_pTextService->_ResetStatus();
 			_pTextService->_ClearComposition();
 		}
-
 #endif
 		return S_OK;
 	}
@@ -42,14 +41,16 @@ private:
 
 HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf)
 {
-	CKeyHandlerEditSession *pEditSession;
 	HRESULT hr = E_FAIL;
 
-	pEditSession = new CKeyHandlerEditSession(this, pContext, wParam, bSf);
-	if(pEditSession != NULL)
+	try
 	{
-		hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-		pEditSession->Release();
+		CKeyHandlerEditSession *pEditSession = new CKeyHandlerEditSession(this, pContext, wParam, bSf);
+		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+		SafeRelease(&pEditSession);
+	}
+	catch(...)
+	{
 	}
 
 	return hr;
@@ -533,7 +534,7 @@ void CTextService::_GetActiveFlags()
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx)) == S_OK)
 	{
 		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
-		pThreadMgrEx->Release();
+		SafeRelease(&pThreadMgrEx);
 	}
 
 	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)

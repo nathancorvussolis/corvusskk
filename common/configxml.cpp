@@ -194,16 +194,8 @@ NOT_S_OK:
 
 void CloseStreamReader(IXmlReader *pReader, IStream *pFileStream)
 {
-	if(pReader != NULL)
-	{
-		pReader->Release();
-		pReader = NULL;
-	}
-	if(pFileStream != NULL)
-	{
-		pFileStream->Release();
-		pFileStream = NULL;
-	}
+	SafeRelease(&pReader);
+	SafeRelease(&pFileStream);
 }
 
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
@@ -502,16 +494,8 @@ NOT_S_OK:
 
 void CloseStreamWriter(IXmlWriter *pWriter, IStream *pFileStream)
 {
-	if(pWriter != NULL)
-	{
-		pWriter->Release();
-		pWriter = NULL;
-	}
-	if(pFileStream != NULL)
-	{
-		pFileStream->Release();
-		pFileStream = NULL;
-	}
+	SafeRelease(&pWriter);
+	SafeRelease(&pFileStream);
 }
 
 HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **pFileStream, BOOL indent)

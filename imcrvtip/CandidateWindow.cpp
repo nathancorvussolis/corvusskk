@@ -71,12 +71,17 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 	if(_hwnd != NULL && _pTextService->_ShowInputMode)
 	{
-		_pInputModeWindow = new CInputModeWindow();
-		if(!_pInputModeWindow->_Create(_pTextService, NULL, TRUE, _hwnd))
+		try
 		{
-			_pInputModeWindow->_Destroy();
-			delete _pInputModeWindow;
-			_pInputModeWindow = NULL;
+			_pInputModeWindow = new CInputModeWindow();
+			if(!_pInputModeWindow->_Create(_pTextService, NULL, TRUE, _hwnd))
+			{
+				_pInputModeWindow->_Destroy();
+				SafeRelease(&_pInputModeWindow);
+			}
+		}
+		catch(...)
+		{
 		}
 	}
 
@@ -138,39 +143,17 @@ void CCandidateWindow::_Destroy()
 	if(_pInputModeWindow != NULL)
 	{
 		_pInputModeWindow->_Destroy();
-		delete _pInputModeWindow;
-		_pInputModeWindow = NULL;
 	}
+	SafeRelease(&_pInputModeWindow);
 
-	if(_pDWTF != NULL)
-	{
-		_pDWTF->Release();
-		_pDWTF = NULL;
-	}
-	if(_pDWFactory != NULL)
-	{
-		_pDWFactory->Release();
-		_pDWFactory = NULL;
-	}
-
+	SafeRelease(&_pDWTF);
+	SafeRelease(&_pDWFactory);
 	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
-		if(_pD2DBrush[i] != NULL)
-		{
-			_pD2DBrush[i]->Release();
-			_pD2DBrush[i] = NULL;
-		}
+		SafeRelease(&_pD2DBrush[i]);
 	}
-	if(_pD2DDCRT != NULL)
-	{
-		_pD2DDCRT->Release();
-		_pD2DDCRT = NULL;
-	}
-	if(_pD2DFactory != NULL)
-	{
-		_pD2DFactory->Release();
-		_pD2DFactory = NULL;
-	}
+	SafeRelease(&_pD2DDCRT);
+	SafeRelease(&_pD2DFactory);
 }
 
 void CCandidateWindow::_Move(LPCRECT lpr)
@@ -200,7 +183,6 @@ void CCandidateWindow::_Move(LPCRECT lpr)
 
 void CCandidateWindow::_BeginUIElement()
 {
-	ITfUIElementMgr *pUIElementMgr;
 	BOOL bShow = TRUE;
 
 	if(!_reg)
@@ -212,6 +194,7 @@ void CCandidateWindow::_BeginUIElement()
 
 	if((_hwnd == NULL) && (_depth == 0))
 	{
+		ITfUIElementMgr *pUIElementMgr;
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
@@ -219,7 +202,7 @@ void CCandidateWindow::_BeginUIElement()
 			{
 				pUIElementMgr->UpdateUIElement(_dwUIElementId);
 			}
-			pUIElementMgr->Release();
+			SafeRelease(&pUIElementMgr);
 		}
 	}
 
@@ -257,14 +240,13 @@ void CCandidateWindow::_BeginUIElement()
 
 void CCandidateWindow::_EndUIElement()
 {
-	ITfUIElementMgr *pUIElementMgr;
-
 	if((_hwnd == NULL) && (_depth == 0))
 	{
+		ITfUIElementMgr *pUIElementMgr;
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->EndUIElement(_dwUIElementId);
-			pUIElementMgr->Release();
+			SafeRelease(&pUIElementMgr);
 		}
 	}
 
@@ -289,14 +271,14 @@ void CCandidateWindow::_EndUIElement()
 
 BOOL CCandidateWindow::_CanShowUIElement()
 {
-	ITfUIElementMgr *pUIElementMgr;
 	BOOL bShow = TRUE;
 
+	ITfUIElementMgr *pUIElementMgr;
 	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 	{
 		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 		pUIElementMgr->EndUIElement(_dwUIElementId);
-		pUIElementMgr->Release();
+		SafeRelease(&pUIElementMgr);
 	}
 
 	return bShow;
@@ -490,9 +472,8 @@ void CCandidateWindow::_End()
 	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_Destroy();
-		_pCandidateWindow->Release();
-		_pCandidateWindow = NULL;
 	}
+	SafeRelease(&_pCandidateWindow);
 
 	if(_hwnd == NULL)
 	{
@@ -549,7 +530,7 @@ void CCandidateWindow::_UpdateUIElement()
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
 		{
 			pUIElementMgr->UpdateUIElement(_dwUIElementId);
-			pUIElementMgr->Release();
+			SafeRelease(&pUIElementMgr);
 		}
 	}
 }
@@ -1145,9 +1126,9 @@ void CCandidateWindow::_EndReq()
 
 void CCandidateWindow::_CreateNext(BOOL reg)
 {
-	_pCandidateWindow = new CCandidateWindow(_pTextService);
-	if(_pCandidateWindow)
+	try
 	{
+		_pCandidateWindow = new CCandidateWindow(_pTextService);
 		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, reg);
 
 #ifdef _DEBUG
@@ -1161,7 +1142,6 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 #else
 		_pCandidateWindow->_Move(&_rect);
 #endif
-
 		_pCandidateWindow->_BeginUIElement();
 
 #ifndef _DEBUG
@@ -1176,5 +1156,8 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 			_pInputModeWindow->_Show(FALSE);
 		}
 #endif
+	}
+	catch(...)
+	{
 	}
 }

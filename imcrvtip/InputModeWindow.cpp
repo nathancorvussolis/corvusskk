@@ -69,7 +69,6 @@ STDAPI_(ULONG) CInputModeWindow::Release()
 
 STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, ITfContextView *pContextView)
 {
-	CIMGetTextExtEditSession *pEditSession;
 	HRESULT hr;
 
 	if(pContext != _pContext)
@@ -83,11 +82,15 @@ STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode
 		break;
 
 	case TF_LC_CHANGE:
-		pEditSession = new CIMGetTextExtEditSession(_pTextService, pContext, pContextView, this);
-		if(pEditSession != NULL)
+		try
 		{
+			CIMGetTextExtEditSession *pEditSession =
+				new CIMGetTextExtEditSession(_pTextService, pContext, pContextView, this);
 			pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-			pEditSession->Release();
+			SafeRelease(&pEditSession);
+		}
+		catch(...)
+		{
 		}
 		break;
 
@@ -104,13 +107,13 @@ STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode
 
 HRESULT CInputModeWindow::_AdviseTextLayoutSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
+	ITfSource *pSource;
 	if(_pContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
-		pSource->Release();
+		SafeRelease(&pSource);
 	}
 
 	return hr;
@@ -118,15 +121,15 @@ HRESULT CInputModeWindow::_AdviseTextLayoutSink()
 
 HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 {
-	ITfSource *pSource;
 	HRESULT hr = E_FAIL;
 
 	if(_pContext != NULL)
 	{
+		ITfSource *pSource;
 		if(_pContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
-			pSource->Release();
+			SafeRelease(&pSource);
 		}
 	}
 
@@ -139,7 +142,6 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	HDC hdc;
 	RECT r;
 	POINT pt = {0, 0};
-	ITfContextView *pContextView;
 
 	if(pContext != NULL)
 	{
@@ -167,13 +169,14 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	}
 	else
 	{
+		ITfContextView *pContextView;
 		if(_pContext->GetActiveView(&pContextView) == S_OK)
 		{
 			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == NULL)
 			{
 				_hwndParent = GetFocus();
 			}
-			pContextView->Release();
+			SafeRelease(&pContextView);
 		}
 	}
 
@@ -319,18 +322,10 @@ void CInputModeWindow::_Destroy()
 		_hwnd = NULL;
 	}
 
-	if(_pContext != NULL)
-	{
-		_UnadviseTextLayoutSink();
-		_pContext->Release();
-		_pContext = NULL;
-	}
+	_UnadviseTextLayoutSink();
+	SafeRelease(&_pContext);
 
-	if(_pTextService != NULL)
-	{
-		_pTextService->Release();
-		_pTextService = NULL;
-	}
+	SafeRelease(&_pTextService);
 }
 
 void CInputModeWindow::_Move(int x, int y)

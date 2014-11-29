@@ -287,7 +287,7 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 			{
 				pRange->Collapse(ec, TF_ANCHOR_END);
 				_pComposition->ShiftStart(ec, pRange);
-				pRange->Release();
+				SafeRelease(&pRange);
 			}
 		}
 		_ResetStatus();

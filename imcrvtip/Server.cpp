@@ -59,8 +59,8 @@ STDAPI_(ULONG) CClassFactory::Release()
 
 STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObj)
 {
-	CTextService *pTextService;
 	HRESULT hr;
+	CTextService *pTextService;
 
 	if(ppvObj == NULL)
 	{
@@ -74,16 +74,18 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 		return CLASS_E_NOAGGREGATION;
 	}
 
-	pTextService = new CTextService();
-
-	if(pTextService == NULL)
+	try
+	{
+		pTextService = new CTextService();
+	}
+	catch(...)
 	{
 		return E_OUTOFMEMORY;
 	}
 
 	hr = pTextService->QueryInterface(riid, ppvObj);
 
-	pTextService->Release();
+	SafeRelease(&pTextService);
 
 	return hr;
 }
