@@ -38,6 +38,9 @@
     <key name="addcandktkn" value="0" />
     <key name="shiftnnokuri" value="1" />
     <key name="precedeokuri" value="0" />
+    <key name="dynamiccomp" value="0" />
+    <key name="dyncompmulti" value="0" />
+    <key name="compuserdic" value="0" />
   </section>
   <section name="font">
     <key name="name" value="メイリオ" />
@@ -70,7 +73,7 @@
   <section name="displayattr">
     <key name="inputmark" value="0,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
     <key name="inputtext" value="1,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
-    <key name="inputokuri" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,0" />
+    <key name="inputokuri" value="0,2,0xFF8000,2,0xFFFFFF,3,0,0,0x000000,5" />
     <key name="convmark" value="0,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,1" />
     <key name="convtext" value="1,2,0xFFFFFF,2,0xFF8000,0,0,0,0x000000,1" />
     <key name="convokuri" value="1,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,5" />

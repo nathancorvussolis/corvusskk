@@ -45,6 +45,9 @@
 #define IDC_CHECKBOX_ADDCANDKTKN                1108
 #define IDC_CHECKBOX_SHIFTNNOKURI               1109
 #define IDC_CHECKBOX_PRECEDEOKURI               1110
+#define IDC_CHECKBOX_DYNAMINCOMP                1111
+#define IDC_CHECKBOX_DYNCOMPMULTI               1112
+#define IDC_CHECKBOX_COMPUSERDIC                1113
 
 #define IDC_EDIT_FONTNAME                       2001
 #define IDC_EDIT_FONTPOINT                      2002

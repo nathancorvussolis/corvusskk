@@ -1,13 +1,13 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
-#include "CandidateWindow.h"
 #include "CandidateList.h"
+#include "CandidateWindow.h"
 
 static LPCWSTR markNo = L":";
 static LPCWSTR markAnnotation = L";";
 
-CCandidateWindow::CCandidateWindow(CTextService *pTextService)
+CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *pCandidateList)
 {
 	DllAddRef();
 
@@ -16,7 +16,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_pTextService = pTextService;
 	_pTextService->AddRef();
 
-	_pCandidateList = _pTextService->_GetCandidateList();
+	_pCandidateList = pCandidateList;
 	_pCandidateList->AddRef();
 
 	_pCandidateWindow = NULL;
@@ -52,6 +52,11 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService)
 	_pDWTF = NULL;
 
 	_reg = FALSE;
+	_comp = FALSE;
+
+	candidates.clear();
+	candidx = 0;
+	searchkey.clear();
 
 	regword = FALSE;
 	regwordul = FALSE;
@@ -202,7 +207,14 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 
 	if(_pInputModeWindow != NULL && regword)
 	{
-		_pInputModeWindow->_Show(bShow);
+#ifndef _DEBUG
+		if(_pCandidateWindow == NULL)
+		{
+#endif
+			_pInputModeWindow->_Show(bShow);
+#ifndef _DEBUG
+		}
+#endif
 	}
 
 	return S_OK;
@@ -441,14 +453,30 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 					break;
 				}
 
-				_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
-				_CandStr[k].append(markNo + _pTextService->candidates[_uShowedCount + k].first.first);
+				if(!_comp)
+				{
+					_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
+					_CandStr[k].append(markNo);
+				}
+				else
+				{
+					_CandStr.push_back(L"");
+				}
+
+				_CandStr[k].append(candidates[_uShowedCount + k].first.first);
 
 				if(_pTextService->cx_annotation &&
-					!_pTextService->candidates[_uShowedCount + k].first.second.empty())
+					!candidates[_uShowedCount + k].first.second.empty())
 				{
-					_CandStr[k].append(markAnnotation +
-						_pTextService->candidates[_uShowedCount + k].first.second);
+					if(!_comp)
+					{
+						_CandStr[k].append(markAnnotation);
+					}
+					else
+					{
+						_CandStr[k].append(markSP);
+					}
+					_CandStr[k].append(candidates[_uShowedCount + k].first.second);
 				}
 
 				++k;

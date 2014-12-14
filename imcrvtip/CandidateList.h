@@ -27,12 +27,13 @@ public:
 	STDMETHODIMP OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, ITfContextView *pContextView);
 
 	HRESULT _StartCandidateList(TfClientId tid, ITfDocumentMgr *pDocumentMgr,
-		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL regdic);
+		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp);
 	void _EndCandidateList();
 
 	BOOL _IsShowCandidateWindow();
 	BOOL _IsContextCandidateWindow(ITfContext *pContext);
 
+	void _InvokeKeyHandler(WPARAM key);
 	void _InvokeSfHandler(BYTE sf);
 	void _Show(BOOL bShow);
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);

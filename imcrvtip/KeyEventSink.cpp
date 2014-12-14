@@ -2,7 +2,6 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
-#include "LanguageBar.h"
 
 static LPCWSTR c_PreservedKeyDesc = L"OnOff";
 

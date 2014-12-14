@@ -114,7 +114,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 
 		fseek(fpdic, pos, SEEK_SET);
 		memset(wbuf, 0, sizeof(wbuf));
-		
+
 		fgetws(wbuf, _countof(wbuf), fpdic);
 		wsbuf = wbuf;
 

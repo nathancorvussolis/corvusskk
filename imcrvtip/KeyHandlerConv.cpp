@@ -1,8 +1,6 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
-#include "CandidateList.h"
-#include "convtype.h"
 
 WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 {
@@ -225,7 +223,7 @@ HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 	return ret;
 }
 
-void CTextService::_StartConv()
+void CTextService::_StartConv(TfEditCookie ec, ITfContext *pContext)
 {
 	CANDIDATES candidates_sel;
 	CANDIDATES candidates_hint;
@@ -234,11 +232,13 @@ void CTextService::_StartConv()
 	size_t okuriidx_bak;
 	size_t i;
 
+	_EndCompletionList(ec, pContext);
+
 	size_t hintchidx = kana.find_first_of(CHAR_SKK_HINT);
 
 	if(!hintmode || hintchidx == std::wstring::npos)
 	{
-		_StartSubConv();
+		_StartSubConv(REQ_SEARCH);
 	}
 	else
 	{
@@ -256,14 +256,14 @@ void CTextService::_StartConv()
 
 		//ヒント検索
 		kana = hint;
-		_StartSubConv();
+		_StartSubConv(REQ_SEARCH);
 		candidates_hint = candidates;
 
 		//通常検索
 		okuriidx = okuriidx_bak;
 		kana = key;
 		cursoridx = kana.size();
-		_StartSubConv();
+		_StartSubConv(REQ_SEARCH);
 
 		//ヒント候補の文字を含む通常候補をヒント候補順で抽出
 		FORWARD_ITERATION_I(candidates_hint_itr, candidates_hint)
@@ -303,7 +303,7 @@ void CTextService::_StartConv()
 	hintmode = FALSE;
 }
 
-void CTextService::_StartSubConv()
+void CTextService::_StartSubConv(WCHAR command)
 {
 	CANDIDATES candidates_bak;
 	CANDIDATES candidates_num;
@@ -315,12 +315,12 @@ void CTextService::_StartSubConv()
 	//仮名を平仮名にして検索
 	if(okuriidx != 0)
 	{
-		_ConvKanaToKana(searchkey, im_hiragana, kana.substr(0, okuriidx), inputmode);
+		_ConvKanaToKana(kana.substr(0, okuriidx), inputmode, searchkey, im_hiragana);
 		searchkey += kana.substr(okuriidx, 1);
 	}
 	else
 	{
-		_ConvKanaToKana(searchkey, im_hiragana, kana, inputmode);
+		_ConvKanaToKana(kana, inputmode, searchkey, im_hiragana);
 	}
 
 	candidates.clear();
@@ -330,7 +330,7 @@ void CTextService::_StartSubConv()
 	searchkeyorg = searchkey;
 
 	//通常検索
-	_SearchDic(REQ_SEARCH);
+	_SearchDic(command);
 
 	//片仮名変換
 	if(cx_addcandktkn && !abbrevmode)
@@ -341,11 +341,11 @@ void CTextService::_StartSubConv()
 		case im_katakana:
 			if(okuriidx != 0)
 			{
-				_ConvKanaToKana(kanaconv, im_katakana, kana.substr(0, okuriidx), inputmode);
+				_ConvKanaToKana(kana.substr(0, okuriidx), inputmode, kanaconv, im_katakana);
 			}
 			else
 			{
-				_ConvKanaToKana(kanaconv, im_katakana, kana, inputmode);
+				_ConvKanaToKana(kana, inputmode, kanaconv, im_katakana);
 			}
 			break;
 		default:
@@ -366,7 +366,7 @@ void CTextService::_StartSubConv()
 	if(!searchkey.empty() && searchkey != searchkeyorg)
 	{
 		//変換済み見出し語検索
-		_SearchDic(REQ_SEARCH);
+		_SearchDic(command);
 	}
 
 	candidates_num = candidates;
@@ -458,7 +458,7 @@ void CTextService::_NextComp()
 		}
 		else
 		{
-			_ConvKanaToKana(searchkey, im_hiragana, kana, inputmode);
+			_ConvKanaToKana(kana, inputmode, searchkey, im_hiragana);
 		}
 
 		candidates.clear();
@@ -514,13 +514,123 @@ void CTextService::_SetComp(const std::wstring &candidate)
 	}
 	else
 	{
-		_ConvKanaToKana(kana, inputmode, candidate, im_hiragana);
+		_ConvKanaToKana(candidate, im_hiragana, kana, inputmode);
 	}
 
 	if(cursoridx > kana.size())
 	{
 		cursoridx = kana.size();
 	}
+}
+
+void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
+{
+	if(kana.empty() || !roman.empty())
+	{
+		_EndCompletionList(ec, pContext);
+		_Update(ec, pContext);
+		return;
+	}
+
+	std::wstring kana_bak = kana;
+	size_t cursoridx_bak = cursoridx;
+
+	//補完
+	complement = FALSE;
+	_NextComp();
+
+	cursoridx = cursoridx_bak;
+
+	if(complement)
+	{
+		if(cx_compuserdic)
+		{
+			//ユーザー辞書検索
+			_UserDicComp();
+			if(!candidates.empty())
+			{
+				kana += markSP + candidates[0].first.second;
+			}
+		}
+
+		okuriidx = kana_bak.size();
+
+		if(cx_dynamiccomp || (cx_compuserdic && !cx_dyncompmulti))
+		{
+			kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
+
+			_Update(ec, pContext);
+
+			kana.erase(okuriidx);
+			okuriidx = 0;
+		}
+		else
+		{
+			kana.erase(okuriidx);
+			okuriidx = 0;
+
+			_Update(ec, pContext);
+		}
+
+		if(cx_dyncompmulti && pContext != NULL)
+		{
+			if(!sel)
+			{
+				candidx = (size_t)-1;
+			}
+
+			showcandlist = FALSE;
+			_ShowCandidateList(ec, pContext, FALSE, TRUE);
+		}
+
+		complement = FALSE;
+	}
+	else
+	{
+		_EndCompletionList(ec, pContext);
+		_Update(ec, pContext);
+	}
+}
+
+void CTextService::_UserDicComp()
+{
+	std::wstring kana_bak = kana;
+	std::wstring searchkey_bak = searchkey;
+	CANDIDATES candidates_bak = candidates;
+	size_t candidx_bak = candidx;
+	size_t i;
+
+	FORWARD_ITERATION_I(candidates_bak_itr, candidates_bak)
+	{
+		//ユーザー辞書検索
+		kana = candidates_bak_itr->first.first;
+		_StartSubConv(REQ_SEARCHUSER);
+
+		if(!candidates.empty() && cx_untilcandlist > 1)
+		{
+			candidates_bak_itr->first.second = L"/";
+			i = 2;
+			FORWARD_ITERATION_I(candidates_itr, candidates)
+			{
+				//「候補一覧表示に要する変換回数」-1 個まで
+				if(cx_untilcandlist < i++)
+				{
+					break;
+				}
+				candidates_bak_itr->first.second += candidates_itr->first.first + L"/";
+			}
+
+			if(cx_untilcandlist - 1 < candidates.size())
+			{
+				candidates_bak_itr->first.second += L"…";
+			}
+		}
+	}
+
+	kana = kana_bak;
+	searchkey = searchkey_bak;
+	candidates = candidates_bak;
+	candidx = candidx_bak;
 }
 
 void CTextService::_ConvRoman()
@@ -740,7 +850,7 @@ BOOL CTextService::_ConvN()
 	return FALSE;
 }
 
-void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode)
+void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode)
 {
 	size_t i;
 	BOOL exist;
@@ -785,7 +895,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 			srckana[1] = L'\0';
 		}
 
-		exist = _SearchKanaByKana(roman_kana_tree, srcmode, srckana, dstmode, dsttmp);
+		exist = _SearchKanaByKana(roman_kana_tree, srckana, srcmode, dsttmp, dstmode);
 
 		if(!exist)	//ローマ字仮名変換表に無ければそのまま
 		{
@@ -796,7 +906,7 @@ void CTextService::_ConvKanaToKana(std::wstring &dst, int dstmode, const std::ws
 	dst.assign(dsttmp);
 }
 
-BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, int srcmode, const WCHAR *src, int dstmode, std::wstring &dst)
+BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, const WCHAR *src, int srcmode, std::wstring &dst, int dstmode)
 {
 	ROMAN_KANA_CONV rkc;
 	BOOL exist = FALSE;
@@ -843,7 +953,7 @@ BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, int srcmode, c
 		}
 		else if(!v_itr->nodes.empty())
 		{
-			exist = _SearchKanaByKana(*v_itr, srcmode, src, dstmode, dst);
+			exist = _SearchKanaByKana(*v_itr, src, srcmode, dst, dstmode);
 
 			if(exist)
 			{

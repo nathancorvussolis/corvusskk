@@ -248,23 +248,22 @@ exit:
 
 void CTextService::_SaveUserDic()
 {
-	WCHAR buf[3];
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();
 
-	buf[0] = REQ_USER_SAVE;
-	buf[1] = L'\n';
-	buf[2] = L'\0';
+	pipebuf[0] = REQ_USER_SAVE;
+	pipebuf[1] = L'\n';
+	pipebuf[2] = L'\0';
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, &buf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
 	{
 		goto exit;
 	}
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, &buf, 4, &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
 	{
 		goto exit;
 	}

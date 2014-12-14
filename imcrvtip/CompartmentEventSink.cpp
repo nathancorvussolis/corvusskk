@@ -1,8 +1,6 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
-#include "CandidateList.h"
-#include "LanguageBar.h"
 
 STDAPI CTextService::OnChange(REFGUID rguid)
 {

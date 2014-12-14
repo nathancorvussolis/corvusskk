@@ -1,7 +1,6 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
-#include "CandidateList.h"
 
 HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, WCHAR ch, WCHAR chO)
 {
@@ -31,7 +30,15 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 		{
 			kana.insert(cursoridx, 1, ch);
 			cursoridx++;
-			_Update(ec, pContext);
+
+			if(cx_dynamiccomp || cx_dyncompmulti)
+			{
+				_DynamicComp(ec, pContext);
+			}
+			else
+			{
+				_Update(ec, pContext);
+			}
 		}
 		else
 		{
@@ -146,13 +153,24 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 						{
 							cursoridx = kana.size();
 							showentry = TRUE;
-							_StartConv();
+							_StartConv(ec, pContext);
+							_Update(ec, pContext);
+							break;
 						}
-						else if(rkc.soku)
+
+						if(rkc.soku)
 						{
 							roman.push_back(ch);
 						}
-						_Update(ec, pContext);
+
+						if(cx_dynamiccomp || cx_dyncompmulti)
+						{
+							_DynamicComp(ec, pContext);
+						}
+						else
+						{
+							_Update(ec, pContext);
+						}
 					}
 					else
 					{
@@ -264,6 +282,8 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 
 HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back)
 {
+	_EndCompletionList(ec, pContext);
+
 	//terminate composition
 	cursoridx = kana.size();
 	_Update(ec, pContext, TRUE, back);
@@ -277,6 +297,8 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 {
 	if(showentry || (!inputkey && !kana.empty() && roman.empty()))
 	{
+		_EndCompletionList(ec, pContext);
+
 		//leave composition
 		cursoridx = kana.size();
 		_Update(ec, pContext, TRUE);

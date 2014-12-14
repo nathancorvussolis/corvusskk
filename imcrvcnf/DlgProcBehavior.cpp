@@ -21,6 +21,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHIFTNNOKURI, SectionBehavior, ValueShiftNNOkuri, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_PRECEDEOKURI, SectionBehavior, ValuePrecedeOkuri);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DYNAMINCOMP, SectionBehavior, ValueDynamicComp);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_DYNCOMPMULTI, SectionBehavior, ValueDynCompMulti);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_COMPUSERDIC, SectionBehavior, ValueCompUserDic);
 
 		return TRUE;
 
@@ -37,7 +40,12 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_ADDCANDKTKN:
 		case IDC_CHECKBOX_SHIFTNNOKURI:
 		case IDC_CHECKBOX_PRECEDEOKURI:
+		case IDC_CHECKBOX_DYNAMINCOMP:
+		case IDC_CHECKBOX_DYNCOMPMULTI:
+		case IDC_CHECKBOX_COMPUSERDIC:
+
 			PropSheet_Changed(GetParent(hDlg), hDlg);
+
 			return TRUE;
 
 		default:
@@ -60,6 +68,9 @@ INT_PTR CALLBACK DlgProcBehavior(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, ValueAddCandKtkn);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHIFTNNOKURI, ValueShiftNNOkuri);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_PRECEDEOKURI, ValuePrecedeOkuri);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DYNAMINCOMP, ValueDynamicComp);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_DYNCOMPMULTI, ValueDynCompMulti);
+			SaveCheckButton(hDlg, IDC_CHECKBOX_COMPUSERDIC, ValueCompUserDic);
 
 			WriterEndSection(pXmlWriter);	//End of SectionBehavior
 

@@ -3,8 +3,6 @@
 #include "imcrvtip.h"
 #include "EditSession.h"
 #include "TextService.h"
-#include "LanguageBar.h"
-#include "CandidateList.h"
 
 class CKeyHandlerEditSession : public CEditSessionBase
 {
@@ -97,7 +95,15 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		{
 			complement = FALSE;	//補完終了
 			kana = kana.erase(cursoridx);
-			_Update(ec, pContext);
+
+			if(cx_dynamiccomp || cx_dyncompmulti)
+			{
+				_DynamicComp(ec, pContext);
+			}
+			else
+			{
+				_Update(ec, pContext);
+			}
 			return S_OK;
 		}
 		break;
@@ -105,6 +111,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		if(complement)
 		{
 			complement = FALSE;	//補完終了
+			_EndCompletionList(ec, pContext);
 		}
 		break;
 	}

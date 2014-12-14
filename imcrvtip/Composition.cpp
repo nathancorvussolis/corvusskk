@@ -2,16 +2,12 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "EditSession.h"
-#include "CandidateList.h"
 #include "InputModeWindow.h"
 
 STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfComposition *pComposition)
 {
-	if(_pCandidateList != NULL)
-	{
-		_pCandidateList->_EndCandidateList();
-	}
-	SafeRelease(&_pCandidateList);
+	_EndCandidateList();
+	showcandlist = FALSE;
 
 	if(pComposition != NULL)
 	{
@@ -230,11 +226,8 @@ void CTextService::_ClearComposition()
 {
 	HRESULT hr;
 
-	if(_pCandidateList != NULL)
-	{
-		_pCandidateList->_EndCandidateList();
-	}
-	SafeRelease(&_pCandidateList);
+	_EndCandidateList();
+	showcandlist = FALSE;
 
 	_EndInputModeWindow();
 

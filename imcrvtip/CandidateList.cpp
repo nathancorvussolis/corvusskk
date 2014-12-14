@@ -2,8 +2,8 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "EditSession.h"
-#include "CandidateWindow.h"
 #include "CandidateList.h"
+#include "CandidateWindow.h"
 
 class CGetTextExtEditSession : public CEditSessionBase
 {
@@ -206,7 +206,7 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 }
 
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
-	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg)
+	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp)
 {
 	HRESULT hr = E_FAIL;
 	TfEditCookie ecTextStore;
@@ -250,7 +250,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 	try
 	{
-		_pCandidateWindow = new CCandidateWindow(_pTextService);
+		_pCandidateWindow = new CCandidateWindow(_pTextService, this);
 
 		if(pContext->GetActiveView(&pContextView) != S_OK)
 		{
@@ -276,7 +276,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 		SafeRelease(&pContextView);
 
-		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg))
+		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg, comp))
 		{
 			goto exit;
 		}
@@ -299,12 +299,19 @@ exit:
 	return hr;
 }
 
+void CCandidateList::_InvokeKeyHandler(WPARAM key)
+{
+	if(_pTextService != NULL && _pContextDocument != NULL)
+	{
+		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)key, (LPARAM)0, 0);
+	}
+}
+
 void CCandidateList::_InvokeSfHandler(BYTE sf)
 {
-	if(_pTextService && _pContextDocument)
+	if(_pTextService != NULL && _pContextDocument != NULL)
 	{
 		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)0, (LPARAM)0, sf);
-		_pTextService->showcandlist = FALSE;
 	}
 }
 

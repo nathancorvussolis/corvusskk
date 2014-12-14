@@ -5,7 +5,7 @@
 #include "CandidateWindow.h"
 #include "InputModeWindow.h"
 
-BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg)
+BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg, BOOL comp)
 {
 	_hwndParent = hwndParent;
 	_pCandidateWindowParent = pCandidateWindowParent;
@@ -86,6 +86,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	}
 
 	_reg = reg;
+	_comp = comp;
+
+	candidates = _pTextService->candidates;
+	candidx = _pTextService->candidx;
+	searchkey = _pTextService->searchkey;
+
 	if(reg)
 	{
 		//辞書登録開始
@@ -318,6 +324,37 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 	_GetChSf(uVKey, ch, sf);
 
+	//複数動的補完
+	if(_comp)
+	{
+		switch(sf)
+		{
+		case SKK_NEXT_COMP:
+			if(candidx == (size_t)-1)
+			{
+				candidx = 0;
+				_InvokeSfHandler(SKK_NEXT_COMP);
+			}
+			else
+			{
+				_NextComp();
+			}
+			break;
+		case SKK_PREV_COMP:
+			if(candidx != (size_t)-1)
+			{
+				_PrevComp();
+			}
+			break;
+		default:
+			_InvokeKeyHandler(uVKey);
+			break;
+		}
+
+		return S_OK;
+	}
+
+	//候補選択
 	switch(sf)
 	{
 	case SKK_CANCEL:
@@ -336,13 +373,13 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 						_RestoreStatusReg();
 					}
 					_PreEndReq();
-					_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, SKK_CANCEL);
 					_EndReq();
 				}
 			}
 			else
 			{
-				_HandleKey(0, NULL, 0, SKK_CANCEL);
+				_HandleKey(0, SKK_CANCEL);
 				_Update();
 			}
 		}
@@ -387,14 +424,14 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 								}
 								_PreEndReq();
 								_pTextService->candidx = index;
-								_HandleKey(0, NULL, 0, SKK_ENTER);
+								_HandleKey(0, SKK_ENTER);
 								_EndReq();
 							}
 						}
 						else
 						{
 							_pTextService->candidx = index;
-							_HandleKey(0, NULL, 0, SKK_ENTER);
+							_HandleKey(0, SKK_ENTER);
 							_Update();
 						}
 						break;
@@ -488,20 +525,43 @@ void CCandidateWindow::_InitList()
 {
 	UINT i;
 
-	_uShowedCount = (UINT)_pTextService->cx_untilcandlist - 1;
-	_uCount = (UINT)_pTextService->candidates.size() - _uShowedCount;
+	if(!_comp)
+	{
+		_uShowedCount = (UINT)_pTextService->cx_untilcandlist - 1;
+	}
+	else
+	{
+		_uShowedCount = 0;
+	}
+	_uCount = (UINT)candidates.size() - _uShowedCount;
 
 	_CandStr.clear();
 	for(i = 0; i < _uCount; i++)
 	{
-		_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
-		_CandStr[i].append(markNo + _pTextService->candidates[_uShowedCount + i].first.first);
+		if(!_comp)
+		{
+			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
+			_CandStr[i].append(markNo);
+		}
+		else
+		{
+			_CandStr.push_back(L"");
+		}
+
+		_CandStr[i].append(candidates[_uShowedCount + i].first.first);
 
 		if(_pTextService->cx_annotation &&
-			!_pTextService->candidates[_uShowedCount + i].first.second.empty())
+			!candidates[_uShowedCount + i].first.second.empty())
 		{
-			_CandStr[i].append(markAnnotation +
-				_pTextService->candidates[_uShowedCount + i].first.second);
+			if(!_comp)
+			{
+				_CandStr[i].append(markAnnotation);
+			}
+			else
+			{
+				_CandStr[i].append(markSP);
+			}
+			_CandStr[i].append(candidates[_uShowedCount + i].first.second);
 		}
 	}
 
@@ -617,7 +677,7 @@ void CCandidateWindow::_PrevPage()
 							_RestoreStatusReg();
 						}
 						_PreEndReq();
-						_HandleKey(0, NULL, 0, SKK_CANCEL);
+						_HandleKey(0, SKK_CANCEL);
 						_EndReq();
 					}
 				}
@@ -636,7 +696,7 @@ void CCandidateWindow::_PrevPage()
 						}
 						_PreEndReq();
 						_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
-						_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+						_HandleKey(0, SKK_PREV_CAND);
 						_EndReq();
 					}
 				}
@@ -645,12 +705,12 @@ void CCandidateWindow::_PrevPage()
 			{
 				if(_pTextService->cx_untilcandlist == 1)
 				{
-					_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, SKK_CANCEL);
 				}
 				else
 				{
 					_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
-					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+					_HandleKey(0, SKK_PREV_CAND);
 				}
 
 				_Update();
@@ -661,6 +721,63 @@ void CCandidateWindow::_PrevPage()
 	}
 
 	_uIndex = _PageIndex[uNewPage];
+
+	_dwFlags = TF_CLUIE_SELECTION;
+	if(uNewPage != uOldPage)
+	{
+		_dwFlags |= TF_CLUIE_CURRENTPAGE;
+	}
+
+	_Update();
+	_UpdateUIElement();
+}
+
+void CCandidateWindow::_NextComp()
+{
+	UINT uOldPage, uNewPage;
+
+	GetCurrentPage(&uOldPage);
+
+	if(_uIndex + 1 >= _uCount)
+	{
+		return;
+	}
+
+	_InvokeSfHandler(SKK_NEXT_COMP);
+
+	candidx++;
+
+	_uIndex++;
+	GetCurrentPage(&uNewPage);
+
+	_dwFlags = TF_CLUIE_SELECTION;
+	if(uNewPage != uOldPage)
+	{
+		_dwFlags |= TF_CLUIE_CURRENTPAGE;
+	}
+
+	_Update();
+	_UpdateUIElement();
+}
+
+void CCandidateWindow::_PrevComp()
+{
+	UINT uOldPage, uNewPage;
+
+	GetCurrentPage(&uOldPage);
+
+	if(_uIndex == 0)
+	{
+		_EndCandidateList(SKK_CANCEL);
+		return;
+	}
+
+	_InvokeSfHandler(SKK_PREV_COMP);
+
+	candidx--;
+
+	_uIndex--;
+	GetCurrentPage(&uNewPage);
 
 	_dwFlags = TF_CLUIE_SELECTION;
 	if(uNewPage != uOldPage)
@@ -688,7 +805,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	if(!regwordfixed)
 	{
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
-		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
+		_HandleKey((WPARAM)uVKey, SKK_NULL);
 		_Update();
 
 		if(_pInputModeWindow != NULL)
@@ -764,11 +881,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 					_PreEndReq();
 					if(_pTextService->candidates.empty())
 					{
-						_HandleKey(0, NULL, 0, SKK_CANCEL);
+						_HandleKey(0, SKK_CANCEL);
 					}
 					else
 					{
-						_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+						_HandleKey(0, SKK_PREV_CAND);
 					}
 					_EndReq();
 				}
@@ -814,7 +931,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			else
 			{
 				_PreEndReq();
-				_HandleKey(0, NULL, 0, SKK_ENTER);
+				_HandleKey(0, SKK_ENTER);
 				_EndReq();
 			}
 		}
@@ -861,11 +978,11 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				_PreEndReq();
 				if(_pTextService->candidates.empty())
 				{
-					_HandleKey(0, NULL, 0, SKK_CANCEL);
+					_HandleKey(0, SKK_CANCEL);
 				}
 				else
 				{
-					_HandleKey(0, NULL, 0, SKK_PREV_CAND);
+					_HandleKey(0, SKK_PREV_CAND);
 				}
 				_EndReq();
 			}
@@ -988,7 +1105,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		break;
 
 	default:
-		_HandleKey(0, NULL, (WPARAM)uVKey, SKK_NULL);
+		_HandleKey((WPARAM)uVKey, SKK_NULL);
 
 		if(_pInputModeWindow != NULL)
 		{
@@ -1030,19 +1147,52 @@ void CCandidateWindow::_Update()
 
 void CCandidateWindow::_EndCandidateList(BYTE sf)
 {
-	_pCandidateList->_InvokeSfHandler(sf);
-	_pCandidateList->_EndCandidateList();
+	_InvokeSfHandler(sf);
+	//複数動的補完は自身で終了しない
+	if(!_comp)
+	{
+		if(_pTextService != NULL)
+		{
+			_pTextService->showcandlist = FALSE;
+		}
+		if(_pCandidateList != NULL)
+		{
+			_pCandidateList->_EndCandidateList();
+		}
+	}
 }
 
-HRESULT CCandidateWindow::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf)
+void CCandidateWindow::_InvokeSfHandler(BYTE sf)
 {
-	return _pTextService->_HandleKey(ec, pContext, wParam, bSf);
+	if(_pCandidateList != NULL)
+	{
+		_pCandidateList->_InvokeSfHandler(sf);
+	}
+}
+
+void CCandidateWindow::_InvokeKeyHandler(UINT uVKey)
+{
+	if(_pCandidateList != NULL)
+	{
+		_pCandidateList->_InvokeKeyHandler(uVKey);
+	}
+}
+
+void CCandidateWindow::_HandleKey(WPARAM wParam, BYTE bSf)
+{
+	if(_pTextService != NULL)
+	{
+		_pTextService->_HandleKey(0, NULL, wParam, bSf);
+	}
 }
 
 void CCandidateWindow::_GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff)
 {
-	ch = _pTextService->_GetCh(uVKey, vkoff);
-	sf = _pTextService->_GetSf(uVKey, ch);
+	if(_pTextService != NULL)
+	{
+		ch = _pTextService->_GetCh(uVKey, vkoff);
+		sf = _pTextService->_GetSf(uVKey, ch);
+	}
 }
 
 void CCandidateWindow::_BackUpStatus()
@@ -1128,8 +1278,8 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 {
 	try
 	{
-		_pCandidateWindow = new CCandidateWindow(_pTextService);
-		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, reg);
+		_pCandidateWindow = new CCandidateWindow(_pTextService, _pCandidateList);
+		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, reg, FALSE);
 
 #ifdef _DEBUG
 		RECT rc;

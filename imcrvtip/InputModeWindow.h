@@ -31,7 +31,7 @@ public:
 	void _Show(BOOL bShow);
 	void _Redraw();
 	void _GetRect(LPRECT lpRect);
-	
+
 	BOOL _term;
 
 private:

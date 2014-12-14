@@ -101,10 +101,6 @@ public:
 	{
 		return _pComposition;
 	}
-	CCandidateList *_GetCandidateList()
-	{
-		return _pCandidateList;
-	}
 
 	// Compartment
 	HRESULT _SetCompartment(REFGUID rguid, const VARIANT *pvar);
@@ -153,7 +149,9 @@ public:
 	// KeyHandlerCompostion
 	HRESULT _Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed = FALSE, BOOL back = FALSE);
 	HRESULT _SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed);
-	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg);
+	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg, BOOL comp);
+	void _EndCandidateList();
+	void _EndCompletionList(TfEditCookie ec, ITfContext *pContext);
 
 	// KeyHandlerControl
 	HRESULT _HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch);
@@ -164,18 +162,20 @@ public:
 	HRESULT _ConvRomanKana(ROMAN_KANA_CONV *pconv);
 	HRESULT _SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV *pconv, int depth);
 	HRESULT _ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv);
-	void _StartConv();
-	void _StartSubConv();
+	void _StartConv(TfEditCookie ec, ITfContext *pContext);
+	void _StartSubConv(WCHAR command);
 	void _NextConv();
 	void _PrevConv();
 	void _NextComp();
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
+	void _DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel = FALSE);
+	void _UserDicComp();
 	void _ConvRoman();
 	BOOL _ConvShift(WCHAR ch);
 	BOOL _ConvN();
-	void _ConvKanaToKana(std::wstring &dst, int dstmode, const std::wstring &src, int srcmode);
-	BOOL _SearchKanaByKana(const ROMAN_KANA_NODE &tree, int srcmode, const WCHAR *src, int dstmode, std::wstring &dst);
+	void _ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode);
+	BOOL _SearchKanaByKana(const ROMAN_KANA_NODE &tree, const WCHAR *src, int srcmode, std::wstring &dst, int dstmode);
 
 	// KeyHandlerDictionary
 	void _ConnectDic();
@@ -342,6 +342,9 @@ public:
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
+	BOOL cx_dynamiccomp;		//動的補完を使用する
+	BOOL cx_dyncompmulti;		//複数動的補完を使用する
+	BOOL cx_compuserdic;		//補完のときユーザー辞書を検索する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

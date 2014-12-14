@@ -78,7 +78,8 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 	{
 		REVERSE_ITERATION_I(keyorder_ritr, complements)
 		{
-			if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0)
+			if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0 &&
+				searchkey.size() < keyorder_ritr->size())
 			{
 				sc.push_back(SKKDICCANDIDATE(*keyorder_ritr, L""));
 			}

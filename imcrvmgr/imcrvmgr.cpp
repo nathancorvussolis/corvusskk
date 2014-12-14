@@ -185,6 +185,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //  request "1\n<key>\t<key(original)>\t<okuri>\n"
 //  reply   "T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit
 //          "F\n":nothing
+//search candidate (user dictionary only)
+//  request "2\n<key>\t<key(original)>\t<okuri>\n"
+//  reply   "T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit
+//          "F\n":nothing
 //search key for complement
 //  request "4\n<key>\t\t\n"
 //  reply   "T\n<key>\t\t\t\n...\n":hit
@@ -224,6 +228,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	switch(command)
 	{
 	case REQ_SEARCH:
+	case REQ_SEARCHUSER:
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
@@ -232,7 +237,21 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$3");
 		okuri = std::regex_replace(argument, re, fmt);
 
-		SearchDictionary(key, okuri, sc);
+		switch(command)
+		{
+		case REQ_SEARCH:
+			SearchDictionary(key, okuri, sc);
+			break;
+		case REQ_SEARCHUSER:
+			candidate = SearchUserDic(key, okuri);
+			re.assign(L"[\\x00-\\x19]");
+			fmt.assign(L"");
+			candidate = std::regex_replace(candidate, re, fmt);
+			ParseSKKDicCandiate(candidate, sc);
+			break;
+		default:
+			break;
+		}
 
 		if(!sc.empty())
 		{
@@ -420,6 +439,7 @@ unsigned int __stdcall SrvThread(void *p)
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
 	std::wstring wspipebuf;
+	WCHAR command;
 #ifdef _DEBUG
 	std::wstring dedit, tedit;
 	std::wregex re;
@@ -455,14 +475,15 @@ unsigned int __stdcall SrvThread(void *p)
 			continue;
 		}
 
+		command = pipebuf[0];
+
 #ifdef _DEBUG
-		if(pipebuf[0] == REQ_USER_SAVE)
+		if(command == REQ_USER_SAVE)
 		{
 			dedit.clear();
 		}
 
 		tedit.assign(pipebuf);
-		tedit.append(L"\n");
 		re.assign(L"\n");
 		fmt.assign(L"\r\n");
 		tedit = std::regex_replace(tedit, re, fmt);
@@ -474,12 +495,11 @@ unsigned int __stdcall SrvThread(void *p)
 		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
-		SrvProc(pipebuf[0], &pipebuf[2], wspipebuf);
+		SrvProc(command, &pipebuf[2], wspipebuf);
 		wcsncpy_s(pipebuf, wspipebuf.c_str(), _TRUNCATE);
 
 #ifdef _DEBUG
 		tedit.assign(pipebuf);
-		tedit.append(L"\n");
 		re.assign(L"\n");
 		fmt.assign(L"\r\n");
 		tedit = std::regex_replace(tedit, re, fmt);
