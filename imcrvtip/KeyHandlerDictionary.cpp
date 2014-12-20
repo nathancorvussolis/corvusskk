@@ -248,11 +248,16 @@ exit:
 
 void CTextService::_SaveUserDic()
 {
+	_CommandDic(REQ_USER_SAVE);
+}
+
+void CTextService::_CommandDic(WCHAR command)
+{
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();
 
-	pipebuf[0] = REQ_USER_SAVE;
+	pipebuf[0] = command;
 	pipebuf[1] = L'\n';
 	pipebuf[2] = L'\0';
 

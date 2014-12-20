@@ -155,6 +155,7 @@
     <ClInclude Include="parseskkdic.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="utf8.h" />
+    <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common.cpp" />

@@ -170,7 +170,7 @@ public:
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
 	void _DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel = FALSE);
-	void _UserDicComp();
+	void _UserDicComp(size_t max = (size_t)-1);
 	void _ConvRoman();
 	BOOL _ConvShift(WCHAR ch);
 	BOOL _ConvN();
@@ -185,6 +185,7 @@ public:
 	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
 	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
+	void _CommandDic(WCHAR command);
 	void _StartManager();
 	void _StartConfigure();
 	void _StartProcess(LPCWSTR fname);

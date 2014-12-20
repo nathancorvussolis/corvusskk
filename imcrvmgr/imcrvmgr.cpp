@@ -302,7 +302,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				result += ParseConcat(sc_itr->first) + L"\t\t\t\n";
+				result += sc_itr->first + L"\t\t\t\n";
 			}
 		}
 		else
@@ -425,6 +425,14 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		result += L"\n";
 		break;
 
+#ifdef _DEBUG
+	case REQ_DEBUGOUT_ON:
+	case REQ_DEBUGOUT_OFF:
+		result = REP_OK;
+		result += L"\n";
+		break;
+#endif
+
 	default:
 		result = REP_FALSE;
 		result += L"\n";
@@ -444,6 +452,7 @@ unsigned int __stdcall SrvThread(void *p)
 	std::wstring dedit, tedit;
 	std::wregex re;
 	std::wstring fmt;
+	static BOOL debugout = TRUE;
 #endif
 
 	while(true)
@@ -478,38 +487,60 @@ unsigned int __stdcall SrvThread(void *p)
 		command = pipebuf[0];
 
 #ifdef _DEBUG
-		if(command == REQ_USER_SAVE)
+		switch(command)
 		{
-			dedit.clear();
+		case REQ_DEBUGOUT_ON:
+			debugout = TRUE;
+			break;
+		default:
+			break;
 		}
 
-		tedit.assign(pipebuf);
-		re.assign(L"\n");
-		fmt.assign(L"\r\n");
-		tedit = std::regex_replace(tedit, re, fmt);
-		re.assign(L"\t");
-		fmt.assign(L"»");
-		tedit = std::regex_replace(tedit, re, fmt);
+		if(debugout)
+		{
+			tedit.assign(pipebuf);
+			re.assign(L"\n");
+			fmt.assign(L"\r\n");
+			tedit = std::regex_replace(tedit, re, fmt);
+			re.assign(L"\t");
+			fmt.assign(L"»");
+			tedit = std::regex_replace(tedit, re, fmt);
 
-		dedit.append(tedit);
-		SetWindowTextW(hwndEdit, dedit.c_str());
+			dedit.append(tedit);
+			SetWindowTextW(hwndEdit, dedit.c_str());
+		}
 #endif
 
 		SrvProc(command, &pipebuf[2], wspipebuf);
 		wcsncpy_s(pipebuf, wspipebuf.c_str(), _TRUNCATE);
 
 #ifdef _DEBUG
-		tedit.assign(pipebuf);
-		re.assign(L"\n");
-		fmt.assign(L"\r\n");
-		tedit = std::regex_replace(tedit, re, fmt);
-		re.assign(L"\t");
-		fmt.assign(L"»");
-		tedit = std::regex_replace(tedit, re, fmt);
+		if(debugout)
+		{
+			tedit.assign(pipebuf);
+			re.assign(L"\n");
+			fmt.assign(L"\r\n");
+			tedit = std::regex_replace(tedit, re, fmt);
+			re.assign(L"\t");
+			fmt.assign(L"»");
+			tedit = std::regex_replace(tedit, re, fmt);
 
-		dedit.append(tedit);
-		SetWindowTextW(hwndEdit, dedit.c_str());
-		SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
+			dedit.append(tedit);
+			SetWindowTextW(hwndEdit, dedit.c_str());
+			SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
+		}
+
+		switch(command)
+		{
+		case REQ_USER_SAVE:
+			dedit.clear();
+			break;
+		case REQ_DEBUGOUT_OFF:
+			debugout = FALSE;
+			break;
+		default:
+			break;
+		}
 #endif
 
 		bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));

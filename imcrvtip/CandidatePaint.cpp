@@ -328,14 +328,17 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_SC:
-		if(_pTextService->cx_annotation &&
-			!candidates[count + _uShowedCount + idx].first.second.empty())
+		if(!_comp)
 		{
-			if(!_comp)
+			if(_pTextService->cx_annotation &&
+				!candidates[count + _uShowedCount + idx].first.second.empty())
 			{
 				s.append(markAnnotation);
 			}
-			else
+		}
+		else
+		{
+			if(!candidates[count + _uShowedCount + idx].first.second.empty())
 			{
 				s.append(markNBSP);
 			}
@@ -343,10 +346,19 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_AN:
-		//if(!_comp)
+		if(!_comp)
 		{
 			if(_pTextService->cx_annotation &&
 				!candidates[count + _uShowedCount + idx].first.second.empty())
+			{
+				s.append(
+					std::regex_replace(candidates[count + _uShowedCount + idx].first.second,
+					std::wregex(markSP), std::wstring(markNBSP)));
+			}
+		}
+		else
+		{
+			if(!candidates[count + _uShowedCount + idx].first.second.empty())
 			{
 				s.append(
 					std::regex_replace(candidates[count + _uShowedCount + idx].first.second,

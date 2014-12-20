@@ -3,6 +3,8 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+#define DISPLAY_FONTSIZE 10
+
 static struct {
 	int id;
 	LPCWSTR value;
@@ -71,7 +73,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname);
 		hdc = GetDC(hDlg);
-		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
+		hFont = CreateFontW(-MulDiv(DISPLAY_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
 			fontweight, fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, fontname);
 		SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
@@ -168,10 +170,10 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, lf.lfFaceName);
-				lf.lfHeight = -MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
+				lf.lfHeight = -MulDiv(DISPLAY_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 				hFont = CreateFontIndirect(&lf);
 				SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
-				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / 10, FALSE);
+				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / DISPLAY_FONTSIZE, FALSE);
 			}
 
 			ReleaseDC(hDlg, hdc);

@@ -1,6 +1,7 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
+#include "CandidateList.h"
 
 WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 {
@@ -535,9 +536,17 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	std::wstring kana_bak = kana;
 	size_t cursoridx_bak = cursoridx;
 
+#ifdef _DEBUG
+	_CommandDic(REQ_DEBUGOUT_OFF);
+#endif
+
 	//補完
 	complement = FALSE;
 	_NextComp();
+
+#ifdef _DEBUG
+	_CommandDic(REQ_DEBUGOUT_ON);
+#endif
 
 	cursoridx = cursoridx_bak;
 
@@ -546,7 +555,7 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 		if(cx_compuserdic)
 		{
 			//ユーザー辞書検索
-			_UserDicComp();
+			_UserDicComp(MAX_SELKEY_C);
 			if(!candidates.empty())
 			{
 				kana += markSP + candidates[0].first.second;
@@ -579,8 +588,15 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 				candidx = (size_t)-1;
 			}
 
-			showcandlist = FALSE;
-			_ShowCandidateList(ec, pContext, FALSE, TRUE);
+			if(_pCandidateList != NULL && _pCandidateList->_IsShowCandidateWindow())
+			{
+				_pCandidateList->_UpdateComp();
+			}
+			else
+			{
+				showcandlist = FALSE;
+				_ShowCandidateList(ec, pContext, FALSE, TRUE);
+			}
 		}
 
 		complement = FALSE;
@@ -592,16 +608,25 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	}
 }
 
-void CTextService::_UserDicComp()
+void CTextService::_UserDicComp(size_t max)
 {
 	std::wstring kana_bak = kana;
 	std::wstring searchkey_bak = searchkey;
 	CANDIDATES candidates_bak = candidates;
 	size_t candidx_bak = candidx;
-	size_t i;
+	size_t i, count = 0;
+
+#ifdef _DEBUG
+	_CommandDic(REQ_DEBUGOUT_OFF);
+#endif
 
 	FORWARD_ITERATION_I(candidates_bak_itr, candidates_bak)
 	{
+		if(max < ++count)
+		{
+			break;
+		}
+
 		//ユーザー辞書検索
 		kana = candidates_bak_itr->first.first;
 		_StartSubConv(REQ_SEARCHUSER);
@@ -609,11 +634,11 @@ void CTextService::_UserDicComp()
 		if(!candidates.empty() && cx_untilcandlist > 1)
 		{
 			candidates_bak_itr->first.second = L"/";
-			i = 2;
+			i = 1;
 			FORWARD_ITERATION_I(candidates_itr, candidates)
 			{
 				//「候補一覧表示に要する変換回数」-1 個まで
-				if(cx_untilcandlist < i++)
+				if(cx_untilcandlist < ++i)
 				{
 					break;
 				}
@@ -626,6 +651,10 @@ void CTextService::_UserDicComp()
 			}
 		}
 	}
+
+#ifdef _DEBUG
+	_CommandDic(REQ_DEBUGOUT_ON);
+#endif
 
 	kana = kana_bak;
 	searchkey = searchkey_bak;

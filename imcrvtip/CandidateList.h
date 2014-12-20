@@ -38,6 +38,7 @@ public:
 	void _Show(BOOL bShow);
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 	void _Move(LPRECT lpr);
+	void _UpdateComp();
 
 private:
 	LONG _cRef;
@@ -59,6 +60,8 @@ private:
 
 	HWND _hwndParent;
 	CCandidateWindow *_pCandidateWindow;
+
+	BOOL _comp;
 };
 
 #endif //CANDIDATELIST_H

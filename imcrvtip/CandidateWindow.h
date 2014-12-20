@@ -51,6 +51,7 @@ public:
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 	void _PreEnd();
 	void _End();
+	void _UpdateComp();
 
 private:
 	void _InitList();

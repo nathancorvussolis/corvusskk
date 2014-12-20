@@ -521,6 +521,18 @@ void CCandidateWindow::_End()
 	}
 }
 
+void CCandidateWindow::_UpdateComp()
+{
+	_comp = TRUE;
+	candidates = _pTextService->candidates;
+	candidx = _pTextService->candidx;
+	searchkey = _pTextService->searchkey;
+
+	_InitList();
+	_Update();
+	_UpdateUIElement();
+}
+
 void CCandidateWindow::_InitList()
 {
 	UINT i;
@@ -766,13 +778,16 @@ void CCandidateWindow::_PrevComp()
 
 	GetCurrentPage(&uOldPage);
 
+	_InvokeSfHandler(SKK_PREV_COMP);
+
 	if(_uIndex == 0)
 	{
-		_EndCandidateList(SKK_CANCEL);
+		candidx = (size_t)-1;
+		_InitList();
+		_Update();
+		_UpdateUIElement();
 		return;
 	}
-
-	_InvokeSfHandler(SKK_PREV_COMP);
 
 	candidx--;
 
@@ -1148,13 +1163,16 @@ void CCandidateWindow::_Update()
 void CCandidateWindow::_EndCandidateList(BYTE sf)
 {
 	_InvokeSfHandler(sf);
-	//複数動的補完は自身で終了しない
+
+	if(_pTextService != NULL)
+	{
+		_pTextService->showcandlist = FALSE;
+	}
+
+	//直後に複数動的補完を表示する場合使い回しする
+	//_InvokeSfHandler() ---> _UpdateComp() -> _comp = TRUE
 	if(!_comp)
 	{
-		if(_pTextService != NULL)
-		{
-			_pTextService->showcandlist = FALSE;
-		}
 		if(_pCandidateList != NULL)
 		{
 			_pCandidateList->_EndCandidateList();

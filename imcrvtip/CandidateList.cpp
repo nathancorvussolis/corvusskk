@@ -238,6 +238,8 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 	_ec = ec;
 
+	_comp = comp;
+
 	if(_AdviseContextKeyEventSink() != S_OK)
 	{
 		goto exit;
@@ -439,5 +441,13 @@ void CCandidateList::_Move(LPRECT lpr)
 	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_Move(lpr);
+	}
+}
+
+void CCandidateList::_UpdateComp()
+{
+	if(_pCandidateWindow != NULL)
+	{
+		_pCandidateWindow->_UpdateComp();
 	}
 }

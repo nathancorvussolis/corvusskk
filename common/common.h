@@ -2,20 +2,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"1.8.0"
-
-#ifndef _DEBUG
-#define TEXTSERVICE_DESC	TEXTSERVICE_NAME
-#else
-#define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
-#endif
-
-//for resource
-#define RC_AUTHOR			"nathancorvussolis"
-#define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"1.8.0"
-#define RC_VERSION_D		1,8,0,0
+#include "version.h"
 
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256
@@ -44,6 +31,10 @@
 #define REQ_USER_DEL_0		L'C'	//ユーザー辞書削除(送りあり、補完なし)
 #define REQ_USER_DEL_1		L'D'	//ユーザー辞書削除(送りなし、補完あり)
 #define REQ_USER_SAVE		L'S'	//ユーザー辞書保存
+#ifdef _DEBUG
+#define REQ_DEBUGOUT_ON		L'['
+#define REQ_DEBUGOUT_OFF	L']'
+#endif
 //reply
 #define REP_OK				L'T'	//hit
 #define REP_FALSE			L'F'	//nothing
