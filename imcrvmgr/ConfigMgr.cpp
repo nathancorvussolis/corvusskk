@@ -201,8 +201,7 @@ void InitLua()
 	lua_setglobal(lua, "crvmgr");
 
 	//skk-version
-	_snprintf_s(version, _TRUNCATE, "%s / %s",
-		WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER), LUA_RELEASE);
+	_snprintf_s(version, _TRUNCATE, "%s", WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER));
 	lua_pushstring(lua, version);
 	lua_setglobal(lua, "SKK_VERSION");
 

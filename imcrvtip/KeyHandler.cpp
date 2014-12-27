@@ -102,6 +102,10 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			}
 			else
 			{
+				if(cx_stacompmulti)
+				{
+					_EndCompletionList(ec, pContext);
+				}
 				_Update(ec, pContext);
 			}
 			return S_OK;

@@ -778,6 +778,15 @@ void CCandidateWindow::_PrevComp()
 
 	GetCurrentPage(&uOldPage);
 
+	if(_uIndex == 0)
+	{
+		if(_pTextService->cx_stacompmulti && !_pTextService->cx_dyncompmulti)
+		{
+			_InvokeSfHandler(SKK_PREV_COMP);
+			return;
+		}
+	}
+
 	_InvokeSfHandler(SKK_PREV_COMP);
 
 	if(_uIndex == 0)
@@ -806,11 +815,6 @@ void CCandidateWindow::_PrevComp()
 
 void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 {
-	std::wstring s;
-	std::wstring regwordtextconv;
-	std::wstring regwordtextcandidate;
-	std::wstring regwordtextannotation;
-	std::wsmatch result;
 	WCHAR ch;
 	BYTE sf;
 
@@ -908,31 +912,56 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		}
 		else
 		{
+			std::wstring conv;
+			std::wstring candidate;
+			std::wstring annotation;
+			std::wsmatch result;
+			std::wstring okurikey;
+
 			//候補と注釈を、行頭以外の最後のセミコロンで分割
 			if(std::regex_search(regwordtext, result, std::wregex(L".+;")))
 			{
-				regwordtextcandidate = result.str().substr(0, result.str().size() - 1);
-				regwordtextannotation = result.suffix();
+				candidate = result.str().substr(0, result.str().size() - 1);
+				annotation = result.suffix();
 			}
 			else
 			{
-				regwordtextcandidate = regwordtext;
-				regwordtextannotation.clear();
+				candidate = regwordtext;
+				annotation.clear();
+			}
+
+			if(_pTextService->okuriidx != 0)
+			{
+				okurikey = _pTextService->kana.substr(_pTextService->okuriidx + 1);
+				if(okurikey.size() >= 2 &&
+					IS_SURROGATE_PAIR(okurikey.c_str()[0], okurikey.c_str()[1]))
+				{
+					okurikey = okurikey.substr(0, 2);
+				}
+				else
+				{
+					okurikey = okurikey.substr(0, 1);
+				}
 			}
 
 			//候補変換
-			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, regwordtextcandidate, regwordtextconv);
-			if(_pTextService->searchkey.empty() ||
-				regwordtextconv.empty() || regwordtextconv == regwordtextcandidate)
+			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, candidate, okurikey, conv);
+
+			if(_pTextService->searchkey.empty() || conv.empty())
 			{
 				//変換見出し語が空文字列または
-				//変換済み候補が空文字列または変化なしであれば未変換見出し語を見出し語とする
+				//変換済み候補が空文字列であれば未変換見出し語を見出し語とする
 				_pTextService->searchkey = _pTextService->searchkeyorg;
 			}
 
+			if(conv.empty())
+			{
+				conv = candidate;
+			}
+
 			_pTextService->candidates.push_back(CANDIDATE
-				(CANDIDATEBASE(regwordtextconv, regwordtextannotation),
-				(CANDIDATEBASE(regwordtextcandidate, regwordtextannotation))));
+				(CANDIDATEBASE(conv, annotation),
+				(CANDIDATEBASE(candidate, annotation))));
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
 			_pTextService->candorgcnt = 0;
 
@@ -1095,20 +1124,18 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_PASTE:
 		if(IsClipboardFormatAvailable(CF_UNICODETEXT))
 		{
-			HANDLE hCB;
-			PWCHAR pwCB;
 			if(OpenClipboard(NULL))
 			{
-				hCB = GetClipboardData(CF_UNICODETEXT);
+				HANDLE hCB = GetClipboardData(CF_UNICODETEXT);
 				if(hCB != NULL)
 				{
-					pwCB = (PWCHAR)GlobalLock(hCB);
+					PWCHAR pwCB = (PWCHAR)GlobalLock(hCB);
 					if(pwCB != NULL)
 					{
-						s.assign(pwCB);
-						s = std::regex_replace(s, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
-						regwordtext.insert(regwordtextpos, s);
-						regwordtextpos += s.size();
+						std::wstring scb = std::regex_replace(std::wstring(pwCB),
+							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
+						regwordtext.insert(regwordtextpos, scb);
+						regwordtextpos += scb.size();
 						_Update();
 						_UpdateUIElement();
 						GlobalUnlock(hCB);

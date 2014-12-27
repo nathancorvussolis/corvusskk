@@ -376,16 +376,24 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				_Update(ec, pContext);
 			}
 
-			if(cx_dyncompmulti && complement && candidx == 0 && pContext != NULL)
+			if(complement && candidx == 0 && pContext != NULL)
 			{
-				if(_pCandidateList == NULL)
+				if(cx_dyncompmulti)
+				{
+					if(_pCandidateList == NULL)
+					{
+						showcandlist = FALSE;
+						_ShowCandidateList(ec, pContext, FALSE, TRUE);
+					}
+					else
+					{
+						_pCandidateList->_UpdateComp();
+					}
+				}
+				else if(cx_stacompmulti)
 				{
 					showcandlist = FALSE;
 					_ShowCandidateList(ec, pContext, FALSE, TRUE);
-				}
-				else
-				{
-					_pCandidateList->_UpdateComp();
 				}
 			}
 			return S_OK;
@@ -417,6 +425,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
+				if(!complement && cx_stacompmulti)
+				{
+					_EndCompletionList(ec, pContext);
+				}
 				_Update(ec, pContext);
 			}
 			return S_OK;
@@ -444,7 +456,15 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			kana.insert(cursoridx, 1, CHAR_SKK_HINT);
 			cursoridx++;
 		}
-		_Update(ec, pContext);
+
+		if(cx_dynamiccomp || cx_dyncompmulti)
+		{
+			_DynamicComp(ec, pContext);
+		}
+		else
+		{
+			_Update(ec, pContext);
+		}
 		return S_OK;
 		break;
 
@@ -484,7 +504,14 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 					kana.insert(cursoridx, 1, CHAR_SKK_OKURI);	//送りローマ字
 					okuriidx = cursoridx;
 					cursoridx++;
-					_Update(ec, pContext);
+					if(cx_dynamiccomp || cx_dyncompmulti)
+					{
+						_DynamicComp(ec, pContext);
+					}
+					else
+					{
+						_Update(ec, pContext);
+					}
 				}
 			}
 
@@ -505,7 +532,15 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			_ConvRoman();
 			kana.insert(cursoridx, 1, ch);
 			cursoridx++;
-			_Update(ec, pContext);
+
+			if(cx_dynamiccomp || cx_dyncompmulti)
+			{
+				_DynamicComp(ec, pContext);
+			}
+			else
+			{
+				_Update(ec, pContext);
+			}
 			return S_OK;
 		}
 		break;
@@ -542,6 +577,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
+				if(cx_stacompmulti)
+				{
+					_EndCompletionList(ec, pContext);
+				}
 				_Update(ec, pContext);
 			}
 		}
@@ -704,12 +743,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty())
+		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
 		{
 			_ConvRoman();
 			_HandleCharShift(ec, pContext);
 		}
-		else if(!kana.empty() && cursoridx > 0)
+
+		if(!kana.empty() && cursoridx > 0)
 		{
 			// surrogate pair
 			if(cursoridx >= 2 &&
@@ -721,6 +761,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			{
 				cursoridx--;
 			}
+
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
 				cursoridx--;
@@ -744,15 +785,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty())
+		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
 		{
 			_ConvRoman();
 			_HandleCharShift(ec, pContext);
 		}
-		else
-		{
-			cursoridx = 0;
-		}
+
+		cursoridx = 0;
 
 		if(cx_dynamiccomp || cx_dyncompmulti)
 		{
@@ -771,12 +810,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty())
+		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
 		{
 			_ConvRoman();
 			_HandleCharShift(ec, pContext);
 		}
-		else if(!kana.empty() && cursoridx < kana.size())
+
+		if(!kana.empty() && cursoridx < kana.size())
 		{
 			// surrogate pair
 			if(kana.size() - cursoridx >= 2 &&
@@ -812,15 +852,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty())
+		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
 		{
 			_ConvRoman();
 			_HandleCharShift(ec, pContext);
 		}
-		else
-		{
-			cursoridx = kana.size();
-		}
+
+		cursoridx = kana.size();
 
 		if(cx_dynamiccomp || cx_dyncompmulti)
 		{
@@ -849,14 +887,14 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 					PWCHAR pwCB = (PWCHAR)GlobalLock(hCB);
 					if(pwCB != NULL)
 					{
-						std::wstring s = std::regex_replace(std::wstring(pwCB),
+						std::wstring scb = std::regex_replace(std::wstring(pwCB),
 							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
-						kana.insert(cursoridx, s);
+						kana.insert(cursoridx, scb);
 						if(okuriidx != 0 && cursoridx <= okuriidx)
 						{
-							okuriidx += s.size();
+							okuriidx += scb.size();
 						}
-						cursoridx += s.size();
+						cursoridx += scb.size();
 						if(cx_dynamiccomp || cx_dyncompmulti)
 						{
 							_DynamicComp(ec, pContext);

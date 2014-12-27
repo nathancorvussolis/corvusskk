@@ -308,7 +308,7 @@ void CTextService::_StartSubConv(WCHAR command)
 {
 	CANDIDATES candidates_bak;
 	CANDIDATES candidates_num;
-	std::wstring kanaconv;
+	std::wstring kanaconv, okurikey;
 
 	searchkey.clear();
 	searchkeyorg.clear();
@@ -361,8 +361,22 @@ void CTextService::_StartSubConv(WCHAR command)
 
 	searchkeyorg = searchkey;	//オリジナルバックアップ
 
+	if(okuriidx != 0)
+	{
+		okurikey = kana.substr(okuriidx + 1);
+		if(okurikey.size() >= 2 &&
+			IS_SURROGATE_PAIR(okurikey.c_str()[0], okurikey.c_str()[1]))
+		{
+			okurikey = okurikey.substr(0, 2);
+		}
+		else
+		{
+			okurikey = okurikey.substr(0, 1);
+		}
+	}
+
 	//見出し語変換
-	_ConvertWord(REQ_CONVERTKEY, searchkeyorg, std::wstring(L""), searchkey);
+	_ConvertWord(REQ_CONVERTKEY, searchkeyorg, std::wstring(L""), okurikey, searchkey);
 
 	if(!searchkey.empty() && searchkey != searchkeyorg)
 	{
@@ -581,21 +595,28 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 			_Update(ec, pContext);
 		}
 
-		if(cx_dyncompmulti && pContext != NULL)
+		if(pContext != NULL)
 		{
-			if(!sel)
+			if(cx_dyncompmulti)
 			{
-				candidx = (size_t)-1;
-			}
+				if(!sel)
+				{
+					candidx = (size_t)-1;
+				}
 
-			if(_pCandidateList != NULL && _pCandidateList->_IsShowCandidateWindow())
-			{
-				_pCandidateList->_UpdateComp();
+				if(_pCandidateList != NULL && _pCandidateList->_IsShowCandidateWindow())
+				{
+					_pCandidateList->_UpdateComp();
+				}
+				else
+				{
+					showcandlist = FALSE;
+					_ShowCandidateList(ec, pContext, FALSE, TRUE);
+				}
 			}
 			else
 			{
-				showcandlist = FALSE;
-				_ShowCandidateList(ec, pContext, FALSE, TRUE);
+				_EndCompletionList(ec, pContext);
 			}
 		}
 

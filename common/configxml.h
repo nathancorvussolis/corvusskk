@@ -93,6 +93,7 @@ extern LPCWSTR ValueBackIncEnter;
 extern LPCWSTR ValueAddCandKtkn;
 extern LPCWSTR ValueShiftNNOkuri;
 extern LPCWSTR ValuePrecedeOkuri;
+extern LPCWSTR ValueStaCompMulti;
 extern LPCWSTR ValueDynamicComp;
 extern LPCWSTR ValueDynCompMulti;
 extern LPCWSTR ValueCompUserDic;

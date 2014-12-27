@@ -34,8 +34,8 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey);
 // SearchDictionary
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);
 std::wstring SearchSKKDic(const std::wstring &searchkey);
-std::wstring ConvertKey(const std::wstring &searchkey);
-std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate);
+std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri);
+std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &okuri);
 int lua_search_skk_dictionary(lua_State *lua);
 int lua_search_user_dictionary(lua_State *lua);
 int lua_search_skk_server(lua_State *lua);

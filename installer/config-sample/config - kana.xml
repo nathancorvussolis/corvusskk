@@ -38,6 +38,7 @@
     <key name="addcandktkn" value="0" />
     <key name="shiftnnokuri" value="1" />
     <key name="precedeokuri" value="0" />
+    <key name="stacompmulti" value="0" />
     <key name="dynamiccomp" value="0" />
     <key name="dyncompmulti" value="0" />
     <key name="compuserdic" value="0" />

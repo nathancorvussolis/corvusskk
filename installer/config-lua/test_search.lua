@@ -15,3 +15,5 @@ print(lua_skk_search("きr", "る"))
 enable_skk_ignore_dic_word = true
 print(lua_skk_search("きr", "る"))
 enable_skk_ignore_dic_word = false
+
+print(lua_skk_convert_key("かx", "っ"))

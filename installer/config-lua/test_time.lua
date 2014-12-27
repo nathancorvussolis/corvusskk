@@ -72,7 +72,7 @@ el_test_time_table = {
 
 for i, v in ipairs(el_test_time_table) do
 	print("<= \"" .. v[1] .. "\" \"".. v[2] .. "\"")
-	local s = lua_skk_convert_candidate(v[1], v[2])
+	local s = lua_skk_convert_candidate(v[1], v[2], "")
 
 	if (s) then
 		print("=> \"" .. s .. "\"\n")

@@ -14,13 +14,15 @@
 				key : 見出し語 string
 				戻り値 : "/<K1>/<K2>/.../<Kn>/\n" or "" string
 		見出し語変換
-			lua_skk_convert_key(key)
+			lua_skk_convert_key(key, okuri)
 				key : 見出し語 string
+				okuri : 送り仮名 string
 				戻り値 : 変換済み文字列 string
 		候補変換
-			lua_skk_convert_candidate(key, candidate)
+			lua_skk_convert_candidate(key, candidate, okuri)
 				key : 見出し語 string
 				candidate : 候補 string
+				okuri : 送り仮名 string
 				戻り値 : 変換済み文字列 string
 		辞書追加
 			lua_skk_add(okuriari, key, candidate, annotation, okuri)
@@ -99,7 +101,7 @@
 
 		バージョン (skk-version)に使用
 			SKK_VERSION
-				"CorvusSKK X.Y.Z / Lua A.B.C" string
+				"CorvusSKK X.Y.Z" string
 
 
 	スクリプトファイルinit.luaの文字コード
@@ -988,9 +990,14 @@ local function skk_convert_gadget(key, candidate)
 end
 
 -- 候補変換処理
-local function skk_convert_candidate(key, candidate)
+local function skk_convert_candidate(key, candidate, okuri)
 	local ret = ""
 	local temp = candidate
+
+	-- xtu/xtsuで「っ」を送り仮名にしたとき送りローマ字「t」を有効にする
+	if (okuri == "っ" and string.sub(key, string.len(key)) == "x") then
+		return candidate
+	end
 
 	-- 数値変換
 	if (enable_skk_convert_num) then
@@ -1021,8 +1028,13 @@ local function skk_convert_candidate(key, candidate)
 end
 
 -- 見出し語変換処理
-local function skk_convert_key(key)
+local function skk_convert_key(key, okuri)
 	local ret = ""
+
+	-- xtu/xtsuで「っ」を送り仮名にしたとき送りローマ字を「t」に変換する
+	if (okuri == "っ" and string.sub(key, string.len(key)) == "x") then
+		return string.sub(key, 1, string.len(key) - 1) .. "t"
+	end
 
 	-- 文字コード表記変換のとき見出し語変換しない
 	local cccplen = string.len(charcode_conv_prefix)
@@ -1103,13 +1115,13 @@ function lua_skk_complement(key)
 end
 
 -- 見出し語変換
-function lua_skk_convert_key(key)
-	return skk_convert_key(key)
+function lua_skk_convert_key(key, okuri)
+	return skk_convert_key(key, okuri)
 end
 
 -- 候補変換
-function lua_skk_convert_candidate(key, candidate)
-	return skk_convert_candidate(key, candidate)
+function lua_skk_convert_candidate(key, candidate, okuri)
+	return skk_convert_candidate(key, candidate, okuri)
 end
 
 -- 辞書追加

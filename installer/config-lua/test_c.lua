@@ -1,5 +1,5 @@
 ﻿
-SKK_VERSION="CorvusSKK X.Y.Z / Lua 5.2.3"
+SKK_VERSION="CorvusSKK X.Y.Z"
 
 local _M = {}
 

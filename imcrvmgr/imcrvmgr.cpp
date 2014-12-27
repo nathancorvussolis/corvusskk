@@ -194,11 +194,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //  reply   "T\n<key>\t\t\t\n...\n":hit
 //          "F\n":nothing
 //convert key
-//  request "5\n<key>\t\n"
+//  request "5\n<key>\t\t<okuri>\n"
 //  reply   "T\n<key converted>\n...\n":hit
 //          "F\n":nothing
 //convert candidate
-//  request "6\n<key>\t<candidate>\n"
+//  request "6\n<key>\t<candidate>\t<okuri>\n"
 //  reply   "T\n<candidate converted>\n":hit
 //          "F\n":nothing
 //add candidate (complement off)
@@ -259,9 +259,9 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				result += ConvertCandidate(keyorg, sc_itr->first) + L"\t" +
+				result += ConvertCandidate(keyorg, sc_itr->first, okuri) + L"\t" +
 					sc_itr->first + L"\t" +
-					ConvertCandidate(keyorg, sc_itr->second) + L"\t" +
+					ConvertCandidate(keyorg, sc_itr->second, okuri) + L"\t" +
 					sc_itr->second + L"\n";
 			}
 		}
@@ -313,33 +313,26 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		break;
 
 	case REQ_CONVERTKEY:
-		re.assign(L"(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-
-		conv = ConvertKey(key);
-
-		if(!conv.empty())
-		{
-			result = REP_OK;
-			result += L"\n";
-			result += conv + L"\n";
-		}
-		else
-		{
-			result = REP_FALSE;
-			result += L"\n";
-		}
-		break;
-
 	case REQ_CONVERTCND:
-		re.assign(L"(.*)\t(.*)\n");
+		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
 		fmt.assign(L"$2");
 		candidate = std::regex_replace(argument, re, fmt);
+		fmt.assign(L"$3");
+		okuri = std::regex_replace(argument, re, fmt);
 
-		conv = ConvertCandidate(key, candidate);
+		switch(command)
+		{
+		case REQ_CONVERTKEY:
+			conv = ConvertKey(key, okuri);
+			break;
+		case REQ_CONVERTCND:
+			conv = ConvertCandidate(key, candidate, okuri);
+			break;
+		default:
+			break;
+		}
 
 		if(!conv.empty())
 		{

@@ -181,7 +181,7 @@ public:
 	void _ConnectDic();
 	void _DisconnectDic();
 	void _SearchDic(WCHAR command);
-	void _ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, std::wstring &conv);
+	void _ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &okuri, std::wstring &conv);
 	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
 	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
@@ -343,6 +343,7 @@ public:
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
+	BOOL cx_stacompmulti;		//複数補完を使用する
 	BOOL cx_dynamiccomp;		//動的補完を使用する
 	BOOL cx_dyncompmulti;		//複数動的補完を使用する
 	BOOL cx_compuserdic;		//補完のときユーザー辞書を検索する

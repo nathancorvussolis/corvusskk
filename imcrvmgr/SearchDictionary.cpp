@@ -152,16 +152,17 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	return candidate;
 }
 
-std::wstring ConvertKey(const std::wstring &key)
+std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	std::wstring ret;
 
 	if(lua != NULL)
 	{
 		lua_getglobal(lua, "lua_skk_convert_key");
-		lua_pushstring(lua, WCTOU8(key));
+		lua_pushstring(lua, WCTOU8(searchkey));
+		lua_pushstring(lua, WCTOU8(okuri));
 
-		if(lua_pcall(lua, 1, 1, 0) == LUA_OK)
+		if(lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
 			if(lua_isstring(lua, -1))
 			{
@@ -173,29 +174,30 @@ std::wstring ConvertKey(const std::wstring &key)
 	else
 	{
 		//文字コード表記変換のとき見出し語変換しない
-		if(key.size() > 1 && key[0] == L'?')
+		if(searchkey.size() > 1 && searchkey[0] == L'?')
 		{
 			return std::wstring(L"");
 		}
 
 		//数値変換
-		ret = std::regex_replace(key, std::wregex(L"[0-9]+"), std::wstring(L"#"));
+		ret = std::regex_replace(searchkey, std::wregex(L"[0-9]+"), std::wstring(L"#"));
 	}
 
 	return ret;
 }
 
-std::wstring ConvertCandidate(const std::wstring &key, const std::wstring &candidate)
+std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &okuri)
 {
 	std::wstring ret;
 
 	if(lua != NULL)
 	{
 		lua_getglobal(lua, "lua_skk_convert_candidate");
-		lua_pushstring(lua, WCTOU8(key));
+		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(candidate));
+		lua_pushstring(lua, WCTOU8(okuri));
 
-		if(lua_pcall(lua, 2, 1, 0) == LUA_OK)
+		if(lua_pcall(lua, 3, 1, 0) == LUA_OK)
 		{
 			if(lua_isstring(lua, -1))
 			{
