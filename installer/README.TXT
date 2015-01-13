@@ -1,6 +1,6 @@
 ﻿
 ==============================================================================
-     CorvusSKK version 1.8.2
+     CorvusSKK version 1.8.3
 
      https://code.google.com/p/corvus-skk/
      nathancorvussolis@gmail.com
@@ -474,8 +474,8 @@
 
   サーバープロセス(imcrvmgr.exe)の各機能の拡張、プログラム実行変換もどき、
   数値変換をLuaスクリプトで実装しています。
-  現在使用しているLuaのバージョンは5.2.3です。
-  詳細はこちらを参照下さい。http://www.lua.org/manual/5.2/manual.html
+  現在使用しているLuaのバージョンは5.3.0です。
+  詳細はこちらを参照下さい。http://www.lua.org/manual/5.3/manual.html
 
   Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsAPIとCランタイム
   関数を呼ぶようにパッチを当てています。

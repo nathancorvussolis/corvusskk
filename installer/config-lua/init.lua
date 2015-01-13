@@ -421,14 +421,12 @@ local function car(t)
 	return skk_num_list[1]
 end
 
--- convert float to integer (remove .0 suffix for compatibility with Lua 5.2)
+-- convert float to integer (remove suffix ".0")
 local function float_to_integer(value)
-	--[[ Lua 5.3 から有効にする予定
-	local ivalue = math.tointeger(value)   -- math.tointeger : Lua 5.3
+	local ivalue = math.tointeger(value)
 	if ivalue then
 		return ivalue
 	end
-	--]]
 	return value
 end
 

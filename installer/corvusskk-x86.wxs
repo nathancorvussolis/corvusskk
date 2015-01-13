@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.8.2" ?>
+  <?define version="1.8.3" ?>
   <Product Id="*" Name="CorvusSKK" Language="1033" Version="$(var.version)" Manufacturer="CorvusSKK Project" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="version $(var.version)" Platform="x86" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
@@ -24,7 +24,7 @@
               <File Id="F_luaexe_x86" Name="lua.exe" Source="..\Win32\Release\lua.exe" />
             </Component>
             <Component Guid="84898511-4C96-4114-A7EE-8F32E260D28A" Id="LUADLL_X86">
-              <File Id="F_luadll_x86" Name="lua52.dll" Source="..\Win32\Release\lua52.dll" />
+              <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
             </Component>
             <Component Guid="1229154E-E5AB-430C-87EC-A7DBB451A157" Id="INITLUA_X86">
               <File Id="F_initlua_x86" Name="init.lua" Source="config-lua\init.lua" />

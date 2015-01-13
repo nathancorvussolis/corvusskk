@@ -2,6 +2,8 @@
   UTF-8 Wrapper for Windows
 */
 
+#include "lprefix.h"
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>

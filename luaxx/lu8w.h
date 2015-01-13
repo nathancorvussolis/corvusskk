@@ -51,7 +51,7 @@ int u8rename(const char *oldfname, const char *newfname);
 #define system u8system
 #define remove u8remove
 #define rename u8rename
-#endif /* LUA_CORE or LUA_LIB or lua_c or luac_c */
+#endif /* LUA_U8W or LUA_CORE or LUA_LIB or lua_c or luac_c */
 #endif /* not lu8w_c */
 
 #endif /* U8W_H */
