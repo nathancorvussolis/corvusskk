@@ -11,7 +11,7 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 	std::wstring candidate;
 	std::string key;
 	std::string buf;
-	size_t pidx;
+	size_t len, pidx;
 	CHAR rbuf[RECVBUFSIZE];
 	int n;
 
@@ -24,7 +24,15 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 	switch(encoding)
 	{
 	case 0:
-		key.append(wstring_to_eucjis2004_string(searchkey));
+		len = (size_t)-1;
+		if(WideCharToEucJis2004(searchkey.c_str(), NULL, NULL, &len))
+		{
+			key.append(wstring_to_eucjis2004_string(searchkey));
+		}
+		else
+		{
+			return candidate;
+		}
 		break;
 	case 1:
 		key.append(wstring_to_utf8_string(searchkey));
@@ -72,7 +80,6 @@ end:
 		std::string s;
 		std::smatch m;
 		std::regex r;
-		size_t ds;
 
 		s = buf.substr(1);
 		r.assign("/[^/]+");
@@ -81,8 +88,8 @@ end:
 			switch(encoding)
 			{
 			case 0:
-				ds = -1;
-				if(EucJis2004ToWideChar(m.str().c_str(), NULL, NULL, &ds))
+				len = (size_t)-1;
+				if(EucJis2004ToWideChar(m.str().c_str(), NULL, NULL, &len))
 				{
 					candidate += eucjis2004_string_to_wstring(m.str());
 				}

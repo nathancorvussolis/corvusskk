@@ -11,6 +11,7 @@ CTextService::CTextService()
 	_cRef = 1;
 
 	_pThreadMgr = NULL;
+	_ClientId = TF_CLIENTID_NULL;
 	_dwThreadMgrEventSinkCookie = TF_INVALID_COOKIE;
 	_dwThreadFocusSinkCookie = TF_INVALID_COOKIE;
 	_dwCompartmentEventSinkOpenCloseCookie = TF_INVALID_COOKIE;
@@ -18,6 +19,8 @@ CTextService::CTextService()
 	_pTextEditSinkContext = NULL;
 	_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	_pComposition = NULL;
+	_pLangBarItem = NULL;
+	_pLangBarItemI = NULL;
 	_pCandidateList = NULL;
 	_pInputModeWindow = NULL;
 
@@ -214,6 +217,11 @@ exit:
 
 STDAPI CTextService::Deactivate()
 {
+	if(_pThreadMgr == NULL)
+	{
+		return S_OK;
+	}
+
 	_SaveUserDic();
 
 	SafeRelease(&_pCandidateList);
@@ -236,9 +244,9 @@ STDAPI CTextService::Deactivate()
 
 	_UninitThreadMgrEventSink();
 
-	SafeRelease(&_pThreadMgr);
-
 	_UninitFont();
+
+	SafeRelease(&_pThreadMgr);
 
 	_ClientId = TF_CLIENTID_NULL;
 

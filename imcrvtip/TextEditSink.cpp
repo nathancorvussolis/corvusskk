@@ -46,7 +46,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 	BOOL fRet;
 	ITfSource *pSource;
 
-	if(_dwTextEditSinkCookie != TF_INVALID_COOKIE)
+	if(_pTextEditSinkContext != NULL && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
 		if(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{

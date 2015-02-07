@@ -212,7 +212,7 @@ std::wstring ParseConcat(const std::wstring &s)
 		re.assign(L"\\(concat \"(.+)\"\\)");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 
-		re.assign(L"\\\\([\\\"|\\\\])");
+		re.assign(L"\\\\([\\\"\\\\])");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 
 		re.assign(L"\\\\[0-3][0-7]{2}");
@@ -246,7 +246,7 @@ std::wstring MakeConcat(const std::wstring &s)
 	if(std::regex_search(ret, re))
 	{
 		// "\"" -> "\\\"", "\\" -> "\\\\"
-		re.assign(L"([\\\"|\\\\])");
+		re.assign(L"([\\\"\\\\])");
 		fmt.assign(L"\\$1");
 		ret = std::regex_replace(ret, re, fmt);
 
