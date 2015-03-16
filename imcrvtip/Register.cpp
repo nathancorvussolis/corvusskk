@@ -35,17 +35,16 @@ BOOL RegisterProfiles()
 	HRESULT hr = E_FAIL;
 	WCHAR fileName[MAX_PATH];
 
-	ITfInputProcessorProfiles *pInputProcessProfiles;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) == S_OK)
+	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
-		if(pInputProcessProfiles->Register(c_clsidTextService) == S_OK)
-		{
-			GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
+		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-			hr = pInputProcessProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID,
-					c_guidProfile, TextServiceDesc, -1, fileName, -1, TEXTSERVICE_ICON_INDEX);
-		}
-		SafeRelease(&pInputProcessProfiles);
+		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
+			TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName),
+			TEXTSERVICE_ICON_INDEX, NULL, 0, TRUE, 0);
+
+		SafeRelease(&pInputProcessorProfilesMgr);
 	}
 
 	return (hr == S_OK);
@@ -53,11 +52,14 @@ BOOL RegisterProfiles()
 
 void UnregisterProfiles()
 {
-	ITfInputProcessorProfiles *pInputProcessProfiles;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessProfiles)) == S_OK)
+	HRESULT hr = E_FAIL;
+
+	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
-		pInputProcessProfiles->Unregister(c_clsidTextService);
-		SafeRelease(&pInputProcessProfiles);
+		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
+
+		SafeRelease(&pInputProcessorProfilesMgr);
 	}
 }
 
@@ -180,4 +182,52 @@ void UnregisterServer()
 	wmemcpy_s(szInfoKey, _countof(szInfoKey), c_szInfoKeyPrefix, _countof(c_szInfoKeyPrefix) - 1);
 
 	SHDeleteKeyW(HKEY_CLASSES_ROOT, szInfoKey);
+}
+
+BOOL InstallLayoutOrTip(DWORD dwFlags)
+{
+	typedef BOOL (WINAPI *PTF_INSTALLLAYOUTORTIP)(LPCWSTR psz, DWORD dwFlags);
+
+	BOOL bRet = FALSE;
+	WCHAR fileNameInputDLL[MAX_PATH];
+
+	if(SHGetFolderPathW(NULL, CSIDL_SYSTEM, NULL, SHGFP_TYPE_CURRENT, fileNameInputDLL) != S_OK)
+	{
+		return FALSE;
+	}
+
+	wcsncat_s(fileNameInputDLL, L"\\input.dll", _TRUNCATE);
+
+	HMODULE hInputDLL = LoadLibraryW(fileNameInputDLL);
+
+	if(hInputDLL != NULL)
+	{
+		PTF_INSTALLLAYOUTORTIP pfnInstallLayoutOrTip =
+			(PTF_INSTALLLAYOUTORTIP)GetProcAddress(hInputDLL, "InstallLayoutOrTip");
+
+		if(pfnInstallLayoutOrTip != NULL)
+		{
+			WCHAR clsid[CLSID_STRLEN + 1];
+			WCHAR guidprofile[CLSID_STRLEN + 1];
+			WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
+
+			if(StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
+			{
+				return FALSE;
+			}
+
+			if(StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile)) == 0)
+			{
+				return FALSE;
+			}
+
+			_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
+
+			bRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
+		}
+
+		FreeLibrary(hInputDLL);
+	}
+
+	return bRet;
 }

@@ -360,9 +360,6 @@ void MakeSKKDicWaitThread(void *p)
 
 INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	LPCWSTR pw[] = {L"／", L"─", L"＼", L"│"};
-	static int ipw = 0;
-
 	switch(message)
 	{
 	case WM_INITDIALOG:
@@ -370,7 +367,7 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SkkDicInfo.hr = S_FALSE;
 		SkkDicInfo.child = hDlg;
 		_beginthread(MakeSKKDicWaitThread, 0, NULL);
-		SetTimer(hDlg, IDC_STATIC_DIC_PW, 1000, NULL);
+		SendMessage(GetDlgItem(hDlg, IDC_PROGRESS_DIC_MAKE), PBM_SETMARQUEE, TRUE, 0);
 		return TRUE;
 	case WM_CTLCOLORDLG:
 	case WM_CTLCOLORSTATIC:
@@ -384,17 +381,6 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			SkkDicInfo.cancel = TRUE;
 		}
 		break;
-	case WM_TIMER:
-		SetDlgItemTextW(hDlg, IDC_STATIC_DIC_PW, pw[ipw]);
-		if(++ipw >= _countof(pw))
-		{
-			ipw = 0;
-		}
-		return TRUE;
-	case WM_DESTROY:
-		KillTimer(hDlg, IDC_STATIC_DIC_PW);
-		ipw = 0;
-		return TRUE;
 	default:
 		break;
 	}

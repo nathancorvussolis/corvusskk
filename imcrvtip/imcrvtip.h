@@ -194,4 +194,15 @@ extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
 
 #endif //(_WIN32_WINNT < 0x0603)
 
+//InstallLayoutOrTip Flags
+
+#define ILOT_UNINSTALL               0x00000001
+#define ILOT_DEFPROFILE              0x00000002
+#define ILOT_DEFUSER4                0x00000004
+#define ILOT_SYSLOCALE               0x00000008
+#define ILOT_NOLOCALETOENUMERATE     0x00000010
+#define ILOT_NOAPPLYTOCURRENTSESSION 0x00000020
+#define ILOT_CLEANINSTALL            0x00000040
+#define ILOT_DISABLED                0x00000080
+
 #endif //IMCRVTIP_H

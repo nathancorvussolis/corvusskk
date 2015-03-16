@@ -26,7 +26,7 @@
 #define IDC_BUTTON_SKK_DIC_DOWN                 1005
 #define IDC_BUTTON_SKK_DIC_MAKE                 1006
 #define IDD_DIALOG_SKK_DIC_MAKE                 1021
-#define IDC_STATIC_DIC_PW                       1022
+#define IDC_PROGRESS_DIC_MAKE                   1022
 #define IDC_BUTTON_ABORT_DIC_MAKE               1023
 #define IDC_CHECKBOX_SKKSRV                     1051
 #define IDC_RADIO_EUC                           1052

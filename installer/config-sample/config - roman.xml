@@ -91,7 +91,7 @@
     <key name="convchar" value="\cq" />
     <key name="jlatin" value="L" />
     <key name="ascii" value="l" />
-    <key name="jmode" value="\cj" />
+    <key name="jmode" value="" />
     <key name="abbrev" value="/" />
     <key name="affix" value="&lt;|>" />
     <key name="nextcand" value="\x20|\cn" />
@@ -106,7 +106,7 @@
     <key name="cancel" value="\cg|\x1B" />
     <key name="back" value="\ch" />
     <key name="delete" value="\cd|\x7F" />
-    <key name="void" value="\cj" />
+    <key name="void" value="" />
     <key name="left" value="\cb" />
     <key name="up" value="\ca" />
     <key name="right" value="\cf" />
@@ -118,7 +118,7 @@
     <key name="convchar" value="" />
     <key name="jlatin" value="" />
     <key name="ascii" value="" />
-    <key name="jmode" value="" />
+    <key name="jmode" value="C\x4A" />
     <key name="abbrev" value="" />
     <key name="affix" value="" />
     <key name="nextcand" value="" />
@@ -133,7 +133,7 @@
     <key name="cancel" value="" />
     <key name="back" value="" />
     <key name="delete" value="\x2E" />
-    <key name="void" value="" />
+    <key name="void" value="C\x4A" />
     <key name="left" value="\x25" />
     <key name="up" value="\x26" />
     <key name="right" value="\x27" />

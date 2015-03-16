@@ -10,6 +10,8 @@ void UnregisterCategories();
 BOOL RegisterServer();
 void UnregisterServer();
 
+BOOL InstallLayoutOrTip(DWORD dwFlags);
+
 static LONG g_cRefDll = 0;
 
 class CClassFactory : public IClassFactory
@@ -139,11 +141,21 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
 
+	if(IsVersion62AndOver())
+	{
+		InstallLayoutOrTip(0);
+	}
+
 	return S_OK;
 }
 
 STDAPI DllUnregisterServer(void)
 {
+	if(IsVersion62AndOver())
+	{
+		InstallLayoutOrTip(ILOT_UNINSTALL);
+	}
+
 	UnregisterProfiles();
 	UnregisterCategories();
 	UnregisterServer();

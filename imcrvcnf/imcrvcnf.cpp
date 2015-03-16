@@ -36,7 +36,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	}
 
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES;
+	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
 	CreateProperty(hInstance);

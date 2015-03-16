@@ -900,9 +900,8 @@ void CTextService::_InitFont()
 			{
 				hr = _pDWFactory->CreateTextFormat(cx_fontname, NULL,
 					static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
-					cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL,
-					DWRITE_FONT_STRETCH_NORMAL,
-					(FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"ja-jp", &_pDWTF);
+					(cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL),
+					DWRITE_FONT_STRETCH_NORMAL, (FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"JPN", &_pDWTF);
 			}
 
 			if(hr == S_OK)
