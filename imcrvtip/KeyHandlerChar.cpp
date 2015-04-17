@@ -220,11 +220,6 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 
 			case E_ABORT:	//不一致
 				_HandleCharShift(ec, pContext);
-				roman.clear();
-				if(okuriidx != 0 && okuriidx + 1 == cursoridx)
-				{
-					kana.replace(okuriidx, 1, 1, CHAR_SKK_OKURI);	//送りローマ字
-				}
 				_Update(ec, pContext);
 				break;
 

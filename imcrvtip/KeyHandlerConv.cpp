@@ -714,7 +714,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 	{
 	case S_OK:	//一致
 	case E_PENDING:	//途中まで一致
-		if(rkc.roman != L'\0' && rkc.wait)	//待機
+		if(rkc.roman[0] != L'\0' && rkc.wait)	//待機
 		{
 			if(okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
@@ -799,7 +799,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 		{
 		case S_OK:		//一致
 		case E_PENDING:	//途中まで一致
-			if(rkc.roman != L'\0' && rkc.soku)
+			if(rkc.roman[0] != L'\0' && rkc.soku)
 			{
 				std::wstring kana_ins;
 				switch(inputmode)

@@ -1,6 +1,6 @@
 ﻿
 ==============================================================================
-     CorvusSKK version 1.8.5
+     CorvusSKK version 1.8.6
 
      https://github.com/nathancorvussolis/corvusskk
      nathancorvussolis@gmail.com
@@ -73,9 +73,9 @@
   許可の付加が自動的に行われます。
 
 
-・Adobe Reader X, XI
+・Adobe Reader X, XI, Acrobat Reader DC
 
-  Adobe Reader X または XI で使用するには、設定ファイル（config.xml）に
+  Adobe Reader X 以降で使用するには、設定ファイル（config.xml）に
   Adobe Reader へのアクセス許可を付加させる必要があります。
   設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に
   行われます。

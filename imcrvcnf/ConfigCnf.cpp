@@ -60,6 +60,7 @@ BOOL SetFileDacl(LPCWSTR path)
 
 	if(GetUserSid(&pszUserSid))
 	{
+		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
 			(IsVersion62AndOver() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
 		LocalFree(pszUserSid);

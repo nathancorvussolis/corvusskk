@@ -696,16 +696,16 @@ local function skk_relative_date(t)
 	local d = os.date("*t", skk_gadget_time)
 
 	if (ymd == ":yy") then
-		d["year"] = d["year"] + tonumber(diff);
+		d["year"] = d["year"] + tonumber(diff)
 	elseif (ymd == ":mm") then
-		d["month"] = d["month"] + tonumber(diff);
+		d["month"] = d["month"] + tonumber(diff)
 	elseif (ymd == ":dd") then
-		d["day"] = d["day"] + tonumber(diff);
+		d["day"] = d["day"] + tonumber(diff)
 	else
 	end
 
-	local skk_gadget_time_bak = skk_gadget_time;
-	skk_gadget_time = os.time(d);
+	local skk_gadget_time_bak = skk_gadget_time
+	skk_gadget_time = os.time(d)
 
 	if (pp_function == "nil") then
 		ret = skk_default_current_date(nil)
@@ -713,7 +713,7 @@ local function skk_relative_date(t)
 		ret = skk_convert_gadget_interpret(pp_function)
 	end
 
-	skk_gadget_time = skk_gadget_time_bak;
+	skk_gadget_time = skk_gadget_time_bak
 
 	return ret
 end
@@ -1037,7 +1037,7 @@ local function skk_convert_key(key, okuri)
 	-- 文字コード表記変換のとき見出し語変換しない
 	local cccplen = string.len(charcode_conv_prefix)
 	if (cccplen < string.len(key) and string.sub(key, 1, cccplen) == charcode_conv_prefix) then
-		return "";
+		return ""
 	end
 
 	-- 数値変換

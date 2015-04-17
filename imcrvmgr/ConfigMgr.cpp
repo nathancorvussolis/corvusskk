@@ -79,6 +79,7 @@ void CreateConfigPath()
 
 	if(GetUserSid(&pszUserSid))
 	{
+		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:%s(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)",
 			(IsVersion62AndOver() ? L"(A;;GA;;;AC)" : L""), pszUserSid);
 
