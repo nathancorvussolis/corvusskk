@@ -356,11 +356,6 @@ local function skk_convert_num_type(num, type)
 	return ret
 end
 
--- S式解析もどき (後で再定義)
-local function skk_convert_gadget_interpret(s)
-	return ""
-end
-
 -- concat
 local function concat(t)
 	local ret = ""
@@ -677,7 +672,7 @@ local function skk_current_date(t)
 	if (pp_function == nil) then
 		ret = skk_default_current_date(nil)
 	else
-		ret = skk_convert_gadget_interpret(pp_function)
+    ret = eval_table(pp_function)
 	end
 
 	return ret
@@ -710,7 +705,7 @@ local function skk_relative_date(t)
 	if (pp_function == "nil") then
 		ret = skk_default_current_date(nil)
 	else
-		ret = skk_convert_gadget_interpret(pp_function)
+    ret = eval_table(pp_function)
 	end
 
 	skk_gadget_time = skk_gadget_time_bak
@@ -816,97 +811,98 @@ local function parse_string(s)
 	return ret
 end
 
--- S式解析もどき
-skk_convert_gadget_interpret = function(s)
+-- S式をテーブル表記に変換
+function convert_s_to_table(s)
 	local ret = ""
-	local pt = {}
-	local ps = {}
-	local func = ""
-	local iparam = 1
-	local bracket = 0
-	local dquote = 0
-	local space = 0
-
-	s = string.match(s, "^%s*%(%s*(.-)%s*%)%s*$")
-	if (s == nil) then
-		return ""
-	end
+	local e = ""
+	local q = 0
+	local c = ""
+	local b = ""
+	local r = ""
 
 	for i = 1, string.len(s) do
+		c = string.sub(s, i, i)
+		b = string.sub(s, i - 1, i - 1)
+		r = string.sub(ret, -1)
 
-		local c = string.sub(s, i, i)
-		local b = string.sub(s, i - 1, i - 1)
-
-		if ((c == "\"") and (dquote == 0)) then
-			dquote = 1
-		elseif ((c == "\"") and (dquote == 1) and (b ~= "\\")) then
-			dquote = 0
+		if (c == "\"" and q == 0) then
+			q = 1
+		elseif (c == "\"" and q == 1 and b ~= "\\") then
+			q = 0
 		end
 
-		if (dquote == 0) then
+		if (q == 0) then
 			if (c == "(") then
-				bracket = bracket + 1
-			elseif (c == ")") then
-				bracket = bracket - 1
-			elseif (c == "\x20") then
-				if (bracket == 0) then
-					if (space == 0) then
-						if (func == "") then
-							func = string.sub(s, iparam, i - 1)
-						else
-							table.insert(pt, string.sub(s, iparam, i - 1))
-						end
-						iparam = i + 1
-						space = space + 1
-					else
-						iparam = i + 1
-						space = space + 1
+				if (ret ~= "") then
+					ret = ret .. ","
+				end
+				ret = ret .. "{"
+			elseif (c == ")" or c == "\x20") then
+				if (e ~= "") then
+					if (r ~= "{") then
+						ret = ret .. ","
 					end
+					-- 要素を文字列化
+					e = string.gsub(e, "\\", "\\\\")
+					e = string.gsub(e, "^\"(.*)\"$", "%1")
+					ret = ret .. "\"" .. e .. "\""
+					e = ""
 				end
 			else
-				space = 0
+				e = e .. c
 			end
-		end
-	end
 
-	if (func == "") then
-		func = string.sub(s, iparam)
-	else
-		table.insert(pt, string.sub(s, iparam))
-	end
-
-	if (func == "lambda") then
-		if (#pt > 1) then
-			return pt[2]
-		else
-			return ""
-		end
-	end
-
-	for i, value in ipairs(pt) do
-		if (string.match(value, "^%(.+%)$")) then
-			local retsub = skk_convert_gadget_interpret(value)
-			table.insert(ps, retsub)
-		else
-			local pvalue = parse_string(value)
-			for j, cvalue in ipairs(skk_gadget_const_table) do
-				if (cvalue[1] == pvalue) then
-					pvalue = cvalue[2]
-					break
-				end
+			if (c == ")") then
+				ret = ret .. "}"
 			end
-			table.insert(ps, pvalue)
-		end
-	end
-
-	for i, value in ipairs(skk_gadget_func_table) do
-		if (value[1] == func) then
-			ret = value[2](ps)
-			break
+		else
+			e = e .. c
 		end
 	end
 
 	return ret
+end
+
+-- テーブル評価
+function eval_table(x)
+	if (type(x) == "table") then
+		if (x[1] == "lambda") then
+			if (#x >= 3) then
+				return x[3]
+			else
+				return ""
+			end
+		end
+
+		local func
+		-- 関数名から関数を取得
+		for i, fv in ipairs(skk_gadget_func_table) do
+			if (fv[1] == x[1]) then
+				func = fv[2]
+				break
+			end
+		end
+
+		if (func ~= nil) then
+			table.remove(x, 1)
+			for i, v in ipairs(x) do
+				-- 定数名から定数を取得
+				for j, cv in ipairs(skk_gadget_const_table) do
+					if (cv[1] == v) then
+						v = cv[2]
+						break
+					end
+				end
+				-- 引数を評価
+				x[i] = eval_table(v)
+			end
+			return func(x)
+		end
+	else
+		return parse_string(x)
+	end
+
+	return ""
 end
 
 -- skk-ignore-dic-word
@@ -984,7 +980,7 @@ local function skk_convert_gadget(key, candidate)
 	-- 乱数
 	math.randomseed(skk_gadget_time)
 
-	return skk_convert_gadget_interpret(candidate)
+	return eval_table(load("return " .. convert_s_to_table(candidate))())
 end
 
 -- 候補変換処理

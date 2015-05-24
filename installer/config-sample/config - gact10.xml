@@ -41,7 +41,9 @@
 
 -->
   <section name="dictionary">
-    <list />
+    <list>
+      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" />
+    </list>
   </section>
   <section name="server">
     <key name="serv" value="0" />

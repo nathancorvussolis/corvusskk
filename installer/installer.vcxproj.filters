@@ -39,6 +39,9 @@
     <None Include="_mkarc.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_version.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="corvusskk-x64.wxs">
       <Filter>Installer Files</Filter>
     </None>
@@ -66,16 +69,19 @@
     <None Include="config-lua\test_time.lua">
       <Filter>config-lua</Filter>
     </None>
+    <None Include="..\README.md">
+      <Filter>Installer Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="README.TXT">
-      <Filter>Installer Files</Filter>
-    </Text>
     <Text Include="..\LICENSE.TXT">
       <Filter>Installer Files</Filter>
     </Text>
     <Text Include="config-sample\kanatable.txt">
       <Filter>config-sample</Filter>
+    </Text>
+    <Text Include="README.TXT">
+      <Filter>Installer Files</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
@@ -97,5 +103,10 @@
     <Xml Include="config-sample\config - roman.xml">
       <Filter>config-sample</Filter>
     </Xml>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="README_mode.png">
+      <Filter>Installer Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

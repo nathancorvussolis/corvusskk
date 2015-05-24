@@ -7,6 +7,10 @@ static LPCWSTR defaultHost = L"localhost";
 static LPCWSTR defaultPort = L"1178";
 static LPCWSTR defaultTimeOut = L"1000";
 
+static WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
+
+INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+
 INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
@@ -95,12 +99,13 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			}
 			return TRUE;
 
-		case IDC_BUTTON_SKK_DIC_ADD:
+		case IDC_BUTTON_SKK_DIC_ADD_FILE:
 			path[0] = L'\0';
 			ZeroMemory(&ofn, sizeof(OPENFILENAMEW));
 			ofn.lStructSize = sizeof(OPENFILENAMEW);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
+			ofn.lpstrTitle = L"ファイル追加";
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_FILEMUSTEXIST;
 			if(GetOpenFileNameW(&ofn) != 0)
@@ -119,6 +124,38 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				}
 				item.mask = LVIF_TEXT;
 				item.pszText = path;
+				item.iItem = index;
+				item.iSubItem = 0;
+				ListView_InsertItem(hWndListView, &item);
+				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_EnsureVisible(hWndListView, index, FALSE);
+			}
+			return TRUE;
+
+		case IDC_BUTTON_SKK_DIC_ADD_URL:
+			urlskkdic[0] = L'\0';
+			if(IDOK == DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_ADD_URL), hDlg, DlgProcSKKDicAddUrl))
+			{
+				if(urlskkdic[0] == L'\0')
+				{
+					return TRUE;
+				}
+
+				PropSheet_Changed(GetParent(hDlg), hDlg);
+
+				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
+				count = ListView_GetItemCount(hWndListView);
+				if(index == -1)
+				{
+					index = count;
+				}
+				else
+				{
+					++index;
+				}
+				item.mask = LVIF_TEXT;
+				item.pszText = urlskkdic;
 				item.iItem = index;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
@@ -223,5 +260,49 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		break;
 	}
 
+	return FALSE;
+}
+
+INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch(message)
+	{
+	case WM_INITDIALOG:
+		return TRUE;
+	case WM_CTLCOLORDLG:
+	case WM_CTLCOLORSTATIC:
+	case WM_CTLCOLORBTN:
+		SetBkMode((HDC)wParam, TRANSPARENT);
+		SetTextColor((HDC)wParam, GetSysColor(COLOR_WINDOWTEXT));
+		return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
+	case WM_COMMAND:
+		switch(LOWORD(wParam))
+		{
+		case IDOK:
+			GetDlgItemTextW(hDlg, IDC_EDIT_SKK_DIC_URL, urlskkdic, _countof(urlskkdic));
+			{
+				// trim
+				std::wstring strurl = std::regex_replace(std::wstring(urlskkdic),
+					std::wregex(L"^\\s+|\\s+$"), std::wstring(L""));
+				_snwprintf_s(urlskkdic, _TRUNCATE, L"%s", strurl.c_str());
+
+				if(urlskkdic[0] == L'\0')
+				{
+					EndDialog(hDlg, IDCANCEL);
+				}
+			}
+			EndDialog(hDlg, IDOK);
+			break;
+		case IDCANCEL:
+			urlskkdic[0] = L'\0';
+			EndDialog(hDlg, IDCANCEL);
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
 	return FALSE;
 }

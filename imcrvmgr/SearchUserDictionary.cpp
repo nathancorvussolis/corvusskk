@@ -297,7 +297,7 @@ BOOL LoadSKKUserDic()
 	complements.clear();
 	accompaniments.clear();
 
-	_wfopen_s(&fp, pathuserdic, RccsUNICODE);
+	_wfopen_s(&fp, pathuserdic, RccsUTF16);
 	if(fp == NULL)
 	{
 		return FALSE;
@@ -478,7 +478,7 @@ BOOL SaveSKKUserDic(USERDATA *userdata)
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;
 
-	_wfopen_s(&fp, pathuserdic, WccsUNICODE);
+	_wfopen_s(&fp, pathuserdic, WccsUTF16);
 	if(fp == NULL)
 	{
 		return FALSE;

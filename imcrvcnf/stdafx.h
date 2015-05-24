@@ -18,3 +18,4 @@
 #include <Sddl.h>
 #include <msctf.h>
 #include <xmllite.h>
+#include <WinInet.h>

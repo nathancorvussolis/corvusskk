@@ -1,8 +1,10 @@
 @echo off
 setlocal
-set TARGETDIR=build
 
 pushd %~dp0
+
+call _version.cmd
+set TARGETDIR=build
 
 del "%TARGETDIR%\config-sample.zip"
 
@@ -19,7 +21,7 @@ popd
 del "%TARGETDIR%\corvusskk.zip"
 
 pushd "%TARGETDIR%"
-7za.exe a -tzip -mtc=off corvusskk.zip corvusskk-x64.msi corvusskk-x86.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip config-lua.zip
+7za.exe a -tzip -mtc=off corvusskk-%VERSION%.zip corvusskk-*.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip config-lua.zip
 popd
 
 popd

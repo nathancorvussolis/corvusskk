@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="config-lua\init.lua" />
     <None Include="config-lua\test_c.lua" />
     <None Include="config-lua\test_gadget.lua" />
@@ -37,6 +38,7 @@
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
     <None Include="_mkarc.cmd" />
+    <None Include="_version.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
@@ -50,6 +52,9 @@
     <Xml Include="config-sample\config - gact10.xml" />
     <Xml Include="config-sample\config - kana.xml" />
     <Xml Include="config-sample\config - roman.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="README_mode.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C65505E2-5456-473C-91B1-C6D91B294DC3}</ProjectGuid>

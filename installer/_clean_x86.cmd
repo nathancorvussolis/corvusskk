@@ -1,10 +1,12 @@
 @echo off
 setlocal
-set TARGETDIR=build
 
 pushd %~dp0
 
-del "%TARGETDIR%\corvusskk-x86.*"
+call _version.cmd
+set TARGETDIR=build
+
+del "%TARGETDIR%\corvusskk-%VERSION%-x86.*"
 
 popd
 

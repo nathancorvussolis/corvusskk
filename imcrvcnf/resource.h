@@ -7,7 +7,8 @@
 #endif
 
 #define IDD_DIALOG_DICTIONARY                   110
-#define IDD_DIALOG_BEHAVIOR                     111
+#define IDD_DIALOG_SKK_DIC_ADD_URL				111
+#define IDD_DIALOG_BEHAVIOR                     112
 #define IDD_DIALOG_DISPLAY                      120
 #define IDD_DIALOG_DISPLAYATTR1                 121
 #define IDD_DIALOG_DISPLAYATTR2                 122
@@ -20,11 +21,12 @@
 #define IDD_DIALOG_JLATTBL                      143
 
 #define IDC_LIST_SKK_DIC                        1001
-#define IDC_BUTTON_SKK_DIC_ADD                  1002
-#define IDC_BUTTON_SKK_DIC_DEL                  1003
-#define IDC_BUTTON_SKK_DIC_UP                   1004
-#define IDC_BUTTON_SKK_DIC_DOWN                 1005
-#define IDC_BUTTON_SKK_DIC_MAKE                 1006
+#define IDC_BUTTON_SKK_DIC_ADD_FILE             1002
+#define IDC_BUTTON_SKK_DIC_ADD_URL              1003
+#define IDC_BUTTON_SKK_DIC_DEL                  1004
+#define IDC_BUTTON_SKK_DIC_UP                   1005
+#define IDC_BUTTON_SKK_DIC_DOWN                 1006
+#define IDC_BUTTON_SKK_DIC_MAKE                 1007
 #define IDD_DIALOG_SKK_DIC_MAKE                 1021
 #define IDC_PROGRESS_DIC_MAKE                   1022
 #define IDC_BUTTON_ABORT_DIC_MAKE               1023
@@ -35,20 +37,22 @@
 #define IDC_EDIT_SKKSRV_PORT                    1055
 #define IDC_EDIT_SKKSRV_TIMEOUT                 1056
 
-#define IDC_CHECKBOX_DEFAULTMODE                1101
-#define IDC_RADIO_DEFMODEHIRA                   1102
-#define IDC_RADIO_DEFMODEASCII                  1103
-#define IDC_CHECKBOX_BEGINCVOKURI               1104
-#define IDC_CHECKBOX_DELCVPOSCNCL               1105
-#define IDC_CHECKBOX_DELOKURICNCL               1106
-#define IDC_CHECKBOX_BACKINCENTER               1107
-#define IDC_CHECKBOX_ADDCANDKTKN                1108
-#define IDC_CHECKBOX_SHIFTNNOKURI               1109
-#define IDC_CHECKBOX_PRECEDEOKURI               1110
-#define IDC_CHECKBOX_STACOMPMULTI               1111
-#define IDC_CHECKBOX_DYNAMINCOMP                1112
-#define IDC_CHECKBOX_DYNCOMPMULTI               1113
-#define IDC_CHECKBOX_COMPUSERDIC                1114
+#define IDC_EDIT_SKK_DIC_URL					1101
+
+#define IDC_CHECKBOX_DEFAULTMODE                1201
+#define IDC_RADIO_DEFMODEHIRA                   1202
+#define IDC_RADIO_DEFMODEASCII                  1203
+#define IDC_CHECKBOX_BEGINCVOKURI               1204
+#define IDC_CHECKBOX_DELCVPOSCNCL               1205
+#define IDC_CHECKBOX_DELOKURICNCL               1206
+#define IDC_CHECKBOX_BACKINCENTER               1207
+#define IDC_CHECKBOX_ADDCANDKTKN                1208
+#define IDC_CHECKBOX_SHIFTNNOKURI               1209
+#define IDC_CHECKBOX_PRECEDEOKURI               1210
+#define IDC_CHECKBOX_STACOMPMULTI               1211
+#define IDC_CHECKBOX_DYNAMINCOMP                1212
+#define IDC_CHECKBOX_DYNCOMPMULTI               1213
+#define IDC_CHECKBOX_COMPUSERDIC                1214
 
 #define IDC_EDIT_FONTNAME                       2001
 #define IDC_EDIT_FONTPOINT                      2002
