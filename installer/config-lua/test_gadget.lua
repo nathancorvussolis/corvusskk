@@ -26,6 +26,13 @@ el_test_gadget_table = {
 {"1mile",	"(skk-gadget-units-conversion \"mile\" (string-to-number (car skk-num-list)) \"yard\")"},
 {"1yard",	"(skk-gadget-units-conversion \"yard\" (string-to-number (car skk-num-list)) \"cm\")"},
 {"1yard",	"(skk-gadget-units-conversion \"yard\" (string-to-number (car skk-num-list)) \"feet\")"},
+{"1すん",	"(skk-gadget-units-conversion \"寸\" (string-to-number (car skk-num-list)) \"mm\")"},
+{"1しゃく",	"(skk-gadget-units-conversion \"尺\" (string-to-number (car skk-num-list)) \"cm\")"},
+{"1しゃく",	"(skk-gadget-units-conversion \"勺\" (string-to-number (car skk-num-list)) \"mL\")"},
+{"1ごう",	"(skk-gadget-units-conversion \"合\" (string-to-number (car skk-num-list)) \"mL\")"},
+{"1しょう",	"(skk-gadget-units-conversion \"升\" (string-to-number (car skk-num-list)) \"L\")"},
+{"1と",	"(skk-gadget-units-conversion \"斗\" (string-to-number (car skk-num-list)) \"L\")"},
+{"1つぼ",	"(skk-gadget-units-conversion \"坪\" (string-to-number (car skk-num-list)) \"㎡\")"},
 
 {"おみくじ",	"(skk-omikuji)"},
 

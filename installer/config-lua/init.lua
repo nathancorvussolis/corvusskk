@@ -162,33 +162,56 @@ local skk_gadget_gengo_table = {
 	{{1989,  1,  8, 1}, "へいせい",   {"平成", "H"}}, -- 1989/01/08
 	{{1926, 12, 25, 1}, "しょうわ",   {"昭和", "S"}}, -- 1926/12/25
 	{{1912,  7, 30, 1}, "たいしょう", {"大正", "T"}}, -- 1912/07/30
-	{{1873,  1,  1, 6}, "めいじ",     {"明治", "M"}}} -- 1873/01/01(グレゴリオ暦 明治6年)
+	{{1873,  1,  1, 6}, "めいじ",     {"明治", "M"}}, -- 1873/01/01(グレゴリオ暦 明治6年)
+}
 
 -- 月テーブル
 local skk_gadget_month_table = {
-  {"Jan", "1"}, {"Feb", "2"}, {"Mar", "3"}, {"Apr", "4"}, {"May", "5"}, {"Jun", "6"},
-  {"Jul", "7"}, {"Aug", "8"}, {"Sep", "9"}, {"Oct", "10"}, {"Nov", "11"}, {"Dec", "12"}}
+	{"Jan", "1"}, {"Feb", "2"}, {"Mar", "3"}, {"Apr", "4"}, {"May", "5"}, {"Jun", "6"},
+	{"Jul", "7"}, {"Aug", "8"}, {"Sep", "9"}, {"Oct", "10"}, {"Nov", "11"}, {"Dec", "12"}
+}
 
 -- 曜日テーブル
 local skk_gadget_dayofweek_table = {
-  {"Sun", "日"}, {"Mon", "月"}, {"Tue", "火"}, {"Wed", "水"}, {"Thu", "木"}, {"Fri", "金"}, {"Sat", "土"}}
+	{"Sun", "日"}, {"Mon", "月"}, {"Tue", "火"}, {"Wed", "水"}, {"Thu", "木"}, {"Fri", "金"}, {"Sat", "土"}
+}
 
 -- 単位テーブル
-local skk_gadget_unit_table = {
-  {"mile", {{"yard", 1760.0}, {"feet", 5280.0}, {"m", 1609.344}, {"km", 1.609344}}},
-  {"yard", {{"feet", 3.0}, {"inch", 36.0}, {"m", 0.9144}, {"cm", 91.44}, {"mm", 914.4}}},
-  {"feet", {{"inch", 12.0}, {"yard",  (1.0 / 3.0)}, {"m", 0.3048}, {"cm", 30.48}, {"mm", 304.8}}},
-  {"inch", {{"feet", (1.0 / 12.0)}, {"yard", (1.0 / 36.0)}, {"m", 0.0254}, {"cm", 2.54}, {"mm", 25.4}}},
-  {"pound", {{"g", 453.59237}, {"ounce", 16.0}, {"grain", 7000.0}}},
-  {"ounce", {{"g", 28.349523125}, {"pound", (1.0 / 16.0)}, {"grain", (7000.0 / 16.0)}}},
-  {"grain", {{"mg", 64.79891}, {"g", 0.06479891}, {"pound", (1.0 / 7000.0)}, {"ounce", (16.0 / 7000.0)}}}}
+local skk_gadget_unit_table_org = {
+	{"mile", {{"yard", 1760.0}, {"feet", 5280.0}, {"m", 1609.344}, {"km", 1.609344}}},
+	{"yard", {{"feet", 3.0}, {"inch", 36.0}, {"m", 0.9144}, {"cm", 91.44}, {"mm", 914.4}}},
+	{"feet", {{"inch", 12.0}, {"yard",  (1.0 / 3.0)}, {"m", 0.3048}, {"cm", 30.48}, {"mm", 304.8}}},
+	{"inch", {{"feet", (1.0 / 12.0)}, {"yard", (1.0 / 36.0)}, {"m", 0.0254}, {"cm", 2.54}, {"mm", 25.4}}},
+	{"pound", {{"g", 453.59237}, {"ounce", 16.0}, {"grain", 7000.0}}},
+	{"ounce", {{"g", 28.349523125}, {"pound", (1.0 / 16.0)}, {"grain", (7000.0 / 16.0)}}},
+	{"grain", {{"mg", 64.79891}, {"g", 0.06479891}, {"pound", (1.0 / 7000.0)}, {"ounce", (16.0 / 7000.0)}}},
+	{"寸", {{"mm", (1000 / 33)}, {"cm", (100 / 33)}}},
+	{"尺", {{"mm", (10000 / 33)}, {"cm", (1000 / 33)}}},
+	{"坪", {{"㎡", (400 / 121)}}},
+	{"勺", {{"L", (2401 / 1331) / 100}, {"mL", (2401 / 1331) * 10}}},
+	{"合", {{"L", (2401 / 1331) / 10}, {"mL", (2401 / 1331) * 100}}},
+	{"升", {{"L", (2401 / 1331)}}},
+	{"斗", {{"L", (2401 / 1331) * 10}}},
+}
+local skk_gadget_unit_table = {}
+for i, v in ipairs(skk_gadget_unit_table_org) do
+	local unit_to_table = {}
+	for j, vv in ipairs(v[2]) do
+		unit_to_table[vv[1]] = vv[2]
+	end
+	skk_gadget_unit_table[v[1]] = unit_to_table
+end
 
 -- 定数テーブル
-local skk_gadget_const_table = {
+local skk_gadget_const_table_org = {
 	{"fill-column", "70"},
 	{"comment-start", "/*"},
 	{"comment-end", "*/"},
 }
+local skk_gadget_const_table = {}
+for i, v in ipairs(skk_gadget_const_table_org) do
+	skk_gadget_const_table[v[1]] = v[2]
+end
 
 -- (window-width)
 local window_width_val = "80"
@@ -530,13 +553,13 @@ local function conv_ad_to_gengo(num, gengotype, type, div, tail, not_gannen, mon
 
 	local year = tonumber(num)
 
-	for i, value in ipairs(skk_gadget_gengo_table) do
-		if ((year >= value[1][1] and month == 0 and day == 0) or
-			(year > value[1][1]) or
-			(year == value[1][1] and month > value[1][2]) or
-			(year == value[1][1] and month == value[1][2] and day >= value[1][3])) then
-			ret = value[3][tonumber(gengotype)] .. div
-			local gengo_year = year - value[1][1] + value[1][4]
+	for i, v in ipairs(skk_gadget_gengo_table) do
+		if ((year >= v[1][1] and month == 0 and day == 0) or
+			(year > v[1][1]) or
+			(year == v[1][1] and month > v[1][2]) or
+			(year == v[1][1] and month == v[1][2] and day >= v[1][3])) then
+			ret = v[3][tonumber(gengotype)] .. div
+			local gengo_year = year - v[1][1] + v[1][4]
 			if ((gengo_year == 1) and (not not_gannen)) then
 				ret = ret .. "元" .. tail
 			else
@@ -584,10 +607,10 @@ local function skk_gengo_to_ad(t)
 
 	local year = tonumber(num)
 
-	for i, value in ipairs(skk_gadget_gengo_table) do
-		if (string.sub(skk_henkan_key, 1, string.len(value[2])) == value[2]) then
-			if (year >= value[1][4]) then
-				local ad_year = year + value[1][1] - value[1][4]
+	for i, v in ipairs(skk_gadget_gengo_table) do
+		if (string.sub(skk_henkan_key, 1, string.len(v[2])) == v[2]) then
+			if (year >= v[1][4]) then
+				local ad_year = year + v[1][1] - v[1][4]
 				ret = head .. tostring(ad_year) .. tail
 				break
 			end
@@ -729,15 +752,11 @@ local function skk_gadget_units_conversion(t)
 	local number = t[2]
 	local unit_to = t[3]
 
-	for i, value_from in ipairs(skk_gadget_unit_table) do
-		if (value_from[1] == unit_from) then
-			for j, value_to in ipairs(value_from[2]) do
-				if (value_to[1] == unit_to) then
-					ret = tostring(float_to_integer(tonumber(number) * value_to[2])) .. unit_to
-					break
-				end
-			end
-			break
+	local value_from = skk_gadget_unit_table[unit_from]
+	if (value_from) then
+		local value_to = value_from[unit_to]
+		if (value_to) then
+			ret = tostring(float_to_integer(tonumber(number) * value_to)) .. unit_to
 		end
 	end
 
@@ -750,7 +769,7 @@ local function skk_omikuji(t)
 end
 
 -- 関数テーブル
-local skk_gadget_func_table = {
+local skk_gadget_func_table_org = {
 	{"concat", concat},
 	{"substring", substring},
 	{"make-string", make_string},
@@ -777,6 +796,10 @@ local skk_gadget_func_table = {
 	{"skk-gadget-units-conversion", skk_gadget_units_conversion},
 	{"skk-omikuji", skk_omikuji},
 }
+local skk_gadget_func_table = {}
+for i, v in ipairs(skk_gadget_func_table_org) do
+	skk_gadget_func_table[v[1]] = v[2]
+end
 
 -- 文字列パース   8進数表記の文字、二重引用符、バックスラッシュ
 local function parse_string(s)
@@ -786,15 +809,9 @@ local function parse_string(s)
 		s = string.sub(ret, 2, string.len(s) - 1)
 	end
 
-	s = string.gsub(s, "\\\\",
-		function(n)
-			return "\\"
-		end)
+	s = string.gsub(s, "\\\\", "\\")
 
-	s = string.gsub(s, "\\\"",
-		function(n)
-			return "\""
-		end)
+	s = string.gsub(s, "\\\"", "\"")
 
 	ret = string.gsub(s, "\\[0-3][0-7][0-7]",
 		function(n)
@@ -842,7 +859,7 @@ function convert_s_to_table(s)
 					if (r ~= "{") then
 						ret = ret .. ","
 					end
-					-- 要素を文字列化
+
 					e = string.gsub(e, "\\", "\\\\")
 					e = string.gsub(e, "^\"(.*)\"$", "%1")
 					ret = ret .. "\"" .. e .. "\""
@@ -865,37 +882,26 @@ end
 
 -- テーブル評価
 function eval_table(x)
-	if (type(x) == "table") then
+	if (type(x) == "table" and #x > 0) then
 		if (x[1] == "lambda") then
-			if (#x >= 3) then
+			if (#x >= 3 and x[3]) then
 				return x[3]
 			else
 				return ""
 			end
 		end
 
-		local func
-		-- 関数名から関数を取得
-		for i, fv in ipairs(skk_gadget_func_table) do
-			if (fv[1] == x[1]) then
-				func = fv[2]
-				break
-			end
-		end
-
-		if (func ~= nil) then
+		local func = skk_gadget_func_table[x[1]]
+		if (func) then
 			table.remove(x, 1)
 			for i, v in ipairs(x) do
-				-- 定数名から定数を取得
-				for j, cv in ipairs(skk_gadget_const_table) do
-					if (cv[1] == v) then
-						v = cv[2]
-						break
-					end
+				local cv = skk_gadget_const_table[v]
+				if (cv) then
+					v = cv
 				end
-				-- 引数を評価
 				x[i] = eval_table(v)
 			end
+
 			return func(x)
 		end
 	else
@@ -915,26 +921,19 @@ local function skk_ignore_dic_word(candidates)
 		local c = string.gsub(ca, ";.+", "")
 		local word = string.gsub(c, "%s*%(%s*skk%-ignore%-dic%-word%s+\"(.+)\"%s*%)%s*", "%1")
 		if (word ~= c) then
-			table.insert(ignore_word_table, word)
+			ignore_word_table[word] = true
 		else
 			sca = sca .. "/" .. ca
 		end
 	end
 
-	if (#ignore_word_table == 0) then
+	if (sca == candidates) then
 		return candidates
 	end
 
 	for ca in string.gmatch(sca, "([^/]+)") do
 		local c = string.gsub(ca, ";.+", "")
-		local cc = c
-		for i, w in ipairs(ignore_word_table) do
-			if (w == c) then
-				cc = ""
-				break
-			end
-		end
-		if (cc ~= "") then
+		if (not ignore_word_table[c]) then
 			ret = ret .. "/" .. ca
 		end
 	end
