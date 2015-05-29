@@ -102,11 +102,6 @@
 		バージョン (skk-version)に使用
 			SKK_VERSION
 				"CorvusSKK X.Y.Z" string
-
-
-	スクリプトファイルinit.luaの文字コード
-
-		UTF-8のみ対応
 --]]
 
 
@@ -202,19 +197,24 @@ for i, v in ipairs(skk_gadget_unit_table_org) do
 	skk_gadget_unit_table[v[1]] = unit_to_table
 end
 
--- 定数テーブル
-local skk_gadget_const_table_org = {
+-- 変数テーブル
+local skk_gadget_variable_table_org = {
+	{"skk-henkan-key", function() return skk_henkan_key end},
+	{"skk-num-list", function() return skk_num_list end},
 	{"fill-column", "70"},
 	{"comment-start", "/*"},
 	{"comment-end", "*/"},
 }
-local skk_gadget_const_table = {}
-for i, v in ipairs(skk_gadget_const_table_org) do
-	skk_gadget_const_table[v[1]] = v[2]
+local skk_gadget_variable_table = {}
+for i, v in ipairs(skk_gadget_variable_table_org) do
+	skk_gadget_variable_table[v[1]] = v[2]
 end
 
 -- (window-width)
-local window_width_val = "80"
+local window_width_value = "80"
+
+-- (window-height)
+local window_height_value = "23"
 
 -- 文字コード表記変換プレフィックス
 local charcode_conv_prefix = "?"
@@ -411,11 +411,6 @@ local function make_string(t)
 	return ret
 end
 
--- number-to-string
-local function number_to_string(t)
-	return t[1]
-end
-
 -- string-to-number
 local function string_to_number(t)
 	return t[1]
@@ -426,17 +421,43 @@ local function string_to_char(t)
 	return string.sub(t[1], 1, 1)
 end
 
+-- number-to-string
+local function number_to_string(t)
+	return t[1]
+end
+
+-- window-height
+local function window_height(t)
+	return window_height_value
+end
+
 -- window-width
 local function window_width(t)
-	return window_width_val
+	return window_width_value
+end
+
+-- current-time-string
+local function current_time_string(t)
+	local d = os.date("*t")
+	return string.format("%s %s %2d %02d:%02d:%02d %04d",
+		skk_gadget_dayofweek_table[d.wday][1], skk_gadget_month_table[d.month][1], d.day,
+		d.hour, d.min, d.sec, d.year)
 end
 
 -- car
 local function car(t)
-	if (#skk_num_list == 0) then
-		return ""
+	if (#t > 0 and #t[1] > 0) then
+		return t[1][1]
 	end
-	return skk_num_list[1]
+	return ""
+end
+
+-- cdr
+local function cdr(t)
+	if (#t > 0 and #t[1] > 1) then
+		return {table.unpack(t[1], 2)}
+	end
+	return ""
 end
 
 -- convert float to integer (remove suffix ".0")
@@ -695,7 +716,7 @@ local function skk_current_date(t)
 	if (pp_function == nil) then
 		ret = skk_default_current_date(nil)
 	else
-    ret = eval_table(pp_function)
+		ret = eval_table(pp_function)
 	end
 
 	return ret
@@ -728,20 +749,12 @@ local function skk_relative_date(t)
 	if (pp_function == "nil") then
 		ret = skk_default_current_date(nil)
 	else
-    ret = eval_table(pp_function)
+		ret = eval_table(pp_function)
 	end
 
 	skk_gadget_time = skk_gadget_time_bak
 
 	return ret
-end
-
--- current-time-string
-local function current_time_string(t)
-	local d = os.date("*t")
-	return string.format("%s %s %2d %02d:%02d:%02d %04d",
-		skk_gadget_dayofweek_table[d.wday][1], skk_gadget_month_table[d.month][1], d.day,
-		d.hour, d.min, d.sec, d.year)
 end
 
 -- skk-gadget-units-conversion
@@ -773,11 +786,14 @@ local skk_gadget_func_table_org = {
 	{"concat", concat},
 	{"substring", substring},
 	{"make-string", make_string},
-	{"number-to-string", number_to_string},
 	{"string-to-number", string_to_number},
 	{"string-to-char", string_to_char},
-	{"car", car},
+	{"number-to-string", number_to_string},
 	{"window-width", window_width},
+	{"window-height", window_height},
+	{"current-time-string", current_time_string},
+	{"car", car},
+	{"cdr", cdr},
 	{"1+", plus_1},
 	{"1-", minus_1},
 	{"+", plus},
@@ -792,7 +808,6 @@ local skk_gadget_func_table_org = {
 	{"skk-default-current-date", skk_default_current_date},
 	{"skk-current-date", skk_current_date},
 	{"skk-relative-date", skk_relative_date},
-	{"current-time-string", current_time_string},
 	{"skk-gadget-units-conversion", skk_gadget_units_conversion},
 	{"skk-omikuji", skk_omikuji},
 }
@@ -803,17 +818,12 @@ end
 
 -- 文字列パース   8進数表記の文字、二重引用符、バックスラッシュ
 local function parse_string(s)
-	local ret = s
+	local ret = ""
 
-	if (string.match(s, "^\".*\"$")) then
-		s = string.sub(ret, 2, string.len(s) - 1)
-	end
-
+	s = string.gsub(s, "^\"(.*)\"$", "%1")
 	s = string.gsub(s, "\\\\", "\\")
-
 	s = string.gsub(s, "\\\"", "\"")
-
-	ret = string.gsub(s, "\\[0-3][0-7][0-7]",
+	s = string.gsub(s, "\\[0-3][0-7][0-7]",
 		function(n)
 			local c =
 				tonumber(string.sub(n, 2, 2)) * 64 +
@@ -824,6 +834,8 @@ local function parse_string(s)
 			end
 			return ""
 		end)
+
+	ret = s
 
 	return ret
 end
@@ -861,7 +873,7 @@ function convert_s_to_table(s)
 					end
 
 					e = string.gsub(e, "\\", "\\\\")
-					e = string.gsub(e, "^\"(.*)\"$", "%1")
+					e = string.gsub(e, "\"", "\\\"")
 					ret = ret .. "\"" .. e .. "\""
 					e = ""
 				end
@@ -882,7 +894,8 @@ end
 
 -- テーブル評価
 function eval_table(x)
-	if (type(x) == "table" and #x > 0) then
+	local argtype = type(x)
+	if (argtype == "table" and #x > 0) then
 		if (x[1] == "lambda") then
 			if (#x >= 3 and x[3]) then
 				return x[3]
@@ -893,18 +906,20 @@ function eval_table(x)
 
 		local func = skk_gadget_func_table[x[1]]
 		if (func) then
-			table.remove(x, 1)
-			for i, v in ipairs(x) do
-				local cv = skk_gadget_const_table[v]
-				if (cv) then
-					v = cv
+			local arg = {table.unpack(x, 2)}
+			for i, v in ipairs(arg) do
+				local vv = skk_gadget_variable_table[v]
+				if (vv) then
+					v = vv
 				end
-				x[i] = eval_table(v)
+				arg[i] = eval_table(v)
 			end
 
-			return func(x)
+			return func(arg)
 		end
-	else
+	elseif (argtype == "function") then
+		return x()
+	elseif (argtype == "string") then
 		return parse_string(x)
 	end
 
