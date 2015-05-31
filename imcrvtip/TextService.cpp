@@ -39,6 +39,7 @@ CTextService::CTextService()
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
 	_ShowInputMode = FALSE;
+	_Vertical = FALSE;
 
 	hPipe = INVALID_HANDLE_VALUE;
 

@@ -2,12 +2,12 @@
 <skk>
 <!--
 
- ACT サンプル （参照：http://www1.vecceed.ne.jp/~bemu/act/act_index.html）
+ ACT サンプル (参照：http://www1.vecceed.ne.jp/~bemu/act/act_index.html)
 
 -->
   <section name="dictionary">
     <list>
-      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" />
+      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" enabled="1" />
     </list>
   </section>
   <section name="server">

@@ -49,6 +49,7 @@ extern LPCWSTR AttributeCandidate;
 extern LPCWSTR AttributeAnnotation;
 extern LPCWSTR AttributeKey;
 extern LPCWSTR AttributePath;
+extern LPCWSTR AttributeEnabled;
 extern LPCWSTR AttributeVKey;
 extern LPCWSTR AttributeMKey;
 extern LPCWSTR AttributeCPStart;

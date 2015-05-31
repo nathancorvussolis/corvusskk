@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 1.8.7
+# CorvusSKK ver. 1.8.8
 
 Windowsで動作するSKK風のIMEです。
 
@@ -44,7 +44,7 @@ Windows 7 以降ではインストールは不要です。
 
 ### CorvusSKK のインストール
 
-corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.msi、64bit版 Windows では corvusskk-X.Y.Z-x64.msi を実行して下さい。（X, Y, Z はバージョン番号）
+corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.msi、64bit版 Windows では corvusskk-X.Y.Z-x64.msi を実行して下さい。 (X, Y, Z はバージョン番号)
 
 アップデートの後はOSを再起動しておくと安全です。
 
@@ -60,14 +60,14 @@ corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.m
 
 ### Windows Store アプリ
 
-Windows Store アプリで使用するには、設定ファイル（config.xml）に Windows Store アプリへのアクセス許可を付加させる必要があります。
+Windows Store アプリで使用するには、設定ファイル (config.xml) に Windows Store アプリへのアクセス許可を付加させる必要があります。
 
 Windows 8 以降で動作する設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に行われます。
 
 
 ### Adobe Reader X, XI, Acrobat Reader DC
 
-Adobe Reader X 以降で使用するには、設定ファイル（config.xml）に Adobe Reader へのアクセス許可を付加させる必要があります。
+Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に Adobe Reader へのアクセス許可を付加させる必要があります。
 
 設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に行われます。
 
@@ -77,7 +77,7 @@ Adobe Reader X 以降で使用するには、設定ファイル（config.xml）�
 
 ### 設定ダイアログ
 
-設定ダイアログは、以下の操作で開くことができます。
+設定ダイアログは、以下のいずれかの操作で開くことができます。
 
 * 言語バーを右クリックし、メニューから「設定」を選択する。「テキストサービスと入力言語」ダイアログの「インストールされているサービス」からCorvusSKKを選択し、プロパティボタンを押す。
 * 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
@@ -110,9 +110,9 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 |---|---|
 | userdict.txt | ユーザー辞書 |
 
-UTF-16(LE, BOMあり)のSKK辞書フォーマットとなっています。
+UTF-16 (LE, BOMあり) のSKK辞書フォーマットとなっています。
 
-ユーザー辞書を編集する際は、ログオンユーザー権限で動作しているサーバープロセス（imcrvmgr.exe）をタスクマネージャなどで終了させた状態で行なって下さい。
+ユーザー辞書を編集する際は、ログオンユーザー権限で動作しているサーバープロセス (imcrvmgr.exe) をタスクマネージャなどで終了させた状態で行なって下さい。
 
 編集後、以下のいずれかの操作を行うとサーバープロセスが自動的に起動します。
 
@@ -125,7 +125,7 @@ UTF-16(LE, BOMあり)のSKK辞書フォーマットとなっています。
 * IME ON 状態から OFF 状態にするとき
 * IME ON 状態のアプリケーションが終了するとき
 * アプリケーションがフォーカスを失うとき
-* サーバープロセス（imcrvmgr.exe）が終了するとき
+* サーバープロセス (imcrvmgr.exe) が終了するとき
 
 
 ### SKK辞書
@@ -134,9 +134,13 @@ SKK辞書の詳細はこちらを参照下さい。 http://openlab.jp/skk/wiki/w
 
 こちらから辞書をダウンロード出来ます。 http://openlab.ring.gr.jp/skk/skk/dic/
 
+SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
+
 設定ダイアログのリストにSKK辞書を追加し、取込ボタンを押して下さい。取込済SKK辞書に変換されて使用可能となります。
 
-SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり)に対応しています。
+チェックボックスを外すと取込の対象外となります。
+
+リストの選択されている行をクリックするとインライン編集することができます。
 
 SKK辞書のURLを追加した場合は、取込処理のときにディレクトリ %TMP%\CorvusSKK または %TEMP%\CorvusSKK にダウンロードされてから取り込まれます。
 
@@ -210,9 +214,9 @@ SKK辞書のダウンロード機能では FTP, HTTP, HTTPS が使用可能で�
 
 | 機能 | 説明 |
 |---|---|
-| 数字 | 選択キー（1〜9で固定） |
-| 表示 | 選択キー（必須、候補一覧の表示にも使用） |
-| 予備 | 選択キー（空でもOK） |
+| 数字 | 選択キー (1〜9で固定) |
+| 表示 | 選択キー (必須、候補一覧の表示にも使用) |
+| 予備 | 選択キー (空でもOK) |
 
 
 ### キー設定（ON/OFF）
@@ -354,7 +358,7 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
 
 「促／ん」がONのとき、仮名が決定したあとに最後の入力文字が入力状態となります。
 
-「待機」がONのとき、入力した文字をローマ字仮名変換した結果（変換出来ないときは入力した文字そのまま）がローマ字として扱われ、辞書検索開始、確定、補完開始、ローマ字に設定されていない組み合わせ、のいずれかになるまで仮名の最終的な決定が遅延されます。
+「待機」がONのとき、入力した文字をローマ字仮名変換した結果 (変換出来ないときは入力した文字そのまま) がローマ字として扱われ、辞書検索開始、確定、補完開始、ローマ字に設定されていない組み合わせ、のいずれかになるまで仮名の最終的な決定が遅延されます。
 
 平仮名／片仮名変換では基本的に１文字ずつ変換されます。
 
@@ -375,7 +379,7 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
   * <ローマ字>、<ひらがな>、<カタカナ>、<カタカナ(半角)>は、それぞれUTF-16換算で最大14バイトです。
   * [促/ん]は、ONのとき1、OFFのとき0です。
   * [待機]は、ONのとき2、OFFのとき0です。
-  * <[促/ん]|[待機]>は、[促/ん]と[待機]の両方がONのとき3となりますが、[待機]のほうが優先されます。（0のときは無しでも可）
+  * <[促/ん]|[待機]>は、[促/ん]と[待機]の両方がONのとき3となりますが、[待機]のほうが優先されます。 (0のときは無しでも可)
   * 空行やタブのみの行は読み飛ばされます。
   * <\t>、<\r>、<\n>は、それぞれタブ、改行コードに読み替えて下さい。
 * 例１）a<\t>あ<\t>ア<\t>ｱ<\r><\n>
@@ -395,7 +399,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 ### Lua拡張
 
-サーバープロセス(imcrvmgr.exe)の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
+サーバープロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
 現在使用しているLuaのバージョンは5.3.0です。
 
@@ -407,7 +411,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 サーバープロセスのカレントディレクトリは、%AppData%\CorvusSKK になっています。
 
-サーバープロセスの起動時にスクリプトファイル(init.lua)が下記の優先順位でロードされます。
+サーバープロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位でロードされます。
 
 1. %AppData%\CorvusSKK\init.lua
 2. サーバープロセスと同じディレクトリのinit.lua
@@ -421,37 +425,46 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承下さい。
 
-以下の関数、値に大体対応しています。
+以下のシンボルに大体対応しています。
 
-    substring
-    concat
-    make-string
-    string-to-char
-    string-to-number
-    current-time-string
-    car (skk-num-list の先頭要素のみ)
-    lambda
-    1+
-    1-
-    +
-    -
-    *
-    /
-    %
-    skk-version
-    skk-server-version
-    skk-gadget-units-conversion
-    skk-ad-to-gengo
-    skk-gengo-to-ad
-    skk-current-date
-    skk-default-current-date
-    skk-relative-date
-    skk-ignore-dic-word (デフォルト無効)
-    skk-omikuji (引数なし、独自実装。おみくじを引くことができます)
-    window-width (80で固定)
-    fill-column (70で固定)
-    comment-start ("/*")
-    comment-end ("*/")
+| 名称 | 説明 |
+|---|---|
+| nil |  |
+| t |  |
+| lambda |  |
+| concat |  |
+| substring |  |
+| make-string |  |
+| string-to-char |  |
+| string-to-number |  |
+| number-to-string |  |
+| window-width | 80で固定 |
+| window-height | 23で固定 |
+| current-time-string |  |
+| car | ほぼ skk-num-list 用 |
+| cdr | ほぼ skk-num-list 用 |
+| 1+ |  |
+| 1- |  |
+| + |  |
+| - |  |
+| \* |  |
+| / |  |
+| % |  |
+| skk-version |  |
+| skk-server-version |  |
+| skk-gadget-units-conversion |  |
+| skk-ad-to-gengo |  |
+| skk-gengo-to-ad |  |
+| skk-current-date |  |
+| skk-default-current-date |  |
+| skk-relative-date |  |
+| skk-ignore-dic-word | デフォルト無効 |
+| skk-omikuji | 独自実装<br>おみくじを引くことができます |
+| fill-column | 70で固定 |
+| comment-start | "/\*" |
+| comment-end | "\*/" |
+| skk-henkan-key | 変換する見出し語 |
+| skk-num-list | 変換する見出し語に含まれる数値文字列のリスト |
 
 
 ### 数値変換
@@ -508,7 +521,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 辞書登録のとき、登録する候補の入力と同時に行います。
 
-行頭以外の最後のセミコロン（いわゆる半角のセミコロン）以降が注釈となります。
+行頭以外の最後のセミコロン (いわゆる半角のセミコロン）以降が注釈となります。
 
 注釈にセミコロンを含めることは出来ません。
 

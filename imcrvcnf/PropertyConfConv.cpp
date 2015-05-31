@@ -98,14 +98,14 @@ void LoadConfigPreservedKey()
 
 void LoadPreservedKey(HWND hwnd)
 {
-	HWND hWndList;
+	HWND hWndListView;
 	int i;
 	LVITEMW item;
 	WCHAR num[8];
 
 	LoadConfigPreservedKey();
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_PRSRVKEY);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_PRSRVKEY);
 
 	for(i = 0; i < MAX_PRESERVEDKEY; i++)
 	{
@@ -120,22 +120,22 @@ void LoadPreservedKey(HWND hwnd)
 		item.pszText = num;
 		item.iItem = i;
 		item.iSubItem = 0;
-		ListView_InsertItem(hWndList, &item);
+		ListView_InsertItem(hWndListView, &item);
 		_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[i].uModifiers & TF_MOD_ALT ? 1 : 0);
 		item.pszText = num;
 		item.iItem = i;
 		item.iSubItem = 1;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[i].uModifiers & TF_MOD_CONTROL ? 1 : 0);
 		item.pszText = num;
 		item.iItem = i;
 		item.iSubItem = 2;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[i].uModifiers & TF_MOD_SHIFT ? 1 : 0);
 		item.pszText = num;
 		item.iItem = i;
 		item.iSubItem = 3;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 	}
 }
 
@@ -256,13 +256,13 @@ void LoadConfigConvPoint()
 
 void LoadConvPoint(HWND hwnd)
 {
-	HWND hWndList;
+	HWND hWndListView;
 	int i;
 	LVITEMW item;
 
 	LoadConfigConvPoint();
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 
 	for(i = 0; i < CONV_POINT_NUM; i++)
 	{
@@ -277,15 +277,15 @@ void LoadConvPoint(HWND hwnd)
 		item.pszText = conv_point[i][0];
 		item.iItem = i;
 		item.iSubItem = 0;
-		ListView_InsertItem(hWndList, &item);
+		ListView_InsertItem(hWndListView, &item);
 		item.pszText = conv_point[i][1];
 		item.iItem = i;
 		item.iSubItem = 1;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		item.pszText = conv_point[i][2];
 		item.iItem = i;
 		item.iSubItem = 2;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 	}
 }
 
@@ -427,14 +427,14 @@ void LoadConfigKana()
 
 void LoadKana(HWND hwnd)
 {
-	HWND hWndList;
+	HWND hWndListView;
 	int i, count;
 	LVITEMW item;
 	WCHAR soku[2];
 
 	LoadConfigKana();
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_KANATBL);
 	count = (int)roman_kana_conv.size();
 
 	for(i = 0; i < count; i++)
@@ -443,25 +443,25 @@ void LoadKana(HWND hwnd)
 		item.pszText = roman_kana_conv[i].roman;
 		item.iItem = i;
 		item.iSubItem = 0;
-		ListView_InsertItem(hWndList, &item);
+		ListView_InsertItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].hiragana;
 		item.iItem = i;
 		item.iSubItem = 1;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].katakana;
 		item.iItem = i;
 		item.iSubItem = 2;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].katakana_ank;
 		item.iItem = i;
 		item.iSubItem = 3;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		soku[1] = L'\0';
 		soku[0] = L'0' + (roman_kana_conv[i].soku ? 1 : 0) + (roman_kana_conv[i].wait ? 2 : 0);
 		item.pszText = soku;
 		item.iItem = i;
 		item.iSubItem = 4;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 	}
 }
 
@@ -581,13 +581,13 @@ void LoadConfigJLatin()
 
 void LoadJLatin(HWND hwnd)
 {
-	HWND hWndList;
+	HWND hWndListView;
 	int i;
 	LVITEMW item;
 
 	LoadConfigJLatin();
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_JLATTBL);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_JLATTBL);
 
 	for(i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
 	{
@@ -601,11 +601,11 @@ void LoadJLatin(HWND hwnd)
 		item.pszText = ascii_jlatin_conv[i].ascii;
 		item.iItem = i;
 		item.iSubItem = 0;
-		ListView_InsertItem(hWndList, &item);
+		ListView_InsertItem(hWndListView, &item);
 		item.pszText = ascii_jlatin_conv[i].jlatin;
 		item.iItem = i;
 		item.iSubItem = 1;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 	}
 }
 
@@ -749,15 +749,15 @@ void LoadConfigKanaTxt(LPCWSTR path)
 
 void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 {
-	HWND hWndList;
+	HWND hWndListView;
 	int i, count;
 	LVITEMW item;
 	WCHAR soku[2];
 
 	LoadConfigKanaTxt(path);
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_KANATBL);
-	ListView_DeleteAllItems(hWndList);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_KANATBL);
+	ListView_DeleteAllItems(hWndListView);
 	count = (int)roman_kana_conv.size();
 
 	for(i = 0; i < count; i++)
@@ -766,25 +766,25 @@ void LoadKanaTxt(HWND hwnd, LPCWSTR path)
 		item.pszText = roman_kana_conv[i].roman;
 		item.iItem = i;
 		item.iSubItem = 0;
-		ListView_InsertItem(hWndList, &item);
+		ListView_InsertItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].hiragana;
 		item.iItem = i;
 		item.iSubItem = 1;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].katakana;
 		item.iItem = i;
 		item.iSubItem = 2;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		item.pszText = roman_kana_conv[i].katakana_ank;
 		item.iItem = i;
 		item.iSubItem = 3;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 		soku[1] = L'\0';
 		soku[0] = L'0' + (roman_kana_conv[i].soku ? 1 : 0) + (roman_kana_conv[i].wait ? 2 : 0);
 		item.pszText = soku;
 		item.iItem = i;
 		item.iSubItem = 4;
-		ListView_SetItem(hWndList, &item);
+		ListView_SetItem(hWndListView, &item);
 	}
 }
 

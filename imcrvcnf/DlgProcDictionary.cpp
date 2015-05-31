@@ -25,12 +25,13 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR port[MAX_SKKSERVER_PORT];
 	std::wstring strxmlval;
 	FILE *fp;
+	static HWND hEdit;
 
 	switch(message)
 	{
 	case WM_INITDIALOG:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
-		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT);
+		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvc.fmt = LVCFMT_CENTER;
 
@@ -129,6 +130,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
 			return TRUE;
@@ -161,6 +163,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
 			return TRUE;
@@ -213,6 +216,34 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		break;
 
 	case WM_NOTIFY:
+		if(wParam == IDC_LIST_SKK_DIC)
+		{
+			hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
+			LPNMLVDISPINFOW pdi = (LPNMLVDISPINFOW)lParam;
+			switch(pdi->hdr.code)
+			{
+			case LVN_BEGINLABELEDIT:
+				hEdit = ListView_GetEditControl(hWndListView);
+				return TRUE;
+
+			case LVN_ENDLABELEDIT:
+				PropSheet_Changed(GetParent(hDlg), hDlg);
+
+				GetWindowTextW(hEdit, urlskkdic, _countof(urlskkdic));
+				if(urlskkdic[0] == L'\0')
+				{
+					return FALSE;
+				}
+				ListView_SetItemText(hWndListView, pdi->item.iItem, 0, urlskkdic);
+				urlskkdic[0] = L'\0';
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				return TRUE;
+
+			default:
+				break;
+			}
+		}
+
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:

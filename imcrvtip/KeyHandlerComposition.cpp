@@ -346,6 +346,27 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		{
 			return S_FALSE;
 		}
+
+		_Vertical = FALSE;
+
+		ITfRange *pRange;
+		if(_pComposition->GetRange(&pRange) == S_OK)
+		{
+			ITfReadOnlyProperty *pReadOnlyProperty;
+			if(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty) == S_OK)
+			{
+				VARIANT var;
+				if(pReadOnlyProperty->GetValue(ec, pRange, &var) == S_OK)
+				{
+					if(var.vt == VT_BOOL)
+					{
+						_Vertical = var.boolVal;
+					}
+				}
+				SafeRelease(&pReadOnlyProperty);
+			}
+			SafeRelease(&pRange);
+		}
 	}
 
 	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)

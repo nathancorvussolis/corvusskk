@@ -1,4 +1,6 @@
 ﻿
+#include <initguid.h>
+
 #include "configxml.h"
 #include "imcrvtip.h"
 

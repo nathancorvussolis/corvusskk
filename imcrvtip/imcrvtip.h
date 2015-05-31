@@ -2,6 +2,8 @@
 #ifndef IMCRVTIP_H
 #define IMCRVTIP_H
 
+#include <tsattrs.h>
+
 #include "common.h"
 #include "convtype.h"
 

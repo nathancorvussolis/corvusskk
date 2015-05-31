@@ -2,12 +2,12 @@
 <skk>
 <!--
 
- AZIK 英語キーボード用サンプル （参照：http://hp.vector.co.jp/authors/VA002116/azik/azikindx.htm）
+ AZIK 英語キーボード用サンプル (参照：http://hp.vector.co.jp/authors/VA002116/azik/azikindx.htm)
 
 -->
   <section name="dictionary">
     <list>
-      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" />
+      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" enabled="1" />
     </list>
   </section>
   <section name="server">

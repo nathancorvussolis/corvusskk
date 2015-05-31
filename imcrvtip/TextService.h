@@ -306,6 +306,7 @@ public:
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
 	BOOL _ShowInputMode;	//InputModeWindow
+	BOOL _Vertical;			//Vertical Writing 
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)

@@ -20,7 +20,7 @@
 -->
   <section name="dictionary">
     <list>
-      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" />
+      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" enabled="1" />
     </list>
   </section>
   <section name="server">

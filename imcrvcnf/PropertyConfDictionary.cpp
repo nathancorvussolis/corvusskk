@@ -17,14 +17,15 @@ struct {
 
 void LoadDictionary(HWND hwnd)
 {
-	HWND hWndList;
+	BOOL check;
+	HWND hWndListView;
 	int i = 0;
 	LVITEMW item;
 	APPDATAXMLLIST list;
 
 	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK && list.size() != 0)
 	{
-		hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+		hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
 		FORWARD_ITERATION_I(l_itr, list)
 		{
 			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
@@ -35,31 +36,46 @@ void LoadDictionary(HWND hwnd)
 			item.pszText = (LPWSTR)(*l_itr)[0].second.c_str();
 			item.iItem = i;
 			item.iSubItem = 0;
-			ListView_InsertItem(hWndList, &item);
+			ListView_InsertItem(hWndListView, &item);
+
+			check = TRUE;
+			if(l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
+			{
+				check = _wtoi((*l_itr)[1].second.c_str());
+			}
+			ListView_SetCheckState(hWndListView, i, check);
+
 			i++;
 		}
-		ListView_SetColumnWidth(hWndList, 0, LVSCW_AUTOSIZE);
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 	}
 }
 
 void SaveDictionary(HWND hwnd)
 {
 	WCHAR path[MAX_PATH];
-	HWND hWndList;
+	BOOL check;
+	HWND hWndListView;
 	int i, count;
 	APPDATAXMLATTR attr;
 	APPDATAXMLROW row;
 	APPDATAXMLLIST list;
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	count = ListView_GetItemCount(hWndList);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	count = ListView_GetItemCount(hWndListView);
 
 	for(i = 0; i < count; i++)
 	{
-		ListView_GetItemText(hWndList, i, 0, path, _countof(path));
+		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
+
+		check = ListView_GetCheckState(hWndListView, i);
 
 		attr.first = AttributePath;
 		attr.second = path;
+		row.push_back(attr);
+
+		attr.first = AttributeEnabled;
+		attr.second = (check ? L"1" : L"0");
 		row.push_back(attr);
 
 		list.push_back(row);
@@ -208,10 +224,11 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 
 HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
-	HWND hWndList;
+	HWND hWndListView;
+	BOOL check;
 	WCHAR path[MAX_PATH];
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
-	size_t count, ic;
+	size_t i, count;
 	FILE *fp;
 	int encode;
 	WCHAR bom;
@@ -224,22 +241,28 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	SKKDICOKURIBLOCKS so;
 	int rl;
 
-	hWndList = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	count = ListView_GetItemCount(hWndList);
+	hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	count = ListView_GetItemCount(hWndListView);
 
-	for(ic = 0; ic < count; ic++)
+	for(i = 0; i < count; i++)
 	{
 		if(SkkDicInfo.cancel)
 		{
 			return E_ABORT;
 		}
 
-		ListView_GetItemText(hWndList, ic, 0, path, _countof(path));
+		check = ListView_GetCheckState(hWndListView, i);
+		if(check == FALSE)
+		{
+			continue;
+		}
+
+		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
 		//download
 		if(std::regex_match(std::wstring(path), std::wregex(L"(ftp|http|https)://.+")))
 		{
-			ListView_GetItemText(hWndList, ic, 0, url, _countof(url));
+			ListView_GetItemText(hWndListView, i, 0, url, _countof(url));
 
 			HRESULT hrd = DownloadDic(url, path, _countof(path));
 			if(hrd != S_OK)

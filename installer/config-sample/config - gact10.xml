@@ -2,7 +2,7 @@
 <skk>
 <!--
 
- gACT10 サンプル （参照：http://hp.vector.co.jp/authors/VA002116/act/gact10_doc.html）
+ gACT10 サンプル (参照：http://hp.vector.co.jp/authors/VA002116/act/gact10_doc.html)
 
    ・オリジナルローマ字テーブルファイル gACT10.dat からの変更点
 
@@ -32,7 +32,7 @@
    ・q、l、L、/、不等号など、使用出来無くなる機能のキーは
      キーボード右上のほうのキーに退けていますので、適宜変更して下さい。
 
-   ・数字とスペースは入力そのままで、記号類は拡張面に定義しています。（qq＋記号）
+   ・数字とスペースは入力そのままで、記号類は拡張面に定義しています。(qq＋記号)
 
    ・英語キーボード、日本語キーボードの相違点は英語キーボードのほうをコメントアウトしています。
 
@@ -42,7 +42,7 @@
 -->
   <section name="dictionary">
     <list>
-      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" />
+      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" enabled="1" />
     </list>
   </section>
   <section name="server">

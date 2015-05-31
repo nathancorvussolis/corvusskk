@@ -19,6 +19,7 @@ LPCWSTR AttributeCandidate = L"c";
 LPCWSTR AttributeAnnotation = L"a";
 LPCWSTR AttributeKey = L"key";
 LPCWSTR AttributePath = L"path";
+LPCWSTR AttributeEnabled = L"enabled";
 LPCWSTR AttributeVKey = L"vkey";
 LPCWSTR AttributeMKey = L"mkey";
 LPCWSTR AttributeCPStart = L"st";
