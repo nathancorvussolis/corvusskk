@@ -91,36 +91,37 @@ const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM] =
 	FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE
 };
 
-BOOL IsVersion62AndOver()
+BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, WORD wServicePackMajor)
 {
 	OSVERSIONINFOEXW osvi;
 	DWORDLONG mask = 0;
 
 	ZeroMemory(&osvi, sizeof(osvi));
 	osvi.dwOSVersionInfoSize = sizeof(osvi);
-	osvi.dwMajorVersion = 6;
-	osvi.dwMinorVersion = 2;
+	osvi.dwMajorVersion = dwMajorVersion;
+	osvi.dwMinorVersion = dwMinorVersion;
+	osvi.wServicePackMajor = wServicePackMajor;
 
 	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
 	VER_SET_CONDITION(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
 
-	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, mask);
+	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask);
 }
 
-BOOL IsVersion63AndOver()
+BOOL IsWindowsVersion62OrLater()
 {
-	OSVERSIONINFOEXW osvi;
-	DWORDLONG mask = 0;
+	return IsWindowsVersionOrLater(6, 2, 0);
+}
 
-	ZeroMemory(&osvi, sizeof(osvi));
-	osvi.dwOSVersionInfoSize = sizeof(osvi);
-	osvi.dwMajorVersion = 6;
-	osvi.dwMinorVersion = 3;
+BOOL IsWindowsVersion63OrLater()
+{
+	return IsWindowsVersionOrLater(6, 3, 0);
+}
 
-	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
-
-	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION, mask);
+BOOL IsWindowsVersion100OrLater()
+{
+	return IsWindowsVersionOrLater(10, 0, 0);
 }
 
 BOOL GetSidMD5Digest(LPWSTR *ppszDigest)
@@ -236,14 +237,17 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	{
 		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
 		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
-		if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+		if(pTokenUser != NULL)
 		{
-			if(ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid))
+			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
-				bRet = TRUE;
+				if(ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid))
+				{
+					bRet = TRUE;
+				}
 			}
+			LocalFree(pTokenUser);
 		}
-		LocalFree(pTokenUser);
 		CloseHandle(hToken);
 	}
 
@@ -254,9 +258,8 @@ BOOL GetLogonSid(LPWSTR *ppszLogonSid)
 {
 	BOOL bRet = FALSE;
 	HANDLE hToken;
-	PTOKEN_GROUPS pTokenGroup;
-	DWORD dwLength;
-	DWORD dwIndex;
+	PTOKEN_GROUPS pTokenGroups;
+	DWORD dwLength, dwIndex;
 
 	if(ppszLogonSid == NULL)
 	{
@@ -266,22 +269,25 @@ BOOL GetLogonSid(LPWSTR *ppszLogonSid)
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenGroups, NULL, 0, &dwLength);
-		pTokenGroup = (PTOKEN_GROUPS)LocalAlloc(LPTR, dwLength);
-		if(GetTokenInformation(hToken, TokenGroups, pTokenGroup, dwLength, &dwLength))
+		pTokenGroups = (PTOKEN_GROUPS)LocalAlloc(LPTR, dwLength);
+		if(pTokenGroups != NULL)
 		{
-			for(dwIndex = 0; dwIndex < pTokenGroup->GroupCount; dwIndex++)
+			if(GetTokenInformation(hToken, TokenGroups, pTokenGroups, dwLength, &dwLength))
 			{
-				if((pTokenGroup->Groups[dwIndex].Attributes & SE_GROUP_LOGON_ID) == SE_GROUP_LOGON_ID)
+				for(dwIndex = 0; dwIndex < pTokenGroups->GroupCount; dwIndex++)
 				{
-					if(ConvertSidToStringSidW(pTokenGroup->Groups[dwIndex].Sid, ppszLogonSid))
+					if((pTokenGroups->Groups[dwIndex].Attributes & SE_GROUP_LOGON_ID) == SE_GROUP_LOGON_ID)
 					{
-						bRet = TRUE;
+						if(ConvertSidToStringSidW(pTokenGroups->Groups[dwIndex].Sid, ppszLogonSid))
+						{
+							bRet = TRUE;
+						}
+						break;
 					}
-					break;
 				}
 			}
+			LocalFree(pTokenGroups);
 		}
-		LocalFree(pTokenGroup);
 		CloseHandle(hToken);
 	}
 

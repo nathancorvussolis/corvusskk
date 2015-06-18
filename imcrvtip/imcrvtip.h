@@ -150,7 +150,7 @@ LONG DllRelease();
 #define IID_PUNK_ARGS(pType) __uuidof(*(pType)), reinterpret_cast<IUnknown**>(pType)
 
 // added in Windows 8 SDK
-#if (_WIN32_WINNT < 0x0602)
+#ifndef _WIN32_WINNT_WIN8
 
 #define EVENT_OBJECT_IME_SHOW               0x8027
 #define EVENT_OBJECT_IME_HIDE               0x8028
@@ -187,14 +187,14 @@ public:
 
 extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
 
-#endif //(_WIN32_WINNT < 0x0602)
+#endif //_WIN32_WINNT_WIN8
 
-// added in Windows 8.1 SDK ?
-#if (_WIN32_WINNT < 0x0603)
+// added in Windows 8.1 SDK
+#ifndef _WIN32_WINNT_WINBLUE
 
 #define D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT (static_cast<D2D1_DRAW_TEXT_OPTIONS>(0x00000004))
 
-#endif //(_WIN32_WINNT < 0x0603)
+#endif //_WIN32_WINNT_WINBLUE
 
 //InstallLayoutOrTip Flags
 

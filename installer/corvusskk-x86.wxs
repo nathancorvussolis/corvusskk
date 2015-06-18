@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.8.8" ?>
+  <?define version="1.8.9" ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
@@ -12,14 +12,14 @@
     <Media Id="1" Cabinet="corvusskk.cab" CompressionLevel="high" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="SystemFolder">
+      <Directory Id="SystemFolder" Name="SystemFolder">
         <Directory Id="IME_X86" Name="IME">
-          <Directory Id="CORVUSSKK_X86" Name="IMCRVSKK" />
+          <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
         </Directory>
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="CORVUSSKK_X86">
+    <DirectoryRef Id="IMCRVSKK_X86">
       <Component Guid="B3338B63-FB00-4206-8678-6352340F6685" Id="CNF_X86">
         <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
       </Component>
@@ -42,7 +42,7 @@
 
     <Component Id="RegistryRun" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-        <RegistryValue Type="string" Name="imcrvmgr" Value="$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe" Action="write" />
+        <RegistryValue Type="string" Name="imcrvmgr" Value="&quot;$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" Action="write" />
       </RegistryKey>
     </Component>
 

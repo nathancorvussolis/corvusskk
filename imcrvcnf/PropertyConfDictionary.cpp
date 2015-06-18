@@ -1,4 +1,5 @@
 ﻿
+#include "eucjis2004.h"
 #include "parseskkdic.h"
 #include "configxml.h"
 #include "imcrvcnf.h"
@@ -12,8 +13,22 @@ struct {
 	HWND child;
 	HRESULT hr;
 	BOOL cancel;
+	int error;
 	WCHAR path[MAX_PATH];
 } SkkDicInfo;
+
+#define SKKDIC_OK       0
+#define SKKDIC_DOWNLOAD 1
+#define SKKDIC_FILEIO   2
+#define SKKDIC_ENCODING 3
+
+LPCWSTR SkkDicErrorMsg[] =
+{
+	L"",
+	L"ダウンロード",
+	L"ファイル入出力",
+	L"文字コード"
+};
 
 void LoadDictionary(HWND hwnd)
 {
@@ -222,6 +237,91 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	return S_OK;
 }
 
+BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
+{
+	BOOL bRet = TRUE;
+	FILE *fp;
+	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
+	std::string strbuf;
+	size_t len;
+
+	_wfopen_s(&fp, path, RB);
+	if(fp == NULL)
+	{
+		return FALSE;
+	}
+	while(fgets(buf, _countof(buf), fp) != NULL)
+	{
+		strbuf += buf;
+
+		if(!strbuf.empty() && strbuf.back() == '\n')
+		{
+			switch(encoding)
+			{
+			case 1: //EUC-JIS-2004
+				if(!EucJis2004ToWideChar(strbuf.c_str(), NULL, NULL, &len))
+				{
+					bRet = FALSE;
+				}
+				break;
+			case 8: //UTF-8
+				if(MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
+					strbuf.c_str(), -1, NULL, 0) == 0)
+				{
+					bRet = FALSE;
+				}
+				break;
+			default:
+				bRet = FALSE;
+				break;
+			}
+
+			if(bRet == FALSE)
+			{
+				break;
+			}
+
+			strbuf.clear();
+		}
+	}
+	fclose(fp);
+
+	return bRet;
+}
+
+BOOL CheckWideCharFile(LPCWSTR path)
+{
+	BOOL bRet = TRUE;
+	FILE *fp;
+	WCHAR wbuf[READBUFSIZE];
+	std::wstring wstrbuf;
+
+	_wfopen_s(&fp, path, RB);
+	if(fp == NULL)
+	{
+		return FALSE;
+	}
+	while(fgetws(wbuf, _countof(wbuf), fp) != NULL)
+	{
+		wstrbuf += wbuf;
+
+		if(!wstrbuf.empty() && wstrbuf.back() == L'\n')
+		{
+			if(WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+				wstrbuf.c_str(), -1, NULL, 0, NULL, NULL) == 0)
+			{
+				bRet = FALSE;
+				break;
+			}
+
+			wstrbuf.clear();
+		}
+	}
+	fclose(fp);
+
+	return bRet;
+}
+
 HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	HWND hWndListView;
@@ -230,11 +330,8 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
 	size_t i, count;
 	FILE *fp;
-	int encode;
+	int encoding;
 	WCHAR bom;
-	BYTE rbom[3];
-	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
-	std::string strbuf;
 	std::wstring key;
 	int okuri;
 	SKKDICCANDIDATES sc;
@@ -267,78 +364,78 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 			HRESULT hrd = DownloadDic(url, path, _countof(path));
 			if(hrd != S_OK)
 			{
+				SkkDicInfo.error = SKKDIC_DOWNLOAD;
 				_snwprintf_s(SkkDicInfo.path, _TRUNCATE, L"%s", url);
 				return E_FAIL;
 			}
 		}
 
-		encode = 0;
+		SkkDicInfo.error = SKKDIC_FILEIO;
+		wcscpy_s(SkkDicInfo.path, path);
+		encoding = 0;
 
 		//check BOM
 		_wfopen_s(&fp, path, RB);
 		if(fp == NULL)
 		{
-			wcscpy_s(SkkDicInfo.path, path);
 			return E_FAIL;
 		}
-		ZeroMemory(rbom, sizeof(rbom));
-		fread(rbom, 3, 1, fp);
-		if(rbom[0] == 0xFF && rbom[1] == 0xFE)
+		bom = L'\0';
+		fread(&bom, 2, 1, fp);
+		fclose(fp);
+		if(bom == BOM)
 		{
 			//UTF-16LE
-			encode = 16;
+			encoding = 16;
+
+			if(!CheckWideCharFile(path))
+			{
+				//Error
+				encoding = -1;
+			}
 		}
-		else if(rbom[0] == 0xEF && rbom[1] == 0xBB && rbom[2] == 0xBF)
-		{
-			//UTF-8
-			encode = 8;
-		}
-		fclose(fp);
 
 		//UTF-8 ?
-		if(encode == 0)
+		if(encoding == 0)
 		{
-			strbuf.clear();
-
-			_wfopen_s(&fp, path, RB);
-			if(fp == NULL)
+			if(CheckMultiByteFile(path, 8))
 			{
-				wcscpy_s(SkkDicInfo.path, path);
-				return E_FAIL;
-			}
-			while(fgets(buf, _countof(buf), fp) != NULL)
-			{
-				strbuf += buf;
-			}
-			fclose(fp);
-
-			if(MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, strbuf.c_str(), -1, NULL, 0) != 0)
-			{
-				encode = 8;
+				encoding = 8;
 			}
 		}
 
-		switch(encode)
+		//EUC-JIS-2004 ?
+		if(encoding == 0)
 		{
-		case 8:
-			//UTF-8
-			bom = 0xFEFF;
-			_wfopen_s(&fp, path, RccsUTF8);
-			break;
-		case 16:
-			//UTF-16LE
-			bom = 0xFEFF;
-			_wfopen_s(&fp, path, RccsUTF16);
-			break;
-		default:
+			if(CheckMultiByteFile(path, 1))
+			{
+				encoding = 1;
+			}
+		}
+
+		switch(encoding)
+		{
+		case 1:
 			//EUC-JIS-2004
 			bom = L'\0';
 			_wfopen_s(&fp, path, RB);
 			break;
+		case 8:
+			//UTF-8
+			bom = BOM;
+			_wfopen_s(&fp, path, RccsUTF8);
+			break;
+		case 16:
+			//UTF-16LE
+			_wfopen_s(&fp, path, RccsUTF16);
+			break;
+		default:
+			SkkDicInfo.error = SKKDIC_ENCODING;
+			fp = NULL;
+			break;
 		}
 		if(fp == NULL)
 		{
-			wcscpy_s(SkkDicInfo.path, path);
 			return E_FAIL;
 		}
 
@@ -377,6 +474,8 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 		fclose(fp);
 	}
 
+	SkkDicInfo.error = SKKDIC_OK;
+
 	return S_OK;
 }
 
@@ -410,6 +509,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	_wfopen_s(&fp, pathskkdic, WB);
 	if(fp == NULL)
 	{
+		SkkDicInfo.error = SKKDIC_FILEIO;
 		wcscpy_s(SkkDicInfo.path, pathskkdic);
 		return E_FAIL;
 	}
@@ -461,6 +561,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	_wfopen_s(&fp, pathskkidx, WB);
 	if(fp == NULL)
 	{
+		SkkDicInfo.error = SKKDIC_FILEIO;
 		wcscpy_s(SkkDicInfo.path, pathskkidx);
 		return E_FAIL;
 	}
@@ -477,6 +578,8 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	}
 
 	fclose(fp);
+
+	SkkDicInfo.error = SKKDIC_OK;
 
 	return S_OK;
 }
@@ -521,7 +624,18 @@ void MakeSKKDicWaitThread(void *p)
 		_wremove(pathskkidx);
 		_wremove(pathskkdic);
 
-		_snwprintf_s(msg, _TRUNCATE, L"失敗しました。\n\n%s", SkkDicInfo.path);
+		LPCWSTR errmsg = L"";
+		switch(SkkDicInfo.error)
+		{
+		case SKKDIC_DOWNLOAD:
+		case SKKDIC_FILEIO:
+		case SKKDIC_ENCODING:
+			errmsg = SkkDicErrorMsg[SkkDicInfo.error];
+			break;
+		default:
+			break;
+		}
+		_snwprintf_s(msg, _TRUNCATE, L"失敗しました。(%s)\n\n%s", errmsg, SkkDicInfo.path);
 		MessageBoxW(SkkDicInfo.parent, msg, TextServiceDesc, MB_OK | MB_ICONERROR);
 	}
 	return;

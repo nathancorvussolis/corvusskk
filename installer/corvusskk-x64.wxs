@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.8.8" ?>
+  <?define version="1.8.9" ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
@@ -12,19 +12,19 @@
     <Media Id="1" Cabinet="corvusskk.cab" CompressionLevel="high" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="SystemFolder">
+      <Directory Id="SystemFolder" Name="SystemFolder">
         <Directory Id="IME_X86" Name="IME">
-          <Directory Id="CORVUSSKK_X86" Name="IMCRVSKK" />
+          <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
         </Directory>
       </Directory>
-      <Directory Id="System64Folder">
+      <Directory Id="System64Folder" Name="System64Folder">
         <Directory Id="IME_X64" Name="IME">
-          <Directory Id="CORVUSSKK_X64" Name="IMCRVSKK" />
+          <Directory Id="IMCRVSKK_X64" Name="IMCRVSKK" />
         </Directory>
       </Directory>
     </Directory>
 
-    <DirectoryRef Id="CORVUSSKK_X86">
+    <DirectoryRef Id="IMCRVSKK_X86">
       <Component Guid="3F78BFCA-3956-44EC-A79B-ED2494D0EDEA" Id="CNF_X86">
         <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
       </Component>
@@ -45,7 +45,7 @@
       </Component>
     </DirectoryRef>
 
-    <DirectoryRef Id="CORVUSSKK_X64">
+    <DirectoryRef Id="IMCRVSKK_X64">
       <Component Guid="2DFD9121-84B7-48E3-9D4D-5A51103906CC" Id="CNF_X64" Win64="yes">
         <File Id="F_imcrvcnf_x64" Name="imcrvcnf.exe" Source="..\x64\Release\imcrvcnf.exe" />
       </Component>
@@ -68,7 +68,7 @@
 
     <Component Id="RegistryRun" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Win64="yes" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-        <RegistryValue Type="string" Name="imcrvmgr" Value="$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe" Action="write" />
+        <RegistryValue Type="string" Name="imcrvmgr" Value="&quot;$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" Action="write" />
       </RegistryKey>
     </Component>
 

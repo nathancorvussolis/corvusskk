@@ -52,7 +52,7 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 	// Use 16 colors (black only) icon instead of monochrome icon.
 	_LangBarItemInfo.dwStyle = TF_LBI_STYLE_SHOWNINTRAY |
 		(IsEqualGUID(_LangBarItemInfo.guidItem, GUID_LBI_INPUTMODE) ? TF_LBI_STYLE_BTN_BUTTON : TF_LBI_STYLE_BTN_MENU) |
-		(IsVersion62AndOver() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//16 colors (black only) icon used on earlier than Windows 8
+		(IsWindowsVersion62OrLater() ? 0 : TF_LBI_STYLE_TEXTCOLORICON);	//16 colors (black only) icon used on earlier than Windows 8
 	_LangBarItemInfo.ulSort = 1;
 	wcsncpy_s(_LangBarItemInfo.szDescription, LangbarItemDesc, _TRUNCATE);
 
@@ -306,7 +306,7 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
-	_GetIcon(phIcon, IsVersion62AndOver());
+	_GetIcon(phIcon, IsWindowsVersion62OrLater());
 
 	return (*phIcon != NULL) ? S_OK : E_FAIL;
 }
@@ -505,7 +505,7 @@ BOOL CTextService::_InitLanguageBar()
 		{
 		}
 
-		if(IsVersion62AndOver())
+		if(IsWindowsVersion62OrLater())
 		{
 			try
 			{

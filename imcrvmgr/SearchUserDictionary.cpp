@@ -305,7 +305,7 @@ BOOL LoadSKKUserDic()
 
 	while(true)
 	{
-		rl = ReadSKKDicLine(fp, 0xFEFF, okuri, key, sc, so);
+		rl = ReadSKKDicLine(fp, BOM, okuri, key, sc, so);
 		if(rl == -1)
 		{
 			break;

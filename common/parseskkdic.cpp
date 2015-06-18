@@ -13,7 +13,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	std::string sbuf;
 	WCHAR wbuf[READBUFSIZE];
 	std::wstring wsbuf;
-	size_t ds, is;
+	size_t is;
 	void *rp;
 	std::wstring s, fmt;
 	std::wregex re;
@@ -23,7 +23,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 
 	switch(bom)
 	{
-	case 0xFEFF:
+	case BOM:
 		while((rp = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
 		{
 			wsbuf += wbuf;
@@ -54,15 +54,14 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 
 	switch(bom)
 	{
-	case 0xFEFF:
+	case BOM:
 		break;
 	default:
-		ds = -1;
-		if(!EucJis2004ToWideChar(sbuf.c_str(), NULL, NULL, &ds))
+		wsbuf = eucjis2004_string_to_wstring(sbuf);
+		if(wsbuf.empty())
 		{
 			return 1;
 		}
-		wsbuf = eucjis2004_string_to_wstring(sbuf);
 		break;
 	}
 

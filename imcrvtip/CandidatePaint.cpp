@@ -737,7 +737,7 @@ void CCandidateWindow::_CalcWindowRect()
 		ReleaseDC(_hwnd, hdc);
 	}
 
-	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE | SWP_NOREDRAW);
+	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
 	if(_pInputModeWindow != NULL)
 	{

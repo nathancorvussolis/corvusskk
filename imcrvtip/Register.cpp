@@ -75,7 +75,7 @@ BOOL RegisterCategories()
 			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 		// for Windows 8 or later
-		if(IsVersion62AndOver())
+		if(IsWindowsVersion62OrLater())
 		{
 			for(i = 0; i < _countof(c_guidCategory8); i++)
 			{
@@ -105,7 +105,7 @@ void UnregisterCategories()
 			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 		// for Windows 8 or later
-		if(IsVersion62AndOver())
+		if(IsWindowsVersion62OrLater())
 		{
 			for(i = 0; i < _countof(c_guidCategory8); i++)
 			{

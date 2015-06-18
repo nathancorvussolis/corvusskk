@@ -113,11 +113,11 @@ void CTextService::_LoadBehavior()
 	//Behavior
 
 	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
-	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueStaCompMulti, cx_stacompmulti, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueDynamicComp, cx_dynamiccomp, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueDynCompMulti, cx_dyncompmulti, FALSE);
@@ -864,7 +864,7 @@ void CTextService::_InitFont()
 		//try delay load
 		__try
 		{
-			_drawtext_option = (IsVersion63AndOver() && cx_colorfont) ?
+			_drawtext_option = (IsWindowsVersion63OrLater() && cx_colorfont) ?
 				D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT : D2D1_DRAW_TEXT_OPTIONS_NONE;
 
 			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);

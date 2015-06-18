@@ -891,7 +891,15 @@ BOOL CTextService::_ConvN()
 				cursoridx += kana_ins.size();
 			}
 
-			roman.clear();
+			if(rkc.soku)
+			{
+				roman = roman.back();
+			}
+			else
+			{
+				roman.clear();
+			}
+
 			return TRUE;
 		}
 		break;

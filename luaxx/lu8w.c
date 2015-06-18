@@ -19,8 +19,8 @@ wchar_t *u8stows(const char *s)
 	int len;
 	wchar_t *wbuf = NULL;
 
-	len = MultiByteToWideChar(CP_UTF8, 0, s, -1, NULL, 0);
-	if(len) {
+	len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s, -1, NULL, 0);
+	if(len > 0) {
 		wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
 		if(wbuf) {
 			MultiByteToWideChar(CP_UTF8, 0, s, -1, wbuf, len);
@@ -37,8 +37,8 @@ char *u8wstos(const wchar_t *s)
 	int len;
 	char *buf = NULL;
 
-	len = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
-	if(len) {
+	len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, s, -1, NULL, 0, NULL, NULL);
+	if(len > 0) {
 		buf = (char *)calloc(len, sizeof(char));
 		if(buf) {
 			WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, len, NULL, NULL);

@@ -339,11 +339,11 @@ public:
 	BOOL cx_showroman;			//ローマ字を表示する
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
+	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
 	BOOL cx_delcvposcncl;		//取消のとき変換位置を削除する
 	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
-	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
 	BOOL cx_stacompmulti;		//複数補完を使用する
 	BOOL cx_dynamiccomp;		//動的補完を使用する
 	BOOL cx_dyncompmulti;		//複数動的補完を使用する

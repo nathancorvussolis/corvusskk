@@ -55,24 +55,24 @@ BOOL SetFileDacl(LPCWSTR path)
 {
 	BOOL bRet = FALSE;
 	WCHAR sddl[MAX_KRNLOBJNAME] = {L'\0'};
-	PSECURITY_DESCRIPTOR pSD = NULL;
+	PSECURITY_DESCRIPTOR psd = NULL;
 	LPWSTR pszUserSid;
 
 	if(GetUserSid(&pszUserSid))
 	{
 		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
-			(IsVersion62AndOver() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
+			(IsWindowsVersion62OrLater() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
 		LocalFree(pszUserSid);
 	}
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &pSD, NULL))
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, NULL))
 	{
-		if(SetFileSecurityW(path, DACL_SECURITY_INFORMATION, pSD))
+		if(SetFileSecurityW(path, DACL_SECURITY_INFORMATION, psd))
 		{
 			bRet = TRUE;
 		}
-		LocalFree(pSD);
+		LocalFree(psd);
 	}
 
 	return bRet;

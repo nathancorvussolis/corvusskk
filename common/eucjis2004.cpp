@@ -165,6 +165,21 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	return srcused;
 }
 
+// 終端NULLを付加
+
+void AddNullWideChar(size_t *srcsize, size_t si, LPWSTR dst, size_t *dstsize, size_t di)
+{
+	if(srcsize != NULL)
+	{
+		*srcsize = si;
+	}
+	*dstsize = di + 1;
+	if(dst != NULL)
+	{
+		*(dst + di) = L'\0';
+	}
+}
+
 // EUC-JIS-2004をUTF-16へ変換
 
 BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
@@ -177,6 +192,11 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	if(dstsize == NULL)
 	{
 		return FALSE;
+	}
+
+	if(dst == NULL)
+	{
+		*dstsize = (size_t)-1;
 	}
 
 	if(src == NULL)
@@ -192,7 +212,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 
 	for(si = 0; ; si++)
 	{
-		if((ss <= si) || (*(src + si) == 0x00))
+		if((ss <= si) || (*(src + si) == '\0'))
 		{
 			break;
 		}
@@ -201,15 +221,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		i = EucJis2004ToUcp(src + si, ss - si, &ucp[0], &ucp[1]);
 		if((ucp[0] == 0) || (i == 0))
 		{
-			if(srcsize != NULL)
-			{
-				*srcsize = si;
-			}
-			*dstsize = di + 1;
-			if(dst != NULL)
-			{
-				*(dst + di) = L'\0';
-			}
+			AddNullWideChar(srcsize, si, dst, dstsize, di);
 			return FALSE;
 		}
 		si += i - 1;
@@ -226,15 +238,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 
 		if(*dstsize <= di + utf16num[0] + utf16num[1])	//limit
 		{
-			if(srcsize != NULL)
-			{
-				*srcsize = si;
-			}
-			*dstsize = di + 1;
-			if(dst != NULL)
-			{
-				*(dst + di) = L'\0';
-			}
+			AddNullWideChar(srcsize, si, dst, dstsize, di);
 			return FALSE;
 		}
 
@@ -251,6 +255,14 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		}
 	}
 
+	AddNullWideChar(srcsize, si, dst, dstsize, di);
+	return TRUE;
+}
+
+// 終端NULLを付加
+
+void AddNullEucJis2004(size_t *srcsize, size_t si, LPSTR dst, size_t *dstsize, size_t di)
+{
 	if(srcsize != NULL)
 	{
 		*srcsize = si;
@@ -258,9 +270,8 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	*dstsize = di + 1;
 	if(dst != NULL)
 	{
-		*(dst + di) = L'\0';
+		*(dst + di) = '\0';
 	}
-	return TRUE;
 }
 
 // UTF-16をEUC-JIS-2004へ変換
@@ -282,6 +293,11 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		return FALSE;
 	}
 
+	if(dst == NULL)
+	{
+		*dstsize = (size_t)-1;
+	}
+
 	if(src == NULL)
 	{
 		*dstsize = 0;
@@ -295,24 +311,16 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 
 	for(si = 0; ; si++)
 	{
-		if((ss <= si) || (*(src + si) == 0x0000))
+		if((ss <= si) || (*(src + si) == L'\0'))
 		{
 			break;
 		}
 
-		if(*(src + si) <= 0x007F)	//ASCII
+		if(*(src + si) <= L'\x7F')	//ASCII
 		{
 			if(*dstsize <= di + 1)	//limit
 			{
-				if(srcsize != NULL)
-				{
-					*srcsize = si;
-				}
-				*dstsize = di + 1;
-				if(dst != NULL)
-				{
-					*(dst + di) = 0;
-				}
+				AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 				return FALSE;
 			}
 			if(dst != NULL)
@@ -354,15 +362,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 				{
 					if(*dstsize <= di + 2)	//limit
 					{
-						if(srcsize != NULL)
-						{
-							*srcsize = si;
-						}
-						*dstsize = di + 1;
-						if(dst != NULL)
-						{
-							*(dst + di) = 0;
-						}
+						AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 						return FALSE;
 					}
 					if(dst != NULL)
@@ -387,15 +387,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						{
 							if(*dstsize <= di + 2)	//limit
 							{
-								if(srcsize != NULL)
-								{
-									*srcsize = si;
-								}
-								*dstsize = di + 1;
-								if(dst != NULL)
-								{
-									*(dst + di) = 0;
-								}
+								AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 								return FALSE;
 							}
 							if(dst != NULL)
@@ -415,15 +407,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						{
 							if(*dstsize <= di + 3)	//limit
 							{
-								if(srcsize != NULL)
-								{
-									*srcsize = si;
-								}
-								*dstsize = di + 1;
-								if(dst != NULL)
-								{
-									*(dst + di) = 0;
-								}
+								AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 								return FALSE;
 							}
 							if(dst != NULL)
@@ -457,15 +441,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 					{
 						if(*dstsize <= di + 2)	//limit
 						{
-							if(srcsize != NULL)
-							{
-								*srcsize = si;
-							}
-							*dstsize = di + 1;
-							if(dst != NULL)
-							{
-								*(dst + di) = 0;
-							}
+							AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 							return FALSE;
 						}
 						if(dst != NULL)
@@ -482,39 +458,23 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 
 			if(!exist)
 			{
-				if(srcsize != NULL)
-				{
-					*srcsize = si;
-				}
-				*dstsize = di + 1;
-				if(dst != NULL)
-				{
-					*(dst + di) = 0;
-				}
+				AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 				return FALSE;
 			}
 		}
 	}
 
-	if(srcsize != NULL)
-	{
-		*srcsize = si;
-	}
-	*dstsize = di + 1;
-	if(dst != NULL)
-	{
-		*(dst + di) = 0;
-	}
+	AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 	return TRUE;
 }
 
 std::string wstring_to_eucjis2004_string(const std::wstring &s)
 {
 	std::string ret;
-	size_t len = -1;
+	size_t len;
 
-	WideCharToEucJis2004(s.c_str(), NULL, NULL, &len);
-	if(len > 0)
+	BOOL b = WideCharToEucJis2004(s.c_str(), NULL, NULL, &len);
+	if(b && len > 0)
 	{
 		try
 		{
@@ -534,10 +494,10 @@ std::string wstring_to_eucjis2004_string(const std::wstring &s)
 std::wstring eucjis2004_string_to_wstring(const std::string &s)
 {
 	std::wstring ret;
-	size_t len = -1;
+	size_t len;
 
-	EucJis2004ToWideChar(s.c_str(), NULL, NULL, &len);
-	if(len > 0)
+	BOOL b = EucJis2004ToWideChar(s.c_str(), NULL, NULL, &len);
+	if(b && len > 0)
 	{
 		try
 		{

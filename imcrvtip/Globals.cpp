@@ -158,7 +158,7 @@ const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INFO_NUM] 
 };
 
 // added in Windows 8 SDK
-#if (_WIN32_WINNT < 0x0602)
+#ifndef _WIN32_WINNT_WIN8
 
 const GUID GUID_TFCAT_TIPCAP_IMMERSIVESUPPORT =
 {0x13A016DF, 0x560B, 0x46CD, {0x94, 0x7A, 0x4C, 0x3A, 0xF1, 0xE0, 0xE3, 0x5D}};
@@ -172,4 +172,4 @@ const GUID GUID_LBI_INPUTMODE =
 const IID IID_ITfFnGetPreferredTouchKeyboardLayout =
 {0x5F309A41, 0x590A, 0x4ACC, {0xA9, 0x7F, 0xD8, 0xEF, 0xFF, 0x13, 0xFD, 0xFC}};
 
-#endif //(_WIN32_WINNT < 0x0602)
+#endif //_WIN32_WINNT_WIN8

@@ -130,6 +130,8 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_PAINT:
 		_WindowProcPaint(hWnd);
 		break;
+	case WM_ERASEBKGND:
+		break;
 	case WM_MOUSEACTIVATE:
 		return MA_NOACTIVATE;
 	default:
@@ -1176,13 +1178,7 @@ void CCandidateWindow::_Update()
 		{
 			_CalcWindowRect();
 
-			InvalidateRect(_hwnd, NULL, FALSE);
-			UpdateWindow(_hwnd);
-
-			if(_pInputModeWindow != NULL)
-			{
-				_pInputModeWindow->_Redraw();
-			}
+			_Redraw();
 		}
 	}
 }

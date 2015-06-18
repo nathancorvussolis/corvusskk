@@ -54,6 +54,8 @@ typedef struct {
 	BYTE digest[16];
 } MD5_DIGEST;
 
+#define BOM L'\uFEFF'
+
 extern LPCWSTR RccsUTF16;
 extern LPCWSTR WccsUTF16;
 extern LPCWSTR RccsUTF8;
@@ -79,8 +81,10 @@ extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvOkuri;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvAnnot;
 extern const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM];
 
-BOOL IsVersion62AndOver();
-BOOL IsVersion63AndOver();
+BOOL IsWindowsVersion62OrLater();
+BOOL IsWindowsVersion63OrLater();
+BOOL IsWindowsVersion100OrLater();
+
 BOOL GetSidMD5Digest(LPWSTR *ppszDigest);
 BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen);
 BOOL GetUserSid(LPWSTR *ppszUserSid);

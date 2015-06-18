@@ -141,7 +141,7 @@ STDAPI DllRegisterServer(void)
 		return E_FAIL;
 	}
 
-	if(IsVersion62AndOver())
+	if(IsWindowsVersion62OrLater())
 	{
 		InstallLayoutOrTip(0);
 	}
@@ -151,7 +151,7 @@ STDAPI DllRegisterServer(void)
 
 STDAPI DllUnregisterServer(void)
 {
-	if(IsVersion62AndOver())
+	if(IsWindowsVersion62OrLater())
 	{
 		InstallLayoutOrTip(ILOT_UNINSTALL);
 	}
