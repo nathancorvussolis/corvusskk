@@ -157,7 +157,6 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	CHAR rbuf[RECVBUFSIZE];
 	BOOL retRead;
 	DWORD bytesRead = 0;
-	DWORD dwTimeout = 1000;
 	FILE *fp;
 	WCHAR dir[MAX_PATH];
 	std::wstring strurl;
@@ -183,21 +182,34 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 	if(hInet != NULL)
 	{
-		InternetSetOptionW(hInet, INTERNET_OPTION_CONNECT_TIMEOUT, &dwTimeout, sizeof(dwTimeout));
-		InternetSetOptionW(hInet, INTERNET_OPTION_DATA_SEND_TIMEOUT, &dwTimeout, sizeof(dwTimeout));
-		InternetSetOptionW(hInet, INTERNET_OPTION_DATA_RECEIVE_TIMEOUT, &dwTimeout, sizeof(dwTimeout));
-
 		hUrl = InternetOpenUrlW(hInet, url, NULL, 0, 0, 0);
 		if(hUrl != NULL)
 		{
+			if(SkkDicInfo.cancel)
+			{
+				InternetCloseHandle(hUrl);
+				InternetCloseHandle(hInet);
+				return E_ABORT;
+			}
+
 			_wfopen_s(&fp, path, WB);
 			if(fp == NULL)
 			{
+				InternetCloseHandle(hUrl);
+				InternetCloseHandle(hInet);
 				return E_FAIL;
 			}
 
 			while(true)
 			{
+				if(SkkDicInfo.cancel)
+				{
+					InternetCloseHandle(hUrl);
+					InternetCloseHandle(hInet);
+					fclose(fp);
+					return E_ABORT;
+				}
+
 				ZeroMemory(rbuf, sizeof(rbuf));
 				retRead = InternetReadFile(hUrl, rbuf, sizeof(rbuf), &bytesRead);
 				if(retRead)
@@ -357,7 +369,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
 		//download
-		if(std::regex_match(std::wstring(path), std::wregex(L"(ftp|http|https)://.+")))
+		if(std::regex_match(std::wstring(path), std::wregex(L"(http|https)://.+")))
 		{
 			ListView_GetItemText(hWndListView, i, 0, url, _countof(url));
 
@@ -366,7 +378,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 			{
 				SkkDicInfo.error = SKKDIC_DOWNLOAD;
 				_snwprintf_s(SkkDicInfo.path, _TRUNCATE, L"%s", url);
-				return E_FAIL;
+				return hrd;
 			}
 		}
 

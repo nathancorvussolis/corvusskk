@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 1.8.9
+# CorvusSKK ver. 1.8.10
 
 Windowsで動作するSKK風のIMEです。
 
@@ -144,7 +144,7 @@ SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あ
 
 SKK辞書のURLを追加した場合は、取込処理のときにディレクトリ %TMP%\CorvusSKK または %TEMP%\CorvusSKK にダウンロードされてから取り込まれます。
 
-SKK辞書のダウンロード機能では FTP, HTTP, HTTPS が使用可能です。プロキシはOSに設定されたものが使用されます。
+SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。プロキシはOSに設定されたものが使用されます。
 
 
 ### SKK辞書サーバー
