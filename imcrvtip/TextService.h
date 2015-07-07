@@ -340,6 +340,7 @@ public:
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
+	BOOL cx_srchallokuri;		//送りあり変換で送りなし候補も検索する
 	BOOL cx_delcvposcncl;		//取消のとき変換位置を削除する
 	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL cx_backincenter;		//後退に確定を含める

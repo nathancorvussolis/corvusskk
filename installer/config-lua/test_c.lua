@@ -14,6 +14,10 @@ function _M.search_skk_dictionary(key)
 		ret = "/切;紙を-/着;服を-/斬;人を-/伐;木を-/剪;盆栽を-/截;布地を-/(skk-ignore-dic-word \"斬\")/\n"
 	elseif (key == "かくてい") then
 		ret = "/(skk-ignore-dic-word \"確定\");yyy/各停;zzz/確定;xxx/\n"
+	elseif (key == "うんどうs") then
+		ret = "/運動/\n"
+	elseif (key == "き") then
+		ret = "/気/機/器/木/\n"
 	end
 
 	return ret

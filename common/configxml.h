@@ -90,6 +90,7 @@ extern LPCWSTR ValueDefModeAscii;
 extern LPCWSTR ValueBeginCvOkuri;
 extern LPCWSTR ValuePrecedeOkuri;
 extern LPCWSTR ValueShiftNNOkuri;
+extern LPCWSTR ValueSrchAllOkuri;
 extern LPCWSTR ValueDelCvPosCncl;
 extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;

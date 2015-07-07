@@ -12,10 +12,10 @@ pushd config-sample
 7za.exe a -tzip -mtc=off "..\%TARGETDIR%\config-sample.zip" *.xml *.txt
 popd
 
-del "%TARGETDIR%\corvusskk.zip"
+del "%TARGETDIR%\corvusskk-%VERSION%.zip"
 
 pushd "%TARGETDIR%"
-7za.exe a -tzip -mtc=off corvusskk-%VERSION%.zip corvusskk-*.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip
+7za.exe a -tzip -mtc=off corvusskk-%VERSION%.zip corvusskk-%VERSION%-x64.msi corvusskk-%VERSION%-x86.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip
 popd
 
 popd

@@ -333,6 +333,41 @@ void CTextService::_StartSubConv(WCHAR command)
 	//通常検索
 	_SearchDic(command);
 
+	if(cx_srchallokuri && okuriidx != 0)
+	{
+		candidates_bak = candidates;
+		candidates.clear();
+		candidates.shrink_to_fit();
+
+		searchkey.pop_back();
+
+		//送りなしエントリ検索
+		_SearchDic(command);
+
+		searchkey = searchkeyorg;
+
+		//重複候補を削除
+		FORWARD_ITERATION_I(candidates_bak_itr, candidates_bak)
+		{
+			FORWARD_ITERATION(candidates_itr, candidates)
+			{
+				if(candidates_itr->first.first == candidates_bak_itr->first.first)
+				{
+					candidates_itr = candidates.erase(candidates_itr);
+				}
+				else
+				{
+					++candidates_itr;
+				}
+			}
+		}
+
+		if(!candidates_bak.empty())
+		{
+			candidates.insert(candidates.begin(), candidates_bak.begin(), candidates_bak.end());
+		}
+	}
+
 	//片仮名変換
 	if(cx_addcandktkn && !abbrevmode)
 	{
@@ -348,6 +383,23 @@ void CTextService::_StartSubConv(WCHAR command)
 			{
 				_ConvKanaToKana(kana, inputmode, kanaconv, im_katakana);
 			}
+
+			if(!kanaconv.empty())
+			{
+				FORWARD_ITERATION_I(candidates_itr, candidates)
+				{
+					if(candidates_itr->first.first == kanaconv)
+					{
+						kanaconv.clear();
+						break;
+					}
+				}
+
+				if(!kanaconv.empty())
+				{
+					candidates.push_back(CANDIDATE(CANDIDATEBASE(kanaconv, L""), CANDIDATEBASE(kanaconv, L"")));
+				}
+			}
 			break;
 		default:
 			break;
@@ -355,6 +407,7 @@ void CTextService::_StartSubConv(WCHAR command)
 	}
 
 	candorgcnt = candidates.size();
+
 	candidates_bak = candidates;
 	candidates.clear();
 	candidates.shrink_to_fit();
@@ -395,21 +448,6 @@ void CTextService::_StartSubConv(WCHAR command)
 	if(!candidates_num.empty())
 	{
 		candidates.insert(candidates.end(), candidates_num.begin(), candidates_num.end());
-	}
-	if(!kanaconv.empty())
-	{
-		FORWARD_ITERATION_I(candidates_itr, candidates)
-		{
-			if(candidates_itr->first.first == kanaconv)
-			{
-				kanaconv.clear();
-				break;
-			}
-		}
-		if(!kanaconv.empty())
-		{
-			candidates.push_back(CANDIDATE(CANDIDATEBASE(kanaconv, L""), CANDIDATEBASE(kanaconv, L"")));
-		}
 	}
 
 	candidx = 0;

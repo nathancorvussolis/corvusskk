@@ -23,6 +23,7 @@
     <key name="begincvokuri" value="1" />
     <key name="precedeokuri" value="0" />
     <key name="shiftnnokuri" value="1" />
+    <key name="srchallokuri" value="0" />
     <key name="delcvposcncl" value="1" />
     <key name="delokuricncl" value="0" />
     <key name="backincenter" value="1" />

@@ -112,7 +112,8 @@ enable_skk_convert_num = true
 enable_skk_convert_gadget = true
 -- skk-ignore-dic-word
 enable_skk_ignore_dic_word = false
-
+-- skk-search-sagyo-henkaku (t:true/anything:false)
+enable_skk_search_sagyo_only = true
 
 
 -- 数値変換タイプ1 (全角数字)
@@ -1107,6 +1108,15 @@ end
 
 -- 辞書検索
 function lua_skk_search(key, okuri)
+
+	-- skk-search-sagyo-henkaku (t:true/anything:false)
+	if (enable_skk_search_sagyo_only) then
+		if (okuri ~= "" and string.find("さしすせサシスセ", okuri) == nil and
+			string.match(string.sub(key, -1), "[a-z]") == nil) then
+			return ""
+		end
+	end
+
 	local ret =  skk_search(key, okuri)
 
 	-- skk-ignore-dic-word

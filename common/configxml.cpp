@@ -60,6 +60,7 @@ LPCWSTR ValueDefModeAscii = L"defmodeascii";
 LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
 LPCWSTR ValuePrecedeOkuri = L"precedeokuri";
 LPCWSTR ValueShiftNNOkuri = L"shiftnnokuri";
+LPCWSTR ValueSrchAllOkuri = L"srchallokuri";
 LPCWSTR ValueDelCvPosCncl = L"delcvposcncl";
 LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";

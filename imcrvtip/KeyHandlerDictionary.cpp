@@ -34,8 +34,9 @@ void CTextService::_DisconnectDic()
 void CTextService::_SearchDic(WCHAR command)
 {
 	DWORD bytesWrite, bytesRead;
-	size_t i, icd, icr, iad, iar;
-	std::wstring s, scd, scr, sad, sar, okurikey;
+	std::wstring s, se, fmt, scd, scr, sad, sar, okurikey;
+	std::wregex r;
+	std::wsmatch m;
 
 	_StartManager();
 
@@ -80,34 +81,22 @@ void CTextService::_SearchDic(WCHAR command)
 	}
 
 	s.assign(pipebuf);
-	i = 1;
+	r.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 
-	while(true)
+	while(std::regex_search(s, m, r))
 	{
-		icd = s.find_first_of(L'\t', i + 1);
-		if(icd == std::wstring::npos)
-		{
-			break;
-		}
-		icr = s.find_first_of(L'\t', icd + 1);
-		if(icr == std::wstring::npos)
-		{
-			break;
-		}
-		iad = s.find_first_of(L'\t', icr + 1);
-		if(iad == std::wstring::npos)
-		{
-			break;
-		}
-		iar = s.find_first_of(L'\n', iad + 1);
-		if(iar == std::wstring::npos)
-		{
-			break;
-		}
-		scd = s.substr(i + 1, icd - (i + 1));
-		scr = s.substr(icd + 1, icr - (icd + 1));
-		sad = s.substr(icr + 1, iad - (icr + 1));
-		sar = s.substr(iad + 1, iar - (iad + 1));
+		se = m.str();
+		s = m.suffix();
+
+		fmt.assign(L"$1");
+		scd = std::regex_replace(se, r, fmt);
+		fmt.assign(L"$2");
+		scr = std::regex_replace(se, r, fmt);
+		fmt.assign(L"$3");
+		sad = std::regex_replace(se, r, fmt);
+		fmt.assign(L"$4");
+		sar = std::regex_replace(se, r, fmt);
+
 		if(scd.empty())
 		{
 			scd = scr;
@@ -118,7 +107,6 @@ void CTextService::_SearchDic(WCHAR command)
 		}
 
 		candidates.push_back(CANDIDATE(CANDIDATEBASE(scd, sad), CANDIDATEBASE(scr, sar)));
-		i = iar;
 	}
 
 exit:

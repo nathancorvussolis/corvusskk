@@ -20,6 +20,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	OPENFILENAMEW ofn;
 	WCHAR path[MAX_PATH];
 	WCHAR pathBak[MAX_PATH];
+	BOOL check;
+	BOOL checkBak;
 	WCHAR num[32];
 	WCHAR host[MAX_SKKSERVER_HOST];
 	WCHAR port[MAX_SKKSERVER_PORT];
@@ -76,10 +78,16 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				ListView_GetItemText(hWndListView, index - 1, 0, pathBak, _countof(pathBak));
+				checkBak = ListView_GetCheckState(hWndListView, index - 1);
 				ListView_GetItemText(hWndListView, index, 0, path, _countof(path));
+				check = ListView_GetCheckState(hWndListView, index);
+
 				ListView_SetItemText(hWndListView, index - 1, 0, path);
+				ListView_SetCheckState(hWndListView, index - 1, check);
 				ListView_SetItemText(hWndListView, index, 0, pathBak);
-				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				ListView_SetCheckState(hWndListView, index, checkBak);
+
+				ListView_SetItemState(hWndListView, index - 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_EnsureVisible(hWndListView, index - 1, FALSE);
 			}
 			return TRUE;
@@ -92,10 +100,16 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				ListView_GetItemText(hWndListView, index + 1, 0, pathBak, _countof(pathBak));
+				checkBak = ListView_GetCheckState(hWndListView, index + 1);
 				ListView_GetItemText(hWndListView, index, 0, path, _countof(path));
+				check = ListView_GetCheckState(hWndListView, index);
+
 				ListView_SetItemText(hWndListView, index + 1, 0, path);
+				ListView_SetCheckState(hWndListView, index + 1, check);
 				ListView_SetItemText(hWndListView, index, 0, pathBak);
-				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				ListView_SetCheckState(hWndListView, index, checkBak);
+
+				ListView_SetItemState(hWndListView, index + 1, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_EnsureVisible(hWndListView, index + 1, FALSE);
 			}
 			return TRUE;
@@ -128,7 +142,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				item.iItem = index;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
-				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
@@ -161,7 +175,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				item.iItem = index;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
-				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);

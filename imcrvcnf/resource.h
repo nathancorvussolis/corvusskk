@@ -45,14 +45,15 @@
 #define IDC_CHECKBOX_BEGINCVOKURI               1204
 #define IDC_CHECKBOX_PRECEDEOKURI               1205
 #define IDC_CHECKBOX_SHIFTNNOKURI               1206
-#define IDC_CHECKBOX_DELCVPOSCNCL               1207
-#define IDC_CHECKBOX_DELOKURICNCL               1208
-#define IDC_CHECKBOX_BACKINCENTER               1209
-#define IDC_CHECKBOX_ADDCANDKTKN                1210
-#define IDC_CHECKBOX_STACOMPMULTI               1211
-#define IDC_CHECKBOX_DYNAMINCOMP                1212
-#define IDC_CHECKBOX_DYNCOMPMULTI               1213
-#define IDC_CHECKBOX_COMPUSERDIC                1214
+#define IDC_CHECKBOX_SRCHALLOKURI               1207
+#define IDC_CHECKBOX_DELCVPOSCNCL               1208
+#define IDC_CHECKBOX_DELOKURICNCL               1209
+#define IDC_CHECKBOX_BACKINCENTER               1210
+#define IDC_CHECKBOX_ADDCANDKTKN                1211
+#define IDC_CHECKBOX_STACOMPMULTI               1212
+#define IDC_CHECKBOX_DYNAMINCOMP                1213
+#define IDC_CHECKBOX_DYNCOMPMULTI               1214
+#define IDC_CHECKBOX_COMPUSERDIC                1215
 
 #define IDC_EDIT_FONTNAME                       2001
 #define IDC_EDIT_FONTPOINT                      2002
