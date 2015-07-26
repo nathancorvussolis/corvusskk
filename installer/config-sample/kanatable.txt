@@ -257,7 +257,7 @@ xwa	ゎ	ヮ	ﾜ	0
 xwi	ゐ	ヰ	ｲ	0
 xwu	う	ウ	ｳ	0
 xwe	ゑ	ヱ	ｴ	0
-xwo	お	オ	ｵ	0
+xwo	を	ヲ	ｦ	0
 xka	ゕ	ヵ	ｶ	0
 xke	ゖ	ヶ	ｹ	0
 va	う゛ぁ	ヴァ	ｳﾞｧ	0
