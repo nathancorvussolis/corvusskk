@@ -29,16 +29,16 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	{
 		//ユーザー辞書
 		candidate += SearchUserDic(searchkey, okuri);
-       
+
 		//SKK辞書
 		candidate += SearchSKKDic(searchkey);
-       
+
 		//SKK辞書サーバー
 		candidate += SearchSKKServer(searchkey);
 
 		//Unicodeコードポイント
 		candidate += SearchUnicode(searchkey);
-       
+
 		//JIS X 0213 面区点番号
 		candidate += SearchJISX0213(searchkey);
 
