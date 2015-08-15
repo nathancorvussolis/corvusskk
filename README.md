@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 1.8.11
+# CorvusSKK ver. 1.8.12
 
 Windowsで動作するSKK風のIMEです。
 
@@ -19,6 +19,7 @@ Microsoft Public License (MS-PL)
 * Windows 7     (32-bit / 64-bit)
 * Windows 8     (32-bit / 64-bit)
 * Windows 8.1   (32-bit / 64-bit)
+* Windows 10    (32-bit / 64-bit)
 
 
 ### DirectX 9 以上をサポートしたGPU (推奨)
@@ -58,16 +59,20 @@ corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.m
 バージョンアップで設定項目が追加されているとき、機能の種類によっては設定ダイアログで一度は保存する必要があるので、バージョンアップしたら動かない機能がある！というときは設定ダイアログでOKボタンを押してみて下さい。
 
 
-### Windows Store アプリ
+### Windows ストアアプリ、Microsoft Edge
 
-Windows Store アプリで使用するには、設定ファイル (config.xml) に Windows Store アプリへのアクセス許可を付加させる必要があります。
+Windows ストアアプリ、Microsoft Edge 等で使用するには、設定ファイル (config.xml) にアクセス許可を付加させる必要があります。
 
 Windows 8 以降で動作する設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に行われます。
+
+また、Windows 8 以前から Windows 8 以降へ Windows をアップグレードしたときは、CorvusSKK をアンインストールした上でインストールし直してください。
+
+インストール時に、Windows ストアアプリ、Microsoft Edge 等で使用可能となるようにIMEの登録がおこなわれます。
 
 
 ### Adobe Reader X, XI, Acrobat Reader DC
 
-Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に Adobe Reader へのアクセス許可を付加させる必要があります。
+Adobe Reader X 以降で使用するには、設定ファイル (config.xml) にアクセス許可を付加させる必要があります。
 
 設定ダイアログでOKボタンを押して保存を行うとアクセス許可の付加が自動的に行われます。
 
@@ -536,7 +541,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
   * 「;;セミコロン」と入力する。
 
 
-### Windows 8, 8.1 のタッチキーボード
+### Windows 8, 8.1, 10 のタッチキーボード
 
 タッチパネルを搭載したマシンでハードウェアキーボードに準拠したレイアウトを使用するには、以下の操作を行って下さい。
 
@@ -546,6 +551,9 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 * Windows 8.1 の場合
   * 「PC設定」の画面 → 「PCとデバイス」の画面 → 「入力」を選択 → 「ハードウェアキーボードに準拠したレイアウトをタッチキーボードオプションとして追加する」をオン
 
+* Windows 10 の場合
+  * 「デバイス」の画面 → 「入力」を選択 → 「ハードウェアキーボードに準拠したレイアウトをタッチキーボードオプションとして追加する」をオン
+
 タッチパネルを搭載していないマシンでハードウェアキーボードに準拠したレイアウトを使用するには、レジストリに以下の値を設定して下さい。
 
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
@@ -554,6 +562,6 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Express 2013 for Windows Desktop Update 4
+Visual Studio Express 2013 for Windows Desktop Update 5
 
 WiX Toolset v3.9 R2
