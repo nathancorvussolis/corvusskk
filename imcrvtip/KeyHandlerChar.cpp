@@ -174,14 +174,16 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 					}
 					else
 					{
-						_HandleCharShift(ec, pContext);
 						if(rkc.soku)
 						{
+							_HandleCharShift(ec, pContext);
 							roman.push_back(ch);
 							_Update(ec, pContext);
 						}
 						else
 						{
+							cursoridx = kana.size();
+							_Update(ec, pContext, TRUE);
 							_HandleCharReturn(ec, pContext);
 						}
 					}
@@ -189,10 +191,10 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 				break;
 
 			case E_PENDING:	//途中まで一致
+				_HandleCharShift(ec, pContext);
+
 				if(rkc.roman[0] != L'\0' && rkc.wait)	//待機
 				{
-					_HandleCharShift(ec, pContext);
-
 					switch(inputmode)
 					{
 					case im_hiragana:
@@ -207,15 +209,17 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 					default:
 						break;
 					}
-
-					_Update(ec, pContext);
 				}
 				else
 				{
-					_HandleCharShift(ec, pContext);
 					roman.push_back(ch);
+				}
+
+				if(pContext != NULL)
+				{
 					_Update(ec, pContext);
 				}
+				_Update(ec, pContext);
 				break;
 
 			case E_ABORT:	//不一致
@@ -248,6 +252,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 		case S_OK:		//一致
 			kana.assign(ajc.jlatin);
 			cursoridx = kana.size();
+			_Update(ec, pContext, TRUE);
 			_HandleCharReturn(ec, pContext);
 			break;
 		case E_PENDING:	//途中まで一致
@@ -265,6 +270,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 		ajc.ascii[1] = L'\0';
 		kana.assign(ajc.ascii);
 		cursoridx = kana.size();
+		_Update(ec, pContext, TRUE);
 		_HandleCharReturn(ec, pContext);
 		break;
 

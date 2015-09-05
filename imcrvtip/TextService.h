@@ -152,6 +152,7 @@ public:
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg, BOOL comp);
 	void _EndCandidateList();
 	void _EndCompletionList(TfEditCookie ec, ITfContext *pContext);
+	BOOL _GetVertical(TfEditCookie ec, ITfContext *pContext);
 
 	// KeyHandlerControl
 	HRESULT _HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch);
@@ -306,7 +307,6 @@ public:
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
 	BOOL _ShowInputMode;	//InputModeWindow
-	BOOL _Vertical;			//Vertical Writing 
 
 	//状態
 	int inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
