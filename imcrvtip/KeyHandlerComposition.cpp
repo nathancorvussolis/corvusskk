@@ -591,7 +591,7 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 {
 	BOOL ret = FALSE;
 
-	if(_IsComposing())
+	if(_IsComposing() && pContext != NULL)
 	{
 		ITfRange *pRange;
 		if(_pComposition->GetRange(&pRange) == S_OK)
