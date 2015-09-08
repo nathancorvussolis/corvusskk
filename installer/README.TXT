@@ -1,7 +1,7 @@
 ﻿
 ==============================================================================
 
-  CorvusSKK ver. 1.9.1
+  CorvusSKK ver. 1.9.2
 
     https://nathancorvussolis.github.io/
     nathancorvussolis@gmail.com
@@ -23,6 +23,6 @@
 
   マニュアル
 
-    https://github.com/nathancorvussolis/corvusskk/blob/1.9.1/README.md
+    https://github.com/nathancorvussolis/corvusskk/blob/1.9.2/README.md
 
 ==============================================================================
