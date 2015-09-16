@@ -224,9 +224,9 @@ STDAPI CTextService::Deactivate()
 
 	_SaveUserDic();
 
-	SafeRelease(&_pCandidateList);
+	_EndCandidateList();
 
-	SafeRelease(&_pInputModeWindow);
+	_EndInputModeWindow();
 
 	_UninitFunctionProvider();
 

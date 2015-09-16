@@ -1,2 +1,2 @@
 
-set VERSION=1.9.3
+set VERSION=1.9.4

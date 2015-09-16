@@ -148,7 +148,7 @@ void CTextService::_TerminateComposition(TfEditCookie ec, ITfContext *pContext)
 		return;
 	}
 
-	if(_pComposition != NULL)
+	if(_IsComposing())
 	{
 		_ClearCompositionDisplayAttributes(ec, pContext);
 		_pComposition->EndComposition(ec);
@@ -231,7 +231,7 @@ void CTextService::_ClearComposition()
 
 	_EndInputModeWindow();
 
-	if(_pComposition != NULL)
+	if(_IsComposing())
 	{
 		ITfDocumentMgr *pDocumentMgr;
 		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
