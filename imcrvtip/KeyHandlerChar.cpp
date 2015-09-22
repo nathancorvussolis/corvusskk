@@ -158,17 +158,22 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 							break;
 						}
 
-						if(rkc.soku)
-						{
-							roman.push_back(ch);
-						}
-
 						if(cx_dynamiccomp || cx_dyncompmulti)
 						{
 							_DynamicComp(ec, pContext);
+
+							if(rkc.soku)
+							{
+								roman.push_back(ch);
+								_Update(ec, pContext);
+							}
 						}
 						else
 						{
+							if(rkc.soku)
+							{
+								roman.push_back(ch);
+							}
 							_Update(ec, pContext);
 						}
 					}

@@ -4,9 +4,6 @@
 #include "CandidateList.h"
 #include "CandidateWindow.h"
 
-static LPCWSTR markNo = L":";
-static LPCWSTR markAnnotation = L";";
-
 CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *pCandidateList)
 {
 	DllAddRef();

@@ -40,7 +40,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		}
 
 		WndProcDef = (WNDPROC)GetWindowLongPtrW(_hwnd, GWLP_WNDPROC);
-		if(WndProcDef != 0)
+		if(WndProcDef != NULL)
 		{
 			SetWindowLongPtrW(_hwnd, GWLP_USERDATA, (LONG_PTR)this);
 			SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
