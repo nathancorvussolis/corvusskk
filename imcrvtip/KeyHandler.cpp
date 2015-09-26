@@ -335,8 +335,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 
 void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 {
-	BOOL fOpen = _IsKeyboardOpen();
-	if(fOpen)
+	if(_IsKeyboardOpen())
 	{
 		_ResetStatus();
 
@@ -356,7 +355,10 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_GetActiveFlags();
 
-		//OnPreservedKey(),CLangBarItemButton::OnClick()経由ならひらがなモード
+		_InitFont();
+
+		//OnPreservedKey(), CLangBarItemButton::OnClick(),
+		//CLangBarItemButton::OnMenuSelect() 経由ならひらがなモード
 		//それ以外なら現在のモード
 		switch(inputmode)
 		{
@@ -368,16 +370,14 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 			_KeyboardInputConversionChanged();
 			break;
 		}
-
-		_InitFont();
 	}
 	else
 	{
-		_UninitFont();
-
 		inputmode = im_default;
 
 		_SaveUserDic();
+
+		_UninitFont();
 
 		_UninitPreservedKey();
 		_LoadPreservedKey();

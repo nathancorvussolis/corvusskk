@@ -222,14 +222,16 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 		case TF_LBI_CLK_LEFT:
 			{
 				BOOL fOpen = _pTextService->_IsKeyboardOpen();
-				if(!fOpen)
-				{
-					_pTextService->inputmode = im_disable;
-				}
-				else
+
+				if(fOpen)
 				{
 					_pTextService->_ClearComposition();
 				}
+				else
+				{
+					_pTextService->inputmode = im_disable;
+				}
+
 				_pTextService->_SetKeyboardOpen(fOpen ? FALSE : TRUE);
 			}
 			break;
@@ -260,7 +262,6 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 
 STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 {
-	BOOL fOpen = _pTextService->_IsKeyboardOpen();
 	switch(wID)
 	{
 	case IDM_CONFIG:
@@ -275,25 +276,28 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 		{
 			if(wID == menuItems[i].id)
 			{
-				_pTextService->inputmode = menuItems[i].inputmode;
-				if(!fOpen)
+				if(_pTextService->_IsKeyboardOpen())
 				{
-					_pTextService->_SetKeyboardOpen(TRUE);
+					_pTextService->_ClearComposition();
 				}
 				else
 				{
-					_pTextService->_ClearComposition();
-					_pTextService->_UpdateLanguageBar();
+					_pTextService->inputmode = im_disable;
+					_pTextService->_SetKeyboardOpen(TRUE);
 				}
+
+				_pTextService->inputmode = menuItems[i].inputmode;
+				_pTextService->_UpdateLanguageBar();
 				break;
 			}
 		}
 		break;
 	case IDM_DEFAULT:
-		_pTextService->inputmode = im_default;
-		if(fOpen)
+		if(_pTextService->_IsKeyboardOpen())
 		{
 			_pTextService->_ClearComposition();
+
+			_pTextService->inputmode = im_default;
 			_pTextService->_SetKeyboardOpen(FALSE);
 		}
 		break;
