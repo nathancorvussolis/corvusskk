@@ -3,9 +3,9 @@
 
 /* EUC-JIS-2004
     0x00..    0x7F ASCII
-  0xA1**..  0xFE** JIS X 0213 plane1
-  0x8E**..  0x8E** HALFWIDTH KATAKANA
-0x8FA1**..0x8FFE** JIS X 0213 plane2 (+ JIS X 0212)
+  0xA1**..  0xFE** JIS X 0213 Plane 1
+  0x8E**..  0x8E** JIS X 0201 HALFWIDTH KATAKANA
+0x8FA1**..0x8FFE** JIS X 0213 Plane 2
   (** : 0xA1..0xFE)
 */
 
@@ -63,10 +63,8 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	CONST CHAR ss3 = 0x0F;
 	CONST CHAR ejs = 0x21;
 	CONST CHAR eje = 0x7E;
-	CHAR ss, ej[2];
+	CHAR ej[2];
 	size_t srcused = 0;
-	USHORT euc;
-	int i;
 
 	if(src == NULL || srcsize == 0 || ucp1 == NULL || ucp2 == NULL)
 	{
@@ -84,8 +82,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	}
 	else
 	{
-		ss = src[0] & mask;
-		switch(ss)
+		switch(src[0] & mask)
 		{
 		case ss3:	// JIS X 0213 Plane 2
 			if(srcsize < 3)
@@ -135,10 +132,10 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 
 			if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
-				euc = ((USHORT)ej[0] << 8) | (USHORT)ej[1] | 0x8080;
+				USHORT euc = ((USHORT)ej[0] << 8) | (USHORT)ej[1] | 0x8080;
 
 				//結合文字
-				for(i=0; i<CMBCHARNUM; i++)
+				for(int i = 0; i < CMBCHARNUM; i++)
 				{
 					if(euccmb[i].euc == euc)
 					{
@@ -184,7 +181,7 @@ void AddNullWideChar(size_t *srcsize, size_t si, LPWSTR dst, size_t *dstsize, si
 
 BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
 {
-	size_t i, j, si, di = 0, ss = -1;
+	size_t si = 0, di = 0, ss = -1;
 	UCSCHAR ucp[2];
 	WCHAR utf16[2][2];
 	size_t utf16num[2];
@@ -218,16 +215,16 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 		}
 
 		// EUC-JIS-2004からUnicode Code Pointへ変換
-		i = EucJis2004ToUcp(src + si, ss - si, &ucp[0], &ucp[1]);
-		if((ucp[0] == 0) || (i == 0))
+		size_t used = EucJis2004ToUcp(src + si, ss - si, &ucp[0], &ucp[1]);
+		if((ucp[0] == 0) || (used == 0))
 		{
 			AddNullWideChar(srcsize, si, dst, dstsize, di);
 			return FALSE;
 		}
-		si += i - 1;
+		si += used - 1;
 
 		// Unicode Code PointからUTF-16へ変換
-		for(i = 0; i < 2; i++)
+		for(int i = 0; i < 2; i++)
 		{
 			utf16num[i] = 0;
 			if(ucp[i] != 0)
@@ -242,11 +239,11 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 			return FALSE;
 		}
 
-		for(i = 0; i < 2; i++)
+		for(int i = 0; i < 2; i++)
 		{
 			if(dst != NULL)
 			{
-				for(j = 0; j < utf16num[i] && j < 2; j++)
+				for(int j = 0; j < (int)utf16num[i] && j < 2; j++)
 				{
 					*(dst + di + j) = utf16[i][j];
 				}
@@ -282,8 +279,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 	CONST CHAR ejs = 0x21;
 	CONST CHAR ss2 = 0x0E;
 	CONST CHAR ss3 = 0x0F;
-	size_t si, di = 0, ss = -1;
-	CHAR i, j;
+	size_t si = 0, di = 0, ss = -1;
 	WCHAR first, second;
 	UCSCHAR ucp;
 	BOOL exist;
@@ -356,7 +352,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 			}
 
 			//結合文字
-			for(i = 0; i < CMBCHARNUM; i++)
+			for(int i = 0; i < CMBCHARNUM; i++)
 			{
 				if(first == euccmb[i].ucp[0] && second == euccmb[i].ucp[1])
 				{
@@ -379,9 +375,9 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 
 			if(!exist)
 			{
-				for(i = 0; i < ROWNUM; i++)
+				for(int i = 0; i < ROWNUM; i++)
 				{
-					for(j = 0; j < CELLNUM; j++)
+					for(int j = 0; j < CELLNUM; j++)
 					{
 						if(ucp == euc1[i][j])		// JIS X 0213 Plane 1
 						{
@@ -435,7 +431,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 
 			if(!exist)
 			{
-				for(i = 0; i < ANKNUM; i++)
+				for(int i = 0; i < ANKNUM; i++)
 				{
 					if(ucp == eucK[i])	//JIS X 0201 halfwidth katakana
 					{

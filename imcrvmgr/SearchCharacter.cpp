@@ -121,7 +121,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	//文字コード表記
 	std::wstring e, u;
 	WCHAR b[16];
-	size_t i, len;
+	size_t len;
 	UCSCHAR ucp;
 	CONST CHAR as = 0x00;
 	CONST CHAR ae = 0x7F;
@@ -135,7 +135,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	{
 		std::string euc = WCTOEUC(searchkey);
 
-		for(i = 0; i < euc.size(); i++)
+		for(size_t i = 0; i < euc.size(); i++)
 		{
 			if(as <= euc[i] && euc[i] <= ae)
 			{
@@ -170,7 +170,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	}
 
 	//Unicodeコードポイント
-	for(i = 0; i < searchkey.size(); i++)
+	for(size_t i = 0; i < searchkey.size(); i++)
 	{
 		if((i + 1 < searchkey.size()) && IS_SURROGATE_PAIR(searchkey[i], searchkey[i + 1]))
 		{

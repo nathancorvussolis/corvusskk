@@ -22,7 +22,7 @@ lua_State *lua;
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
-	WNDCLASSEX wcex;
+	WNDCLASSEXW wcex;
 	HWND hWnd;
 	WSADATA wsaData;
 	PSECURITY_DESCRIPTOR psd;
@@ -32,19 +32,25 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateConfigPath();
 
-	ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL);
-	sa.nLength = sizeof(sa);
-	sa.lpSecurityDescriptor = psd;
-	sa.bInheritHandle = FALSE;
-
-	hMutex = CreateMutexW(&sa, FALSE, mgrmutexname);
-	if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL))
 	{
+		sa.nLength = sizeof(sa);
+		sa.lpSecurityDescriptor = psd;
+		sa.bInheritHandle = FALSE;
+
+		hMutex = CreateMutexW(&sa, FALSE, mgrmutexname);
+		if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
+		{
+			LocalFree(psd);
+			return 0;
+		}
+
 		LocalFree(psd);
+	}
+	else
+	{
 		return 0;
 	}
-
-	LocalFree(psd);
 
 	WSAStartup(WINSOCK_VERSION, &wsaData);
 
@@ -56,25 +62,24 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	InitLua();
 
-	ZeroMemory(&wcex, sizeof(wcex));
-	wcex.cbSize = sizeof(WNDCLASSEX);
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.hInstance		= hInstance;
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW);
-	wcex.lpszClassName	= TextServiceDesc;
-	RegisterClassEx(&wcex);
-
 	hInst = hInstance;
 
+	ZeroMemory(&wcex, sizeof(wcex));
+	wcex.cbSize = sizeof(WNDCLASSEXW);
+	wcex.style			= CS_HREDRAW | CS_VREDRAW;
+	wcex.lpfnWndProc	= WndProc;
+	wcex.hInstance		= hInst;
+	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
+	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
+	wcex.lpszClassName = DictionaryManagerClass;
+	RegisterClassExW(&wcex);
+
 #ifdef _DEBUG
-	hWnd = CreateWindowW(TextServiceDesc, TextServiceDesc,
-		WS_OVERLAPPED | WS_SYSMENU | WS_MINIMIZEBOX,
-		0, 0, 600, 800, NULL, NULL, hInstance, NULL);
+	hWnd = CreateWindowW(DictionaryManagerClass, TextServiceDesc,
+		WS_OVERLAPPEDWINDOW, 0, 0, 600, 800, NULL, NULL, hInst, NULL);
 #else
-	hWnd = CreateWindowW(TextServiceDesc, TextServiceDesc, WS_POPUP,
-		0, 0, 0, 0, NULL, NULL, hInstance, NULL);
+	hWnd = CreateWindowW(DictionaryManagerClass, TextServiceDesc,
+		WS_POPUP, 0, 0, 0, 0, NULL, NULL, hInst, NULL);
 #endif
 
 	if(!hWnd)
@@ -85,10 +90,11 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	}
 
 #ifdef _DEBUG
-	//ShowWindow(hWnd, nCmdShow);
 	ShowWindow(hWnd, SW_MINIMIZE);
-	UpdateWindow(hWnd);
+#else
+	ShowWindow(hWnd, SW_HIDE);
 #endif
+	UpdateWindow(hWnd);
 
 	while(GetMessageW(&msg, NULL, 0, 0))
 	{
@@ -107,14 +113,13 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HANDLE hThreadSave;
 	HANDLE hPipe;
 #ifdef _DEBUG
 	RECT r;
 	HDC hDC;
 #endif
 
-	switch (message)
+	switch(message)
 	{
 	case WM_CREATE:
 #ifdef _DEBUG
@@ -143,15 +148,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 
+#ifdef _DEBUG
+	case WM_SIZE:
+		GetClientRect(hWnd, &r);
+		MoveWindow(hwndEdit, 0, 0, r.right, r.bottom, TRUE);
+		break;
+#endif
+
+	case WM_POWERBROADCAST:
+		if(wParam == PBT_APMSUSPEND)
+		{
+			StartSaveSKKUserDic(FALSE);
+
+			BackUpSKKUserDic();
+		}
+		break;
+
 	case WM_DESTROY:
 	case WM_ENDSESSION:
 #ifdef _DEBUG
 		DeleteObject(hFont);
 #endif
-		hThreadSave = StartSaveSKKUserDicEx();
-		WaitForSingleObject(hThreadSave, INFINITE);
-		CloseHandle(hThreadSave);
-
 		bSrvThreadExit = TRUE;
 		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
 			NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
@@ -162,6 +179,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 
 		CloseHandle(hThreadSrv);
+
+		StartSaveSKKUserDic(FALSE);
+
+		if(message == WM_ENDSESSION)
+		{
+			BackUpSKKUserDic();
+		}
 
 		DeleteCriticalSection(&csUserDataSave);
 
@@ -183,11 +207,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //
 //search candidate
 //  request "1\n<key>\t<key(original)>\t<okuri>\n"
-//  reply   "T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit
+//  reply   "T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
 //          "F\n":nothing
 //search candidate (user dictionary only)
 //  request "2\n<key>\t<key(original)>\t<okuri>\n"
-//  reply   "T\n<candidate(display)>\t<candidate(regist)>\t<annotation(display)>\t<annotation(regist)>\n...\n":hit
+//  reply   "T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
 //          "F\n":nothing
 //search key for complement
 //  request "4\n<key>\t\t\n"
@@ -216,6 +240,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //save user dictionary
 //  request "S\n"
 //  reply   "T\n"
+//create configuration dialog process
+//  request "P\n"
+//  reply   "T\n"
+//
 
 void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 {
@@ -411,8 +439,15 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		}
 		else
 		{
-			StartSaveSKKUserDic();
+			StartSaveSKKUserDic(TRUE);
 		}
+
+		result = REP_OK;
+		result += L"\n";
+		break;
+
+	case REQ_EXEC_CNF:
+		StartProcess(hInst, IMCRVCNFEXE);
 
 		result = REP_OK;
 		result += L"\n";
@@ -555,19 +590,21 @@ HANDLE SrvStart()
 {
 	PSECURITY_DESCRIPTOR psd;
 	SECURITY_ATTRIBUTES sa;
-	HANDLE hPipe;
+	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hThread = NULL;
 
-	ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL);
-	sa.nLength = sizeof(sa);
-	sa.lpSecurityDescriptor = psd;
-	sa.bInheritHandle = FALSE;
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL))
+	{
+		sa.nLength = sizeof(sa);
+		sa.lpSecurityDescriptor = psd;
+		sa.bInheritHandle = FALSE;
 
-	hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
-		PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
-		1, PIPEBUFSIZE * sizeof(WCHAR), PIPEBUFSIZE * sizeof(WCHAR), 0, &sa);
+		hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
+			1, PIPEBUFSIZE * sizeof(WCHAR), PIPEBUFSIZE * sizeof(WCHAR), 0, &sa);
 
-	LocalFree(psd);
+		LocalFree(psd);
+	}
 
 	if(hPipe != INVALID_HANDLE_VALUE)
 	{

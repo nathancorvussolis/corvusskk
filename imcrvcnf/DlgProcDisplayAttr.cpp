@@ -146,7 +146,6 @@ INT_PTR CALLBACK DlgProcDisplayAttrConv(HWND hDlg, UINT message, WPARAM wParam, 
 INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no)
 {
 	HWND hwnd;
-	size_t i, j;
 	int x, y;
 	RECT rect;
 	POINT pt;
@@ -158,28 +157,28 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		for(i = 0; i < _countof(cbAttrID); i++)
+		for(int i = 0; i < _countof(cbAttrID); i++)
 		{
-			for(j = 0; j < _countof(cbAttrText); j++)
+			for(int j = 0; j < _countof(cbAttrText); j++)
 			{
 				SendMessageW(GetDlgItem(hDlg, cbAttrID[i]), CB_ADDSTRING, 0, (LPARAM)cbAttrText[j]);
 			}
 		}
-		for(i = 0; i < _countof(cbULAttrID); i++)
+		for(int i = 0; i < _countof(cbULAttrID); i++)
 		{
-			for(j = 0; j < _countof(cbULAttrText); j++)
+			for(int j = 0; j < _countof(cbULAttrText); j++)
 			{
 				SendMessageW(GetDlgItem(hDlg, cbULAttrID[i]), CB_ADDSTRING, 0, (LPARAM)cbULAttrText[j]);
 			}
 		}
-		for(i = 0; i < _countof(colCust); i++)
+		for(int i = 0; i < _countof(colCust); i++)
 		{
 			colCust[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
 		LoadConfigDisplayAttr(no);
 
-		for(i = 0; i < _countof(displayAttr[no]); i++)
+		for(int i = 0; i < _countof(displayAttr[no]); i++)
 		{
 			if(displayAttr[no][i].se)
 			{
@@ -284,9 +283,9 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		break;
 
 	case WM_LBUTTONDOWN:
-		for(i = 0; i < _countof(displayAttrColor[no]); i++)
+		for(int i = 0; i < _countof(displayAttrColor[no]); i++)
 		{
-			for(j = 0; j < _countof(displayAttrColor[no][i]); j++)
+			for(int j = 0; j < _countof(displayAttrColor[no][i]); j++)
 			{
 				hwnd = GetDlgItem(hDlg, displayAttrColor[no][i][j].id);
 				if(!IsWindowEnabled(hwnd))
@@ -325,9 +324,9 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(i = 0; i < _countof(displayAttrColor[no]); i++)
+		for(int i = 0; i < _countof(displayAttrColor[no]); i++)
 		{
-			for(j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != NULL; j++)
+			for(int j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != NULL; j++)
 			{
 				DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, *displayAttrColor[no][i][j].color);
 			}
@@ -340,7 +339,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		switch(((LPNMHDR)lParam)->code)
 		{
 		case PSN_APPLY:
-			for(i = 0; i < _countof(displayAttr[no]); i++)
+			for(int i = 0; i < _countof(displayAttr[no]); i++)
 			{
 				displayAttr[no][i].se =
 					(IsDlgButtonChecked(hDlg, displayAttrID[i][0]) == BST_CHECKED ? TRUE : FALSE);
@@ -373,7 +372,6 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 void DisplayAttrSeriesChecked(HWND hDlg, int id)
 {
-	size_t i;
 	int c = -1;
 
 	switch(id)
@@ -395,7 +393,7 @@ void DisplayAttrSeriesChecked(HWND hDlg, int id)
 	}
 	if(c > -1)
 	{
-		for(i = 1; i < _countof(displayAttrID[c]); i++)
+		for(int i = 1; i < _countof(displayAttrID[c]); i++)
 		{
 			EnableWindow(GetDlgItem(hDlg, displayAttrID[c][i]),
 				(IsDlgButtonChecked(hDlg, id) == BST_CHECKED ? FALSE : TRUE));
@@ -405,12 +403,11 @@ void DisplayAttrSeriesChecked(HWND hDlg, int id)
 
 void LoadConfigDisplayAttr(int no)
 {
-	int i;
 	std::wstring strxmlval;
 	BOOL se;
 	TF_DISPLAYATTRIBUTE da;
 
-	for(i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
+	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
 	{
 		ReadValue(pathconfigxml, SectionDisplayAttr, displayAttr[no][i].key, strxmlval);
 		if(!strxmlval.empty())
@@ -428,7 +425,6 @@ void LoadConfigDisplayAttr(int no)
 
 void SaveConfigDisplayAttr(int no)
 {
-	int i;
 	WCHAR num[64];
 
 	if(no == 0)
@@ -436,7 +432,7 @@ void SaveConfigDisplayAttr(int no)
 		WriterStartSection(pXmlWriter, SectionDisplayAttr);	//Start of SectionDisplayAttr
 	}
 
-	for(i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
+	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, displayAttrFormat,
 			displayAttr[no][i].se,

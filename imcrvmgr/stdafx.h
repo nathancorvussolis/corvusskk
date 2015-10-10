@@ -4,6 +4,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <process.h>
 
 #include <string>
@@ -12,10 +14,10 @@
 #include <regex>
 
 #include <WinSock2.h>
-#include <Ws2tcpip.h>
+#include <WS2tcpip.h>
 #include <Windows.h>
-#include <Windowsx.h>
+#include <sddl.h>
+#include <Ole2.h>
 #include <msctf.h>
 #include <xmllite.h>
-#include <Sddl.h>
-#include <Shlobj.h>
+#include <ShlObj.h>

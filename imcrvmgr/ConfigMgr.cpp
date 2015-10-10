@@ -4,10 +4,12 @@
 #include "imcrvmgr.h"
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
+LPCWSTR DictionaryManagerClass = TEXTSERVICE_NAME L"DictionaryManager";
 
 // ファイルパス
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathuserdic[MAX_PATH];	//ユーザー辞書
+WCHAR pathuserbak[MAX_PATH];	//ユーザー辞書バックアッププレフィックス
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 WCHAR pathinitlua[MAX_PATH];	//init.lua
@@ -43,32 +45,33 @@ const luaL_Reg luaFuncs[] =
 
 void CreateConfigPath()
 {
-	WCHAR appdata[MAX_PATH];
+	PWSTR appdatafolder = NULL;
 
-	pathconfigxml[0] = L'\0';
-	pathuserdic[0] = L'\0';
-	pathskkdic[0] = L'\0';
-	pathskkidx[0] = L'\0';
-	pathinitlua[0] = L'\0';
+	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
+	ZeroMemory(pathuserdic, sizeof(pathuserdic));
+	ZeroMemory(pathuserbak, sizeof(pathuserbak));
+	ZeroMemory(pathskkdic, sizeof(pathskkdic));
+	ZeroMemory(pathskkidx, sizeof(pathskkidx));
+	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
-	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, NULL, &appdatafolder) == S_OK)
 	{
-		appdata[0] = L'\0';
-		return;
+		WCHAR appdir[MAX_PATH];
+
+		_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s", appdatafolder, TextServiceDesc);
+
+		CoTaskMemFree(appdatafolder);
+
+		CreateDirectoryW(appdir, NULL);
+		SetCurrentDirectoryW(appdir);
+
+		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
+		_snwprintf_s(pathuserdic, _TRUNCATE, L"%s\\%s", appdir, fnuserdic);
+		_snwprintf_s(pathuserbak, _TRUNCATE, L"%s\\%s", appdir, fnuserbak);
+		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s", appdir, fnskkdic);
+		_snwprintf_s(pathskkidx, _TRUNCATE, L"%s\\%s", appdir, fnskkidx);
+		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s", appdir, fninitlua);
 	}
-
-	wcsncat_s(appdata, L"\\", _TRUNCATE);
-	wcsncat_s(appdata, TextServiceDesc, _TRUNCATE);
-	wcsncat_s(appdata, L"\\", _TRUNCATE);
-
-	_wmkdir(appdata);
-	SetCurrentDirectoryW(appdata);
-
-	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
-	_snwprintf_s(pathuserdic, _TRUNCATE, L"%s%s", appdata, fnuserdic);
-	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
-	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
-	_snwprintf_s(pathinitlua, _TRUNCATE, L"%s%s", appdata, fninitlua);
 
 	LPWSTR pszUserSid = NULL;
 	LPWSTR pszDigest = NULL;
@@ -91,8 +94,8 @@ void CreateConfigPath()
 
 	if(GetSidMD5Digest(&pszDigest))
 	{
-		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", CORVUSMGRPIPE, pszDigest);
-		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", CORVUSMGRMUTEX, pszDigest);
+		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszDigest);
+		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszDigest);
 
 		LocalFree(pszDigest);
 	}
@@ -145,6 +148,7 @@ void LoadConfig()
 		timeout = timeouttmp;
 
 		DisconnectSKKServer();
+
 		if(serv)
 		{
 			ConnectSKKServer();
@@ -212,8 +216,8 @@ void InitLua()
 		return;
 	}
 
-	//%SystemRoot%\System32\IME\IMCRVSKK\init.lua
-	// or %SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
+	ZeroMemory(pathinitlua, sizeof(pathinitlua));
+
 	if(GetModuleFileNameW(NULL, pathinitlua, _countof(pathinitlua)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
@@ -223,6 +227,9 @@ void InitLua()
 			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
 		}
 	}
+
+	//%SystemRoot%\System32\IME\IMCRVSKK\init.lua
+	// or %SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
 	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;

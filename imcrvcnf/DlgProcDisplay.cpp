@@ -26,10 +26,9 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	HWND hwnd;
 	HDC hdc;
 	PAINTSTRUCT ps;
-	size_t i;
 	WCHAR num[16];
 	WCHAR fontname[LF_FACESIZE];
-	int fontpoint, fontweight, x, y;
+	int fontpoint, fontweight, x, y, count;
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
 	LOGFONTW lf;
@@ -90,12 +89,12 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		_snwprintf_s(num, _TRUNCATE, L"%d", w);
 		SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 
-		for(i = 0; i < _countof(customColor); i++)
+		for(int i = 0; i < _countof(customColor); i++)
 		{
 			customColor[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
-		for(i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayColor); i++)
 		{
 			ReadValue(pathconfigxml, SectionDisplay, displayColor[i].value, strxmlval);
 			if(!strxmlval.empty())
@@ -113,18 +112,18 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
-		for(i = 0; i <= 9; i++)
+		for(int i = 0; i <= 9; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
 			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
-		i = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
-		if(i > 9)
+		count = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
+		if(count > 9)
 		{
-			i = 5;
+			count = 5;
 		}
-		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)i, 0);
+		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)count, 0);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
@@ -223,7 +222,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		break;
 
 	case WM_LBUTTONDOWN:
-		for(i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayColor); i++)
 		{
 			hwnd = GetDlgItem(hDlg, displayColor[i].id);
 			GetWindowRect(hwnd, &rect);
@@ -257,7 +256,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayColor); i++)
 		{
 			DrawSelectColor(hDlg, displayColor[i].id, displayColor[i].color);
 		}
@@ -297,7 +296,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 			WriterKey(pXmlWriter, ValueMaxWidth, num);
 
-			for(i = 0; i < _countof(displayColor); i++)
+			for(int i = 0; i < _countof(displayColor); i++)
 			{
 				_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayColor[i].color);
 				WriterKey(pXmlWriter, displayColor[i].value, num);

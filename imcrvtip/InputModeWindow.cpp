@@ -190,12 +190,13 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 	wc.lpszMenuName = NULL;
-	wc.lpszClassName = TextServiceDesc;
+	wc.lpszClassName = InputModeWindowClass;
 	wc.hIconSm = NULL;
 	RegisterClassExW(&wc);
 
-	_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE, TextServiceDesc,
-		NULL, WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+	_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
+		InputModeWindowClass, L"", WS_POPUP,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		_hwndParent, NULL, g_hInst, NULL);
 
 	if(_hwnd == NULL)

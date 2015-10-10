@@ -3,7 +3,6 @@
 #define VERSION_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-#define TEXTSERVICE_VER		L"1.9.6"
 
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
@@ -11,10 +10,12 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 
+#define TEXTSERVICE_VER		L"2.0.0"
+
 //for resource
 #define RC_AUTHOR			"nathancorvussolis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"1.9.6"
-#define RC_VERSION_D		1,9,6,0
+#define RC_VERSION			"2.0.0"
+#define RC_VERSION_D		2,0,0,0
 
 #endif

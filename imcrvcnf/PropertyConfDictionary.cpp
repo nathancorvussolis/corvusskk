@@ -32,15 +32,15 @@ LPCWSTR SkkDicErrorMsg[] =
 
 void LoadDictionary(HWND hwnd)
 {
-	BOOL check;
-	HWND hWndListView;
-	int i = 0;
-	LVITEMW item;
 	APPDATAXMLLIST list;
+	LVITEMW item;
 
-	if(ReadList(pathconfigxml, SectionDictionary, list) == S_OK && list.size() != 0)
+	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
+
+	if(hr == S_OK && list.size() != 0)
 	{
-		hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+		HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
 			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
@@ -53,7 +53,7 @@ void LoadDictionary(HWND hwnd)
 			item.iSubItem = 0;
 			ListView_InsertItem(hWndListView, &item);
 
-			check = TRUE;
+			BOOL check = TRUE;
 			if(l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
 			{
 				check = _wtoi((*l_itr)[1].second.c_str());
@@ -68,22 +68,19 @@ void LoadDictionary(HWND hwnd)
 
 void SaveDictionary(HWND hwnd)
 {
-	WCHAR path[MAX_PATH];
-	BOOL check;
-	HWND hWndListView;
-	int i, count;
-	APPDATAXMLATTR attr;
-	APPDATAXMLROW row;
 	APPDATAXMLLIST list;
+	APPDATAXMLROW row;
+	APPDATAXMLATTR attr;
+	WCHAR path[MAX_PATH];
 
-	hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	count = ListView_GetItemCount(hWndListView);
+	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	int count = ListView_GetItemCount(hWndListView);
 
-	for(i = 0; i < count; i++)
+	for(int i = 0; i < count; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
-		check = ListView_GetCheckState(hWndListView, i);
+		BOOL check = ListView_GetCheckState(hWndListView, i);
 
 		attr.first = AttributePath;
 		attr.second = path;
@@ -168,7 +165,8 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	}
 
 	wcsncat_s(dir, TEXTSERVICE_NAME, _TRUNCATE);
-	_wmkdir(dir);
+
+	CreateDirectoryW(dir, NULL);
 
 	strurl.assign(url);
 	strurl = std::regex_replace(strurl, std::wregex(L".+/"), std::wstring(L""));
@@ -262,6 +260,7 @@ BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
 	{
 		return FALSE;
 	}
+
 	while(fgets(buf, _countof(buf), fp) != NULL)
 	{
 		strbuf += buf;
@@ -296,6 +295,7 @@ BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
 			strbuf.clear();
 		}
 	}
+
 	fclose(fp);
 
 	return bRet;
@@ -313,6 +313,7 @@ BOOL CheckWideCharFile(LPCWSTR path)
 	{
 		return FALSE;
 	}
+
 	while(fgetws(wbuf, _countof(wbuf), fp) != NULL)
 	{
 		wstrbuf += wbuf;
@@ -329,6 +330,7 @@ BOOL CheckWideCharFile(LPCWSTR path)
 			wstrbuf.clear();
 		}
 	}
+
 	fclose(fp);
 
 	return bRet;
@@ -336,31 +338,24 @@ BOOL CheckWideCharFile(LPCWSTR path)
 
 HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
-	HWND hWndListView;
-	BOOL check;
 	WCHAR path[MAX_PATH];
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
-	size_t i, count;
 	FILE *fp;
-	int encoding;
-	WCHAR bom;
 	std::wstring key;
-	int okuri;
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
-	int rl;
 
-	hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	count = ListView_GetItemCount(hWndListView);
+	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	int count = ListView_GetItemCount(hWndListView);
 
-	for(i = 0; i < count; i++)
+	for(int i = 0; i < count; i++)
 	{
 		if(SkkDicInfo.cancel)
 		{
 			return E_ABORT;
 		}
 
-		check = ListView_GetCheckState(hWndListView, i);
+		BOOL check = ListView_GetCheckState(hWndListView, i);
 		if(check == FALSE)
 		{
 			continue;
@@ -384,7 +379,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 		SkkDicInfo.error = SKKDIC_FILEIO;
 		wcscpy_s(SkkDicInfo.path, path);
-		encoding = 0;
+		int encoding = 0;
 
 		//check BOM
 		_wfopen_s(&fp, path, RB);
@@ -392,7 +387,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 		{
 			return E_FAIL;
 		}
-		bom = L'\0';
+		WCHAR bom = L'\0';
 		fread(&bom, 2, 1, fp);
 		fclose(fp);
 		if(bom == BOM)
@@ -451,7 +446,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 			return E_FAIL;
 		}
 
-		okuri = -1;
+		int okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
 
 		while(true)
 		{
@@ -461,13 +456,15 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 				return E_ABORT;
 			}
 
-			rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
+			int rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
 			if(rl == -1)
 			{
+				//EOF
 				break;
 			}
 			else if(rl == 1)
 			{
+				//comment
 				continue;
 			}
 

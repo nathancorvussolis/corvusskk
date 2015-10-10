@@ -5,7 +5,8 @@
 #include "common.h"
 
 // imcrvcnf
-void CreateProperty(HINSTANCE hInst);
+void CreateProperty();
+int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam);
 
 // ConfigCnf
 void CreateConfigPath();
@@ -34,6 +35,20 @@ void SaveJLatin(HWND hwnd);
 void LoadConfigKanaTxt(LPCWSTR path);
 void LoadKanaTxt(HWND hwnd, LPCWSTR path);
 void SaveKanaTxt(HWND hwnd, LPCWSTR path);
+
+// dialog procedures
+INT_PTR CALLBACK DlgProcDictionary(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcBehavior(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcDisplay(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcDisplayAttrInput(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcDisplayAttrConv(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcSelKey(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcPreservedKey(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcKeyMap1(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcKeyMap2(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcConvPoint(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcKana(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK DlgProcJLatin(HWND, UINT, WPARAM, LPARAM);
 
 extern LPCWSTR TextServiceDesc;
 

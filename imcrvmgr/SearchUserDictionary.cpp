@@ -288,8 +288,7 @@ BOOL LoadSKKUserDic()
 {
 	FILE *fp;
 	std::wstring key, empty;
-	int okuri = -1;
-	int rl;
+	int okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
 	USEROKURIENTRY userokurientry;
@@ -297,7 +296,7 @@ BOOL LoadSKKUserDic()
 	complements.clear();
 	accompaniments.clear();
 
-	_wfopen_s(&fp, pathuserdic, RccsUTF16);
+	_wfopen_s(&fp, pathuserdic, RccsUTF8);
 	if(fp == NULL)
 	{
 		return FALSE;
@@ -305,13 +304,15 @@ BOOL LoadSKKUserDic()
 
 	while(true)
 	{
-		rl = ReadSKKDicLine(fp, BOM, okuri, key, sc, so);
+		int rl = ReadSKKDicLine(fp, BOM, okuri, key, sc, so);
 		if(rl == -1)
 		{
+			//EOF
 			break;
 		}
 		else if(rl == 1)
 		{
+			//comment
 			continue;
 		}
 
@@ -473,15 +474,18 @@ void WriteSKKUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDA
 	fwprintf(fp, L"%s\n", line.c_str());
 }
 
-BOOL SaveSKKUserDic(USERDATA *userdata)
+void SaveSKKUserDic(void *p)
 {
+	USERDATA *userdata = (USERDATA *)p;
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;
+
+	EnterCriticalSection(&csUserDataSave);	// !
 
 	_wfopen_s(&fp, pathuserdic, WccsUTF16);
 	if(fp == NULL)
 	{
-		return FALSE;
+		goto exit;
 	}
 
 	//送りありエントリ
@@ -518,67 +522,60 @@ BOOL SaveSKKUserDic(USERDATA *userdata)
 
 	fclose(fp);
 
-	return TRUE;
-}
-
-unsigned int __stdcall SaveSKKUserDicThreadEx(void *p)
-{
-	USERDATA *userdata = (USERDATA *)p;
-	BOOL ret;
-
-	EnterCriticalSection(&csUserDataSave);	// !
-
-	ret = SaveSKKUserDic(userdata);
+exit:
 
 	LeaveCriticalSection(&csUserDataSave);	// !
 
 	delete userdata;
-
-	return 0;
 }
 
-HANDLE StartSaveSKKUserDicEx()
+void StartSaveSKKUserDic(BOOL bThread)
 {
-	HANDLE hThread = NULL;
-
 	if(bUserDicChg)
 	{
 		bUserDicChg = FALSE;
+
 		try
 		{
 			USERDATA *userdata = new USERDATA();
-			try
-			{
-				userdata->userdic = userdic;
-				userdata->userokuri = userokuri;
-				userdata->complements = complements;
-				userdata->accompaniments = accompaniments;
+			userdata->userdic = userdic;
+			userdata->userokuri = userokuri;
+			userdata->complements = complements;
+			userdata->accompaniments = accompaniments;
 
-				hThread = (HANDLE)_beginthreadex(NULL, 0, SaveSKKUserDicThreadEx, userdata, 0, NULL);
-			}
-			catch(...)
+			if(bThread)
 			{
-				delete userdata;
+				_beginthread(SaveSKKUserDic, 0, userdata);
+			}
+			else
+			{
+				SaveSKKUserDic(userdata);
 			}
 		}
 		catch(...)
 		{
 		}
 	}
-
-	return hThread;
 }
 
-void SaveSKKUserDicThreadExWaitThread(void *p)
+void BackUpSKKUserDic()
 {
-	HANDLE hThread;
+	EnterCriticalSection(&csUserDataSave);	// !
 
-	hThread = StartSaveSKKUserDicEx();
-	WaitForSingleObject(hThread, INFINITE);
-	CloseHandle(hThread);
-}
+	WCHAR oldpath[MAX_PATH];
+	WCHAR newpath[MAX_PATH];
 
-void StartSaveSKKUserDic()
-{
-	_beginthread(SaveSKKUserDicThreadExWaitThread, 0, NULL);
+	for(int i = BACKUP_GENS; i > 1; i--)
+	{
+		_snwprintf_s(oldpath, _TRUNCATE, L"%s%d", pathuserbak, i - 1);
+		_snwprintf_s(newpath, _TRUNCATE, L"%s%d", pathuserbak, i);
+
+		MoveFileExW(oldpath, newpath, MOVEFILE_REPLACE_EXISTING);
+	}
+
+	_snwprintf_s(newpath, _TRUNCATE, L"%s%d", pathuserbak, 1);
+
+	CopyFileW(pathuserdic, newpath, FALSE);
+
+	LeaveCriticalSection(&csUserDataSave);	// !
 }

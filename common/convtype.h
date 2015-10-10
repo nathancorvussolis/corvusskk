@@ -22,7 +22,6 @@ typedef struct {
 	WCHAR jlatin[JLATIN_NUM];
 } ASCII_JLATIN_CONV;
 
-#define ROMAN_KANA_TBL_DEF_NUM	512
 #define ROMAN_KANA_TBL_MAX		32768
 #define ASCII_JLATIN_TBL_NUM	128
 

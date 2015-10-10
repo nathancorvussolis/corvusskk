@@ -16,28 +16,27 @@ WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
 void CreateConfigPath()
 {
-	WCHAR appdata[MAX_PATH];
+	PWSTR appdatafolder = NULL;
 
-	pathconfigxml[0] = L'\0';
-	pathskkdic[0] = L'\0';
-	pathskkidx[0] = L'\0';
+	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
+	ZeroMemory(pathskkdic, sizeof(pathskkdic));
+	ZeroMemory(pathskkidx, sizeof(pathskkidx));
 
-	if(SHGetFolderPathW(NULL, CSIDL_APPDATA | CSIDL_FLAG_DONT_VERIFY, NULL, SHGFP_TYPE_CURRENT, appdata) != S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, NULL, &appdatafolder) == S_OK)
 	{
-		appdata[0] = L'\0';
-		return;
+		WCHAR appdir[MAX_PATH];
+
+		_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s", appdatafolder, TextServiceDesc);
+
+		CoTaskMemFree(appdatafolder);
+
+		CreateDirectoryW(appdir, NULL);
+		SetCurrentDirectoryW(appdir);
+
+		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
+		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s", appdir, fnskkdic);
+		_snwprintf_s(pathskkidx, _TRUNCATE, L"%s\\%s", appdir, fnskkidx);
 	}
-
-	wcsncat_s(appdata, L"\\", _TRUNCATE);
-	wcsncat_s(appdata, TextServiceDesc, _TRUNCATE);
-	wcsncat_s(appdata, L"\\", _TRUNCATE);
-
-	_wmkdir(appdata);
-	SetCurrentDirectoryW(appdata);
-
-	_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s%s", appdata, fnconfigxml);
-	_snwprintf_s(pathskkdic, _TRUNCATE, L"%s%s", appdata, fnskkdic);
-	_snwprintf_s(pathskkidx, _TRUNCATE, L"%s%s", appdata, fnskkidx);
 
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 
@@ -45,7 +44,7 @@ void CreateConfigPath()
 
 	if(GetSidMD5Digest(&pszDigest))
 	{
-		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", CORVUSCNFMUTEX, pszDigest);
+		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszDigest);
 
 		LocalFree(pszDigest);
 	}
@@ -63,6 +62,7 @@ BOOL SetFileDacl(LPCWSTR path)
 		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
 			(IsWindowsVersion62OrLater() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
+
 		LocalFree(pszUserSid);
 	}
 

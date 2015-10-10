@@ -38,6 +38,7 @@ BOOL RegisterProfiles()
 	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
 	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
+		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
 		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
@@ -57,7 +58,7 @@ void UnregisterProfiles()
 	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
 	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
-		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
+		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, 0);
 
 		SafeRelease(&pInputProcessorProfilesMgr);
 	}
@@ -65,19 +66,18 @@ void UnregisterProfiles()
 
 BOOL RegisterCategories()
 {
-	int i;
-
 	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
-		for(i = 0; i < _countof(c_guidCategory); i++)
+		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
 			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
+
 		// for Windows 8 or later
 		if(IsWindowsVersion62OrLater())
 		{
-			for(i = 0; i < _countof(c_guidCategory8); i++)
+			for(int i = 0; i < _countof(c_guidCategory8); i++)
 			{
 				pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}
@@ -95,19 +95,18 @@ BOOL RegisterCategories()
 
 void UnregisterCategories()
 {
-	int i;
-
 	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
-		for(i = 0; i < _countof(c_guidCategory); i++)
+		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
 			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
+
 		// for Windows 8 or later
 		if(IsWindowsVersion62OrLater())
 		{
-			for(i = 0; i < _countof(c_guidCategory8); i++)
+			for(int i = 0; i < _countof(c_guidCategory8); i++)
 			{
 				pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}
@@ -147,6 +146,7 @@ BOOL RegisterServer()
 		goto exit;
 	}
 
+	ZeroMemory(fileName, sizeof(fileName));
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
 	if(RegSetValueExW(hSubKey, NULL, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
@@ -189,16 +189,20 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 	typedef BOOL (WINAPI *PTF_INSTALLLAYOUTORTIP)(LPCWSTR psz, DWORD dwFlags);
 
 	BOOL bRet = FALSE;
-	WCHAR fileNameInputDLL[MAX_PATH];
+	WCHAR fileName[MAX_PATH];
 
-	if(SHGetFolderPathW(NULL, CSIDL_SYSTEM, NULL, SHGFP_TYPE_CURRENT, fileNameInputDLL) != S_OK)
+	PWSTR systemfolder = NULL;
+
+	ZeroMemory(fileName, sizeof(fileName));
+
+	if(SHGetKnownFolderPath(FOLDERID_System, KF_FLAG_DONT_VERIFY, NULL, &systemfolder) == S_OK)
 	{
-		return FALSE;
+		_snwprintf_s(fileName, _TRUNCATE, L"%s\\%s", systemfolder, L"input.dll");
+
+		CoTaskMemFree(systemfolder);
 	}
 
-	wcsncat_s(fileNameInputDLL, L"\\input.dll", _TRUNCATE);
-
-	HMODULE hInputDLL = LoadLibraryW(fileNameInputDLL);
+	HMODULE hInputDLL = LoadLibraryW(fileName);
 
 	if(hInputDLL != NULL)
 	{
@@ -211,19 +215,15 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 			WCHAR guidprofile[CLSID_STRLEN + 1];
 			WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
 
-			if(StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
+			int clsidlen = StringFromGUID2(c_clsidTextService, clsid, _countof(clsid));
+			int guidprofilelen = StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile));
+
+			if(clsidlen != 0 && guidprofilelen != 0)
 			{
-				return FALSE;
+				_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
+
+				bRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
 			}
-
-			if(StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile)) == 0)
-			{
-				return FALSE;
-			}
-
-			_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
-
-			bRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
 		}
 
 		FreeLibrary(hInputDLL);

@@ -8,6 +8,8 @@ HINSTANCE g_hInst;
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 LPCWSTR LangbarItemDesc = L"ver. " TEXTSERVICE_VER;
+LPCWSTR CandidateWindowClass = TEXTSERVICE_NAME L"CandidateWindow";
+LPCWSTR InputModeWindowClass = TEXTSERVICE_NAME L"InputModeWindow";
 
 #ifndef _DEBUG
 

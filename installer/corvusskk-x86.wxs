@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="1.9.6" ?>
+  <?define version="2.0.0" ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
@@ -42,7 +42,7 @@
 
     <Component Id="RegistryRun" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-        <RegistryValue Type="string" Name="imcrvmgr" Value="&quot;$(env.windir)\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" Action="write" />
+        <RegistryValue Type="string" Name="imcrvmgr" Value="&quot;$(env.SystemRoot)\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" Action="write" />
       </RegistryKey>
     </Component>
 

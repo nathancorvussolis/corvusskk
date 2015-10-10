@@ -189,7 +189,6 @@ public:
 	void _CommandDic(WCHAR command);
 	void _StartManager();
 	void _StartConfigure();
-	void _StartProcess(LPCWSTR fname);
 
 	// FnConfigure
 	void _CreateConfigPath();

@@ -25,12 +25,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
 		wc.lpszMenuName = NULL;
-		wc.lpszClassName = TextServiceDesc;
+		wc.lpszClassName = CandidateWindowClass;
 		wc.hIconSm = NULL;
 		RegisterClassExW(&wc);
 
 		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
-			TextServiceDesc, NULL, WS_POPUP,
+			CandidateWindowClass, L"", WS_POPUP,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 			_hwndParent, NULL, g_hInst, NULL);
 
@@ -1131,7 +1131,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				HANDLE hCB = GetClipboardData(CF_UNICODETEXT);
 				if(hCB != NULL)
 				{
-					PWCHAR pwCB = (PWCHAR)GlobalLock(hCB);
+					LPWSTR pwCB = (LPWSTR)GlobalLock(hCB);
 					if(pwCB != NULL)
 					{
 						std::wstring scb = std::regex_replace(std::wstring(pwCB),

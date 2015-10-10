@@ -231,7 +231,6 @@ void CTextService::_StartConv(TfEditCookie ec, ITfContext *pContext)
 	std::wstring keyhint, key, hint;
 	std::wstring candidate, str;
 	size_t okuriidx_bak;
-	size_t i;
 
 	_EndCompletionList(ec, pContext);
 
@@ -270,7 +269,7 @@ void CTextService::_StartConv(TfEditCookie ec, ITfContext *pContext)
 		FORWARD_ITERATION_I(candidates_hint_itr, candidates_hint)
 		{
 			candidate = candidates_hint_itr->first.first;
-			for(i = 0; i < candidate.size(); i++)
+			for(size_t i = 0; i < candidate.size(); i++)
 			{
 				str.clear();
 				if((i + 1) != candidate.size() && IS_SURROGATE_PAIR(candidate[i], candidate[i + 1]))
@@ -675,7 +674,7 @@ void CTextService::_UserDicComp(size_t max)
 	std::wstring searchkey_bak = searchkey;
 	CANDIDATES candidates_bak = candidates;
 	size_t candidx_bak = candidx;
-	size_t i, count = 0;
+	size_t count = 0;
 
 #ifdef _DEBUG
 	_CommandDic(REQ_DEBUGOUT_OFF);
@@ -695,7 +694,7 @@ void CTextService::_UserDicComp(size_t max)
 		if(!candidates.empty() && cx_untilcandlist > 1)
 		{
 			candidates_bak_itr->first.second = L"/";
-			i = 1;
+			size_t i = 1;
 			FORWARD_ITERATION_I(candidates_itr, candidates)
 			{
 				//「候補一覧表示に要する変換回数」-1 個まで
@@ -950,7 +949,6 @@ BOOL CTextService::_ConvN()
 
 void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode)
 {
-	size_t i;
 	BOOL exist;
 	WCHAR *convkana = NULL;
 	WCHAR srckana[3];
@@ -976,7 +974,7 @@ void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::ws
 		break;
 	}
 
-	for(i = 0; i < src.size(); i++)
+	for(size_t i = 0; i < src.size(); i++)
 	{
 		// surrogate pair, 「う゛」
 		if(((i + 1) < src.size()) &&

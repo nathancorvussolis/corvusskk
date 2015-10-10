@@ -101,6 +101,8 @@ typedef struct ROMAN_KANA_NODE {
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR LangbarItemDesc;
+extern LPCWSTR CandidateWindowClass;
+extern LPCWSTR InputModeWindowClass;
 
 extern HINSTANCE g_hInst;
 

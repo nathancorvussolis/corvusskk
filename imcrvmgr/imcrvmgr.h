@@ -54,9 +54,9 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadSKKUserDic();
-BOOL SaveSKKUserDic(USERDATA *userdata);
-HANDLE StartSaveSKKUserDicEx();
-void StartSaveSKKUserDic();
+void SaveSKKUserDic(void *p);
+void StartSaveSKKUserDic(BOOL bThread);
+void BackUpSKKUserDic();
 
 // SearchSKKServer
 std::wstring SearchSKKServer(const std::wstring &searchkey);
@@ -71,7 +71,10 @@ std::wstring GetSKKServerInfo(CHAR req);
 //server
 #define SKK_HIT		'1'
 
+#define BACKUP_GENS		3
+
 extern LPCWSTR TextServiceDesc;
+extern LPCWSTR DictionaryManagerClass;
 
 extern CRITICAL_SECTION csUserDataSave;
 extern BOOL bUserDicChg;
@@ -86,6 +89,7 @@ extern KEYORDER accompaniments;
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathuserdic[MAX_PATH];		//ユーザー辞書
+extern WCHAR pathuserbak[MAX_PATH];		//ユーザー辞書バックアッププレフィックス
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 extern WCHAR pathinitlua[MAX_PATH];		//init.lua

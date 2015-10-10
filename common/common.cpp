@@ -1,8 +1,8 @@
 ﻿
 #include "common.h"
 
-#define CCSUTF16 L",ccs=UTF-16LE"
-#define CCSUTF8 L",ccs=UTF-8"
+#define CCSUTF16 L", ccs=UTF-16LE"
+#define CCSUTF8 L", ccs=UTF-8"
 LPCWSTR RccsUTF16 = L"r" CCSUTF16;
 LPCWSTR WccsUTF16 = L"w" CCSUTF16;
 LPCWSTR RccsUTF8 = L"r" CCSUTF8;
@@ -11,7 +11,8 @@ LPCWSTR RB = L"rb";
 LPCWSTR WB = L"wb";
 
 LPCWSTR fnconfigxml = L"config.xml";	//設定
-LPCWSTR fnuserdic = L"userdict.txt";	//ユーザ辞書
+LPCWSTR fnuserdic = L"userdict.txt";	//ユーザー辞書
+LPCWSTR fnuserbak = L"userdict.bk";		//ユーザー辞書バックアッププレフィックス
 LPCWSTR fnskkdic = L"skkdict.dic";		//取込SKK辞書
 LPCWSTR fnskkidx = L"skkdict.idx";		//取込SKK辞書インデックス
 LPCWSTR fninitlua = L"init.lua";		//init.lua
@@ -132,7 +133,6 @@ BOOL GetSidMD5Digest(LPWSTR *ppszDigest)
 	MD5_DIGEST digest;
 	DWORD dwLSid;
 	LPWSTR pLSid;
-	int i;
 
 	if(ppszDigest == NULL)
 	{
@@ -154,7 +154,7 @@ BOOL GetSidMD5Digest(LPWSTR *ppszDigest)
 			{
 				if(GetMD5(&digest, (CONST BYTE *)pLSid, dwLSid * sizeof(WCHAR)))
 				{
-					for(i = 0; i < _countof(digest.digest); i++)
+					for(int i = 0; i < _countof(digest.digest); i++)
 					{
 						_snwprintf_s(*ppszDigest + i * 2, (_countof(digest.digest) * 2 + 1) - i * 2,
 							_TRUNCATE, L"%02x", digest.digest[i]);
@@ -289,6 +289,36 @@ BOOL GetLogonSid(LPWSTR *ppszLogonSid)
 			LocalFree(pTokenGroups);
 		}
 		CloseHandle(hToken);
+	}
+
+	return bRet;
+}
+
+BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
+{
+	WCHAR path[MAX_PATH];
+	PROCESS_INFORMATION pi;
+	STARTUPINFOW si;
+
+	if(GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
+	{
+		WCHAR *pdir = wcsrchr(path, L'\\');
+		if(pdir != NULL)
+		{
+			*(pdir + 1) = L'\0';
+			wcsncat_s(path, lpFileName, _TRUNCATE);
+		}
+	}
+
+	ZeroMemory(&pi, sizeof(pi));
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+
+	BOOL bRet = CreateProcessW(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	if(bRet)
+	{
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
 	}
 
 	return bRet;

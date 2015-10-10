@@ -4,20 +4,6 @@
 
 HINSTANCE hInst;
 
-// static dialog procedure
-INT_PTR CALLBACK DlgProcDictionary(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcBehavior(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplay(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplayAttrInput(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplayAttrConv(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcSelKey(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcPreservedKey(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKeyMap1(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKeyMap2(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcConvPoint(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKana(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcJLatin(HWND, UINT, WPARAM, LPARAM);
-
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	HANDLE hMutex;
@@ -39,12 +25,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
-	CreateProperty(hInstance);
+	CreateProperty();
 
 	return 0;
 }
 
-void CreateProperty(HINSTANCE hInstance)
+void CreateProperty()
 {
 	PROPSHEETPAGEW psp;
 	PROPSHEETHEADERW psh;
@@ -66,14 +52,13 @@ void CreateProperty(HINSTANCE hInstance)
 		{IDD_DIALOG_JLATTBL,		DlgProcJLatin}
 	};
 	HPROPSHEETPAGE hpsp[_countof(DlgPage)];
-	int i;
 
 	ZeroMemory(&psp, sizeof(PROPSHEETPAGEW));
 	psp.dwSize = sizeof(PROPSHEETPAGEW);
 	psp.dwFlags = PSP_PREMATURE;
 	psp.hInstance = hInst;
 
-	for(i = 0; i < _countof(DlgPage); i++)
+	for(int i = 0; i < _countof(DlgPage); i++)
 	{
 		psp.pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
 		psp.pfnDlgProc = DlgPage[i].DlgProc;
@@ -82,13 +67,35 @@ void CreateProperty(HINSTANCE hInstance)
 
 	ZeroMemory(&psh, sizeof(PROPSHEETHEADERW));
 	psh.dwSize = sizeof(PROPSHEETHEADERW);
-	psh.dwFlags = PSH_DEFAULT | PSH_NOCONTEXTHELP;
-	psh.hInstance = hInstance;
+	psh.dwFlags = PSH_DEFAULT | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
 	psh.hwndParent = NULL;
-	psh.nPages = _countof(DlgPage);
-	psh.phpage = hpsp;
+	psh.hInstance = hInst;
 	psh.pszCaption = TEXTSERVICE_DESC L" (ver. " TEXTSERVICE_VER L")";
+	psh.nPages = _countof(DlgPage);
+	psh.nStartPage = 0;
+	psh.phpage = hpsp;
+	psh.pfnCallback = PropSheetProc;
+
 	PropertySheetW(&psh);
 
 	return;
+}
+
+int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
+{
+	switch(uMsg)
+	{
+	case PSCB_INITIALIZED:
+		//imcrvmgr.exeから実行されるときimcrvtip.dllで
+		//AllowSetForegroundWindow関数が実行済みのはず
+		SetForegroundWindow(hwndDlg);
+		break;
+	case PSCB_PRECREATE:
+		break;
+	case PSCB_BUTTONPRESSED:
+		break;
+	default:
+		break;
+	}
+	return 0;
 }

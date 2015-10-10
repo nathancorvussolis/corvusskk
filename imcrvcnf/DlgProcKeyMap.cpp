@@ -81,12 +81,10 @@ INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no)
 {
-	size_t i;
-
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		for(i = 0; i < _countof(KeyMap[no]); i++)
+		for(int i = 0; i < _countof(KeyMap[no]); i++)
 		{
 			LoadKeyMap(hDlg, KeyMap[no][i].idd, SectionName[no], KeyMap[no][i].keyName, KeyMap[no][i].defaultValue);
 		}
@@ -140,7 +138,7 @@ INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		case PSN_APPLY:
 			WriterStartSection(pXmlWriter, SectionName[no]);	//Start of SectionKeyMap or SectionVKeyMap
 
-			for(i = 0; i < _countof(KeyMap[no]); i++)
+			for(int i = 0; i < _countof(KeyMap[no]); i++)
 			{
 				SaveKeyMap(hDlg, KeyMap[no][i].idd, KeyMap[no][i].keyName);
 			}
