@@ -20,19 +20,9 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	}
 	SafeRelease(&_pComposition);
 
-	_ResetStatus();
+	_EndInputModeWindow();
 
-	if(_pInputModeWindow != NULL)
-	{
-		if(_pInputModeWindow->_term)
-		{
-			_EndInputModeWindow();
-		}
-		else
-		{
-			_StartInputModeWindow(TRUE);
-		}
-	}
+	_ResetStatus();
 
 	return S_OK;
 }
@@ -72,42 +62,40 @@ public:
 	}
 
 	// ITfEditSession
-	STDMETHODIMP DoEditSession(TfEditCookie ec);
-};
-
-STDAPI CStartCompositionEditSession::DoEditSession(TfEditCookie ec)
-{
-	HRESULT hr = E_FAIL;
-
-	ITfInsertAtSelection *pInsertAtSelection;
-	if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		ITfRange *pRange;
-		if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRange) == S_OK)
+		HRESULT hr = E_FAIL;
+
+		ITfInsertAtSelection *pInsertAtSelection;
+		if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
 		{
-			ITfContextComposition *pContextComposition;
-			if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
+			ITfRange *pRange;
+			if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRange) == S_OK)
 			{
-				ITfComposition *pComposition;
-				if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
+				ITfContextComposition *pContextComposition;
+				if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
 				{
-					_pTextService->_SetComposition(pComposition);
+					ITfComposition *pComposition;
+					if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
+					{
+						_pTextService->_SetComposition(pComposition);
 
-					TF_SELECTION tfSelection;
-					tfSelection.range = pRange;
-					tfSelection.style.ase = TF_AE_NONE;
-					tfSelection.style.fInterimChar = FALSE;
-					hr = _pContext->SetSelection(ec, 1, &tfSelection);
+						TF_SELECTION tfSelection;
+						tfSelection.range = pRange;
+						tfSelection.style.ase = TF_AE_NONE;
+						tfSelection.style.fInterimChar = FALSE;
+						hr = _pContext->SetSelection(ec, 1, &tfSelection);
+					}
+					SafeRelease(&pContextComposition);
 				}
-				SafeRelease(&pContextComposition);
+				SafeRelease(&pRange);
 			}
-			SafeRelease(&pRange);
+			SafeRelease(&pInsertAtSelection);
 		}
-		SafeRelease(&pInsertAtSelection);
-	}
 
-	return hr;
-}
+		return hr;
+	}
+};
 
 BOOL CTextService::_StartComposition(ITfContext *pContext)
 {
@@ -196,7 +184,7 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 		return;
 	}
 
-	if(cFetched > 1)
+	if(cFetched != 1)
 	{
 		SafeRelease(&tfSelection.range);
 		return;

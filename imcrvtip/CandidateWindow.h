@@ -122,7 +122,7 @@ private:
 	IDWriteTextFormat *_pDWTF;
 
 	BOOL _reg;		//初期表示から辞書登録
-	BOOL _comp;		//複数動的補完
+	BOOL _comp;		//複数補完/複数動的補完
 
 	CANDIDATES candidates;		//描画用候補
 	size_t candidx;				//描画用候補インデックス

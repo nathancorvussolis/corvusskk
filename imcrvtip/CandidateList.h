@@ -58,10 +58,9 @@ private:
 	ITfDocumentMgr *_pDocumentMgr;
 	TfEditCookie _ec;
 
-	HWND _hwndParent;
 	CCandidateWindow *_pCandidateWindow;
 
-	BOOL _comp;
+	BOOL _comp;		//複数補完/複数動的補完
 };
 
 #endif //CANDIDATELIST_H

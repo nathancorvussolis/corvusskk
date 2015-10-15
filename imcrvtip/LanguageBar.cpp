@@ -578,7 +578,7 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 	if(_ShowInputMode && showinputmode &&
 		(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow()))
 	{
-		_StartInputModeWindow(FALSE);
+		_StartInputModeWindow();
 	}
 }
 
@@ -588,113 +588,4 @@ void CTextService::_GetIcon(HICON *phIcon)
 	{
 		_pLangBarItem->_GetIcon(phIcon, FALSE);
 	}
-}
-
-class CInputModeEditSession : public CEditSessionBase
-{
-public:
-	CInputModeEditSession(CTextService *pTextService, ITfContext *pContext, CInputModeWindow *pInputModeWindow) : CEditSessionBase(pTextService, pContext)
-	{
-		_pTextService = pTextService;
-		_pContext = pContext;
-		_pInputModeWindow = pInputModeWindow;
-	}
-
-	// ITfEditSession
-	STDMETHODIMP DoEditSession(TfEditCookie ec)
-	{
-		HRESULT hr;
-
-		_pTextService->_SetText(ec, _pContext, std::wstring(L""), -1, 0, FALSE);
-
-		ITfContextView *pContextView;
-		if(_pContext->GetActiveView(&pContextView) == S_OK)
-		{
-			try
-			{
-				CIMGetTextExtEditSession *pEditSession =
-					new CIMGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow);
-				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-				SafeRelease(&pEditSession);
-			}
-			catch(...)
-			{
-			}
-
-			SafeRelease(&pContextView);
-		}
-
-		return S_OK;
-	}
-
-private:
-	CTextService *_pTextService;
-	ITfContext *_pContext;
-	CInputModeWindow *_pInputModeWindow;
-};
-
-void CTextService::_StartInputModeWindow(BOOL term)
-{
-	HRESULT hr = E_FAIL;
-
-	switch(inputmode)
-	{
-	case im_hiragana:
-	case im_katakana:
-	case im_katakana_ank:
-	case im_jlatin:
-	case im_ascii:
-		_EndInputModeWindow();
-
-		ITfDocumentMgr *pDocumentMgr;
-		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != NULL)
-		{
-			ITfContext *pContext;
-			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != NULL)
-			{
-				try
-				{
-					_pInputModeWindow = new CInputModeWindow();
-					_pInputModeWindow->_term = term;
-
-					if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
-					{
-						try
-						{
-							CInputModeEditSession *pEditSession = new CInputModeEditSession(this, pContext, _pInputModeWindow);
-							// Asynchronous
-							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hr);
-							SafeRelease(&pEditSession);
-						}
-						catch(...)
-						{
-						}
-
-						if(hr != TF_S_ASYNC)
-						{
-							_EndInputModeWindow();
-						}
-					}
-				}
-				catch(...)
-				{
-				}
-
-				SafeRelease(&pContext);
-			}
-			SafeRelease(&pDocumentMgr);
-		}
-		break;
-	default:
-		break;
-	}
-}
-
-void CTextService::_EndInputModeWindow()
-{
-	if(_pInputModeWindow != NULL)
-	{
-		_pInputModeWindow->_Destroy();
-	}
-	SafeRelease(&_pInputModeWindow);
 }

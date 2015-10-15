@@ -21,7 +21,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		return 0;
 	}
 
-	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwSize = sizeof(icex);
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
@@ -53,8 +53,8 @@ void CreateProperty()
 	};
 	HPROPSHEETPAGE hpsp[_countof(DlgPage)];
 
-	ZeroMemory(&psp, sizeof(PROPSHEETPAGEW));
-	psp.dwSize = sizeof(PROPSHEETPAGEW);
+	ZeroMemory(&psp, sizeof(psp));
+	psp.dwSize = sizeof(psp);
 	psp.dwFlags = PSP_PREMATURE;
 	psp.hInstance = hInst;
 
@@ -65,8 +65,8 @@ void CreateProperty()
 		hpsp[i] = CreatePropertySheetPageW(&psp);
 	}
 
-	ZeroMemory(&psh, sizeof(PROPSHEETHEADERW));
-	psh.dwSize = sizeof(PROPSHEETHEADERW);
+	ZeroMemory(&psh, sizeof(psh));
+	psh.dwSize = sizeof(psh);
 	psh.dwFlags = PSH_DEFAULT | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
 	psh.hwndParent = NULL;
 	psh.hInstance = hInst;

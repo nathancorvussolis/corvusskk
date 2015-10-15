@@ -116,14 +116,16 @@ STDAPI CTextService::OnSetFocus(BOOL fForeground)
 
 STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
+	if(pfEaten == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
 	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
 	{
-		if(_pInputModeWindow != NULL)
-		{
-			_ClearComposition();
-		}
+		_EndInputModeWindow();
 
 		if(inputmode == im_ascii)
 		{
@@ -141,6 +143,11 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 STDAPI CTextService::OnKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
+	if(pfEaten == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
 	if(*pfEaten)
@@ -153,6 +160,11 @@ STDAPI CTextService::OnKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BO
 
 STDAPI CTextService::OnTestKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
+	if(pfEaten == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
 	return S_OK;
@@ -160,6 +172,11 @@ STDAPI CTextService::OnTestKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, 
 
 STDAPI CTextService::OnKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
+	if(pfEaten == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
 	return S_OK;
@@ -167,6 +184,11 @@ STDAPI CTextService::OnKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL
 
 STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEaten)
 {
+	if(pic == NULL || pfEaten == NULL)
+	{
+		return E_INVALIDARG;
+	}
+
 	if(IsEqualGUID(rguid, c_guidPreservedKeyOnOff))
 	{
 		BOOL fOpen = _IsKeyboardOpen();
@@ -181,6 +203,7 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 		}
 
 		_SetKeyboardOpen(fOpen ? FALSE : TRUE);
+
 		*pfEaten = TRUE;
 	}
 	else

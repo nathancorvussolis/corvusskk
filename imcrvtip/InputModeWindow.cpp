@@ -6,6 +6,96 @@
 #define IMPUTMODE_TIMER_ID		0x54ab516b
 #define IMPUTMODE_TIMEOUT_MSEC	3000
 
+class CInputModeWindowGetTextExtEditSession : public CEditSessionBase
+{
+public:
+	CInputModeWindowGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext,
+		ITfContextView *pContextView, CInputModeWindow *pInputModeWindow) : CEditSessionBase(pTextService, pContext)
+	{
+		_pInputModeWindow = pInputModeWindow;
+		_pInputModeWindow->AddRef();
+		_pContextView = pContextView;
+		_pContextView->AddRef();
+	}
+
+	~CInputModeWindowGetTextExtEditSession()
+	{
+		SafeRelease(&_pInputModeWindow);
+		SafeRelease(&_pContextView);
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		TF_SELECTION tfSelection;
+		ULONG cFetched = 0;
+		if(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
+		{
+			return E_FAIL;
+		}
+
+		if(cFetched != 1)
+		{
+			SafeRelease(&tfSelection.range);
+			return E_FAIL;
+		}
+
+		RECT rc;
+		BOOL fClipped;
+		if(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped) == S_OK)
+		{
+			POINT pt;
+			pt.x = rc.left;
+			pt.y = rc.bottom;
+			HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+
+			MONITORINFO mi;
+			mi.cbSize = sizeof(mi);
+			GetMonitorInfoW(hMonitor, &mi);
+
+			RECT rw;
+			_pInputModeWindow->_GetRect(&rw);
+			LONG height = rw.bottom - rw.top;
+			LONG width = rw.right - rw.left;
+
+			if(rc.left < mi.rcWork.left)
+			{
+				rc.left = mi.rcWork.left;
+			}
+
+			if(mi.rcWork.right < rc.right)
+			{
+				rc.left = mi.rcWork.right - width;
+			}
+
+			if(mi.rcWork.bottom < rc.top)
+			{
+				rc.bottom = mi.rcWork.bottom - height - IM_MERGIN_Y;
+			}
+			else if(mi.rcWork.bottom < (rc.bottom + height + IM_MERGIN_Y))
+			{
+				rc.bottom = rc.top - height - IM_MERGIN_Y * 2;
+			}
+
+			if(rc.bottom < mi.rcWork.top)
+			{
+				rc.bottom = mi.rcWork.top - IM_MERGIN_Y;
+			}
+
+			_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
+			_pInputModeWindow->_Show(TRUE);
+		}
+
+		SafeRelease(&tfSelection.range);
+
+		return S_OK;
+	}
+
+private:
+	ITfContextView *_pContextView;
+	CInputModeWindow *_pInputModeWindow;
+};
+
 CInputModeWindow::CInputModeWindow()
 {
 	DllAddRef();
@@ -17,8 +107,6 @@ CInputModeWindow::CInputModeWindow()
 	_pTextService = NULL;
 	_pContext = NULL;
 	_size = 0;
-
-	_term = FALSE;
 }
 
 CInputModeWindow::~CInputModeWindow()
@@ -84,8 +172,8 @@ STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode
 	case TF_LC_CHANGE:
 		try
 		{
-			CIMGetTextExtEditSession *pEditSession =
-				new CIMGetTextExtEditSession(_pTextService, pContext, pContextView, this);
+			CInputModeWindowGetTextExtEditSession *pEditSession =
+				new CInputModeWindowGetTextExtEditSession(_pTextService, pContext, pContextView, this);
 			pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 			SafeRelease(&pEditSession);
 		}
@@ -188,7 +276,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	wc.hInstance = g_hInst;
 	wc.hIcon = NULL;
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW+1);
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszMenuName = NULL;
 	wc.lpszClassName = InputModeWindowClass;
 	wc.hIconSm = NULL;
@@ -263,8 +351,8 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_TIMER:
 		if(wParam == IMPUTMODE_TIMER_ID)
 		{
-			// CAUTION! killing self
-			_pTextService->_ClearComposition();
+			// CAUTION!! killing self
+			_pTextService->_EndInputModeWindow();
 		}
 		break;
 	case WM_DESTROY:
@@ -363,4 +451,113 @@ void CInputModeWindow::_GetRect(LPRECT lpRect)
 			GetClientRect(_hwnd, lpRect);
 		}
 	}
+}
+
+class CInputModeWindowEditSession : public CEditSessionBase
+{
+public:
+	CInputModeWindowEditSession(CTextService *pTextService, ITfContext *pContext,
+		CInputModeWindow *pInputModeWindow) : CEditSessionBase(pTextService, pContext)
+	{
+		_pInputModeWindow = pInputModeWindow;
+		_pInputModeWindow->AddRef();
+	}
+
+	~CInputModeWindowEditSession()
+	{
+		SafeRelease(&_pInputModeWindow);
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		HRESULT hr;
+
+		ITfContextView *pContextView;
+		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		{
+			try
+			{
+				CInputModeWindowGetTextExtEditSession *pEditSession =
+					new CInputModeWindowGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow);
+				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
+				SafeRelease(&pEditSession);
+			}
+			catch(...)
+			{
+			}
+
+			SafeRelease(&pContextView);
+		}
+
+		return S_OK;
+	}
+
+private:
+	CInputModeWindow *_pInputModeWindow;
+};
+
+void CTextService::_StartInputModeWindow()
+{
+	switch(inputmode)
+	{
+	case im_hiragana:
+	case im_katakana:
+	case im_katakana_ank:
+	case im_jlatin:
+	case im_ascii:
+		_EndInputModeWindow();
+
+		ITfDocumentMgr *pDocumentMgr;
+		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != NULL)
+		{
+			ITfContext *pContext;
+			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != NULL)
+			{
+				try
+				{
+					_pInputModeWindow = new CInputModeWindow();
+
+					if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
+					{
+						HRESULT hrSession = E_FAIL;
+
+						try
+						{
+							CInputModeWindowEditSession *pEditSession = new CInputModeWindowEditSession(this, pContext, _pInputModeWindow);
+							// Asynchronous
+							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hrSession);
+							SafeRelease(&pEditSession);
+						}
+						catch(...)
+						{
+						}
+
+						if(hrSession != TF_S_ASYNC)
+						{
+							_EndInputModeWindow();
+						}
+					}
+				}
+				catch(...)
+				{
+				}
+
+				SafeRelease(&pContext);
+			}
+			SafeRelease(&pDocumentMgr);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void CTextService::_EndInputModeWindow()
+{
+	if(_pInputModeWindow != NULL)
+	{
+		_pInputModeWindow->_Destroy();
+	}
+	SafeRelease(&_pInputModeWindow);
 }

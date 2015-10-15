@@ -85,7 +85,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	std::wstring key, candidate, wsbuf;
 	WCHAR wbuf[DICBUFSIZE];
 	long pos, left, mid, right;
-	int comp;
+	int cmpkey;
 	size_t pidx;
 
 	_wfopen_s(&fpidx, pathskkidx, RB);
@@ -118,8 +118,8 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 		fgetws(wbuf, _countof(wbuf), fpdic);
 		wsbuf = wbuf;
 
-		comp = wcsncmp(key.c_str(), wsbuf.c_str(), key.size());
-		if(comp == 0)
+		cmpkey = wcsncmp(key.c_str(), wsbuf.c_str(), key.size());
+		if(cmpkey == 0)
 		{
 			if((pidx = wsbuf.find_last_of(L'/')) != std::string::npos)
 			{
@@ -136,7 +136,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 			}
 			break;
 		}
-		else if(comp > 0)
+		else if(cmpkey > 0)
 		{
 			left = mid + 1;
 		}

@@ -154,12 +154,12 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			hdc = GetDC(hDlg);
 
 			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
-			GetObjectW(hFont, sizeof(LOGFONTW), &lf);
+			GetObjectW(hFont, sizeof(lf), &lf);
 			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
 			lf.lfCharSet = SHIFTJIS_CHARSET;
 
 			ZeroMemory(&cf, sizeof(cf));
-			cf.lStructSize = sizeof(CHOOSEFONTW);
+			cf.lStructSize = sizeof(cf);
 			cf.hwndOwner = hDlg;
 			cf.lpLogFont = &lf;
 			cf.Flags = CF_INITTOLOGFONTSTRUCT | CF_NOVERTFONTS | CF_SCREENFONTS | CF_SELECTSCRIPT;
@@ -274,7 +274,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			WriterKey(pXmlWriter, ValueFontName, fontname);
 
 			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
-			GetObjectW(hFont, sizeof(LOGFONTW), &lf);
+			GetObjectW(hFont, sizeof(lf), &lf);
 			GetDlgItemTextW(hDlg, IDC_EDIT_FONTPOINT, num, _countof(num));
 			WriterKey(pXmlWriter, ValueFontSize, num);
 			_snwprintf_s(num, _TRUNCATE, L"%d", lf.lfWeight);

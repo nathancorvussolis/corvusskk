@@ -5,14 +5,25 @@
 #include "CandidateList.h"
 #include "CandidateWindow.h"
 
-class CGetTextExtEditSession : public CEditSessionBase
+class CCandidateListGetTextExtEditSession : public CEditSessionBase
 {
 public:
-	CGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext, ITfContextView *pContextView, ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
+	CCandidateListGetTextExtEditSession(CTextService *pTextService, ITfContext *pContext,
+		ITfContextView *pContextView, ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
 	{
-		_pContextView = pContextView;
-		_pRangeComposition = pRange;
 		_pCandidateWindow = pCandidateWindow;
+		_pCandidateWindow->AddRef();
+		_pRangeComposition = pRange;
+		_pRangeComposition->AddRef();
+		_pContextView = pContextView;
+		_pContextView->AddRef();
+	}
+
+	~CCandidateListGetTextExtEditSession()
+	{
+		SafeRelease(&_pCandidateWindow);
+		SafeRelease(&_pRangeComposition);
+		SafeRelease(&_pContextView);
 	}
 
 	// ITfEditSession
@@ -25,6 +36,7 @@ public:
 		{
 			_pCandidateWindow->_Move(&rc);
 		}
+
 		return S_OK;
 	}
 
@@ -41,8 +53,8 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 	_cRef = 1;
 
 	_pTextService = pTextService;
+	_pTextService->AddRef();
 
-	_hwndParent = NULL;
 	_pCandidateWindow = NULL;
 	_pRangeComposition = NULL;
 	_pContextCandidateWindow = NULL;
@@ -56,6 +68,8 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 CCandidateList::~CCandidateList()
 {
 	_EndCandidateList();
+
+	SafeRelease(&_pTextService);
 
 	DllRelease();
 }
@@ -183,8 +197,8 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 		{
 			try
 			{
-				CGetTextExtEditSession *pEditSession =
-					new CGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow);
+				CCandidateListGetTextExtEditSession *pEditSession =
+					new CCandidateListGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow);
 				pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 				SafeRelease(&pEditSession);
 			}
@@ -205,14 +219,57 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 	return S_OK;
 }
 
+class CCandidateWindowEditSession : public CEditSessionBase
+{
+public:
+	CCandidateWindowEditSession(CTextService *pTextService, ITfContext *pContext,
+		ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
+	{
+		_pCandidateWindow = pCandidateWindow;
+		_pCandidateWindow->AddRef();
+		_pRangeComposition = pRange;
+		_pRangeComposition->AddRef();
+	}
+
+	~CCandidateWindowEditSession()
+	{
+		SafeRelease(&_pCandidateWindow);
+		SafeRelease(&_pRangeComposition);
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		ITfContextView *pContextView;
+		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		{
+			RECT rc;
+			BOOL fClipped;
+			if(pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
+			{
+				_pCandidateWindow->_Move(&rc);
+			}
+
+			SafeRelease(&pContextView);
+		}
+
+		_pCandidateWindow->_BeginUIElement();
+		_pCandidateWindow->_Redraw();
+
+		return S_OK;
+	}
+
+private:
+	ITfRange *_pRangeComposition;
+	CCandidateWindow *_pCandidateWindow;
+};
+
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
 	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp)
 {
 	HRESULT hr = E_FAIL;
 	TfEditCookie ecTextStore;
 	ITfContextView *pContextView;
-	BOOL fClipped;
-	RECT rc;
 	HWND hwnd = NULL;
 
 	_EndCandidateList();
@@ -237,7 +294,6 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	_pRangeComposition->AddRef();
 
 	_ec = ec;
-
 	_comp = comp;
 
 	if(_AdviseContextKeyEventSink() != S_OK)
@@ -254,38 +310,43 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	{
 		_pCandidateWindow = new CCandidateWindow(_pTextService, this);
 
-		if(pContext->GetActiveView(&pContextView) != S_OK)
+		if(pContext->GetActiveView(&pContextView) == S_OK)
 		{
-			goto exit;
-		}
-
-		if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
-		{
-			if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == NULL)
+			if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
 			{
-				hwnd = GetFocus();
+				if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == NULL)
+				{
+					hwnd = GetFocus();
+				}
 			}
+
+			SafeRelease(&pContextView);
 		}
-
-		_hwndParent = hwnd;
-		if(_hwndParent)
-		{
-			// for LibreOffice, to get position in screen
-			SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_OPENCANDIDATE, 1);
-		}
-
-		pContextView->GetTextExt(ec, pRange, &rc, &fClipped);
-
-		SafeRelease(&pContextView);
 
 		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg, comp))
 		{
 			goto exit;
 		}
 
-		_pCandidateWindow->_Move(&rc);
-		_pCandidateWindow->_BeginUIElement();
-		_pCandidateWindow->_Redraw();
+		HRESULT hrSession = E_FAIL;
+
+		try
+		{
+			CCandidateWindowEditSession *pEditSession =
+				new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow);
+			// Asynchronous
+			pContext->RequestEditSession(ec, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hrSession);
+			SafeRelease(&pEditSession);
+		}
+		catch(...)
+		{
+		}
+
+		if(hrSession != TF_S_ASYNC)
+		{
+			hr = E_FAIL;
+			goto exit;
+		}
 
 		hr = S_OK;
 	}
@@ -319,13 +380,6 @@ void CCandidateList::_InvokeSfHandler(BYTE sf)
 
 void CCandidateList::_EndCandidateList()
 {
-	if(_hwndParent)
-	{
-		// for LibreOffice, to get position in screen
-		SendMessageW(_hwndParent, WM_IME_NOTIFY, IMN_CLOSECANDIDATE, 1);
-		_hwndParent = NULL;
-	}
-
 	if(_pCandidateWindow != NULL)
 	{
 		_pCandidateWindow->_EndUIElement();

@@ -122,8 +122,6 @@ public:
 	// LanguageBar
 	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
 	void _GetIcon(HICON *phIcon);
-	void _StartInputModeWindow(BOOL term);
-	void _EndInputModeWindow();
 
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);
@@ -204,6 +202,10 @@ public:
 	BOOL _AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth);
 	void _AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth);
 	void _LoadJLatin();
+
+	// InputModeWindow
+	void _StartInputModeWindow();
+	void _EndInputModeWindow();
 
 private:
 	LONG _cRef;

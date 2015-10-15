@@ -64,7 +64,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		case IDC_BUTTON_LOADKANA:
 			path[0] = L'\0';
 			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
 			ofn.nMaxFile = _countof(path);
@@ -81,7 +81,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		case IDC_BUTTON_SAVEKANA:
 			path[0] = L'\0';
 			ZeroMemory(&ofn, sizeof(ofn));
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
 			ofn.nMaxFile = _countof(path);

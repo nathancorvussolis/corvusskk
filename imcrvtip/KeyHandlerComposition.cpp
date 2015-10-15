@@ -353,7 +353,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		return S_FALSE;
 	}
 
-	if(cFetched > 1)
+	if(cFetched != 1)
 	{
 		SafeRelease(&tfSelection.range);
 		return S_FALSE;
@@ -561,6 +561,11 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 				SafeRelease(&pRange);
 			}
 			SafeRelease(&pDocumentMgr);
+		}
+
+		if(hr != S_OK)
+		{
+			_CancelComposition(ec, pContext);
 		}
 	}
 	catch(...)

@@ -22,7 +22,7 @@ lua_State *lua;
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
-	WNDCLASSEXW wcex;
+	WNDCLASSEXW wc;
 	HWND hWnd;
 	WSADATA wsaData;
 	PSECURITY_DESCRIPTOR psd;
@@ -64,15 +64,15 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	hInst = hInstance;
 
-	ZeroMemory(&wcex, sizeof(wcex));
-	wcex.cbSize = sizeof(WNDCLASSEXW);
-	wcex.style			= CS_HREDRAW | CS_VREDRAW;
-	wcex.lpfnWndProc	= WndProc;
-	wcex.hInstance		= hInst;
-	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-	wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-	wcex.lpszClassName = DictionaryManagerClass;
-	RegisterClassExW(&wcex);
+	ZeroMemory(&wc, sizeof(wc));
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_HREDRAW | CS_VREDRAW;
+	wc.lpfnWndProc = WndProc;
+	wc.hInstance = hInst;
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wc.lpszClassName = DictionaryManagerClass;
+	RegisterClassExW(&wc);
 
 #ifdef _DEBUG
 	hWnd = CreateWindowW(DictionaryManagerClass, TextServiceDesc,

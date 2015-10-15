@@ -31,6 +31,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 				{
 					_pCandidateList->_Move(&rc);
 				}
+
 				SafeRelease(&pContextView);
 			}
 		}
