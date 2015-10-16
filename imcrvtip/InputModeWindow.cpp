@@ -3,8 +3,8 @@
 #include "TextService.h"
 #include "InputModeWindow.h"
 
-#define IMPUTMODE_TIMER_ID		0x54ab516b
-#define IMPUTMODE_TIMEOUT_MSEC	3000
+#define INPUTMODE_TIMER_ID		0x54ab516b
+#define INPUTMODE_TIMEOUT_MSEC	3000
 
 class CInputModeWindowGetTextExtEditSession : public CEditSessionBase
 {
@@ -301,7 +301,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		if(!_bCandidateWindow)
 		{
-			SetTimer(_hwnd, IMPUTMODE_TIMER_ID, IMPUTMODE_TIMEOUT_MSEC, NULL);
+			SetTimer(_hwnd, INPUTMODE_TIMER_ID, INPUTMODE_TIMEOUT_MSEC, NULL);
 		}
 	}
 
@@ -349,7 +349,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	switch(uMsg)
 	{
 	case WM_TIMER:
-		if(wParam == IMPUTMODE_TIMER_ID)
+		if(wParam == INPUTMODE_TIMER_ID)
 		{
 			// CAUTION!! killing self
 			_pTextService->_EndInputModeWindow();
@@ -358,7 +358,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_DESTROY:
 		if(!_bCandidateWindow)
 		{
-			KillTimer(hWnd, IMPUTMODE_TIMER_ID);
+			KillTimer(hWnd, INPUTMODE_TIMER_ID);
 		}
 		break;
 	case WM_PAINT:

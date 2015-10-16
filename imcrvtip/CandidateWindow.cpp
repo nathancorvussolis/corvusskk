@@ -326,7 +326,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 	_GetChSf(uVKey, ch, sf);
 
-	//複数動的補完
+	//複数補完/複数動的補完
 	if(_comp)
 	{
 		switch(sf)
