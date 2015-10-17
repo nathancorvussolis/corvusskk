@@ -421,15 +421,17 @@ void CInputModeWindow::_Move(int x, int y)
 {
 	if(_hwnd != NULL)
 	{
-		RECT rc;
-		GetWindowRect(_hwnd, &rc);
-		MoveWindow(_hwnd, x, y, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+		SetWindowPos(_hwnd, HWND_TOPMOST, x, y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
 	}
 }
 
 void CInputModeWindow::_Show(BOOL bShow)
 {
-	ShowWindow(_hwnd, (bShow ? SW_SHOWNA : SW_HIDE));
+	if(_hwnd != NULL)
+	{
+		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
+			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (bShow ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
+	}
 }
 
 void CInputModeWindow::_Redraw()

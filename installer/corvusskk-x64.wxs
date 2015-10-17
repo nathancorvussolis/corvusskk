@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="2.0.1" ?>
+  <?define version="2.0.2" ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">

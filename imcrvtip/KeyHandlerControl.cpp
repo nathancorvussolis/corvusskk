@@ -31,14 +31,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(_ShowInputMode && pContext != NULL)
-				{
-					_HandleCharShift(ec, pContext);
-				}
-				else
-				{
-					_HandleCharReturn(ec, pContext);
-				}
+				_HandleCharReturn(ec, pContext);
 				//ひらがな/カタカナモードへ
 				inputmode = (inputmode == im_hiragana ? im_katakana : im_hiragana);
 				_UpdateLanguageBar();
@@ -47,14 +40,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode && pContext != NULL)
-			{
-				_HandleCharShift(ec, pContext);
-			}
-			else
-			{
-				_HandleCharReturn(ec, pContext);
-			}
+			_HandleCharReturn(ec, pContext);
 			//ひらがなモードへ
 			inputmode = im_hiragana;
 			_UpdateLanguageBar();
@@ -105,14 +91,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 			else
 			{
-				if(_ShowInputMode && pContext != NULL)
-				{
-					_HandleCharShift(ec, pContext);
-				}
-				else
-				{
-					_HandleCharReturn(ec, pContext);
-				}
+				_HandleCharReturn(ec, pContext);
 				//半角ｶﾀｶﾅモードへ
 				inputmode = im_katakana_ank;
 				_UpdateLanguageBar();
@@ -121,14 +100,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode && pContext != NULL)
-			{
-				_HandleCharShift(ec, pContext);
-			}
-			else
-			{
-				_HandleCharReturn(ec, pContext);
-			}
+			_HandleCharReturn(ec, pContext);
 			//ひらがなモードへ
 			inputmode = im_hiragana;
 			_UpdateLanguageBar();
@@ -152,23 +124,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		case im_katakana:
 		case im_katakana_ank:
 			_ConvRoman();
-			if(_ShowInputMode && pContext != NULL)
-			{
-				if(!showentry)
-				{
-					inputkey = FALSE;
-					if(okuriidx != 0)
-					{
-						kana.erase(okuriidx, 1);
-						okuriidx = 0;
-					}
-				}
-				_HandleCharShift(ec, pContext);
-			}
-			else
-			{
-				_HandleCharReturn(ec, pContext);
-			}
+			_HandleCharReturn(ec, pContext);
 			//アスキー/全英モードへ
 			inputmode = (sf == SKK_ASCII ? im_ascii : im_jlatin);
 			_UpdateLanguageBar();
