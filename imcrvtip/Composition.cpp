@@ -191,7 +191,7 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 	}
 
 	ITfRange *pRange;
-	if(_pComposition->GetRange(&pRange) == S_OK)
+	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 	{
 		if(_IsRangeCovered(ec, tfSelection.range, pRange))
 		{

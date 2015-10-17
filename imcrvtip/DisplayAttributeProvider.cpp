@@ -65,7 +65,7 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 void CTextService::_ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext)
 {
 	ITfRange *pRange;
-	if(_pComposition->GetRange(&pRange) == S_OK)
+	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 	{
 		ITfProperty *pProperty;
 		if(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty) == S_OK)

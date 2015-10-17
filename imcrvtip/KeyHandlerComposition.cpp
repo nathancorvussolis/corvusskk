@@ -360,7 +360,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 	}
 
 	ITfRange *pRange;
-	if(_pComposition->GetRange(&pRange) == S_OK)
+	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 	{
 		if(_IsRangeCovered(ec, tfSelection.range, pRange))
 		{
@@ -555,7 +555,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 		if(pContext->GetDocumentMgr(&pDocumentMgr) == S_OK)
 		{
 			ITfRange *pRange;
-			if(_pComposition->GetRange(&pRange) == S_OK)
+			if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 			{
 				hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, reg, comp);
 				SafeRelease(&pRange);
@@ -596,10 +596,10 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 {
 	BOOL ret = FALSE;
 
-	if(_IsComposing() && pContext != NULL)
+	if(pContext != NULL)
 	{
 		ITfRange *pRange;
-		if(_pComposition->GetRange(&pRange) == S_OK)
+		if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 		{
 			ITfReadOnlyProperty *pReadOnlyProperty;
 			if(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty) == S_OK)
