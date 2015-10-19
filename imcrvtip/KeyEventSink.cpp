@@ -123,18 +123,15 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
-	if(_pCandidateList == NULL || !_pCandidateList->_IsShowCandidateWindow())
-	{
-		_EndInputModeWindow();
+	_EndInputModeWindow();
 
-		if(inputmode == im_ascii)
+	if(!_IsComposing())
+	{
+		WCHAR ch = _GetCh((BYTE)wParam);
+		if(_IsKeyVoid(ch, (BYTE)wParam))
 		{
-			WCHAR ch = _GetCh((BYTE)wParam);
-			if(_IsKeyVoid(ch, (BYTE)wParam))
-			{
-				_GetActiveFlags();
-				_UpdateLanguageBar();
-			}
+			_GetActiveFlags();
+			_UpdateLanguageBar();
 		}
 	}
 
