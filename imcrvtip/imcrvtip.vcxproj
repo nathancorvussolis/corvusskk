@@ -107,6 +107,7 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
       <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -130,6 +131,7 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
       <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,6 +158,7 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
       <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,6 +185,7 @@
     <ResourceCompile>
       <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
       <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>

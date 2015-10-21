@@ -81,7 +81,15 @@
     <key name="8" value="Ii" />
     <key name="9" value="Dd" />
   </section>
-  <section name="preservedkey">
+  <section name="preservedkeyon">
+    <list>
+      <row vkey="0xC0" mkey="1" />
+      <row vkey="0x19" mkey="0" />
+      <row vkey="0xF3" mkey="0" />
+      <row vkey="0xF4" mkey="0" />
+    </list>
+  </section>
+  <section name="preservedkeyoff">
     <list>
       <row vkey="0xC0" mkey="1" />
       <row vkey="0x19" mkey="0" />

@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.0.2
+# CorvusSKK ver. 2.1.0
 
 Windowsで動作するSKK風のIMEです。
 
@@ -31,21 +31,21 @@ Microsoft Public License (MS-PL)
 
 ### Vista 用更新プログラムのインストール
 
-Windows Vista SP2 では、以下のプラットフォーム更新プログラムのいずれかを予めインストールして下さい。
+Windows Vista SP2 では、以下のプラットフォーム更新プログラムのいずれかを予めインストールしてください。
 
 Windows 7 以降ではインストールは不要です。
 
 * KB971644 (Windows Update から)
 * KB971512
 
-    (x64) http://www.microsoft.com/ja-JP/download/details.aspx?id=4390
+    (x64) https://www.microsoft.com/ja-JP/download/details.aspx?id=4390
 
-    (x86) http://www.microsoft.com/ja-JP/download/details.aspx?id=3274
+    (x86) https://www.microsoft.com/ja-JP/download/details.aspx?id=3274
 
 
 ### CorvusSKK のインストール
 
-corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.msi、64bit版 Windows では corvusskk-X.Y.Z-x64.msi を実行して下さい。 (X, Y, Z はバージョン番号)
+corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.msi、64bit版 Windows では corvusskk-X.Y.Z-x64.msi を実行してください。 (X, Y, Z はバージョン番号)
 
 32bit版 Windows では %SystemRoot%\System32\IME\IMCRVSKK、64bit版 Windows では %SystemRoot%\System32\IME\IMCRVSKK および %SystemRoot%\SysWOW64\IME\IMCRVSKK にインストールされます。
 
@@ -54,7 +54,7 @@ corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.m
 
 ### 初期設定
 
-任意のユーザーアカウントで初めて使用するときは、設定ダイアログでOKボタンを押して初期設定を保存して下さい。
+任意のユーザーアカウントで初めて使用するときは、設定ダイアログでOKボタンを押して初期設定を保存してください。
 
 設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
 
@@ -120,7 +120,7 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 
 UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込まれます。
 
-ユーザー辞書を直接編集する際は、ログオンユーザー権限で動作している辞書管理プロセス (imcrvmgr.exe) をタスクマネージャなどで終了させた状態でおこなって下さい。
+ユーザー辞書を直接編集する際は、ログオンユーザー権限で動作している辞書管理プロセス (imcrvmgr.exe) をタスクマネージャなどで終了させた状態でおこなってください。
 
 編集されたユーザー辞書の文字コードは、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
 
@@ -148,13 +148,13 @@ UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込ま
 
 ### SKK辞書
 
-SKK辞書の詳細はこちらを参照下さい。 http://openlab.jp/skk/wiki/wiki.cgi?page=FrontPage
+SKK辞書の詳細はこちらを参照ください。 http://openlab.jp/skk/wiki/wiki.cgi?page=FrontPage
 
 こちらから辞書をダウンロード出来ます。 http://openlab.ring.gr.jp/skk/skk/dic/
 
 SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
 
-設定ダイアログのリストにSKK辞書を追加し、取込ボタンを押して下さい。取込済SKK辞書に変換されて使用可能となります。
+設定ダイアログのリストにSKK辞書を追加し、取込ボタンを押してください。取込済SKK辞書に変換されて使用可能となります。
 
 チェックボックスを外すと取込の対象外となります。
 
@@ -171,7 +171,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 同時に１つのみ使用可能です。IPv4、IPv6 に対応しています。
 
-通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応していますが、通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用して下さい。
+通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応していますが、通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用してください。
 
 サーバーコンプリーション機能は未実装です。
 
@@ -229,7 +229,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 コマンドプロンプト等では、デフォルトで 1〜9 と ASDFJKLGH と asdfjklgh を使用します。
 
-候補一覧が表示されているとき、Kanaキーロックは無視されます。
+候補一覧が表示されているとき、KANAキーロックは無視されます。
 
 | 機能 | 説明 |
 |---|---|
@@ -240,22 +240,24 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### キー設定（ON/OFF）
 
-IME ON/OFF のキーを指定します。
+IME ON/OFF のキーをそれぞれ指定します。
 
-仮想キーコード、Alt、Control、Shift の組合せを設定して下さい。
+仮想キーコード、Alt、Control、Shift の組合せを設定してください。
 
-仮想キーコードの詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/dd375731(v=vs.85).aspx
+「仮想ｷｰ表示」エディットボックスにフォーカスがある状態でキー入力すると仮想キーコードを表示します。
 
-最大で8行です。
+仮想キーコードの詳細はこちらを参照ください。 https://msdn.microsoft.com/en-us/library/dd375731(v=vs.85).aspx
+
+最大で ON/OFF それぞれ8行ずつです。
 
 
 ### キー設定（文字）、キー設定（仮想キー）
 
-各機能に対してキーを正規表現で設定して下さい。
+各機能に対してキーを正規表現で設定してください。
 
 Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照下さい。 http://msdn.microsoft.com/en-us/library/bb982727(v=vs.120).aspx
+正規表現の詳細はこちらを参照ください。 https://msdn.microsoft.com/en-us/library/bb982727(v=vs.120).aspx
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -400,7 +402,7 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
   * [待機]は、ONのとき2、OFFのとき0です。
   * <[促/ん]|[待機]>は、[促/ん]と[待機]の両方がONのとき3となりますが、[待機]のほうが優先されます。 (0のときは無しでも可)
   * 空行やタブのみの行は読み飛ばされます。
-  * <\t>、<\r>、<\n>は、それぞれタブ、改行コードに読み替えて下さい。
+  * <\t>、<\r>、<\n>は、それぞれタブ、改行コードに読み替えてください。
 * 例１）a<\t>あ<\t>ア<\t>ｱ<\r><\n>
 * 例２）nn<\t>ん<\t>ン<\t>ﾝ<\t>0<\r><\n>
 * 例３）np<\t>ん<\t>ン<\t>ﾝ<\t>1<\r><\n>
@@ -422,7 +424,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 現在使用しているLuaのバージョンは5.3.1です。
 
-詳細はこちらを参照下さい。http://www.lua.org/manual/5.3/manual.html
+詳細はこちらを参照ください。http://www.lua.org/manual/5.3/manual.html
 
 Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsAPIとCランタイム関数を呼ぶようにパッチを当てています。
 
@@ -437,12 +439,12 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
   * 通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
   * または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
 
-コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使って下さい。
+コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使ってください。
 
 
 ### プログラム実行変換もどき
 
-Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承下さい。
+Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承ください。
 
 以下のシンボルに大体対応しています。
 
@@ -510,7 +512,7 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 
 ### Unicodeコードポイント変換
 
-「U+XXXXXX」( コードポイント XXXXXX : 0000-FFFF または 10000-10FFFF ) または「uxxxxxx」( コードポイント xxxxxx : 0000-ffff または 10000-10ffff ) のフォーマットで変換して下さい。
+「U+XXXXXX」( コードポイント XXXXXX : 0000-FFFF または 10000-10FFFF ) または「uxxxxxx」( コードポイント xxxxxx : 0000-ffff または 10000-10ffff ) のフォーマットで変換してください。
 
 * 例１）「▽U+30A2」→「▼ア」
 * 例２）「▽u30a2」→「▼ア」
@@ -518,14 +520,14 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 
 ### JIS X 0213面区点番号変換
 
-「X-YY-ZZ」( 面 X : 1-2、 区 YY : 01-94、点 ZZ: 01-94 ) のフォーマットで変換して下さい。Unicodeコードポイントが注釈として付加されます。
+「X-YY-ZZ」( 面 X : 1-2、 区 YY : 01-94、点 ZZ: 01-94 ) のフォーマットで変換してください。Unicodeコードポイントが注釈として付加されます。
 
 * 例）「▽1-05-02」→「▼ア;U+30A2」
 
 
 ### 文字コード表記変換
 
-「?X」( X : 任意の1文字以上の文字列 ) のフォーマットで変換して下さい。
+「?X」( X : 任意の1文字以上の文字列 ) のフォーマットで変換してください。
 
 ASCII(hex), JIS X 0201(片仮名, 8bit, hex), JIS X 0213面区点番号のカンマ区切りの候補およびUnicodeコードポイントのカンマ区切りの候補に変換されます。
 
@@ -556,7 +558,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### Windows 8, 8.1, 10 のタッチキーボード
 
-タッチパネルを搭載したマシンでハードウェアキーボードに準拠したレイアウトを使用するには、以下の操作を行って下さい。
+タッチパネルを搭載したマシンでハードウェアキーボードに準拠したレイアウトを使用するには、以下の操作を行ってください。
 
 * Windows 8 の場合
   * 「PC設定」の画面 → 「全般」を選択 → 「タッチキーボード」の項目 → 「ハードウェアキーボードに準拠したレイアウトを使えるようにする」をオン
@@ -567,7 +569,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 * Windows 10 の場合
   * 「デバイス」の画面 → 「入力」を選択 → 「ハードウェアキーボードに準拠したレイアウトをタッチキーボードオプションとして追加する」をオン
 
-タッチパネルを搭載していないマシンでハードウェアキーボードに準拠したレイアウトを使用するには、レジストリに以下の値を設定して下さい。
+タッチパネルを搭載していないマシンでハードウェアキーボードに準拠したレイアウトを使用するには、レジストリに以下の値を設定してください。
 
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "EnableCompatibilityKeyboard"=dword:00000001

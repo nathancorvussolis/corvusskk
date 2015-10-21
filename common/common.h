@@ -7,6 +7,7 @@
 #define MAX_KRNLOBJNAME		256
 #define CONV_POINT_NUM		256
 #define KEYRELEN			256
+#define PRESERVEDKEY_NUM	2		//ON/OFF
 #define MAX_PRESERVEDKEY	8
 #define MAX_SELKEY_C		9
 

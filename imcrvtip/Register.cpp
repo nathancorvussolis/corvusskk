@@ -41,8 +41,8 @@ BOOL RegisterProfiles()
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
-			TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName),
+		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID,
+			c_guidProfile, TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName),
 			TEXTSERVICE_ICON_INDEX, NULL, 0, TRUE, 0);
 
 		SafeRelease(&pInputProcessorProfilesMgr);
@@ -66,12 +66,20 @@ void UnregisterProfiles()
 
 BOOL RegisterCategories()
 {
+	BOOL fRet = TRUE;
+	HRESULT hr;
+
 	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
-			pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
+			hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
+
+			if(hr != S_OK)
+			{
+				fRet = FALSE;
+			}
 		}
 
 		// for Windows 8 or later
@@ -79,7 +87,12 @@ BOOL RegisterCategories()
 		{
 			for(int i = 0; i < _countof(c_guidCategory8); i++)
 			{
-				pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
+				hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
+
+				if(hr != S_OK)
+				{
+					fRet = FALSE;
+				}
 			}
 		}
 
@@ -87,20 +100,22 @@ BOOL RegisterCategories()
 	}
 	else
 	{
-		return FALSE;
+		fRet = FALSE;
 	}
 
-	return TRUE;
+	return fRet;
 }
 
 void UnregisterCategories()
 {
+	HRESULT hr;
+
 	ITfCategoryMgr *pCategoryMgr;
 	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
-			pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
+			hr = pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 
 		// for Windows 8 or later
@@ -108,7 +123,7 @@ void UnregisterCategories()
 		{
 			for(int i = 0; i < _countof(c_guidCategory8); i++)
 			{
-				pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
+				hr = pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}
 		}
 
@@ -188,7 +203,7 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 {
 	typedef BOOL (WINAPI *PTF_INSTALLLAYOUTORTIP)(LPCWSTR psz, DWORD dwFlags);
 
-	BOOL bRet = FALSE;
+	BOOL fRet = FALSE;
 	WCHAR fileName[MAX_PATH];
 
 	PWSTR systemfolder = NULL;
@@ -222,12 +237,12 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 			{
 				_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
 
-				bRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
+				fRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
 			}
 		}
 
 		FreeLibrary(hInputDLL);
 	}
 
-	return bRet;
+	return fRet;
 }

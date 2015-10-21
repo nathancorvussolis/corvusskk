@@ -3,6 +3,14 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+static const struct {
+	int id;
+	LPWSTR text;
+} preservedkeyTextInfo[PRESERVEDKEY_NUM] = {
+	{IDC_LIST_PRSRVKEY_ON, L"ON 仮想ｷｰ"},
+	{IDC_LIST_PRSRVKEY_OFF, L"OFF 仮想ｷｰ"},
+};
+
 INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
@@ -16,39 +24,44 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	switch(message)
 	{
 	case WM_INITDIALOG:
-		hWndListView = GetDlgItem(hDlg, IDC_LIST_PRSRVKEY);
-		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
-		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		lvc.fmt = LVCFMT_CENTER;
+		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
+		{
+			hWndListView = GetDlgItem(hDlg, preservedkeyTextInfo[i].id);
+			ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
+			lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+			lvc.fmt = LVCFMT_CENTER;
 
-		lvc.iSubItem = 0;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"仮想ｷｰ";
-		ListView_InsertColumn(hWndListView, 0, &lvc);
-		lvc.iSubItem = 1;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"ALT";
-		ListView_InsertColumn(hWndListView, 1, &lvc);
-		lvc.iSubItem = 2;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"CTRL";
-		ListView_InsertColumn(hWndListView, 2, &lvc);
-		lvc.iSubItem = 3;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"SHIFT";
-		ListView_InsertColumn(hWndListView, 3, &lvc);
+			lvc.iSubItem = 0;
+			lvc.cx = GetScaledSizeX(hDlg, 90);
+			lvc.pszText = preservedkeyTextInfo[i].text;
+			ListView_InsertColumn(hWndListView, 0, &lvc);
+			lvc.iSubItem = 1;
+			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.pszText = L"ALT";
+			ListView_InsertColumn(hWndListView, 1, &lvc);
+			lvc.iSubItem = 2;
+			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.pszText = L"CTRL";
+			ListView_InsertColumn(hWndListView, 2, &lvc);
+			lvc.iSubItem = 3;
+			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.pszText = L"SHIFT";
+			ListView_InsertColumn(hWndListView, 3, &lvc);
+		}
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, L"");
 		CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT, BST_UNCHECKED);
 		CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL, BST_UNCHECKED);
 		CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT, BST_UNCHECKED);
+		CheckDlgButton(hDlg, IDC_RADIO_PRSRVKEY_ON, BST_CHECKED);
 
 		LoadPreservedKey(hDlg);
 
 		return TRUE;
 
 	case WM_COMMAND:
-		hWndListView = GetDlgItem(hDlg, IDC_LIST_PRSRVKEY);
+		hWndListView = GetDlgItem(hDlg,
+			IsDlgButtonChecked(hDlg, IDC_RADIO_PRSRVKEY_ON) ? IDC_LIST_PRSRVKEY_ON : IDC_LIST_PRSRVKEY_OFF);
 		switch(LOWORD(wParam))
 		{
 		case IDC_BUTTON_PRSRVKEY_W:
@@ -167,19 +180,83 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			}
 			return TRUE;
 
+		case IDC_RADIO_PRSRVKEY_ON:
+			SetFocus(GetDlgItem(hDlg, IDC_LIST_PRSRVKEY_ON));
+			return TRUE;
+
+		case IDC_RADIO_PRSRVKEY_OFF:
+			SetFocus(GetDlgItem(hDlg, IDC_LIST_PRSRVKEY_OFF));
+			return TRUE;
+
 		default:
 			break;
 		}
 		break;
 
 	case WM_NOTIFY:
+		hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 		switch(((LPNMHDR)lParam)->code)
 		{
+		case PSN_TRANSLATEACCELERATOR:
+			{
+				LPMSG lpMsg = (LPMSG)((LPPSHNOTIFY)lParam)->lParam;
+				switch(lpMsg->message)
+				{
+				case WM_KEYDOWN:
+				case WM_SYSKEYDOWN:
+					switch(GetDlgCtrlID(lpMsg->hwnd))
+					{
+					case IDC_EDIT_DISPVKEY:
+						WCHAR vkeytext[8];
+						_snwprintf_s(vkeytext, _TRUNCATE, L"0x%02X", (BYTE)lpMsg->wParam);
+						SetDlgItemTextW(hDlg, IDC_EDIT_DISPVKEY, vkeytext);
+						SendDlgItemMessageW(hDlg, IDC_EDIT_DISPVKEY, EM_SETSEL, 4, 4);
+						SetWindowLongPtrW(hDlg, DWLP_MSGRESULT, PSNRET_MESSAGEHANDLED);
+						return TRUE;
+					default:
+						break;
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+
+		case NM_SETFOCUS:
+			switch(((LPNMHDR)lParam)->idFrom)
+			{
+			case IDC_LIST_PRSRVKEY_ON:
+				CheckRadioButton(hDlg, IDC_RADIO_PRSRVKEY_ON, IDC_RADIO_PRSRVKEY_OFF, IDC_RADIO_PRSRVKEY_ON);
+				break;
+			case IDC_LIST_PRSRVKEY_OFF:
+				CheckRadioButton(hDlg, IDC_RADIO_PRSRVKEY_ON, IDC_RADIO_PRSRVKEY_OFF, IDC_RADIO_PRSRVKEY_OFF);
+				break;
+			default:
+				break;
+			}
+			switch(((LPNMHDR)lParam)->idFrom)
+			{
+			case IDC_LIST_PRSRVKEY_ON:
+			case IDC_LIST_PRSRVKEY_OFF:
+				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, L"");
+				CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT, BST_UNCHECKED);
+				CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL, BST_UNCHECKED);
+				CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT, BST_UNCHECKED);
+
+				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
+				ListView_SetItemState(hWndListView, index, 0, 0x000F);
+				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, 0x000F);
+				return TRUE;
+			default:
+				break;
+			}
+			break;
+
 		case LVN_ITEMCHANGED:
 			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
 			if(pListView->uChanged & LVIF_STATE)
 			{
-				hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				if(index == -1)
 				{

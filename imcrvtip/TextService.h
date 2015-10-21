@@ -5,6 +5,7 @@
 #include "imcrvtip.h"
 #include "convtype.h"
 #include "parseskkdic.h"
+#include "configxml.h"
 
 class CLangBarItemButton;
 class CCandidateList;
@@ -194,6 +195,7 @@ public:
 	void _LoadBehavior();
 	void _LoadDisplayAttr();
 	void _LoadSelKey();
+	void _SetPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list);
 	void _LoadPreservedKey();
 	void _LoadCKeyMap(LPCWSTR section);
 	void _LoadVKeyMap(LPCWSTR section);
@@ -224,8 +226,8 @@ private:
 	BOOL _InitKeyEventSink();
 	void _UninitKeyEventSink();
 
-	BOOL _InitPreservedKey();
-	void _UninitPreservedKey();
+	BOOL _InitPreservedKey(int onoff);
+	void _UninitPreservedKey(int onoff);
 
 	BOOL _InitLanguageBar();
 	void _UninitLanguageBar();
@@ -371,7 +373,7 @@ public:
 	WCHAR selkey[MAX_SELKEY_C][2][2];
 
 	//preserved key
-	TF_PRESERVEDKEY preservedkey[MAX_PRESERVEDKEY];
+	TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
 
 	//表示属性   別のインスタンスからGetDisplayAttributeInfo()が呼ばれるのでstaticで
 	static BOOL display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM];

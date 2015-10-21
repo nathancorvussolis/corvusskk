@@ -60,6 +60,8 @@ static const struct {
 	{ValueColorNO, RGB(0x00,0x00,0x00)}
 };
 
+LPCWSTR sectionpreservedkeyonoff[PRESERVEDKEY_NUM] = {SectionPreservedKeyON, SectionPreservedKeyOFF};
+
 void CTextService::_CreateConfigPath()
 {
 	PWSTR appdatafolder = NULL;
@@ -227,15 +229,16 @@ void CTextService::_LoadSelKey()
 	}
 }
 
-void CTextService::_LoadPreservedKey()
+void CTextService::_SetPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 {
-	APPDATAXMLLIST list;
+	if(onoff != 0 && onoff != 1)
+	{
+		return;
+	}
 
-	ZeroMemory(preservedkey, sizeof(preservedkey));
+	ZeroMemory(preservedkey[onoff], sizeof(preservedkey[onoff]));
 
-	HRESULT hr = ReadList(pathconfigxml, SectionPreservedKey, list);
-
-	if(hr == S_OK && list.size() != 0)
+	if(list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
@@ -249,15 +252,15 @@ void CTextService::_LoadPreservedKey()
 			{
 				if(r_itr->first == AttributeVKey)
 				{
-					preservedkey[i].uVKey = wcstoul(r_itr->second.c_str(), NULL, 0);
+					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), NULL, 0);
 				}
 				else if(r_itr->first == AttributeMKey)
 				{
-					preservedkey[i].uModifiers =
+					preservedkey[onoff][i].uModifiers =
 						wcstoul(r_itr->second.c_str(), NULL, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT);
-					if((preservedkey[i].uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
+					if((preservedkey[onoff][i].uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
 					{
-						preservedkey[i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+						preservedkey[onoff][i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
 					}
 				}
 			}
@@ -269,7 +272,32 @@ void CTextService::_LoadPreservedKey()
 	{
 		for(int i = 0; i < _countof(configpreservedkey); i++)
 		{
-			preservedkey[i] = configpreservedkey[i];
+			preservedkey[onoff][i] = configpreservedkey[i];
+		}
+	}
+}
+
+void CTextService::_LoadPreservedKey()
+{
+	APPDATAXMLLIST list;
+
+	//for compatibility
+	HRESULT hr = ReadList(pathconfigxml, SectionPreservedKey, list);
+
+	if(hr == S_OK && list.size() != 0)
+	{
+		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		{
+			_SetPreservedKeyONOFF(k, list);
+		}
+	}
+	else
+	{
+		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		{
+			list.clear();
+			hr = ReadList(pathconfigxml, sectionpreservedkeyonoff[k], list);
+			_SetPreservedKeyONOFF(k, list);
 		}
 	}
 }

@@ -54,12 +54,14 @@ BOOL CTextService::_InitThreadMgrEventSink()
 
 void CTextService::_UninitThreadMgrEventSink()
 {
+	HRESULT hr;
+
 	if(_dwThreadMgrEventSinkCookie != TF_INVALID_COOKIE)
 	{
 		ITfSource *pSource;
 		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
-			pSource->UnadviseSink(_dwThreadMgrEventSinkCookie);
+			hr = pSource->UnadviseSink(_dwThreadMgrEventSinkCookie);
 			SafeRelease(&pSource);
 		}
 		_dwThreadMgrEventSinkCookie = TF_INVALID_COOKIE;

@@ -343,9 +343,11 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		_LoadBehavior();
 		_LoadSelKey();
 
-		_UninitPreservedKey();
+		_UninitPreservedKey(0);	//ON
+		_UninitPreservedKey(1);	//OFF
 		_LoadPreservedKey();
-		_InitPreservedKey();
+		_InitPreservedKey(1);	//OFF
+		_InitPreservedKey(0);	//ON 未使用だがキーは拾う 重複するキーは上書きされない
 
 		_LoadCKeyMap(SectionKeyMap);
 		_LoadVKeyMap(SectionVKeyMap);
@@ -379,9 +381,11 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_UninitFont();
 
-		_UninitPreservedKey();
+		_UninitPreservedKey(1);	//OFF
+		_UninitPreservedKey(0);	//ON
 		_LoadPreservedKey();
-		_InitPreservedKey();
+		_InitPreservedKey(0);	//ON
+		_InitPreservedKey(1);	//OFF 未使用だがキーは拾う 重複するキーは上書きされない
 
 		_ResetStatus();
 

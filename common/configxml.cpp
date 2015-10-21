@@ -128,7 +128,9 @@ LPCWSTR SectionSelKey = L"selkey";
 
 //preservedkey section
 
-LPCWSTR SectionPreservedKey = L"preservedkey";
+LPCWSTR SectionPreservedKey = L"preservedkey";	//for compatibility
+LPCWSTR SectionPreservedKeyON = L"preservedkeyon";
+LPCWSTR SectionPreservedKeyOFF = L"preservedkeyoff";
 
 //keymap section
 

@@ -3,7 +3,8 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-static LPCWSTR c_PreservedKeyDesc = L"OnOff";
+static LPCWSTR c_PreservedKeyDesc[PRESERVEDKEY_NUM] = {L"ON", L"OFF"};
+static const GUID c_guidPreservedKeyOnOff[PRESERVEDKEY_NUM] = {c_guidPreservedKeyOn, c_guidPreservedKeyOff};
 
 BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 {
@@ -186,20 +187,27 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 		return E_INVALIDARG;
 	}
 
-	if(IsEqualGUID(rguid, c_guidPreservedKeyOnOff))
-	{
-		BOOL fOpen = _IsKeyboardOpen();
+	BOOL fOpen = _IsKeyboardOpen();
 
+	if(IsEqualGUID(rguid, c_guidPreservedKeyOn))
+	{
+		if(!fOpen)
+		{
+			inputmode = im_disable;
+
+			_SetKeyboardOpen(TRUE);
+		}
+
+		*pfEaten = TRUE;
+	}
+	else if(IsEqualGUID(rguid, c_guidPreservedKeyOff))
+	{
 		if(fOpen)
 		{
 			_ClearComposition();
-		}
-		else
-		{
-			inputmode = im_disable;
-		}
 
-		_SetKeyboardOpen(fOpen ? FALSE : TRUE);
+			_SetKeyboardOpen(FALSE);
+		}
 
 		*pfEaten = TRUE;
 	}
@@ -219,6 +227,7 @@ BOOL CTextService::_InitKeyEventSink()
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, (ITfKeyEventSink *)this, TRUE);
+
 		SafeRelease(&pKeystrokeMgr);
 	}
 
@@ -231,45 +240,72 @@ void CTextService::_UninitKeyEventSink()
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		pKeystrokeMgr->UnadviseKeyEventSink(_ClientId);
+
 		SafeRelease(&pKeystrokeMgr);
 	}
 }
 
-BOOL CTextService::_InitPreservedKey()
+BOOL CTextService::_InitPreservedKey(int onoff)
 {
-	HRESULT hr = E_FAIL;
+	BOOL fRet = TRUE;
+	HRESULT hr;
+
+	if(onoff != 0 && onoff != 1)
+	{
+		return FALSE;
+	}
 
 	ITfKeystrokeMgr *pKeystrokeMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
-			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
+			if(preservedkey[onoff][i].uVKey == 0 && preservedkey[onoff][i].uModifiers == 0)
 			{
 				break;
 			}
-			hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff,
-				&preservedkey[i], c_PreservedKeyDesc, (ULONG)wcslen(c_PreservedKeyDesc));
+
+			hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff[onoff],
+				&preservedkey[onoff][i], c_PreservedKeyDesc[onoff], (ULONG)wcslen(c_PreservedKeyDesc[onoff]));
+
+			if(hr != S_OK)
+			{
+				fRet = FALSE;
+			}
 		}
+
 		SafeRelease(&pKeystrokeMgr);
 	}
+	else
+	{
+		fRet = FALSE;
+	}
 
-	return (hr == S_OK);
+	return fRet;
 }
 
-void CTextService::_UninitPreservedKey()
+void CTextService::_UninitPreservedKey(int onoff)
 {
+	HRESULT hr;
+
+	if(onoff != 0 && onoff != 1)
+	{
+		return;
+	}
+
 	ITfKeystrokeMgr *pKeystrokeMgr;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
 	{
 		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
-			if(preservedkey[i].uVKey == 0 && preservedkey[i].uModifiers == 0)
+			if(preservedkey[onoff][i].uVKey == 0 && preservedkey[onoff][i].uModifiers == 0)
 			{
 				break;
 			}
-			pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff, &preservedkey[i]);
+
+			hr = pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff[onoff], &preservedkey[onoff][i]);
 		}
+
 		SafeRelease(&pKeystrokeMgr);
 	}
 }

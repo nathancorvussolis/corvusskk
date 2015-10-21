@@ -158,7 +158,9 @@ extern LPCWSTR SectionSelKey;
 
 //preservedkey section
 
-extern LPCWSTR SectionPreservedKey;
+extern LPCWSTR SectionPreservedKey;	//for compatibility
+extern LPCWSTR SectionPreservedKeyON;
+extern LPCWSTR SectionPreservedKeyOFF;
 
 //keymap section
 

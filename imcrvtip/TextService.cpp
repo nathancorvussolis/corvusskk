@@ -189,13 +189,6 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 		goto exit;
 	}
 
-	_LoadPreservedKey();
-
-	if(!_InitPreservedKey())
-	{
-		goto exit;
-	}
-
 	if(!_InitDisplayAttributeGuidAtom())
 	{
 		goto exit;
@@ -230,7 +223,8 @@ STDAPI CTextService::Deactivate()
 
 	_UninitFunctionProvider();
 
-	_UninitPreservedKey();
+	_UninitPreservedKey(0);
+	_UninitPreservedKey(1);
 
 	_UninitKeyEventSink();
 

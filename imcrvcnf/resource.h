@@ -140,15 +140,19 @@
 #define IDC_EDIT_SELKEY_SPARE                   3103
 #define IDC_BUTTON_SELKEY_W                     3104
 
-#define IDC_LIST_PRSRVKEY                       3201
-#define IDC_EDIT_PRSRVKEY_VKEY                  3202
-#define IDC_CHECKBOX_PRSRVKEY_MKEY_ALT          3203
-#define IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL         3204
-#define IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT        3205
-#define IDC_BUTTON_PRSRVKEY_UP                  3206
-#define IDC_BUTTON_PRSRVKEY_DOWN                3207
-#define IDC_BUTTON_PRSRVKEY_W                   3208
-#define IDC_BUTTON_PRSRVKEY_D                   3209
+#define IDC_LIST_PRSRVKEY_ON                    3201
+#define IDC_LIST_PRSRVKEY_OFF                   3202
+#define IDC_EDIT_PRSRVKEY_VKEY                  3203
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_ALT          3204
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL         3205
+#define IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT        3206
+#define IDC_RADIO_PRSRVKEY_ON                   3207
+#define IDC_RADIO_PRSRVKEY_OFF                  3208
+#define IDC_BUTTON_PRSRVKEY_UP                  3209
+#define IDC_BUTTON_PRSRVKEY_DOWN                3210
+#define IDC_BUTTON_PRSRVKEY_W                   3211
+#define IDC_BUTTON_PRSRVKEY_D                   3212
+#define IDC_EDIT_DISPVKEY                       3221
 
 #define IDC_EDIT_KANA                           3301
 #define IDC_EDIT_CONV_CHAR                      3302
