@@ -183,8 +183,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, fname);
 
-	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER,
-		INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 	if(hInet == NULL)
 	{
 		return E_FAIL;
@@ -200,7 +199,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	_wfopen_s(&fp, path, WB);
 	if(fp == NULL)
 	{
-		goto exit;
+		goto exit_f;
 	}
 
 	while(true)
@@ -232,6 +231,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 
 exit:
 	fclose(fp);
+exit_f:
 	InternetCloseHandle(hUrl);
 	InternetCloseHandle(hInet);
 
