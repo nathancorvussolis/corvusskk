@@ -149,102 +149,93 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 
 HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 {
+	HRESULT hr = E_FAIL;
 	HINTERNET hInet;
 	HINTERNET hUrl;
 	CHAR rbuf[RECVBUFSIZE];
 	BOOL retRead;
 	DWORD bytesRead = 0;
-	FILE *fp;
 	WCHAR dir[MAX_PATH];
-	std::wstring strurl;
+	WCHAR fname[MAX_PATH];
+	FILE *fp;
 
 	DWORD temppathlen = GetTempPathW(_countof(dir), dir);
 	if(temppathlen == 0 || temppathlen > _countof(dir))
 	{
 		return E_FAIL;
 	}
-
 	wcsncat_s(dir, TEXTSERVICE_NAME, _TRUNCATE);
 
 	CreateDirectoryW(dir, NULL);
 
-	strurl.assign(url);
-	strurl = std::regex_replace(strurl, std::wregex(L".+/"), std::wstring(L""));
-	if(strurl.empty())
+	LPCWSTR fnurl = wcsrchr(url, L'/');
+	if(fnurl == NULL || *(fnurl + 1) == L'\0')
 	{
 		return E_FAIL;
 	}
-	strurl = std::regex_replace(strurl, std::wregex(L"[\\\\/:*?\"<>|]"), std::wstring(L"_"));
-	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, strurl.c_str());
+	wcsncpy_s(fname, fnurl + 1, _TRUNCATE);
 
-	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-	if(hInet != NULL)
+	LPWSTR pfname = fname;
+	while((pfname = wcspbrk(pfname, L"\\/:*?\"<>|")) != NULL)
 	{
-		hUrl = InternetOpenUrlW(hInet, url, NULL, 0, 0, 0);
-		if(hUrl != NULL)
+		*pfname = L'_';
+	}
+
+	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, fname);
+
+	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER,
+		INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	if(hInet == NULL)
+	{
+		return E_FAIL;
+	}
+
+	hUrl = InternetOpenUrlW(hInet, url, NULL, 0, 0, 0);
+	if(hUrl == NULL)
+	{
+		InternetCloseHandle(hInet);
+		return E_FAIL;
+	}
+
+	_wfopen_s(&fp, path, WB);
+	if(fp == NULL)
+	{
+		goto exit;
+	}
+
+	while(true)
+	{
+		if(SkkDicInfo.cancel)
 		{
-			if(SkkDicInfo.cancel)
+			hr = E_ABORT;
+			goto exit;
+		}
+
+		ZeroMemory(rbuf, sizeof(rbuf));
+		retRead = InternetReadFile(hUrl, rbuf, sizeof(rbuf), &bytesRead);
+		if(retRead)
+		{
+			if(bytesRead == 0)
 			{
-				InternetCloseHandle(hUrl);
-				InternetCloseHandle(hInet);
-				return E_ABORT;
+				break;
 			}
-
-			_wfopen_s(&fp, path, WB);
-			if(fp == NULL)
-			{
-				InternetCloseHandle(hUrl);
-				InternetCloseHandle(hInet);
-				return E_FAIL;
-			}
-
-			while(true)
-			{
-				if(SkkDicInfo.cancel)
-				{
-					InternetCloseHandle(hUrl);
-					InternetCloseHandle(hInet);
-					fclose(fp);
-					return E_ABORT;
-				}
-
-				ZeroMemory(rbuf, sizeof(rbuf));
-				retRead = InternetReadFile(hUrl, rbuf, sizeof(rbuf), &bytesRead);
-				if(retRead)
-				{
-					if(bytesRead == 0)
-					{
-						break;
-					}
-				}
-				else
-				{
-					InternetCloseHandle(hUrl);
-					InternetCloseHandle(hInet);
-					fclose(fp);
-					return E_FAIL;
-				}
-
-				fwrite(rbuf, bytesRead, 1, fp);
-			}
-
-			InternetCloseHandle(hUrl);
-			fclose(fp);
 		}
 		else
 		{
-			InternetCloseHandle(hInet);
-			return E_FAIL;
+			goto exit;
 		}
 
-		InternetCloseHandle(hInet);
-	}
-	else
-	{
-		return E_FAIL;
+		fwrite(rbuf, bytesRead, 1, fp);
 	}
 
-	return S_OK;
+	hr = S_OK;
+
+exit:
+	fclose(fp);
+	InternetCloseHandle(hUrl);
+	InternetCloseHandle(hInet);
+
+	return hr;
 }
 
 BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
@@ -340,6 +331,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	WCHAR path[MAX_PATH];
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
+	URL_COMPONENTSW urlc;
 	FILE *fp;
 	std::wstring key;
 	SKKDICCANDIDATES sc;
@@ -364,16 +356,28 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
 		//download
-		if(std::regex_match(std::wstring(path), std::wregex(L"(http|https)://.+")))
+		ZeroMemory(&urlc, sizeof(urlc));
+		urlc.dwStructSize = sizeof(urlc);
+		if(InternetCrackUrlW(path, 0, 0, &urlc))
 		{
-			ListView_GetItemText(hWndListView, i, 0, url, _countof(url));
-
-			HRESULT hrd = DownloadDic(url, path, _countof(path));
-			if(hrd != S_OK)
+			switch(urlc.nScheme)
 			{
-				SkkDicInfo.error = SKKDIC_DOWNLOAD;
-				_snwprintf_s(SkkDicInfo.path, _TRUNCATE, L"%s", url);
-				return hrd;
+			case INTERNET_SCHEME_HTTP:
+			case INTERNET_SCHEME_HTTPS:
+				{
+					wcsncpy_s(url, path, _TRUNCATE);
+
+					HRESULT hrd = DownloadDic(url, path, _countof(path));
+					if(hrd != S_OK)
+					{
+						SkkDicInfo.error = SKKDIC_DOWNLOAD;
+						_snwprintf_s(SkkDicInfo.path, _TRUNCATE, L"%s", url);
+						return hrd;
+					}
+				}
+				break;
+			default:
+				break;
 			}
 		}
 
