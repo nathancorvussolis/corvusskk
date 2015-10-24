@@ -148,6 +148,8 @@ UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込ま
 
 ### SKK辞書
 
+![](installer/md_image/01_dictionary.png)
+
 SKK辞書の詳細はこちらを参照ください。 http://openlab.jp/skk/wiki/wiki.cgi?page=FrontPage
 
 こちらから辞書をダウンロード出来ます。 http://openlab.ring.gr.jp/skk/skk/dic/
@@ -178,6 +180,8 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 動作
 
+![](installer/md_image/02_behavior.png)
+
 | 機能 | 備考 |
 |---|---|
 | 初期入力モード                       | プログラム起動時の入力モードを指定します。 |
@@ -197,6 +201,8 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ###表示
 
+![](installer/md_image/03_display.png)
+
 | 機能 | 備考 |
 |---|---|
 | 候補一覧のフォント                        | 候補一覧に表示するフォントの種類、スタイル、サイズを指定します。 |
@@ -214,6 +220,10 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 表示属性
 
+![](installer/md_image/04_display_attribute_1.png)
+
+![](installer/md_image/05_display_attribute_2.png)
+
 入力中文字列の表示属性を設定します。
 
 「連続」のチェックボックスをチェックすると、表の左側の表示属性を継承し、下線は繋って表示されます。
@@ -224,6 +234,8 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 
 ### 候補一覧選択キー
+
+![](installer/md_image/06_select_key.png)
 
 候補一覧での確定は、デフォルトで 1〜7 と ASDFJKL と asdfjkl を使用します。
 
@@ -240,6 +252,8 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### キー設定（ON/OFF）
 
+![](installer/md_image/07_on_off_key.png)
+
 IME ON/OFF のキーをそれぞれ指定します。
 
 仮想キーコード、Alt、Control、Shift の組合せを設定してください。
@@ -252,6 +266,10 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 
 ### キー設定（文字）、キー設定（仮想キー）
+
+![](installer/md_image/08_key1_character.png)
+
+![](installer/md_image/09_key2_virtual_key.png)
 
 各機能に対してキーを正規表現で設定してください。
 
@@ -344,7 +362,7 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
 
 ### キー設定と入力モード遷移図
 
-![](installer/README_mode.png)
+![](installer/md_image/20_key_and_mode.png)
 
 
 ### 半角カタカナモード
@@ -355,6 +373,8 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
 
 
 ### 変換位置指定
+
+![](installer/md_image/10_conversion_point.png)
 
 変換位置での挙動を指定します。最大で256行です。
 
@@ -374,6 +394,8 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
 
 
 ### ローマ字・仮名変換表
+
+![](installer/md_image/11_kana.png)
 
 ローマ字、平仮名、片仮名、所謂半角片仮名、促音/撥音(ん)、待機の組み合せを指定します。
 
@@ -411,6 +433,8 @@ Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用していま
 
 ### ASCII・全英変換表
 
+![](installer/md_image/12_full_width_latin.png)
+
 ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 
@@ -444,7 +468,11 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 ### プログラム実行変換もどき
 
+![](installer/md_image/21_convert_program.png)
+
 Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承ください。
+
+SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.lisp
 
 以下のシンボルに大体対応しています。
 
@@ -480,7 +508,7 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 | skk-default-current-date |  |
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
-| skk-omikuji | 独自実装<br>おみくじを引くことができます |
+| skk-omikuji | 独自実装。おみくじを引くことができます。<br>『(skk-omikuji)』 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |
@@ -489,6 +517,8 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 
 
 ### 数値変換
+
+![](installer/md_image/22_convert_number.png)
 
 タイプ0〜3,5,8,9に対応しています。
 
@@ -512,6 +542,8 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 
 ### Unicodeコードポイント変換
 
+![](installer/md_image/23_convert_unicode_codepoint.png)
+
 「U+XXXXXX」( コードポイント XXXXXX : 0000-FFFF または 10000-10FFFF ) または「uxxxxxx」( コードポイント xxxxxx : 0000-ffff または 10000-10ffff ) のフォーマットで変換してください。
 
 * 例１）「▽U+30A2」→「▼ア」
@@ -520,12 +552,16 @@ Emacs Lispのプログラム実行変換に対応していますが、あくま�
 
 ### JIS X 0213面区点番号変換
 
+![](installer/md_image/24_convert_unicode_jisx0213.png)
+
 「X-YY-ZZ」( 面 X : 1-2、 区 YY : 01-94、点 ZZ: 01-94 ) のフォーマットで変換してください。Unicodeコードポイントが注釈として付加されます。
 
 * 例）「▽1-05-02」→「▼ア;U+30A2」
 
 
 ### 文字コード表記変換
+
+![](installer/md_image/25_convert_character_display.png)
 
 「?X」( X : 任意の1文字以上の文字列 ) のフォーマットで変換してください。
 
@@ -539,6 +575,8 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 
 ### 注釈の登録
+
+![](installer/md_image/26_register_annotation.png)
 
 辞書登録のとき、登録する候補の入力と同時に行います。
 

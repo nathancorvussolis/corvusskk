@@ -10,6 +10,9 @@
     <Filter Include="config-sample">
       <UniqueIdentifier>{a4c9d6dd-8349-4e02-b744-23321ddbb9f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Installer Files\md_image">
+      <UniqueIdentifier>{caab1f7f-f9ad-4ffc-8be3-7bbdcc5fa4bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="_build.cmd">
@@ -105,8 +108,62 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="README_mode.png">
-      <Filter>Installer Files</Filter>
+    <Image Include="md_image\01_dictionary.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\02_behavior.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\03_display.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\04_display_attribute_1.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\05_display_attribute_2.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\06_select_key.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\07_on_off_key.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\08_key1_character.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\09_key2_virtual_key.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\10_conversion_point.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\11_kana.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\12_full_width_latin.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\20_key_and_mode.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\21_convert_program.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\22_convert_number.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\23_convert_unicode_codepoint.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\24_convert_unicode_jisx0213.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\25_convert_character_display.png">
+      <Filter>Installer Files\md_image</Filter>
+    </Image>
+    <Image Include="md_image\26_register_annotation.png">
+      <Filter>Installer Files\md_image</Filter>
     </Image>
   </ItemGroup>
 </Project>

@@ -54,7 +54,25 @@
     <Xml Include="config-sample\config - roman.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="README_mode.png" />
+    <Image Include="md_image\01_dictionary.png" />
+    <Image Include="md_image\02_behavior.png" />
+    <Image Include="md_image\03_display.png" />
+    <Image Include="md_image\04_display_attribute_1.png" />
+    <Image Include="md_image\05_display_attribute_2.png" />
+    <Image Include="md_image\06_select_key.png" />
+    <Image Include="md_image\07_on_off_key.png" />
+    <Image Include="md_image\08_key1_character.png" />
+    <Image Include="md_image\09_key2_virtual_key.png" />
+    <Image Include="md_image\10_conversion_point.png" />
+    <Image Include="md_image\11_kana.png" />
+    <Image Include="md_image\12_full_width_latin.png" />
+    <Image Include="md_image\20_key_and_mode.png" />
+    <Image Include="md_image\21_convert_program.png" />
+    <Image Include="md_image\22_convert_number.png" />
+    <Image Include="md_image\23_convert_unicode_codepoint.png" />
+    <Image Include="md_image\24_convert_unicode_jisx0213.png" />
+    <Image Include="md_image\25_convert_character_display.png" />
+    <Image Include="md_image\26_register_annotation.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C65505E2-5456-473C-91B1-C6D91B294DC3}</ProjectGuid>
