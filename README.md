@@ -52,6 +52,15 @@ corvusskk-X.Y.Z.zip を展開し、32bit版 Windows では corvusskk-X.Y.Z-x86.m
 アップデートの後はOSを再起動しておくと安全です。
 
 
+### CorvusSKK のアンインストール
+
+コントロールパネルの「プログラムと機能」からアンインストールしてください。
+
+または、インストールに使用した msi ファイルを再度実行し「Remove」を選択してください。
+
+アンインストールの後はOSを再起動しておくと安全です。
+
+
 ### 初期設定
 
 任意のユーザーアカウントで初めて使用するときは、設定ダイアログでOKボタンを押して初期設定を保存してください。
@@ -459,7 +468,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 辞書管理プロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位でロードされます。
 
 1. %AppData%\CorvusSKK\init.lua
-2. 辞書管理プロセスと同じディレクトリのinit.lua
+2. 辞書管理プロセスと同じディレクトリのinit.lua (インストーラーによりインストール済み)
   * 通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
   * または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
 

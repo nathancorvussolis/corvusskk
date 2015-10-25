@@ -192,8 +192,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	hUrl = InternetOpenUrlW(hInet, url, NULL, 0, 0, 0);
 	if(hUrl == NULL)
 	{
-		InternetCloseHandle(hInet);
-		return E_FAIL;
+		goto exit_u;
 	}
 
 	_wfopen_s(&fp, path, WB);
@@ -233,6 +232,7 @@ exit:
 	fclose(fp);
 exit_f:
 	InternetCloseHandle(hUrl);
+exit_u:
 	InternetCloseHandle(hInet);
 
 	return hr;
