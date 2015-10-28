@@ -187,6 +187,8 @@ int u8fprintf(FILE *file, const char *format, ...)
 
 	vsnprintf(buf, buflen, format, argptr);
 
+	va_end(argptr);
+
 	if(file == stdout || file == stderr) {
 		wbuf = u8stows(buf);
 		if(wbuf) {
@@ -224,6 +226,8 @@ int u8printf(const char *format, ...)
 	}
 
 	vsnprintf(buf, buflen, format, argptr);
+
+	va_end(argptr);
 
 	wbuf = u8stows(buf);
 	if(wbuf) {

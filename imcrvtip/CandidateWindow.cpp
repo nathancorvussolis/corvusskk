@@ -135,7 +135,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_MOUSEACTIVATE:
 		return MA_NOACTIVATE;
 	default:
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 	}
 	return 0;
 }

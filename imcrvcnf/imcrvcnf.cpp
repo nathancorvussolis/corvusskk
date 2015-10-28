@@ -32,8 +32,6 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 void CreateProperty()
 {
-	PROPSHEETPAGEW psp;
-	PROPSHEETHEADERW psh;
 	struct {
 		int id;
 		DLGPROC DlgProc;
@@ -51,29 +49,28 @@ void CreateProperty()
 		{IDD_DIALOG_KANATBL,		DlgProcKana},
 		{IDD_DIALOG_JLATTBL,		DlgProcJLatin}
 	};
-	HPROPSHEETPAGE hpsp[_countof(DlgPage)];
 
+	PROPSHEETPAGEW psp[_countof(DlgPage)];
 	ZeroMemory(&psp, sizeof(psp));
-	psp.dwSize = sizeof(psp);
-	psp.dwFlags = PSP_PREMATURE;
-	psp.hInstance = hInst;
-
-	for(int i = 0; i < _countof(DlgPage); i++)
+	for(int i = 0; i < _countof(psp); i++)
 	{
-		psp.pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
-		psp.pfnDlgProc = DlgPage[i].DlgProc;
-		hpsp[i] = CreatePropertySheetPageW(&psp);
+		psp[i].dwSize = sizeof(psp[i]);
+		psp[i].dwFlags = PSP_PREMATURE;
+		psp[i].hInstance = hInst;
+		psp[i].pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
+		psp[i].pfnDlgProc = DlgPage[i].DlgProc;
 	}
 
+	PROPSHEETHEADERW psh;
 	ZeroMemory(&psh, sizeof(psh));
 	psh.dwSize = sizeof(psh);
-	psh.dwFlags = PSH_DEFAULT | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
+	psh.dwFlags = PSH_PROPSHEETPAGE | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
 	psh.hwndParent = NULL;
 	psh.hInstance = hInst;
 	psh.pszCaption = TEXTSERVICE_DESC L" (ver. " TEXTSERVICE_VER L")";
-	psh.nPages = _countof(DlgPage);
+	psh.nPages = _countof(psp);
 	psh.nStartPage = 0;
-	psh.phpage = hpsp;
+	psh.ppsp = psp;
 	psh.pfnCallback = PropSheetProc;
 
 	PropertySheetW(&psh);
