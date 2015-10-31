@@ -197,6 +197,10 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 
 			_SetKeyboardOpen(TRUE);
 		}
+		else
+		{
+			_UpdateLanguageBar();
+		}
 
 		*pfEaten = TRUE;
 	}
@@ -207,6 +211,10 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 			_ClearComposition();
 
 			_SetKeyboardOpen(FALSE);
+		}
+		else
+		{
+			_UpdateLanguageBar();
 		}
 
 		*pfEaten = TRUE;

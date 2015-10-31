@@ -67,7 +67,7 @@ void CreateProperty()
 	psh.dwFlags = PSH_PROPSHEETPAGE | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
 	psh.hwndParent = NULL;
 	psh.hInstance = hInst;
-	psh.pszCaption = TEXTSERVICE_DESC L" (ver. " TEXTSERVICE_VER L")";
+	psh.pszCaption = TEXTSERVICE_DESC L" ver. " TEXTSERVICE_VER;
 	psh.nPages = _countof(psp);
 	psh.nStartPage = 0;
 	psh.ppsp = psp;

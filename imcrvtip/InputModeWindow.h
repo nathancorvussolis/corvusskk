@@ -24,6 +24,8 @@ public:
 
 	BOOL _Create(CTextService *pTextService, ITfContext *pContext, BOOL bCandidateWindow, HWND hWnd);
 	void _Destroy();
+	static BOOL _InitClass();
+	static void _UninitClass();
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -45,7 +47,6 @@ private:
 	CTextService *_pTextService;
 	HWND _hwndParent;
 	HWND _hwnd;
-	WNDPROC WndProcDef;
 	BOOL _bCandidateWindow;
 
 	int _size;

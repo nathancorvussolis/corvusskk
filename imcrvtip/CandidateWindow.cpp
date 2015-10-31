@@ -14,38 +14,14 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 	if(_hwndParent != NULL)
 	{
-		WNDCLASSEXW wc;
-		wc.cbSize = sizeof(wc);
-		wc.style = CS_IME | CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW;
-		wc.lpfnWndProc = DefWindowProcW;
-		wc.cbClsExtra = 0;
-		wc.cbWndExtra = sizeof(LONG_PTR);
-		wc.hInstance = g_hInst;
-		wc.hIcon = NULL;
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
-		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-		wc.lpszMenuName = NULL;
-		wc.lpszClassName = CandidateWindowClass;
-		wc.hIconSm = NULL;
-		RegisterClassExW(&wc);
-
 		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
 			CandidateWindowClass, L"", WS_POPUP,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-			_hwndParent, NULL, g_hInst, NULL);
+			_hwndParent, NULL, g_hInst, this);
 
 		if(_hwnd == NULL)
 		{
 			return FALSE;
-		}
-
-		WndProcDef = (WNDPROC)GetWindowLongPtrW(_hwnd, GWLP_WNDPROC);
-		if(WndProcDef != NULL)
-		{
-			SetWindowLongPtrW(_hwnd, GWLP_USERDATA, (LONG_PTR)this);
-			SetWindowLongPtrW(_hwnd, GWLP_WNDPROC, (LONG_PTR)_WindowPreProc);
-			SetWindowPos(_hwnd, NULL, 0, 0, 0, 0,
-				SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
 		}
 
 		hFont = _pTextService->hFont;
@@ -112,15 +88,55 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	return TRUE;
 }
 
+BOOL CCandidateWindow::_InitClass()
+{
+	WNDCLASSEXW wcex;
+
+	ZeroMemory(&wcex, sizeof(wcex));
+	wcex.cbSize = sizeof(wcex);
+	wcex.style = CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW;
+	wcex.lpfnWndProc = CCandidateWindow::_WindowPreProc;
+	wcex.cbClsExtra = 0;
+	wcex.cbWndExtra = 0;
+	wcex.hInstance = g_hInst;
+	wcex.hIcon = NULL;
+	wcex.hCursor = LoadCursorW(NULL, IDC_ARROW);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+	wcex.lpszMenuName = NULL;
+	wcex.lpszClassName = CandidateWindowClass;
+	wcex.hIconSm = NULL;
+
+	ATOM atom = RegisterClassExW(&wcex);
+
+	return (atom != 0);
+}
+
+void CCandidateWindow::_UninitClass()
+{
+	UnregisterClassW(CandidateWindowClass, g_hInst);
+}
+
 LRESULT CALLBACK CCandidateWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LRESULT ret = 0;
-	CCandidateWindow *pWindowProc = (CCandidateWindow*)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
-	if(pWindowProc != NULL)
+	CCandidateWindow *pCandidateWindow = NULL;
+
+	switch(uMsg)
 	{
-		ret = pWindowProc->_WindowProc(hWnd, uMsg, wParam, lParam);
+	case WM_NCCREATE:
+		pCandidateWindow = (CCandidateWindow *)((LPCREATESTRUCTW)lParam)->lpCreateParams;
+		SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)pCandidateWindow);
+		break;
+	default:
+		pCandidateWindow = (CCandidateWindow *)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		break;
 	}
-	return ret;
+
+	if(pCandidateWindow != NULL)
+	{
+		return pCandidateWindow->_WindowProc(hWnd, uMsg, wParam, lParam);
+	}
+
+	return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 }
 
 LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -137,6 +153,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	default:
 		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
 	}
+
 	return 0;
 }
 

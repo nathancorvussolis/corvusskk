@@ -580,6 +580,10 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 	{
 		_StartInputModeWindow();
 	}
+	else
+	{
+		_EndInputModeWindow();
+	}
 }
 
 void CTextService::_GetIcon(HICON *phIcon)
