@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.1.1
+# CorvusSKK ver. 2.1.2
 
 Windowsで動作するSKK風のIMEです。
 
@@ -626,4 +626,4 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 Visual Studio Express 2013 for Windows Desktop Update 5
 
-WiX Toolset v3.10
+WiX Toolset v3.10.1
