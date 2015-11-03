@@ -211,7 +211,7 @@
     <ClCompile Include="Composition.cpp" />
     <ClCompile Include="DisplayAttributeProvider.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="FnConfigure.cpp" />
+    <ClCompile Include="FnConfig.cpp" />
     <ClCompile Include="FunctionProvider.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="InputModeWindow.cpp" />

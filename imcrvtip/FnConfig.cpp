@@ -302,7 +302,7 @@ void CTextService::_LoadPreservedKey()
 	}
 }
 
-void CTextService::_LoadCKeyMap(LPCWSTR section)
+void CTextService::_LoadCKeyMap()
 {
 	WCHAR key[2];
 	WCHAR keyre[KEYRELEN];
@@ -319,7 +319,7 @@ void CTextService::_LoadCKeyMap(LPCWSTR section)
 		{
 			break;
 		}
-		ReadValue(pathconfigxml, section, configkeymap[i].keyname, strxmlval);
+		ReadValue(pathconfigxml, SectionKeyMap, configkeymap[i].keyname, strxmlval);
 		wcsncpy_s(keyre, strxmlval.c_str(), _TRUNCATE);
 		if(keyre[0] == L'\0')
 		{
@@ -422,7 +422,7 @@ void CTextService::_LoadCKeyMap(LPCWSTR section)
 	}
 }
 
-void CTextService::_LoadVKeyMap(LPCWSTR section)
+void CTextService::_LoadVKeyMap()
 {
 	WCHAR key[3];
 	WCHAR keyre[KEYRELEN];
@@ -442,7 +442,7 @@ void CTextService::_LoadVKeyMap(LPCWSTR section)
 		{
 			break;
 		}
-		ReadValue(pathconfigxml, section, configkeymap[i].keyname, strxmlval);
+		ReadValue(pathconfigxml, SectionVKeyMap, configkeymap[i].keyname, strxmlval);
 		wcsncpy_s(keyre, strxmlval.c_str(), _TRUNCATE);
 		if(keyre[0] == L'\0')
 		{

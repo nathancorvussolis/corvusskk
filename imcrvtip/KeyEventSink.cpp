@@ -25,7 +25,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 
 	if(_IsComposing())
 	{
-		if(inputmode != im_ascii && !_pInputModeWindow)
+		if(inputmode != im_ascii)
 		{
 			return TRUE;
 		}
@@ -91,13 +91,13 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 	}
 
 	//処理しないCtrlキー
-	if(vk_ctrl)
+	if(vk_ctrl != 0)
 	{
 		return FALSE;
 	}
 
-	//ASCIIモード、かなキーロック
-	if(inputmode == im_ascii && !vk_kana)
+	//ASCIIモード、かなキーロックOFF
+	if(inputmode == im_ascii && vk_kana == 0)
 	{
 		return FALSE;
 	}
@@ -126,7 +126,7 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 	_EndInputModeWindow();
 
-	if(!_IsComposing())
+	if(!_IsKeyboardDisabled() && _IsKeyboardOpen() && !_IsComposing())
 	{
 		WCHAR ch = _GetCh((BYTE)wParam);
 		if(_IsKeyVoid(ch, (BYTE)wParam))
