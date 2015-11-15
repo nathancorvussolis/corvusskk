@@ -45,13 +45,16 @@
     <None Include="_version.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="corvusskk-version.wxi">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="corvusskk-x64.wxs">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="corvusskk-x86.wxs">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="ms-pl.rtf">
+    <None Include="license.rtf">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="config-lua\init.lua">

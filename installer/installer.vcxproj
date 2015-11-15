@@ -26,9 +26,10 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
+    <None Include="corvusskk-version.wxi" />
     <None Include="corvusskk-x64.wxs" />
     <None Include="corvusskk-x86.wxs" />
-    <None Include="ms-pl.rtf" />
+    <None Include="license.rtf" />
     <None Include="_build.cmd" />
     <None Include="_build_x64.cmd" />
     <None Include="_build_x86.cmd" />

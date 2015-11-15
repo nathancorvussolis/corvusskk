@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?define version="2.1.2" ?>
+  <?include corvusskk-version.wxi ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
@@ -68,7 +68,8 @@
 
     <Component Id="RegistryRun" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Win64="yes" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-        <RegistryValue Type="string" Name="imcrvmgr" Value="&quot;$(env.SystemRoot)\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" Action="write" />
+        <RegistryValue Action="write" Type="string" Name="imcrvmgr"
+          Value="&quot;[%SystemRoot]\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" />
       </RegistryKey>
     </Component>
 
@@ -89,8 +90,10 @@
     </Feature>
 
     <DirectoryRef Id="TARGETDIR">
-      <Merge Id="CRT_X86" SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x86.msm" DiskId="1" Language="0" />
-      <Merge Id="CRT_X64" SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x64.msm" DiskId="1" Language="0" />
+      <Merge Id="CRT_X86" DiskId="1" Language="0"
+        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x86.msm" />
+      <Merge Id="CRT_X64" DiskId="1" Language="0"
+        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x64.msm" />
     </DirectoryRef>
     <Feature Id="CRT" Title="VCRuntime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="CRT_X86" />
@@ -98,7 +101,7 @@
     </Feature>
 
     <UIRef Id="WixUI_Minimal" />
-    <WixVariable Id="WixUILicenseRtf" Value="ms-pl.rtf" />
+    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
     <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
     <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
 
