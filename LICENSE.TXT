@@ -182,10 +182,10 @@ MICROSOFT SOFTWARE LICENSE TERMS
 MICROSOFT VISUAL STUDIO EXPRESS 2013 FOR WINDOWS DESKTOP
 
  Distributable Code.
-  The software contains code that you are permitted to distribute in
-  programs you develop if you comply with the terms below.
-  (For this Section the term "distribution" also means deployment of
-  your programs for third parties to access over the Internet.)
+ The software contains code that you are permitted to distribute in
+ programs you develop if you comply with the terms below.
+ (For this Section the term "distribution" also means deployment of
+ your programs for third parties to access over the Internet.)
 
   i. Right to Use and Distribute.
    The code and text files listed below are “Distributable Code.”
