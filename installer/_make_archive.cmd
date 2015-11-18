@@ -15,7 +15,7 @@ popd
 del "%TARGETDIR%\corvusskk-%VERSION%.zip"
 
 pushd "%TARGETDIR%"
-7za.exe a -tzip -mtc=off corvusskk-%VERSION%.zip corvusskk-%VERSION%-x64.msi corvusskk-%VERSION%-x86.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip
+7za.exe a -tzip -mtc=off corvusskk-%VERSION%.zip corvusskk-%VERSION%-x86.msi corvusskk-%VERSION%-x64.msi ..\README.TXT ..\..\LICENSE.TXT config-sample.zip
 popd
 
 popd

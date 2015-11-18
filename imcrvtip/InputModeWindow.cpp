@@ -542,22 +542,24 @@ void CTextService::_StartInputModeWindow()
 
 					if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
 					{
+						HRESULT hr = E_FAIL;
 						HRESULT hrSession = E_FAIL;
 
 						try
 						{
 							CInputModeWindowEditSession *pEditSession = new CInputModeWindowEditSession(this, pContext, _pInputModeWindow);
-							// Asynchronous
-							pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hrSession);
+							// Asynchronous, read-only
+							hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
 							SafeRelease(&pEditSession);
+
+							// It is possible that asynchronous requests are treated as synchronous requests.
+							if(hr != S_OK || (hrSession != TF_S_ASYNC && hrSession != S_OK))
+							{
+								_EndInputModeWindow();
+							}
 						}
 						catch(...)
 						{
-						}
-
-						if(hrSession != TF_S_ASYNC)
-						{
-							_EndInputModeWindow();
 						}
 					}
 				}
@@ -567,6 +569,7 @@ void CTextService::_StartInputModeWindow()
 
 				SafeRelease(&pContext);
 			}
+
 			SafeRelease(&pDocumentMgr);
 		}
 		break;

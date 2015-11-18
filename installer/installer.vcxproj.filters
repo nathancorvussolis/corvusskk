@@ -39,7 +39,13 @@
     <None Include="_debug_unreg.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_mkarc.cmd">
+    <None Include="_make_archive.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_rebuild_solution.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_sign.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_version.cmd">

@@ -181,9 +181,7 @@ Microsoft_VC120_CRT_x86.msm
 MICROSOFT SOFTWARE LICENSE TERMS
 MICROSOFT VISUAL STUDIO EXPRESS 2013 FOR WINDOWS DESKTOP
 
-2. ADDITIONAL LICENSING REQUIREMENTS AND/OR USE RIGHTS.
-
- a. Distributable Code.
+ Distributable Code.
   The software contains code that you are permitted to distribute in
   programs you develop if you comply with the terms below.
   (For this Section the term "distribution" also means deployment of

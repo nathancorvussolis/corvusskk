@@ -267,7 +267,7 @@ private:
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
 	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp)
 {
-	HRESULT hr = E_FAIL;
+	HRESULT hrRet = E_FAIL;
 	TfEditCookie ecTextStore;
 	ITfContextView *pContextView;
 	HWND hwnd = NULL;
@@ -327,39 +327,42 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		{
 			goto exit;
 		}
-
-		HRESULT hrSession = E_FAIL;
-
-		try
-		{
-			CCandidateWindowEditSession *pEditSession =
-				new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow);
-			// Asynchronous
-			pContext->RequestEditSession(ec, pEditSession, TF_ES_ASYNC | TF_ES_READWRITE, &hrSession);
-			SafeRelease(&pEditSession);
-		}
-		catch(...)
-		{
-		}
-
-		if(hrSession != TF_S_ASYNC)
-		{
-			hr = E_FAIL;
-			goto exit;
-		}
-
-		hr = S_OK;
 	}
 	catch(...)
 	{
+		goto exit;
 	}
 
+	HRESULT hr = E_FAIL;
+	HRESULT hrSession = E_FAIL;
+
+	try
+	{
+		CCandidateWindowEditSession *pEditSession =
+			new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow);
+		// Asynchronous, read-only
+		hr = pContext->RequestEditSession(ec, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
+		SafeRelease(&pEditSession);
+
+		// It is possible that asynchronous requests are treated as synchronous requests.
+		if(hr != S_OK || (hrSession != TF_S_ASYNC && hrSession != S_OK))
+		{
+			goto exit;
+		}
+	}
+	catch(...)
+	{
+		goto exit;
+	}
+
+	hrRet = S_OK;
+
 exit:
-	if(hr != S_OK)
+	if(hrRet != S_OK)
 	{
 		_EndCandidateList();
 	}
-	return hr;
+	return hrRet;
 }
 
 void CCandidateList::_InvokeKeyHandler(WPARAM key)

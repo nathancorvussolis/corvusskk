@@ -565,6 +565,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 
 		if(hr != S_OK)
 		{
+			_ResetStatus();
 			_CancelComposition(ec, pContext);
 		}
 	}

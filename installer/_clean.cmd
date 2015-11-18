@@ -5,10 +5,10 @@ pushd %~dp0
 
 set TARGETDIR=build
 
+del "%TARGETDIR%\*.wixobj"
+del "%TARGETDIR%\*.wixpdb"
+del "%TARGETDIR%\*.msi"
 del "%TARGETDIR%\*.zip"
-
-call _clean_x64.cmd
-call _clean_x86.cmd
 
 popd
 
