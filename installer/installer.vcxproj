@@ -39,8 +39,9 @@
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
     <None Include="_make_archive.cmd" />
-    <None Include="_rebuild_solution.cmd" />
     <None Include="_sign.cmd" />
+    <None Include="_solution_build.cmd" />
+    <None Include="_solution_clean.cmd" />
     <None Include="_version.cmd" />
   </ItemGroup>
   <ItemGroup>

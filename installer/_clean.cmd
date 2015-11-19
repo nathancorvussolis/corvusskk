@@ -3,11 +3,11 @@ setlocal
 
 pushd %~dp0
 
-set TARGETDIR=build
+call _version.cmd
 
-del "%TARGETDIR%\*.wixobj"
-del "%TARGETDIR%\*.wixpdb"
-del "%TARGETDIR%\*.msi"
+call _clean_x86.cmd
+call _clean_x64.cmd
+
 del "%TARGETDIR%\*.zip"
 
 popd

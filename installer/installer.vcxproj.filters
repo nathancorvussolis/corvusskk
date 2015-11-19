@@ -42,10 +42,13 @@
     <None Include="_make_archive.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_rebuild_solution.cmd">
+    <None Include="_sign.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_sign.cmd">
+    <None Include="_solution_build.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_clean.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_version.cmd">
