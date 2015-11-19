@@ -216,7 +216,8 @@ MICROSOFT VISUAL STUDIO EXPRESS 2013 FOR WINDOWS DESKTOP
      including attorneys’ fees, related to the distribution or use of
      your programs.
 
-  iii. Distribution Restrictions. You may not
+  iii. Distribution Restrictions.
+   You may not
 
    · alter any copyright, trademark or patent notice in the
      Distributable Code;
