@@ -1,7 +1,7 @@
-@pushd %~dp0
 @echo off
-
 setlocal
+
+pushd %~dp0
 
 set DIGESTALGORITHM=%1
 set TIMESTAMPFLAG=%2
@@ -33,6 +33,6 @@ call _build_x64.cmd
 
 %SIGNCOMMAND% %MSIFILES%
 
-endlocal
-
 popd
+
+endlocal

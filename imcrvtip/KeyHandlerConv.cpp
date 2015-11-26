@@ -161,7 +161,7 @@ HRESULT CTextService::_SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KA
 	HRESULT ret = E_ABORT;	//一致なし
 
 	if((pconv == NULL) ||
-		(_countof(pconv->roman) <= depth) || (pconv->roman[depth] == L'\0'))
+		(_countof(pconv->roman) <= (depth + 1)) || (pconv->roman[depth] == L'\0'))
 	{
 		return ret;
 	}

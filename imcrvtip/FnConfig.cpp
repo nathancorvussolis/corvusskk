@@ -754,7 +754,7 @@ BOOL CTextService::_AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int 
 {
 	BOOL added = FALSE;
 
-	if((_countof(rkc.roman) <= depth) || (rkc.roman[depth] == L'\0'))
+	if((_countof(rkc.roman) <= (depth + 1)) || (rkc.roman[depth] == L'\0'))
 	{
 		return FALSE;
 	}
@@ -796,7 +796,7 @@ void CTextService::_AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, 
 
 	ZeroMemory(&rkn, sizeof(rkn));
 
-	if((_countof(rkc.roman) <= depth) || (rkc.roman[depth] == L'\0'))
+	if((_countof(rkc.roman) <= (depth + 1)) || (rkc.roman[depth] == L'\0'))
 	{
 		return;
 	}

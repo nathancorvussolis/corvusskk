@@ -111,7 +111,7 @@ STDAPI DllCanUnloadNow(void)
 	return g_cRefDll <= 0 ? S_OK : S_FALSE;
 }
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, void **ppvObj)
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppvObj)
 {
 	static CClassFactory factory;
 
