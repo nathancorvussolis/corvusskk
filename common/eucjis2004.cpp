@@ -58,9 +58,11 @@ size_t UcpToWideChar(UCSCHAR ucp, PWCHAR first, PWCHAR second)
 
 size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 {
+	CONST CHAR as = 0x00;
+	CONST CHAR ae = 0x7F;
 	CONST CHAR mask = 0x7F;
-	CONST CHAR ss2 = 0x0E;
-	CONST CHAR ss3 = 0x0F;
+	CONST CHAR ss2 = 0x0E | ~mask;
+	CONST CHAR ss3 = 0x0F | ~mask;
 	CONST CHAR ejs = 0x21;
 	CONST CHAR eje = 0x7E;
 	CHAR ej[2];
@@ -74,7 +76,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	*ucp1 = 0;
 	*ucp2 = 0;
 
-	if(src[0] >= 0x00 && src[0] <= 0x7F)	//ASCII
+	if(as <= src[0] && src[0] <= ae)	//ASCII
 	{
 		*ucp1 = src[0];
 		*ucp2 = 0;
@@ -82,7 +84,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	}
 	else
 	{
-		switch(src[0] & mask)
+		switch(src[0])
 		{
 		case ss3:	// JIS X 0213 Plane 2
 			if(srcsize < 3)
@@ -90,13 +92,13 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[1] & mask;
-			ej[1] = src[2] & mask;
+			ej[0] = src[1] - ~mask;
+			ej[1] = src[2] - ~mask;
 
 			if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
 				*ucp1 = 0;
-				if(euc2i[ej[0] - ejs] != 0)
+				if(euc2i[ej[0] - ejs] != 0 && euc2i[ej[0] - ejs] <= ROW2NUM)
 				{
 					*ucp1 = euc2[euc2i[ej[0] - ejs] - 1][ej[1] - ejs];
 				}
@@ -111,7 +113,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[1] & mask;
+			ej[0] = src[1] - ~mask;
 
 			if(ej[0] >= ejs && ej[0] <= eje)
 			{
@@ -127,8 +129,8 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[0] & mask;
-			ej[1] = src[1] & mask;
+			ej[0] = src[0] - ~mask;
+			ej[1] = src[1] - ~mask;
 
 			if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
@@ -276,9 +278,9 @@ void AddNullEucJis2004(size_t *srcsize, size_t si, LPSTR dst, size_t *dstsize, s
 BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsize)
 {
 	CONST CHAR mask = 0x7F;
+	CONST CHAR ss2 = 0x0E | ~mask;
+	CONST CHAR ss3 = 0x0F | ~mask;
 	CONST CHAR ejs = 0x21;
-	CONST CHAR ss2 = 0x0E;
-	CONST CHAR ss3 = 0x0F;
 	size_t si = 0, di = 0, ss = -1;
 	WCHAR first, second;
 	UCSCHAR ucp;
@@ -399,7 +401,8 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							exist = TRUE;
 							break;
 						}
-						else if(euc2i[i] != 0 && ucp == euc2[euc2i[i] - 1][j])	// JIS X 0213 Plane 2
+						else if(euc2i[i] != 0 && euc2i[i] <= ROW2NUM &&
+							ucp == euc2[euc2i[i] - 1][j])	// JIS X 0213 Plane 2
 						{
 							if(*dstsize <= di + 3)	//limit
 							{
@@ -408,7 +411,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							}
 							if(dst != NULL)
 							{
-								*(dst + di) = ss3 | ~mask;
+								*(dst + di) = ss3;
 								*(dst + di + 1) = (ejs + i) | ~mask;
 								*(dst + di + 2) = (ejs + j) | ~mask;
 							}
@@ -442,7 +445,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						}
 						if(dst != NULL)
 						{
-							*(dst + di) = ss2 | ~mask;
+							*(dst + di) = ss2;
 							*(dst + di + 1) = (ejs + i) | ~mask;
 						}
 						di += 2;

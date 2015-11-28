@@ -119,10 +119,15 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 {
 	std::wstring candidate;
 	//文字コード表記
+	CONST CHAR as = 0x00;
+	CONST CHAR ae = 0x7F;
 	CONST CHAR mask = 0x7F;
 	CONST CHAR ss2 = 0x0E;
 	CONST CHAR ss3 = 0x0F;
+	CONST CHAR ejs = 0x21;
+	CONST CHAR eje = 0x7E;
 	CONST CHAR base = 0x20;
+	CHAR ej[2];
 	std::wstring e, u;
 	WCHAR b[16];
 	size_t len;
@@ -135,35 +140,50 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 
 		for(size_t i = 0; i < euc.size(); i++)
 		{
-			if(euc[i] >= 0x00 && euc[i] <= 0x7F)
+			if(as <= euc[i] && euc[i] <= ae)
 			{
 				_snwprintf_s(b, _TRUNCATE, L"%02X", euc[i]);
 			}
 			else
 			{
-				switch(euc[i] & mask)
+				switch(euc[i])
 				{
 				case ss3:	// JIS X 0213 Plane 2
 					if(i + 2 < euc.size())
 					{
-						_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d",
-							(euc[i + 1] & mask) - base, (euc[i + 2] & mask) - base);
-						i += 2;
+						ej[0] = euc[i + 1] - ~mask;
+						ej[1] = euc[i + 2] - ~mask;
+
+						if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
+						{
+							_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d", ej[0] - base, ej[1] - base);
+							i += 2;
+						}
 					}
 					break;
 				case ss2:	//JIS X 0201 halfwidth katakana
 					if(i + 1 < euc.size())
 					{
-						_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
-						i++;
+						ej[0] = euc[i + 1] - ~mask;
+
+						if(ej[0] >= ejs && ej[0] <= eje)
+						{
+							_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
+							i++;
+						}
 					}
 					break;
 				default:	// JIS X 0213 Plane 1
 					if(i + 1 < euc.size())
 					{
-						_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d",
-							(euc[i] & mask) - base, (euc[i + 1] & mask) - base);
-						i++;
+						ej[0] = euc[i] - ~mask;
+						ej[1] = euc[i + 1] - ~mask;
+
+						if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
+						{
+							_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d", ej[0] - base, ej[1] - base);
+							i++;
+						}
 					}
 					break;
 				}
