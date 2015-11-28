@@ -45,12 +45,12 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 {
 	std::wstring candidate;
 	//JIS X 0213 面区点番号
+	CONST CHAR mask = 0x7F;
+	CONST CHAR base = 0x20;
 	int men, ku, ten;
 	size_t size;
 	WCHAR utf16[8];
 	CHAR euc[4];
-	CONST CHAR mask = 0x7F;
-	CONST CHAR base = 0x20;
 	UCSCHAR ucp[2];
 	WCHAR sucp[32];
 
@@ -119,16 +119,14 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 {
 	std::wstring candidate;
 	//文字コード表記
+	CONST CHAR mask = 0x7F;
+	CONST CHAR ss2 = 0x0E;
+	CONST CHAR ss3 = 0x0F;
+	CONST CHAR base = 0x20;
 	std::wstring e, u;
 	WCHAR b[16];
 	size_t len;
 	UCSCHAR ucp;
-	CONST CHAR as = 0x00;
-	CONST CHAR ae = 0x7F;
-	CONST CHAR mask = 0x7F;
-	CONST CHAR ejs = 0x21;
-	CONST CHAR ss2 = 0x0E;
-	CONST CHAR ss3 = 0x0F;
 
 	//ASCII, JIS X 0201 (片仮名, 8bit), JIS X 0213 面区点番号
 	if(WideCharToEucJis2004(searchkey.c_str(), NULL, NULL, &len))
@@ -137,26 +135,38 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 
 		for(size_t i = 0; i < euc.size(); i++)
 		{
-			if(as <= euc[i] && euc[i] <= ae)
+			if(euc[i] >= 0x00 && euc[i] <= 0x7F)
 			{
 				_snwprintf_s(b, _TRUNCATE, L"%02X", euc[i]);
 			}
-			else if((euc[i] & mask) == ss3)
-			{
-				_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d",
-					(euc[i + 1] & mask) - ejs + 1, (euc[i + 2] & mask) - ejs + 1);
-				i += 2;
-			}
-			else if((euc[i] & mask) == ss2)
-			{
-				_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
-				i++;
-			}
 			else
 			{
-				_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d",
-					(euc[i] & mask) - ejs + 1, (euc[i + 1] & mask) - ejs + 1);
-				i++;
+				switch(euc[i] & mask)
+				{
+				case ss3:	// JIS X 0213 Plane 2
+					if(i + 2 < euc.size())
+					{
+						_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d",
+							(euc[i + 1] & mask) - base, (euc[i + 2] & mask) - base);
+						i += 2;
+					}
+					break;
+				case ss2:	//JIS X 0201 halfwidth katakana
+					if(i + 1 < euc.size())
+					{
+						_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
+						i++;
+					}
+					break;
+				default:	// JIS X 0213 Plane 1
+					if(i + 1 < euc.size())
+					{
+						_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d",
+							(euc[i] & mask) - base, (euc[i + 1] & mask) - base);
+						i++;
+					}
+					break;
+				}
 			}
 
 			if(!e.empty())
