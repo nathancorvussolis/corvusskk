@@ -72,15 +72,20 @@ DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments)
 {
-	wchar_t *wbuf;
+	wchar_t *wbuf = NULL;
 	char *b;
 
-	if(nSize == 0) return 0;
+	if((lpBuffer == NULL) || (nSize == 0) ||
+		(dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) ||
+		(dwFlags & FORMAT_MESSAGE_FROM_STRING)) {
+		return 0;
+	}
 	lpBuffer[0] = '\0';
 
-	wbuf = (wchar_t *)calloc(nSize, sizeof(wchar_t));
+	FormatMessageW(dwFlags |
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+		lpSource, dwMessageId, dwLanguageId, (LPWSTR)&wbuf, 0, NULL);
 	if(wbuf){
-		FormatMessageW(dwFlags, lpSource, dwMessageId, dwLanguageId, wbuf, nSize, NULL);
 		b = u8wstos(wbuf);
 		if(b) {
 			if(strlen(b) < nSize) {
@@ -88,7 +93,7 @@ DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD 
 			}
 			free(b);
 		}
-		free(wbuf);
+		LocalFree(wbuf);
 	}
 
 	return (DWORD)strlen(lpBuffer);
