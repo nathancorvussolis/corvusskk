@@ -76,16 +76,17 @@ DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD 
 	char *b;
 
 	if((lpBuffer == NULL) || (nSize == 0) ||
-		(dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) ||
-		(dwFlags & FORMAT_MESSAGE_FROM_STRING)) {
+		((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0) ||
+		((dwFlags & FORMAT_MESSAGE_IGNORE_INSERTS) == 0) ||
+		((dwFlags & FORMAT_MESSAGE_FROM_STRING) != 0)) {
 		return 0;
 	}
+
 	lpBuffer[0] = '\0';
 
-	FormatMessageW(dwFlags |
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_IGNORE_INSERTS,
+	FormatMessageW(dwFlags | FORMAT_MESSAGE_ALLOCATE_BUFFER,
 		lpSource, dwMessageId, dwLanguageId, (LPWSTR)&wbuf, 0, NULL);
-	if(wbuf){
+	if(wbuf) {
 		b = u8wstos(wbuf);
 		if(b) {
 			if(strlen(b) < nSize) {
