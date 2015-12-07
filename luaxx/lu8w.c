@@ -72,32 +72,40 @@ DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments)
 {
+	DWORD len = 0;
 	wchar_t *wbuf = NULL;
 	char *b;
 
-	if((lpBuffer == NULL) || (nSize == 0) ||
-		((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0) ||
+	if((lpBuffer == NULL) ||
+		((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) == 0 && nSize == 0) ||
 		((dwFlags & FORMAT_MESSAGE_IGNORE_INSERTS) == 0) ||
 		((dwFlags & FORMAT_MESSAGE_FROM_STRING) != 0)) {
 		return 0;
 	}
-
-	lpBuffer[0] = '\0';
 
 	FormatMessageW(dwFlags | FORMAT_MESSAGE_ALLOCATE_BUFFER,
 		lpSource, dwMessageId, dwLanguageId, (LPWSTR)&wbuf, 0, NULL);
 	if(wbuf) {
 		b = u8wstos(wbuf);
 		if(b) {
+			if((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0) {
+				nSize = max(strlen(b) + 1, nSize);
+				*((LPSTR *)lpBuffer) = (LPSTR)LocalAlloc(LPTR, nSize);
+				lpBuffer = *((LPSTR *)lpBuffer);
+				if(lpBuffer == NULL) {
+					nSize = 0;
+				}
+			}
 			if(strlen(b) < nSize) {
 				strcpy(lpBuffer, b);
+				len = strlen(b);
 			}
 			free(b);
 		}
 		LocalFree(wbuf);
 	}
 
-	return (DWORD)strlen(lpBuffer);
+	return len;
 }
 
 HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
