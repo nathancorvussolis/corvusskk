@@ -455,7 +455,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.3.1です。
+現在使用しているLuaのバージョンは5.3.2です。
 
 詳細はこちらを参照ください。http://www.lua.org/manual/5.3/manual.html
 
@@ -531,7 +531,7 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 
 タイプ0〜3,5,8,9に対応しています。
 
-タイプ3と5での数値は0〜10^68-1の整数に対応しています。
+タイプ3と5での数値は0〜10^72-1の整数に対応しています。
 
 独自実装としてタイプ6(ローマ数字)が、1〜3999の整数に対応しています。
 
@@ -624,6 +624,6 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Express 2013 for Windows Desktop Update 5
+Visual Studio Community 2013 Update 5
 
 WiX Toolset v3.10.1
