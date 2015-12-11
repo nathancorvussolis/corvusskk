@@ -8,6 +8,28 @@ require("init")
 
 el_test_time_table = {
 
+{"へいせい1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")",	"西暦1989年"},
+{"へいせい1ねん",	"(skk-gengo-to-ad \"\" \"年\")",		"1989年"},
+{"しょうわ1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")",	"西暦1926年"},
+{"しょうわ1ねん",	"(skk-gengo-to-ad \"\" \"年\")",		"1926年"},
+{"たいしょう1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")",	"西暦1912年"},
+{"たいしょう1ねん",	"(skk-gengo-to-ad \"\" \"年\")",		"1912年"},
+{"めいじ1ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")",	""},
+{"めいじ1ねん",		"(skk-gengo-to-ad \"\" \"年\")",		""},
+{"めいじ5ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")",	""},
+{"めいじ5ねん",		"(skk-gengo-to-ad \"\" \"年\")",		""},
+{"めいじ6ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")",	"西暦1873年"},
+{"めいじ6ねん",		"(skk-gengo-to-ad \"\" \"年\")",		"1873年"},
+
+{"せいれき1988ねん",	"(skk-ad-to-gengo 0 nil \"年\" t)",	"昭和63年"},
+{"せいれき1988ねん",	"(skk-ad-to-gengo 1 nil \"年\" t)",	"S63年"},
+{"せいれき1988ねん",	"(skk-ad-to-gengo 0 nil \"年\")",	"昭和63年"},
+{"せいれき1988ねん",	"(skk-ad-to-gengo 1 nil \"年\")",	"S63年"},
+{"せいれき1989ねん",	"(skk-ad-to-gengo 0 nil \"年\" t)",	"平成1年"},
+{"せいれき1989ねん",	"(skk-ad-to-gengo 1 nil \"年\" t)",	"H1年"},
+{"せいれき1989ねん",	"(skk-ad-to-gengo 0 nil \"年\")",	"平成元年"},
+{"せいれき1989ねん",	"(skk-ad-to-gengo 1 nil \"年\")",	"H元年"},
+
 {"today",	"(skk-current-date (lambda (date-information format gengo and-time) (skk-default-current-date date-information nil 0 'gengo 0 0 0)))"},
 {"today",	"(skk-current-date (lambda (date-information format gengo and-time) (skk-default-current-date date-information \"%s-%s-%s(%s)\" 0 nil 0 0 nil)))"},
 {"today",	"(skk-current-date (lambda (date-information format gengo and-time) (skk-default-current-date date-information nil 0 'gengo 1 0 0)))"},
@@ -43,40 +65,41 @@ el_test_time_table = {
 
 {"あした！",	"(skk-relative-date nil nil nil :dd 1)"},
 
-
-{"へいせい1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"へいせい1ねん",	"(skk-gengo-to-ad \"\" \"年\")"},
-{"しょうわ1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"しょうわ1ねん",	"(skk-gengo-to-ad \"\" \"年\")"},
-{"たいしょう1ねん",	"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"たいしょう1ねん",	"(skk-gengo-to-ad \"\" \"年\")"},
-{"めいじ1ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"めいじ1ねん",		"(skk-gengo-to-ad \"\" \"年\")"},
-{"めいじ5ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"めいじ5ねん",		"(skk-gengo-to-ad \"\" \"年\")"},
-{"めいじ6ねん",		"(skk-gengo-to-ad \"西暦\" \"年\")"},
-{"めいじ6ねん",		"(skk-gengo-to-ad \"\" \"年\")"},
-
-{"せいれき1988ねん",	"(skk-ad-to-gengo 0 nil \"年\" t)"},
-{"せいれき1988ねん",	"(skk-ad-to-gengo 1 nil \"年\" t)"},
-{"せいれき1988ねん",	"(skk-ad-to-gengo 0 nil \"年\")"},
-{"せいれき1988ねん",	"(skk-ad-to-gengo 1 nil \"年\")"},
-{"せいれき1989ねん",	"(skk-ad-to-gengo 0 nil \"年\" t)"},
-{"せいれき1989ねん",	"(skk-ad-to-gengo 1 nil \"年\" t)"},
-{"せいれき1989ねん",	"(skk-ad-to-gengo 0 nil \"年\")"},
-{"せいれき1989ねん",	"(skk-ad-to-gengo 1 nil \"年\")"},
-
 }
 
 
+
+--local result = "OK"
 
 for i, v in ipairs(el_test_time_table) do
 	print("<= \"" .. v[1] .. "\" \"".. v[2] .. "\"")
 	local s = lua_skk_convert_candidate(v[1], v[2], "")
 
 	if (s) then
-		print("=> \"" .. s .. "\"\n")
+		print("=> \"" .. s .. "\"")
 	else
-		print("=> nil\n")
+		print("=> nil")
+	end
+
+	if (v[3]) then
+		if (type(v[3]) == "function") then
+			v[3] = v[3](s)
+		end
+
+		if (tostring(s) == v[3]) then
+			print "OK\n"
+		else
+			result = "NG"
+			print("== " .. v[3] .. "\n" .. result)
+			break
+		end
+	else
+		print("\n")
 	end
 end
+--[[
+if (result == "OK") then
+	print("\nAll OK.")
+end
+--]]
+print("check results by yourself.")

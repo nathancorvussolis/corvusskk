@@ -23,3 +23,5 @@ print("> " .. lua_skk_search("き", "る"))
 enable_skk_search_sagyo_only = false
 print("> " .. lua_skk_search("き", "る"))
 enable_skk_search_sagyo_only = true
+
+print("check results by yourself.")
