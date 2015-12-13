@@ -39,6 +39,10 @@ function _M.search_jisx0213(key)
 	return ""
 end
 
+function _M.search_jisx0208(key)
+	return ""
+end
+
 function _M.search_character_code(key)
 	return ""
 end
