@@ -70,6 +70,10 @@
 			crvmgr.search_jisx0213(key)
 				key : 見出し語 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
+		JIS X 0208区点番号変換
+			crvmgr.search_jisx0208(key)
+				key : 見出し語 string
+				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
 		文字コード表記変換 (ASCII, JIS X 0201(片仮名, 8bit), JIS X 0213 / Unicode)
 			crvmgr.search_character_code(key)
 				key : 見出し語 string
@@ -1083,6 +1087,9 @@ local function skk_search(key, okuri)
 		-- JIS X 0213面区点番号変換
 		ret = ret .. crvmgr.search_jisx0213(key)
 
+		-- JIS X 0208区点番号変換
+		ret = ret .. crvmgr.search_jisx0208(key)
+
 		local cccplen = string.len(charcode_conv_prefix)
 		if (cccplen < string.len(key) and string.sub(key, 1, cccplen) == charcode_conv_prefix) then
 			local subkey = string.sub(key, cccplen + 1)
@@ -1188,6 +1195,25 @@ function lua_skk_add(okuriari, key, candidate, annotation, okuri)
 				string.match(key, "^[12]%-9[0-4]%-0[1-9]$") or			-- [12]-90-01 - [12]-94-94
 				string.match(key, "^[12]%-9[0-4]%-[1-8][0-9]$") or		-- 〃
 				string.match(key, "^[12]%-9[0-4]%-9[0-4]$")) then		-- 〃
+				return
+			end
+		end
+	end
+	--]]
+
+	--[[
+	-- 例) JIS X 0208区点番号変換のときユーザー辞書に登録しない
+	if not (okuriari) then
+		if (string.match(key, "^[0-9][0-9]%-[0-9][0-9]$")) then
+			if (string.match(key, "^0[1-9]%-0[1-9]$") or			-- 01-01 - 09-94
+				string.match(key, "^0[1-9]%-[1-8][0-9]$") or		-- 〃
+				string.match(key, "^0[1-9]%-9[0-4]$") or			-- 〃
+				string.match(key, "^[1-8][0-9]%-0[1-9]$") or		-- 10-01 - 89-94
+				string.match(key, "^[1-8][0-9]%-[1-8][0-9]$") or	-- 〃
+				string.match(key, "^[1-8][0-9]%-9[0-4]$") or		-- 〃
+				string.match(key, "^9[0-4]%-0[1-9]$") or			-- 90-01 - 94-94
+				string.match(key, "^9[0-4]%-[1-8][0-9]$") or		-- 〃
+				string.match(key, "^9[0-4]%-9[0-4]$")) then			-- 〃
 				return
 			end
 		end

@@ -35,6 +35,7 @@ const luaL_Reg luaFuncs[] =
 	{"search_skk_server_info", lua_search_skk_server_info},
 	{"search_unicode", lua_search_unicode},
 	{"search_jisx0213", lua_search_jisx0213},
+	{"search_jisx0208", lua_search_jisx0208},
 	{"search_character_code", lua_search_character_code},
 	{"complement", lua_complement},
 	{"add", lua_add},

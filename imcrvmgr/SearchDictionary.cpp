@@ -42,6 +42,9 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 		//JIS X 0213 面区点番号
 		candidate += SearchJISX0213(searchkey);
 
+		//JIS X 0218 区点番号
+		candidate += SearchJISX0208(searchkey);
+
 		if(searchkey.size() > 1 && searchkey[0] == L'?')
 		{
 			//文字コード表記変換 (ASCII, JIS X 0201(8bit), JIS X 0213 / Unicode)
@@ -271,6 +274,16 @@ int lua_search_jisx0213(lua_State *lua)
 {
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchJISX0213(searchkey);
+
+	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+
+	return 1;
+}
+
+int lua_search_jisx0208(lua_State *lua)
+{
+	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
+	std::wstring candidate = SearchJISX0208(searchkey);
 
 	lua_pushstring(lua, WCTOU8(candidate.c_str()));
 
