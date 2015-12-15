@@ -259,7 +259,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 //JIS X 0208 有効区点テーブル
 const USHORT jisx0208b[ROWNUM][COLNUM] =
 {
-	//1-15点, 16-31点, 32-47点, 48-63点, 64-71点, 80-94点
+	//1-15点, 16-31点, 32-47点, 48-63点, 64-79点, 80-94点
 	{0xFFFE, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x7FFF}, //1区
 	{0x7FFE, 0xFC00, 0xFC03, 0xF001, 0x07FF, 0x43FC}, //2区
 	{0x0000, 0x03FF, 0xFFFE, 0x07FF, 0xFFFE, 0x07FF},
