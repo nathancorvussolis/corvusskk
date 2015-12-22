@@ -38,7 +38,7 @@ void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault)
 {
 	std::wstring strxmlval;
-	LPCWSTR lpDefVal = L"\\";
+	LPCWSTR lpDefVal = L"\uFFFF";
 
 	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval, lpDefVal);
 	if(strxmlval == lpDefVal) strxmlval = lpDefault;

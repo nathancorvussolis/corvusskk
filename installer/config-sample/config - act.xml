@@ -99,7 +99,7 @@
   </section>
   <section name="keymap">
 <!--    <key name="kana" value="q" /> -->
-    <key name="kana" value="\" />		<!-- ACT -->
+    <key name="kana" value="\\" />		<!-- ACT -->
 
     <key name="convchar" value="\cq" />
     <key name="jlatin" value="L" />
