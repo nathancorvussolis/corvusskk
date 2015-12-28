@@ -2,6 +2,9 @@
 #include "common.h"
 #include "configxml.h"
 
+#pragma comment(lib, "shlwapi.lib")
+#pragma comment(lib, "xmllite.lib")
+
 //tag
 
 LPCWSTR TagRoot = L"skk";

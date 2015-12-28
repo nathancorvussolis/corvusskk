@@ -74,12 +74,11 @@ void CreateConfigPath()
 		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s", appdir, fninitlua);
 	}
 
-	LPWSTR pszUserSid = NULL;
-	LPWSTR pszDigest = NULL;
-
 	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(mgrmutexname, sizeof(mgrmutexname));
+
+	LPWSTR pszUserSid = NULL;
 
 	if(GetUserSid(&pszUserSid))
 	{
@@ -93,12 +92,14 @@ void CreateConfigPath()
 		LocalFree(pszUserSid);
 	}
 
-	if(GetSidMD5Digest(&pszDigest))
-	{
-		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszDigest);
-		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszDigest);
+	LPWSTR pszUserUUID = NULL;
 
-		LocalFree(pszDigest);
+	if(GetUserUUID(&pszUserUUID))
+	{
+		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszUserUUID);
+		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszUserUUID);
+
+		LocalFree(pszUserUUID);
 	}
 }
 

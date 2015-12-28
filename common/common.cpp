@@ -1,6 +1,12 @@
 ﻿
 #include "common.h"
 
+#pragma comment(lib, "secur32.lib")
+
+#ifndef STATUS_SUCCESS
+#define STATUS_SUCCESS ((NTSTATUS)0x00000000L)
+#endif
+
 #define CCSUTF16 L", ccs=UTF-16LE"
 #define CCSUTF8 L", ccs=UTF-8"
 LPCWSTR RccsUTF16 = L"r" CCSUTF16;
@@ -125,90 +131,26 @@ BOOL IsWindowsVersion100OrLater()
 	return IsWindowsVersionOrLater(10, 0, 0);
 }
 
-BOOL GetSidMD5Digest(LPWSTR *ppszDigest)
-{
-	BOOL bRet = FALSE;
-	LPWSTR pszUserSid = NULL;
-	LPWSTR pszLogonSid = NULL;
-	MD5_DIGEST digest;
-	DWORD dwLSid;
-	LPWSTR pLSid;
-
-	if(ppszDigest == NULL)
-	{
-		return FALSE;
-	}
-
-	if(GetUserSid(&pszUserSid) && GetLogonSid(&pszLogonSid))
-	{
-		dwLSid = (DWORD)(wcslen(pszUserSid) + wcslen(pszLogonSid) + 2);
-		pLSid = (LPWSTR)LocalAlloc(LPTR, dwLSid * sizeof(WCHAR));
-
-		if(pLSid != NULL)
-		{
-			_snwprintf_s(pLSid, dwLSid, _TRUNCATE, L"%s %s", pszUserSid, pszLogonSid);
-
-			*ppszDigest = (LPWSTR)LocalAlloc(LPTR, (_countof(digest.digest) * 2 + 1) * sizeof(WCHAR));
-
-			if(*ppszDigest != NULL)
-			{
-				if(GetMD5(&digest, (CONST BYTE *)pLSid, dwLSid * sizeof(WCHAR)))
-				{
-					for(int i = 0; i < _countof(digest.digest); i++)
-					{
-						_snwprintf_s(*ppszDigest + i * 2, (_countof(digest.digest) * 2 + 1) - i * 2,
-							_TRUNCATE, L"%02x", digest.digest[i]);
-					}
-
-					bRet = TRUE;
-				}
-				else
-				{
-					LocalFree(*ppszDigest);
-				}
-			}
-
-			LocalFree(pLSid);
-		}
-	}
-
-	if(pszUserSid != NULL)
-	{
-		LocalFree(pszUserSid);
-	}
-
-	if(pszLogonSid != NULL)
-	{
-		LocalFree(pszLogonSid);
-	}
-
-	return bRet;
-}
-
-BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
+BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, PBYTE digest, DWORD digestlen, CONST PBYTE data, DWORD datalen)
 {
 	BOOL bRet = FALSE;
 	HCRYPTPROV hProv = NULL;
 	HCRYPTHASH hHash = NULL;
-	BYTE *pbData;
-	DWORD dwDataLen;
 
 	if(digest == NULL || data == NULL)
 	{
 		return FALSE;
 	}
 
-	ZeroMemory(digest, sizeof(digest));
-	pbData = digest->digest;
-	dwDataLen = sizeof(digest->digest);
+	ZeroMemory(digest, digestlen);
 
-	if(CryptAcquireContextW(&hProv, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+	if(CryptAcquireContextW(&hProv, NULL, NULL, dwProvType, CRYPT_VERIFYCONTEXT))
 	{
-		if(CryptCreateHash(hProv, CALG_MD5, 0, 0, &hHash))
+		if(CryptCreateHash(hProv, AlgId, 0, 0, &hHash))
 		{
 			if(CryptHashData(hHash, data, datalen, 0))
 			{
-				if(CryptGetHashParam(hHash, HP_HASHVAL, pbData, &dwDataLen, 0))
+				if(CryptGetHashParam(hHash, HP_HASHVAL, digest, &digestlen, 0))
 				{
 					bRet = TRUE;
 				}
@@ -221,12 +163,157 @@ BOOL GetMD5(MD5_DIGEST *digest, CONST BYTE *data, DWORD datalen)
 	return bRet;
 }
 
+BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
+{
+	BOOL bRet = FALSE;
+	HANDLE hToken = INVALID_HANDLE_VALUE;
+	DWORD dwLength = 0;
+	PTOKEN_STATISTICS pTokenStatistics = NULL;
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenStatistics, NULL, 0, &dwLength);
+		pTokenStatistics = (PTOKEN_STATISTICS)LocalAlloc(LPTR, dwLength);
+
+		if(pTokenStatistics != NULL)
+		{
+			if(GetTokenInformation(hToken, TokenStatistics, pTokenStatistics, dwLength, &dwLength))
+			{
+				if(LsaGetLogonSessionData(&pTokenStatistics->AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
+				{
+					bRet = TRUE;
+				}
+			}
+
+			LocalFree(pTokenStatistics);
+		}
+
+		CloseHandle(hToken);
+	}
+
+	return bRet;
+}
+
+BOOL IsLittleEndian()
+{
+	ULONG i = 1;
+	return (*(UCHAR *)&i == 1);
+}
+
+ULONG htonlc(ULONG h)
+{
+	if(IsLittleEndian())
+	{
+		h = (h << 24) | ((h & 0x0000FF00) << 8) |
+			((h >> 8) & 0x0000FF00) | (h >> 24);
+	}
+	return h;
+}
+
+ULONG ntohlc(ULONG n)
+{
+	return htonlc(n);
+}
+
+USHORT htonsc(USHORT h)
+{
+	if(IsLittleEndian())
+	{
+		h = (h << 8) | (h >> 8);
+	}
+	return h;
+}
+
+USHORT ntohsc(USHORT n)
+{
+	return htonsc(n);
+}
+
+BOOL GetUserUUID(LPWSTR *ppszUUID)
+{
+	BOOL bRet = FALSE;
+	PSECURITY_LOGON_SESSION_DATA pLogonSessionData = NULL;
+	// UUID v5
+	CONST DWORD dwProvType = PROV_RSA_AES;
+	CONST ALG_ID AlgId = CALG_SHA1;
+	CONST DWORD dwDigestLen = 20;
+	static const GUID NamespaceLogonInfo =
+	{0x88dfb5cd, 0xad34, 0x4c44, {0xac, 0xff, 0x3, 0x74, 0xcd, 0xa7, 0x43, 0xf3}};
+
+	if(ppszUUID == NULL)
+	{
+		return FALSE;
+	}
+
+	if(GetLogonSessionData(&pLogonSessionData))
+	{
+		GUID lguid = NamespaceLogonInfo;
+		DWORD ldata[] = {
+			pLogonSessionData->LogonId.LowPart,
+			pLogonSessionData->LogonId.HighPart,
+			pLogonSessionData->LogonTime.LowPart,
+			pLogonSessionData->LogonTime.HighPart
+		};
+		DWORD dwLogonInfoLen = sizeof(lguid) + sizeof(ldata) +
+			GetLengthSid(pLogonSessionData->Sid);
+		PBYTE pLogonInfo = (PBYTE)LocalAlloc(LPTR, dwLogonInfoLen);
+		if(pLogonInfo != NULL)
+		{
+			//network byte order
+			lguid.Data1 = htonlc(lguid.Data1);
+			lguid.Data2 = htonsc(lguid.Data2);
+			lguid.Data3 = htonsc(lguid.Data3);
+
+			memcpy_s(pLogonInfo, sizeof(lguid), &lguid, sizeof(lguid));
+			memcpy_s(pLogonInfo + sizeof(lguid), sizeof(ldata), ldata, sizeof(ldata));
+			CopySid(GetLengthSid(pLogonSessionData->Sid),
+				(PSID)(pLogonInfo + sizeof(lguid) + sizeof(ldata)),
+				pLogonSessionData->Sid);
+
+			BYTE digest[dwDigestLen];
+			if(GetDigest(dwProvType, AlgId, digest, dwDigestLen, pLogonInfo, dwLogonInfoLen))
+			{
+				GUID dguid = *(GUID *)digest;
+				//local byte order
+				dguid.Data1 = ntohlc(dguid.Data1);
+				dguid.Data2 = ntohsc(dguid.Data2);
+				dguid.Data3 = ntohsc(dguid.Data3);
+				//version
+				dguid.Data3 &= 0x0FFF;
+				dguid.Data3 |= 0x5000;
+				//variant
+				dguid.Data4[0] &= 0x3F;
+				dguid.Data4[0] |= 0x80;
+
+				*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
+				if(*ppszUUID != NULL)
+				{
+					_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
+						L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+						dguid.Data1, dguid.Data2, dguid.Data3,
+						dguid.Data4[0], dguid.Data4[1],
+						dguid.Data4[2], dguid.Data4[3], dguid.Data4[4],
+						dguid.Data4[5], dguid.Data4[6], dguid.Data4[7]);
+
+					bRet = TRUE;
+				}
+			}
+
+			LocalFree(pLogonInfo);
+		}
+
+		LsaFreeReturnBuffer(pLogonSessionData);
+	}
+
+	return bRet;
+}
+
 BOOL GetUserSid(LPWSTR *ppszUserSid)
 {
 	BOOL bRet = FALSE;
-	HANDLE hToken;
-	PTOKEN_USER pTokenUser;
-	DWORD dwLength;
+	HANDLE hToken = INVALID_HANDLE_VALUE;
+	DWORD dwLength = 0;
+	PTOKEN_USER pTokenUser = NULL;
 
 	if(ppszUserSid == NULL)
 	{
@@ -237,57 +324,17 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	{
 		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
 		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+
 		if(pTokenUser != NULL)
 		{
 			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
-				if(ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid))
-				{
-					bRet = TRUE;
-				}
+				bRet = ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid);
 			}
+
 			LocalFree(pTokenUser);
 		}
-		CloseHandle(hToken);
-	}
 
-	return bRet;
-}
-
-BOOL GetLogonSid(LPWSTR *ppszLogonSid)
-{
-	BOOL bRet = FALSE;
-	HANDLE hToken;
-	PTOKEN_GROUPS pTokenGroups;
-	DWORD dwLength, dwIndex;
-
-	if(ppszLogonSid == NULL)
-	{
-		return FALSE;
-	}
-
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
-	{
-		GetTokenInformation(hToken, TokenGroups, NULL, 0, &dwLength);
-		pTokenGroups = (PTOKEN_GROUPS)LocalAlloc(LPTR, dwLength);
-		if(pTokenGroups != NULL)
-		{
-			if(GetTokenInformation(hToken, TokenGroups, pTokenGroups, dwLength, &dwLength))
-			{
-				for(dwIndex = 0; dwIndex < pTokenGroups->GroupCount; dwIndex++)
-				{
-					if((pTokenGroups->Groups[dwIndex].Attributes & SE_GROUP_LOGON_ID) == SE_GROUP_LOGON_ID)
-					{
-						if(ConvertSidToStringSidW(pTokenGroups->Groups[dwIndex].Sid, ppszLogonSid))
-						{
-							bRet = TRUE;
-						}
-						break;
-					}
-				}
-			}
-			LocalFree(pTokenGroups);
-		}
 		CloseHandle(hToken);
 	}
 

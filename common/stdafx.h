@@ -16,3 +16,4 @@
 #include <msctf.h>
 #include <xmllite.h>
 #include <Shlwapi.h>
+#include <NTSecAPI.h>

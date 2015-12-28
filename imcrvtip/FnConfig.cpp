@@ -79,15 +79,15 @@ void CTextService::_CreateConfigPath()
 	ZeroMemory(mgrmutexname, sizeof(mgrmutexname));
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 
-	LPWSTR pszDigest = NULL;
+	LPWSTR pszUserUUID = NULL;
 
-	if(GetSidMD5Digest(&pszDigest))
+	if(GetUserUUID(&pszUserUUID))
 	{
-		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszDigest);
-		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszDigest);
-		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszDigest);
+		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszUserUUID);
+		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszUserUUID);
+		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
 
-		LocalFree(pszDigest);
+		LocalFree(pszUserUUID);
 	}
 }
 

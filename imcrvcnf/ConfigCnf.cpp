@@ -40,13 +40,13 @@ void CreateConfigPath()
 
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 
-	LPWSTR pszDigest = NULL;
+	LPWSTR pszUserUUID = NULL;
 
-	if(GetSidMD5Digest(&pszDigest))
+	if(GetUserUUID(&pszUserUUID))
 	{
-		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszDigest);
+		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
 
-		LocalFree(pszDigest);
+		LocalFree(pszUserUUID);
 	}
 }
 
