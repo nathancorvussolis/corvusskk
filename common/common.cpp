@@ -150,10 +150,7 @@ BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, PBYTE digest, DWORD digestlen, CO
 		{
 			if(CryptHashData(hHash, data, datalen, 0))
 			{
-				if(CryptGetHashParam(hHash, HP_HASHVAL, digest, &digestlen, 0))
-				{
-					bRet = TRUE;
-				}
+				bRet = CryptGetHashParam(hHash, HP_HASHVAL, digest, &digestlen, 0);
 			}
 			CryptDestroyHash(hHash);
 		}
@@ -196,8 +193,8 @@ BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
 
 BOOL IsLittleEndian()
 {
-	ULONG i = 1;
-	return (*(UCHAR *)&i == 1);
+	ULONG n = 1;
+	return (*(UCHAR *)&n == 1);
 }
 
 ULONG htonlc(ULONG h)
@@ -238,7 +235,7 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 	CONST ALG_ID AlgId = CALG_SHA1;
 	CONST DWORD dwDigestLen = 20;
 	static const GUID NamespaceLogonInfo =
-	{0x88dfb5cd, 0xad34, 0x4c44, {0xac, 0xff, 0x3, 0x74, 0xcd, 0xa7, 0x43, 0xf3}};
+	{0x88dfb5cd, 0xad34, 0x4c44, {0xac, 0xff, 0x03, 0x74, 0xcd, 0xa7, 0x43, 0xf3}};
 
 	if(ppszUUID == NULL)
 	{
