@@ -160,37 +160,6 @@ BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, 
 	return bRet;
 }
 
-BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
-{
-	BOOL bRet = FALSE;
-	HANDLE hToken = INVALID_HANDLE_VALUE;
-	DWORD dwLength = 0;
-	PTOKEN_STATISTICS pTokenStatistics = NULL;
-
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
-	{
-		GetTokenInformation(hToken, TokenStatistics, NULL, 0, &dwLength);
-		pTokenStatistics = (PTOKEN_STATISTICS)LocalAlloc(LPTR, dwLength);
-
-		if(pTokenStatistics != NULL)
-		{
-			if(GetTokenInformation(hToken, TokenStatistics, pTokenStatistics, dwLength, &dwLength))
-			{
-				if(LsaGetLogonSessionData(&pTokenStatistics->AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
-				{
-					bRet = TRUE;
-				}
-			}
-
-			LocalFree(pTokenStatistics);
-		}
-
-		CloseHandle(hToken);
-	}
-
-	return bRet;
-}
-
 BOOL IsLittleEndian()
 {
 	ULONG n = 1;
@@ -273,12 +242,44 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
 	return bRet;
 }
 
+BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
+{
+	BOOL bRet = FALSE;
+	HANDLE hToken = INVALID_HANDLE_VALUE;
+	DWORD dwLength = 0;
+	PTOKEN_STATISTICS pTokenStatistics = NULL;
+
+	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+		GetTokenInformation(hToken, TokenStatistics, NULL, 0, &dwLength);
+		pTokenStatistics = (PTOKEN_STATISTICS)LocalAlloc(LPTR, dwLength);
+
+		if(pTokenStatistics != NULL)
+		{
+			if(GetTokenInformation(hToken, TokenStatistics, pTokenStatistics, dwLength, &dwLength))
+			{
+				if(LsaGetLogonSessionData(&pTokenStatistics->AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
+				{
+					bRet = TRUE;
+				}
+			}
+
+			LocalFree(pTokenStatistics);
+		}
+
+		CloseHandle(hToken);
+	}
+
+	return bRet;
+}
+
 BOOL GetUserUUID(LPWSTR *ppszUUID)
 {
 	BOOL bRet = FALSE;
 	PSECURITY_LOGON_SESSION_DATA pLogonSessionData = NULL;
+	//8c210750-6502-4a83-ae5c-88d86cb96f24
 	const GUID NamespaceLogonInfo =
-	{0x88dfb5cd, 0xad34, 0x4c44, {0xac, 0xff, 0x03, 0x74, 0xcd, 0xa7, 0x43, 0xf3}};
+	{0x8c210750, 0x6502, 0x4a83, {0xae, 0x5c, 0x88, 0xd8, 0x6c, 0xb9, 0x6f, 0x24}};
 
 	if(ppszUUID == NULL)
 	{
