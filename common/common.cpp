@@ -131,7 +131,7 @@ BOOL IsWindowsVersion100OrLater()
 	return IsWindowsVersionOrLater(10, 0, 0);
 }
 
-BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, PBYTE digest, DWORD digestlen, CONST PBYTE data, DWORD datalen)
+BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, DWORD digestlen)
 {
 	BOOL bRet = FALSE;
 	HCRYPTPROV hProv = NULL;
@@ -226,15 +226,58 @@ USHORT ntohsc(USHORT n)
 	return htonsc(n);
 }
 
+BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
+{
+	BOOL bRet = FALSE;
+	CONST DWORD dwProvType = PROV_RSA_AES;
+	CONST ALG_ID AlgId = CALG_SHA1;
+	CONST DWORD dwDigestLen = 20;
+	CONST USHORT maskVersion = 0x5000;
+	GUID lguid = rguid;
+
+	PBYTE pMessage = (PBYTE)LocalAlloc(LPTR, sizeof(lguid) + namelen);
+	if(pMessage != NULL)
+	{
+		//network byte order
+		lguid.Data1 = htonlc(lguid.Data1);
+		lguid.Data2 = htonsc(lguid.Data2);
+		lguid.Data3 = htonsc(lguid.Data3);
+
+		memcpy_s(pMessage, sizeof(lguid), &lguid, sizeof(lguid));
+		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
+
+		BYTE digest[dwDigestLen];
+		if(GetDigest(dwProvType, AlgId,
+			pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
+		{
+			GUID dguid = *(GUID *)digest;
+			//local byte order
+			dguid.Data1 = ntohlc(dguid.Data1);
+			dguid.Data2 = ntohsc(dguid.Data2);
+			dguid.Data3 = ntohsc(dguid.Data3);
+			//version
+			dguid.Data3 &= 0x0FFF;
+			dguid.Data3 |= maskVersion;
+			//variant
+			dguid.Data4[0] &= 0x3F;
+			dguid.Data4[0] |= 0x80;
+
+			*uuid = dguid;
+
+			bRet = TRUE;
+		}
+
+		LocalFree(pMessage);
+	}
+
+	return bRet;
+}
+
 BOOL GetUserUUID(LPWSTR *ppszUUID)
 {
 	BOOL bRet = FALSE;
 	PSECURITY_LOGON_SESSION_DATA pLogonSessionData = NULL;
-	// UUID v5
-	CONST DWORD dwProvType = PROV_RSA_AES;
-	CONST ALG_ID AlgId = CALG_SHA1;
-	CONST DWORD dwDigestLen = 20;
-	static const GUID NamespaceLogonInfo =
+	const GUID NamespaceLogonInfo =
 	{0x88dfb5cd, 0xad34, 0x4c44, {0xac, 0xff, 0x03, 0x74, 0xcd, 0xa7, 0x43, 0xf3}};
 
 	if(ppszUUID == NULL)
@@ -244,53 +287,33 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 
 	if(GetLogonSessionData(&pLogonSessionData))
 	{
-		GUID lguid = NamespaceLogonInfo;
 		DWORD ldata[] = {
 			pLogonSessionData->LogonId.LowPart,
 			pLogonSessionData->LogonId.HighPart,
 			pLogonSessionData->LogonTime.LowPart,
 			pLogonSessionData->LogonTime.HighPart
 		};
-		DWORD dwLogonInfoLen = sizeof(lguid) + sizeof(ldata) +
-			GetLengthSid(pLogonSessionData->Sid);
+		DWORD dwLogonInfoLen = sizeof(ldata) + GetLengthSid(pLogonSessionData->Sid);
+
 		PBYTE pLogonInfo = (PBYTE)LocalAlloc(LPTR, dwLogonInfoLen);
 		if(pLogonInfo != NULL)
 		{
-			//network byte order
-			lguid.Data1 = htonlc(lguid.Data1);
-			lguid.Data2 = htonsc(lguid.Data2);
-			lguid.Data3 = htonsc(lguid.Data3);
-
-			memcpy_s(pLogonInfo, sizeof(lguid), &lguid, sizeof(lguid));
-			memcpy_s(pLogonInfo + sizeof(lguid), sizeof(ldata), ldata, sizeof(ldata));
+			memcpy_s(pLogonInfo, sizeof(ldata), ldata, sizeof(ldata));
 			CopySid(GetLengthSid(pLogonSessionData->Sid),
-				(PSID)(pLogonInfo + sizeof(lguid) + sizeof(ldata)),
-				pLogonSessionData->Sid);
+				(PSID)(pLogonInfo + sizeof(ldata)), pLogonSessionData->Sid);
 
-			BYTE digest[dwDigestLen];
-			if(GetDigest(dwProvType, AlgId, digest, dwDigestLen, pLogonInfo, dwLogonInfoLen))
+			GUID uuid = GUID_NULL;
+			if(GetUUID5(NamespaceLogonInfo, pLogonInfo, dwLogonInfoLen, &uuid))
 			{
-				GUID dguid = *(GUID *)digest;
-				//local byte order
-				dguid.Data1 = ntohlc(dguid.Data1);
-				dguid.Data2 = ntohsc(dguid.Data2);
-				dguid.Data3 = ntohsc(dguid.Data3);
-				//version
-				dguid.Data3 &= 0x0FFF;
-				dguid.Data3 |= 0x5000;
-				//variant
-				dguid.Data4[0] &= 0x3F;
-				dguid.Data4[0] |= 0x80;
-
 				*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
 				if(*ppszUUID != NULL)
 				{
 					_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
 						L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-						dguid.Data1, dguid.Data2, dguid.Data3,
-						dguid.Data4[0], dguid.Data4[1],
-						dguid.Data4[2], dguid.Data4[3], dguid.Data4[4],
-						dguid.Data4[5], dguid.Data4[6], dguid.Data4[7]);
+						uuid.Data1, uuid.Data2, uuid.Data3,
+						uuid.Data4[0], uuid.Data4[1],
+						uuid.Data4[2], uuid.Data4[3], uuid.Data4[4],
+						uuid.Data4[5], uuid.Data4[6], uuid.Data4[7]);
 
 					bRet = TRUE;
 				}
