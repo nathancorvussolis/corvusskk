@@ -247,24 +247,30 @@ BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
 	BOOL bRet = FALSE;
 	HANDLE hToken = INVALID_HANDLE_VALUE;
 	DWORD dwLength = 0;
-	PTOKEN_STATISTICS pTokenStatistics = NULL;
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
-		GetTokenInformation(hToken, TokenStatistics, NULL, 0, &dwLength);
-		pTokenStatistics = (PTOKEN_STATISTICS)LocalAlloc(LPTR, dwLength);
-
-		if(pTokenStatistics != NULL)
+		TOKEN_ELEVATION_TYPE tokenElevationType;
+		if(GetTokenInformation(hToken, TokenElevationType, &tokenElevationType, sizeof(tokenElevationType), &dwLength))
 		{
-			if(GetTokenInformation(hToken, TokenStatistics, pTokenStatistics, dwLength, &dwLength))
+			if(tokenElevationType == TokenElevationTypeFull)
 			{
-				if(LsaGetLogonSessionData(&pTokenStatistics->AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
+				TOKEN_LINKED_TOKEN linkedToken;
+				if(GetTokenInformation(hToken, TokenLinkedToken, &linkedToken, sizeof(linkedToken), &dwLength))
 				{
-					bRet = TRUE;
+					CloseHandle(hToken);
+					hToken = linkedToken.LinkedToken;
 				}
 			}
+		}
 
-			LocalFree(pTokenStatistics);
+		TOKEN_STATISTICS tokenStatistics;
+		if(GetTokenInformation(hToken, TokenStatistics, &tokenStatistics, sizeof(tokenStatistics), &dwLength))
+		{
+			if(LsaGetLogonSessionData(&tokenStatistics.AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
+			{
+				bRet = TRUE;
+			}
 		}
 
 		CloseHandle(hToken);
@@ -288,11 +294,9 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 
 	if(GetLogonSessionData(&pLogonSessionData))
 	{
-		DWORD ldata[] = {
-			pLogonSessionData->LogonId.LowPart,
-			pLogonSessionData->LogonId.HighPart,
-			pLogonSessionData->LogonTime.LowPart,
-			pLogonSessionData->LogonTime.HighPart
+		LARGE_INTEGER ldata[] = {
+			{pLogonSessionData->LogonId.LowPart, pLogonSessionData->LogonId.HighPart},
+			{pLogonSessionData->LogonTime.LowPart, pLogonSessionData->LogonTime.HighPart}
 		};
 		DWORD dwLogonInfoLen = sizeof(ldata) + GetLengthSid(pLogonSessionData->Sid);
 
