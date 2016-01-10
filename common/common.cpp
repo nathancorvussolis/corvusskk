@@ -45,8 +45,8 @@ const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputText =
 
 const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputOkuri =
 {
-	{TF_CT_COLORREF, RGB(0x00, 0x80, 0xFF)},	// TF_DA_COLOR crText;
-	{TF_CT_COLORREF, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
+	{TF_CT_NONE, RGB(0x00, 0x80, 0xFF)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
 	TF_LS_DASH,					// TF_DA_LINESTYLE lsStyle;
 	FALSE,						// BOOL fBoldLine;
 	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
