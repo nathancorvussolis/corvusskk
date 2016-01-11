@@ -45,7 +45,7 @@ const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputText =
 
 const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputOkuri =
 {
-	{TF_CT_NONE, RGB(0x00, 0x80, 0xFF)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
 	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
 	TF_LS_DASH,					// TF_DA_LINESTYLE lsStyle;
 	FALSE,						// BOOL fBoldLine;
@@ -65,8 +65,8 @@ const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvMark =
 
 const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvText =
 {
-	{TF_CT_COLORREF, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crText;
-	{TF_CT_COLORREF, RGB(0x00, 0x80, 0xFF)},	// TF_DA_COLOR crBk;
+	{TF_CT_NONE, RGB(0x00, 0x00, 0x00)},	// TF_DA_COLOR crText;
+	{TF_CT_NONE, RGB(0xFF, 0xFF, 0xFF)},	// TF_DA_COLOR crBk;
 	TF_LS_NONE,					// TF_DA_LINESTYLE lsStyle;
 	FALSE,						// BOOL fBoldLine;
 	{TF_CT_NONE, 0},			// TF_DA_COLOR crLine;
@@ -255,11 +255,11 @@ BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
 		{
 			if(tokenElevationType == TokenElevationTypeFull)
 			{
-				TOKEN_LINKED_TOKEN linkedToken;
-				if(GetTokenInformation(hToken, TokenLinkedToken, &linkedToken, sizeof(linkedToken), &dwLength))
+				TOKEN_LINKED_TOKEN tokenLinkedToken;
+				if(GetTokenInformation(hToken, TokenLinkedToken, &tokenLinkedToken, sizeof(tokenLinkedToken), &dwLength))
 				{
 					CloseHandle(hToken);
-					hToken = linkedToken.LinkedToken;
+					hToken = tokenLinkedToken.LinkedToken;
 				}
 			}
 		}
@@ -294,9 +294,11 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 
 	if(GetLogonSessionData(&pLogonSessionData))
 	{
-		LARGE_INTEGER ldata[] = {
-			{pLogonSessionData->LogonId.LowPart, pLogonSessionData->LogonId.HighPart},
-			{pLogonSessionData->LogonTime.LowPart, pLogonSessionData->LogonTime.HighPart}
+		DWORD ldata[] = {
+			pLogonSessionData->LogonId.LowPart,
+			(DWORD)pLogonSessionData->LogonId.HighPart,
+			pLogonSessionData->LogonTime.LowPart,
+			(DWORD)pLogonSessionData->LogonTime.HighPart,
 		};
 		DWORD dwLogonInfoLen = sizeof(ldata) + GetLengthSid(pLogonSessionData->Sid);
 

@@ -77,9 +77,9 @@
   <section name="displayattr">
     <key name="inputmark" value="0,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
     <key name="inputtext" value="1,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
-    <key name="inputokuri" value="0,0,0xFF8000,0,0xFFFFFF,3,0,0,0x000000,5" />
+    <key name="inputokuri" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,5" />
     <key name="convmark" value="0,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,1" />
-    <key name="convtext" value="1,2,0xFFFFFF,2,0xFF8000,0,0,0,0x000000,1" />
+    <key name="convtext" value="1,0,0x000000,0,0xFFFFFF,0,0,0,0x000000,1" />
     <key name="convokuri" value="1,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,5" />
     <key name="convannot" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,2" />
   </section>
