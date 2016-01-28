@@ -158,6 +158,8 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	std::wstring ret;
+	std::wregex re;
+	std::wstring fmt;
 
 	if(lua != NULL)
 	{
@@ -185,6 +187,8 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 		//数値変換
 		ret = std::regex_replace(searchkey, std::wregex(L"[0-9]+"), std::wstring(L"#"));
 	}
+
+	ret = std::regex_replace(ret, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
 
 	return ret;
 }
@@ -214,6 +218,8 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 		//concatのみ
 		ret = ParseConcat(candidate);
 	}
+
+	ret = std::regex_replace(ret, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
 
 	return ret;
 }

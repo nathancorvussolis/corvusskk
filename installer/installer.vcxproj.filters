@@ -81,6 +81,9 @@
     <None Include="config-lua\test_search.lua">
       <Filter>config-lua</Filter>
     </None>
+    <None Include="config-lua\test_string.lua">
+      <Filter>config-lua</Filter>
+    </None>
     <None Include="config-lua\test_time.lua">
       <Filter>config-lua</Filter>
     </None>

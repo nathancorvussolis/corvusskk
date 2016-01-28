@@ -25,6 +25,7 @@
     <None Include="config-lua\test_gadget.lua" />
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
+    <None Include="config-lua\test_string.lua" />
     <None Include="config-lua\test_time.lua" />
     <None Include="corvusskk-version.wxi" />
     <None Include="corvusskk-x64.wxs" />

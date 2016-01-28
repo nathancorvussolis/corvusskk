@@ -821,13 +821,24 @@ for i, v in ipairs(skk_gadget_func_table_org) do
 	skk_gadget_func_table[v[1]] = v[2]
 end
 
--- 文字列パース   8進数表記の文字、二重引用符、バックスラッシュ
+-- 文字列パース
 local function parse_string(s)
 	local ret = ""
+	local bsrep = "\u{fddc}"
 
 	s = string.gsub(s, "^\"(.*)\"$", "%1")
-	s = string.gsub(s, "\\\\", "\\")
+
+	-- バックスラッシュ 一時退避
+	s = string.gsub(s, "\\\\", bsrep);
+	-- 二重引用符
 	s = string.gsub(s, "\\\"", "\"")
+	-- 空白文字
+	s = string.gsub(s, "\\s", "\x20")
+	-- 制御文字  無効化
+	s = string.gsub(s, "\\[abtnvfred]", "")
+	s = string.gsub(s, "\\%^[@A-Za-z%[\\\\%]%^_%?]", "")
+	s = string.gsub(s, "\\C%-[@A-Za-z%[\\\\%]%^_%?]", "")
+	-- 8進数表記の文字
 	s = string.gsub(s, "\\[0-3][0-7][0-7]",
 		function(n)
 			local c =
@@ -839,6 +850,10 @@ local function parse_string(s)
 			end
 			return ""
 		end)
+	-- 意味なしエスケープ
+	s = string.gsub(s, "\\", "")
+	-- バックスラッシュ
+	s = string.gsub(s, bsrep, "\\");
 
 	ret = s
 

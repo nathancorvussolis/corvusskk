@@ -194,7 +194,7 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 std::wstring ParseConcat(const std::wstring &s)
 {
-	std::wstring ret, numstr, tmpstr, fmt;
+	std::wstring ret, tmpstr, fmt, numstr, numtmpstr;
 	std::wregex re;
 	std::wsmatch res;
 	wchar_t u;
@@ -206,28 +206,53 @@ std::wstring ParseConcat(const std::wstring &s)
 	if(std::regex_search(tmpstr, re))
 	{
 		ret.clear();
-		fmt = L"$1";
 
+		fmt.assign(L"$1");
 		re.assign(L"\\(concat \"(.+)\"\\)");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
-
-		re.assign(L"\\\\([\\\"\\\\])");
+		//バックスラッシュ 一時退避
+		fmt.assign(L"\ufddc");
+		re.assign(L"\\\\\\\\");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
-
+		//二重引用符
+		fmt.assign(L"$1");
+		re.assign(L"\\\\(\\\")");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		//空白文字
+		fmt.assign(L"\x20");
+		re.assign(L"\\\\s");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		//制御文字 無効化
+		fmt.assign(L"");
+		re.assign(L"\\\\[abtnvfred]");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		re.assign(L"\\\\(C-|\\^)[@A-Za-z\\[\\\\\\]^_?]");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		//8進数表記の文字
 		re.assign(L"\\\\[0-3][0-7]{2}");
 		while(std::regex_search(tmpstr, res, re))
 		{
-			ret += res.prefix();
-			numstr = res.str();
-			numstr[0] = L'0';
-			u = (wchar_t)wcstoul(numstr.c_str(), NULL, 0);
+			numstr += res.prefix();
+			numtmpstr = res.str();
+			numtmpstr[0] = L'0';
+			u = (wchar_t)wcstoul(numtmpstr.c_str(), NULL, 0);
 			if(u >= L'\x20' && u <= L'\x7E')
 			{
-				ret.append(1, u);
+				numstr.append(1, u);
 			}
 			tmpstr = res.suffix();
 		}
-		ret += tmpstr;
+		tmpstr = numstr + tmpstr;
+		//意味なしエスケープ
+		fmt.assign(L"");
+		re.assign(L"\\\\");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		//バックスラッシュ
+		fmt.assign(L"\\");
+		re.assign(L"\ufddc");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+
+		ret = tmpstr;
 	}
 
 	return ret;
