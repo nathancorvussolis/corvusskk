@@ -198,20 +198,23 @@ std::wstring ParseConcat(const std::wstring &s)
 	std::wregex re;
 	std::wsmatch res;
 	wchar_t u;
-
+	LPCWSTR bsrep = L"\ufddc";
 	ret = s;
 
 	tmpstr = s;
-	re.assign(L"^\\(concat \".+?\"\\)$");
+	re.assign(L"^\\s*\\(\\s*concat\\s+\".+?\"\\s*\\)\\s*$");
 	if(std::regex_search(tmpstr, re))
 	{
 		ret.clear();
 
 		fmt.assign(L"$1");
-		re.assign(L"\\(concat \"(.+)\"\\)");
+		re.assign(L"^\\s*\\(\\s*concat\\s+\"(.+)\"\\s*\\)\\s*$");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//バックスラッシュ 一時退避
-		fmt.assign(L"\ufddc");
+		fmt.assign(L"");
+		re.assign(L"\"\\s+\"");
+		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		//バックスラッシュ
+		fmt.assign(bsrep);
 		re.assign(L"\\\\\\\\");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		//二重引用符
@@ -222,11 +225,9 @@ std::wstring ParseConcat(const std::wstring &s)
 		fmt.assign(L"\x20");
 		re.assign(L"\\\\s");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//制御文字 無効化
+		//制御文字など
 		fmt.assign(L"");
-		re.assign(L"\\\\[abtnvfred]");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		re.assign(L"\\\\(C-|\\^)[@A-Za-z\\[\\\\\\]^_?]");
+		re.assign(L"\\\\[abtnvfred ]");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		//8進数表記の文字
 		re.assign(L"\\\\[0-3][0-7]{2}");
@@ -249,7 +250,7 @@ std::wstring ParseConcat(const std::wstring &s)
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		//バックスラッシュ
 		fmt.assign(L"\\");
-		re.assign(L"\ufddc");
+		re.assign(bsrep);
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 
 		ret = tmpstr;

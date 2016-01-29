@@ -828,16 +828,14 @@ local function parse_string(s)
 
 	s = string.gsub(s, "^\"(.*)\"$", "%1")
 
-	-- バックスラッシュ 一時退避
+	-- バックスラッシュ
 	s = string.gsub(s, "\\\\", bsrep);
 	-- 二重引用符
 	s = string.gsub(s, "\\\"", "\"")
 	-- 空白文字
 	s = string.gsub(s, "\\s", "\x20")
-	-- 制御文字  無効化
-	s = string.gsub(s, "\\[abtnvfred]", "")
-	s = string.gsub(s, "\\%^[@A-Za-z%[\\\\%]%^_%?]", "")
-	s = string.gsub(s, "\\C%-[@A-Za-z%[\\\\%]%^_%?]", "")
+	-- 制御文字など
+	s = string.gsub(s, "\\[abtnvfred ]", "")
 	-- 8進数表記の文字
 	s = string.gsub(s, "\\[0-3][0-7][0-7]",
 		function(n)
@@ -868,6 +866,9 @@ function convert_s_to_table(s)
 	local c = ""
 	local b = ""
 	local r = ""
+	local bsrep = "\u{fddc}"
+
+	s = string.gsub(s, "\\", bsrep);
 
 	for i = 1, string.len(s) do
 		c = string.sub(s, i, i)
@@ -892,7 +893,6 @@ function convert_s_to_table(s)
 						ret = ret .. ","
 					end
 
-					e = string.gsub(e, "\\", "\\\\")
 					e = string.gsub(e, "\"", "\\\"")
 					ret = ret .. "\"" .. e .. "\""
 					e = ""
@@ -908,6 +908,8 @@ function convert_s_to_table(s)
 			e = e .. c
 		end
 	end
+
+	ret = string.gsub(ret, bsrep, "\\\\");
 
 	return ret
 end
@@ -954,7 +956,7 @@ local function skk_ignore_dic_word(candidates)
 
 	for ca in string.gmatch(candidates, "([^/]+)") do
 		local c = string.gsub(ca, ";.+", "")
-		local word = string.gsub(c, "%s*%(%s*skk%-ignore%-dic%-word%s+\"(.+)\"%s*%)%s*", "%1")
+		local word = string.gsub(c, "^%s*%(%s*skk%-ignore%-dic%-word%s+\"(.+)\"%s*%)%s*$", "%1")
 		if (word ~= c) then
 			ignore_word_table[word] = true
 		else
@@ -1037,13 +1039,13 @@ local function skk_convert_candidate(key, candidate, okuri)
 
 	-- 実行変換
 	if (enable_skk_convert_gadget) then
-		if (string.match(temp, "^%(.+%)$")) then
+		if (string.match(temp, "^%s*%(.+%)%s*$")) then
 			temp = skk_convert_gadget(key, temp)
 			ret = temp
 		end
 
 		-- concat関数で"/"関数が\057にエスケープされる為再度実行する
-		if (string.match(temp, "^%(.+%)$")) then
+		if (string.match(temp, "^%s*%(.+%)%s*$")) then
 			temp = skk_convert_gadget(key, temp)
 			-- 正常な実行結果であれば上書きする
 			if (temp ~= "") then
