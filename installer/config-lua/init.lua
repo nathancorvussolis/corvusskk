@@ -824,7 +824,7 @@ end
 -- 文字列パース
 local function parse_string(s)
 	local ret = ""
-	local bsrep = "\u{fddc}"
+	local bsrep = "\u{f05c}"
 
 	s = string.gsub(s, "^\"(.*)\"$", "%1")
 
@@ -866,7 +866,7 @@ function convert_s_to_table(s)
 	local c = ""
 	local b = ""
 	local r = ""
-	local bsrep = "\u{fddc}"
+	local bsrep = "\u{f05c}"
 
 	s = string.gsub(s, "\\", bsrep);
 
@@ -956,7 +956,7 @@ local function skk_ignore_dic_word(candidates)
 
 	for ca in string.gmatch(candidates, "([^/]+)") do
 		local c = string.gsub(ca, ";.+", "")
-		local word = string.gsub(c, "^%s*%(%s*skk%-ignore%-dic%-word%s+\"(.+)\"%s*%)%s*$", "%1")
+		local word = string.gsub(c, "^%(%s*skk%-ignore%-dic%-word%s+\"(.+)\"%s*%)$", "%1")
 		if (word ~= c) then
 			ignore_word_table[word] = true
 		else
@@ -1039,13 +1039,13 @@ local function skk_convert_candidate(key, candidate, okuri)
 
 	-- 実行変換
 	if (enable_skk_convert_gadget) then
-		if (string.match(temp, "^%s*%(.+%)%s*$")) then
+		if (string.match(temp, "^%(.+%)$")) then
 			temp = skk_convert_gadget(key, temp)
 			ret = temp
 		end
 
 		-- concat関数で"/"関数が\057にエスケープされる為再度実行する
-		if (string.match(temp, "^%s*%(.+%)%s*$")) then
+		if (string.match(temp, "^%(.+%)$")) then
 			temp = skk_convert_gadget(key, temp)
 			-- 正常な実行結果であれば上書きする
 			if (temp ~= "") then

@@ -198,17 +198,17 @@ std::wstring ParseConcat(const std::wstring &s)
 	std::wregex re;
 	std::wsmatch res;
 	wchar_t u;
-	LPCWSTR bsrep = L"\ufddc";
+	LPCWSTR bsrep = L"\uf05c";
 	ret = s;
 
 	tmpstr = s;
-	re.assign(L"^\\s*\\(\\s*concat\\s+\".+?\"\\s*\\)\\s*$");
+	re.assign(L"^\\(\\s*concat\\s+\".+?\"\\s*\\)$");
 	if(std::regex_search(tmpstr, re))
 	{
 		ret.clear();
 
 		fmt.assign(L"$1");
-		re.assign(L"^\\s*\\(\\s*concat\\s+\"(.+)\"\\s*\\)\\s*$");
+		re.assign(L"^\\(\\s*concat\\s+\"(.+)\"\\s*\\)$");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		fmt.assign(L"");
 		re.assign(L"\"\\s+\"");
@@ -218,8 +218,8 @@ std::wstring ParseConcat(const std::wstring &s)
 		re.assign(L"\\\\\\\\");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		//二重引用符
-		fmt.assign(L"$1");
-		re.assign(L"\\\\(\\\")");
+		fmt.assign(L"\\\"");
+		re.assign(L"\\\\\\\"");
 		tmpstr = std::regex_replace(tmpstr, re, fmt);
 		//空白文字
 		fmt.assign(L"\x20");
