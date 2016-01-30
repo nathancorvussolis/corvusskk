@@ -202,7 +202,7 @@ std::wstring ParseConcat(const std::wstring &s)
 	ret = s;
 
 	tmpstr = s;
-	re.assign(L"^\\(\\s*concat\\s+\".+?\"\\s*\\)$");
+	re.assign(L"^\\(\\s*concat\\s+\".+\"\\s*\\)$");
 	if(std::regex_search(tmpstr, re))
 	{
 		ret.clear();
