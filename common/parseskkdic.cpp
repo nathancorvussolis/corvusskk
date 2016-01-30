@@ -194,44 +194,41 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 std::wstring ParseConcat(const std::wstring &s)
 {
-	std::wstring ret, tmpstr, fmt, numstr, numtmpstr;
+	std::wstring ret, fmt, numstr, numtmpstr;
 	std::wregex re;
 	std::wsmatch res;
 	wchar_t u;
 	LPCWSTR bsrep = L"\uf05c";
 	ret = s;
 
-	tmpstr = s;
 	re.assign(L"^\\(\\s*concat\\s+\".+\"\\s*\\)$");
-	if(std::regex_search(tmpstr, re))
+	if(std::regex_search(ret, re))
 	{
-		ret.clear();
-
-		fmt.assign(L"$1");
 		re.assign(L"^\\(\\s*concat\\s+\"(.+)\"\\s*\\)$");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		fmt.assign(L"");
+		fmt.assign(L"$1");
+		ret = std::regex_replace(ret, re, fmt);
 		re.assign(L"\"\\s+\"");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//バックスラッシュ
-		fmt.assign(bsrep);
-		re.assign(L"\\\\\\\\");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//二重引用符
-		fmt.assign(L"\\\"");
-		re.assign(L"\\\\\\\"");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//空白文字
-		fmt.assign(L"\x20");
-		re.assign(L"\\\\s");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-		//制御文字など
 		fmt.assign(L"");
+		ret = std::regex_replace(ret, re, fmt);
+		//バックスラッシュ
+		re.assign(L"\\\\\\\\");
+		fmt.assign(bsrep);
+		ret = std::regex_replace(ret, re, fmt);
+		//二重引用符
+		re.assign(L"\\\\\\\"");
+		fmt.assign(L"\\\"");
+		ret = std::regex_replace(ret, re, fmt);
+		//空白文字
+		re.assign(L"\\\\s");
+		fmt.assign(L"\x20");
+		ret = std::regex_replace(ret, re, fmt);
+		//制御文字など
 		re.assign(L"\\\\[abtnvfred ]");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		fmt.assign(L"");
+		ret = std::regex_replace(ret, re, fmt);
 		//8進数表記の文字
 		re.assign(L"\\\\[0-3][0-7]{2}");
-		while(std::regex_search(tmpstr, res, re))
+		while(std::regex_search(ret, res, re))
 		{
 			numstr += res.prefix();
 			numtmpstr = res.str();
@@ -241,19 +238,17 @@ std::wstring ParseConcat(const std::wstring &s)
 			{
 				numstr.append(1, u);
 			}
-			tmpstr = res.suffix();
+			ret = res.suffix();
 		}
-		tmpstr = numstr + tmpstr;
+		ret = numstr + ret;
 		//意味なしエスケープ
-		fmt.assign(L"");
 		re.assign(L"\\\\");
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
+		fmt.assign(L"");
+		ret = std::regex_replace(ret, re, fmt);
 		//バックスラッシュ
-		fmt.assign(L"\\");
 		re.assign(bsrep);
-		tmpstr = std::regex_replace(tmpstr, re, fmt);
-
-		ret = tmpstr;
+		fmt.assign(L"\\");
+		ret = std::regex_replace(ret, re, fmt);
 	}
 
 	return ret;
