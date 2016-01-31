@@ -28,6 +28,7 @@ public:
 
 	HRESULT _StartCandidateList(TfClientId tid, ITfDocumentMgr *pDocumentMgr,
 		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp);
+	void _PreEndCandidateList();
 	void _EndCandidateList();
 
 	BOOL _IsShowCandidateWindow();

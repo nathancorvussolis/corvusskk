@@ -1202,6 +1202,14 @@ void CCandidateWindow::_Update()
 
 void CCandidateWindow::_EndCandidateList(BYTE sf)
 {
+	if(!_comp)
+	{
+		if(_pCandidateList != NULL)
+		{
+			_pCandidateList->_PreEndCandidateList();
+		}
+	}
+
 	_InvokeSfHandler(sf);
 
 	if(_pTextService != NULL)

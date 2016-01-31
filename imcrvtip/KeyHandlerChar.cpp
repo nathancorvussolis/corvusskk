@@ -310,6 +310,11 @@ HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, B
 
 HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 {
+	if(!showentry && kana.empty() && roman.empty())
+	{
+		_EndCompletionList(ec, pContext);
+	}
+
 	if(showentry || (!inputkey && !kana.empty() && roman.empty()))
 	{
 		_EndCompletionList(ec, pContext);
