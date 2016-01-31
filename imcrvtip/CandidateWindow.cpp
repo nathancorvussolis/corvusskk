@@ -1202,30 +1202,20 @@ void CCandidateWindow::_Update()
 
 void CCandidateWindow::_EndCandidateList(BYTE sf)
 {
-	if(!_comp)
-	{
-		if(_pCandidateList != NULL)
-		{
-			_pCandidateList->_PreEndCandidateList();
-		}
-	}
-
 	_InvokeSfHandler(sf);
 
 	if(_pTextService != NULL)
 	{
 		_pTextService->showcandlist = FALSE;
-	}
 
-	//直後に複数動的補完を表示する場合使い回しする
-	//_InvokeSfHandler() ---> _UpdateComp() -> _comp = TRUE
-	if(!_comp)
-	{
-		if(_pCandidateList != NULL)
+		//直後に複数動的補完を表示する場合使い回しする
+		//_InvokeSfHandler() ---> _UpdateComp() -> _comp = TRUE
+		if(!_comp)
 		{
-			_pCandidateList->_EndCandidateList();
+			_pTextService->_EndCandidateList();
 		}
 	}
+
 }
 
 void CCandidateWindow::_InvokeSfHandler(BYTE sf)

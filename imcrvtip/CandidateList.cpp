@@ -381,7 +381,7 @@ void CCandidateList::_InvokeSfHandler(BYTE sf)
 	}
 }
 
-void CCandidateList::_PreEndCandidateList()
+void CCandidateList::_EndCandidateList()
 {
 	_UnadviseTextLayoutSink();
 
@@ -394,11 +394,6 @@ void CCandidateList::_PreEndCandidateList()
 
 	SafeRelease(&_pContextCandidateWindow);
 	SafeRelease(&_pDocumentMgr);
-}
-
-void CCandidateList::_EndCandidateList()
-{
-	_PreEndCandidateList();
 
 	if(_pCandidateWindow != NULL)
 	{
