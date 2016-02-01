@@ -243,6 +243,11 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 	DWORD dwLength = 0;
 	DWORD dwUserSidLen = 0;
 
+	if(ppLogonInfo == NULL)
+	{
+		return FALSE;
+	}
+
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
@@ -254,31 +259,46 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 			{
 				dwUserSidLen = GetLengthSid(pTokenUser->User.Sid);
 				*ppLogonInfo = (PBYTE)LocalAlloc(LPTR, dwUserSidLen + sizeof(LUID));
-
-				bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
+				if(*ppLogonInfo != NULL)
+				{
+					bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
+				}
 			}
 
 			LocalFree(pTokenUser);
 		}
 
-		TOKEN_ELEVATION_TYPE tokenElevationType;
-		if(GetTokenInformation(hToken, TokenElevationType, &tokenElevationType, sizeof(tokenElevationType), &dwLength))
+		if(bRet)
 		{
-			if(tokenElevationType == TokenElevationTypeFull)
+			TOKEN_ELEVATION_TYPE tokenElevationType;
+			if(GetTokenInformation(hToken, TokenElevationType,
+				&tokenElevationType, sizeof(tokenElevationType), &dwLength))
 			{
-				TOKEN_LINKED_TOKEN tokenLinkedToken;
-				if(GetTokenInformation(hToken, TokenLinkedToken, &tokenLinkedToken, sizeof(tokenLinkedToken), &dwLength))
+				if(tokenElevationType == TokenElevationTypeFull)
 				{
-					CloseHandle(hToken);
-					hToken = tokenLinkedToken.LinkedToken;
+					TOKEN_LINKED_TOKEN tokenLinkedToken;
+					if(GetTokenInformation(hToken, TokenLinkedToken,
+						&tokenLinkedToken, sizeof(tokenLinkedToken), &dwLength))
+					{
+						CloseHandle(hToken);
+						hToken = tokenLinkedToken.LinkedToken;
+					}
 				}
 			}
-		}
 
-		TOKEN_STATISTICS tokenStatistics;
-		if(GetTokenInformation(hToken, TokenStatistics, &tokenStatistics, sizeof(tokenStatistics), &dwLength))
+			TOKEN_STATISTICS tokenStatistics;
+			if(GetTokenInformation(hToken, TokenStatistics,
+				&tokenStatistics, sizeof(tokenStatistics), &dwLength))
+			{
+				*(LUID *)(*ppLogonInfo + dwUserSidLen) = tokenStatistics.AuthenticationId;
+			}
+		}
+		else
 		{
-			*(LUID *)(*ppLogonInfo + dwUserSidLen) = tokenStatistics.AuthenticationId;
+			if(*ppLogonInfo != NULL)
+			{
+				LocalFree(*ppLogonInfo);
+			}
 		}
 
 		CloseHandle(hToken);
