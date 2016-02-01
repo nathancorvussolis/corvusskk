@@ -248,6 +248,8 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 		return FALSE;
 	}
 
+	*ppLogonInfo = NULL;
+
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
@@ -292,8 +294,13 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 			{
 				*(LUID *)(*ppLogonInfo + dwUserSidLen) = tokenStatistics.AuthenticationId;
 			}
+			else
+			{
+				bRet = FALSE;
+			}
 		}
-		else
+
+		if(!bRet)
 		{
 			if(*ppLogonInfo != NULL)
 			{
