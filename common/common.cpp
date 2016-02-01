@@ -1,12 +1,6 @@
 ﻿
 #include "common.h"
 
-#pragma comment(lib, "secur32.lib")
-
-#ifndef STATUS_SUCCESS
-#define STATUS_SUCCESS ((NTSTATUS)0x00000000L)
-#endif
-
 #define CCSUTF16 L", ccs=UTF-16LE"
 #define CCSUTF8 L", ccs=UTF-8"
 LPCWSTR RccsUTF16 = L"r" CCSUTF16;
@@ -242,14 +236,31 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
 	return bRet;
 }
 
-BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
+BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 {
 	BOOL bRet = FALSE;
 	HANDLE hToken = INVALID_HANDLE_VALUE;
 	DWORD dwLength = 0;
+	DWORD dwUserSidLen = 0;
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
+		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		PTOKEN_USER pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
+
+		if(pTokenUser != NULL)
+		{
+			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+			{
+				dwUserSidLen = GetLengthSid(pTokenUser->User.Sid);
+				*ppLogonInfo = (PBYTE)LocalAlloc(LPTR, dwUserSidLen + sizeof(LUID));
+
+				bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
+			}
+
+			LocalFree(pTokenUser);
+		}
+
 		TOKEN_ELEVATION_TYPE tokenElevationType;
 		if(GetTokenInformation(hToken, TokenElevationType, &tokenElevationType, sizeof(tokenElevationType), &dwLength))
 		{
@@ -267,10 +278,7 @@ BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
 		TOKEN_STATISTICS tokenStatistics;
 		if(GetTokenInformation(hToken, TokenStatistics, &tokenStatistics, sizeof(tokenStatistics), &dwLength))
 		{
-			if(LsaGetLogonSessionData(&tokenStatistics.AuthenticationId, ppLogonSessionData) == STATUS_SUCCESS)
-			{
-				bRet = TRUE;
-			}
+			*(LUID *)(*ppLogonInfo + dwUserSidLen) = tokenStatistics.AuthenticationId;
 		}
 
 		CloseHandle(hToken);
@@ -282,7 +290,7 @@ BOOL GetLogonSessionData(PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData)
 BOOL GetUserUUID(LPWSTR *ppszUUID)
 {
 	BOOL bRet = FALSE;
-	PSECURITY_LOGON_SESSION_DATA pLogonSessionData = NULL;
+	PBYTE pLogonInfo = NULL;
 	//8c210750-6502-4a83-ae5c-88d86cb96f24
 	const GUID NamespaceLogonInfo =
 	{0x8c210750, 0x6502, 0x4a83, {0xae, 0x5c, 0x88, 0xd8, 0x6c, 0xb9, 0x6f, 0x24}};
@@ -292,44 +300,26 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 		return FALSE;
 	}
 
-	if(GetLogonSessionData(&pLogonSessionData))
+	if(GetLogonInfo(&pLogonInfo))
 	{
-		DWORD ldata[] = {
-			pLogonSessionData->LogonId.LowPart,
-			(DWORD)pLogonSessionData->LogonId.HighPart,
-			pLogonSessionData->LogonTime.LowPart,
-			(DWORD)pLogonSessionData->LogonTime.HighPart,
-		};
-		DWORD dwLogonInfoLen = sizeof(ldata) + GetLengthSid(pLogonSessionData->Sid);
-
-		PBYTE pLogonInfo = (PBYTE)LocalAlloc(LPTR, dwLogonInfoLen);
-		if(pLogonInfo != NULL)
+		GUID uuid = GUID_NULL;
+		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)LocalSize(pLogonInfo), &uuid))
 		{
-			memcpy_s(pLogonInfo, sizeof(ldata), ldata, sizeof(ldata));
-			CopySid(GetLengthSid(pLogonSessionData->Sid),
-				(PSID)(pLogonInfo + sizeof(ldata)), pLogonSessionData->Sid);
-
-			GUID uuid = GUID_NULL;
-			if(GetUUID5(NamespaceLogonInfo, pLogonInfo, dwLogonInfoLen, &uuid))
+			*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
+			if(*ppszUUID != NULL)
 			{
-				*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
-				if(*ppszUUID != NULL)
-				{
-					_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
-						L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-						uuid.Data1, uuid.Data2, uuid.Data3,
-						uuid.Data4[0], uuid.Data4[1],
-						uuid.Data4[2], uuid.Data4[3], uuid.Data4[4],
-						uuid.Data4[5], uuid.Data4[6], uuid.Data4[7]);
+				_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
+					L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+					uuid.Data1, uuid.Data2, uuid.Data3,
+					uuid.Data4[0], uuid.Data4[1],
+					uuid.Data4[2], uuid.Data4[3], uuid.Data4[4],
+					uuid.Data4[5], uuid.Data4[6], uuid.Data4[7]);
 
-					bRet = TRUE;
-				}
+				bRet = TRUE;
 			}
-
-			LocalFree(pLogonInfo);
 		}
 
-		LsaFreeReturnBuffer(pLogonSessionData);
+		LocalFree(pLogonInfo);
 	}
 
 	return bRet;
