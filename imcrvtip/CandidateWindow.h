@@ -66,7 +66,6 @@ private:
 	void _PrevComp();
 	void _OnKeyDownRegword(UINT uVKey);
 	void _Update();
-	void _EndCandidateList(BYTE sf);
 	void _InvokeSfHandler(BYTE sf);
 	void _InvokeKeyHandler(UINT uVKey);
 	void _HandleKey(WPARAM wParam, BYTE bSf);
