@@ -10,12 +10,12 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 
-#define TEXTSERVICE_VER		L"2.2.2"
+#define TEXTSERVICE_VER		L"2.2.3"
 
 //for resource
 #define RC_AUTHOR			"nathancorvussolis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"2.2.2"
-#define RC_VERSION_D		2,2,1,0
+#define RC_VERSION			"2.2.3"
+#define RC_VERSION_D		2,2,3,0
 
 #endif
