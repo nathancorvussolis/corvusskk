@@ -52,7 +52,7 @@ el_test_gadget_table = {
 	local mdays = mday_table[m]
 	if (type(mdays) == "function") then mdays = mdays(tonumber(y)) end
 	local d = string.sub(s, 9, 10)
-	if (not (string.match(d, "^[%d][%d]$") and
+	if (not (string.match(d, "^[ %d][%d]$") and
 		(1 <= tonumber(d) and tonumber(d) <= mdays))) then return "Error : days of month" end
 	local t = string.sub(s, 12, 19)
 	if (not (string.match(t, "^[0-1][0-9]:[0-5][0-9]:[0-5][0-9]$") or
