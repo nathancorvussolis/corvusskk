@@ -81,7 +81,7 @@ BOOL SetFileDacl(LPCWSTR path)
 int GetScaledSizeX(HWND hwnd, int size)
 {
 	HDC hdc = GetDC(hwnd);
-	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
 	ReleaseDC(hwnd, hdc);
 	return MulDiv(size, dpi, 96);
 }
