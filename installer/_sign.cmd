@@ -52,11 +52,11 @@ call _build_x64.cmd
 
 call _build_bundle.cmd
 
-"%WIX%\bin\insignia.exe" -ib %BSFILE% -o %BEFILE%
+"%WIX%\bin\insignia.exe" -nologo -ib %BSFILE% -o %BEFILE%
 %SIGNCOMMAND1% %BEFILE%
 %SIGNCOMMAND2% %BEFILE%
 
-"%WIX%\bin\insignia.exe" -ab %BEFILE% %BSFILE% -o %BSFILE%
+"%WIX%\bin\insignia.exe" -nologo -ab %BEFILE% %BSFILE% -o %BSFILE%
 %SIGNCOMMAND1% %BSFILE%
 %SIGNCOMMAND2% %BSFILE%
 
