@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+
+  <?include installer-version.wxi ?>
+
+  <Bundle Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
+    Copyright="© 2011 nathancorvussolis" AboutUrl="https://nathancorvussolis.github.io/"
+    UpgradeCode="F2664253-EAE9-4ED5-AD92-03229BD8F64F" Condition="VersionNT &gt;= v6.0">
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLargeLicense">
+      <bal:WixStandardBootstrapperApplication ThemeFile="theme-bundle\RtfSidebarTheme.xml"
+        LicenseFile="license.rtf" ShowVersion="yes" SuppressOptionsUI="yes" />
+      <Payload Name="rslogo.png" SourceFile="theme-bundle\logo.png" />
+      <Payload Name="rslogoside.png" SourceFile="theme-bundle\logoside.png" />
+    </BootstrapperApplicationRef>
+
+    <Chain>
+      <!-- x64 modules -->
+      <MsiPackage Id="X64" DisplayName="x64 modules" ForcePerMachine="yes" Compressed="yes"
+        SourceFile="build\x64.msi" InstallCondition="VersionNT64" />
+      <!-- x86 modules -->
+      <MsiPackage Id="X86" DisplayName="x86 modules" ForcePerMachine="yes" Compressed="yes"
+        SourceFile="build\x86.msi" After="X64" />
+    </Chain>
+
+  </Bundle>
+
+</Wix>

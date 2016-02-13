@@ -10,12 +10,18 @@
     <Filter Include="config-sample">
       <UniqueIdentifier>{a4c9d6dd-8349-4e02-b744-23321ddbb9f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Installer Files\md_image">
+    <Filter Include="resource-md">
       <UniqueIdentifier>{caab1f7f-f9ad-4ffc-8be3-7bbdcc5fa4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="theme-bundle">
+      <UniqueIdentifier>{69d80344-cf91-428b-bd8c-5fb2f5ee9f0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="_build.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_bundle.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_build_x64.cmd">
@@ -39,9 +45,6 @@
     <None Include="_debug_unreg.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_make_archive.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="_sign.cmd">
       <Filter>Installer Files</Filter>
     </None>
@@ -52,15 +55,6 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_version.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="corvusskk-version.wxi">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="corvusskk-x64.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="corvusskk-x86.wxs">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="license.rtf">
@@ -84,20 +78,31 @@
     <None Include="config-lua\test_time.lua">
       <Filter>config-lua</Filter>
     </None>
-    <None Include="..\README.md">
+    <None Include="resource-md\markdown.css">
+      <Filter>resource-md</Filter>
+    </None>
+    <None Include="installer-bundle.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-version.wxi">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-x64.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-x86.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="..\README.md" />
+    <None Include="_make_readme.cmd">
       <Filter>Installer Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\LICENSE.TXT">
-      <Filter>Installer Files</Filter>
-    </Text>
     <Text Include="config-sample\kanatable.txt">
       <Filter>config-sample</Filter>
     </Text>
-    <Text Include="README.TXT">
-      <Filter>Installer Files</Filter>
-    </Text>
+    <Text Include="..\LICENSE.TXT" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml">
@@ -118,64 +123,73 @@
     <Xml Include="config-sample\config - roman.xml">
       <Filter>config-sample</Filter>
     </Xml>
+    <Xml Include="theme-bundle\RtfSidebarTheme.xml">
+      <Filter>theme-bundle</Filter>
+    </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="md_image\01_dictionary.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\01_dictionary.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\02_behavior.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\02_behavior.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\03_display.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\03_display.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\04_display_attribute_1.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\04_display_attribute_1.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\05_display_attribute_2.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\05_display_attribute_2.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\06_select_key.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\06_select_key.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\07_on_off_key.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\07_on_off_key.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\08_key1_character.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\08_key1_character.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\09_key2_virtual_key.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\09_key2_virtual_key.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\10_conversion_point.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\10_conversion_point.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\11_kana.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\11_kana.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\12_full_width_latin.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\12_full_width_latin.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\20_key_and_mode.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\20_key_and_mode.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\21_convert_program.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\21_convert_program.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\22_convert_number.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\22_convert_number.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\23_convert_unicode_codepoint.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\23_convert_unicode_codepoint.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\24_convert_unicode_jisx0213.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\24_convert_unicode_jisx0213.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\25_convert_character_display.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\25_convert_character_display.png">
+      <Filter>resource-md</Filter>
     </Image>
-    <Image Include="md_image\26_register_annotation.png">
-      <Filter>Installer Files\md_image</Filter>
+    <Image Include="resource-md\26_register_annotation.png">
+      <Filter>resource-md</Filter>
+    </Image>
+    <Image Include="theme-bundle\logo.png">
+      <Filter>theme-bundle</Filter>
+    </Image>
+    <Image Include="theme-bundle\logoside.png">
+      <Filter>theme-bundle</Filter>
     </Image>
   </ItemGroup>
 </Project>

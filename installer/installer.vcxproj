@@ -26,11 +26,14 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
-    <None Include="corvusskk-version.wxi" />
-    <None Include="corvusskk-x64.wxs" />
-    <None Include="corvusskk-x86.wxs" />
+    <None Include="installer-bundle.wxs" />
+    <None Include="installer-version.wxi" />
+    <None Include="installer-x64.wxs" />
+    <None Include="installer-x86.wxs" />
     <None Include="license.rtf" />
+    <None Include="resource-md\markdown.css" />
     <None Include="_build.cmd" />
+    <None Include="_build_bundle.cmd" />
     <None Include="_build_x64.cmd" />
     <None Include="_build_x86.cmd" />
     <None Include="_clean.cmd" />
@@ -38,7 +41,7 @@
     <None Include="_clean_x86.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
-    <None Include="_make_archive.cmd" />
+    <None Include="_make_readme.cmd" />
     <None Include="_sign.cmd" />
     <None Include="_solution_build.cmd" />
     <None Include="_solution_clean.cmd" />
@@ -47,7 +50,6 @@
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
     <Text Include="config-sample\kanatable.txt" />
-    <Text Include="README.TXT" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml" />
@@ -56,27 +58,30 @@
     <Xml Include="config-sample\config - gact10.xml" />
     <Xml Include="config-sample\config - kana.xml" />
     <Xml Include="config-sample\config - roman.xml" />
+    <Xml Include="theme-bundle\RtfSidebarTheme.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="md_image\01_dictionary.png" />
-    <Image Include="md_image\02_behavior.png" />
-    <Image Include="md_image\03_display.png" />
-    <Image Include="md_image\04_display_attribute_1.png" />
-    <Image Include="md_image\05_display_attribute_2.png" />
-    <Image Include="md_image\06_select_key.png" />
-    <Image Include="md_image\07_on_off_key.png" />
-    <Image Include="md_image\08_key1_character.png" />
-    <Image Include="md_image\09_key2_virtual_key.png" />
-    <Image Include="md_image\10_conversion_point.png" />
-    <Image Include="md_image\11_kana.png" />
-    <Image Include="md_image\12_full_width_latin.png" />
-    <Image Include="md_image\20_key_and_mode.png" />
-    <Image Include="md_image\21_convert_program.png" />
-    <Image Include="md_image\22_convert_number.png" />
-    <Image Include="md_image\23_convert_unicode_codepoint.png" />
-    <Image Include="md_image\24_convert_unicode_jisx0213.png" />
-    <Image Include="md_image\25_convert_character_display.png" />
-    <Image Include="md_image\26_register_annotation.png" />
+    <Image Include="resource-md\01_dictionary.png" />
+    <Image Include="resource-md\02_behavior.png" />
+    <Image Include="resource-md\03_display.png" />
+    <Image Include="resource-md\04_display_attribute_1.png" />
+    <Image Include="resource-md\05_display_attribute_2.png" />
+    <Image Include="resource-md\06_select_key.png" />
+    <Image Include="resource-md\07_on_off_key.png" />
+    <Image Include="resource-md\08_key1_character.png" />
+    <Image Include="resource-md\09_key2_virtual_key.png" />
+    <Image Include="resource-md\10_conversion_point.png" />
+    <Image Include="resource-md\11_kana.png" />
+    <Image Include="resource-md\12_full_width_latin.png" />
+    <Image Include="resource-md\20_key_and_mode.png" />
+    <Image Include="resource-md\21_convert_program.png" />
+    <Image Include="resource-md\22_convert_number.png" />
+    <Image Include="resource-md\23_convert_unicode_codepoint.png" />
+    <Image Include="resource-md\24_convert_unicode_jisx0213.png" />
+    <Image Include="resource-md\25_convert_character_display.png" />
+    <Image Include="resource-md\26_register_annotation.png" />
+    <Image Include="theme-bundle\logo.png" />
+    <Image Include="theme-bundle\logoside.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C65505E2-5456-473C-91B1-C6D91B294DC3}</ProjectGuid>
@@ -139,17 +144,17 @@
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <NMakeBuildCommandLine>_build_x86.cmd</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>_build_x86.cmd</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>_clean_x86.cmd</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>echo build</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean</NMakeCleanCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
-    <NMakeBuildCommandLine>_build_x64.cmd</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>_build_x64.cmd</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>_clean_x64.cmd</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>echo build</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean</NMakeCleanCommandLine>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>

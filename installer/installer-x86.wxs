@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?include corvusskk-version.wxi ?>
+  <?include installer-version.wxi ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
-    <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="ver. $(var.version)"
+    <Package Id="*" Compressed="yes" Description="CorvusSKK (x86)" Comments="ver. $(var.version)"
       Platform="x86" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
 
-    <Media Id="1" Cabinet="corvusskk.cab" CompressionLevel="high" EmbedCab="yes" />
+    <Media Id="1" Cabinet="x86.cab" CompressionLevel="high" EmbedCab="yes" />
+
+    <!-- disable advertised shortcuts -->
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="SystemFolder" Name="SystemFolder">
         <Directory Id="IME_X86" Name="IME">
           <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
         </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="IMCRVSKK_MENU" Name="CorvusSKK" />
       </Directory>
     </Directory>
 
@@ -38,13 +44,21 @@
       <Component Guid="1229154E-E5AB-430C-87EC-A7DBB451A157" Id="INITLUA_X86">
         <File Id="F_initlua_x86" Name="init.lua" Source="config-lua\init.lua" />
       </Component>
+      <Component Guid="0830BDCC-483C-4E83-90B7-47E146D4996B" Id="README_HTML">
+        <File Id="F_readme_html" Name="README.html" Source="build\README.html" KeyPath="yes">
+          <Shortcut Id="S_readme_html" Name="README.html" Directory="IMCRVSKK_MENU"
+            WorkingDirectory="IMCRVSKK_X86" Show="normal" Advertise="yes" />
+        </File>
+        <RemoveFolder Id="RF_readme_html" Directory="IMCRVSKK_MENU" On="uninstall" />
+      </Component>
     </DirectoryRef>
-
-    <Component Id="RegistryRun" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
+    
+    <Component Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Id="REG_X86" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
         <RegistryValue Action="write" Type="string" Name="imcrvmgr"
           Value="&quot;[%SystemRoot]\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" />
       </RegistryKey>
+      <Condition><![CDATA[NOT VersionNT64]]></Condition>
     </Component>
 
     <Feature Id="Default" Title="Main" Level="1">
@@ -54,7 +68,8 @@
       <ComponentRef Id="LUAEXE_X86" />
       <ComponentRef Id="LUADLL_X86" />
       <ComponentRef Id="INITLUA_X86" />
-      <ComponentRef Id="RegistryRun" />
+      <ComponentRef Id="README_HTML" />
+      <ComponentRef Id="REG_X86" />
     </Feature>
 
     <DirectoryRef Id="TARGETDIR">
@@ -65,20 +80,12 @@
       <MergeRef Id="CRT_X86" />
     </Feature>
 
-    <UIRef Id="WixUI_Minimal" />
-    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-    <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
-    <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
-
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 
     <InstallExecuteSequence>
       <ScheduleReboot After="InstallFinalize" />
     </InstallExecuteSequence>
 
-    <Condition Message="This installer is used for 32-bit Windows. Use 64-bit installer.">
-      <![CDATA[NOT VersionNT64]]>
-    </Condition>
     <Condition Message="This application does not support this version of Windows.">
       <![CDATA[VersionNT >= 600]]>
     </Condition>

@@ -1,49 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 
-  <?include corvusskk-version.wxi ?>
+  <?include installer-version.wxi ?>
 
   <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
 
-    <Package Id="*" Compressed="yes" Description="CorvusSKK" Comments="ver. $(var.version)"
+    <Package Id="*" Compressed="yes" Description="CorvusSKK (x64)" Comments="ver. $(var.version)"
       Platform="x64" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
 
-    <Media Id="1" Cabinet="corvusskk.cab" CompressionLevel="high" EmbedCab="yes" />
+    <Media Id="1" Cabinet="x64.cab" CompressionLevel="high" EmbedCab="yes" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="SystemFolder" Name="SystemFolder">
-        <Directory Id="IME_X86" Name="IME">
-          <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
-        </Directory>
-      </Directory>
       <Directory Id="System64Folder" Name="System64Folder">
         <Directory Id="IME_X64" Name="IME">
           <Directory Id="IMCRVSKK_X64" Name="IMCRVSKK" />
         </Directory>
       </Directory>
     </Directory>
-
-    <DirectoryRef Id="IMCRVSKK_X86">
-      <Component Guid="3F78BFCA-3956-44EC-A79B-ED2494D0EDEA" Id="CNF_X86">
-        <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
-      </Component>
-      <Component Guid="AEC36A38-0319-4ACF-9326-431DB3D80FD0" Id="MGR_X86">
-        <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
-      </Component>
-      <Component Guid="CBC6E637-0EF3-4E97-B7C3-2A6430CADE72" Id="TIP_X86">
-        <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
-      </Component>
-      <Component Guid="493A7BCB-BF97-47C7-B739-23A92837984D" Id="LUAEXE_X86">
-        <File Id="F_luaexe_x86" Name="lua.exe" Source="..\Win32\Release\lua.exe" />
-      </Component>
-      <Component Guid="93ED8DC7-9C63-4950-9BCE-3846F9C9BBB9" Id="LUADLL_X86">
-        <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
-      </Component>
-      <Component Guid="23966B7A-73A0-4E98-8509-02DF0EC3DB7E" Id="INITLUA_X86">
-        <File Id="F_initlua_x86" Name="init.lua" Source="config-lua\init.lua" />
-      </Component>
-    </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_X64">
       <Component Guid="2DFD9121-84B7-48E3-9D4D-5A51103906CC" Id="CNF_X64" Win64="yes">
@@ -66,7 +40,7 @@
       </Component>
     </DirectoryRef>
 
-    <Component Id="RegistryRun" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Win64="yes" Directory="TARGETDIR">
+    <Component Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Id="REG_X64" Directory="TARGETDIR" Win64="yes">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
         <RegistryValue Action="write" Type="string" Name="imcrvmgr"
           Value="&quot;[%SystemRoot]\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" />
@@ -74,42 +48,24 @@
     </Component>
 
     <Feature Id="Default" Title="Main" Level="1">
-      <ComponentRef Id="CNF_X86" />
-      <ComponentRef Id="MGR_X86" />
-      <ComponentRef Id="TIP_X86" />
-      <ComponentRef Id="LUAEXE_X86" />
-      <ComponentRef Id="LUADLL_X86" />
-      <ComponentRef Id="INITLUA_X86" />
       <ComponentRef Id="CNF_X64" />
       <ComponentRef Id="MGR_X64" />
       <ComponentRef Id="TIP_X64" />
       <ComponentRef Id="LUAEXE_X64" />
       <ComponentRef Id="LUADLL_X64" />
       <ComponentRef Id="INITLUA_X64" />
-      <ComponentRef Id="RegistryRun" />
+      <ComponentRef Id="REG_X64" />
     </Feature>
 
     <DirectoryRef Id="TARGETDIR">
-      <Merge Id="CRT_X86" DiskId="1" Language="0"
-        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x86.msm" />
       <Merge Id="CRT_X64" DiskId="1" Language="0"
         SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC120_CRT_x64.msm" />
     </DirectoryRef>
     <Feature Id="CRT" Title="VCRuntime" AllowAdvertise="no" Display="hidden" Level="1">
-      <MergeRef Id="CRT_X86" />
       <MergeRef Id="CRT_X64" />
     </Feature>
 
-    <UIRef Id="WixUI_Minimal" />
-    <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
-    <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
-    <Icon Id="CorvusSKK.ico" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
-
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
-
-    <InstallExecuteSequence>
-      <ScheduleReboot After="InstallFinalize" />
-    </InstallExecuteSequence>
 
     <Condition Message="This application does not support this version of Windows.">
       <![CDATA[VersionNT64 >= 600]]>
