@@ -80,7 +80,6 @@
     <Image Include="resource-md\24_convert_unicode_jisx0213.png" />
     <Image Include="resource-md\25_convert_character_display.png" />
     <Image Include="resource-md\26_register_annotation.png" />
-    <Image Include="theme-bundle\logo.png" />
     <Image Include="theme-bundle\logoside.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

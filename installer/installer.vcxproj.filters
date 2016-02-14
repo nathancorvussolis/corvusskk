@@ -185,9 +185,6 @@
     <Image Include="resource-md\26_register_annotation.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="theme-bundle\logo.png">
-      <Filter>theme-bundle</Filter>
-    </Image>
     <Image Include="theme-bundle\logoside.png">
       <Filter>theme-bundle</Filter>
     </Image>

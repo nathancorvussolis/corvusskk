@@ -9,14 +9,14 @@
 
   <Page Name="Help">
     <Text X="80" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="64" Height="64" ImageFile="rslogo.png"/>
+    <Image X="11" Y="11" Width="64" Height="64" ImageFile="logo.png"/>
     <Text X="11" Y="80" Width="-11" Height="32" FontId="2" DisablePrefix="yes">#(loc.HelpHeader)</Text>
     <Text X="11" Y="121" Width="-11" Height="-35" FontId="3" DisablePrefix="yes">#(loc.HelpText)</Text>
     <Button Name="HelpCancelButton" X="-11" Y="-11" Width="75" Height="23" TabStop="yes" FontId="0">#(loc.HelpCloseButton)</Button>
   </Page>
   <Page Name="Install">
     <Text X="185" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="165" Height="400" ImageFile="rslogoside.png"/>
+    <Image X="11" Y="11" Width="165" Height="400" ImageFile="logoside.png"/>
     <Text X="184" Y="49" Width="-10" Height="-107" TabStop="no" FontId="2" HexStyle="0x800000" DisablePrefix="yes" />
     <Richedit Name="EulaRichedit" X="185" Y="50" Width="-11" Height="-108" TabStop="yes" FontId="0" />
     <Text Name="InstallVersion" X="185" Y="-81" Width="-11" Height="17" FontId="3" DisablePrefix="yes" HideWhenDisabled="yes">#(loc.InstallVersion)</Text>
@@ -27,7 +27,7 @@
   </Page>
   <Page Name="Options">
     <Text X="80" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="64" Height="64" ImageFile="rslogo.png"/>
+    <Image X="11" Y="11" Width="64" Height="64" ImageFile="logo.png"/>
     <Text X="11" Y="80" Width="-11" Height="30" FontId="2" DisablePrefix="yes">#(loc.OptionsHeader)</Text>
     <Text X="11" Y="121" Width="-11" Height="17" FontId="3">#(loc.OptionsLocationLabel)</Text>
     <Editbox Name="FolderEditbox" X="11" Y="143" Width="-91" Height="21" TabStop="yes" FontId="3" FileSystemAutoComplete="yes" />
@@ -38,7 +38,7 @@
   </Page>
   <Page Name="FilesInUse">
     <Text X="80" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="64" Height="64" ImageFile="rslogo.png"/>
+    <Image X="11" Y="11" Width="64" Height="64" ImageFile="logo.png"/>
     <Text X="11" Y="80" Width="-11" Height="30" FontId="2" DisablePrefix="yes">#(loc.FilesInUseHeader)</Text>
     <Text X="11" Y="121" Width="-11" Height="34" FontId="3" DisablePrefix="yes">#(loc.FilesInUseLabel)</Text>
     <Text Name="FilesInUseText" X="11" Y="150" Width="-11" Height="-86" FontId="3" DisablePrefix="yes" HexStyle="0x0000000C"></Text>
@@ -51,7 +51,7 @@
   </Page>
   <Page Name="Progress">
     <Text X="80" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="64" Height="64" ImageFile="rslogo.png"/>
+    <Image X="11" Y="11" Width="64" Height="64" ImageFile="logo.png"/>
     <Text X="11" Y="80" Width="-11" Height="30" FontId="2" DisablePrefix="yes">#(loc.ProgressHeader)</Text>
     <Text X="11" Y="141" Width="70" Height="17" FontId="3" DisablePrefix="yes">#(loc.ProgressLabel)</Text>
     <Text Name="OverallProgressPackageText" X="85" Y="141" Width="-11" Height="17" FontId="3" DisablePrefix="yes">#(loc.OverallProgressPackageText)</Text>
@@ -60,7 +60,7 @@
   </Page>
   <Page Name="Modify">
     <Text X="185" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="165" Height="400" ImageFile="rslogoside.png"/>
+    <Image X="11" Y="11" Width="165" Height="400" ImageFile="logoside.png"/>
     <Text X="185" Y="50" Width="-11" Height="30" FontId="2" DisablePrefix="yes">#(loc.ModifyHeader)</Text>
     <Button Name="RepairButton" X="-171" Y="-11" Width="75" Height="23" TabStop="yes" FontId="0" HideWhenDisabled="yes">#(loc.ModifyRepairButton)</Button>
     <Button Name="UninstallButton" X="-91" Y="-11" Width="75" Height="23" TabStop="yes" FontId="0">#(loc.ModifyUninstallButton)</Button>
@@ -68,7 +68,7 @@
   </Page>
   <Page Name="Success">
     <Text X="185" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="165" Height="400" ImageFile="rslogoside.png"/>
+    <Image X="11" Y="11" Width="165" Height="400" ImageFile="logoside.png"/>
     <Text Name="SuccessHeader" X="185" Y="50" Width="-11" Height="30" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.SuccessHeader)</Text>
     <Text Name="SuccessInstallHeader" X="185" Y="50" Width="-11" Height="100" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.SuccessInstallHeader)</Text>
     <Text Name="SuccessRepairHeader" X="185" Y="50" Width="-11" Height="100" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.SuccessRepairHeader)</Text> 	
@@ -80,7 +80,7 @@
   </Page>
   <Page Name="Failure">
     <Text X="185" Y="11" Width="-11" Height="32" FontId="1" DisablePrefix="yes">#(loc.Title)</Text>
-    <Image X="11" Y="11" Width="165" Height="400" ImageFile="rslogoside.png"/>
+    <Image X="11" Y="11" Width="165" Height="400" ImageFile="logoside.png"/>
     <Text Name="FailureHeader" X="185" Y="50" Width="-11" Height="30" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.FailureHeader)</Text>
     <Text Name="FailureInstallHeader" X="185" Y="50" Width="-11" Height="30" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.FailureInstallHeader)</Text>
     <Text Name="FailureUninstallHeader" X="185" Y="50" Width="-11" Height="30" FontId="2" HideWhenDisabled="yes" DisablePrefix="yes">#(loc.FailureUninstallHeader)</Text>
