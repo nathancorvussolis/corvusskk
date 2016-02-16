@@ -3,7 +3,7 @@
 
   <?include installer-version.wxi ?>
 
-  <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
+  <Product Id="*" Name="CorvusSKK (x64)" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK (x64)" Comments="ver. $(var.version)"
@@ -66,6 +66,10 @@
     </Feature>
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+    <InstallExecuteSequence>
+      <ScheduleReboot After="InstallFinalize" />
+    </InstallExecuteSequence>
 
     <Condition Message="This application does not support this version of Windows.">
       <![CDATA[VersionNT64 >= 600]]>

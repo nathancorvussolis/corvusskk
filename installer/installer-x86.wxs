@@ -3,7 +3,7 @@
 
   <?include installer-version.wxi ?>
 
-  <Product Id="*" Name="CorvusSKK" Version="$(var.version)" Manufacturer="nathancorvussolis"
+  <Product Id="*" Name="CorvusSKK (x86)" Version="$(var.version)" Manufacturer="nathancorvussolis"
     Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK (x86)" Comments="ver. $(var.version)"
