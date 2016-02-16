@@ -11,8 +11,7 @@
 
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLargeLicense">
       <bal:WixStandardBootstrapperApplication ThemeFile="theme-bundle\RtfSidebarTheme.xml"
-        LicenseFile="license.rtf" ShowVersion="yes" SuppressOptionsUI="yes"
-        LogoFile="theme-bundle\logo.png" />
+        LicenseFile="license.rtf" ShowVersion="yes" SuppressOptionsUI="yes" />
       <Payload Name="logoside.png" SourceFile="theme-bundle\logoside.png" />
     </BootstrapperApplicationRef>
 
