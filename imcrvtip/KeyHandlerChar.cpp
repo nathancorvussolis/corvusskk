@@ -302,6 +302,7 @@ HRESULT CTextService::_HandleCharReturn(TfEditCookie ec, ITfContext *pContext, B
 	//terminate composition
 	cursoridx = kana.size();
 	_Update(ec, pContext, TRUE, back);
+
 	_TerminateComposition(ec, pContext);
 	_ResetStatus();
 
@@ -317,6 +318,7 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 		//leave composition
 		cursoridx = kana.size();
 		_Update(ec, pContext, TRUE);
+
 		if(pContext != NULL)
 		{
 			ITfRange *pRange;
@@ -327,6 +329,7 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 				SafeRelease(&pRange);
 			}
 		}
+
 		_ResetStatus();
 	}
 
