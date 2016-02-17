@@ -1,10 +1,11 @@
 
-# CorvusSKK ver. 2.2.4
+# CorvusSKK ver. 2.2.5
 
 Windowsで動作するSKK風のIMEです。
 
 
 ## インストール
+
 
 ### 対応OS
 
@@ -18,7 +19,9 @@ Windowsで動作するSKK風のIMEです。
     + SP1
 
 * Windows 8     (32-bit / 64-bit)
+
 * Windows 8.1   (32-bit / 64-bit)
+
 * Windows 10    (32-bit / 64-bit)
 
 

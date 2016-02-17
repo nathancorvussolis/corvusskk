@@ -52,7 +52,7 @@
         <RemoveFolder Id="RF_readme_html" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
     </DirectoryRef>
-    
+
     <Component Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Id="REG_X86" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
         <RegistryValue Action="write" Type="string" Name="imcrvmgr"
