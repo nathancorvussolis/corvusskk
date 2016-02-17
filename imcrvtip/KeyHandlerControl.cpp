@@ -798,7 +798,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
+		if(!roman.empty() || (okuriidx != 0 && okuriidx + 1 == cursoridx))
 		{
 			_ConvRoman();
 
@@ -812,8 +812,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 		}
-
-		if(!kana.empty() && cursoridx > 0)
+		else if(!kana.empty() && cursoridx > 0)
 		{
 			// surrogate pair
 			if(cursoridx >= 2 &&
@@ -849,7 +848,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
+		if(!roman.empty() || (okuriidx != 0 && okuriidx + 1 == cursoridx))
 		{
 			_ConvRoman();
 
@@ -863,8 +862,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 		}
-
-		cursoridx = 0;
+		else
+		{
+			cursoridx = 0;
+		}
 
 		if(cx_dynamiccomp || cx_dyncompmulti)
 		{
@@ -883,7 +884,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
+		if(!roman.empty() || (okuriidx != 0 && okuriidx + 1 == cursoridx))
 		{
 			_ConvRoman();
 
@@ -897,8 +898,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 		}
-
-		if(!kana.empty() && cursoridx < kana.size())
+		else if(!kana.empty() && cursoridx < kana.size())
 		{
 			// surrogate pair
 			if(kana.size() - cursoridx >= 2 &&
@@ -934,7 +934,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			break;
 		}
 
-		if(!roman.empty() || (okuriidx != 0 && kana[okuriidx] == CHAR_SKK_OKURI))
+		if(!roman.empty() || (okuriidx != 0 && okuriidx + 1 == cursoridx))
 		{
 			_ConvRoman();
 
@@ -948,8 +948,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				return S_OK;
 			}
 		}
-
-		cursoridx = kana.size();
+		else
+		{
+			cursoridx = kana.size();
+		}
 
 		if(cx_dynamiccomp || cx_dyncompmulti)
 		{
