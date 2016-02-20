@@ -5,8 +5,8 @@ pushd "%~dp0"
 
 call _version.cmd
 
-del "%TARGETDIR%\README.html"
-del "%TARGETDIR%\x86.*"
+if exist "%TARGETDIR%\README.html" del "%TARGETDIR%\README.html"
+if exist "%TARGETDIR%\x86.*" del "%TARGETDIR%\x86.*"
 
 popd
 

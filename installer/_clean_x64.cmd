@@ -5,7 +5,7 @@ pushd "%~dp0"
 
 call _version.cmd
 
-del "%TARGETDIR%\x64.*"
+if exist "%TARGETDIR%\x64.*" del "%TARGETDIR%\x64.*"
 
 popd
 
