@@ -123,6 +123,9 @@
     <Xml Include="config-sample\config - roman.xml">
       <Filter>config-sample</Filter>
     </Xml>
+    <Xml Include="config-sample\config - tenho.xml">
+      <Filter>config-sample</Filter>
+    </Xml>
     <Xml Include="theme-bundle\RtfSidebarTheme.xml">
       <Filter>theme-bundle</Filter>
     </Xml>
