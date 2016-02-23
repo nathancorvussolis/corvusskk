@@ -106,8 +106,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	key = searchkey + L"\x20";
 
 	left = 0;
-	fseek(fpidx, 0, SEEK_END);
-	right = (ftell(fpidx) / sizeof(pos)) - 1;
+	right = (_filelength(_fileno(fpidx)) / sizeof(pos)) - 1;
 
 	while(left <= right)
 	{
