@@ -19,7 +19,7 @@ wchar_t *u8stows(const char *s)
 	int len;
 	wchar_t *wbuf = NULL;
 
-	len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s, -1, NULL, 0);
+	len = MultiByteToWideChar(CP_UTF8, 0, s, -1, NULL, 0);
 	if(len > 0) {
 		wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
 		if(wbuf) {
@@ -37,7 +37,7 @@ char *u8wstos(const wchar_t *s)
 	int len;
 	char *buf = NULL;
 
-	len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, s, -1, NULL, 0, NULL, NULL);
+	len = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
 	if(len > 0) {
 		buf = (char *)calloc(len, sizeof(char));
 		if(buf) {
@@ -279,6 +279,10 @@ char *u8fgets(char *buf, int len, FILE *file)
 				}
 			}
 			else if(IS_HIGH_SURROGATE(c)) {
+				if(len <= (int)(strlen(buf) + 4)) {
+					ungetwc(c, file);
+					break;
+				}
 				c0 = c;
 				continue;
 			}
@@ -295,18 +299,13 @@ char *u8fgets(char *buf, int len, FILE *file)
 					free(b);
 				}
 				else {
+					ungetwc(c, file);
 					free(b);
-					if(ws[1] != L'\0') ungetwc(ws[1], file);
-					if(ws[0] != L'\0') ungetwc(ws[0], file);
 					break;
 				}
 			}
 
 			if(c == L'\n') break;
-		}
-
-		if(c0 != L'\0') {
-			ungetwc(c0, file);
 		}
 
 		if(strlen(buf) > 0) dst = buf;

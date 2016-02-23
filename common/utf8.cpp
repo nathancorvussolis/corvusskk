@@ -3,7 +3,7 @@ std::string wstring_to_utf8_string(const std::wstring &s)
 {
 	std::string ret;
 
-	int len = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, s.c_str(), -1, NULL, 0, NULL, NULL);
+	int len = WideCharToMultiByte(CP_UTF8, 0, s.c_str(), -1, NULL, 0, NULL, NULL);
 	if(len > 0)
 	{
 		try
@@ -27,7 +27,7 @@ std::wstring utf8_string_to_wstring(const std::string &s)
 {
 	std::wstring ret;
 
-	int len = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s.c_str(), -1, NULL, 0);
+	int len = MultiByteToWideChar(CP_UTF8, 0, s.c_str(), -1, NULL, 0);
 	if(len > 0)
 	{
 		try

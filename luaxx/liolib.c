@@ -470,130 +470,45 @@ static int test_eof (lua_State *L, FILE *f) {
 }
 
 
+static int read_line (lua_State *L, FILE *f, int chop) {
+  luaL_Buffer b;
+  int c = '\0';
+  luaL_buffinit(L, &b);
+  while (c != EOF && c != '\n') {  /* repeat until end of line */
+    char *buff = luaL_prepbuffer(&b);  /* preallocate buffer */
+    int i = 0;
+    l_lockfile(f);  /* no memory errors can happen inside the lock */
 #ifdef U8W_H
-static int read_line_w (lua_State *L, FILE *f, int chop) {
-  luaL_Buffer b;
-  wint_t c = L'\0', c0;
-  wchar_t ws[2 + 1];
-  char *ps = NULL, *pps = NULL;
-  luaL_buffinit(L, &b);
-  while (c != WEOF && c != L'\n') {  /* repeat until end of line */
-    char *buff = luaL_prepbuffer(&b);  /* pre-allocate buffer */
-    int i = 0;
-    l_lockfile(f);  /* no memory errors can happen inside the lock */
-    if(pps) {
-      for(; (i < LUAL_BUFFERSIZE) && (*pps != '\0'); pps++) {
-        buff[i++] = *pps;
-      }
-      if(*pps == '\0') {
-        free(ps);
-        pps = NULL;
+    if(f == stdin) {
+      char *pb = u8fgets(buff, LUAL_BUFFERSIZE, f);
+      if (pb != NULL) {
+        char *pbn = strchr(buff, '\n');
+        if (pbn != NULL) {
+          *pbn = '\0';
+          c = '\n';
+        }
+        i = (int)strlen(pb);
       }
       else {
-        break;
+        c = EOF;
       }
     }
-    c0 = L'\0';
-    while ((c = getwc(f)) != WEOF && c != L'\n') {
-      if(IS_HIGH_SURROGATE(c0)) {
-        if(IS_HIGH_SURROGATE(c)) {
-          c0 = c;
-          continue;
-        }
-        else if(IS_LOW_SURROGATE(c)) {
-          ws[0] = c0;
-          ws[1] = c;
-          ws[2] = L'\0';
-        }
-        else {
-          ws[0] = c;
-          ws[1] = L'\0';
-        }
-      }
-      else if(IS_HIGH_SURROGATE(c)) {
-        c0 = c;
-        continue;
-      }
-      else if(IS_LOW_SURROGATE(c)) {
-        continue;
-      }
-      else {
-        ws[0] = c;
-        ws[1] = L'\0';
-      }
-      c0 = L'\0';
-      ps = u8wstos(ws);
-      if(ps) {
-        for(pps = ps; (i < LUAL_BUFFERSIZE) && (*pps != '\0'); pps++) {
-          buff[i++] = *pps;
-        }
-        if(*pps == '\0') {
-          free(ps);
-          pps = NULL;
-        }
-        else {
-          break;
-        }
-      }
-    }
-    if(c0 != L'\0') {
-      ungetwc(c0, f);
-    }
-    l_unlockfile(f);
-    luaL_addsize(&b, i);
-  }
-  if (!chop && c == L'\n')  /* want a newline and have one? */
-    luaL_addchar(&b, (int)c);  /* add ending newline to result */
-  luaL_pushresult(&b);  /* close buffer */
-  /* return ok if read something (either a newline or something else) */
-  return (c == L'\n' || lua_rawlen(L, -1) > 0);
-}
-static int read_line_c (lua_State *L, FILE *f, int chop) {
-  luaL_Buffer b;
-  int c = '\0';
-  luaL_buffinit(L, &b);
-  while (c != EOF && c != '\n') {  /* repeat until end of line */
-    char *buff = luaL_prepbuffer(&b);  /* preallocate buffer */
-    int i = 0;
-    l_lockfile(f);  /* no memory errors can happen inside the lock */
-    while (i < LUAL_BUFFERSIZE && (c = l_getc(f)) != EOF && c != '\n')
-      buff[i++] = c;
-    l_unlockfile(f);
-    luaL_addsize(&b, i);
-  }
-  if (!chop && c == '\n')  /* want a newline and have one? */
-    luaL_addchar(&b, c);  /* add ending newline to result */
-  luaL_pushresult(&b);  /* close buffer */
-  /* return ok if read something (either a newline or something else) */
-  return (c == '\n' || lua_rawlen(L, -1) > 0);
-}
-static int read_line (lua_State *L, FILE *f, int chop) {
-  if(f == stdin) {
-    return read_line_w(L, f, chop);
-  }
-  return read_line_c(L, f, chop);
-}
-#else
-static int read_line (lua_State *L, FILE *f, int chop) {
-  luaL_Buffer b;
-  int c = '\0';
-  luaL_buffinit(L, &b);
-  while (c != EOF && c != '\n') {  /* repeat until end of line */
-    char *buff = luaL_prepbuffer(&b);  /* preallocate buffer */
-    int i = 0;
-    l_lockfile(f);  /* no memory errors can happen inside the lock */
-    while (i < LUAL_BUFFERSIZE && (c = l_getc(f)) != EOF && c != '\n')
-      buff[i++] = c;
-    l_unlockfile(f);
-    luaL_addsize(&b, i);
-  }
-  if (!chop && c == '\n')  /* want a newline and have one? */
-    luaL_addchar(&b, c);  /* add ending newline to result */
-  luaL_pushresult(&b);  /* close buffer */
-  /* return ok if read something (either a newline or something else) */
-  return (c == '\n' || lua_rawlen(L, -1) > 0);
-}
+    else {
 #endif
+    while (i < LUAL_BUFFERSIZE && (c = l_getc(f)) != EOF && c != '\n')
+      buff[i++] = c;
+#ifdef U8W_H
+    }
+#endif
+    l_unlockfile(f);
+    luaL_addsize(&b, i);
+  }
+  if (!chop && c == '\n')  /* want a newline and have one? */
+    luaL_addchar(&b, c);  /* add ending newline to result */
+  luaL_pushresult(&b);  /* close buffer */
+  /* return ok if read something (either a newline or something else) */
+  return (c == '\n' || lua_rawlen(L, -1) > 0);
+}
 
 
 static void read_all (lua_State *L, FILE *f) {
