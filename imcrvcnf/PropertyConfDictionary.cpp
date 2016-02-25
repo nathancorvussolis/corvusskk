@@ -532,7 +532,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	//送りありエントリ
 	fwrite(EntriesAri, wcslen(EntriesAri) * sizeof(WCHAR), 1, fp);
-	fseek(fp, -2, SEEK_END);
+	fseek(fp, -2, SEEK_CUR);
 	fwrite(L"\r\n", 4, 1, fp);
 
 	REVERSE_ITERATION_I(entries_ritr, entries_a)
@@ -551,7 +551,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	//送りなしエントリ
 	fwrite(EntriesNasi, wcslen(EntriesNasi) * sizeof(WCHAR), 1, fp);
-	fseek(fp, -2, SEEK_END);
+	fseek(fp, -2, SEEK_CUR);
 	fwrite(L"\r\n", 4, 1, fp);
 
 	FORWARD_ITERATION_I(entries_itr, entries_n)
