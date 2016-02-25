@@ -58,7 +58,6 @@
     <Xml Include="config-sample\config - gact10.xml" />
     <Xml Include="config-sample\config - kana.xml" />
     <Xml Include="config-sample\config - roman.xml" />
-    <Xml Include="config-sample\config - tenho.xml" />
     <Xml Include="theme-bundle\RtfSidebarTheme.xml" />
   </ItemGroup>
   <ItemGroup>
