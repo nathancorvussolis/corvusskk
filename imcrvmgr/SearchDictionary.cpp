@@ -13,8 +13,8 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	if(lua != NULL)
 	{
 		lua_getglobal(lua,"lua_skk_search");
-		lua_pushstring(lua, WCTOU8(searchkey.c_str()));
-		lua_pushstring(lua, WCTOU8(okuri.c_str()));
+		lua_pushstring(lua, WCTOU8(searchkey));
+		lua_pushstring(lua, WCTOU8(okuri));
 
 		if(lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
@@ -111,14 +111,18 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	while(left <= right)
 	{
 		mid = (left + right) / 2;
+
+		pos = 0;
 		fseek(fpidx, mid * sizeof(pos), SEEK_SET);
 		fread(&pos, sizeof(pos), 1, fpidx);
 
-		fseek(fpdic, pos, SEEK_SET);
 		memset(wbuf, 0, sizeof(wbuf));
-
-		fgetws(wbuf, _countof(wbuf), fpdic);
-		wsbuf = wbuf;
+		wsbuf.clear();
+		fseek(fpdic, pos, SEEK_SET);
+		if(fgetws(wbuf, _countof(wbuf), fpdic) != NULL)
+		{
+			wsbuf = wbuf;
+		}
 
 		cmpkey = wcsncmp(key.c_str(), wsbuf.c_str(), key.size());
 		if(cmpkey == 0)
@@ -228,7 +232,7 @@ int lua_search_skk_dictionary(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchSKKDic(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -239,7 +243,7 @@ int lua_search_user_dictionary(lua_State *lua)
 	std::wstring okurikey = U8TOWC(lua_tostring(lua, 2));
 	std::wstring candidate = SearchUserDic(searchkey, okurikey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -249,7 +253,7 @@ int lua_search_skk_server(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchSKKServer(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -259,8 +263,8 @@ int lua_search_skk_server_info(lua_State *lua)
 	std::wstring server_ver = GetSKKServerInfo(SKK_VER);
 	std::wstring server_hst = GetSKKServerInfo(SKK_HST);
 
-	lua_pushstring(lua, WCTOU8(server_ver.c_str()));
-	lua_pushstring(lua, WCTOU8(server_hst.c_str()));
+	lua_pushstring(lua, WCTOU8(server_ver));
+	lua_pushstring(lua, WCTOU8(server_hst));
 
 	return 2;
 }
@@ -270,7 +274,7 @@ int lua_search_unicode(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchUnicode(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -280,7 +284,7 @@ int lua_search_jisx0213(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchJISX0213(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -290,7 +294,7 @@ int lua_search_jisx0208(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchJISX0208(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -300,7 +304,7 @@ int lua_search_character_code(lua_State *lua)
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 	std::wstring candidate = SearchCharacterCode(searchkey);
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
@@ -322,7 +326,7 @@ int lua_complement(lua_State *lua)
 		candidate += L"/\n";
 	}
 
-	lua_pushstring(lua, WCTOU8(candidate.c_str()));
+	lua_pushstring(lua, WCTOU8(candidate));
 
 	return 1;
 }
