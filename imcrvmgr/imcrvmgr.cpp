@@ -315,6 +315,10 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 				{
 					candidate = U8TOWC(lua_tostring(lua, -1));
 					ParseSKKDicCandiate(candidate, sc);
+					FORWARD_ITERATION_I(sc_itr, sc)
+					{
+						sc_itr->first = ParseConcat(sc_itr->first);
+					}
 				}
 			}
 			lua_pop(lua, 1);
