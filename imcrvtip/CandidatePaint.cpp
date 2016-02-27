@@ -737,6 +737,18 @@ void CCandidateWindow::_CalcWindowRect()
 		ReleaseDC(_hwnd, hdc);
 	}
 
+	if(_vertical)
+	{
+		if(x < _rect.left)
+		{
+			x = _rect.left - (_rect.right - _rect.left) - cx;
+			if(rw.right < (x + cx))
+			{
+				x = rw.right - cx;
+			}
+		}
+	}
+
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
 	if(_pInputModeWindow != NULL)

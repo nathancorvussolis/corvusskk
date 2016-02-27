@@ -34,7 +34,7 @@ public:
 
 		if(_pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
 		{
-			_pCandidateWindow->_Move(&rc);
+			_pCandidateWindow->_Move(&rc, ec, _pContext);
 		}
 
 		return S_OK;
@@ -247,7 +247,7 @@ public:
 			BOOL fClipped;
 			if(pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
 			{
-				_pCandidateWindow->_Move(&rc);
+				_pCandidateWindow->_Move(&rc, ec, _pContext);
 			}
 
 			SafeRelease(&pContextView);
@@ -494,11 +494,11 @@ void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcan
 	}
 }
 
-void CCandidateList::_Move(LPRECT lpr)
+void CCandidateList::_Move(LPRECT lpr, TfEditCookie ec, ITfContext *pContext)
 {
 	if(_pCandidateWindow != NULL)
 	{
-		_pCandidateWindow->_Move(lpr);
+		_pCandidateWindow->_Move(lpr, ec, pContext);
 	}
 }
 

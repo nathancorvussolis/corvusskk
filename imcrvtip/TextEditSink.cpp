@@ -29,7 +29,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 				BOOL fClipped;
 				if(pContextView->GetTextExt(ecReadOnly, pRange, &rc, &fClipped) == S_OK)
 				{
-					_pCandidateList->_Move(&rc);
+					_pCandidateList->_Move(&rc, ecReadOnly, pic);
 				}
 
 				SafeRelease(&pContextView);

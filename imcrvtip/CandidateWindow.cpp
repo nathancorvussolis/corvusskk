@@ -94,7 +94,7 @@ BOOL CCandidateWindow::_InitClass()
 
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(wcex);
-	wcex.style = CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW;
+	wcex.style = CS_VREDRAW | CS_HREDRAW;
 	wcex.lpfnWndProc = CCandidateWindow::_WindowPreProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
@@ -181,11 +181,30 @@ void CCandidateWindow::_Destroy()
 	SafeRelease(&_pD2DFactory);
 }
 
-void CCandidateWindow::_Move(LPCRECT lpr)
+void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 {
 	if(_hwnd != NULL && lpr != NULL)
 	{
 		_rect = *lpr;
+
+		//ignore abnormal position (from CUAS ?)
+		if((_rect.top == _rect.bottom) && ((_rect.right - _rect.left) == 1))
+		{
+			return;
+		}
+
+		if(ec != TF_INVALID_EDIT_COOKIE && pContext != NULL)
+		{
+			_vertical = _pTextService->_GetVertical(ec, pContext);
+		}
+
+		if(_vertical)
+		{
+			LONG w = _rect.right - _rect.left;
+			_rect.right += w;
+			_rect.left += w;
+			_rect.bottom = _rect.top;
+		}
 
 		_CalcWindowRect();
 

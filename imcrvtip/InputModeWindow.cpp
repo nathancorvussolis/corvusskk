@@ -301,7 +301,7 @@ BOOL CInputModeWindow::_InitClass()
 
 	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(wcex);
-	wcex.style = CS_VREDRAW | CS_HREDRAW | CS_DROPSHADOW;
+	wcex.style = CS_VREDRAW | CS_HREDRAW;
 	wcex.lpfnWndProc = CInputModeWindow::_WindowPreProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;

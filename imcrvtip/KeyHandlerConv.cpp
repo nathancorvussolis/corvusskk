@@ -615,9 +615,7 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 
 		okuriidx = kana_bak.size();
 
-		BOOL vertical = _GetVertical(ec, pContext);
-
-		if(cx_dynamiccomp && (!cx_dyncompmulti || !vertical || pContext == NULL))
+		if(cx_dynamiccomp)
 		{
 			kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
 
