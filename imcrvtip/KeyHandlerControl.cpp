@@ -220,7 +220,14 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			ch = L'>';
 			kana.push_back(ch);
 			cursoridx++;
-			_Update(ec, pContext);
+			if(cx_dynamiccomp || cx_dyncompmulti)
+			{
+				_DynamicComp(ec, pContext);
+			}
+			else
+			{
+				_Update(ec, pContext);
+			}
 			return S_OK;
 		}
 

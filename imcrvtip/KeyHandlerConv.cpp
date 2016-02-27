@@ -495,7 +495,7 @@ void CTextService::_NextComp()
 {
 	if(!complement)
 	{
-		if(okuriidx != 0 || kana.empty())
+		if(okuriidx != 0)
 		{
 			return;
 		}
