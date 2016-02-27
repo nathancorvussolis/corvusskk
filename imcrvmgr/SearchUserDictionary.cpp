@@ -3,6 +3,8 @@
 #include "configxml.h"
 #include "imcrvmgr.h"
 
+#define MAX_COMPLEMENT_RESULT 1024
+
 //ユーザー辞書
 SKKDIC userdic;
 USEROKURI userokuri;
@@ -74,14 +76,22 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 
 void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 {
+	size_t count = 0;
+
 	if(!complements.empty())
 	{
 		REVERSE_ITERATION_I(keyorder_ritr, complements)
 		{
+			if(count >= MAX_COMPLEMENT_RESULT)
+			{
+				break;
+			}
+
 			if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0 &&
 				searchkey.size() < keyorder_ritr->size())
 			{
 				sc.push_back(SKKDICCANDIDATE(*keyorder_ritr, L""));
+				++count;
 			}
 		}
 	}
