@@ -678,6 +678,7 @@ void CCandidateWindow::_PrevComp()
 	if(_uIndex == 0)
 	{
 		if((_pTextService->cx_stacompmulti && !_pTextService->cx_dyncompmulti) ||
+			//closed at _DynamicComp
 			_pTextService->searchkey.empty())
 		{
 			_InvokeSfHandler(SKK_PREV_COMP);
