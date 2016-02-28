@@ -1,5 +1,5 @@
 ﻿--[[
-	 CorvusSKK ver.2.2.5   Lua拡張スクリプト
+	 CorvusSKK ver.2.2.6   Lua拡張スクリプト
 
 
 	 Cから呼ばれるLuaの関数
