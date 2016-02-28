@@ -49,11 +49,13 @@ public:
 	void _EndUIElement();
 	BOOL _CanShowUIElement();
 	void _Redraw();
-	HRESULT _OnKeyDown(UINT uVKey);
 	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
 	void _PreEnd();
 	void _End();
 	void _UpdateComp();
+
+	//KeyHandler
+	HRESULT _OnKeyDown(UINT uVKey);
 
 private:
 	LONG _cRef;
@@ -64,12 +66,7 @@ private:
 	void _PrevPage();
 	void _NextComp();
 	void _PrevComp();
-	void _OnKeyDownRegword(UINT uVKey);
 	void _Update();
-	void _InvokeSfHandler(BYTE sf);
-	void _InvokeKeyHandler(UINT uVKey);
-	void _HandleKey(WPARAM wParam, BYTE bSf);
-	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
 	void _BackUpStatus();
 	void _ClearStatus();
 	void _RestoreStatusReg();
@@ -77,6 +74,13 @@ private:
 	void _PreEndReq();
 	void _EndReq();
 	void _CreateNext(BOOL reg);
+
+	//KeyHandler
+	void _OnKeyDownRegword(UINT uVKey);
+	void _InvokeSfHandler(BYTE sf);
+	void _InvokeKeyHandler(UINT uVKey);
+	void _HandleKey(WPARAM wParam, BYTE bSf);
+	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
 
 	//Paint
 	void _WindowProcPaint(HWND hWnd);

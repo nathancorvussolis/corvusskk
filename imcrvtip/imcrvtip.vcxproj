@@ -202,6 +202,7 @@
     <ClInclude Include="TextService.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CandidateKeyHandler.cpp" />
     <ClCompile Include="CandidateList.cpp" />
     <ClCompile Include="CandidatePaint.cpp" />
     <ClCompile Include="CandidateUIElement.cpp" />

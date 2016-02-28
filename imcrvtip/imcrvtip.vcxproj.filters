@@ -36,6 +36,9 @@
     <ClInclude Include="imcrvtip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputModeWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="LanguageBar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,12 +48,12 @@
     <ClInclude Include="TextService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="InputModeWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CandidateKeyHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CandidateList.cpp">
