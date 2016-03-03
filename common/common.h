@@ -17,7 +17,6 @@
 #define MAX_WIDTH_DEFAULT	800
 
 #define PIPEBUFSIZE			0x2000	//named pipe, 16KB with wchar_t
-#define DICBUFSIZE			0x1000	//entry, 8KB with wchar_t
 #define READBUFSIZE			0x800	//read skk dictionary, 4KB with wchar_t/char
 #define RECVBUFSIZE			0x800	//receive from skk server, 2KB with char
 

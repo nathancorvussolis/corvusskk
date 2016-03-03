@@ -11,7 +11,6 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 	std::wstring candidate;
 	std::string key;
 	std::string buf;
-	size_t pidx;
 	CHAR rbuf[RECVBUFSIZE];
 	int n;
 
@@ -105,18 +104,6 @@ end:
 				break;
 			default:
 				break;
-			}
-
-			if(candidate.size() >= DICBUFSIZE)
-			{
-				candidate.erase(DICBUFSIZE);
-
-				if((pidx = candidate.find_last_of(L'/')) != std::string::npos)
-				{
-					candidate.erase(pidx);
-					candidate.append(L"/\n");
-					break;
-				}
 			}
 
 			s = m.suffix();
