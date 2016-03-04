@@ -4,6 +4,10 @@
 #include "utf8.h"
 #include "imcrvmgr.h"
 
+typedef std::map<std::wstring, long> MAP;
+typedef std::vector<long> POS;
+POS skkdicpos;
+
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
     std::wstring candidate;
@@ -84,41 +88,32 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 std::wstring SearchSKKDic(const std::wstring &searchkey)
 {
-	FILE *fpdic, *fpidx;
+	FILE *fp;
 	std::wstring key, candidate, wsbuf, kbuf, cbuf;
 	WCHAR wbuf[READBUFSIZE];
+	PWCHAR pwb = NULL;
 	long pos, left, mid, right;
 
-	_wfopen_s(&fpidx, pathskkidx, RB);
-	if(fpidx == NULL)
+	_wfopen_s(&fp, pathskkdic, RB);
+	if(fp == NULL)
 	{
 		return candidate;
 	}
-	_wfopen_s(&fpdic, pathskkdic, RB);
-	if(fpdic == NULL)
-	{
-		fclose(fpidx);
-		return candidate;
-	}
-
-	key = searchkey + L"\x20";
 
 	left = 0;
-	right = (_filelength(_fileno(fpidx)) / sizeof(pos)) - 1;
+	right = (long)skkdicpos.size() - 1;
 
 	while(left <= right)
 	{
 		mid = left + (right - left) / 2;
-		pos = 0;
-		fseek(fpidx, mid * sizeof(pos), SEEK_SET);
-		fread(&pos, sizeof(pos), 1, fpidx);
-		fseek(fpdic, pos, SEEK_SET);
+		pos = skkdicpos[mid];
+		fseek(fp, pos, SEEK_SET);
 
 		wsbuf.clear();
 		kbuf.clear();
 		cbuf.clear();
 
-		while(fgetws(wbuf, _countof(wbuf), fpdic) != NULL)
+		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
 		{
 			wsbuf += wbuf;
 
@@ -126,6 +121,11 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 			{
 				break;
 			}
+		}
+
+		if(pwb == NULL)
+		{
+			break;
 		}
 
 		size_t ridx = wsbuf.find(L"\r\n");
@@ -138,11 +138,11 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 		size_t cidx = wsbuf.find(L"\x20/");
 		if(cidx != std::wstring::npos && cidx < wsbuf.size())
 		{
-			kbuf = wsbuf.substr(0, cidx + 1);
+			kbuf = wsbuf.substr(0, cidx);
 			cbuf = wsbuf.substr(cidx + 1);
 		}
 
-		int cmpkey = key.compare(kbuf);
+		int cmpkey = searchkey.compare(kbuf);
 		if(cmpkey == 0)
 		{
 			candidate = cbuf;
@@ -158,10 +158,87 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 		}
 	}
 
-	fclose(fpdic);
-	fclose(fpidx);
+	fclose(fp);
 
 	return candidate;
+}
+
+void LoadSKKDic()
+{
+	FILE *fp;
+	std::wstring wsbuf, key;
+	WCHAR wbuf[READBUFSIZE];
+	PWCHAR pwb = NULL;
+	long pos;
+	int okuri = -1;
+	MAP map;
+
+	skkdicpos.clear();
+	skkdicpos.shrink_to_fit();
+
+	_wfopen_s(&fp, pathskkdic, RB);
+	if(fp == NULL)
+	{
+		return;
+	}
+
+	fseek(fp, 2, SEEK_SET); //BOM
+	pos = ftell(fp);
+
+	while(true)
+	{
+		wsbuf.clear();
+
+		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
+		{
+			wsbuf += wbuf;
+
+			if(!wsbuf.empty() && wsbuf.back() == L'\n')
+			{
+				break;
+			}
+		}
+
+		if(pwb == NULL)
+		{
+			break;
+		}
+
+		size_t ridx = wsbuf.find(L"\r\n");
+		if(ridx != std::wstring::npos && ridx <= wsbuf.size())
+		{
+			wsbuf.erase(ridx);
+			wsbuf.push_back(L'\n');
+		}
+
+		size_t cidx = wsbuf.find(L"\x20/");
+		if(cidx != std::wstring::npos && cidx <= wsbuf.size())
+		{
+			key = wsbuf.substr(0, cidx);
+		}
+
+		if(wsbuf.compare(EntriesAri) == 0)
+		{
+			okuri = 1;
+		}
+		else if(wsbuf.compare(EntriesNasi) == 0)
+		{
+			okuri = 0;
+		}
+		else if(okuri != -1)
+		{
+			map.insert(MAP::value_type(key, pos));
+		}
+
+		pos = ftell(fp);
+	}
+
+	fclose(fp);
+
+	for(auto map_itr = map.begin(); map_itr != map.end(); map_itr++)
+	{
+		skkdicpos.push_back(map_itr->second);
+	}
 }
 
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)

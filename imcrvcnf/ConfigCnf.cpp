@@ -12,7 +12,6 @@ WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 // ファイルパス
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
-WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 
 void CreateConfigPath()
 {
@@ -20,7 +19,6 @@ void CreateConfigPath()
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
-	ZeroMemory(pathskkidx, sizeof(pathskkidx));
 
 	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, NULL, &appdatafolder) == S_OK)
 	{
@@ -35,7 +33,6 @@ void CreateConfigPath()
 
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
 		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s", appdir, fnskkdic);
-		_snwprintf_s(pathskkidx, _TRUNCATE, L"%s\\%s", appdir, fnskkidx);
 	}
 
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));

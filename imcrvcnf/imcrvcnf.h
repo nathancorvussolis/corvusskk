@@ -62,6 +62,5 @@ extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathskkdic[MAX_PATH];	//取込SKK辞書
-extern WCHAR pathskkidx[MAX_PATH];	//取込SKK辞書インデックス
 
 #endif //IMCRVCNF_H

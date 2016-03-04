@@ -35,6 +35,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey);
 // SearchDictionary
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);
 std::wstring SearchSKKDic(const std::wstring &searchkey);
+void LoadSKKDic();
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri);
 std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &okuri);
 int lua_search_skk_dictionary(lua_State *lua);
@@ -93,7 +94,6 @@ extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathuserdic[MAX_PATH];		//ユーザー辞書
 extern WCHAR pathuserbak[MAX_PATH];		//ユーザー辞書バックアッププレフィックス
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
-extern WCHAR pathskkidx[MAX_PATH];		//取込SKK辞書インデックス
 extern WCHAR pathinitlua[MAX_PATH];		//init.lua
 
 extern WCHAR krnlobjsddl[MAX_KRNLOBJNAME];	//SDDL

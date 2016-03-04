@@ -5,9 +5,6 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-//見出し語位置
-typedef std::map< std::wstring, long > KEYPOS; //見出し語、ファイル位置
-
 struct {
 	HWND parent;
 	HWND child;
@@ -516,8 +513,6 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES 
 HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 {
 	FILE *fp;
-	long pos;
-	KEYPOS keypos;
 
 	_wfopen_s(&fp, pathskkdic, WB);
 	if(fp == NULL)
@@ -543,9 +538,6 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 			return E_ABORT;
 		}
 
-		pos = ftell(fp);
-		keypos.insert(KEYPOS::value_type(entries_ritr->first, pos));
-
 		WriteSKKDicEntry(fp, entries_ritr->first, entries_ritr->second);
 	}
 
@@ -562,32 +554,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 			return E_ABORT;
 		}
 
-		pos = ftell(fp);
-		keypos.insert(KEYPOS::value_type(entries_itr->first, pos));
-
 		WriteSKKDicEntry(fp, entries_itr->first, entries_itr->second);
-	}
-
-	fclose(fp);
-
-	//インデックスファイル
-	_wfopen_s(&fp, pathskkidx, WB);
-	if(fp == NULL)
-	{
-		SkkDicInfo.error = SKKDIC_FILEIO;
-		wcscpy_s(SkkDicInfo.path, pathskkidx);
-		return E_FAIL;
-	}
-
-	FORWARD_ITERATION_I(keypos_itr, keypos)
-	{
-		if(SkkDicInfo.cancel)
-		{
-			fclose(fp);
-			return E_ABORT;
-		}
-
-		fwrite(&keypos_itr->second, sizeof(keypos_itr->second), 1, fp);
 	}
 
 	fclose(fp);
@@ -627,14 +594,12 @@ void MakeSKKDicWaitThread(void *p)
 	}
 	else if(SkkDicInfo.hr == E_ABORT)
 	{
-		_wremove(pathskkidx);
 		_wremove(pathskkdic);
 
 		MessageBoxW(SkkDicInfo.parent, L"中断しました。", TextServiceDesc, MB_OK | MB_ICONWARNING);
 	}
 	else
 	{
-		_wremove(pathskkidx);
 		_wremove(pathskkdic);
 
 		LPCWSTR errmsg = L"";

@@ -8,7 +8,7 @@ HANDLE SrvStart();
 
 CRITICAL_SECTION csUserDataSave;
 BOOL bUserDicChg;
-FILETIME ftConfig;
+FILETIME ftConfig, ftSKKDic;
 #ifdef _DEBUG
 HWND hwndEdit;
 HFONT hFont;
@@ -58,6 +58,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	if(IsFileUpdated(pathconfigxml, &ftConfig))
 	{
 		LoadConfig();
+	}
+
+	ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
+	if(IsFileUpdated(pathskkdic, &ftSKKDic))
+	{
+		LoadSKKDic();
 	}
 
 	InitLua();
@@ -504,6 +510,11 @@ unsigned int __stdcall SrvThread(void *p)
 		if(IsFileUpdated(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
+		}
+
+		if(IsFileUpdated(pathskkdic, &ftSKKDic))
+		{
+			LoadSKKDic();
 		}
 
 		ZeroMemory(pipebuf, sizeof(pipebuf));
