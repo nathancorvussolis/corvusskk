@@ -235,7 +235,7 @@ void LoadSKKDic()
 
 	fclose(fp);
 
-	for(auto map_itr = map.begin(); map_itr != map.end(); map_itr++)
+	FORWARD_ITERATION_I(map_itr, map)
 	{
 		skkdicpos.push_back(map_itr->second);
 	}
