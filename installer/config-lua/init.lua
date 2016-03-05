@@ -51,8 +51,9 @@
 				okuri : 送り仮名 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
 		SKK辞書検索
-			crvmgr.search_skk_dictionary(key)
+			crvmgr.search_skk_dictionary(key, okuri)
 				key : 見出し語 string
+				okuri : 送り仮名 string
 				戻り値 : "/<C1><;A1>/<C2><;A2>/.../<Cn><;An>/\n" or "" string
 		SKK辞書サーバー検索
 			crvmgr.search_skk_server(key)
@@ -1092,7 +1093,7 @@ local function skk_search(key, okuri)
 	ret = ret .. crvmgr.search_user_dictionary(key, okuri)
 
 	-- SKK辞書検索
-	ret = ret .. crvmgr.search_skk_dictionary(key)
+	ret = ret .. crvmgr.search_skk_dictionary(key, okuri)
 
 	-- SKK辞書サーバー検索
 	ret = ret .. crvmgr.search_skk_server(key)

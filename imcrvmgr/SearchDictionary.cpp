@@ -4,9 +4,8 @@
 #include "utf8.h"
 #include "imcrvmgr.h"
 
-typedef std::map<std::wstring, long> MAP;
 typedef std::vector<long> POS;
-POS skkdicpos;
+POS skkdicpos_a, skkdicpos_n;
 
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
@@ -35,7 +34,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 		candidate += SearchUserDic(searchkey, okuri);
 
 		//SKK辞書
-		candidate += SearchSKKDic(searchkey);
+		candidate += SearchSKKDic(searchkey, okuri);
 
 		//SKK辞書サーバー
 		candidate += SearchSKKServer(searchkey);
@@ -86,7 +85,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	}
 }
 
-std::wstring SearchSKKDic(const std::wstring &searchkey)
+std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	FILE *fp;
 	std::wstring key, candidate, wsbuf, kbuf, cbuf;
@@ -101,12 +100,26 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 	}
 
 	left = 0;
-	right = (long)skkdicpos.size() - 1;
+	if(okuri.empty())
+	{
+		right = (long)skkdicpos_n.size() - 1;
+	}
+	else
+	{
+		right = (long)skkdicpos_a.size() - 1;
+	}
 
 	while(left <= right)
 	{
 		mid = left + (right - left) / 2;
-		pos = skkdicpos[mid];
+		if(okuri.empty())
+		{
+			pos = skkdicpos_n[mid];
+		}
+		else
+		{
+			pos = skkdicpos_a[mid];
+		}
 		fseek(fp, pos, SEEK_SET);
 
 		wsbuf.clear();
@@ -131,8 +144,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey)
 		size_t ridx = wsbuf.find(L"\r\n");
 		if(ridx != std::wstring::npos && ridx <= wsbuf.size())
 		{
-			wsbuf.erase(ridx);
-			wsbuf.push_back(L'\n');
+			wsbuf.erase(ridx, 1);
 		}
 
 		size_t cidx = wsbuf.find(L"\x20/");
@@ -171,10 +183,11 @@ void LoadSKKDic()
 	PWCHAR pwb = NULL;
 	long pos;
 	int okuri = -1;
-	MAP map;
 
-	skkdicpos.clear();
-	skkdicpos.shrink_to_fit();
+	skkdicpos_a.clear();
+	skkdicpos_a.shrink_to_fit();
+	skkdicpos_n.clear();
+	skkdicpos_n.shrink_to_fit();
 
 	_wfopen_s(&fp, pathskkdic, RB);
 	if(fp == NULL)
@@ -182,7 +195,7 @@ void LoadSKKDic()
 		return;
 	}
 
-	fseek(fp, 2, SEEK_SET); //BOM
+	fseek(fp, 2, SEEK_SET); //skip BOM
 	pos = ftell(fp);
 
 	while(true)
@@ -207,14 +220,7 @@ void LoadSKKDic()
 		size_t ridx = wsbuf.find(L"\r\n");
 		if(ridx != std::wstring::npos && ridx <= wsbuf.size())
 		{
-			wsbuf.erase(ridx);
-			wsbuf.push_back(L'\n');
-		}
-
-		size_t cidx = wsbuf.find(L"\x20/");
-		if(cidx != std::wstring::npos && cidx <= wsbuf.size())
-		{
-			key = wsbuf.substr(0, cidx);
+			wsbuf.erase(ridx, 1);
 		}
 
 		if(wsbuf.compare(EntriesAri) == 0)
@@ -225,9 +231,19 @@ void LoadSKKDic()
 		{
 			okuri = 0;
 		}
-		else if(okuri != -1)
+		else
 		{
-			map.insert(MAP::value_type(key, pos));
+			switch(okuri)
+			{
+			case 1:
+				skkdicpos_a.push_back(pos);
+				break;
+			case 0:
+				skkdicpos_n.push_back(pos);
+				break;
+			default:
+				break;
+			}
 		}
 
 		pos = ftell(fp);
@@ -235,10 +251,7 @@ void LoadSKKDic()
 
 	fclose(fp);
 
-	FORWARD_ITERATION_I(map_itr, map)
-	{
-		skkdicpos.push_back(map_itr->second);
-	}
+	std::reverse(skkdicpos_a.begin(), skkdicpos_a.end());
 }
 
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)
@@ -313,7 +326,8 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 int lua_search_skk_dictionary(lua_State *lua)
 {
 	std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
-	std::wstring candidate = SearchSKKDic(searchkey);
+	std::wstring okurikey = U8TOWC(lua_tostring(lua, 2));
+	std::wstring candidate = SearchSKKDic(searchkey, okurikey);
 
 	lua_pushstring(lua, WCTOU8(candidate));
 

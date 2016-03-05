@@ -34,7 +34,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey);
 
 // SearchDictionary
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);
-std::wstring SearchSKKDic(const std::wstring &searchkey);
+std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &okuri);
 void LoadSKKDic();
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri);
 std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &okuri);
