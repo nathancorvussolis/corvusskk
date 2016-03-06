@@ -4,8 +4,10 @@
 #include "utf8.h"
 #include "imcrvmgr.h"
 
+//エントリの行頭位置
 typedef std::vector<long> POS;
-POS skkdicpos_a, skkdicpos_n;
+POS skkdicpos_a; //送りありエントリ
+POS skkdicpos_n; //送りなしエントリ
 
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
@@ -90,7 +92,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 	FILE *fp;
 	std::wstring key, candidate, wsbuf, kbuf, cbuf;
 	WCHAR wbuf[READBUFSIZE];
-	PWCHAR pwb = NULL;
+	PWCHAR pwb;
 	long pos, left, mid, right;
 
 	_wfopen_s(&fp, pathskkdic, RB);
@@ -178,9 +180,8 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 void LoadSKKDic()
 {
 	FILE *fp;
-	std::wstring wsbuf, key;
 	WCHAR wbuf[READBUFSIZE];
-	PWCHAR pwb = NULL;
+	PWCHAR pwb;
 	long pos;
 	int okuri = -1;
 
@@ -200,13 +201,9 @@ void LoadSKKDic()
 
 	while(true)
 	{
-		wsbuf.clear();
-
 		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
 		{
-			wsbuf += wbuf;
-
-			if(!wsbuf.empty() && wsbuf.back() == L'\n')
+			if(wcschr(wbuf, L'\n') != NULL)
 			{
 				break;
 			}
@@ -217,17 +214,17 @@ void LoadSKKDic()
 			break;
 		}
 
-		size_t ridx = wsbuf.find(L"\r\n");
-		if(ridx != std::wstring::npos && ridx <= wsbuf.size())
+		if((pwb = wcsstr(wbuf, L"\r\n")) != NULL)
 		{
-			wsbuf.erase(ridx, 1);
+			*pwb = L'\n';
+			*(pwb + 1) = L'\0';
 		}
 
-		if(wsbuf.compare(EntriesAri) == 0)
+		if(wcscmp(EntriesAri, wbuf) == 0)
 		{
 			okuri = 1;
 		}
-		else if(wsbuf.compare(EntriesNasi) == 0)
+		else if(wcscmp(EntriesNasi, wbuf) == 0)
 		{
 			okuri = 0;
 		}
