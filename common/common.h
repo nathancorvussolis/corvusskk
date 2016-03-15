@@ -5,20 +5,20 @@
 #include "version.h"
 
 #define MAX_KRNLOBJNAME		256
-#define CONV_POINT_NUM		256
-#define KEYRELEN			256
-#define PRESERVEDKEY_NUM	2		//ON/OFF
-#define MAX_PRESERVEDKEY	8
-#define MAX_SELKEY_C		9
-
-#define MAX_SKKSERVER_HOST	(255 + 1)
-#define MAX_SKKSERVER_PORT	(5 + 1)
-
-#define MAX_WIDTH_DEFAULT	800
-
 #define PIPEBUFSIZE			0x2000	//named pipe, 16KB with wchar_t
 #define READBUFSIZE			0x800	//read skk dictionary, 4KB with wchar_t/char
 #define RECVBUFSIZE			0x800	//receive from skk server, 2KB with char
+
+#define MAX_SKKSERVER_HOST	(255 + 1)	//SKKサーバー ホスト 読み込みバッファ
+#define MAX_SKKSERVER_PORT	(5 + 1)		//SKKサーバー ポート 読み込みバッファ
+#define COMPMULTIDISP_NUM	3		//複数補完/複数動的補完の表示数
+#define MAX_SELKEY_C		9		//候補一覧選択キー最大数
+#define MAX_SELKEY			7		//候補一覧選択キー数
+#define MAX_WIDTH_DEFAULT	800		//候補一覧の最大幅
+#define PRESERVEDKEY_NUM	2		//キー設定ON/OFF
+#define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
+#define MAX_KEYRE			256		//キー１/２ 読み込みバッファ
+#define MAX_CONV_POINT		256		//変換位置指定最大数
 
 //request
 #define REQ_SEARCH			L'1'	//辞書検索

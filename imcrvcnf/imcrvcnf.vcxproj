@@ -201,9 +201,10 @@
   <ItemGroup>
     <ClCompile Include="ConfigCnf.cpp" />
     <ClCompile Include="convtable.cpp" />
-    <ClCompile Include="DlgProcDisplay.cpp" />
-    <ClCompile Include="DlgProcBehavior.cpp" />
+    <ClCompile Include="DlgProcBehavior1.cpp" />
+    <ClCompile Include="DlgProcBehavior2.cpp" />
     <ClCompile Include="DlgProcConvPoint.cpp" />
+    <ClCompile Include="DlgProcDisplay.cpp" />
     <ClCompile Include="DlgProcDictionary.cpp" />
     <ClCompile Include="DlgProcDisplayAttr.cpp" />
     <ClCompile Include="DlgProcJLatin.cpp" />

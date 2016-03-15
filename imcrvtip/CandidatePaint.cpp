@@ -366,14 +366,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 			}
 		}
 
-		if(_pTextService->cx_verticalcand || _comp)
-		{
-			s.append(markNBSP);
-		}
-		else
-		{
-			s.append(markCandEnd);
-		}
+		s.append(markNBSP);
 		break;
 
 	case CL_COLOR_NO:

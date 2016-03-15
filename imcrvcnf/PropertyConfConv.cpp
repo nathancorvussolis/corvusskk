@@ -6,7 +6,7 @@
 
 #define CONFKANALEN 0x100
 
-WCHAR conv_point[CONV_POINT_NUM][3][2];
+WCHAR conv_point[MAX_CONV_POINT][3][2];
 std::vector<ROMAN_KANA_CONV> roman_kana_conv;
 ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
 TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
@@ -47,7 +47,7 @@ void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName,
 
 void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 {
-	WCHAR keyre[KEYRELEN];
+	WCHAR keyre[MAX_KEYRE];
 
 	GetDlgItemTextW(hDlg, nIDDlgItem, keyre, _countof(keyre));
 	WriterKey(pXmlWriter, lpKeyName, keyre);
@@ -257,7 +257,7 @@ void LoadConfigConvPoint()
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if(i >= CONV_POINT_NUM)
+			if(i >= MAX_CONV_POINT)
 			{
 				break;
 			}
@@ -300,7 +300,7 @@ void LoadConvPoint(HWND hwnd)
 
 	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 
-	for(int i = 0; i < CONV_POINT_NUM; i++)
+	for(int i = 0; i < MAX_CONV_POINT; i++)
 	{
 		if(conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
@@ -335,7 +335,7 @@ void SaveConvPoint(HWND hwnd)
 	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_CONVPOINT);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for(int i = 0; i < count && i < CONV_POINT_NUM; i++)
+	for(int i = 0; i < count && i < MAX_CONV_POINT; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
 		wcsncpy_s(conv_point[i][0], key, _TRUNCATE);
@@ -344,7 +344,7 @@ void SaveConvPoint(HWND hwnd)
 		ListView_GetItemText(hWndListView, i, 2, key, _countof(key));
 		wcsncpy_s(conv_point[i][2], key, _TRUNCATE);
 	}
-	if(count < CONV_POINT_NUM)
+	if(count < MAX_CONV_POINT)
 	{
 		conv_point[count][0][0] = L'\0';
 		conv_point[count][1][0] = L'\0';
@@ -353,7 +353,7 @@ void SaveConvPoint(HWND hwnd)
 
 	WriterStartSection(pXmlWriter, SectionConvPoint);	//Start of SectionConvPoint
 
-	for(int i = 0; i < CONV_POINT_NUM; i++)
+	for(int i = 0; i < MAX_CONV_POINT; i++)
 	{
 		if(conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&

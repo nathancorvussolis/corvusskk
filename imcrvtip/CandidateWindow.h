@@ -101,6 +101,7 @@ private:
 	std::vector< UINT > _CandCount;
 	std::vector< UINT > _PageIndex;
 	std::vector< std::wstring > _CandStr;
+	UINT _uPageCandNum;
 
 	CTextService *_pTextService;
 	CCandidateList *_pCandidateList;

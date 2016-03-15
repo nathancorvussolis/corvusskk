@@ -8,7 +8,8 @@
 
 #define IDD_DIALOG_DICTIONARY                   110
 #define IDD_DIALOG_SKK_DIC_ADD_URL				111
-#define IDD_DIALOG_BEHAVIOR                     112
+#define IDD_DIALOG_BEHAVIOR1                    112
+#define IDD_DIALOG_BEHAVIOR2                    113
 #define IDD_DIALOG_DISPLAY                      120
 #define IDD_DIALOG_DISPLAYATTR1                 121
 #define IDD_DIALOG_DISPLAYATTR2                 122
@@ -50,10 +51,12 @@
 #define IDC_CHECKBOX_DELOKURICNCL               1209
 #define IDC_CHECKBOX_BACKINCENTER               1210
 #define IDC_CHECKBOX_ADDCANDKTKN                1211
-#define IDC_CHECKBOX_STACOMPMULTI               1212
-#define IDC_CHECKBOX_DYNAMINCOMP                1213
-#define IDC_CHECKBOX_DYNCOMPMULTI               1214
-#define IDC_CHECKBOX_COMPUSERDIC                1215
+
+#define IDC_COMBO_COMPMULTINUM                  1301
+#define IDC_CHECKBOX_STACOMPMULTI               1302
+#define IDC_CHECKBOX_DYNAMINCOMP                1303
+#define IDC_CHECKBOX_DYNCOMPMULTI               1304
+#define IDC_CHECKBOX_COMPUSERDIC                1305
 
 #define IDC_EDIT_FONTNAME                       2001
 #define IDC_EDIT_FONTPOINT                      2002

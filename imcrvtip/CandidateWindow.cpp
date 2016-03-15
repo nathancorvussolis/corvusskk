@@ -436,7 +436,20 @@ void CCandidateWindow::_InitList()
 
 	if(!_comp)
 	{
-		_uShowedCount = (UINT)_pTextService->cx_untilcandlist - 1;
+		_uPageCandNum = MAX_SELKEY;
+	}
+	else
+	{
+		_uPageCandNum = _pTextService->cx_compmultinum;
+		if(_uPageCandNum > MAX_SELKEY_C || _uPageCandNum < 1)
+		{
+			_uPageCandNum = MAX_SELKEY;
+		}
+	}
+
+	if(!_comp)
+	{
+		_uShowedCount = _pTextService->cx_untilcandlist - 1;
 	}
 	else
 	{
@@ -449,7 +462,7 @@ void CCandidateWindow::_InitList()
 	{
 		if(!_comp)
 		{
-			_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY)][0]);
+			_CandStr.push_back(_pTextService->selkey[(i % _uPageCandNum)][0]);
 			_CandStr[i].append(markNo);
 		}
 		else
@@ -474,15 +487,15 @@ void CCandidateWindow::_InitList()
 		}
 	}
 
-	_uPageCnt = ((_uCount - (_uCount % MAX_SELKEY)) / MAX_SELKEY) + ((_uCount % MAX_SELKEY) == 0 ? 0 : 1);
+	_uPageCnt = ((_uCount - (_uCount % _uPageCandNum)) / _uPageCandNum) + ((_uCount % _uPageCandNum) == 0 ? 0 : 1);
 
 	_PageIndex.clear();
 	_CandCount.clear();
 	for(i = 0; i < _uPageCnt; i++)
 	{
-		_PageIndex.push_back(i * MAX_SELKEY);
-		_CandCount.push_back((i < (_uPageCnt - 1)) ? MAX_SELKEY :
-			(((_uCount % MAX_SELKEY) == 0) ? MAX_SELKEY : (_uCount % MAX_SELKEY)));
+		_PageIndex.push_back(i * _uPageCandNum);
+		_CandCount.push_back((i < (_uPageCnt - 1)) ? _uPageCandNum :
+			(((_uCount % _uPageCandNum) == 0) ? _uPageCandNum : (_uCount % _uPageCandNum)));
 	}
 
 	_uIndex = 0;

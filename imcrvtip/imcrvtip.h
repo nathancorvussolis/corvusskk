@@ -87,9 +87,6 @@ typedef struct ROMAN_KANA_NODE {
 #define TKB_NEXT_PAGE	L'\uF003'	//next page key on touch-optimized keyboard
 #define TKB_PREV_PAGE	L'\uF004'	//previous page key on touch-optimized keyboard
 
-//候補一覧選択キー数
-#define MAX_SELKEY		7
-
 #define CL_COLOR_BG		0	//背景
 #define CL_COLOR_FR		1	//枠
 #define CL_COLOR_SE		2	//選択
@@ -123,7 +120,6 @@ extern const GUID c_guidDisplayAttributeConvAnnot;
 
 extern LPCWSTR markNo;
 extern LPCWSTR markAnnotation;
-extern LPCWSTR markCandEnd;
 extern LPCWSTR markCursor;
 extern LPCWSTR markReg;
 extern LPCWSTR markRegL;

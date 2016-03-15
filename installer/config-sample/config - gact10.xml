@@ -63,6 +63,7 @@
     <key name="delokuricncl" value="0" />
     <key name="backincenter" value="1" />
     <key name="addcandktkn" value="0" />
+    <key name="compmultinum" value="3" />
     <key name="stacompmulti" value="0" />
     <key name="dynamiccomp" value="0" />
     <key name="dyncompmulti" value="0" />

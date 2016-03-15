@@ -331,7 +331,7 @@ public:
 	COLORREF cx_colors[DISPLAY_COLOR_NUM];		//候補一覧の色
 	BOOL cx_drawapi;			//候補一覧の描画API(FALSE:GDI/TRUE:Direct2D)
 	BOOL cx_colorfont;			//候補一覧の描画API 彩色(Direct2Dのときカラーフォントにする)
-	size_t cx_untilcandlist;	//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
+	UINT cx_untilcandlist;		//候補一覧表示に要する変換回数(0:表示なし/1:1回目)
 	BOOL cx_verticalcand;		//候補一覧を縦に表示する
 	BOOL cx_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL cx_annotation;			//注釈を表示する
@@ -348,6 +348,8 @@ public:
 	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
+
+	UINT cx_compmultinum;		//複数補完/複数動的補完の表示数
 	BOOL cx_stacompmulti;		//複数補完を使用する
 	BOOL cx_dynamiccomp;		//動的補完を使用する
 	BOOL cx_dyncompmulti;		//複数動的補完を使用する

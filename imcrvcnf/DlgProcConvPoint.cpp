@@ -63,7 +63,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				ListView_SetItemText(hWndListView, index, 2, key);
 			}
-			else if(count < CONV_POINT_NUM)
+			else if(count < MAX_CONV_POINT)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 

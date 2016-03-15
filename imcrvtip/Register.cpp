@@ -7,7 +7,7 @@
 #ifndef _DEBUG
 #define TEXTSERVICE_ICON_INDEX  0	// see resource script file
 #else
-#define TEXTSERVICE_ICON_INDEX  1
+#define TEXTSERVICE_ICON_INDEX  12
 #endif
 
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";

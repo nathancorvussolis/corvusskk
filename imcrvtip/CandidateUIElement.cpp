@@ -37,6 +37,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_CandCount.clear();
 	_PageIndex.clear();
 	_CandStr.clear();
+	_uPageCandNum = 0;
 
 	hFont = NULL;
 

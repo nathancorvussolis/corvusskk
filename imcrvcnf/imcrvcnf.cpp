@@ -37,7 +37,8 @@ void CreateProperty()
 		DLGPROC DlgProc;
 	} DlgPage[] = {
 		{IDD_DIALOG_DICTIONARY,		DlgProcDictionary},
-		{IDD_DIALOG_BEHAVIOR,		DlgProcBehavior},
+		{IDD_DIALOG_BEHAVIOR1,		DlgProcBehavior1},
+		{IDD_DIALOG_BEHAVIOR2,		DlgProcBehavior2},
 		{IDD_DIALOG_DISPLAY,		DlgProcDisplay},
 		{IDD_DIALOG_DISPLAYATTR1,	DlgProcDisplayAttrInput},
 		{IDD_DIALOG_DISPLAYATTR2,	DlgProcDisplayAttrConv},

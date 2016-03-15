@@ -123,7 +123,6 @@ const GUID c_guidDisplayAttributeConvAnnot =
 
 LPCWSTR markNo = L":";
 LPCWSTR markAnnotation = L";";
-LPCWSTR markCandEnd = L"\u3000";
 LPCWSTR markCursor = L"|";
 LPCWSTR markReg = L"登録";
 LPCWSTR markRegL = L"[";
