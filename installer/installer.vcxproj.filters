@@ -131,37 +131,40 @@
     <Image Include="resource-md\01_dictionary.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\02_behavior.png">
+    <Image Include="resource-md\02_behavior_1.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\03_display.png">
+    <Image Include="resource-md\03_behavior_2.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\04_display_attribute_1.png">
+    <Image Include="resource-md\04_display.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\05_display_attribute_2.png">
+    <Image Include="resource-md\05_display_attribute_1.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\06_select_key.png">
+    <Image Include="resource-md\06_display_attribute_2.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\07_on_off_key.png">
+    <Image Include="resource-md\07_select_key.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\08_key1_character.png">
+    <Image Include="resource-md\08_on_off_key.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\09_key2_virtual_key.png">
+    <Image Include="resource-md\09_key1_character.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\10_conversion_point.png">
+    <Image Include="resource-md\10_key2_virtual_key.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\11_kana.png">
+    <Image Include="resource-md\11_conversion_point.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="resource-md\12_full_width_latin.png">
+    <Image Include="resource-md\12_kana.png">
+      <Filter>resource-md</Filter>
+    </Image>
+    <Image Include="resource-md\13_full_width_latin.png">
       <Filter>resource-md</Filter>
     </Image>
     <Image Include="resource-md\20_key_and_mode.png">
