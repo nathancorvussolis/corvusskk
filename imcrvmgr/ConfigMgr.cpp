@@ -73,9 +73,11 @@ void CreateConfigPath()
 		//for compatibility
 		if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
 		{
-			WCHAR skkdictdic[MAX_PATH];
-			_snwprintf_s(skkdictdic, _TRUNCATE, L"%s\\%s", appdir, L"skkdict.dic");
-			CopyFileW(skkdictdic, pathskkdic, TRUE);
+			WCHAR skkdict[MAX_PATH];
+			_snwprintf_s(skkdict, _TRUNCATE, L"%s\\%s", appdir, L"skkdict.dic");
+			MoveFileW(skkdict, pathskkdic);
+			_snwprintf_s(skkdict, _TRUNCATE, L"%s\\%s", appdir, L"skkdict.idx");
+			DeleteFileW(skkdict);
 		}
 	}
 
