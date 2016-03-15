@@ -63,7 +63,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
 	if(IsFileUpdated(pathskkdic, &ftSKKDic))
 	{
-		LoadSKKDic();
+		MakeSKKDicPos();
 	}
 
 	InitLua();
@@ -514,7 +514,7 @@ unsigned int __stdcall SrvThread(void *p)
 
 		if(IsFileUpdated(pathskkdic, &ftSKKDic))
 		{
-			LoadSKKDic();
+			MakeSKKDicPos();
 		}
 
 		ZeroMemory(pipebuf, sizeof(pipebuf));

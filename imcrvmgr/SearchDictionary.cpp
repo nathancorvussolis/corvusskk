@@ -90,10 +90,11 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	FILE *fp;
-	std::wstring key, candidate, wsbuf, kbuf, cbuf;
+	std::wstring candidate, wsbuf, kbuf, cbuf;
 	WCHAR wbuf[READBUFSIZE];
 	PWCHAR pwb;
 	long pos, left, mid, right;
+	size_t cidx;
 
 	_wfopen_s(&fp, pathskkdic, RB);
 	if(fp == NULL)
@@ -143,17 +144,19 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 			break;
 		}
 
-		size_t ridx = wsbuf.find(L"\r\n");
-		if(ridx != std::wstring::npos && ridx <= wsbuf.size())
+		if((cidx = wsbuf.find_last_of(L'/')) != std::wstring::npos)
 		{
-			wsbuf.erase(ridx, 1);
+			wsbuf.erase(cidx + 1);
+			wsbuf.push_back(L'\n');
 		}
 
-		size_t cidx = wsbuf.find(L"\x20/");
-		if(cidx != std::wstring::npos && cidx < wsbuf.size())
+		if((cidx = wsbuf.find_first_of(L'\x20')) != std::wstring::npos)
 		{
 			kbuf = wsbuf.substr(0, cidx);
-			cbuf = wsbuf.substr(cidx + 1);
+			if((cidx = wsbuf.find_first_of(L'/', cidx)) != std::wstring::npos)
+			{
+				cbuf = wsbuf.substr(cidx);
+			}
 		}
 
 		int cmpkey = searchkey.compare(kbuf);
@@ -177,11 +180,11 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 	return candidate;
 }
 
-void LoadSKKDic()
+void MakeSKKDicPos()
 {
 	FILE *fp;
 	WCHAR wbuf[READBUFSIZE];
-	PWCHAR pwb;
+	PWCHAR pwb, pwn;
 	long pos;
 	int okuri = -1;
 
@@ -203,8 +206,13 @@ void LoadSKKDic()
 	{
 		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
 		{
-			if(wcschr(wbuf, L'\n') != NULL)
+			if((pwn = wcschr(wbuf, L'\n')) != NULL)
 			{
+				if((pwn != wbuf) && (*(pwn - 1) == L'\r'))
+				{
+					*(pwn - 1) = L'\n';
+					*pwn = L'\0';
+				}
 				break;
 			}
 		}
@@ -212,12 +220,6 @@ void LoadSKKDic()
 		if(pwb == NULL)
 		{
 			break;
-		}
-
-		if((pwb = wcsstr(wbuf, L"\r\n")) != NULL)
-		{
-			*pwb = L'\n';
-			*(pwb + 1) = L'\0';
 		}
 
 		if(wcscmp(EntriesAri, wbuf) == 0)
