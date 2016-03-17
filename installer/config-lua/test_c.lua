@@ -7,7 +7,7 @@ function _M.search_user_dictionary(key, okuri)
 	return ""
 end
 
-function _M.search_skk_dictionary(key)
+function _M.search_skk_dictionary(key, okuri)
 	local ret = ""
 
 	if (key == "きr") then
