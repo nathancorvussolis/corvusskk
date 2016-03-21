@@ -600,8 +600,6 @@ void MakeSKKDicWaitThread(void *p)
 	}
 	else
 	{
-		_wremove(pathskkdic);
-
 		LPCWSTR errmsg = L"";
 		switch(SkkDicInfo.error)
 		{
