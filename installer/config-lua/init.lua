@@ -830,7 +830,7 @@ local function parse_string(s)
 	s = string.gsub(s, "^\"(.*)\"$", "%1")
 
 	-- バックスラッシュ
-	s = string.gsub(s, "\\\\", bsrep);
+	s = string.gsub(s, "\\\\", bsrep)
 	-- 二重引用符
 	s = string.gsub(s, "\\\"", "\"")
 	-- 空白文字
@@ -852,7 +852,7 @@ local function parse_string(s)
 	-- 意味なしエスケープ
 	s = string.gsub(s, "\\", "")
 	-- バックスラッシュ
-	s = string.gsub(s, bsrep, "\\");
+	s = string.gsub(s, bsrep, "\\")
 
 	ret = s
 
@@ -869,7 +869,7 @@ function convert_s_to_table(s)
 	local r = ""
 	local bsrep = "\u{f05c}"
 
-	s = string.gsub(s, "\\", bsrep);
+	s = string.gsub(s, "\\", bsrep)
 
 	for i = 1, string.len(s) do
 		c = string.sub(s, i, i)
@@ -910,7 +910,7 @@ function convert_s_to_table(s)
 		end
 	end
 
-	ret = string.gsub(ret, bsrep, "\\\\");
+	ret = string.gsub(ret, bsrep, "\\\\")
 
 	return ret
 end

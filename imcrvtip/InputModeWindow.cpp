@@ -226,8 +226,6 @@ HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 
 BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext, BOOL bCandidateWindow, HWND hWnd)
 {
-	HDC hdc;
-	RECT r;
 	POINT pt = {0, 0};
 
 	if(pContext != NULL)
@@ -277,12 +275,13 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		return FALSE;
 	}
 
-	hdc = GetDC(NULL);
+	HDC hdc = GetDC(NULL);
 	_size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
 	ReleaseDC(NULL, hdc);
 
 	if(_bCandidateWindow)
 	{
+		RECT r;
 		GetClientRect(_hwndParent, &r);
 		pt.x = r.left;
 		pt.y = r.bottom;

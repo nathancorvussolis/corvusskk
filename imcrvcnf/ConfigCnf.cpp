@@ -86,15 +86,15 @@ int GetScaledSizeX(HWND hwnd, int size)
 void DrawSelectColor(HWND hDlg, int id, COLORREF col)
 {
 	RECT rect;
-	HDC hdc;
-	HWND hwnd;
 
-	hwnd = GetDlgItem(hDlg, id);
-	hdc = GetDC(hwnd);
+	HWND hwnd = GetDlgItem(hDlg, id);
+	HDC hdc = GetDC(hwnd);
+
 	SelectObject(hdc, GetStockObject(BLACK_PEN));
 	SetDCBrushColor(hdc, col);
 	SelectObject(hdc, GetStockObject(DC_BRUSH));
 	GetClientRect(hwnd, &rect);
 	Rectangle(hdc, rect.left, rect.top, rect.right, rect.bottom);
+
 	ReleaseDC(hwnd, hdc);
 }
