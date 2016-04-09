@@ -15,13 +15,99 @@
       <Payload Name="logoside.png" SourceFile="theme-bundle\logoside.png" />
     </BootstrapperApplicationRef>
 
+    <!-- v6.0 Service Pack 2 -->
+    <bal:Condition Message="This application requires Service Pack 2 for Windows Vista / Server 2008.">
+      (VersionNT &lt;&gt; v6.0) OR (VersionNT = v6.0 AND ServicePackLevel &gt;= 2)
+    </bal:Condition>
+
+    <!-- d2d1.dll version -->
+    <util:FileSearch Id="D2D1.DLL" Path="[WindowsFolder]System32\d2d1.dll"
+      Result="version" Variable="D2D1VER" />
+    <!-- DWrite.dll version -->
+    <util:FileSearch Id="DWRITE.DLL" Path="[WindowsFolder]System32\DWrite.dll"
+      Result="version" Variable="DWRITEVER" />
+
+    <!-- v6.0 KB971644 or KB971512 -->
+    <bal:Condition Message="This application requires KB971644 or KB971512 for Windows Vista / Server 2008.">
+      (VersionNT &lt;&gt; v6.0) OR (VersionNT = v6.0 AND D2D1VER AND DWRITEVER)
+    </bal:Condition>
+
+    <!-- v6.1 Service Pack 1 -->
+    <bal:Condition Message="This application requires Service Pack 1 for Windows 7 / Server 2008 R2.">
+      (VersionNT &lt;&gt; v6.1) OR (VersionNT = v6.1 AND ServicePackLevel &gt;= 1)
+    </bal:Condition>
+
+    <!-- v6.3 KB2919355 -->
+    <util:FileSearch Id="HAL.DLL" Path="[WindowsFolder]System32\hal.dll"
+      Result="version" Variable="NT603HALVER" Condition="VersionNT = v6.3" />
+    <bal:Condition Message="This application requires S14 Update (KB2919355) for Windows 8.1 / Server 2012 R2.">
+      (VersionNT &lt;&gt; v6.3) OR (VersionNT = v6.3 AND NT603HALVER &gt; v6.3.9600.16500)
+    </bal:Condition>
+
+    <!-- ucrtbase.dll version -->
+    <util:FileSearch Id="UCRTBASE.DLL" Path="[WindowsFolder]System32\ucrtbase.dll"
+      Result="version" Variable="UCRTBASEVER" />
+    <!-- universal crt version -->
+    <Variable Name="UCRTVER" Type="version" Value="10.0.10586.0" />
+
     <Chain>
+
+      <!-- Windows Vista / Windows Server 2008 (x86) -->
+      <MsuPackage Name="Windows6.0-KB3118401-x86.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows6.0-KB3118401-x86.msu" InstallCondition="VersionNT = v6.0 AND NOT VersionNT64"
+        DetectCondition="VersionNT = v6.0 AND NOT VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows Vista / Windows Server 2008 (x64) -->
+      <MsuPackage Name="Windows6.0-KB3118401-x64.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows6.0-KB3118401-x64.msu" InstallCondition="VersionNT = v6.0 AND VersionNT64"
+        DetectCondition="VersionNT = v6.0 AND VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 7 (x86) -->
+      <MsuPackage Name="Windows6.1-KB3118401-x86.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows6.1-KB3118401-x86.msu" InstallCondition="VersionNT = v6.1 AND NOT VersionNT64"
+        DetectCondition="VersionNT = v6.1 AND NOT VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 7 / Windows Server 2008 R2 (x64) -->
+      <MsuPackage Name="Windows6.1-KB3118401-x64.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows6.1-KB3118401-x64.msu" InstallCondition="VersionNT = v6.1 AND VersionNT64"
+        DetectCondition="VersionNT = v6.1 AND VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 8 (x86) -->
+      <MsuPackage Name="Windows8-RT-KB3118401-x86.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows8-RT-KB3118401-x86.msu" InstallCondition="VersionNT = v6.2 AND NOT VersionNT64"
+        DetectCondition="VersionNT = v6.2 AND NOT VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 8 / Windows Server 2012 (x64) -->
+      <MsuPackage Name="Windows8-RT-KB3118401-x64.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows8-RT-KB3118401-x64.msu" InstallCondition="VersionNT = v6.2 AND VersionNT64"
+        DetectCondition="VersionNT = v6.2 AND VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 8.1 (x86) -->
+      <MsuPackage Name="Windows8.1-KB3118401-x86.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows8.1-KB3118401-x86.msu" InstallCondition="VersionNT = v6.3 AND NOT VersionNT64"
+        DetectCondition="VersionNT = v6.3 AND NOT VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
+      <!-- Windows 8.1 / Windows Server 2012 R2 (x64) -->
+      <MsuPackage Name="Windows8.1-KB3118401-x64.msu"
+        DisplayName="Universal CRT" KB="KB3118401" Cache="no" Compressed="yes" Permanent="yes"
+        SourceFile="ucrt\Windows8.1-KB3118401-x64.msu" InstallCondition="VersionNT = v6.3 AND VersionNT64"
+        DetectCondition="VersionNT = v6.3 AND VersionNT64 AND UCRTBASEVER &gt;= UCRTVER" />
+
       <!-- x64 modules -->
       <MsiPackage Id="X64" DisplayName="x64 modules" ForcePerMachine="yes" Compressed="yes"
         SourceFile="build\x64.msi" InstallCondition="VersionNT64" />
+
       <!-- x86 modules -->
       <MsiPackage Id="X86" DisplayName="x86 modules" ForcePerMachine="yes" Compressed="yes"
         SourceFile="build\x86.msi" After="X64" />
+
     </Chain>
 
   </Bundle>

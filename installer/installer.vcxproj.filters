@@ -16,6 +16,9 @@
     <Filter Include="theme-bundle">
       <UniqueIdentifier>{69d80344-cf91-428b-bd8c-5fb2f5ee9f0a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ucrt">
+      <UniqueIdentifier>{bbd2c006-6c4f-4948-aa29-b73b905e7b58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="_build.cmd">
@@ -94,6 +97,30 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="..\README.md" />
+    <None Include="ucrt\Windows6.0-KB3118401-x64.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows6.0-KB3118401-x86.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows6.1-KB3118401-x64.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows6.1-KB3118401-x86.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows8.1-KB3118401-x64.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows8.1-KB3118401-x86.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows8-RT-KB3118401-x64.msu">
+      <Filter>ucrt</Filter>
+    </None>
+    <None Include="ucrt\Windows8-RT-KB3118401-x86.msu">
+      <Filter>ucrt</Filter>
+    </None>
     <None Include="_make_readme.cmd">
       <Filter>Installer Files</Filter>
     </None>
