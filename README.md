@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.3.1
+# CorvusSKK ver. 2.3.2
 
 Windowsで動作するSKK風のIMEです。
 
@@ -21,6 +21,8 @@ Windowsで動作するSKK風のIMEです。
 * Windows 8     (32-bit / 64-bit)
 
 * Windows 8.1   (32-bit / 64-bit)
+
+    + [S14 Update (KB2919355)](https://support.microsoft.com/ja-jp/kb/2919355)
 
 * Windows 10    (32-bit / 64-bit)
 
@@ -278,9 +280,9 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 各機能に対してキーを正規表現で設定してください。
 
-Visual C++ 2013 の 正規表現で、文法は ECMAScript を使用しています。
+Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照ください。 https://msdn.microsoft.com/en-us/library/bb982727(v=vs.120).aspx
+正規表現の詳細はこちらを参照ください。 https://msdn.microsoft.com/en-us/library/bb982727(v=vs.140).aspx
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -621,11 +623,11 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2013 Update 5
+Visual Studio Community 2015 Update 2
 
 WiX Toolset v3.10.2
 
-pandoc 1.16.0.2
+pandoc 1.17.0.2
 
 
 ### ビルド手順
