@@ -30,7 +30,7 @@ size_t UcpToWideChar(UCSCHAR ucp, PWCHAR first, PWCHAR second)
 {
 	size_t ret = 0;
 
-	if(first == NULL || second == NULL)
+	if(first == nullptr || second == nullptr)
 	{
 		return 0;
 	}
@@ -60,15 +60,15 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 {
 	CONST CHAR as = 0x00;
 	CONST CHAR ae = 0x7F;
-	CONST CHAR mask = 0x7F;
-	CONST CHAR ss2 = 0x0E | ~mask;
-	CONST CHAR ss3 = 0x0F | ~mask;
+	CONST CHAR ss2 = (CHAR)0x8E;
+	CONST CHAR ss3 = (CHAR)0x8F;
+	CONST CHAR ejd = (CHAR)0x80;
 	CONST CHAR ejs = 0x21;
 	CONST CHAR eje = 0x7E;
 	CHAR ej[2];
 	size_t srcused = 0;
 
-	if(src == NULL || srcsize == 0 || ucp1 == NULL || ucp2 == NULL)
+	if(src == nullptr || srcsize == 0 || ucp1 == nullptr || ucp2 == nullptr)
 	{
 		return 0;
 	}
@@ -92,8 +92,18 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[1] - ~mask;
-			ej[1] = src[2] - ~mask;
+			ej[0] = 0;
+			ej[1] = 0;
+
+			if((UCHAR)src[1] >= (UCHAR)ejd)
+			{
+				ej[0] = (CHAR)((UCHAR)src[1] - (UCHAR)ejd);
+			}
+
+			if((UCHAR)src[2] >= (UCHAR)ejd)
+			{
+				ej[1] = (CHAR)((UCHAR)src[2] - (UCHAR)ejd);
+			}
 
 			if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
@@ -113,7 +123,12 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[1] - ~mask;
+			ej[0] = 0;
+
+			if((UCHAR)src[1] >= (UCHAR)ejd)
+			{
+				ej[0] = (CHAR)((UCHAR)src[1] - (UCHAR)ejd);
+			}
 
 			if(ej[0] >= ejs && ej[0] <= eje)
 			{
@@ -129,8 +144,18 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 				break;
 			}
 
-			ej[0] = src[0] - ~mask;
-			ej[1] = src[1] - ~mask;
+			ej[0] = 0;
+			ej[1] = 0;
+
+			if((UCHAR)src[0] >= (UCHAR)ejd)
+			{
+				ej[0] = (CHAR)((UCHAR)src[0] - (UCHAR)ejd);
+			}
+
+			if((UCHAR)src[1] >= (UCHAR)ejd)
+			{
+				ej[1] = (CHAR)((UCHAR)src[1] - (UCHAR)ejd);
+			}
 
 			if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
@@ -168,12 +193,12 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 
 void AddNullWideChar(size_t *srcsize, size_t si, LPWSTR dst, size_t *dstsize, size_t di)
 {
-	if(srcsize != NULL)
+	if(srcsize != nullptr)
 	{
 		*srcsize = si;
 	}
 	*dstsize = di + 1;
-	if(dst != NULL)
+	if(dst != nullptr)
 	{
 		*(dst + di) = L'\0';
 	}
@@ -188,23 +213,23 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	WCHAR utf16[2][2];
 	size_t utf16num[2];
 
-	if(dstsize == NULL)
+	if(dstsize == nullptr)
 	{
 		return FALSE;
 	}
 
-	if(dst == NULL)
+	if(dst == nullptr)
 	{
 		*dstsize = (size_t)-1;
 	}
 
-	if(src == NULL)
+	if(src == nullptr)
 	{
 		*dstsize = 0;
 		return FALSE;
 	}
 
-	if(srcsize != NULL)
+	if(srcsize != nullptr)
 	{
 		ss = *srcsize;
 	}
@@ -243,7 +268,7 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 
 		for(int i = 0; i < 2; i++)
 		{
-			if(dst != NULL)
+			if(dst != nullptr)
 			{
 				for(int j = 0; j < (int)utf16num[i] && j < 2; j++)
 				{
@@ -262,12 +287,12 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 
 void AddNullEucJis2004(size_t *srcsize, size_t si, LPSTR dst, size_t *dstsize, size_t di)
 {
-	if(srcsize != NULL)
+	if(srcsize != nullptr)
 	{
 		*srcsize = si;
 	}
 	*dstsize = di + 1;
-	if(dst != NULL)
+	if(dst != nullptr)
 	{
 		*(dst + di) = '\0';
 	}
@@ -277,32 +302,32 @@ void AddNullEucJis2004(size_t *srcsize, size_t si, LPSTR dst, size_t *dstsize, s
 
 BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsize)
 {
-	CONST CHAR mask = 0x7F;
-	CONST CHAR ss2 = 0x0E | ~mask;
-	CONST CHAR ss3 = 0x0F | ~mask;
+	CONST CHAR ss2 = (CHAR)0x8E;
+	CONST CHAR ss3 = (CHAR)0x8F;
+	CONST CHAR ejd = (CHAR)0x80;
 	CONST CHAR ejs = 0x21;
 	size_t si = 0, di = 0, ss = -1;
 	WCHAR first, second;
 	UCSCHAR ucp;
 	BOOL exist;
 
-	if(dstsize == NULL)
+	if(dstsize == nullptr)
 	{
 		return FALSE;
 	}
 
-	if(dst == NULL)
+	if(dst == nullptr)
 	{
 		*dstsize = (size_t)-1;
 	}
 
-	if(src == NULL)
+	if(src == nullptr)
 	{
 		*dstsize = 0;
 		return FALSE;
 	}
 
-	if(srcsize != NULL)
+	if(srcsize != nullptr)
 	{
 		ss = *srcsize;
 	}
@@ -321,7 +346,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 				AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 				return FALSE;
 			}
-			if(dst != NULL)
+			if(dst != nullptr)
 			{
 				*(dst + di) = (CHAR)*(src + si);
 			}
@@ -363,7 +388,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 						return FALSE;
 					}
-					if(dst != NULL)
+					if(dst != nullptr)
 					{
 						*(dst + di) = euccmb[i].euc >> 8;
 						*(dst + di + 1) = euccmb[i].euc & 0xFF;
@@ -388,10 +413,10 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 								return FALSE;
 							}
-							if(dst != NULL)
+							if(dst != nullptr)
 							{
-								*(dst + di) = (ejs + i) | ~mask;
-								*(dst + di + 1) = (ejs + j) | ~mask;
+								*(dst + di) = (CHAR)((UCHAR)(ejs + i) + (UCHAR)ejd);
+								*(dst + di + 1) = (CHAR)((UCHAR)(ejs + j) + (UCHAR)ejd);
 							}
 							di += 2;
 							if(ucp != first)	//surrogate pair
@@ -409,11 +434,11 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 								return FALSE;
 							}
-							if(dst != NULL)
+							if(dst != nullptr)
 							{
 								*(dst + di) = ss3;
-								*(dst + di + 1) = (ejs + i) | ~mask;
-								*(dst + di + 2) = (ejs + j) | ~mask;
+								*(dst + di + 1) = (CHAR)((UCHAR)(ejs + i) + (UCHAR)ejd);
+								*(dst + di + 2) = (CHAR)((UCHAR)(ejs + j) + (UCHAR)ejd);
 							}
 							di += 3;
 							if(ucp != first)	//surrogate pair
@@ -443,10 +468,10 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 							AddNullEucJis2004(srcsize, si, dst, dstsize, di);
 							return FALSE;
 						}
-						if(dst != NULL)
+						if(dst != nullptr)
 						{
 							*(dst + di) = ss2;
-							*(dst + di + 1) = (ejs + i) | ~mask;
+							*(dst + di + 1) = (CHAR)((UCHAR)(ejs + i) + (UCHAR)ejd);
 						}
 						di += 2;
 						exist = TRUE;
@@ -472,13 +497,13 @@ std::string wstring_to_eucjis2004_string(const std::wstring &s)
 	std::string ret;
 	size_t len;
 
-	BOOL b = WideCharToEucJis2004(s.c_str(), NULL, NULL, &len);
+	BOOL b = WideCharToEucJis2004(s.c_str(), nullptr, nullptr, &len);
 	if(b && len > 0)
 	{
 		try
 		{
 			LPSTR euc = new CHAR[len];
-			WideCharToEucJis2004(s.c_str(), NULL, euc, &len);
+			WideCharToEucJis2004(s.c_str(), nullptr, euc, &len);
 			ret = euc;
 			delete[] euc;
 		}
@@ -495,13 +520,13 @@ std::wstring eucjis2004_string_to_wstring(const std::string &s)
 	std::wstring ret;
 	size_t len;
 
-	BOOL b = EucJis2004ToWideChar(s.c_str(), NULL, NULL, &len);
+	BOOL b = EucJis2004ToWideChar(s.c_str(), nullptr, nullptr, &len);
 	if(b && len > 0)
 	{
 		try
 		{
 			LPWSTR wcs = new WCHAR[len];
-			EucJis2004ToWideChar(s.c_str(), NULL, wcs, &len);
+			EucJis2004ToWideChar(s.c_str(), nullptr, wcs, &len);
 			ret = wcs;
 			delete[] wcs;
 		}

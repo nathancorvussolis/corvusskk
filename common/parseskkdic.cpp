@@ -24,7 +24,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	switch(bom)
 	{
 	case BOM:
-		while((rp = fgetws(wbuf, _countof(wbuf), fp)) != NULL)
+		while((rp = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
 		{
 			wsbuf += wbuf;
 
@@ -35,7 +35,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		}
 		break;
 	default:
-		while((rp = fgets(buf, _countof(buf), fp)) != NULL)
+		while((rp = fgets(buf, _countof(buf), fp)) != nullptr)
 		{
 			sbuf += buf;
 
@@ -47,7 +47,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		break;
 	}
 
-	if(rp == NULL)
+	if(rp == nullptr)
 	{
 		return -1;
 	}
@@ -233,7 +233,7 @@ std::wstring ParseConcat(const std::wstring &s)
 			numstr += res.prefix();
 			numtmpstr = res.str();
 			numtmpstr[0] = L'0';
-			u = (wchar_t)wcstoul(numtmpstr.c_str(), NULL, 0);
+			u = (wchar_t)wcstoul(numtmpstr.c_str(), nullptr, 0);
 			if(u >= L'\x20' && u <= L'\x7E')
 			{
 				numstr.append(1, u);

@@ -130,14 +130,14 @@ BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, 
 	HCRYPTPROV hProv = NULL;
 	HCRYPTHASH hHash = NULL;
 
-	if(digest == NULL || data == NULL)
+	if(digest == nullptr || data == nullptr)
 	{
 		return FALSE;
 	}
 
 	ZeroMemory(digest, digestlen);
 
-	if(CryptAcquireContextW(&hProv, NULL, NULL, dwProvType, CRYPT_VERIFYCONTEXT))
+	if(CryptAcquireContextW(&hProv, nullptr, nullptr, dwProvType, CRYPT_VERIFYCONTEXT))
 	{
 		if(CryptCreateHash(hProv, AlgId, 0, 0, &hHash))
 		{
@@ -198,7 +198,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
 	GUID lguid = rguid;
 
 	PBYTE pMessage = (PBYTE)LocalAlloc(LPTR, sizeof(lguid) + namelen);
-	if(pMessage != NULL)
+	if(pMessage != nullptr)
 	{
 		//network byte order
 		lguid.Data1 = htonlc(lguid.Data1);
@@ -242,25 +242,25 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 	DWORD dwLength = 0;
 	DWORD dwUserSidLen = 0;
 
-	if(ppLogonInfo == NULL)
+	if(ppLogonInfo == nullptr)
 	{
 		return FALSE;
 	}
 
-	*ppLogonInfo = NULL;
+	*ppLogonInfo = nullptr;
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
-		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
 		PTOKEN_USER pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
-		if(pTokenUser != NULL)
+		if(pTokenUser != nullptr)
 		{
 			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
 				dwUserSidLen = GetLengthSid(pTokenUser->User.Sid);
 				*ppLogonInfo = (PBYTE)LocalAlloc(LPTR, dwUserSidLen + sizeof(LUID));
-				if(*ppLogonInfo != NULL)
+				if(*ppLogonInfo != nullptr)
 				{
 					bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
 				}
@@ -301,7 +301,7 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 
 		if(!bRet)
 		{
-			if(*ppLogonInfo != NULL)
+			if(*ppLogonInfo != nullptr)
 			{
 				LocalFree(*ppLogonInfo);
 			}
@@ -316,12 +316,12 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 BOOL GetUserUUID(LPWSTR *ppszUUID)
 {
 	BOOL bRet = FALSE;
-	PBYTE pLogonInfo = NULL;
+	PBYTE pLogonInfo = nullptr;
 	//8c210750-6502-4a83-ae5c-88d86cb96f24
 	const GUID NamespaceLogonInfo =
 	{0x8c210750, 0x6502, 0x4a83, {0xae, 0x5c, 0x88, 0xd8, 0x6c, 0xb9, 0x6f, 0x24}};
 
-	if(ppszUUID == NULL)
+	if(ppszUUID == nullptr)
 	{
 		return FALSE;
 	}
@@ -332,7 +332,7 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)LocalSize(pLogonInfo), &uuid))
 		{
 			*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
-			if(*ppszUUID != NULL)
+			if(*ppszUUID != nullptr)
 			{
 				_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
 					L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
@@ -356,19 +356,19 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	BOOL bRet = FALSE;
 	HANDLE hToken = INVALID_HANDLE_VALUE;
 	DWORD dwLength = 0;
-	PTOKEN_USER pTokenUser = NULL;
+	PTOKEN_USER pTokenUser = nullptr;
 
-	if(ppszUserSid == NULL)
+	if(ppszUserSid == nullptr)
 	{
 		return FALSE;
 	}
 
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
-		GetTokenInformation(hToken, TokenUser, NULL, 0, &dwLength);
+		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
 		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
-		if(pTokenUser != NULL)
+		if(pTokenUser != nullptr)
 		{
 			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
@@ -393,7 +393,7 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 	if(GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(path, L'\\');
-		if(pdir != NULL)
+		if(pdir != nullptr)
 		{
 			*(pdir + 1) = L'\0';
 			wcsncat_s(path, lpFileName, _TRUNCATE);
@@ -404,7 +404,7 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 	ZeroMemory(&si, sizeof(si));
 	si.cb = sizeof(si);
 
-	BOOL bRet = CreateProcessW(path, NULL, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi);
+	BOOL bRet = CreateProcessW(path, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 	if(bRet)
 	{
 		CloseHandle(pi.hProcess);

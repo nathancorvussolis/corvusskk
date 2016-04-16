@@ -117,7 +117,7 @@ STDAPI CTextService::OnSetFocus(BOOL fForeground)
 
 STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -141,7 +141,7 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 
 STDAPI CTextService::OnKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -158,7 +158,7 @@ STDAPI CTextService::OnKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BO
 
 STDAPI CTextService::OnTestKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -170,7 +170,7 @@ STDAPI CTextService::OnTestKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, 
 
 STDAPI CTextService::OnKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -182,7 +182,7 @@ STDAPI CTextService::OnKeyUp(ITfContext *pic, WPARAM wParam, LPARAM lParam, BOOL
 
 STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEaten)
 {
-	if(pic == NULL || pfEaten == NULL)
+	if(pic == nullptr || pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}

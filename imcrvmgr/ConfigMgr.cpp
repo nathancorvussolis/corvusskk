@@ -40,12 +40,12 @@ const luaL_Reg luaFuncs[] =
 	{"add", lua_add},
 	{"delete", lua_delete},
 	{"save", lua_save},
-	{NULL, NULL}
+	{nullptr, nullptr}
 };
 
 void CreateConfigPath()
 {
-	PWSTR appdatafolder = NULL;
+	PWSTR appdatafolder = nullptr;
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathuserdic, sizeof(pathuserdic));
@@ -53,7 +53,7 @@ void CreateConfigPath()
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, NULL, &appdatafolder) == S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder) == S_OK)
 	{
 		WCHAR appdir[MAX_PATH];
 
@@ -61,7 +61,7 @@ void CreateConfigPath()
 
 		CoTaskMemFree(appdatafolder);
 
-		CreateDirectoryW(appdir, NULL);
+		CreateDirectoryW(appdir, nullptr);
 		SetCurrentDirectoryW(appdir);
 
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
@@ -85,7 +85,7 @@ void CreateConfigPath()
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(mgrmutexname, sizeof(mgrmutexname));
 
-	LPWSTR pszUserSid = NULL;
+	LPWSTR pszUserSid = nullptr;
 
 	if(GetUserSid(&pszUserSid))
 	{
@@ -99,7 +99,7 @@ void CreateConfigPath()
 		LocalFree(pszUserSid);
 	}
 
-	LPWSTR pszUserUUID = NULL;
+	LPWSTR pszUserUUID = nullptr;
 
 	if(GetUserUUID(&pszUserUUID))
 	{
@@ -179,12 +179,12 @@ BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft)
 	HANDLE hFile;
 	FILETIME ftn;
 
-	if(path != NULL && ft != NULL)
+	if(path != nullptr && ft != nullptr)
 	{
-		hFile = CreateFileW(path, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+		hFile = CreateFileW(path, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 		if(hFile != INVALID_HANDLE_VALUE)
 		{
-			if(GetFileTime(hFile, NULL, NULL, &ftn))
+			if(GetFileTime(hFile, nullptr, nullptr, &ftn))
 			{
 				if(((ULARGE_INTEGER *)ft)->QuadPart != ((ULARGE_INTEGER *)&ftn)->QuadPart)
 				{
@@ -204,7 +204,7 @@ void InitLua()
 	CHAR version[64];
 
 	lua = luaL_newstate();
-	if(lua == NULL)
+	if(lua == nullptr)
 	{
 		return;
 	}
@@ -227,10 +227,10 @@ void InitLua()
 
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
-	if(GetModuleFileNameW(NULL, pathinitlua, _countof(pathinitlua)) != 0)
+	if(GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
-		if(pdir != NULL)
+		if(pdir != nullptr)
 		{
 			*(pdir + 1) = L'\0';
 			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
@@ -249,9 +249,9 @@ void InitLua()
 
 void UninitLua()
 {
-	if(lua != NULL)
+	if(lua != nullptr)
 	{
 		lua_close(lua);
-		lua = NULL;
+		lua = nullptr;
 	}
 }

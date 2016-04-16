@@ -76,11 +76,11 @@ void SetConfigPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 			{
 				if(r_itr->first == AttributeVKey)
 				{
-					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), NULL, 0);
+					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), nullptr, 0);
 				}
 				else if(r_itr->first == AttributeMKey)
 				{
-					preservedkey[onoff][i].uModifiers = wcstoul(r_itr->second.c_str(), NULL, 0);
+					preservedkey[onoff][i].uModifiers = wcstoul(r_itr->second.c_str(), nullptr, 0);
 					if(preservedkey[onoff][i].uModifiers == 0)
 					{
 						preservedkey[onoff][i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
@@ -190,7 +190,7 @@ void SavePreservedKey(HWND hwnd)
 		for(int i = 0; i < count && i < MAX_PRESERVEDKEY; i++)
 		{
 			ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
-			preservedkey[k][i].uVKey = wcstoul(key, NULL, 0);
+			preservedkey[k][i].uVKey = wcstoul(key, nullptr, 0);
 			preservedkey[k][i].uModifiers = 0;
 			ListView_GetItemText(hWndListView, i, 1, key, _countof(key));
 			if(key[0] == L'1')
@@ -407,7 +407,7 @@ void LoadConfigKana()
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
-				WCHAR *pszb = NULL;
+				WCHAR *pszb = nullptr;
 				size_t blen = 0;
 
 				if(r_itr->first == AttributeRoman)
@@ -436,7 +436,7 @@ void LoadConfigKana()
 					rkc.wait = (_wtoi(r_itr->second.c_str()) & 0x2) ? TRUE : FALSE;
 				}
 
-				if(pszb != NULL)
+				if(pszb != nullptr)
 				{
 					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
 				}
@@ -579,7 +579,7 @@ void LoadConfigJLatin()
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
-				WCHAR *pszb = NULL;
+				WCHAR *pszb = nullptr;
 				size_t blen = 0;
 
 				if(r_itr->first == AttributeLatin)
@@ -593,7 +593,7 @@ void LoadConfigJLatin()
 					blen = _countof(ascii_jlatin_conv[i].jlatin);
 				}
 
-				if(pszb != NULL)
+				if(pszb != nullptr)
 				{
 					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
 				}
@@ -699,14 +699,14 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	roman_kana_conv.shrink_to_fit();
 
 	_wfopen_s(&fp, path, RccsUTF8);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		return;
 	}
 
 	ZeroMemory(b, sizeof(b));
 
-	while(fgetws(b, CONFKANALEN, fp) != NULL)
+	while(fgetws(b, CONFKANALEN, fp) != nullptr)
 	{
 		if(roman_kana_conv.size() >= ROMAN_KANA_TBL_MAX)
 		{
@@ -838,7 +838,7 @@ void SaveKanaTxt(HWND hwnd, LPCWSTR path)
 	}
 
 	_wfopen_s(&fp, path, WccsUTF8);
-	if(fp != NULL)
+	if(fp != nullptr)
 	{
 		count = (int)roman_kana_conv.size();
 

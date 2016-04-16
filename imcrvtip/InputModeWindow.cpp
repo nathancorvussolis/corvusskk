@@ -102,10 +102,10 @@ CInputModeWindow::CInputModeWindow()
 
 	_cRef = 1;
 
-	_hwnd = NULL;
-	_hwndParent = NULL;
-	_pTextService = NULL;
-	_pContext = NULL;
+	_hwnd = nullptr;
+	_hwndParent = nullptr;
+	_pTextService = nullptr;
+	_pContext = nullptr;
 	_size = 0;
 }
 
@@ -118,12 +118,12 @@ CInputModeWindow::~CInputModeWindow()
 
 STDAPI CInputModeWindow::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextLayoutSink))
 	{
@@ -211,7 +211,7 @@ HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	if(_pContext != NULL)
+	if(_pContext != nullptr)
 	{
 		ITfSource *pSource;
 		if(_pContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
@@ -228,7 +228,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 {
 	POINT pt = {0, 0};
 
-	if(pContext != NULL)
+	if(pContext != nullptr)
 	{
 		_pContext = pContext;
 		_pContext->AddRef();
@@ -238,7 +238,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		}
 	}
 
-	if(!bCandidateWindow && _pContext == NULL)
+	if(!bCandidateWindow && _pContext == nullptr)
 	{
 		return FALSE;
 	}
@@ -257,7 +257,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		ITfContextView *pContextView;
 		if(_pContext->GetActiveView(&pContextView) == S_OK)
 		{
-			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == NULL)
+			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == nullptr)
 			{
 				_hwndParent = GetFocus();
 			}
@@ -268,16 +268,16 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
 		InputModeWindowClass, L"", WS_POPUP,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-		_hwndParent, NULL, g_hInst, this);
+		_hwndParent, nullptr, g_hInst, this);
 
-	if(_hwnd == NULL)
+	if(_hwnd == nullptr)
 	{
 		return FALSE;
 	}
 
-	HDC hdc = GetDC(NULL);
+	HDC hdc = GetDC(nullptr);
 	_size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
-	ReleaseDC(NULL, hdc);
+	ReleaseDC(nullptr, hdc);
 
 	if(_bCandidateWindow)
 	{
@@ -305,12 +305,12 @@ BOOL CInputModeWindow::_InitClass()
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = g_hInst;
-	wcex.hIcon = NULL;
-	wcex.hCursor = LoadCursorW(NULL, IDC_ARROW);
+	wcex.hIcon = nullptr;
+	wcex.hCursor = LoadCursorW(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = NULL;
+	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = InputModeWindowClass;
-	wcex.hIconSm = NULL;
+	wcex.hIconSm = nullptr;
 
 	ATOM atom = RegisterClassExW(&wcex);
 
@@ -324,7 +324,7 @@ void CInputModeWindow::_UninitClass()
 
 LRESULT CALLBACK CInputModeWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	CInputModeWindow *pInputModeWindow = NULL;
+	CInputModeWindow *pInputModeWindow = nullptr;
 
 	switch(uMsg)
 	{
@@ -337,7 +337,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM w
 		break;
 	}
 
-	if(pInputModeWindow != NULL)
+	if(pInputModeWindow != nullptr)
 	{
 		return pInputModeWindow->_WindowProc(hWnd, uMsg, wParam, lParam);
 	}
@@ -362,7 +362,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_CREATE:
 		if(!_bCandidateWindow)
 		{
-			SetTimer(hWnd, INPUTMODE_TIMER_ID, INPUTMODE_TIMEOUT_MSEC, NULL);
+			SetTimer(hWnd, INPUTMODE_TIMER_ID, INPUTMODE_TIMEOUT_MSEC, nullptr);
 		}
 		break;
 	case WM_TIMER:
@@ -423,10 +423,10 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CInputModeWindow::_Destroy()
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		DestroyWindow(_hwnd);
-		_hwnd = NULL;
+		_hwnd = nullptr;
 	}
 
 	_UnadviseTextLayoutSink();
@@ -437,7 +437,7 @@ void CInputModeWindow::_Destroy()
 
 void CInputModeWindow::_Move(int x, int y)
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, x, y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
 	}
@@ -445,7 +445,7 @@ void CInputModeWindow::_Move(int x, int y)
 
 void CInputModeWindow::_Show(BOOL bShow)
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (bShow ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
@@ -454,19 +454,19 @@ void CInputModeWindow::_Show(BOOL bShow)
 
 void CInputModeWindow::_Redraw()
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
-		InvalidateRect(_hwnd, NULL, FALSE);
+		InvalidateRect(_hwnd, nullptr, FALSE);
 		UpdateWindow(_hwnd);
 	}
 }
 
 void CInputModeWindow::_GetRect(LPRECT lpRect)
 {
-	if(lpRect != NULL)
+	if(lpRect != nullptr)
 	{
 		ZeroMemory(lpRect, sizeof(*lpRect));
-		if(_hwnd != NULL)
+		if(_hwnd != nullptr)
 		{
 			GetClientRect(_hwnd, lpRect);
 		}
@@ -530,16 +530,16 @@ void CTextService::_StartInputModeWindow()
 		_EndInputModeWindow();
 
 		ITfDocumentMgr *pDocumentMgr;
-		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != NULL)
+		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != nullptr)
 		{
 			ITfContext *pContext;
-			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != NULL)
+			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != nullptr)
 			{
 				try
 				{
 					_pInputModeWindow = new CInputModeWindow();
 
-					if(_pInputModeWindow->_Create(this, pContext, FALSE, NULL))
+					if(_pInputModeWindow->_Create(this, pContext, FALSE, nullptr))
 					{
 						HRESULT hr = E_FAIL;
 						HRESULT hrSession = E_FAIL;
@@ -579,7 +579,7 @@ void CTextService::_StartInputModeWindow()
 
 void CTextService::_EndInputModeWindow()
 {
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Destroy();
 	}

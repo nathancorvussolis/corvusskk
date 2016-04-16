@@ -163,37 +163,37 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 	}
 	wcsncat_s(dir, TEXTSERVICE_NAME, _TRUNCATE);
 
-	CreateDirectoryW(dir, NULL);
+	CreateDirectoryW(dir, nullptr);
 
 	LPCWSTR fnurl = wcsrchr(url, L'/');
-	if(fnurl == NULL || *(fnurl + 1) == L'\0')
+	if(fnurl == nullptr || *(fnurl + 1) == L'\0')
 	{
 		return E_FAIL;
 	}
 	wcsncpy_s(fname, fnurl + 1, _TRUNCATE);
 
 	LPWSTR pfname = fname;
-	while((pfname = wcspbrk(pfname, L"\\/:*?\"<>|")) != NULL)
+	while((pfname = wcspbrk(pfname, L"\\/:*?\"<>|")) != nullptr)
 	{
 		*pfname = L'_';
 	}
 
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, fname);
 
-	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-	if(hInet == NULL)
+	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
+	if(hInet == nullptr)
 	{
 		return E_FAIL;
 	}
 
-	hUrl = InternetOpenUrlW(hInet, url, NULL, 0, 0, 0);
-	if(hUrl == NULL)
+	hUrl = InternetOpenUrlW(hInet, url, nullptr, 0, 0, 0);
+	if(hUrl == nullptr)
 	{
 		goto exit_u;
 	}
 
 	_wfopen_s(&fp, path, WB);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		goto exit_f;
 	}
@@ -244,12 +244,12 @@ BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
 	size_t len;
 
 	_wfopen_s(&fp, path, RB);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		return FALSE;
 	}
 
-	while(fgets(buf, _countof(buf), fp) != NULL)
+	while(fgets(buf, _countof(buf), fp) != nullptr)
 	{
 		strbuf += buf;
 
@@ -258,14 +258,14 @@ BOOL CheckMultiByteFile(LPCWSTR path, int encoding)
 			switch(encoding)
 			{
 			case 1: //EUC-JIS-2004
-				if(!EucJis2004ToWideChar(strbuf.c_str(), NULL, NULL, &len))
+				if(!EucJis2004ToWideChar(strbuf.c_str(), nullptr, nullptr, &len))
 				{
 					bRet = FALSE;
 				}
 				break;
 			case 8: //UTF-8
 				if(MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
-					strbuf.c_str(), -1, NULL, 0) == 0)
+					strbuf.c_str(), -1, nullptr, 0) == 0)
 				{
 					bRet = FALSE;
 				}
@@ -297,19 +297,19 @@ BOOL CheckWideCharFile(LPCWSTR path)
 	std::wstring wstrbuf;
 
 	_wfopen_s(&fp, path, RB);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		return FALSE;
 	}
 
-	while(fgetws(wbuf, _countof(wbuf), fp) != NULL)
+	while(fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 	{
 		wstrbuf += wbuf;
 
 		if(!wstrbuf.empty() && wstrbuf.back() == L'\n')
 		{
 			if(WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
-				wstrbuf.c_str(), -1, NULL, 0, NULL, NULL) == 0)
+				wstrbuf.c_str(), -1, nullptr, 0, nullptr, nullptr) == 0)
 			{
 				bRet = FALSE;
 				break;
@@ -384,7 +384,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 
 		//check BOM
 		_wfopen_s(&fp, path, RB);
-		if(fp == NULL)
+		if(fp == nullptr)
 		{
 			return E_FAIL;
 		}
@@ -439,10 +439,10 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 			break;
 		default:
 			SkkDicInfo.error = SKKDIC_ENCODING;
-			fp = NULL;
+			fp = nullptr;
 			break;
 		}
-		if(fp == NULL)
+		if(fp == nullptr)
 		{
 			return E_FAIL;
 		}
@@ -515,7 +515,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	FILE *fp;
 
 	_wfopen_s(&fp, pathskkdic, WB);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		SkkDicInfo.error = SKKDIC_FILEIO;
 		wcscpy_s(SkkDicInfo.path, pathskkdic);
@@ -582,7 +582,7 @@ void MakeSKKDicWaitThread(void *p)
 	WCHAR msg[512];
 	HANDLE hThread;
 
-	hThread = (HANDLE)_beginthreadex(NULL, 0, MakeSKKDicThread, NULL, 0, NULL);
+	hThread = (HANDLE)_beginthreadex(nullptr, 0, MakeSKKDicThread, nullptr, 0, nullptr);
 	WaitForSingleObject(hThread, INFINITE);
 	CloseHandle(hThread);
 
@@ -626,7 +626,7 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SkkDicInfo.hr = S_OK;
 		SkkDicInfo.child = hDlg;
 		SkkDicInfo.path[0] = L'\0';
-		_beginthread(MakeSKKDicWaitThread, 0, NULL);
+		_beginthread(MakeSKKDicWaitThread, 0, nullptr);
 		SendMessage(GetDlgItem(hDlg, IDC_PROGRESS_DIC_MAKE), PBM_SETMARQUEE, TRUE, 0);
 		return TRUE;
 	case WM_CTLCOLORDLG:

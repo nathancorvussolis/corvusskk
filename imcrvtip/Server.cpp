@@ -29,12 +29,12 @@ public:
 
 STDAPI CClassFactory::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory))
 	{
@@ -64,14 +64,14 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 	HRESULT hr;
 	CTextService *pTextService;
 
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
-	if(NULL != pUnkOuter)
+	if(nullptr != pUnkOuter)
 	{
 		return CLASS_E_NOAGGREGATION;
 	}
@@ -115,12 +115,12 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppvObj)
 {
 	static CClassFactory factory;
 
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if((IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory)) &&
 		IsEqualGUID(rclsid, c_clsidTextService))

@@ -25,7 +25,7 @@ HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 {
 	HRESULT hr = E_FAIL;
 
-	if(pvar == NULL)
+	if(pvar == nullptr)
 	{
 		return hr;
 	}
@@ -58,10 +58,10 @@ BOOL CTextService::_IsKeyboardDisabled()
 	BOOL fDisabled = FALSE;
 
 	ITfDocumentMgr *pDocumentMgr;
-	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
+	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 	{
 		ITfContext *pContext;
-		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != NULL))
+		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
 		{
 			ITfCompartmentMgr *pCompartmentMgr;
 			if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)

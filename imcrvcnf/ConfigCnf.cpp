@@ -15,12 +15,12 @@ WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 
 void CreateConfigPath()
 {
-	PWSTR appdatafolder = NULL;
+	PWSTR appdatafolder = nullptr;
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, NULL, &appdatafolder) == S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder) == S_OK)
 	{
 		WCHAR appdir[MAX_PATH];
 
@@ -28,7 +28,7 @@ void CreateConfigPath()
 
 		CoTaskMemFree(appdatafolder);
 
-		CreateDirectoryW(appdir, NULL);
+		CreateDirectoryW(appdir, nullptr);
 		SetCurrentDirectoryW(appdir);
 
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
@@ -37,7 +37,7 @@ void CreateConfigPath()
 
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 
-	LPWSTR pszUserUUID = NULL;
+	LPWSTR pszUserUUID = nullptr;
 
 	if(GetUserUUID(&pszUserUUID))
 	{
@@ -51,7 +51,7 @@ BOOL SetFileDacl(LPCWSTR path)
 {
 	BOOL bRet = FALSE;
 	WCHAR sddl[MAX_KRNLOBJNAME] = {L'\0'};
-	PSECURITY_DESCRIPTOR psd = NULL;
+	PSECURITY_DESCRIPTOR psd = nullptr;
 	LPWSTR pszUserSid;
 
 	if(GetUserSid(&pszUserSid))
@@ -63,7 +63,7 @@ BOOL SetFileDacl(LPCWSTR path)
 		LocalFree(pszUserSid);
 	}
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, NULL))
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, nullptr))
 	{
 		if(SetFileSecurityW(path, DACL_SECURITY_INFORMATION, psd))
 		{

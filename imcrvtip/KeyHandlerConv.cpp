@@ -160,7 +160,7 @@ HRESULT CTextService::_SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KA
 {
 	HRESULT ret = E_ABORT;	//一致なし
 
-	if((pconv == NULL) ||
+	if((pconv == nullptr) ||
 		(_countof(pconv->roman) <= (depth + 1)) || (pconv->roman[depth] == L'\0'))
 	{
 		return ret;
@@ -202,7 +202,7 @@ HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 {
 	HRESULT ret = E_ABORT;	//一致なし
 
-	if(pconv == NULL)
+	if(pconv == nullptr)
 	{
 		return ret;
 	}
@@ -632,7 +632,7 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 			_Update(ec, pContext);
 		}
 
-		if(pContext != NULL)
+		if(pContext != nullptr)
 		{
 			if(cx_dyncompmulti)
 			{
@@ -641,7 +641,7 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 					candidx = (size_t)-1;
 				}
 
-				if(_pCandidateList != NULL && _pCandidateList->_IsShowCandidateWindow())
+				if(_pCandidateList != nullptr && _pCandidateList->_IsShowCandidateWindow())
 				{
 					_pCandidateList->_UpdateComp();
 				}
@@ -948,7 +948,7 @@ BOOL CTextService::_ConvN()
 void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode)
 {
 	BOOL exist;
-	WCHAR *convkana = NULL;
+	WCHAR *convkana = nullptr;
 	WCHAR srckana[3];
 	std::wstring dsttmp;
 

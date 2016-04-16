@@ -262,7 +262,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		{
 		case PSN_APPLY:
 			_wfopen_s(&fp, pathconfigxml, L"ab");
-			if(fp != NULL)
+			if(fp != nullptr)
 			{
 				fclose(fp);
 			}

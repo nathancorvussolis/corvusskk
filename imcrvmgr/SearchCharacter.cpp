@@ -108,7 +108,7 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 	}
 
 	size = _countof(utf16);
-	if(EucJis2004ToWideChar(euc, NULL, utf16, &size))
+	if(EucJis2004ToWideChar(euc, nullptr, utf16, &size))
 	{
 		candidate = L"/";
 		candidate += utf16;
@@ -163,7 +163,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	UCSCHAR ucp;
 
 	//ASCII, JIS X 0201 (片仮名, 8bit), JIS X 0213 面区点番号
-	if(WideCharToEucJis2004(searchkey.c_str(), NULL, NULL, &len))
+	if(WideCharToEucJis2004(searchkey.c_str(), nullptr, nullptr, &len))
 	{
 		std::string euc = WCTOEUC(searchkey);
 

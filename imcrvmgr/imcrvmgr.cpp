@@ -32,14 +32,14 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateConfigPath();
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL))
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, nullptr))
 	{
 		sa.nLength = sizeof(sa);
 		sa.lpSecurityDescriptor = psd;
 		sa.bInheritHandle = FALSE;
 
 		hMutex = CreateMutexW(&sa, FALSE, mgrmutexname);
-		if(hMutex == NULL || GetLastError() == ERROR_ALREADY_EXISTS)
+		if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
 		{
 			LocalFree(psd);
 			return 0;
@@ -75,17 +75,17 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = hInst;
-	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszClassName = DictionaryManagerClass;
 	RegisterClassExW(&wc);
 
 #ifdef _DEBUG
 	hWnd = CreateWindowW(DictionaryManagerClass, TextServiceDesc,
-		WS_OVERLAPPEDWINDOW, 0, 0, 600, 800, NULL, NULL, hInst, NULL);
+		WS_OVERLAPPEDWINDOW, 0, 0, 600, 800, nullptr, nullptr, hInst, nullptr);
 #else
 	hWnd = CreateWindowW(DictionaryManagerClass, TextServiceDesc,
-		WS_POPUP, 0, 0, 0, 0, NULL, NULL, hInst, NULL);
+		WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, hInst, nullptr);
 #endif
 
 	if(!hWnd)
@@ -102,9 +102,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 #endif
 	UpdateWindow(hWnd);
 
-	while(GetMessageW(&msg, NULL, 0, 0))
+	while(GetMessageW(&msg, nullptr, 0, 0))
 	{
-		if(!TranslateAcceleratorW(msg.hwnd, NULL, &msg))
+		if(!TranslateAcceleratorW(msg.hwnd, nullptr, &msg))
 		{
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
@@ -132,7 +132,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hWnd, &r);
 		hwndEdit = CreateWindowW(L"EDIT", L"",
 			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY,
-			0, 0, r.right, r.bottom, hWnd, NULL, hInst, NULL);
+			0, 0, r.right, r.bottom, hWnd, nullptr, hInst, nullptr);
 		hDC = GetDC(hwndEdit);
 		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72), 0, 0, 0,
 			FW_NORMAL, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET,
@@ -148,7 +148,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
-		if(hThreadSrv == NULL)
+		if(hThreadSrv == nullptr)
 		{
 			DestroyWindow(hWnd);
 		}
@@ -177,7 +177,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif
 		bSrvThreadExit = TRUE;
 		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-			NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
+			nullptr, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, nullptr);
 		if(hPipe != INVALID_HANDLE_VALUE)
 		{
 			CloseHandle(hPipe);
@@ -311,7 +311,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
 
-		if(lua != NULL)
+		if(lua != nullptr)
 		{
 			lua_getglobal(lua,"lua_skk_complement");
 			lua_pushstring(lua, WCTOU8(key));
@@ -397,7 +397,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$4");
 		okuri = std::regex_replace(argument, re, fmt);
 
-		if(lua != NULL)
+		if(lua != nullptr)
 		{
 			lua_getglobal(lua, "lua_skk_add");
 			lua_pushboolean(lua, (command == REQ_USER_ADD_0 ? 1 : 0));
@@ -424,7 +424,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$2");
 		candidate = std::regex_replace(argument, re, fmt);
 
-		if(lua != NULL)
+		if(lua != nullptr)
 		{
 			lua_getglobal(lua, "lua_skk_delete");
 			lua_pushboolean(lua, (command == REQ_USER_DEL_0 ? 1 : 0));
@@ -442,7 +442,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		break;
 
 	case REQ_USER_SAVE:
-		if(lua != NULL)
+		if(lua != nullptr)
 		{
 			lua_getglobal(lua, "lua_skk_save");
 			lua_pcall(lua, 0, 0, 0);
@@ -495,7 +495,7 @@ unsigned int __stdcall SrvThread(void *p)
 
 	while(true)
 	{
-		if(ConnectNamedPipe(hPipe, NULL) == FALSE)
+		if(ConnectNamedPipe(hPipe, nullptr) == FALSE)
 		{
 			DisconnectNamedPipe(hPipe);
 			break;
@@ -520,7 +520,7 @@ unsigned int __stdcall SrvThread(void *p)
 		ZeroMemory(pipebuf, sizeof(pipebuf));
 
 		bytesRead = 0;
-		bRet = ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL);
+		bRet = ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr);
 		if(bRet == FALSE || bytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe);
@@ -587,7 +587,7 @@ unsigned int __stdcall SrvThread(void *p)
 #endif
 
 		bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-		bRet = WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL);
+		bRet = WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr);
 		if(bRet)
 		{
 			FlushFileBuffers(hPipe);
@@ -606,9 +606,9 @@ HANDLE SrvStart()
 	PSECURITY_DESCRIPTOR psd;
 	SECURITY_ATTRIBUTES sa;
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
-	HANDLE hThread = NULL;
+	HANDLE hThread = nullptr;
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, NULL))
+	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, nullptr))
 	{
 		sa.nLength = sizeof(sa);
 		sa.lpSecurityDescriptor = psd;
@@ -623,10 +623,10 @@ HANDLE SrvStart()
 
 	if(hPipe != INVALID_HANDLE_VALUE)
 	{
-		hThread = (HANDLE)_beginthreadex(NULL, 0, SrvThread, hPipe, 0, NULL);
+		hThread = (HANDLE)_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr);
 	}
 
-	if(hThread == NULL)
+	if(hThread == nullptr)
 	{
 		CloseHandle(hPipe);
 	}

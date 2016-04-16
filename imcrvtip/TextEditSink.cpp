@@ -20,7 +20,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 		}
 
 		// reposition candidate window
-		if(_pCandidateList != NULL)
+		if(_pCandidateList != nullptr)
 		{
 			ITfContextView *pContextView;
 			if(pic->GetActiveView(&pContextView) == S_OK)
@@ -47,7 +47,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 	BOOL fRet;
 	ITfSource *pSource;
 
-	if(_pTextEditSinkContext != NULL && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
+	if(_pTextEditSinkContext != nullptr && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
 		if(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
@@ -59,7 +59,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	}
 
-	if(pDocumentMgr == NULL)
+	if(pDocumentMgr == nullptr)
 	{
 		return TRUE;
 	}
@@ -69,7 +69,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		return FALSE;
 	}
 
-	if(_pTextEditSinkContext == NULL)
+	if(_pTextEditSinkContext == nullptr)
 	{
 		return TRUE;
 	}

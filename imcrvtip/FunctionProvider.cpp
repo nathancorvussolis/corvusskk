@@ -4,7 +4,7 @@
 
 HRESULT CTextService::GetType(GUID *pguid)
 {
-	if(pguid == NULL)
+	if(pguid == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -18,16 +18,16 @@ HRESULT CTextService::GetDescription(BSTR *pbstrDesc)
 {
 	BSTR bstrDesc;
 
-	if(pbstrDesc == NULL)
+	if(pbstrDesc == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*pbstrDesc = NULL;
+	*pbstrDesc = nullptr;
 
 	bstrDesc = SysAllocString(TextServiceDesc);
 
-	if(bstrDesc == NULL)
+	if(bstrDesc == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -39,12 +39,12 @@ HRESULT CTextService::GetDescription(BSTR *pbstrDesc)
 
 HRESULT CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 {
-	if(ppunk == NULL)
+	if(ppunk == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppunk = NULL;
+	*ppunk = nullptr;
 
 	//This value can be GUID_NULL.
 	if(!IsEqualGUID(rguid, GUID_NULL) && !IsEqualGUID(rguid, c_clsidTextService))
@@ -82,16 +82,16 @@ HRESULT CTextService::GetDisplayName(BSTR *pbstrName)
 {
 	BSTR bstrName;
 
-	if(pbstrName == NULL)
+	if(pbstrName == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*pbstrName = NULL;
+	*pbstrName = nullptr;
 
 	bstrName = SysAllocString(L"設定");
 
-	if(bstrName == NULL)
+	if(bstrName == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -123,7 +123,7 @@ HRESULT CTextService::Show(HWND hwndParent)
 
 HRESULT CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId)
 {
-	if(pTKBLayoutType != NULL && pwPreferredLayoutId != NULL)
+	if(pTKBLayoutType != nullptr && pwPreferredLayoutId != nullptr)
 	{
 		*pTKBLayoutType = TKBLT_OPTIMIZED;
 		*pwPreferredLayoutId = TKBL_OPT_JAPANESE_ABC;

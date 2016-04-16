@@ -20,12 +20,12 @@ public:
 	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
-		if(ppvObj == NULL)
+		if(ppvObj == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		*ppvObj = NULL;
+		*ppvObj = nullptr;
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IEnumTfDisplayAttributeInfo))
 		{
@@ -60,12 +60,12 @@ public:
 	{
 		CEnumDisplayAttributeInfo *pClone;
 
-		if(ppEnum == NULL)
+		if(ppEnum == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		*ppEnum = NULL;
+		*ppEnum = nullptr;
 
 		try
 		{
@@ -87,7 +87,7 @@ public:
 		ULONG cFetched = 0;
 		ITfDisplayAttributeInfo *pDisplayAttributeInfo;
 
-		if(rgInfo == NULL)
+		if(rgInfo == nullptr)
 		{
 			return E_INVALIDARG;
 		}
@@ -124,7 +124,7 @@ public:
 			_iIndex++;
 		}
 
-		if(pcFetched != NULL)
+		if(pcFetched != nullptr)
 		{
 			*pcFetched = cFetched;
 		}

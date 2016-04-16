@@ -6,12 +6,12 @@
 
 STDAPI CTextService::OnSetThreadFocus()
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_Show(TRUE);
 	}
 
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Show(TRUE);
 	}
@@ -23,12 +23,12 @@ STDAPI CTextService::OnKillThreadFocus()
 {
 	_SaveUserDic();
 
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_Show(FALSE);
 	}
 
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Show(FALSE);
 	}

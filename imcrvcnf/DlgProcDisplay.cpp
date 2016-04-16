@@ -99,7 +99,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			ReadValue(pathconfigxml, SectionDisplay, displayColor[i].value, strxmlval);
 			if(!strxmlval.empty())
 			{
-				displayColor[i].color = wcstoul(strxmlval.c_str(), NULL, 0);
+				displayColor[i].color = wcstoul(strxmlval.c_str(), nullptr, 0);
 			}
 		}
 
@@ -155,7 +155,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
 			GetObjectW(hFont, sizeof(lf), &lf);
-			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, NULL, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
+			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
 			lf.lfCharSet = SHIFTJIS_CHARSET;
 
 			ZeroMemory(&cf, sizeof(cf));
@@ -235,13 +235,13 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			{
 				cc.lStructSize = sizeof(cc);
 				cc.hwndOwner = hDlg;
-				cc.hInstance = NULL;
+				cc.hInstance = nullptr;
 				cc.rgbResult = displayColor[i].color;
 				cc.lpCustColors = customColor;
 				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-				cc.lCustData = NULL;
-				cc.lpfnHook = NULL;
-				cc.lpTemplateName = NULL;
+				cc.lCustData = 0;
+				cc.lpfnHook = nullptr;
+				cc.lpTemplateName = nullptr;
 				if(ChooseColorW(&cc))
 				{
 					DrawSelectColor(hDlg, displayColor[i].id, cc.rgbResult);

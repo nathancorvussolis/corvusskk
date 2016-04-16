@@ -12,21 +12,21 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	_depth = depth;
 	_dwUIElementId = dwUIElementId;
 
-	if(_hwndParent != NULL)
+	if(_hwndParent != nullptr)
 	{
 		_hwnd = CreateWindowExW(WS_EX_TOOLWINDOW | WS_EX_TOPMOST | WS_EX_NOACTIVATE,
 			CandidateWindowClass, L"", WS_POPUP,
 			CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
-			_hwndParent, NULL, g_hInst, this);
+			_hwndParent, nullptr, g_hInst, this);
 
-		if(_hwnd == NULL)
+		if(_hwnd == nullptr)
 		{
 			return FALSE;
 		}
 
 		hFont = _pTextService->hFont;
 
-		if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != NULL)
+		if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != nullptr)
 		{
 			_drawtext_option = _pTextService->_drawtext_option;
 			_pD2DFactory = _pTextService->_pD2DFactory;
@@ -45,12 +45,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		}
 	}
 
-	if(_hwnd != NULL && _pTextService->_ShowInputMode)
+	if(_hwnd != nullptr && _pTextService->_ShowInputMode)
 	{
 		try
 		{
 			_pInputModeWindow = new CInputModeWindow();
-			if(!_pInputModeWindow->_Create(_pTextService, NULL, TRUE, _hwnd))
+			if(!_pInputModeWindow->_Create(_pTextService, nullptr, TRUE, _hwnd))
 			{
 				_pInputModeWindow->_Destroy();
 				SafeRelease(&_pInputModeWindow);
@@ -71,7 +71,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	if(reg)
 	{
 		//辞書登録開始
-		if(_hwnd == NULL)
+		if(_hwnd == nullptr)
 		{
 			regwordul = TRUE;
 		}
@@ -99,12 +99,12 @@ BOOL CCandidateWindow::_InitClass()
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = g_hInst;
-	wcex.hIcon = NULL;
-	wcex.hCursor = LoadCursorW(NULL, IDC_ARROW);
+	wcex.hIcon = nullptr;
+	wcex.hCursor = LoadCursorW(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = NULL;
+	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = CandidateWindowClass;
-	wcex.hIconSm = NULL;
+	wcex.hIconSm = nullptr;
 
 	ATOM atom = RegisterClassExW(&wcex);
 
@@ -118,7 +118,7 @@ void CCandidateWindow::_UninitClass()
 
 LRESULT CALLBACK CCandidateWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	CCandidateWindow *pCandidateWindow = NULL;
+	CCandidateWindow *pCandidateWindow = nullptr;
 
 	switch(uMsg)
 	{
@@ -131,7 +131,7 @@ LRESULT CALLBACK CCandidateWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM w
 		break;
 	}
 
-	if(pCandidateWindow != NULL)
+	if(pCandidateWindow != nullptr)
 	{
 		return pCandidateWindow->_WindowProc(hWnd, uMsg, wParam, lParam);
 	}
@@ -159,13 +159,13 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CCandidateWindow::_Destroy()
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		DestroyWindow(_hwnd);
-		_hwnd = NULL;
+		_hwnd = nullptr;
 	}
 
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Destroy();
 	}
@@ -183,7 +183,7 @@ void CCandidateWindow::_Destroy()
 
 void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 {
-	if(_hwnd != NULL && lpr != NULL)
+	if(_hwnd != nullptr && lpr != nullptr)
 	{
 		_rect = *lpr;
 
@@ -193,7 +193,7 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 			return;
 		}
 
-		if(ec != TF_INVALID_EDIT_COOKIE && pContext != NULL)
+		if(ec != TF_INVALID_EDIT_COOKIE && pContext != nullptr)
 		{
 			_vertical = _pTextService->_GetVertical(ec, pContext);
 		}
@@ -208,7 +208,7 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 
 		_CalcWindowRect();
 
-		if(_pCandidateWindow != NULL)
+		if(_pCandidateWindow != nullptr)
 		{
 #ifdef _DEBUG
 			RECT rc;
@@ -236,7 +236,7 @@ void CCandidateWindow::_BeginUIElement()
 
 	_Update();
 
-	if((_hwnd == NULL) && (_depth == 0))
+	if((_hwnd == nullptr) && (_depth == 0))
 	{
 		ITfUIElementMgr *pUIElementMgr;
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
@@ -250,7 +250,7 @@ void CCandidateWindow::_BeginUIElement()
 		}
 	}
 
-	if(_hwnd == NULL)
+	if(_hwnd == nullptr)
 	{
 		_bShow = FALSE;
 	}
@@ -261,14 +261,14 @@ void CCandidateWindow::_BeginUIElement()
 
 	if(_bShow)
 	{
-		if(_hwnd != NULL)
+		if(_hwnd != nullptr)
 		{
 			SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 
 			if(_reg)
 			{
-				if(_pInputModeWindow != NULL)
+				if(_pInputModeWindow != nullptr)
 				{
 					_pInputModeWindow->_Show(TRUE);
 				}
@@ -284,7 +284,7 @@ void CCandidateWindow::_BeginUIElement()
 
 void CCandidateWindow::_EndUIElement()
 {
-	if((_hwnd == NULL) && (_depth == 0))
+	if((_hwnd == nullptr) && (_depth == 0))
 	{
 		ITfUIElementMgr *pUIElementMgr;
 		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
@@ -294,12 +294,12 @@ void CCandidateWindow::_EndUIElement()
 		}
 	}
 
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Show(FALSE);
 		}
@@ -330,12 +330,12 @@ BOOL CCandidateWindow::_CanShowUIElement()
 
 void CCandidateWindow::_Redraw()
 {
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
-		InvalidateRect(_hwnd, NULL, FALSE);
+		InvalidateRect(_hwnd, nullptr, FALSE);
 		UpdateWindow(_hwnd);
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Redraw();
 		}
@@ -346,7 +346,7 @@ void CCandidateWindow::_SetText(const std::wstring &text, BOOL fixed, BOOL showc
 {
 	//CTextService -> CCandidateList -> CCandidateWindow で入力文字列をもらう
 
-	if(_pCandidateWindow != NULL && !_preEnd)
+	if(_pCandidateWindow != nullptr && !_preEnd)
 	{
 		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
 		return;
@@ -392,24 +392,24 @@ void CCandidateWindow::_End()
 	_preEnd = FALSE;
 
 #ifndef _DEBUG
-	if(_hwnd != NULL)
+	if(_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 	}
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Show(TRUE);
 	}
 #endif
 
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_Destroy();
 	}
 	SafeRelease(&_pCandidateWindow);
 
-	if(_hwnd == NULL)
+	if(_hwnd == nullptr)
 	{
 		_dwFlags = TF_CLUIE_DOCUMENTMGR | TF_CLUIE_COUNT | TF_CLUIE_SELECTION |
 			TF_CLUIE_STRING | TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;
@@ -525,9 +525,9 @@ void CCandidateWindow::_NextPage()
 	uNewPage = uOldPage + 1;
 	if(uNewPage >= _uPageCnt)
 	{
-		if(_pCandidateList != NULL)
+		if(_pCandidateList != nullptr)
 		{
-			if(_hwnd == NULL)
+			if(_hwnd == nullptr)
 			{
 				regwordul = TRUE;
 			}
@@ -544,7 +544,7 @@ void CCandidateWindow::_NextPage()
 				_BackUpStatus();
 				_ClearStatus();
 
-				if(_pInputModeWindow != NULL)
+				if(_pInputModeWindow != nullptr)
 				{
 					_pInputModeWindow->_Show(TRUE);
 				}
@@ -582,13 +582,13 @@ void CCandidateWindow::_PrevPage()
 	}
 	else
 	{
-		if(_pCandidateList != NULL)
+		if(_pCandidateList != nullptr)
 		{
 			if(!regword)
 			{
 				if(_pTextService->cx_untilcandlist == 1)
 				{
-					if(_pCandidateWindowParent == NULL)
+					if(_pCandidateWindowParent == nullptr)
 					{
 						_InvokeSfHandler(SKK_CANCEL);
 					}
@@ -605,7 +605,7 @@ void CCandidateWindow::_PrevPage()
 				}
 				else
 				{
-					if(_pCandidateWindowParent == NULL)
+					if(_pCandidateWindowParent == nullptr)
 					{
 						_pTextService->candidx = _pTextService->cx_untilcandlist - 1;
 						_InvokeSfHandler(SKK_PREV_CAND);
@@ -740,7 +740,7 @@ void CCandidateWindow::_Update()
 	}
 	else
 	{
-		if(_hwnd != NULL)
+		if(_hwnd != nullptr)
 		{
 			_CalcWindowRect();
 
@@ -814,7 +814,7 @@ void CCandidateWindow::_ClearStatusReg()
 
 void CCandidateWindow::_PreEndReq()
 {
-	if(_pCandidateWindowParent != NULL && !_preEnd)
+	if(_pCandidateWindowParent != nullptr && !_preEnd)
 	{
 		_pCandidateWindowParent->_PreEnd();
 	}
@@ -822,7 +822,7 @@ void CCandidateWindow::_PreEndReq()
 
 void CCandidateWindow::_EndReq()
 {
-	if(_pCandidateWindowParent != NULL && !_preEnd)
+	if(_pCandidateWindowParent != nullptr && !_preEnd)
 	{
 		_pCandidateWindowParent->_End();
 	}
@@ -849,13 +849,13 @@ void CCandidateWindow::_CreateNext(BOOL reg)
 		_pCandidateWindow->_BeginUIElement();
 
 #ifndef _DEBUG
-		if(_hwnd != NULL)
+		if(_hwnd != nullptr)
 		{
 			SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
 		}
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Show(FALSE);
 		}

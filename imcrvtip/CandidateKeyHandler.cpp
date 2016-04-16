@@ -11,7 +11,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	WCHAR ch;
 	BYTE sf;
 
-	if(_pCandidateWindow != NULL && !_preEnd)
+	if(_pCandidateWindow != nullptr && !_preEnd)
 	{
 		return _pCandidateWindow->_OnKeyDown(uVKey);
 	}
@@ -59,11 +59,11 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	switch(sf)
 	{
 	case SKK_CANCEL:
-		if(_pCandidateList != NULL)
+		if(_pCandidateList != nullptr)
 		{
 			if(!regword)
 			{
-				if(_pCandidateWindowParent == NULL)
+				if(_pCandidateWindowParent == nullptr)
 				{
 					_InvokeSfHandler(SKK_CANCEL);
 				}
@@ -112,7 +112,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 					{
 						if(!regword)
 						{
-							if(_pCandidateWindowParent == NULL)
+							if(_pCandidateWindowParent == nullptr)
 							{
 								_pTextService->candidx = index;
 								_InvokeSfHandler(SKK_ENTER);
@@ -160,7 +160,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_HandleKey((WPARAM)uVKey, SKK_NULL);
 		_Update();
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Redraw();
 		}
@@ -171,7 +171,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	{
 		_pTextService->_UpdateLanguageBar();
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Redraw();
 		}
@@ -210,14 +210,14 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				_Update();
 				_UpdateUIElement();
 
-				if(_pInputModeWindow != NULL)
+				if(_pInputModeWindow != nullptr)
 				{
 					_pInputModeWindow->_Show(FALSE);
 				}
 			}
 			else
 			{
-				if(_pCandidateWindowParent == NULL)
+				if(_pCandidateWindowParent == nullptr)
 				{
 					if(_pTextService->candidates.empty())
 					{
@@ -301,7 +301,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			regwordtext.clear();
 			regwordtextpos = 0;
 
-			if(_pCandidateWindowParent == NULL)
+			if(_pCandidateWindowParent == nullptr)
 			{
 				_InvokeSfHandler(SKK_ENTER);
 			}
@@ -332,14 +332,14 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			_Update();
 			_UpdateUIElement();
 
-			if(_pInputModeWindow != NULL)
+			if(_pInputModeWindow != nullptr)
 			{
 				_pInputModeWindow->_Show(FALSE);
 			}
 		}
 		else
 		{
-			if(_pCandidateWindowParent == NULL)
+			if(_pCandidateWindowParent == nullptr)
 			{
 				if(_pTextService->candidates.empty())
 				{
@@ -457,13 +457,13 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	case SKK_PASTE:
 		if(IsClipboardFormatAvailable(CF_UNICODETEXT))
 		{
-			if(OpenClipboard(NULL))
+			if(OpenClipboard(nullptr))
 			{
 				HANDLE hCB = GetClipboardData(CF_UNICODETEXT);
-				if(hCB != NULL)
+				if(hCB != nullptr)
 				{
 					LPWSTR pwCB = (LPWSTR)GlobalLock(hCB);
-					if(pwCB != NULL)
+					if(pwCB != nullptr)
 					{
 						std::wstring scb = std::regex_replace(std::wstring(pwCB),
 							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
@@ -482,7 +482,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	default:
 		_HandleKey((WPARAM)uVKey, SKK_NULL);
 
-		if(_pInputModeWindow != NULL)
+		if(_pInputModeWindow != nullptr)
 		{
 			_pInputModeWindow->_Redraw();
 		}
@@ -492,7 +492,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 
 void CCandidateWindow::_InvokeSfHandler(BYTE sf)
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_InvokeSfHandler(sf);
 	}
@@ -500,7 +500,7 @@ void CCandidateWindow::_InvokeSfHandler(BYTE sf)
 
 void CCandidateWindow::_InvokeKeyHandler(UINT uVKey)
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_InvokeKeyHandler(uVKey);
 	}
@@ -508,15 +508,15 @@ void CCandidateWindow::_InvokeKeyHandler(UINT uVKey)
 
 void CCandidateWindow::_HandleKey(WPARAM wParam, BYTE bSf)
 {
-	if(_pTextService != NULL)
+	if(_pTextService != nullptr)
 	{
-		_pTextService->_HandleKey(0, NULL, wParam, bSf);
+		_pTextService->_HandleKey(0, nullptr, wParam, bSf);
 	}
 }
 
 void CCandidateWindow::_GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff)
 {
-	if(_pTextService != NULL)
+	if(_pTextService != nullptr)
 	{
 		ch = _pTextService->_GetCh(uVKey, vkoff);
 		sf = _pTextService->_GetSf(uVKey, ch);

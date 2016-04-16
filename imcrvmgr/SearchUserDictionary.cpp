@@ -307,7 +307,7 @@ BOOL LoadSKKUserDic()
 	accompaniments.clear();
 
 	_wfopen_s(&fp, pathuserdic, RccsUTF8);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		return FALSE;
 	}
@@ -493,7 +493,7 @@ void SaveSKKUserDic(void *p)
 	EnterCriticalSection(&csUserDataSave);	// !
 
 	_wfopen_s(&fp, pathuserdic, WccsUTF16);
-	if(fp == NULL)
+	if(fp == nullptr)
 	{
 		goto exit;
 	}

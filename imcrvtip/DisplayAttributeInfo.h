@@ -22,12 +22,12 @@ public:
 	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
-		if(ppvObj == NULL)
+		if(ppvObj == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		*ppvObj = NULL;
+		*ppvObj = nullptr;
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfDisplayAttributeInfo))
 		{
@@ -60,12 +60,12 @@ public:
 	// ITfDisplayAttributeInfo
 	STDMETHODIMP GetGUID(GUID *pguid)
 	{
-		if(pguid == NULL)
+		if(pguid == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		if(_pguid == NULL)
+		if(_pguid == nullptr)
 		{
 			return E_FAIL;
 		}
@@ -78,16 +78,16 @@ public:
 	{
 		BSTR bstrDesc;
 
-		if(pbstrDesc == NULL)
+		if(pbstrDesc == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		*pbstrDesc = NULL;
+		*pbstrDesc = nullptr;
 
 		bstrDesc = SysAllocString(TextServiceDesc);
 
-		if(bstrDesc == NULL)
+		if(bstrDesc == nullptr)
 		{
 			return E_OUTOFMEMORY;
 		}
@@ -98,7 +98,7 @@ public:
 	}
 	STDMETHODIMP GetAttributeInfo(TF_DISPLAYATTRIBUTE *pda)
 	{
-		if(pda == NULL)
+		if(pda == nullptr)
 		{
 			return E_INVALIDARG;
 		}

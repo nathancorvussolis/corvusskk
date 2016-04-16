@@ -98,10 +98,10 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName);
 
 template<class T> void SafeRelease(T **ppT)
 {
-	if(*ppT != NULL)
+	if(*ppT != nullptr)
 	{
 		(*ppT)->Release();
-		*ppT = NULL;
+		*ppT = nullptr;
 	}
 }
 

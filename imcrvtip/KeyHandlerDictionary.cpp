@@ -12,14 +12,14 @@ void CTextService::_ConnectDic()
 	}
 
 	hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-		NULL, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, NULL);
+		nullptr, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, nullptr);
 	if(hPipe == INVALID_HANDLE_VALUE)
 	{
 		return;
 	}
 
 	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	SetNamedPipeHandleState(hPipe, &dwMode, NULL, NULL);
+	SetNamedPipeHandleState(hPipe, &dwMode, nullptr, nullptr);
 }
 
 void CTextService::_DisconnectDic()
@@ -62,7 +62,7 @@ void CTextService::_SearchDic(WCHAR command)
 		command, searchkey.c_str(), searchkeyorg.c_str(), okurikey.c_str());
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -70,7 +70,7 @@ void CTextService::_SearchDic(WCHAR command)
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -129,7 +129,7 @@ void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const st
 		command, key.c_str(), candidate.c_str(), okuri.c_str());
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -137,7 +137,7 @@ void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const st
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -184,7 +184,7 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 		command, key.c_str(), candidate.c_str(), annotation.c_str(), okurikey.c_str());
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -192,7 +192,7 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -215,7 +215,7 @@ void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std
 		command, key.c_str(), candidate.c_str());
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -223,7 +223,7 @@ void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -250,13 +250,13 @@ void CTextService::_CommandDic(WCHAR command)
 	pipebuf[2] = L'\0';
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
-	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, NULL) == FALSE)
+	if(WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
 	{
 		goto exit;
 	}
 
 	bytesRead = 0;
-	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, NULL) == FALSE)
+	if(ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -270,7 +270,7 @@ exit:
 void CTextService::_StartManager()
 {
 	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, mgrmutexname);
-	if(hMutex != NULL)
+	if(hMutex != nullptr)
 	{
 		CloseHandle(hMutex);
 		return;
@@ -282,14 +282,14 @@ void CTextService::_StartManager()
 void CTextService::_StartConfigure()
 {
 	HANDLE hMutex = OpenMutexW(SYNCHRONIZE, FALSE, cnfmutexname);
-	if(hMutex != NULL)
+	if(hMutex != nullptr)
 	{
 		CloseHandle(hMutex);
 		return;
 	}
 
 	hMutex = OpenMutexW(SYNCHRONIZE, FALSE, mgrmutexname);
-	if(hMutex != NULL)
+	if(hMutex != nullptr)
 	{
 		CloseHandle(hMutex);
 

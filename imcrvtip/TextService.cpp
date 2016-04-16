@@ -11,30 +11,30 @@ CTextService::CTextService()
 
 	_cRef = 1;
 
-	_pThreadMgr = NULL;
+	_pThreadMgr = nullptr;
 	_ClientId = TF_CLIENTID_NULL;
 	_dwThreadMgrEventSinkCookie = TF_INVALID_COOKIE;
 	_dwThreadFocusSinkCookie = TF_INVALID_COOKIE;
 	_dwCompartmentEventSinkOpenCloseCookie = TF_INVALID_COOKIE;
 	_dwCompartmentEventSinkInputmodeConversionCookie = TF_INVALID_COOKIE;
-	_pTextEditSinkContext = NULL;
+	_pTextEditSinkContext = nullptr;
 	_dwTextEditSinkCookie = TF_INVALID_COOKIE;
-	_pComposition = NULL;
-	_pLangBarItem = NULL;
-	_pLangBarItemI = NULL;
-	_pCandidateList = NULL;
-	_pInputModeWindow = NULL;
+	_pComposition = nullptr;
+	_pLangBarItem = nullptr;
+	_pLangBarItemI = nullptr;
+	_pCandidateList = nullptr;
+	_pInputModeWindow = nullptr;
 
-	hFont = NULL;
-	_pD2DFactory = NULL;
-	_pD2DDCRT = NULL;
+	hFont = nullptr;
+	_pD2DFactory = nullptr;
+	_pD2DDCRT = nullptr;
 	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
-		_pD2DBrush[i] = NULL;
+		_pD2DBrush[i] = nullptr;
 	}
 	_drawtext_option = D2D1_DRAW_TEXT_OPTIONS_NONE;
-	_pDWFactory = NULL;
-	_pDWTF = NULL;
+	_pDWFactory = nullptr;
+	_pDWTF = nullptr;
 
 	_dwActiveFlags = 0;
 	_ImmersiveMode = FALSE;
@@ -57,12 +57,12 @@ CTextService::~CTextService()
 
 STDAPI CTextService::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextInputProcessor))
 	{
@@ -177,7 +177,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	}
 
 	ITfDocumentMgr *pDocumentMgr;
-	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
+	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 	{
 		_InitTextEditSink(pDocumentMgr);
 		SafeRelease(&pDocumentMgr);
@@ -214,7 +214,7 @@ exit:
 
 STDAPI CTextService::Deactivate()
 {
-	if(_pThreadMgr == NULL)
+	if(_pThreadMgr == nullptr)
 	{
 		return S_OK;
 	}
@@ -234,7 +234,7 @@ STDAPI CTextService::Deactivate()
 
 	_UninitLanguageBar();
 
-	_InitTextEditSink(NULL);
+	_InitTextEditSink(nullptr);
 
 	_UninitCompartmentEventSink();
 

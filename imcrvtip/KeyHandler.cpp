@@ -202,14 +202,14 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	//機能処理
 	if(_HandleControl(ec, pContext, sf, ch) == S_OK)
 	{
-		if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
+		if(pContext != nullptr && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
 		{
 			_UpdateLanguageBar();
 		}
 		return S_OK;
 	}
 
-	if(pContext != NULL && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
+	if(pContext != nullptr && !iscomp && _IsKeyVoid(ch, (BYTE)wParam))
 	{
 		_UpdateLanguageBar();
 		return S_OK;

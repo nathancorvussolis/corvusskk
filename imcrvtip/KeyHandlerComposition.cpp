@@ -12,7 +12,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	LONG cchOkuri = 0;
 	BOOL showmodemark = cx_showmodemark;
 
-	if(pContext == NULL)	//辞書登録用
+	if(pContext == nullptr)	//辞書登録用
 	{
 		showmodemark = TRUE;
 	}
@@ -114,7 +114,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 			cchCursor = (LONG)comptext.size();
 
-			if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
+			if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 			{
 				_pCandidateList->_SetText(comptext, FALSE, FALSE, TRUE);
 				return S_OK;
@@ -158,7 +158,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				if(okuriidx == 0)
 				{
 					comptext.append(kana);
-					if(pContext == NULL && !fixed && cursoridx != kana.size())	//辞書登録用
+					if(pContext == nullptr && !fixed && cursoridx != kana.size())	//辞書登録用
 					{
 						comptext.insert(cursoridx + (comptext.size() - kana.size()), markCursor);
 					}
@@ -175,7 +175,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					{
 						comptext.append(kana.substr(okuriidx + 1));
 					}
-					if(pContext == NULL && !fixed && roman.empty() && cursoridx != kana.size())	//辞書登録用
+					if(pContext == nullptr && !fixed && roman.empty() && cursoridx != kana.size())	//辞書登録用
 					{
 						if(!showmodemark)
 						{
@@ -300,7 +300,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		(((cx_untilcandlist != 1) && (candidx + 1 == cx_untilcandlist)) || (cx_untilcandlist == 1)) &&
 		(candidates.size() + 1 != cx_untilcandlist))
 	{
-		if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
+		if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 		{
 			showcandlist = TRUE;
 			candidx = 0;
@@ -317,7 +317,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		}
 	}
 
-	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
+	if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 	{
 		_pCandidateList->_SetText(comptext, fixed, FALSE, FALSE);
 		return S_OK;
@@ -334,7 +334,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 	ULONG cFetched = 0;
 	LONG cch, cchRes;
 
-	if(pContext == NULL && _pCandidateList != NULL)	//辞書登録用
+	if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 	{
 		_pCandidateList->_SetText(text, fixed, FALSE, FALSE);
 		return S_OK;
@@ -392,7 +392,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 			tfSelection.range->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
 			tfSelection.range->ShiftStartToRange(ec, pRange, TF_ANCHOR_END);
-			tfSelection.range->ShiftStart(ec, cchRes, &cch, NULL);
+			tfSelection.range->ShiftStart(ec, cchRes, &cch, nullptr);
 			//decide cursor position
 			tfSelection.range->Collapse(ec, TF_ANCHOR_START);
 			pContext->SetSelection(ec, 1, &tfSelection);
@@ -413,7 +413,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 							_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInputMark);
 							if(cx_showmodemark)
 							{
-								pRangeClone->ShiftStart(ec, 1, &cch, NULL);
+								pRangeClone->ShiftStart(ec, 1, &cch, nullptr);
 							}
 						}
 
@@ -425,7 +425,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						if(cchOkuri != 0)
 						{
 							pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
-							pRangeClone->ShiftStart(ec, cchOkuri, &cch, NULL);
+							pRangeClone->ShiftStart(ec, cchOkuri, &cch, nullptr);
 							if(!display_attribute_series[2])
 							{
 								_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInputOkuri);
@@ -437,7 +437,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 								if(cchOkuri < hintpos)
 								{
 									pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
-									pRangeClone->ShiftStart(ec, hintpos, &cch, NULL);
+									pRangeClone->ShiftStart(ec, hintpos, &cch, nullptr);
 									_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeInputText);
 								}
 							}
@@ -448,7 +448,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeConvMark);
 						if(cx_showmodemark)
 						{
-							pRangeClone->ShiftStart(ec, 1, &cch, NULL);
+							pRangeClone->ShiftStart(ec, 1, &cch, nullptr);
 						}
 
 						if(!display_attribute_series[4])
@@ -459,7 +459,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 						if(cchOkuri != 0)
 						{
 							pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
-							pRangeClone->ShiftStart(ec, cchOkuri, &cch, NULL);
+							pRangeClone->ShiftStart(ec, cchOkuri, &cch, nullptr);
 							if(!display_attribute_series[5])
 							{
 								_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeConvOkuri);
@@ -546,7 +546,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 
 	try
 	{
-		if(_pCandidateList == NULL)
+		if(_pCandidateList == nullptr)
 		{
 			_pCandidateList = new CCandidateList(this);
 		}
@@ -578,7 +578,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 
 void CTextService::_EndCandidateList()
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_EndCandidateList();
 	}
@@ -587,7 +587,7 @@ void CTextService::_EndCandidateList()
 
 void CTextService::_EndCompletionList(TfEditCookie ec, ITfContext *pContext)
 {
-	if(pContext != NULL && !showcandlist)
+	if(pContext != nullptr && !showcandlist)
 	{
 		_EndCandidateList();
 	}
@@ -597,7 +597,7 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 {
 	BOOL ret = FALSE;
 
-	if(pContext != NULL)
+	if(pContext != nullptr)
 	{
 		ITfRange *pRange;
 		if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)

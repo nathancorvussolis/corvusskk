@@ -13,7 +13,7 @@ static struct {
 		{ValueDisplayAttrInputMark, c_daDisplayAttributeSeries[0], c_daDisplayAttributeInputMark},
 		{ValueDisplayAttrInputText, c_daDisplayAttributeSeries[1], c_daDisplayAttributeInputText},
 		{ValueDisplayAttrInputOkuri, c_daDisplayAttributeSeries[2], c_daDisplayAttributeInputOkuri},
-		{NULL, FALSE, {(TF_DA_COLORTYPE)0, 0}}
+		{nullptr, FALSE, {(TF_DA_COLORTYPE)0, 0}}
 	},
 	{
 		{ValueDisplayAttrConvMark, c_daDisplayAttributeSeries[3], c_daDisplayAttributeConvMark},
@@ -302,13 +302,13 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				{
 					cc.lStructSize = sizeof(cc);
 					cc.hwndOwner = hDlg;
-					cc.hInstance = NULL;
+					cc.hInstance = nullptr;
 					cc.rgbResult = *displayAttrColor[no][i][j].color;
 					cc.lpCustColors = colCust;
 					cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-					cc.lCustData = NULL;
-					cc.lpfnHook = NULL;
-					cc.lpTemplateName = NULL;
+					cc.lCustData = 0;
+					cc.lpfnHook = nullptr;
+					cc.lpTemplateName = nullptr;
 					if(ChooseColorW(&cc))
 					{
 						DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, cc.rgbResult);
@@ -326,7 +326,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		hdc = BeginPaint(hDlg, &ps);
 		for(int i = 0; i < _countof(displayAttrColor[no]); i++)
 		{
-			for(int j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != NULL; j++)
+			for(int j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != nullptr; j++)
 			{
 				DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, *displayAttrColor[no][i][j].color);
 			}
@@ -407,7 +407,7 @@ void LoadConfigDisplayAttr(int no)
 	BOOL se;
 	TF_DISPLAYATTRIBUTE da;
 
-	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
+	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
 	{
 		ReadValue(pathconfigxml, SectionDisplayAttr, displayAttr[no][i].key, strxmlval);
 		if(!strxmlval.empty())
@@ -432,7 +432,7 @@ void SaveConfigDisplayAttr(int no)
 		WriterStartSection(pXmlWriter, SectionDisplayAttr);	//Start of SectionDisplayAttr
 	}
 
-	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != NULL; i++)
+	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, displayAttrFormat,
 			displayAttr[no][i].se,

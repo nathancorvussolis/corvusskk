@@ -55,11 +55,11 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 	_pTextService = pTextService;
 	_pTextService->AddRef();
 
-	_pCandidateWindow = NULL;
-	_pRangeComposition = NULL;
-	_pContextCandidateWindow = NULL;
-	_pContextDocument = NULL;
-	_pDocumentMgr = NULL;
+	_pCandidateWindow = nullptr;
+	_pRangeComposition = nullptr;
+	_pContextCandidateWindow = nullptr;
+	_pContextDocument = nullptr;
+	_pDocumentMgr = nullptr;
 
 	_dwCookieContextKeyEventSink = TF_INVALID_COOKIE;
 	_dwCookieTextLayoutSink = TF_INVALID_COOKIE;
@@ -76,12 +76,12 @@ CCandidateList::~CCandidateList()
 
 STDAPI CCandidateList::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfContextKeyEventSink))
 	{
@@ -119,7 +119,7 @@ STDAPI_(ULONG) CCandidateList::Release()
 
 STDAPI CCandidateList::OnKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -144,7 +144,7 @@ STDAPI CCandidateList::OnKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 
 STDAPI CCandidateList::OnKeyUp(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -156,7 +156,7 @@ STDAPI CCandidateList::OnKeyUp(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 
 STDAPI CCandidateList::OnTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -168,7 +168,7 @@ STDAPI CCandidateList::OnTestKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten
 
 STDAPI CCandidateList::OnTestKeyUp(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 {
-	if(pfEaten == NULL)
+	if(pfEaten == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -193,7 +193,7 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 		break;
 
 	case TF_LC_CHANGE:
-		if(_pCandidateWindow != NULL)
+		if(_pCandidateWindow != nullptr)
 		{
 			try
 			{
@@ -270,11 +270,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	HRESULT hrRet = E_FAIL;
 	TfEditCookie ecTextStore;
 	ITfContextView *pContextView;
-	HWND hwnd = NULL;
+	HWND hwnd = nullptr;
 
 	_EndCandidateList();
 
-	if(pDocumentMgr->CreateContext(tfClientId, 0, NULL, &_pContextCandidateWindow, &ecTextStore) != S_OK)
+	if(pDocumentMgr->CreateContext(tfClientId, 0, nullptr, &_pContextCandidateWindow, &ecTextStore) != S_OK)
 	{
 		return E_FAIL;
 	}
@@ -314,7 +314,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		{
 			if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
 			{
-				if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == NULL)
+				if(FAILED(pContextView->GetWnd(&hwnd)) || hwnd == nullptr)
 				{
 					hwnd = GetFocus();
 				}
@@ -323,7 +323,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			SafeRelease(&pContextView);
 		}
 
-		if(!_pCandidateWindow->_Create(hwnd, NULL, 0, 0, reg, comp))
+		if(!_pCandidateWindow->_Create(hwnd, nullptr, 0, 0, reg, comp))
 		{
 			goto exit;
 		}
@@ -367,7 +367,7 @@ exit:
 
 void CCandidateList::_InvokeKeyHandler(WPARAM key)
 {
-	if(_pTextService != NULL && _pContextDocument != NULL)
+	if(_pTextService != nullptr && _pContextDocument != nullptr)
 	{
 		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)key, (LPARAM)0, 0);
 	}
@@ -375,7 +375,7 @@ void CCandidateList::_InvokeKeyHandler(WPARAM key)
 
 void CCandidateList::_InvokeSfHandler(BYTE sf)
 {
-	if(_pTextService != NULL && _pContextDocument != NULL)
+	if(_pTextService != nullptr && _pContextDocument != nullptr)
 	{
 		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)0, (LPARAM)0, sf);
 	}
@@ -387,7 +387,7 @@ void CCandidateList::_EndCandidateList()
 
 	_UnadviseContextKeyEventSink();
 
-	if(_pDocumentMgr != NULL)
+	if(_pDocumentMgr != nullptr)
 	{
 		_pDocumentMgr->Pop(0);
 	}
@@ -395,7 +395,7 @@ void CCandidateList::_EndCandidateList()
 	SafeRelease(&_pContextCandidateWindow);
 	SafeRelease(&_pDocumentMgr);
 
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
@@ -408,7 +408,7 @@ void CCandidateList::_EndCandidateList()
 
 BOOL CCandidateList::_IsShowCandidateWindow()
 {
-	return (_pCandidateWindow != NULL) ? TRUE : FALSE;
+	return (_pCandidateWindow != nullptr) ? TRUE : FALSE;
 }
 
 BOOL CCandidateList::_IsContextCandidateWindow(ITfContext *pContext)
@@ -435,7 +435,7 @@ HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 	HRESULT hr = E_FAIL;
 
 	ITfSource *pSource;
-	if(_pContextCandidateWindow != NULL)
+	if(_pContextCandidateWindow != nullptr)
 	{
 		if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
 		{
@@ -465,7 +465,7 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	if(_pContextDocument != NULL)
+	if(_pContextDocument != nullptr)
 	{
 		ITfSource *pSource;
 		if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
@@ -480,7 +480,7 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 
 void CCandidateList::_Show(BOOL bShow)
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->Show(bShow);
 	}
@@ -488,7 +488,7 @@ void CCandidateList::_Show(BOOL bShow)
 
 void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
 	}
@@ -496,7 +496,7 @@ void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcan
 
 void CCandidateList::_Move(LPRECT lpr, TfEditCookie ec, ITfContext *pContext)
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_Move(lpr, ec, pContext);
 	}
@@ -504,7 +504,7 @@ void CCandidateList::_Move(LPRECT lpr, TfEditCookie ec, ITfContext *pContext)
 
 void CCandidateList::_UpdateComp()
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_UpdateComp();
 	}

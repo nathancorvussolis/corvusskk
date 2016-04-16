@@ -44,7 +44,7 @@ public:
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK _WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	void _Destroy();
-	void _Move(LPCRECT lpr, TfEditCookie ec = TF_INVALID_EDIT_COOKIE, ITfContext *pContext = NULL);
+	void _Move(LPCRECT lpr, TfEditCookie ec = TF_INVALID_EDIT_COOKIE, ITfContext *pContext = nullptr);
 	void _BeginUIElement();
 	void _EndUIElement();
 	BOOL _CanShowUIElement();

@@ -11,11 +11,11 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	HDC hmemdc = NULL;
-	HBITMAP hmembmp = NULL;
+	HDC hmemdc = nullptr;
+	HBITMAP hmembmp = nullptr;
 	HPEN npen;
 	HBRUSH nbrush;
-	HGDIOBJ bmp = NULL, font = NULL, pen, brush;
+	HGDIOBJ bmp = nullptr, font = nullptr, pen, brush;
 	RECT r, rc;
 	POINT pt;
 	int cx, cy, cycle;
@@ -33,7 +33,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 	cx = r.right;
 	cy = r.bottom;
 
-	if(_pD2DDCRT != NULL)
+	if(_pD2DDCRT != nullptr)
 	{
 		_pD2DDCRT->BindDC(hdc, &r);
 		_pD2DDCRT->BeginDraw();
@@ -107,7 +107,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory != NULL)
+			if(_pDWFactory != nullptr)
 			{
 				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
@@ -158,7 +158,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		r.right = 1;
 		r.bottom = 1;
 
-		if(_pDWFactory != NULL)
+		if(_pDWFactory != nullptr)
 		{
 			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
@@ -194,7 +194,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		rc.right = pt.x + r.right;
 		rc.bottom = pt.y + height;
 
-		if(_pD2DDCRT != NULL && _pDWTF != NULL)
+		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 		{
 			rd2d = D2D1::RectF((FLOAT)rc.left, (FLOAT)rc.top, (FLOAT)rc.right, (FLOAT)rc.bottom);
 
@@ -211,7 +211,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		}
 	}
 
-	if(_pD2DDCRT != NULL)
+	if(_pD2DDCRT != nullptr)
 	{
 		_pD2DDCRT->EndDraw();
 	}
@@ -264,7 +264,7 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 
 	s = _MakeRegWordString();
 
-	if(_pD2DDCRT != NULL && _pDWTF != NULL)
+	if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 	{
 		rd2d = D2D1::RectF((FLOAT)lpr->left, (FLOAT)lpr->top, (FLOAT)lpr->right, (FLOAT)lpr->bottom);
 
@@ -395,7 +395,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	{
 		s = _MakeCandidateString(page, count, idx, cycle);
 
-		if(_pD2DDCRT != NULL && _pDWTF != NULL)
+		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 		{
 			if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 			{
@@ -455,8 +455,8 @@ void CCandidateWindow::_CalcWindowRect()
 {
 	HMONITOR hMonitor;
 	MONITORINFO mi;
-	HDC hdc = NULL;
-	HGDIOBJ font = NULL;
+	HDC hdc = nullptr;
+	HGDIOBJ font = nullptr;
 	RECT r, rw;
 	POINT pt;
 	int x, y, cx = 0, cy = 0, xmax = 0, cycle;
@@ -467,7 +467,7 @@ void CCandidateWindow::_CalcWindowRect()
 	DWRITE_TEXT_METRICS dwTM;
 	LONG height = 0;
 
-	if(_hwnd == NULL)
+	if(_hwnd == nullptr)
 	{
 		return;
 	}
@@ -480,7 +480,7 @@ void CCandidateWindow::_CalcWindowRect()
 	GetMonitorInfoW(hMonitor, &mi);
 	rw = mi.rcWork;
 
-	if(_pDWFactory != NULL)
+	if(_pDWFactory != nullptr)
 	{
 		if(_GetTextMetrics(L"\x20", &dwTM) == S_OK)
 		{
@@ -505,7 +505,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(regwordul || regword)
 	{
-		if(_pDWFactory != NULL)
+		if(_pDWFactory != nullptr)
 		{
 			if(_GetTextMetrics(disptext.c_str(), &dwTM) == S_OK)
 			{
@@ -548,7 +548,7 @@ void CCandidateWindow::_CalcWindowRect()
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory != NULL)
+			if(_pDWFactory != nullptr)
 			{
 				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
@@ -574,7 +574,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		_snwprintf_s(strPage, _TRUNCATE, L"%s(%u/%u)%s", markNBSP, page + 1, _uPageCnt, markNBSP);
 
-		if(_pDWFactory != NULL)
+		if(_pDWFactory != nullptr)
 		{
 			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
@@ -606,7 +606,7 @@ void CCandidateWindow::_CalcWindowRect()
 			r.right = 1;
 			r.bottom = 1;
 
-			if(_pDWFactory != NULL)
+			if(_pDWFactory != nullptr)
 			{
 				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
 				{
@@ -651,7 +651,7 @@ void CCandidateWindow::_CalcWindowRect()
 		r.right = 1;
 		r.bottom = 1;
 
-		if(_pDWFactory != NULL)
+		if(_pDWFactory != nullptr)
 		{
 			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
 			{
@@ -724,7 +724,7 @@ void CCandidateWindow::_CalcWindowRect()
 		y = _rect.bottom;
 	}
 
-	if(_pDWFactory == NULL)
+	if(_pDWFactory == nullptr)
 	{
 		SelectObject(hdc, font);
 		ReleaseDC(_hwnd, hdc);
@@ -744,13 +744,13 @@ void CCandidateWindow::_CalcWindowRect()
 
 	SetWindowPos(_hwnd, HWND_TOPMOST, x, y, cx, cy, SWP_NOACTIVATE);
 
-	if(_pInputModeWindow != NULL)
+	if(_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_GetRect(&r);
 		_pInputModeWindow->_Move(x + cx - r.right, y + cy + 1);
 	}
 
-	if(_pCandidateWindow == NULL)
+	if(_pCandidateWindow == nullptr)
 	{
 		NotifyWinEvent(EVENT_OBJECT_IME_CHANGE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
 	}
@@ -760,7 +760,7 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 {
 	HRESULT hr = E_FAIL;
 
-	if(metrics != NULL && _pDWFactory != NULL && _pDWTF != NULL)
+	if(metrics != nullptr && _pDWFactory != nullptr && _pDWTF != nullptr)
 	{
 		IDWriteTextLayout *pdwTL;
 		if(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL) == S_OK)

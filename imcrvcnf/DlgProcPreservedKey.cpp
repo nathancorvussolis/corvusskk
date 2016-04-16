@@ -72,7 +72,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key, _countof(key));
-				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, NULL, 0));
+				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
 				ListView_SetItemText(hWndListView, index, 0, key);
 				ListView_SetItemText(hWndListView, index, 1,
@@ -88,7 +88,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 				item.mask = LVIF_TEXT;
 				GetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key, _countof(key));
-				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, NULL, 0));
+				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
 				item.pszText = key;
 				item.iItem = count;

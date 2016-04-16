@@ -16,12 +16,12 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_pCandidateList = pCandidateList;
 	_pCandidateList->AddRef();
 
-	_pCandidateWindow = NULL;
-	_pCandidateWindowParent = NULL;
-	_pInputModeWindow = NULL;
+	_pCandidateWindow = nullptr;
+	_pCandidateWindowParent = nullptr;
+	_pInputModeWindow = nullptr;
 
-	_hwnd = NULL;
-	_hwndParent = NULL;
+	_hwnd = nullptr;
+	_hwndParent = nullptr;
 	_preEnd = FALSE;
 	_rect = {0, 0, 0, 0};
 	_depth = 0;
@@ -39,17 +39,17 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_CandStr.clear();
 	_uPageCandNum = 0;
 
-	hFont = NULL;
+	hFont = nullptr;
 
-	_pD2DFactory = NULL;
-	_pD2DDCRT = NULL;
+	_pD2DFactory = nullptr;
+	_pD2DDCRT = nullptr;
 	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 	{
-		_pD2DBrush[i] = NULL;
+		_pD2DBrush[i] = nullptr;
 	}
 	_drawtext_option = D2D1_DRAW_TEXT_OPTIONS_NONE;
-	_pDWFactory = NULL;
-	_pDWTF = NULL;
+	_pDWFactory = nullptr;
+	_pDWTF = nullptr;
 
 	_reg = FALSE;
 	_comp = FALSE;
@@ -71,7 +71,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 
 CCandidateWindow::~CCandidateWindow()
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
@@ -86,12 +86,12 @@ CCandidateWindow::~CCandidateWindow()
 
 STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == NULL)
+	if(ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppvObj = NULL;
+	*ppvObj = nullptr;
 
 	if(IsEqualIID(riid, IID_IUnknown) ||
 		IsEqualIID(riid, IID_ITfUIElement) ||
@@ -130,16 +130,16 @@ STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 {
 	BSTR bstrDesc;
 
-	if(bstr == NULL)
+	if(bstr == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*bstr = NULL;
+	*bstr = nullptr;
 
 	bstrDesc = SysAllocString(TextServiceDesc);
 
-	if(bstrDesc == NULL)
+	if(bstrDesc == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -151,7 +151,7 @@ STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 
 STDAPI CCandidateWindow::GetGUID(GUID *pguid)
 {
-	if(pguid == NULL)
+	if(pguid == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -168,7 +168,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		return E_UNEXPECTED;
 	}
 
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->Show(bShow);
 	}
@@ -178,7 +178,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 #endif
 		if(bShow)
 		{
-			if(_hwnd != NULL)
+			if(_hwnd != nullptr)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
@@ -192,7 +192,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		}
 		else
 		{
-			if(_hwnd != NULL)
+			if(_hwnd != nullptr)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
@@ -207,10 +207,10 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	}
 #endif
 
-	if(_pInputModeWindow != NULL && regword)
+	if(_pInputModeWindow != nullptr && regword)
 	{
 #ifndef _DEBUG
-		if(_pCandidateWindow == NULL)
+		if(_pCandidateWindow == nullptr)
 		{
 #endif
 			_pInputModeWindow->_Show(bShow);
@@ -224,12 +224,12 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 
 STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		return _pCandidateWindow->IsShown(pbShow);
 	}
 
-	if(pbShow == NULL)
+	if(pbShow == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -241,12 +241,12 @@ STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 
 STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 {
-	if(_pCandidateWindow != NULL)
+	if(_pCandidateWindow != nullptr)
 	{
 		return _pCandidateWindow->GetUpdatedFlags(pdwFlags);
 	}
 
-	if(pdwFlags == NULL)
+	if(pdwFlags == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -258,12 +258,12 @@ STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 
 STDAPI CCandidateWindow::GetDocumentMgr(ITfDocumentMgr **ppdim)
 {
-	if(ppdim == NULL)
+	if(ppdim == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppdim = NULL;
+	*ppdim = nullptr;
 
 	return S_OK;
 }
@@ -275,7 +275,7 @@ STDAPI CCandidateWindow::GetCount(UINT *puCount)
 		return _pCandidateWindow->GetCount(puCount);
 	}
 
-	if(puCount == NULL)
+	if(puCount == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -299,7 +299,7 @@ STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
 		return _pCandidateWindow->GetSelection(puIndex);
 	}
 
-	if(puIndex == NULL)
+	if(puIndex == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -323,7 +323,7 @@ STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
 		return _pCandidateWindow->GetString(uIndex, pstr);
 	}
 
-	if(pstr == NULL)
+	if(pstr == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -357,7 +357,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 		return _pCandidateWindow->GetPageIndex(pIndex, uSize, puPageCnt);
 	}
 
-	if(puPageCnt == NULL)
+	if(puPageCnt == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -381,7 +381,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 			hr = S_FALSE;
 		}
 
-		if(pIndex != NULL)
+		if(pIndex != nullptr)
 		{
 			for(i = 0; i < uSize; i++)
 			{
@@ -405,7 +405,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 		return _pCandidateWindow->SetPageIndex(pIndex, uPageCnt);
 	}
 
-	if(pIndex == NULL)
+	if(pIndex == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -500,7 +500,7 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 		return _pCandidateWindow->GetCurrentPage(puPage);
 	}
 
-	if(puPage == NULL)
+	if(puPage == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -576,7 +576,7 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 
 STDAPI CCandidateWindow::Finalize()
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_EndCandidateList();
 	}
@@ -585,7 +585,7 @@ STDAPI CCandidateWindow::Finalize()
 
 STDAPI CCandidateWindow::Abort()
 {
-	if(_pCandidateList != NULL)
+	if(_pCandidateList != nullptr)
 	{
 		_pCandidateList->_EndCandidateList();
 	}

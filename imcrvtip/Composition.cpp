@@ -9,7 +9,7 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	_EndCandidateList();
 	showcandlist = FALSE;
 
-	if(pComposition != NULL)
+	if(pComposition != nullptr)
 	{
 		ITfRange *pRange;
 		if(pComposition->GetRange(&pRange) == S_OK)
@@ -29,7 +29,7 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 
 BOOL CTextService::_IsComposing()
 {
-	return _pComposition != NULL;
+	return _pComposition != nullptr;
 }
 
 void CTextService::_SetComposition(ITfComposition *pComposition)
@@ -70,13 +70,13 @@ public:
 		if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
 		{
 			ITfRange *pRange;
-			if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, NULL, 0, &pRange) == S_OK)
+			if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, nullptr, 0, &pRange) == S_OK)
 			{
 				ITfContextComposition *pContextComposition;
 				if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
 				{
 					ITfComposition *pComposition;
-					if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != NULL))
+					if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != nullptr))
 					{
 						_pTextService->_SetComposition(pComposition);
 
@@ -131,7 +131,7 @@ public:
 
 void CTextService::_TerminateComposition(TfEditCookie ec, ITfContext *pContext)
 {
-	if(pContext == NULL)	//辞書登録用
+	if(pContext == nullptr)	//辞書登録用
 	{
 		return;
 	}
@@ -222,10 +222,10 @@ void CTextService::_ClearComposition()
 	if(_IsComposing())
 	{
 		ITfDocumentMgr *pDocumentMgr;
-		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != NULL))
+		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 		{
 			ITfContext *pContext;
-			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != NULL))
+			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
 			{
 				_ResetStatus();
 

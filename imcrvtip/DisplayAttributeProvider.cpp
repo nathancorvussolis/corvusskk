@@ -8,12 +8,12 @@ STDAPI CTextService::EnumDisplayAttributeInfo(IEnumTfDisplayAttributeInfo **ppEn
 {
 	CEnumDisplayAttributeInfo *pAttributeEnum;
 
-	if(ppEnum == NULL)
+	if(ppEnum == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppEnum = NULL;
+	*ppEnum = nullptr;
 
 	try
 	{
@@ -31,12 +31,12 @@ STDAPI CTextService::EnumDisplayAttributeInfo(IEnumTfDisplayAttributeInfo **ppEn
 
 STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeInfo **ppInfo)
 {
-	if(ppInfo == NULL)
+	if(ppInfo == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	*ppInfo = NULL;
+	*ppInfo = nullptr;
 
 	for(int i = 0; i < _countof(c_gdDisplayAttributeInfo); i++)
 	{
@@ -54,7 +54,7 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 		}
 	}
 
-	if(*ppInfo == NULL)
+	if(*ppInfo == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -111,7 +111,7 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 	};
 
 	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(int i = 0; i < _countof(displayAttributeAtom); i++)
 		{

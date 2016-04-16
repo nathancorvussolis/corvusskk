@@ -27,12 +27,12 @@ public:
 	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
-		if(ppvObj == NULL)
+		if(ppvObj == nullptr)
 		{
 			return E_INVALIDARG;
 		}
 
-		*ppvObj = NULL;
+		*ppvObj = nullptr;
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfEditSession))
 		{

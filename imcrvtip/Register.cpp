@@ -36,14 +36,14 @@ BOOL RegisterProfiles()
 	WCHAR fileName[MAX_PATH];
 
 	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
 		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID,
 			c_guidProfile, TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName),
-			TEXTSERVICE_ICON_INDEX, NULL, 0, TRUE, 0);
+			TEXTSERVICE_ICON_INDEX, nullptr, 0, TRUE, 0);
 
 		SafeRelease(&pInputProcessorProfilesMgr);
 	}
@@ -56,7 +56,7 @@ void UnregisterProfiles()
 	HRESULT hr = E_FAIL;
 
 	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
 	{
 		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, 0);
 
@@ -70,7 +70,7 @@ BOOL RegisterCategories()
 	HRESULT hr;
 
 	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
@@ -111,7 +111,7 @@ void UnregisterCategories()
 	HRESULT hr;
 
 	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
@@ -146,17 +146,17 @@ BOOL RegisterServer()
 
 	wmemcpy_s(szInfoKey, _countof(szInfoKey), c_szInfoKeyPrefix, _countof(c_szInfoKeyPrefix) - 1);
 
-	if(RegCreateKeyExW(HKEY_CLASSES_ROOT, szInfoKey, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL) != ERROR_SUCCESS)
+	if(RegCreateKeyExW(HKEY_CLASSES_ROOT, szInfoKey, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey, nullptr) != ERROR_SUCCESS)
 	{
 		return FALSE;
 	}
 
-	if(RegSetValueExW(hKey, NULL, 0, REG_SZ, (BYTE *)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if(RegSetValueExW(hKey, nullptr, 0, REG_SZ, (BYTE *)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit;
 	}
 
-	if(RegCreateKeyExW(hKey, c_szInProcSvr32, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hSubKey, NULL) != ERROR_SUCCESS)
+	if(RegCreateKeyExW(hKey, c_szInProcSvr32, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hSubKey, nullptr) != ERROR_SUCCESS)
 	{
 		goto exit;
 	}
@@ -164,7 +164,7 @@ BOOL RegisterServer()
 	ZeroMemory(fileName, sizeof(fileName));
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-	if(RegSetValueExW(hSubKey, NULL, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if(RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit_sub;
 	}
@@ -206,11 +206,11 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 	BOOL fRet = FALSE;
 	WCHAR fileName[MAX_PATH];
 
-	PWSTR systemfolder = NULL;
+	PWSTR systemfolder = nullptr;
 
 	ZeroMemory(fileName, sizeof(fileName));
 
-	if(SHGetKnownFolderPath(FOLDERID_System, KF_FLAG_DONT_VERIFY, NULL, &systemfolder) == S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_System, KF_FLAG_DONT_VERIFY, nullptr, &systemfolder) == S_OK)
 	{
 		_snwprintf_s(fileName, _TRUNCATE, L"%s\\%s", systemfolder, L"input.dll");
 
@@ -219,12 +219,12 @@ BOOL InstallLayoutOrTip(DWORD dwFlags)
 
 	HMODULE hInputDLL = LoadLibraryW(fileName);
 
-	if(hInputDLL != NULL)
+	if(hInputDLL != nullptr)
 	{
 		PTF_INSTALLLAYOUTORTIP pfnInstallLayoutOrTip =
 			(PTF_INSTALLLAYOUTORTIP)GetProcAddress(hInputDLL, "InstallLayoutOrTip");
 
-		if(pfnInstallLayoutOrTip != NULL)
+		if(pfnInstallLayoutOrTip != nullptr)
 		{
 			WCHAR clsid[CLSID_STRLEN + 1];
 			WCHAR guidprofile[CLSID_STRLEN + 1];

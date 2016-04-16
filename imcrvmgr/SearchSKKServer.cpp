@@ -132,7 +132,7 @@ void ConnectSKKServer()
 		return;
 	}
 
-	for(paiw = paiwResult; paiw != NULL; paiw = paiw->ai_next)
+	for(paiw = paiwResult; paiw != nullptr; paiw = paiw->ai_next)
 	{
 		sock = socket(paiw->ai_family, paiw->ai_socktype, paiw->ai_protocol);
 		if(sock == INVALID_SOCKET)
@@ -177,7 +177,7 @@ void ConnectSKKServer()
 		FD_SET(sock, &fdw);
 		FD_SET(sock, &fde);
 
-		select(0, NULL, &fdw, &fde, &tv);
+		select(0, nullptr, &fdw, &fde, &tv);
 		if(FD_ISSET(sock, &fdw))
 		{
 			break;
