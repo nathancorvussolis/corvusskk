@@ -28,18 +28,18 @@ BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
 
 const luaL_Reg luaFuncs[] =
 {
-	{"search_skk_dictionary", lua_search_skk_dictionary},
-	{"search_user_dictionary", lua_search_user_dictionary},
-	{"search_skk_server", lua_search_skk_server},
-	{"search_skk_server_info", lua_search_skk_server_info},
-	{"search_unicode", lua_search_unicode},
-	{"search_jisx0213", lua_search_jisx0213},
-	{"search_jisx0208", lua_search_jisx0208},
-	{"search_character_code", lua_search_character_code},
-	{"complement", lua_complement},
-	{"add", lua_add},
-	{"delete", lua_delete},
-	{"save", lua_save},
+	{u8"search_skk_dictionary", lua_search_skk_dictionary},
+	{u8"search_user_dictionary", lua_search_user_dictionary},
+	{u8"search_skk_server", lua_search_skk_server},
+	{u8"search_skk_server_info", lua_search_skk_server_info},
+	{u8"search_unicode", lua_search_unicode},
+	{u8"search_jisx0213", lua_search_jisx0213},
+	{u8"search_jisx0208", lua_search_jisx0208},
+	{u8"search_character_code", lua_search_character_code},
+	{u8"complement", lua_complement},
+	{u8"add", lua_add},
+	{u8"delete", lua_delete},
+	{u8"save", lua_save},
 	{nullptr, nullptr}
 };
 
@@ -212,12 +212,12 @@ void InitLua()
 	luaL_openlibs(lua);
 
 	luaL_newlib(lua, luaFuncs);
-	lua_setglobal(lua, "crvmgr");
+	lua_setglobal(lua, u8"crvmgr");
 
 	//skk-version
 	_snprintf_s(version, _TRUNCATE, "%s", WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER));
 	lua_pushstring(lua, version);
-	lua_setglobal(lua, "SKK_VERSION");
+	lua_setglobal(lua, u8"SKK_VERSION");
 
 	//%AppData%\CorvusSKK\init.lua
 	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)

@@ -313,7 +313,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 		if(lua != nullptr)
 		{
-			lua_getglobal(lua,"lua_skk_complement");
+			lua_getglobal(lua, u8"lua_skk_complement");
 			lua_pushstring(lua, WCTOU8(key));
 			if(lua_pcall(lua, 1, 1, 0) == LUA_OK)
 			{
@@ -399,7 +399,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 		if(lua != nullptr)
 		{
-			lua_getglobal(lua, "lua_skk_add");
+			lua_getglobal(lua, u8"lua_skk_add");
 			lua_pushboolean(lua, (command == REQ_USER_ADD_0 ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key));
 			lua_pushstring(lua, WCTOU8(candidate));
@@ -426,7 +426,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 		if(lua != nullptr)
 		{
-			lua_getglobal(lua, "lua_skk_delete");
+			lua_getglobal(lua, u8"lua_skk_delete");
 			lua_pushboolean(lua, (command == REQ_USER_DEL_0 ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key));
 			lua_pushstring(lua, WCTOU8(candidate));
@@ -444,7 +444,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	case REQ_USER_SAVE:
 		if(lua != nullptr)
 		{
-			lua_getglobal(lua, "lua_skk_save");
+			lua_getglobal(lua, u8"lua_skk_save");
 			lua_pcall(lua, 0, 0, 0);
 		}
 		else

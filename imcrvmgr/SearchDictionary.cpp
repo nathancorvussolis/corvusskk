@@ -17,7 +17,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 	if(lua != nullptr)
 	{
-		lua_getglobal(lua,"lua_skk_search");
+		lua_getglobal(lua, u8"lua_skk_search");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(okuri));
 
@@ -261,7 +261,7 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 
 	if(lua != nullptr)
 	{
-		lua_getglobal(lua, "lua_skk_convert_key");
+		lua_getglobal(lua, u8"lua_skk_convert_key");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(okuri));
 
@@ -297,7 +297,7 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 
 	if(lua != nullptr)
 	{
-		lua_getglobal(lua, "lua_skk_convert_candidate");
+		lua_getglobal(lua, u8"lua_skk_convert_candidate");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(candidate));
 		lua_pushstring(lua, WCTOU8(okuri));
