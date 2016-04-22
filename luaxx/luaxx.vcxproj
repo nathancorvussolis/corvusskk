@@ -22,6 +22,7 @@
     <ProjectGuid>{3DD6BBBB-4BCF-4991-A568-0D04B37D5E51}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>luaxx</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
