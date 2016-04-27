@@ -97,6 +97,56 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 	}
 }
 
+void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
+{
+	std::wstring candidate, conv;
+	std::wregex re(L"[\\x00-\\x19]");
+	std::wstring fmt(L"");
+	SKKDICCANDIDATES scc;
+
+	if(max >= 9 || max <= 0)
+	{
+		return;
+	}
+
+	FORWARD_ITERATION_I(sc_itr, sc)
+	{
+		candidate = SearchUserDic(sc_itr->first, L"");
+
+		candidate = std::regex_replace(candidate, re, fmt);
+
+		scc.clear();
+
+		ParseSKKDicCandiate(candidate, scc);
+
+		int i = 0;
+		FORWARD_ITERATION_I(scc_itr, scc)
+		{
+			if(max <= i++)
+			{
+				break;
+			}
+
+			conv = ConvertCandidate(sc_itr->first, scc_itr->first, L"");
+			if(conv.empty())
+			{
+				conv = scc_itr->first;
+			}
+			sc_itr->second += L"/" + conv;
+		}
+
+		if(!sc_itr->second.empty())
+		{
+			sc_itr->second += L"/";
+		}
+
+		if(i < (int)scc.size())
+		{
+			sc_itr->second += L"…";
+		}
+	}
+}
+
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri)
 {
 	SKKDICENTRY userdicentry;

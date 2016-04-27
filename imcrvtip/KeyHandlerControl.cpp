@@ -359,15 +359,13 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 
 			if(complement && cx_compuserdic)
 			{
-				if(candidx == 0)
-				{
-					_UserDicComp();
-				}
-
 				okuriidx = kana.size();
 				if(candidx < candidates.size() && !candidates[candidx].first.second.empty())
 				{
-					kana += markSP + candidates[candidx].first.second;
+					if(!cx_stacompmulti && !cx_dyncompmulti)
+					{
+						kana += markSP + candidates[candidx].first.second;
+					}
 				}
 				kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
 
@@ -424,7 +422,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				okuriidx = kana.size();
 				if(candidx < candidates.size() && !candidates[candidx].first.second.empty())
 				{
-					kana += markSP + candidates[candidx].first.second;
+					if(!cx_stacompmulti && !cx_dyncompmulti)
+					{
+						kana += markSP + candidates[candidx].first.second;
+					}
 				}
 				kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
 

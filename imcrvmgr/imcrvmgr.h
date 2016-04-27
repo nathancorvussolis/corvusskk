@@ -54,6 +54,7 @@ int lua_save(lua_State *lua);
 // SearchUserDictionary
 std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri);
 void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
+void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadSKKUserDic();

@@ -215,13 +215,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 //  request "1\n<key>\t<key(original)>\t<okuri>\n"
 //  reply   "T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
 //          "F\n":nothing
-//search candidate (user dictionary only)
-//  request "2\n<key>\t<key(original)>\t<okuri>\n"
-//  reply   "T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
-//          "F\n":nothing
 //search key for complement
-//  request "4\n<key>\t\t\n"
-//  reply   "T\n<key>\t\t\t\n...\n":hit
+//  request "4\n<key prefix>\t<candidate max>\t\n"
+//  reply   "T\n<key>\t\t<candidates>\t\n...\n":hit
 //          "F\n":nothing
 //convert key
 //  request "5\n<key>\t\t<okuri>\n"
@@ -262,7 +258,6 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	switch(command)
 	{
 	case REQ_SEARCH:
-	case REQ_SEARCHUSER:
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
@@ -271,21 +266,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$3");
 		okuri = std::regex_replace(argument, re, fmt);
 
-		switch(command)
-		{
-		case REQ_SEARCH:
-			SearchDictionary(key, okuri, sc);
-			break;
-		case REQ_SEARCHUSER:
-			candidate = SearchUserDic(key, okuri);
-			re.assign(L"[\\x00-\\x19]");
-			fmt.assign(L"");
-			candidate = std::regex_replace(candidate, re, fmt);
-			ParseSKKDicCandiate(candidate, sc);
-			break;
-		default:
-			break;
-		}
+		SearchDictionary(key, okuri, sc);
 
 		if(!sc.empty())
 		{
@@ -310,6 +291,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
+		fmt.assign(L"$2");
+		keyorg = std::regex_replace(argument, re, fmt);
 
 		if(lua != nullptr)
 		{
@@ -334,13 +317,15 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 			SearchComplement(key, sc);
 		}
 
+		SearchComplementSearchCandidate(sc, _wtoi(keyorg.c_str()));
+
 		if(!sc.empty())
 		{
 			result = REP_OK;
 			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				result += sc_itr->first + L"\t\t\t\n";
+				result += sc_itr->first + L"\t\t" + sc_itr->second + L"\t\n";
 			}
 		}
 		else

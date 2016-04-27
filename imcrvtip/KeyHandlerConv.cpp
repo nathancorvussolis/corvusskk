@@ -516,6 +516,14 @@ void CTextService::_NextComp()
 		candidates.clear();
 		candidates.shrink_to_fit();
 
+		//候補の表示数は「候補一覧表示に要する変換回数」-1 個まで
+		WCHAR c = L'0';
+		if(cx_untilcandlist >= 1 && cx_untilcandlist <= 9)
+		{
+			c += cx_untilcandlist - 1;
+		}
+		searchkeyorg.push_back(c);
+
 		//補完
 		_SearchDic(REQ_COMPLEMENT);
 
@@ -605,8 +613,6 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	{
 		if(cx_compuserdic)
 		{
-			//ユーザー辞書検索
-			_UserDicComp(MAX_SELKEY_C);
 			if(!candidates.empty())
 			{
 				kana += markSP + candidates[0].first.second;
@@ -664,60 +670,6 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 		_EndCompletionList(ec, pContext);
 		_Update(ec, pContext);
 	}
-}
-
-void CTextService::_UserDicComp(size_t max)
-{
-	std::wstring kana_bak = kana;
-	std::wstring searchkey_bak = searchkey;
-	CANDIDATES candidates_bak = candidates;
-	size_t candidx_bak = candidx;
-	size_t count = 0;
-
-#ifdef _DEBUG
-	_CommandDic(REQ_DEBUGOUT_OFF);
-#endif
-
-	FORWARD_ITERATION_I(candidates_bak_itr, candidates_bak)
-	{
-		if(max < ++count)
-		{
-			break;
-		}
-
-		//ユーザー辞書検索
-		kana = candidates_bak_itr->first.first;
-		_StartSubConv(REQ_SEARCHUSER);
-
-		if(!candidates.empty() && cx_untilcandlist > 1)
-		{
-			candidates_bak_itr->first.second = L"/";
-			size_t i = 1;
-			FORWARD_ITERATION_I(candidates_itr, candidates)
-			{
-				//「候補一覧表示に要する変換回数」-1 個まで
-				if(cx_untilcandlist < ++i)
-				{
-					break;
-				}
-				candidates_bak_itr->first.second += candidates_itr->first.first + L"/";
-			}
-
-			if(cx_untilcandlist - 1 < candidates.size())
-			{
-				candidates_bak_itr->first.second += L"…";
-			}
-		}
-	}
-
-#ifdef _DEBUG
-	_CommandDic(REQ_DEBUGOUT_ON);
-#endif
-
-	kana = kana_bak;
-	searchkey = searchkey_bak;
-	candidates = candidates_bak;
-	candidx = candidx_bak;
 }
 
 void CTextService::_ConvRoman()

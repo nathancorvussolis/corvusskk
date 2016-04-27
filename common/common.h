@@ -22,7 +22,6 @@
 
 //request
 #define REQ_SEARCH			L'1'	//辞書検索
-#define REQ_SEARCHUSER		L'2'	//辞書検索(ユーザー辞書のみ)
 #define REQ_COMPLEMENT		L'4'	//補完
 #define REQ_CONVERTKEY		L'5'	//見出し語変換
 #define REQ_CONVERTCND		L'6'	//候補変換

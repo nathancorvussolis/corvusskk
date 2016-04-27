@@ -170,7 +170,6 @@ public:
 	void _PrevComp();
 	void _SetComp(const std::wstring &candidate);
 	void _DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel = FALSE);
-	void _UserDicComp(size_t max = (size_t)-1);
 	void _ConvRoman();
 	BOOL _ConvShift(WCHAR ch);
 	BOOL _ConvN();
