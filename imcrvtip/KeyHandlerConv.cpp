@@ -527,6 +527,14 @@ void CTextService::_NextComp()
 		//補完
 		_SearchDic(REQ_COMPLEMENT);
 
+		if(!cx_compuserdic)
+		{
+			FORWARD_ITERATION_I(candidates_itr, candidates)
+			{
+				candidates_itr->first.second.clear();
+			}
+		}
+
 		if(!candidates.empty())
 		{
 			complement = TRUE;
@@ -595,17 +603,9 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	std::wstring kana_bak = kana;
 	size_t cursoridx_bak = cursoridx;
 
-#ifdef _DEBUG
-	_CommandDic(REQ_DEBUGOUT_OFF);
-#endif
-
 	//補完
 	complement = FALSE;
 	_NextComp();
-
-#ifdef _DEBUG
-	_CommandDic(REQ_DEBUGOUT_ON);
-#endif
 
 	cursoridx = cursoridx_bak;
 

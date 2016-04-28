@@ -31,10 +31,6 @@
 #define REQ_USER_DEL_1		L'D'	//ユーザー辞書削除(送りなし、補完あり)
 #define REQ_USER_SAVE		L'S'	//ユーザー辞書保存
 #define REQ_EXEC_CNF		L'P'	//設定ダイアログ起動
-#ifdef _DEBUG
-#define REQ_DEBUGOUT_ON		L'['
-#define REQ_DEBUGOUT_OFF	L']'
-#endif
 //reply
 #define REP_OK				L'T'	//hit
 #define REP_FALSE			L'F'	//nothing

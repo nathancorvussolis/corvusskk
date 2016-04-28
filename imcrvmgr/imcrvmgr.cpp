@@ -448,14 +448,6 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		result += L"\n";
 		break;
 
-#ifdef _DEBUG
-	case REQ_DEBUGOUT_ON:
-	case REQ_DEBUGOUT_OFF:
-		result = REP_OK;
-		result += L"\n";
-		break;
-#endif
-
 	default:
 		result = REP_FALSE;
 		result += L"\n";
@@ -475,7 +467,6 @@ unsigned int __stdcall SrvThread(void *p)
 	std::wstring dedit, tedit;
 	std::wregex re;
 	std::wstring fmt;
-	static BOOL debugout = TRUE;
 #endif
 
 	while(true)
@@ -515,56 +506,38 @@ unsigned int __stdcall SrvThread(void *p)
 		command = pipebuf[0];
 
 #ifdef _DEBUG
-		switch(command)
-		{
-		case REQ_DEBUGOUT_ON:
-			debugout = TRUE;
-			break;
-		default:
-			break;
-		}
+		tedit.assign(pipebuf);
+		re.assign(L"\n");
+		fmt.assign(L"↲\r\n");
+		tedit = std::regex_replace(tedit, re, fmt);
+		re.assign(L"\t");
+		fmt.assign(L"»\u00A0");
+		tedit = std::regex_replace(tedit, re, fmt);
 
-		if(debugout)
-		{
-			tedit.assign(pipebuf);
-			re.assign(L"\n");
-			fmt.assign(L"\r\n");
-			tedit = std::regex_replace(tedit, re, fmt);
-			re.assign(L"\t");
-			fmt.assign(L"»");
-			tedit = std::regex_replace(tedit, re, fmt);
-
-			dedit.append(tedit);
-			SetWindowTextW(hwndEdit, dedit.c_str());
-		}
+		dedit.append(tedit);
+		SetWindowTextW(hwndEdit, dedit.c_str());
 #endif
 
 		SrvProc(command, &pipebuf[2], wspipebuf);
 		wcsncpy_s(pipebuf, wspipebuf.c_str(), _TRUNCATE);
 
 #ifdef _DEBUG
-		if(debugout)
-		{
-			tedit.assign(pipebuf);
-			re.assign(L"\n");
-			fmt.assign(L"\r\n");
-			tedit = std::regex_replace(tedit, re, fmt);
-			re.assign(L"\t");
-			fmt.assign(L"»");
-			tedit = std::regex_replace(tedit, re, fmt);
+		tedit.assign(pipebuf);
+		re.assign(L"\n");
+		fmt.assign(L"↲\r\n");
+		tedit = std::regex_replace(tedit, re, fmt);
+		re.assign(L"\t");
+		fmt.assign(L"»\u00A0");
+		tedit = std::regex_replace(tedit, re, fmt);
 
-			dedit.append(tedit);
-			SetWindowTextW(hwndEdit, dedit.c_str());
-			SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
-		}
+		dedit.append(tedit);
+		SetWindowTextW(hwndEdit, dedit.c_str());
+		SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
 
 		switch(command)
 		{
 		case REQ_USER_SAVE:
 			dedit.clear();
-			break;
-		case REQ_DEBUGOUT_OFF:
-			debugout = FALSE;
 			break;
 		default:
 			break;
