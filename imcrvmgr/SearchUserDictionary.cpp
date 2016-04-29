@@ -138,11 +138,11 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 		if(!sc_itr->second.empty())
 		{
 			sc_itr->second += L"/";
-		}
 
-		if(i < (int)scc.size())
-		{
-			sc_itr->second += L"…";
+			if(i < (int)scc.size())
+			{
+				sc_itr->second += L"…";
+			}
 		}
 	}
 }

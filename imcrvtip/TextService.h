@@ -352,7 +352,7 @@ public:
 	BOOL cx_stacompmulti;		//複数補完を使用する
 	BOOL cx_dynamiccomp;		//動的補完を使用する
 	BOOL cx_dyncompmulti;		//複数動的補完を使用する
-	BOOL cx_compuserdic;		//補完のときユーザー辞書を検索する
+	BOOL cx_compuserdic;		//補完された見出し語の候補を表示する
 
 	//ローマ字・仮名
 	std::wstring roman;		//ローマ字

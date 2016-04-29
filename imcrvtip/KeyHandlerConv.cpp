@@ -527,6 +527,7 @@ void CTextService::_NextComp()
 		//補完
 		_SearchDic(REQ_COMPLEMENT);
 
+		//補完済み見出し語の候補を除去
 		if(!cx_compuserdic)
 		{
 			FORWARD_ITERATION_I(candidates_itr, candidates)
