@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.3.2
+# CorvusSKK ver. 2.3.3
 
 Windowsで動作するSKK風のIMEです。
 
@@ -12,7 +12,8 @@ Windowsで動作するSKK風のIMEです。
 * Windows Vista (32-bit / 64-bit)
 
     + Service Pack 2
-    + プラットフォーム更新プログラム ( [KB971644](https://support.microsoft.com/ja-jp/kb/971644) または [KB971512](https://support.microsoft.com/ja-jp/kb/971512) )
+    + プラットフォーム更新プログラム ( [KB971644](https://support.microsoft.com/en-us/kb/971644) または [KB971512](https://support.microsoft.com/en-us/kb/971512) )
+    + 更新プログラム ( [KB2763674](https://support.microsoft.com/en-us/kb/2763674) )
 
 * Windows 7     (32-bit / 64-bit)
 
@@ -22,7 +23,7 @@ Windowsで動作するSKK風のIMEです。
 
 * Windows 8.1   (32-bit / 64-bit)
 
-    + S14 Update ( [KB2919355](https://support.microsoft.com/ja-jp/kb/2919355) )
+    + S14 Update ( [KB2919355](https://support.microsoft.com/en-us/kb/2919355) )
 
 * Windows 10    (32-bit / 64-bit)
 
