@@ -2,8 +2,6 @@
 #include "imcrvtip.h"
 #include "TextService.h"
 #include "CandidateList.h"
-#include "CandidateWindow.h"
-#include "InputModeWindow.h"
 
 CTextService::CTextService()
 {
@@ -153,9 +151,6 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr->AddRef();
 	_ClientId = tid;
 
-	CCandidateWindow::_InitClass();
-	CInputModeWindow::_InitClass();
-
 	if (!_IsKeyboardOpen())
 	{
 		_KeyboardSetDefaultMode();
@@ -243,9 +238,6 @@ STDAPI CTextService::Deactivate()
 	_UninitThreadMgrEventSink();
 
 	_UninitFont();
-
-	CCandidateWindow::_UninitClass();
-	CInputModeWindow::_UninitClass();
 
 	SafeRelease(&_pThreadMgr);
 
