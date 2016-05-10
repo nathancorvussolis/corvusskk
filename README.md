@@ -44,6 +44,10 @@ corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン�
     + %SystemRoot%\System32\IME\IMCRVSKK
     + %SystemRoot%\SysWOW64\IME\IMCRVSKK
 
+* 共通
+
+    + %SystemRoot%\IME\IMCRVSKK
+
 
 ### アンインストール
 
@@ -52,15 +56,6 @@ corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン�
 または、インストールに使用した exe ファイルを再度実行し「Uninstall」を選択してください。
 
 アンインストールの後はOSを再起動しておくと安全です。
-
-
-### 初期設定
-
-任意のユーザーアカウントで初めて使用するときは、設定ダイアログでOKボタンを押して初期設定を保存してください。
-
-設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
-
-続いて、設定ダイアログのSKK辞書のリストにSKK辞書ファイルのパスまたはURLを追加して取込ボタンを押してください。詳しくは後述の「SKK辞書」の項を参照してください。
 
 
 ### Windows ストアアプリ、Microsoft Edge
@@ -110,6 +105,10 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 各種設定の config.xml ファイルは、UTF-8 の XML フォーマットのテキストファイルとなっており、テキストエディタで編集可能です。変更した後は、IME OFF → ON で新しい設定が反映されます。
 
 取込済SKK辞書の skkdict.txt ファイルは、UTF-16 (LE, BOMあり) のSKK辞書フォーマットとなっています。
+
+ディレクトリ %AppData%\CorvusSKK にファイルが存在しないときは %SystemRoot%\IME\IMCRVSKK にインストールされているファイルが使用されます。
+
+SKK辞書サーバーを使用するなどでローカルのSKK辞書を使用したくないときは、設定ダイアログのSKK辞書のリストが空またはチェック無しの状態で取込処理をおこなってください。空の取込済SKK辞書が生成されます。
 
 
 ### ユーザー辞書
@@ -466,9 +465,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 辞書管理プロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位でロードされます。
 
 1. %AppData%\CorvusSKK\init.lua
-2. 辞書管理プロセスと同じディレクトリのinit.lua (インストーラーによりインストール済み)
-  * 通常、%SystemRoot%\System32\IME\IMCRVSKK\init.lua
-  * または、%SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
+2. %SystemRoot%\IME\IMCRVSKK\init.lua (インストーラーによりインストール済み)
 
 コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使ってください。
 

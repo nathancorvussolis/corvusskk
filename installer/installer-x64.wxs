@@ -35,9 +35,6 @@
       <Component Guid="39B37C2E-8821-47E8-98FE-00503A54894C" Id="LUADLL_X64" Win64="yes">
         <File Id="F_luadll_x64" Name="lua53.dll" Source="..\x64\Release\lua53.dll" />
       </Component>
-      <Component Guid="055AA272-77FB-46CD-AB50-34DA50625ABB" Id="INITLUA_X64" Win64="yes">
-        <File Id="F_initlua_x64" Name="init.lua" Source="config-lua\init.lua" />
-      </Component>
     </DirectoryRef>
 
     <Component Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Id="REG_X64" Directory="TARGETDIR" Win64="yes">
@@ -53,7 +50,6 @@
       <ComponentRef Id="TIP_X64" />
       <ComponentRef Id="LUAEXE_X64" />
       <ComponentRef Id="LUADLL_X64" />
-      <ComponentRef Id="INITLUA_X64" />
       <ComponentRef Id="REG_X64" />
     </Feature>
 
@@ -70,6 +66,11 @@
       <MergeRef Id="AMP_X64" />
       <MergeRef Id="OMP_X64" />
     </Feature>
+
+    <UIRef Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
+    <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
+    <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 

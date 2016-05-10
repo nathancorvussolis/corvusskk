@@ -1,6 +1,4 @@
 ﻿
-#include "parseskkdic.h"
-#include "configxml.h"
 #include "utf8.h"
 #include "imcrvmgr.h"
 

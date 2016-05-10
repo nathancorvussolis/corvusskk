@@ -20,6 +20,11 @@
           <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
         </Directory>
       </Directory>
+      <Directory Id="WindowsFolder" Name="Windows">
+        <Directory Id="IME_WIN" Name="IME">
+          <Directory Id="IMCRVSKK_WIN" Name="IMCRVSKK" />
+        </Directory>
+      </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="IMCRVSKK_MENU" Name="CorvusSKK" />
       </Directory>
@@ -41,15 +46,31 @@
       <Component Guid="84898511-4C96-4114-A7EE-8F32E260D28A" Id="LUADLL_X86">
         <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
       </Component>
-      <Component Guid="1229154E-E5AB-430C-87EC-A7DBB451A157" Id="INITLUA_X86">
-        <File Id="F_initlua_x86" Name="init.lua" Source="config-lua\init.lua" />
+    </DirectoryRef>
+
+    <DirectoryRef Id="IMCRVSKK_WIN">
+      <Component Guid="12FF814A-8F58-44C4-B653-23258B7F1705" Id="CONFIG_XML">
+        <File Id="F_config_xml" Name="config.xml" Source="build\config.xml" />
       </Component>
-      <Component Guid="0830BDCC-483C-4E83-90B7-47E146D4996B" Id="README_HTML">
+      <Component Guid="6EE61E3E-BB06-4A30-9C67-8CD769B2AE09" Id="INIT_LUA">
+        <File Id="F_init_lua" Name="init.lua" Source="build\init.lua" />
+      </Component>
+      <Component Guid="E2626079-9F1C-4B10-9A68-034B12D6DB73" Id="SKKDICT_TXT">
+        <File Id="F_skkdict_txt" Name="skkdict.txt" Source="build\skkdict.txt" />
+      </Component>
+      <Component Guid="C4067E27-5681-4FE1-89BE-38080A9C40E5" Id="README_HTML">
         <File Id="F_readme_html" Name="README.html" Source="build\README.html" KeyPath="yes">
           <Shortcut Id="S_readme_html" Name="README.html" Directory="IMCRVSKK_MENU"
-            WorkingDirectory="IMCRVSKK_X86" Show="normal" Advertise="yes" />
+            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
         </File>
         <RemoveFolder Id="RF_readme_html" Directory="IMCRVSKK_MENU" On="uninstall" />
+      </Component>
+      <Component Guid="9C25E720-D44D-46E7-9FBF-041A00A825A8" Id="LICENSE_TXT">
+        <File Id="F_license_txt" Name="LICENSE.txt" Source="build\LICENSE.txt" KeyPath="yes">
+          <Shortcut Id="S_license_txt" Name="LICENSE.txt" Directory="IMCRVSKK_MENU"
+            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
+        </File>
+        <RemoveFolder Id="RF_license_txt" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
     </DirectoryRef>
 
@@ -67,7 +88,10 @@
       <ComponentRef Id="TIP_X86" />
       <ComponentRef Id="LUAEXE_X86" />
       <ComponentRef Id="LUADLL_X86" />
-      <ComponentRef Id="INITLUA_X86" />
+      <ComponentRef Id="CONFIG_XML" />
+      <ComponentRef Id="INIT_LUA" />
+      <ComponentRef Id="SKKDICT_TXT" />
+      <ComponentRef Id="LICENSE_TXT" />
       <ComponentRef Id="README_HTML" />
       <ComponentRef Id="REG_X86" />
     </Feature>
@@ -85,6 +109,11 @@
       <MergeRef Id="AMP_X86" />
       <MergeRef Id="OMP_X86" />
     </Feature>
+
+    <UIRef Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
+    <Property Id="ARPPRODUCTICON" Value="CorvusSKK.ico" />
+    <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\CorvusSKK.ico" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 

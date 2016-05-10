@@ -1,5 +1,4 @@
 ﻿
-#include "parseskkdic.h"
 #include "configxml.h"
 #include "imcrvmgr.h"
 

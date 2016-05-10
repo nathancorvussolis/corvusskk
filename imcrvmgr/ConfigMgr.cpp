@@ -45,7 +45,7 @@ const luaL_Reg luaFuncs[] =
 
 void CreateConfigPath()
 {
-	PWSTR appdatafolder = nullptr;
+	PWSTR knownfolderpath = nullptr;
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathuserdic, sizeof(pathuserdic));
@@ -53,13 +53,13 @@ void CreateConfigPath()
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder) == S_OK)
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
 	{
 		WCHAR appdir[MAX_PATH];
 
-		_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s", appdatafolder, TextServiceDesc);
+		_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s", knownfolderpath, TextServiceDesc);
 
-		CoTaskMemFree(appdatafolder);
+		CoTaskMemFree(knownfolderpath);
 
 		CreateDirectoryW(appdir, nullptr);
 		SetCurrentDirectoryW(appdir);
@@ -80,7 +80,40 @@ void CreateConfigPath()
 			DeleteFileW(skkdict);
 		}
 	}
+}
 
+void UpdateConfigPath()
+{
+	PWSTR knownfolderpath = nullptr;
+
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+	{
+		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
+		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnskkdic);
+
+		CoTaskMemFree(knownfolderpath);
+	}
+
+	if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+	{
+		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
+		if(GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
+		{
+			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
+		}
+
+		//%SystemRoot%\\IME\\IMCRVSKK\\skkdict.txt
+		if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
+		{
+			_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnskkdic);
+		}
+
+		CoTaskMemFree(knownfolderpath);
+	}
+}
+
+void CreateIpcName()
+{
 	ZeroMemory(krnlobjsddl, sizeof(krnlobjsddl));
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(mgrmutexname, sizeof(mgrmutexname));
@@ -219,7 +252,7 @@ void InitLua()
 	lua_pushstring(lua, version);
 	lua_setglobal(lua, u8"SKK_VERSION");
 
-	//%AppData%\CorvusSKK\init.lua
+	//%AppData%\\CorvusSKK\\init.lua
 	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;
@@ -227,6 +260,8 @@ void InitLua()
 
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
+#ifdef _DEBUG
+	//<module directory>\\init.lua
 	if(GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
@@ -236,9 +271,18 @@ void InitLua()
 			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
 		}
 	}
+#else
+	PWSTR knownfolderpath = nullptr;
 
-	//%SystemRoot%\System32\IME\IMCRVSKK\init.lua
-	// or %SystemRoot%\SysWOW64\IME\IMCRVSKK\init.lua
+	//%SystemRoot%\\IME\\IMCRVSKK\\init.lua
+	if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+	{
+		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fninitlua);
+
+		CoTaskMemFree(knownfolderpath);
+	}
+#endif
+
 	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;

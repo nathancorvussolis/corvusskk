@@ -15,16 +15,12 @@ typedef struct {
 
 // ConfigMgr
 void CreateConfigPath();
+void UpdateConfigPath();
+void CreateIpcName();
 void LoadConfig();
 BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft);
 void InitLua();
 void UninitLua();
-
-// ConvGadget
-std::wstring ConvGadget(const std::wstring &key, const std::wstring &candidate);
-
-// ConvNum
-std::wstring ConvNum(const std::wstring &key, const std::wstring &candidate);
 
 // SearchCharacter
 std::wstring SearchUnicode(const std::wstring &searchkey);
@@ -68,6 +64,11 @@ void ConnectSKKServer();
 void DisconnectSKKServer();
 std::wstring GetSKKServerInfo(CHAR req);
 
+// Server
+void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result);
+unsigned int __stdcall SrvThread(void *p);
+HANDLE SrvStart();
+
 //client
 #define SKK_REQ		'1'
 #define SKK_VER		'2'
@@ -77,18 +78,26 @@ std::wstring GetSKKServerInfo(CHAR req);
 
 #define BACKUP_GENS		3
 
-extern LPCWSTR TextServiceDesc;
-extern LPCWSTR DictionaryManagerClass;
-
 extern CRITICAL_SECTION csUserDataSave;
 extern BOOL bUserDicChg;
-
+extern FILETIME ftConfig, ftSKKDic;
+#ifdef _DEBUG
+extern HWND hwndEdit;
+extern HFONT hFont;
+#endif
+extern HINSTANCE hInst;
+extern HANDLE hMutex;
+extern HANDLE hThreadSrv;
+extern BOOL bSrvThreadExit;
 extern lua_State *lua;
 
 extern SKKDIC userdic;
 extern USEROKURI userokuri;
 extern KEYORDER complements;
 extern KEYORDER accompaniments;
+
+extern LPCWSTR TextServiceDesc;
+extern LPCWSTR DictionaryManagerClass;
 
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定

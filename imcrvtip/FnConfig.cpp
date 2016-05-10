@@ -64,17 +64,45 @@ LPCWSTR sectionpreservedkeyonoff[PRESERVEDKEY_NUM] = {SectionPreservedKeyON, Sec
 
 void CTextService::_CreateConfigPath()
 {
-	PWSTR appdatafolder = nullptr;
+	PWSTR knownfolderpath = nullptr;
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder) == S_OK)
+	//%AppData%\\CorvusSKK\\config.xml
+	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
 	{
-		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", appdatafolder, TextServiceDesc, fnconfigxml);
+		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
 
-		CoTaskMemFree(appdatafolder);
+		CoTaskMemFree(knownfolderpath);
 	}
 
+	if(GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
+	{
+#ifdef _DEBUG
+		//<module directory>\\config.xml
+		if(GetModuleFileNameW(g_hInst, pathconfigxml, _countof(pathconfigxml)) != 0)
+		{
+			WCHAR *pdir = wcsrchr(pathconfigxml, L'\\');
+			if(pdir != nullptr)
+			{
+				*(pdir + 1) = L'\0';
+				wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
+			}
+		}
+#else
+		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
+		if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+		{
+			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
+
+			CoTaskMemFree(knownfolderpath);
+		}
+#endif
+	}
+}
+
+void CTextService::_CreateIpcName()
+{
 	ZeroMemory(mgrpipename, sizeof(mgrpipename));
 	ZeroMemory(mgrmutexname, sizeof(mgrmutexname));
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));

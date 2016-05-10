@@ -3,13 +3,12 @@
 #define VERSION_H
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
-
 #ifndef _DEBUG
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME
 #else
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
-
+#define TEXTSERVICE_DIR		L"IMCRVSKK"
 #define TEXTSERVICE_VER		L"2.3.4"
 
 //for resource

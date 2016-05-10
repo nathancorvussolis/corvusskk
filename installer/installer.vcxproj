@@ -30,8 +30,8 @@
     <None Include="installer-version.wxi" />
     <None Include="installer-x64.wxs" />
     <None Include="installer-x86.wxs" />
-    <None Include="license.rtf" />
     <None Include="resource-md\markdown.css" />
+    <None Include="theme-bundle\license.rtf" />
     <None Include="_build.cmd" />
     <None Include="_build_bundle.cmd" />
     <None Include="_build_x64.cmd" />
@@ -41,7 +41,7 @@
     <None Include="_clean_x86.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
-    <None Include="_make_readme.cmd" />
+    <None Include="_build_x86_sub.cmd" />
     <None Include="_sign.cmd" />
     <None Include="_solution_build.cmd" />
     <None Include="_solution_clean.cmd" />
@@ -58,6 +58,7 @@
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
     <Text Include="config-sample\kanatable.txt" />
+    <Text Include="config-share\skkdict.txt" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml" />
@@ -66,6 +67,7 @@
     <Xml Include="config-sample\config - gact10.xml" />
     <Xml Include="config-sample\config - kana.xml" />
     <Xml Include="config-sample\config - roman.xml" />
+    <Xml Include="config-share\config.xml" />
     <Xml Include="theme-bundle\RtfSidebarTheme.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -133,34 +135,40 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua"</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeReBuildCommandLine>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua"</NMakeCleanCommandLine>
-    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\"</NMakeReBuildCommandLine>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine>echo build</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>echo rebuild</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>echo clean</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
-    <NMakeBuildCommandLine>echo build</NMakeBuildCommandLine>
-    <NMakeReBuildCommandLine>echo rebuild</NMakeReBuildCommandLine>
-    <NMakeCleanCommandLine>echo clean</NMakeCleanCommandLine>
+    <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>

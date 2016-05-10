@@ -34,7 +34,10 @@ void CreateConfigPath()
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
 		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s", appdir, fnskkdic);
 	}
+}
 
+void CreateIpcName()
+{
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
 
 	LPWSTR pszUserUUID = nullptr;

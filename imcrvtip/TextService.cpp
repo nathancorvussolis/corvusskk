@@ -46,6 +46,7 @@ CTextService::CTextService()
 	_ResetStatus();
 
 	_CreateConfigPath();
+	_CreateIpcName();
 }
 
 CTextService::~CTextService()

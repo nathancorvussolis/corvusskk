@@ -190,6 +190,7 @@ public:
 
 	// FnConfig
 	void _CreateConfigPath();
+	void _CreateIpcName();
 	void _ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval);
 	void _LoadBehavior();
 	void _LoadDisplayAttr();

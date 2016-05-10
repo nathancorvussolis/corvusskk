@@ -19,6 +19,9 @@
     <Filter Include="ucrt">
       <UniqueIdentifier>{bbd2c006-6c4f-4948-aa29-b73b905e7b58}</UniqueIdentifier>
     </Filter>
+    <Filter Include="config-share">
+      <UniqueIdentifier>{29dc0f73-b251-4b3a-8423-decd81086516}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="_build.cmd">
@@ -31,6 +34,9 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_build_x86.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_x86_sub.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_clean.cmd">
@@ -58,9 +64,6 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_version.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="license.rtf">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="config-lua\init.lua">
@@ -121,8 +124,8 @@
     <None Include="ucrt\Windows8-RT-KB3118401-x86.msu">
       <Filter>ucrt</Filter>
     </None>
-    <None Include="_make_readme.cmd">
-      <Filter>Installer Files</Filter>
+    <None Include="theme-bundle\license.rtf">
+      <Filter>theme-bundle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +133,9 @@
       <Filter>config-sample</Filter>
     </Text>
     <Text Include="..\LICENSE.TXT" />
+    <Text Include="config-share\skkdict.txt">
+      <Filter>config-share</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml">
@@ -149,6 +155,9 @@
     </Xml>
     <Xml Include="config-sample\config - roman.xml">
       <Filter>config-sample</Filter>
+    </Xml>
+    <Xml Include="config-share\config.xml">
+      <Filter>config-share</Filter>
     </Xml>
     <Xml Include="theme-bundle\RtfSidebarTheme.xml">
       <Filter>theme-bundle</Filter>

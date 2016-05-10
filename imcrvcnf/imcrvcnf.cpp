@@ -14,6 +14,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	hInst = hInstance;
 
 	CreateConfigPath();
+	CreateIpcName();
 
 	hMutex = CreateMutexW(nullptr, FALSE, cnfmutexname);
 	if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)

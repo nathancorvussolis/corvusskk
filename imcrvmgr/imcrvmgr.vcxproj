@@ -196,6 +196,7 @@
     <ClCompile Include="SearchSKKServer.cpp" />
     <ClCompile Include="SearchUserDictionary.cpp" />
     <ClCompile Include="imcrvmgr.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
