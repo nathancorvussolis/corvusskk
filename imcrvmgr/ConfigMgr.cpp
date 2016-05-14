@@ -86,6 +86,8 @@ void UpdateConfigPath()
 {
 	PWSTR knownfolderpath = nullptr;
 
+	//%AppData%\\CorvusSKK\\config.xml
+	//%AppData%\\CorvusSKK\\skkdict.txt
 	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
 	{
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
@@ -94,21 +96,52 @@ void UpdateConfigPath()
 		CoTaskMemFree(knownfolderpath);
 	}
 
-	if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+	if(GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
 	{
+#ifdef _DEBUG
+		//<module directory>\\config.xml
+		if(GetModuleFileNameW(hInst, pathconfigxml, _countof(pathconfigxml)) != 0)
+		{
+			WCHAR *pdir = wcsrchr(pathconfigxml, L'\\');
+			if(pdir != nullptr)
+			{
+				*(pdir + 1) = L'\0';
+				wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
+			}
+		}
+#else
 		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
-		if(GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
+		if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
 		{
 			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
-		}
 
+			CoTaskMemFree(knownfolderpath);
+		}
+#endif
+	}
+
+	if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
+	{
+#ifdef _DEBUG
+		//<module directory>\\skkdict.txt
+		if(GetModuleFileNameW(hInst, pathskkdic, _countof(pathskkdic)) != 0)
+		{
+			WCHAR *pdir = wcsrchr(pathskkdic, L'\\');
+			if(pdir != nullptr)
+			{
+				*(pdir + 1) = L'\0';
+				wcsncat_s(pathskkdic, fnskkdic, _TRUNCATE);
+			}
+		}
+#else
 		//%SystemRoot%\\IME\\IMCRVSKK\\skkdict.txt
-		if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
+		if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
 		{
 			_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnskkdic);
-		}
 
-		CoTaskMemFree(knownfolderpath);
+			CoTaskMemFree(knownfolderpath);
+		}
+#endif
 	}
 }
 
@@ -206,7 +239,7 @@ void LoadConfig()
 	}
 }
 
-BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft)
+BOOL IsFileModified(LPCWSTR path, FILETIME *ft)
 {
 	BOOL ret = FALSE;
 	HANDLE hFile;

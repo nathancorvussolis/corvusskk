@@ -106,9 +106,21 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 
 取込済SKK辞書の skkdict.txt ファイルは、UTF-16 (LE, BOMあり) のSKK辞書フォーマットとなっています。
 
-ディレクトリ %AppData%\CorvusSKK にファイルが存在しないときは %SystemRoot%\IME\IMCRVSKK にインストールされているファイルが使用されます。
-
 SKK辞書サーバーを使用するなどでローカルのSKK辞書を使用したくないときは、設定ダイアログのSKK辞書のリストが空またはチェック無しの状態で取込処理をおこなってください。空の取込済SKK辞書が生成されます。
+
+下記のディレクトリの優先順位で各ファイルが読み込まれます。
+
+1. %AppData%\CorvusSKK
+2. %SystemRoot%\IME\IMCRVSKK (インストーラーによりインストール済み)
+
+> **開発者向け**
+>
+> デバッグビルドでは、ディレクトリ %AppData%\CorvusSKK_DEBUG の各ファイルに保存されます。
+>
+> デバッグビルドでは、下記のディレクトリの優先順位で各ファイルが読み込まれます。
+>
+> 1. %AppData%\CorvusSKK_DEBUG
+> 2. 実行ファイルと同じディレクトリ (ビルドするとディレクトリ installer\config-share から上書きコピーされます)
 
 
 ### ユーザー辞書
@@ -460,14 +472,23 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 スクリプトファイルの文字コードはUTF-8のみに対応しています。
 
-辞書管理プロセスのカレントディレクトリは、%AppData%\CorvusSKK になっています。
+辞書管理プロセスのカレントディレクトリは %AppData%\CorvusSKK になっています。
 
-辞書管理プロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位でロードされます。
+コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使ってください。
+
+辞書管理プロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位で読み込まれます。
 
 1. %AppData%\CorvusSKK\init.lua
 2. %SystemRoot%\IME\IMCRVSKK\init.lua (インストーラーによりインストール済み)
 
-コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使ってください。
+> **開発者向け**
+>
+> デバッグビルドでは、辞書管理プロセスのカレントディレクトリは %AppData%\CorvusSKK_DEBUG になっています。
+>
+> デバッグビルドでは、下記の優先順位でスクリプトファイルが読み込まれます。
+>
+> 1. %AppData%\CorvusSKK_DEBUG\init.lua
+> 2. 実行ファイルと同じディレクトリのinit.lua (ビルドするとディレクトリ installer\config-lua から上書きコピーされます)
 
 
 ### プログラム実行変換もどき

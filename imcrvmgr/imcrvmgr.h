@@ -18,7 +18,7 @@ void CreateConfigPath();
 void UpdateConfigPath();
 void CreateIpcName();
 void LoadConfig();
-BOOL IsFileUpdated(LPCWSTR path, FILETIME *ft);
+BOOL IsFileModified(LPCWSTR path, FILETIME *ft);
 void InitLua();
 void UninitLua();
 

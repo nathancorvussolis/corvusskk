@@ -30,16 +30,19 @@
     <None Include="_build_bundle.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_build_sub.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="_build_x64.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_build_x86.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_x86_sub.cmd">
+    <None Include="_clean.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_clean.cmd">
+    <None Include="_clean_sub.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_clean_x64.cmd">

@@ -54,13 +54,13 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	WSAStartup(WINSOCK_VERSION, &wsaData);
 
 	ZeroMemory(&ftConfig, sizeof(ftConfig));
-	if(IsFileUpdated(pathconfigxml, &ftConfig))
+	if(IsFileModified(pathconfigxml, &ftConfig))
 	{
 		LoadConfig();
 	}
 
 	ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
-	if(IsFileUpdated(pathskkdic, &ftSKKDic))
+	if(IsFileModified(pathskkdic, &ftSKKDic))
 	{
 		MakeSKKDicPos();
 	}

@@ -37,11 +37,12 @@
     <None Include="_build_x64.cmd" />
     <None Include="_build_x86.cmd" />
     <None Include="_clean.cmd" />
+    <None Include="_clean_sub.cmd" />
     <None Include="_clean_x64.cmd" />
     <None Include="_clean_x86.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
-    <None Include="_build_x86_sub.cmd" />
+    <None Include="_build_sub.cmd" />
     <None Include="_sign.cmd" />
     <None Include="_solution_build.cmd" />
     <None Include="_solution_clean.cmd" />
@@ -136,22 +137,34 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
-copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeBuildCommandLine>
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul</NMakeCleanCommandLine>
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
-copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeReBuildCommandLine>
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
-copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeBuildCommandLine>
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeBuildCommandLine>
     <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul</NMakeCleanCommandLine>
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
-copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul</NMakeReBuildCommandLine>
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>

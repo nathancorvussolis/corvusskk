@@ -279,12 +279,12 @@ unsigned int __stdcall SrvThread(void *p)
 
 		UpdateConfigPath();
 
-		if(IsFileUpdated(pathconfigxml, &ftConfig))
+		if(IsFileModified(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
 		}
 
-		if(IsFileUpdated(pathskkdic, &ftSKKDic))
+		if(IsFileModified(pathskkdic, &ftSKKDic))
 		{
 			MakeSKKDicPos();
 		}
