@@ -103,6 +103,8 @@ THE SOFTWARE.
 
 NAIST Japanese Dictionary
 
+The BSD 3-Clause License
+
 Copyright (c) 2008, Nara Institute of Science and Technology, Japan.
 
 All rights reserved.

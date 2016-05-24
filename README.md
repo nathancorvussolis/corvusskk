@@ -660,10 +660,10 @@ pandoc 1.17.0.2
     > installer\_solution_build.cmd
     > installer\_sign.cmd <URL 1> <pfx file 1> <password 1> <URL 2> <pfx file 2> <password 2>
 
-	    * <URL 1> : SHA-1 Authenticode timestamp server
-		* <pfx file 1> : pfx file for SHA-1 file digest algorithm
-	    * <URL 2> : SHA-256 RFC-3161 timestamp server
-		* <pfx file 2> : pfx file for SHA-256 file digest algorithm
+        * <URL 1> : SHA-1 Authenticode timestamp server
+        * <pfx file 1> : pfx file for SHA-1 file digest algorithm
+        * <URL 2> : SHA-256 RFC-3161 timestamp server
+        * <pfx file 2> : pfx file for SHA-256 file digest algorithm
 
 クリア
 
