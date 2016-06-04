@@ -136,7 +136,6 @@ extern LPCWSTR ValueVerticalCand;
 extern LPCWSTR ValueAnnotation;
 extern LPCWSTR ValueAnnotatLst;
 extern LPCWSTR ValueShowModeInl;
-extern LPCWSTR ValueShowModeImm;
 extern LPCWSTR ValueShowModeMark;
 extern LPCWSTR ValueShowRoman;
 

@@ -214,8 +214,7 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
-	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, FALSE);
-	_ReadBoolValue(SectionDisplay, ValueShowModeImm, cx_showmodeimm, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
 }

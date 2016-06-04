@@ -109,7 +109,6 @@ LPCWSTR ValueVerticalCand = L"verticalcand";
 LPCWSTR ValueAnnotation = L"annotation";
 LPCWSTR ValueAnnotatLst = L"annotatlst";
 LPCWSTR ValueShowModeInl = L"showmodeinl";
-LPCWSTR ValueShowModeImm = L"showmodeimm";
 LPCWSTR ValueShowModeMark = L"showmodemark";
 LPCWSTR ValueShowRoman = L"showroman";
 
