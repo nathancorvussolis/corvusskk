@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3DD6BBBB-4BCF-4991-A568-0D04B37D5E51}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>luaxx</RootNamespace>
+    <RootNamespace>liblua</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

@@ -26,7 +26,7 @@
     <ClCompile Include="lua.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\luaxx\lu8w.c">
+    <ClCompile Include="..\liblua\lu8w.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
