@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,7 +145,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,7 +174,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

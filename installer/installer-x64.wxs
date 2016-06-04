@@ -33,7 +33,7 @@
         <File Id="F_luaexe_x64" Name="lua.exe" Source="..\x64\Release\lua.exe" />
       </Component>
       <Component Guid="39B37C2E-8821-47E8-98FE-00503A54894C" Id="LUADLL_X64" Win64="yes">
-        <File Id="F_luadll_x64" Name="lua53.dll" Source="..\x64\Release\lua53.dll" />
+        <File Id="F_luadll_x64" Name="liblua.dll" Source="..\x64\Release\liblua.dll" />
       </Component>
     </DirectoryRef>
 
