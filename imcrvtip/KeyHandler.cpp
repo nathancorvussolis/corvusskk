@@ -390,11 +390,16 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_CreateConfigPath();
 
+		_LoadDisplayAttr();
+		_LoadBehavior();
+
 		_UninitPreservedKey(1);	//OFF
 		_UninitPreservedKey(0);	//ON
 		_LoadPreservedKey();
 		_InitPreservedKey(0);	//ON
 		_InitPreservedKey(1);	//OFF 未使用だがキーは拾う 重複するキーは上書きされない
+
+		_GetActiveFlags();
 	}
 
 	_UpdateLanguageBar(showinputmode);
