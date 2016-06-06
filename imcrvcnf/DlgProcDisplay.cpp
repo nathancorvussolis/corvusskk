@@ -136,6 +136,11 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, SectionDisplay, ValueShowModeInl, L"1");
+		LoadCheckButton(hDlg, IDC_RADIO_SHOWMODECHG, SectionDisplay, ValueShowModeChg, L"1");
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_SHOWMODECHG))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_SHOWMODEALL, BST_CHECKED);
+		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionDisplay, ValueShowModeMark, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, SectionDisplay, ValueShowRoman, L"1");
 
@@ -203,6 +208,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		case IDC_RADIO_ANNOTATALL:
 		case IDC_RADIO_ANNOTATLST:
 		case IDC_CHECKBOX_SHOWMODEINL:
+		case IDC_RADIO_SHOWMODEALL:
+		case IDC_RADIO_SHOWMODECHG:
 		case IDC_CHECKBOX_SHOWMODEMARK:
 		case IDC_CHECKBOX_SHOWROMAN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -307,6 +314,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
+			SaveCheckButton(hDlg, IDC_RADIO_SHOWMODECHG, ValueShowModeChg);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, ValueShowModeMark);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, ValueShowRoman);
 

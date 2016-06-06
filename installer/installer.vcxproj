@@ -143,7 +143,6 @@ copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\"
 </NMakeBuildCommandLine>
     <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
 del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
@@ -163,7 +162,6 @@ copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\"
 </NMakeBuildCommandLine>
     <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
 del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul

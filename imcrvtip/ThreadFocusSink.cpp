@@ -16,7 +16,8 @@ STDAPI CTextService::OnSetThreadFocus()
 		_pInputModeWindow->_Show(TRUE);
 	}
 
-	if(_pCandidateList == nullptr && _pInputModeWindow == nullptr && !_IsComposing())
+	if(_pCandidateList == nullptr && _pInputModeWindow == nullptr &&
+		!_IsComposing() && !cx_showmodechg)
 	{
 		_UpdateLanguageBar();
 	}

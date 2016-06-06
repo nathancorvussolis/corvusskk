@@ -80,8 +80,10 @@
 #define IDC_RADIO_ANNOTATALL                    2035
 #define IDC_RADIO_ANNOTATLST                    2036
 #define IDC_CHECKBOX_SHOWMODEINL                2037
-#define IDC_CHECKBOX_SHOWMODEMARK               2038
-#define IDC_CHECKBOX_SHOWROMAN                  2039
+#define IDC_RADIO_SHOWMODEALL                   2038
+#define IDC_RADIO_SHOWMODECHG                   2039
+#define IDC_CHECKBOX_SHOWMODEMARK               2040
+#define IDC_CHECKBOX_SHOWROMAN                  2041
 
 #define IDC_CHECKBOX_SERIES_MARK                2101
 #define IDC_CHECKBOX_SERIES_TEXT                2102

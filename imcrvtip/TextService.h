@@ -337,6 +337,7 @@ public:
 	BOOL cx_annotation;			//注釈を表示する
 	BOOL cx_annotatlst;			//注釈を表示する(FALSE:全て/TRUE:候補一覧のみ)
 	BOOL cx_showmodeinl;		//入力モードを表示する
+	BOOL cx_showmodechg;		//入力モードを表示する(FALSE:全て/TRUE:変更時)
 	BOOL cx_showmodemark;		//▽▼*マークを表示する
 	BOOL cx_showroman;			//ローマ字を表示する
 
