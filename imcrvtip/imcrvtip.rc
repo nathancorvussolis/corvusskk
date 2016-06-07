@@ -36,7 +36,8 @@ FILESUBTYPE        VFT2_UNKNOWN
 	}
 }
 
-IDI_0_SKK          ICON  "Icon\\CorvusSKK.ico"
+IDI_0_SKK          ICON  "Icon\\imcrvskk.ico"
+IDI_1_DBG          ICON  "Icon\\imdebug.ico"
 IDI_X_DEFAULT      ICON  "Icon\\xDefault.ico"
 IDI_X_HIRAGANA     ICON  "Icon\\xHiragana.ico"
 IDI_X_KATAKANA     ICON  "Icon\\xKatakana.ico"

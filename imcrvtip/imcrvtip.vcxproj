@@ -257,7 +257,8 @@ ver &gt; nul</Command>
     <ResourceCompile Include="imcrvtip.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Icon\CorvusSKK.ico" />
+    <Image Include="Icon\imcrvskk.ico" />
+    <Image Include="Icon\imdebug.ico" />
     <Image Include="Icon\xAscii.ico" />
     <Image Include="Icon\xDefault.ico" />
     <Image Include="Icon\xHiragana.ico" />
