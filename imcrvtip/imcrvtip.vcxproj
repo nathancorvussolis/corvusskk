@@ -111,7 +111,8 @@
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul</Command>
+      <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul
+ver &gt; nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,7 +139,8 @@
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul</Command>
+      <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul
+ver &gt; nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
