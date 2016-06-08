@@ -1,0 +1,35 @@
+﻿
+#include <winver.h>
+
+VS_VERSION_INFO    VERSIONINFO
+FILEVERSION        5,3,3,0
+PRODUCTVERSION     5,3,3,0
+FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
+#ifndef _DEBUG
+FILEFLAGS          0x00000000L
+#else
+FILEFLAGS          VS_FF_DEBUG
+#endif
+FILEOS             VOS_NT_WINDOWS32
+FILETYPE           VFT_DLL
+FILESUBTYPE        VFT2_UNKNOWN
+{
+	BLOCK "StringFileInfo"
+	{
+		BLOCK "000004B0"
+		{
+			VALUE "CompanyName", "Lua.org, PUC-Rio"
+			VALUE "FileDescription", "Lua Language Library"
+			VALUE "FileVersion", "5.3.3"
+			VALUE "InternalName", "lua53"
+			VALUE "LegalCopyright", "Copyright (C) 1994-2016 Lua.org, PUC-Rio."
+			VALUE "OriginalFilename", "lua53.dll"
+			VALUE "ProductName", "Lua Language"
+			VALUE "ProductVersion", "5.3.3"
+		}
+	}
+	BLOCK "VarFileInfo"
+	{
+		VALUE "Translation", 0x0000, 1200
+	}
+}
