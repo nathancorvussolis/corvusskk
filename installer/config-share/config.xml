@@ -52,6 +52,7 @@
     <key name="annotatlst" value="0" />
     <key name="showmodeinl" value="1" />
     <key name="showmodechg" value="1" />
+    <key name="showmodesec" value="3" />
     <key name="showmodemark" value="1" />
     <key name="showroman" value="1" />
   </section>

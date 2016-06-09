@@ -28,7 +28,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	PAINTSTRUCT ps;
 	WCHAR num[16];
 	WCHAR fontname[LF_FACESIZE];
-	int fontpoint, fontweight, x, y, count;
+	INT fontpoint, fontweight, x, y, count;
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
 	LOGFONTW lf;
@@ -45,26 +45,27 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	case WM_INITDIALOG:
 		ReadValue(pathconfigxml, SectionFont, ValueFontName, strxmlval);
 		wcsncpy_s(fontname, strxmlval.c_str(), _TRUNCATE);
-
-		ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
-		fontpoint = _wtoi(strxmlval.c_str());
-		ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);
-		fontweight = _wtoi(strxmlval.c_str());
-		ReadValue(pathconfigxml, SectionFont, ValueFontItalic, strxmlval);
-		fontitalic = _wtoi(strxmlval.c_str());
-
 		if(fontname[0] == L'\0')
 		{
 			wcsncpy_s(fontname, L"メイリオ", _TRUNCATE);
 		}
+
+		ReadValue(pathconfigxml, SectionFont, ValueFontSize, strxmlval);
+		fontpoint = _wtoi(strxmlval.c_str());
 		if(fontpoint < 8 || fontpoint > 72)
 		{
 			fontpoint = 12;
 		}
+
+		ReadValue(pathconfigxml, SectionFont, ValueFontWeight, strxmlval);
+		fontweight = _wtoi(strxmlval.c_str());
 		if(fontweight <= 0 || fontweight > 1000)
 		{
 			fontweight = FW_NORMAL;
 		}
+
+		ReadValue(pathconfigxml, SectionFont, ValueFontItalic, strxmlval);
+		fontitalic = _wtoi(strxmlval.c_str());
 		if(fontitalic != FALSE)
 		{
 			fontitalic = TRUE;
@@ -104,9 +105,11 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 
 		LoadCheckButton(hDlg, IDC_RADIO_API_D2D, SectionDisplay, ValueDrawAPI);
+		EnableWindow(GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT), TRUE);
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_API_GDI, BST_CHECKED);
+			EnableWindow(GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT), FALSE);
 		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, SectionDisplay, ValueColorFont);
 
@@ -119,7 +122,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 		ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
 		count = strxmlval.empty() ? 5 : _wtoi(strxmlval.c_str());
-		if(count > 9)
+		if(count > 9 || count < 0)
 		{
 			count = 5;
 		}
@@ -141,12 +144,39 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_SHOWMODEALL, BST_CHECKED);
 		}
+		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
+		count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+		if(count > 60 || count <= 0)
+		{
+			count = 3;
+		}
+		_snwprintf_s(num, _TRUNCATE, L"%d", count);
+		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
+
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionDisplay, ValueShowModeMark, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, SectionDisplay, ValueShowRoman, L"1");
 
 		return TRUE;
 
 	case WM_COMMAND:
+		switch(LOWORD(wParam))
+		{
+		case IDC_RADIO_API_GDI:
+		case IDC_RADIO_API_D2D:
+			hwnd = GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT);
+			if(IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
+			{
+				EnableWindow(hwnd, TRUE);
+			}
+			else
+			{
+				EnableWindow(hwnd, FALSE);
+			}
+			break;
+		default:
+			break;
+		}
+
 		switch(LOWORD(wParam))
 		{
 		case IDC_BUTTON_CHOOSEFONT:
@@ -178,6 +208,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			return TRUE;
 
 		case IDC_EDIT_MAXWIDTH:
+		case IDC_EDIT_SHOWMODESEC:
 			switch(HIWORD(wParam))
 			{
 			case EN_CHANGE:
@@ -305,7 +336,12 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, ValueColorFont);
 
 			hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
-			num[0] = L'0' + (WCHAR)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
+			count = (INT)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
+			if(count > 9 || count < 0)
+			{
+				count = 5;
+			}
+			num[0] = L'0' + count;
 			num[1] = L'\0';
 			WriterKey(pXmlWriter, ValueUntilCandList, num);
 
@@ -313,8 +349,19 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, ValueVerticalCand);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
+
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
 			SaveCheckButton(hDlg, IDC_RADIO_SHOWMODECHG, ValueShowModeChg);
+			GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
+			count = _wtoi(num);
+			if(count <= 0 || count > 60)
+			{
+				count = 3;
+			}
+			_snwprintf_s(num, _TRUNCATE, L"%d", count);
+			SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
+			WriterKey(pXmlWriter, ValueShowModeSec, num);
+
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, ValueShowModeMark);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, ValueShowRoman);
 

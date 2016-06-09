@@ -214,8 +214,16 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
+
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowModeChg, cx_showmodechg, TRUE);
+	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
+	cx_showmodesec = _wtoi(strxmlval.c_str());
+	if(cx_showmodesec > 60 || cx_showmodesec <= 0)
+	{
+		cx_showmodesec = 3;
+	}
+
 	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
 }

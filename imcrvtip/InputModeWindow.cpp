@@ -4,7 +4,6 @@
 #include "InputModeWindow.h"
 
 #define INPUTMODE_TIMER_ID		0x54ab516b
-#define INPUTMODE_TIMEOUT_MSEC	3000
 
 class CInputModeWindowGetTextExtEditSession : public CEditSessionBase
 {
@@ -362,7 +361,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_CREATE:
 		if(!_bCandidateWindow)
 		{
-			SetTimer(hWnd, INPUTMODE_TIMER_ID, INPUTMODE_TIMEOUT_MSEC, nullptr);
+			SetTimer(hWnd, INPUTMODE_TIMER_ID, _pTextService->cx_showmodesec * 1000, nullptr);
 		}
 		break;
 	case WM_TIMER:
