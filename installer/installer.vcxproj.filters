@@ -63,7 +63,13 @@
     <None Include="_solution_build.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_solution_build_debug.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="_solution_clean.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_clean_debug.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_version.cmd">
