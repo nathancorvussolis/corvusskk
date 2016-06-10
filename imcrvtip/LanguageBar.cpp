@@ -563,7 +563,7 @@ void CTextService::_UninitLanguageBar()
 	SafeRelease(&_pLangBarItemI);
 }
 
-void CTextService::_UpdateLanguageBar(BOOL showinputmode)
+void CTextService::_UpdateLanguageBar()
 {
 	if(_pLangBarItem != nullptr)
 	{
@@ -575,7 +575,7 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 		_pLangBarItemI->_Update();
 	}
 
-	if(_ShowInputMode && showinputmode &&
+	if(_ShowInputMode &&
 		(_pCandidateList == nullptr || !_pCandidateList->_IsShowCandidateWindow()))
 	{
 		_StartInputModeWindow();

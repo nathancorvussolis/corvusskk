@@ -121,7 +121,7 @@ public:
 	void _ClearComposition();
 
 	// LanguageBar
-	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
+	void _UpdateLanguageBar();
 	void _GetIcon(HICON *phIcon);
 
 	// DisplayAttribureProvider
@@ -131,7 +131,7 @@ public:
 	// KeyHandler
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
-	void _KeyboardOpenCloseChanged(BOOL showinputmode = TRUE);
+	void _KeyboardOpenCloseChanged();
 	void _KeyboardInputConversionChanged();
 	BOOL _KeyboardSetDefaultMode();
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
@@ -337,7 +337,6 @@ public:
 	BOOL cx_annotation;			//注釈を表示する
 	BOOL cx_annotatlst;			//注釈を表示する(FALSE:全て/TRUE:候補一覧のみ)
 	BOOL cx_showmodeinl;		//入力モードを表示する
-	BOOL cx_showmodechg;		//入力モードを表示する(FALSE:全て/TRUE:変更時)
 	UINT cx_showmodesec;		//入力モードの表示秒数
 	BOOL cx_showmodemark;		//▽▼*マークを表示する
 	BOOL cx_showroman;			//ローマ字を表示する

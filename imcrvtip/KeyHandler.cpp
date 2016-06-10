@@ -333,7 +333,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	return S_OK;
 }
 
-void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
+void CTextService::_KeyboardOpenCloseChanged()
 {
 	if(_IsKeyboardOpen())
 	{
@@ -402,7 +402,7 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		_GetActiveFlags();
 	}
 
-	_UpdateLanguageBar(showinputmode);
+	_UpdateLanguageBar();
 }
 
 void CTextService::_KeyboardInputConversionChanged()

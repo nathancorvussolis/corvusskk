@@ -111,7 +111,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			CheckDlgButton(hDlg, IDC_RADIO_API_GDI, BST_CHECKED);
 			EnableWindow(GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT), FALSE);
 		}
-		LoadCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, SectionDisplay, ValueColorFont);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_COLOR_FONT, SectionDisplay, ValueColorFont, L"1");
 
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 		num[1] = L'\0';
@@ -139,11 +139,6 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, SectionDisplay, ValueShowModeInl, L"1");
-		LoadCheckButton(hDlg, IDC_RADIO_SHOWMODECHG, SectionDisplay, ValueShowModeChg, L"1");
-		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_SHOWMODECHG))
-		{
-			CheckDlgButton(hDlg, IDC_RADIO_SHOWMODEALL, BST_CHECKED);
-		}
 		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
 		count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
 		if(count > 60 || count <= 0)
@@ -239,8 +234,6 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		case IDC_RADIO_ANNOTATALL:
 		case IDC_RADIO_ANNOTATLST:
 		case IDC_CHECKBOX_SHOWMODEINL:
-		case IDC_RADIO_SHOWMODEALL:
-		case IDC_RADIO_SHOWMODECHG:
 		case IDC_CHECKBOX_SHOWMODEMARK:
 		case IDC_CHECKBOX_SHOWROMAN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -351,7 +344,6 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
-			SaveCheckButton(hDlg, IDC_RADIO_SHOWMODECHG, ValueShowModeChg);
 			GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
 			count = _wtoi(num);
 			if(count <= 0 || count > 60)
