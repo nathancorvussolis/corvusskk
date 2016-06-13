@@ -16,8 +16,6 @@ STDAPI CTextService::OnSetThreadFocus()
 		_pInputModeWindow->_Show(TRUE);
 	}
 
-	_UpdateLanguageBar();
-
 	return S_OK;
 }
 
