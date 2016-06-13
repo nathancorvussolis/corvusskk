@@ -575,8 +575,21 @@ void CTextService::_UpdateLanguageBar()
 		_pLangBarItemI->_Update();
 	}
 
-	if(_ShowInputMode &&
-		(_pCandidateList == nullptr || !_pCandidateList->_IsShowCandidateWindow()))
+	BOOL bEditContext = FALSE;
+	ITfDocumentMgr *pDocumentMgr;
+	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+	{
+		ITfContext *pContext;
+		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+		{
+			bEditContext = TRUE;
+			_GetActiveFlags();
+			SafeRelease(&pContext);
+		}
+		SafeRelease(&pDocumentMgr);
+	}
+
+	if(_ShowInputMode && bEditContext && !_IsComposing())
 	{
 		_StartInputModeWindow();
 	}

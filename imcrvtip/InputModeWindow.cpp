@@ -545,10 +545,10 @@ void CTextService::_StartInputModeWindow()
 		_EndInputModeWindow();
 
 		ITfDocumentMgr *pDocumentMgr;
-		if(_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK && pDocumentMgr != nullptr)
+		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 		{
 			ITfContext *pContext;
-			if(pDocumentMgr->GetTop(&pContext) == S_OK && pContext != nullptr)
+			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
 			{
 				try
 				{

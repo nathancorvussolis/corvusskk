@@ -552,7 +552,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 		}
 
 		ITfDocumentMgr *pDocumentMgr;
-		if(pContext->GetDocumentMgr(&pDocumentMgr) == S_OK)
+		if((pContext->GetDocumentMgr(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 		{
 			ITfRange *pRange;
 			if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)

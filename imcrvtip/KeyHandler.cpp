@@ -555,11 +555,15 @@ void CTextService::_GetActiveFlags()
 	_dwActiveFlags = 0;
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
+	_ShowInputMode = FALSE;
 
 	ITfThreadMgrEx *pThreadMgrEx;
 	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx)) == S_OK)
 	{
-		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
+		if(pThreadMgrEx->GetActiveFlags(&_dwActiveFlags) != S_OK)
+		{
+			_dwActiveFlags = 0;
+		}
 		SafeRelease(&pThreadMgrEx);
 	}
 
