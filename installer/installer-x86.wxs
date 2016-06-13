@@ -112,7 +112,7 @@
 
     <UIRef Id="WixUI_Minimal" />
     <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
-    <Property Id="ARPPRODUCTICON" Value="imcrvskk.ico" />
+    <Property Id="ARPPRODUCTICON" Value="IMCRVSKK_ICO" />
     <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\imcrvskk.ico" />
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
