@@ -333,7 +333,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	return S_OK;
 }
 
-void CTextService::_KeyboardOpenCloseChanged()
+void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 {
 	if(_IsKeyboardOpen())
 	{
@@ -390,19 +390,14 @@ void CTextService::_KeyboardOpenCloseChanged()
 
 		_CreateConfigPath();
 
-		_LoadDisplayAttr();
-		_LoadBehavior();
-
 		_UninitPreservedKey(1);	//OFF
 		_UninitPreservedKey(0);	//ON
 		_LoadPreservedKey();
 		_InitPreservedKey(0);	//ON
 		_InitPreservedKey(1);	//OFF 未使用だがキーは拾う 重複するキーは上書きされない
-
-		_GetActiveFlags();
 	}
 
-	_UpdateLanguageBar();
+	_UpdateLanguageBar(showinputmode);
 }
 
 void CTextService::_KeyboardInputConversionChanged()
