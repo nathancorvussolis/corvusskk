@@ -26,14 +26,6 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		RECT rs = {-1, -1, -1, -1};
-		if(_pContextView->GetScreenExt(&rs) == S_OK &&
-			(rs.left == 0 && rs.top == 0 && rs.right == 0 && rs.bottom == 0))
-		{
-			_pInputModeWindow->_Show(FALSE);
-			return FALSE;
-		}
-
 		TF_SELECTION tfSelection;
 		ULONG cFetched = 0;
 		if(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
@@ -264,14 +256,6 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		ITfContextView *pContextView;
 		if(_pContext->GetActiveView(&pContextView) == S_OK)
 		{
-			RECT rs = {-1, -1, -1, -1};
-			if(pContextView->GetScreenExt(&rs) == S_OK &&
-				(rs.left == 0 && rs.top == 0 && rs.right == 0 && rs.bottom == 0))
-			{
-				SafeRelease(&pContextView);
-				return FALSE;
-			}
-
 			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == nullptr)
 			{
 				_hwndParent = GetFocus();
