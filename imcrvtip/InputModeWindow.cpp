@@ -41,49 +41,59 @@ public:
 
 		RECT rc;
 		BOOL fClipped;
-		if(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped) == S_OK)
+		if(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped) != S_OK)
 		{
-			POINT pt;
-			pt.x = rc.left;
-			pt.y = rc.bottom;
-			HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
-
-			MONITORINFO mi;
-			mi.cbSize = sizeof(mi);
-			GetMonitorInfoW(hMonitor, &mi);
-
-			RECT rw;
-			_pInputModeWindow->_GetRect(&rw);
-			LONG height = rw.bottom - rw.top;
-			LONG width = rw.right - rw.left;
-
-			if(rc.left < mi.rcWork.left)
-			{
-				rc.left = mi.rcWork.left;
-			}
-
-			if(mi.rcWork.right < rc.right)
-			{
-				rc.left = mi.rcWork.right - width;
-			}
-
-			if(mi.rcWork.bottom < rc.top)
-			{
-				rc.bottom = mi.rcWork.bottom - height - IM_MERGIN_Y;
-			}
-			else if(mi.rcWork.bottom < (rc.bottom + height + IM_MERGIN_Y))
-			{
-				rc.bottom = rc.top - height - IM_MERGIN_Y * 2;
-			}
-
-			if(rc.bottom < mi.rcWork.top)
-			{
-				rc.bottom = mi.rcWork.top - IM_MERGIN_Y;
-			}
-
-			_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
-			_pInputModeWindow->_Show(TRUE);
+			SafeRelease(&tfSelection.range);
+			return E_FAIL;
 		}
+
+		//ignore abnormal position (from CUAS ?)
+		if((rc.top == rc.bottom) && ((rc.right - rc.left) == 1))
+		{
+			SafeRelease(&tfSelection.range);
+			return E_FAIL;
+		}
+
+		POINT pt;
+		pt.x = rc.left;
+		pt.y = rc.bottom;
+		HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+
+		MONITORINFO mi;
+		mi.cbSize = sizeof(mi);
+		GetMonitorInfoW(hMonitor, &mi);
+
+		RECT rw;
+		_pInputModeWindow->_GetRect(&rw);
+		LONG height = rw.bottom - rw.top;
+		LONG width = rw.right - rw.left;
+
+		if(rc.left < mi.rcWork.left)
+		{
+			rc.left = mi.rcWork.left;
+		}
+
+		if(mi.rcWork.right < rc.right)
+		{
+			rc.left = mi.rcWork.right - width;
+		}
+
+		if(mi.rcWork.bottom < rc.top)
+		{
+			rc.bottom = mi.rcWork.bottom - height - IM_MERGIN_Y;
+		}
+		else if(mi.rcWork.bottom < (rc.bottom + height + IM_MERGIN_Y))
+		{
+			rc.bottom = rc.top - height - IM_MERGIN_Y * 2;
+		}
+
+		if(rc.bottom < mi.rcWork.top)
+		{
+			rc.bottom = mi.rcWork.top - IM_MERGIN_Y;
+		}
+
+		_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
+		_pInputModeWindow->_Show(TRUE);
 
 		SafeRelease(&tfSelection.range);
 
