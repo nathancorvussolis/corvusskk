@@ -1,14 +1,10 @@
 ﻿
 #include "imcrvtip.h"
 
-#define CLSID_STRLEN 38
-#define TEXTSERVICE_MODEL   L"Apartment"
-#define TEXTSERVICE_LANGID  MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT)
-#ifndef _DEBUG
-#define TEXTSERVICE_ICON_INDEX  0	// see resource script file
-#else
-#define TEXTSERVICE_ICON_INDEX  1
-#endif
+#define CLSID_STRLEN	38
+#define TEXTSERVICE_MODEL	L"Apartment"
+#define TEXTSERVICE_LANGID	MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT)
+#define TEXTSERVICE_ICON_INDEX	0
 
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";
 static const WCHAR c_szInProcSvr32[] = L"InProcServer32";

@@ -2,8 +2,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
-#define IDI_0_SKK        100
-#define IDI_1_DBG        101
+#define IDI_0_IME        100
 
 #define IDI_X_DEFAULT    201
 #define IDI_X_HIRAGANA   202

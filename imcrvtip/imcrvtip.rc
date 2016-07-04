@@ -36,8 +36,11 @@ FILESUBTYPE        VFT2_UNKNOWN
 	}
 }
 
-IDI_0_SKK          ICON  "Icon\\imcrvskk.ico"
-IDI_1_DBG          ICON  "Icon\\imdebug.ico"
+#ifndef _DEBUG
+IDI_0_IME          ICON  "Icon\\imcrvskk.ico"
+#else
+IDI_0_IME          ICON  "Icon\\imdebug.ico"
+#endif
 IDI_X_DEFAULT      ICON  "Icon\\xDefault.ico"
 IDI_X_HIRAGANA     ICON  "Icon\\xHiragana.ico"
 IDI_X_KATAKANA     ICON  "Icon\\xKatakana.ico"
