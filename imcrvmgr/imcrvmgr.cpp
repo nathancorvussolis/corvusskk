@@ -3,11 +3,11 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
-CRITICAL_SECTION csUserDataSave;
+CRITICAL_SECTION csSaveUserDic;
 BOOL bUserDicChg;
 FILETIME ftConfig, ftSKKDic;
 #ifdef _DEBUG
-HWND hwndEdit;
+HWND hWndEdit;
 HFONT hFont;
 #endif
 HINSTANCE hInst;
@@ -21,51 +21,20 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	MSG msg;
 	WNDCLASSEXW wc;
 	HWND hWnd;
-	WSADATA wsaData;
-	PSECURITY_DESCRIPTOR psd;
-	SECURITY_ATTRIBUTES sa;
 
 	_wsetlocale(LC_ALL, L"JPN");
 
-	CreateConfigPath();
-	UpdateConfigPath();
 	CreateIpcName();
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, nullptr))
+	hMutex = CreateMutexW(nullptr, FALSE, mgrmutexname);
+	if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		sa.nLength = sizeof(sa);
-		sa.lpSecurityDescriptor = psd;
-		sa.bInheritHandle = FALSE;
-
-		hMutex = CreateMutexW(&sa, FALSE, mgrmutexname);
-		if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
+		if(hMutex != nullptr)
 		{
-			LocalFree(psd);
-			return 0;
+			CloseHandle(hMutex);
 		}
-
-		LocalFree(psd);
-	}
-	else
-	{
 		return 0;
 	}
-
-	WSAStartup(WINSOCK_VERSION, &wsaData);
-
-	ZeroMemory(&ftConfig, sizeof(ftConfig));
-	if(IsFileModified(pathconfigxml, &ftConfig))
-	{
-		LoadConfig();
-	}
-
-	ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
-	if(IsFileModified(pathskkdic, &ftSKKDic))
-	{
-		MakeSKKDicPos();
-	}
-
-	InitLua();
 
 	hInst = hInstance;
 
@@ -89,8 +58,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	if(!hWnd)
 	{
-		UninitLua();
-		WSACleanup();
+		ReleaseMutex(hMutex);
+		CloseHandle(hMutex);
 		return 0;
 	}
 
@@ -110,8 +79,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		}
 	}
 
-	UninitLua();
-	WSACleanup();
+	ReleaseMutex(hMutex);
+	CloseHandle(hMutex);
 
 	return (int) msg.wParam;
 }
@@ -119,6 +88,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HANDLE hPipe;
+	WSADATA wsaData;
 #ifdef _DEBUG
 	RECT r;
 	HDC hDC;
@@ -129,21 +99,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 #ifdef _DEBUG
 		GetClientRect(hWnd, &r);
-		hwndEdit = CreateWindowW(L"EDIT", L"",
+		hWndEdit = CreateWindowW(L"EDIT", L"",
 			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY,
 			0, 0, r.right, r.bottom, hWnd, nullptr, hInst, nullptr);
-		hDC = GetDC(hwndEdit);
+		hDC = GetDC(hWndEdit);
 		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72), 0, 0, 0,
 			FW_NORMAL, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 			L"Meiryo");
-		SendMessageW(hwndEdit, WM_SETFONT, (WPARAM)hFont, 0);
-		ReleaseDC(hwndEdit, hDC);
+		SendMessageW(hWndEdit, WM_SETFONT, (WPARAM)hFont, 0);
+		ReleaseDC(hWndEdit, hDC);
 #endif
-		InitializeCriticalSection(&csUserDataSave);
+		WSAStartup(WINSOCK_VERSION, &wsaData);
+
+		CreateConfigPath();
+		UpdateConfigPath();
+
+		ZeroMemory(&ftConfig, sizeof(ftConfig));
+		if(IsFileModified(pathconfigxml, &ftConfig))
+		{
+			LoadConfig();
+		}
+
+		ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
+		if(IsFileModified(pathskkdic, &ftSKKDic))
+		{
+			MakeSKKDicPos();
+		}
 
 		bUserDicChg = FALSE;
-		LoadSKKUserDic();
+		LoadUserDic();
+
+		InitLua();
+
+		InitializeCriticalSection(&csSaveUserDic);	// !
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
@@ -156,16 +145,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 	case WM_SIZE:
 		GetClientRect(hWnd, &r);
-		MoveWindow(hwndEdit, 0, 0, r.right, r.bottom, TRUE);
+		MoveWindow(hWndEdit, 0, 0, r.right, r.bottom, TRUE);
 		break;
 #endif
 
 	case WM_POWERBROADCAST:
 		if(wParam == PBT_APMSUSPEND)
 		{
-			StartSaveSKKUserDic(FALSE);
+			StartSaveUserDic(FALSE);
 
-			BackUpSKKUserDic();
+			BackUpUserDic();
 		}
 		break;
 
@@ -185,17 +174,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		CloseHandle(hThreadSrv);
 
-		StartSaveSKKUserDic(FALSE);
+		StartSaveUserDic(FALSE);
 
 		if(message == WM_ENDSESSION)
 		{
-			BackUpSKKUserDic();
+			BackUpUserDic();
 		}
 
-		DeleteCriticalSection(&csUserDataSave);
+		DeleteCriticalSection(&csSaveUserDic);	// !
 
-		ReleaseMutex(hMutex);
-		CloseHandle(hMutex);
+		UninitLua();
+
+		WSACleanup();
 
 		PostQuitMessage(0);
 		break;

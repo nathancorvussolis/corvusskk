@@ -508,7 +508,7 @@ int lua_delete(lua_State *lua)
 
 int lua_save(lua_State *lua)
 {
-	StartSaveSKKUserDic(TRUE);
+	StartSaveUserDic(TRUE);
 
 	return 0;
 }

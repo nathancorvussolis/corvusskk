@@ -228,7 +228,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		}
 		else
 		{
-			StartSaveSKKUserDic(TRUE);
+			StartSaveUserDic(TRUE);
 		}
 
 		result = REP_OK;
@@ -311,7 +311,7 @@ unsigned int __stdcall SrvThread(void *p)
 		tedit = std::regex_replace(tedit, re, fmt);
 
 		dedit.append(tedit);
-		SetWindowTextW(hwndEdit, dedit.c_str());
+		SetWindowTextW(hWndEdit, dedit.c_str());
 #endif
 
 		SrvProc(command, &pipebuf[2], wspipebuf);
@@ -327,8 +327,8 @@ unsigned int __stdcall SrvThread(void *p)
 		tedit = std::regex_replace(tedit, re, fmt);
 
 		dedit.append(tedit);
-		SetWindowTextW(hwndEdit, dedit.c_str());
-		SendMessageW(hwndEdit, WM_VSCROLL, SB_BOTTOM, 0);
+		SetWindowTextW(hWndEdit, dedit.c_str());
+		SendMessageW(hWndEdit, WM_VSCROLL, SB_BOTTOM, 0);
 
 		switch(command)
 		{
@@ -378,11 +378,10 @@ HANDLE SrvStart()
 	if(hPipe != INVALID_HANDLE_VALUE)
 	{
 		hThread = (HANDLE)_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr);
-	}
-
-	if(hThread == nullptr)
-	{
-		CloseHandle(hPipe);
+		if(hThread == nullptr)
+		{
+			CloseHandle(hPipe);
+		}
 	}
 
 	return hThread;

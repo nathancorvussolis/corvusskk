@@ -53,10 +53,9 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
 void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
-BOOL LoadSKKUserDic();
-void SaveSKKUserDic(void *p);
-void StartSaveSKKUserDic(BOOL bThread);
-void BackUpSKKUserDic();
+BOOL LoadUserDic();
+void StartSaveUserDic(BOOL bThread);
+void BackUpUserDic();
 
 // SearchSKKServer
 std::wstring SearchSKKServer(const std::wstring &searchkey);
@@ -78,11 +77,11 @@ HANDLE SrvStart();
 
 #define BACKUP_GENS		3
 
-extern CRITICAL_SECTION csUserDataSave;
+extern CRITICAL_SECTION csSaveUserDic;
 extern BOOL bUserDicChg;
 extern FILETIME ftConfig, ftSKKDic;
 #ifdef _DEBUG
-extern HWND hwndEdit;
+extern HWND hWndEdit;
 extern HFONT hFont;
 #endif
 extern HINSTANCE hInst;

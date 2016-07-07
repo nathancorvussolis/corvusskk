@@ -12,8 +12,7 @@ KEYORDER complements;
 //補完なし
 KEYORDER accompaniments;
 
-void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
-void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder);
+HANDLE hThreadUserDic = INVALID_HANDLE_VALUE;
 
 std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &okuri)
 {
@@ -144,6 +143,28 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 			}
 		}
 	}
+}
+
+void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
+{
+	if(!keyorder.empty())
+	{
+		FORWARD_ITERATION_I(keyorder_itr, keyorder)
+		{
+			if(searchkey == *keyorder_itr)
+			{
+				keyorder.erase(keyorder_itr);
+				break;
+			}
+		}
+	}
+}
+
+void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
+{
+	DelKeyOrder(searchkey, keyorder);
+
+	keyorder.push_back(searchkey);
 }
 
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri)
@@ -321,29 +342,7 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	}
 }
 
-void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
-{
-	DelKeyOrder(searchkey, keyorder);
-
-	keyorder.push_back(searchkey);
-}
-
-void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
-{
-	if(!keyorder.empty())
-	{
-		FORWARD_ITERATION_I(keyorder_itr, keyorder)
-		{
-			if(searchkey == *keyorder_itr)
-			{
-				keyorder.erase(keyorder_itr);
-				break;
-			}
-		}
-	}
-}
-
-BOOL LoadSKKUserDic()
+BOOL LoadUserDic()
 {
 	FILE *fp;
 	std::wstring key, empty;
@@ -352,10 +351,12 @@ BOOL LoadSKKUserDic()
 	SKKDICOKURIBLOCKS so;
 	USEROKURIENTRY userokurientry;
 
+	userdic.clear();
+	userokuri.clear();
 	complements.clear();
 	accompaniments.clear();
 
-	_wfopen_s(&fp, pathuserdic, RccsUTF8);
+	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
 	if(fp == nullptr)
 	{
 		return FALSE;
@@ -505,7 +506,7 @@ BOOL LoadSKKUserDic()
 	return TRUE;
 }
 
-void WriteSKKUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc, const SKKDICOKURIBLOCKS &so)
+void WriteUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc, const SKKDICOKURIBLOCKS &so)
 {
 	std::wstring line;
 
@@ -533,13 +534,18 @@ void WriteSKKUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDA
 	fwprintf(fp, L"%s\n", line.c_str());
 }
 
-void SaveSKKUserDic(void *p)
+unsigned int __stdcall SaveUserDic(void *p)
 {
 	USERDATA *userdata = (USERDATA *)p;
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;
 
-	EnterCriticalSection(&csUserDataSave);	// !
+	if(userdata == nullptr)
+	{
+		return 0;
+	}
+
+	EnterCriticalSection(&csSaveUserDic);	// !
 
 	_wfopen_s(&fp, pathuserdic, WccsUTF16);
 	if(fp == nullptr)
@@ -561,7 +567,7 @@ void SaveSKKUserDic(void *p)
 			{
 				so = userokuri_itr->second.o;
 			}
-			WriteSKKUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
+			WriteUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
 		}
 	}
 
@@ -575,54 +581,90 @@ void SaveSKKUserDic(void *p)
 		auto userdic_itr = userdata->userdic.find(*keyorder_ritr);
 		if(userdic_itr != userdata->userdic.end())
 		{
-			WriteSKKUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
+			WriteUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
 		}
 	}
 
 	fclose(fp);
 
 exit:
-
-	LeaveCriticalSection(&csUserDataSave);	// !
+	LeaveCriticalSection(&csSaveUserDic);	// !
 
 	delete userdata;
+
+	return 0;
 }
 
-void StartSaveSKKUserDic(BOOL bThread)
+void StartSaveUserDic(BOOL bThread)
 {
+	if(hThreadUserDic != INVALID_HANDLE_VALUE)
+	{
+		DWORD ws = WaitForSingleObject(hThreadUserDic, (bThread ? 0 : INFINITE));
+		switch(ws)
+		{
+		case WAIT_OBJECT_0:
+			CloseHandle(hThreadUserDic);
+			hThreadUserDic = INVALID_HANDLE_VALUE;
+			break;
+		case WAIT_TIMEOUT:
+			return;
+			break;
+		default:
+			break;
+		}
+	}
+
 	if(bUserDicChg)
 	{
-		bUserDicChg = FALSE;
+		USERDATA *userdata = nullptr;
 
 		try
 		{
-			USERDATA *userdata = new USERDATA();
+			userdata = new USERDATA();
 			userdata->userdic = userdic;
 			userdata->userokuri = userokuri;
 			userdata->complements = complements;
 			userdata->accompaniments = accompaniments;
-
-			if(bThread)
-			{
-				_beginthread(SaveSKKUserDic, 0, userdata);
-			}
-			else
-			{
-				SaveSKKUserDic(userdata);
-			}
 		}
 		catch(...)
 		{
+			if(userdata != nullptr)
+			{
+				delete userdata;
+			}
+			return;
+		}
+
+		if(bThread)
+		{
+			if(hThreadUserDic == INVALID_HANDLE_VALUE)
+			{
+				hThreadUserDic = (HANDLE)_beginthreadex(nullptr, 0, SaveUserDic, userdata, 0, nullptr);
+				if(hThreadUserDic == nullptr)
+				{
+					delete userdata;
+					hThreadUserDic = INVALID_HANDLE_VALUE;
+				}
+				else
+				{
+					bUserDicChg = FALSE;
+				}
+			}
+		}
+		else
+		{
+			SaveUserDic(userdata);
+			bUserDicChg = FALSE;
 		}
 	}
 }
 
-void BackUpSKKUserDic()
+void BackUpUserDic()
 {
-	EnterCriticalSection(&csUserDataSave);	// !
-
 	WCHAR oldpath[MAX_PATH];
 	WCHAR newpath[MAX_PATH];
+
+	EnterCriticalSection(&csSaveUserDic);	// !
 
 	for(int i = BACKUP_GENS; i > 1; i--)
 	{
@@ -636,5 +678,5 @@ void BackUpSKKUserDic()
 
 	CopyFileW(pathuserdic, newpath, FALSE);
 
-	LeaveCriticalSection(&csUserDataSave);	// !
+	LeaveCriticalSection(&csSaveUserDic);	// !
 }
