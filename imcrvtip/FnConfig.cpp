@@ -48,7 +48,7 @@ static const TF_PRESERVEDKEY configpreservedkey[] =
 static const struct {
 	LPCWSTR value;
 	COLORREF color;
-} colorsxmlvalue[8] =
+} colorsxmlvalue[DISPLAY_COLOR_NUM] =
 {
 	{ValueColorBG, RGB(0xFF,0xFF,0xFF)},
 	{ValueColorFR, RGB(0x00,0x00,0x00)},

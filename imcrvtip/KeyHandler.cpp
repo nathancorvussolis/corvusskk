@@ -94,7 +94,8 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		if(complement)
 		{
 			complement = FALSE;	//補完終了
-			kana = kana.erase(cursoridx);
+			kana = searchkey;
+			cursoridx = kana.size();
 
 			if(cx_dynamiccomp || cx_dyncompmulti)
 			{

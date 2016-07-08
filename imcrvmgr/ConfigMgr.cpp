@@ -25,6 +25,7 @@ DWORD encoding = 0;		//エンコーディング
 DWORD timeout = 1000;	//タイムアウト
 
 BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
+BOOL compincback = FALSE;	//前方一致と後方一致で補完する
 
 const luaL_Reg luaFuncs[] =
 {
@@ -236,6 +237,13 @@ void LoadConfig()
 	if(precedeokuri != TRUE && precedeokuri != FALSE)
 	{
 		precedeokuri = FALSE;
+	}
+
+	ReadValue(pathconfigxml, SectionBehavior, ValueCompIncBack, strxmlval);
+	compincback = _wtoi(strxmlval.c_str());
+	if(compincback != TRUE && compincback != FALSE)
+	{
+		compincback = FALSE;
 	}
 }
 

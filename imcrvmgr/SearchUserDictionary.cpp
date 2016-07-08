@@ -85,11 +85,22 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 				break;
 			}
 
-			if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0 &&
-				searchkey.size() < keyorder_ritr->size())
+			if(searchkey.size() < keyorder_ritr->size())
 			{
-				sc.push_back(SKKDICCANDIDATE(*keyorder_ritr, L""));
-				++count;
+				if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0)
+				{
+					//前方一致
+					sc.push_back(SKKDICCANDIDATE(*keyorder_ritr, L""));
+					++count;
+				}
+				else if(compincback &&
+					keyorder_ritr->compare((keyorder_ritr->size() - searchkey.size()),
+					searchkey.size(), searchkey) == 0)
+				{
+					//後方一致
+					sc.push_back(SKKDICCANDIDATE(*keyorder_ritr, L""));
+					++count;
+				}
 			}
 		}
 	}

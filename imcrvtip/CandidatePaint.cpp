@@ -7,6 +7,12 @@
 #define MERGIN_X 2
 #define MERGIN_Y 4
 
+const int colors_compback[DISPLAY_COLOR_NUM] =
+{
+	CL_COLOR_BG, CL_COLOR_FR, CL_COLOR_CA, CL_COLOR_CO,
+	CL_COLOR_SE, CL_COLOR_SC, CL_COLOR_AN, CL_COLOR_NO
+};
+
 void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 {
 	PAINTSTRUCT ps;
@@ -18,7 +24,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 	HGDIOBJ bmp = nullptr, font = nullptr, pen, brush;
 	RECT r, rc;
 	POINT pt;
-	int cx, cy, cycle;
+	int cx, cy;
 	UINT page, count, i;
 	std::wstring s;
 	WCHAR strPage[32];
@@ -97,7 +103,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(cycle = CL_COLOR_BG; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}
@@ -284,8 +290,17 @@ void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
 std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT idx, int cycle)
 {
 	std::wstring s;
+	std::wstring ca = candidates[count + _uShowedCount + idx].first.first;
+	std::wstring an = candidates[count + _uShowedCount + idx].first.second;
 
-	switch(cycle)
+	int color_cycle = cycle;
+	if(_comp && ca.compare(0, searchkey.size(), searchkey) != 0)
+	{
+		//補完かつ後方一致
+		color_cycle = colors_compback[cycle];
+	}
+
+	switch(color_cycle)
 	{
 	case CL_COLOR_BG:
 		s.append(markNBSP);
@@ -315,30 +330,40 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 	case CL_COLOR_CA:
 		if(!_comp)
 		{
-			s.append(
-				std::regex_replace(candidates[ count + _uShowedCount + idx ].first.first,
+			s.append(std::regex_replace(ca,
 				std::wregex(markSP), std::wstring(markNBSP)));
 		}
 		else
 		{
-			s.append(
-				std::regex_replace(candidates[ count + _uShowedCount + idx ].first.first.substr(searchkey.size()),
-				std::wregex(markSP), std::wstring(markNBSP)));
+			if(searchkey.size() < ca.size())
+			{
+				if(ca.compare(0, searchkey.size(), searchkey) == 0)
+				{
+					//前方一致
+					s.append(std::regex_replace(ca.substr(searchkey.size()),
+						std::wregex(markSP), std::wstring(markNBSP)));
+				}
+				else
+				{
+					//後方一致
+					s.append(std::regex_replace(ca.substr(0, ca.size() - searchkey.size()),
+						std::wregex(markSP), std::wstring(markNBSP)));
+				}
+			}
 		}
 		break;
 
 	case CL_COLOR_SC:
 		if(!_comp)
 		{
-			if(_pTextService->cx_annotation &&
-				!candidates[count + _uShowedCount + idx].first.second.empty())
+			if(_pTextService->cx_annotation && !an.empty())
 			{
 				s.append(markAnnotation);
 			}
 		}
 		else
 		{
-			if(!candidates[count + _uShowedCount + idx].first.second.empty())
+			if(!an.empty())
 			{
 				s.append(markNBSP);
 			}
@@ -348,20 +373,17 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 	case CL_COLOR_AN:
 		if(!_comp)
 		{
-			if(_pTextService->cx_annotation &&
-				!candidates[count + _uShowedCount + idx].first.second.empty())
+			if(_pTextService->cx_annotation && !an.empty())
 			{
-				s.append(
-					std::regex_replace(candidates[count + _uShowedCount + idx].first.second,
+				s.append(std::regex_replace(an,
 					std::wregex(markSP), std::wstring(markNBSP)));
 			}
 		}
 		else
 		{
-			if(!candidates[count + _uShowedCount + idx].first.second.empty())
+			if(!an.empty())
 			{
-				s.append(
-					std::regex_replace(candidates[count + _uShowedCount + idx].first.second,
+				s.append(std::regex_replace(an,
 					std::wregex(markSP), std::wstring(markNBSP)));
 			}
 		}
@@ -381,7 +403,6 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 
 void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx)
 {
-	int cycle;
 	std::wstring s;
 	RECT r, r_ex;
 	D2D1_RECT_F rd2d;
@@ -391,9 +412,18 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 	r_ex = *lpr;
 	r_ex.right = r_ex.left;
 
-	for(cycle = CL_COLOR_BG; cycle < DISPLAY_COLOR_NUM; cycle++)
+	std::wstring ca = candidates[count + _uShowedCount + idx].first.first;
+
+	for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
 	{
 		s = _MakeCandidateString(page, count, idx, cycle);
+
+		int color_cycle = cycle;
+		if(_comp && ca.compare(0, searchkey.size(), searchkey) != 0)
+		{
+			//補完かつ後方一致
+			color_cycle = colors_compback[cycle];
+		}
 
 		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 		{
@@ -411,7 +441,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 			rd2d = D2D1::RectF((FLOAT)r.left, (FLOAT)r.top, (FLOAT)r.right, (FLOAT)r.bottom);
 
-			if(_comp && (count + _uShowedCount + idx == candidx) && (cycle == CL_COLOR_SE || cycle == CL_COLOR_CA))
+			if(_comp && (count + _uShowedCount + idx == candidx) &&
+				(color_cycle == CL_COLOR_SE || color_cycle == CL_COLOR_CA))
 			{
 				_pD2DDCRT->FillRectangle(&rd2d, _pD2DBrush[CL_COLOR_SE]);
 				_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(),
@@ -420,7 +451,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			else
 			{
 				_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(),
-					_pDWTF, &rd2d, _pD2DBrush[cycle], _drawtext_option);
+					_pDWTF, &rd2d, _pD2DBrush[color_cycle], _drawtext_option);
 			}
 		}
 		else
@@ -433,7 +464,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 			r_ex.right = r.right;
 
-			if(_comp && (count + _uShowedCount + idx == candidx) && (cycle == CL_COLOR_SE || cycle == CL_COLOR_CA))
+			if(_comp && (count + _uShowedCount + idx == candidx) &&
+				(color_cycle == CL_COLOR_SE || color_cycle == CL_COLOR_CA))
 			{
 				SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
 				SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_SE]);
@@ -441,7 +473,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			}
 			else
 			{
-				SetTextColor(hdc, _pTextService->cx_colors[cycle]);
+				SetTextColor(hdc, _pTextService->cx_colors[color_cycle]);
 				SetBkMode(hdc, TRANSPARENT);
 			}
 
@@ -459,7 +491,7 @@ void CCandidateWindow::_CalcWindowRect()
 	HGDIOBJ font = nullptr;
 	RECT r, rw;
 	POINT pt;
-	int x, y, cx = 0, cy = 0, xmax = 0, cycle;
+	int x, y, cx = 0, cy = 0, xmax = 0;
 	UINT page, count, i;
 	std::wstring s;
 	WCHAR strPage[32];
@@ -538,7 +570,7 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(cycle = CL_COLOR_BG; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}
@@ -596,7 +628,7 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(cycle = CL_COLOR_BG; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}

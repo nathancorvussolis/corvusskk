@@ -244,16 +244,6 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-
-
-# WiX Toolset files
-*.msi
-*.wixobj
-*.wixpdb
-
-# Archive files
-*.zip
-
 # Backup files
 *.BAK
 *.bak

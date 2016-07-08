@@ -26,6 +26,7 @@
     <key name="dynamiccomp" value="0" />
     <key name="dyncompmulti" value="0" />
     <key name="compuserdic" value="0" />
+    <key name="compincback" value="0" />
   </section>
   <section name="font">
     <key name="name" value="メイリオ" />

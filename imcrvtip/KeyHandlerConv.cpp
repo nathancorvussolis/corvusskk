@@ -540,7 +540,13 @@ void CTextService::_NextComp()
 		{
 			complement = TRUE;
 			candidx = 0;
-			_SetComp(candidates[candidx].first.first);
+			std::wstring compc = candidates[candidx].first.first;
+			cursoridx = searchkey.size();
+			if(compc.compare(0, searchkey.size(), searchkey) != 0)
+			{
+				cursoridx = compc.size() - searchkey.size();
+			}
+			_SetComp(compc);
 		}
 	}
 	else
@@ -548,7 +554,13 @@ void CTextService::_NextComp()
 		if(candidx < candidates.size() - 1)
 		{
 			++candidx;
-			_SetComp(candidates[candidx].first.first);
+			std::wstring compc = candidates[candidx].first.first;
+			cursoridx = searchkey.size();
+			if(compc.compare(0, searchkey.size(), searchkey) != 0)
+			{
+				cursoridx = compc.size() - searchkey.size();
+			}
+			_SetComp(compc);
 		}
 	}
 }
@@ -560,15 +572,21 @@ void CTextService::_PrevComp()
 		if(candidx == 0)
 		{
 			complement = FALSE;
+			kana = searchkey;
+			cursoridx = kana.size();
+
 			_SetComp(searchkey);
 		}
 		else
 		{
 			--candidx;
-			if(candidx < candidates.size())
+			std::wstring compc = candidates[candidx].first.first;
+			cursoridx = searchkey.size();
+			if(compc.compare(0, searchkey.size(), searchkey) != 0)
 			{
-				_SetComp(candidates[candidx].first.first);
+				cursoridx = compc.size() - searchkey.size();
 			}
+			_SetComp(compc);
 		}
 	}
 }
