@@ -130,6 +130,7 @@ LPCWSTR markRegR = L"]";
 LPCWSTR markRegKeyEnd = L"：";
 LPCWSTR markSP = L"\x20";
 LPCWSTR markNBSP = L"\u00A0";
+LPCWSTR markHM = L"\x2D";
 LPCWSTR markMidashi = L"▽";
 LPCWSTR markHenkan = L"▼";
 LPCWSTR markOkuri = L"*";

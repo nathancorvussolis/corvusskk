@@ -626,32 +626,38 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	complement = FALSE;
 	_NextComp();
 
-	cursoridx = cursoridx_bak;
-
 	if(complement)
 	{
-		if(cx_compuserdic)
-		{
-			if(!candidates.empty())
-			{
-				kana += markSP + candidates[0].first.second;
-			}
-		}
-
-		okuriidx = kana_bak.size();
-
 		if(cx_dynamiccomp)
 		{
-			kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
+			kana.insert(cursoridx, markHM);
+			cursoridx = cursoridx_bak;
+			if(kana_bak.size() < kana.size() &&
+				kana.compare(0, kana_bak.size(), kana_bak) != 0)
+			{
+				cursoridx += (kana.size() - kana_bak.size());
+			}
+
+			if(cx_compuserdic && !cx_dyncompmulti)
+			{
+				if(!candidates.empty())
+				{
+					okuriidx = kana.size();
+					kana += markSP + candidates[0].first.second;
+					kana.insert(okuriidx, 1, CHAR_SKK_OKURI);
+				}
+			}
 
 			_Update(ec, pContext);
 
-			kana.erase(okuriidx);
+			kana = kana_bak;
+			cursoridx = cursoridx_bak;
 			okuriidx = 0;
 		}
 		else
 		{
-			kana.erase(okuriidx);
+			kana = kana_bak;
+			cursoridx = cursoridx_bak;
 			okuriidx = 0;
 
 			_Update(ec, pContext);
@@ -687,6 +693,10 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 	else
 	{
 		_EndCompletionList(ec, pContext);
+
+		kana = kana_bak;
+		cursoridx = cursoridx_bak;
+
 		_Update(ec, pContext);
 	}
 }
