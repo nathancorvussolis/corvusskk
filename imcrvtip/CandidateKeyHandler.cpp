@@ -26,7 +26,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	_GetChSf(uVKey, ch, sf);
 
 	//複数補完/複数動的補完
-	if(_comp)
+	if(_mode == wm_complement)
 	{
 		switch(sf)
 		{
@@ -69,7 +69,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 				}
 				else
 				{
-					if(_reg)
+					if(_mode == wm_register)
 					{
 						_RestoreStatusReg();
 					}
@@ -119,7 +119,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 							}
 							else
 							{
-								if(_reg)
+								if(_mode == wm_register)
 								{
 									_RestoreStatusReg();
 								}
@@ -203,7 +203,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			regwordtext.clear();
 			regwordtextpos = 0;
 
-			if(!_reg)
+			if((_mode == wm_candidate) || (_mode == wm_complement))
 			{
 				_InitList();
 				_uIndex = _PageIndex[_PageIndex.size() - 1];
@@ -325,7 +325,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		regwordtext.clear();
 		regwordtextpos = 0;
 
-		if(!_reg)
+		if((_mode == wm_candidate) || (_mode == wm_complement))
 		{
 			_InitList();
 			_uIndex = _PageIndex[_PageIndex.size() - 1];

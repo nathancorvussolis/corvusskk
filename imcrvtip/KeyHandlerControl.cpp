@@ -395,7 +395,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 					if(_pCandidateList == nullptr)
 					{
 						showcandlist = FALSE;
-						_ShowCandidateList(ec, pContext, FALSE, TRUE);
+						_ShowCandidateList(ec, pContext, wm_complement);
 					}
 					else
 					{
@@ -405,7 +405,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				else if(cx_stacompmulti)
 				{
 					showcandlist = FALSE;
-					_ShowCandidateList(ec, pContext, FALSE, TRUE);
+					_ShowCandidateList(ec, pContext, wm_complement);
 				}
 			}
 			return S_OK;

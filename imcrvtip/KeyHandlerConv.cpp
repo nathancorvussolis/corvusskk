@@ -679,7 +679,7 @@ void CTextService::_DynamicComp(TfEditCookie ec, ITfContext *pContext, BOOL sel)
 				else
 				{
 					showcandlist = FALSE;
-					_ShowCandidateList(ec, pContext, FALSE, TRUE);
+					_ShowCandidateList(ec, pContext, wm_complement);
 				}
 			}
 			else

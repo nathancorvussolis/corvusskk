@@ -51,8 +51,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_pDWFactory = nullptr;
 	_pDWTF = nullptr;
 
-	_reg = FALSE;
-	_comp = FALSE;
+	_mode = 0;
 
 	candidates.clear();
 	candidx = 0;
@@ -455,7 +454,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 					break;
 				}
 
-				if(!_comp)
+				if(_mode == wm_candidate)
 				{
 					_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
 					_CandStr[k].append(markNo);
@@ -470,7 +469,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 				if(_pTextService->cx_annotation &&
 					!candidates[_uShowedCount + k].first.second.empty())
 				{
-					if(!_comp)
+					if(_mode == wm_candidate)
 					{
 						_CandStr[k].append(markAnnotation);
 					}

@@ -116,14 +116,14 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 			if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 			{
-				_pCandidateList->_SetText(comptext, FALSE, FALSE, TRUE);
+				_pCandidateList->_SetText(comptext, FALSE, wm_register);
 				return S_OK;
 			}
 			else
 			{
 				_SetText(ec, pContext, comptext, cchCursor, cchOkuri, FALSE);
 				//辞書登録表示開始
-				return _ShowCandidateList(ec, pContext, TRUE, FALSE);
+				return _ShowCandidateList(ec, pContext, wm_register);
 			}
 		}
 	}
@@ -304,7 +304,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		{
 			showcandlist = TRUE;
 			candidx = 0;
-			_pCandidateList->_SetText(comptext, FALSE, TRUE, FALSE);
+			_pCandidateList->_SetText(comptext, FALSE, wm_candidate);
 			return S_OK;
 		}
 		else
@@ -313,13 +313,13 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			//候補一覧表示開始
 			showcandlist = TRUE;
 			candidx = 0;
-			return _ShowCandidateList(ec, pContext, FALSE, FALSE);
+			return _ShowCandidateList(ec, pContext, wm_candidate);
 		}
 	}
 
 	if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 	{
-		_pCandidateList->_SetText(comptext, fixed, FALSE, FALSE);
+		_pCandidateList->_SetText(comptext, fixed, wm_none);
 		return S_OK;
 	}
 	else
@@ -336,7 +336,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 	if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 	{
-		_pCandidateList->_SetText(text, fixed, FALSE, FALSE);
+		_pCandidateList->_SetText(text, fixed, wm_none);
 		return S_OK;
 	}
 
@@ -540,7 +540,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 	return S_OK;
 }
 
-HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, BOOL reg, BOOL comp)
+HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, int mode)
 {
 	HRESULT hr = E_FAIL;
 
@@ -557,7 +557,7 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 			ITfRange *pRange;
 			if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
 			{
-				hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, reg, comp);
+				hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, mode);
 				SafeRelease(&pRange);
 			}
 			SafeRelease(&pDocumentMgr);

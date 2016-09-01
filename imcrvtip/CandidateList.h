@@ -27,7 +27,7 @@ public:
 	STDMETHODIMP OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, ITfContextView *pContextView);
 
 	HRESULT _StartCandidateList(TfClientId tid, ITfDocumentMgr *pDocumentMgr,
-		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp);
+		ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, int mode);
 	void _EndCandidateList();
 
 	BOOL _IsShowCandidateWindow();
@@ -36,7 +36,7 @@ public:
 	void _InvokeKeyHandler(WPARAM key);
 	void _InvokeSfHandler(BYTE sf);
 	void _Show(BOOL bShow);
-	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
+	void _SetText(const std::wstring &text, BOOL fixed, int mode);
 	void _Move(LPRECT lpr, TfEditCookie ec = TF_INVALID_EDIT_COOKIE, ITfContext *pContext = nullptr);
 	void _UpdateComp();
 
@@ -59,8 +59,6 @@ private:
 	TfEditCookie _ec;
 
 	CCandidateWindow *_pCandidateWindow;
-
-	BOOL _comp;		//複数補完/複数動的補完
 };
 
 #endif //CANDIDATELIST_H

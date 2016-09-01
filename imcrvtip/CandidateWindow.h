@@ -38,7 +38,7 @@ public:
 	STDMETHODIMP Finalize();
 	STDMETHODIMP Abort();
 
-	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, BOOL reg, BOOL comp);
+	BOOL _Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, int mode);
 	static BOOL _InitClass();
 	static void _UninitClass();
 	static LRESULT CALLBACK _WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -49,7 +49,7 @@ public:
 	void _EndUIElement();
 	BOOL _CanShowUIElement();
 	void _Redraw();
-	void _SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg);
+	void _SetText(const std::wstring &text, BOOL fixed, int mode);
 	void _PreEnd();
 	void _End();
 	void _UpdateComp();
@@ -73,7 +73,7 @@ private:
 	void _ClearStatusReg();
 	void _PreEndReq();
 	void _EndReq();
-	void _CreateNext(BOOL reg);
+	void _CreateNext(int mode);
 
 	//KeyHandler
 	void _OnKeyDownRegword(UINT uVKey);
@@ -127,16 +127,15 @@ private:
 	IDWriteFactory *_pDWFactory;
 	IDWriteTextFormat *_pDWTF;
 
-	BOOL _reg;		//初期表示から辞書登録
-	BOOL _comp;		//複数補完/複数動的補完
+	int _mode;		//モード
 
 	CANDIDATES candidates;		//描画用候補
 	size_t candidx;				//描画用候補インデックス
 	std::wstring searchkey;		//描画用見出し語
 
 	//辞書登録
-	BOOL regword;				//モード
-	BOOL regwordul;				//UILess
+	BOOL regword;				//辞書登録モード
+	BOOL regwordul;				//辞書登録モード(UILess)
 	BOOL regwordfixed;			//未確定文字列を確定
 	std::wstring regwordtext;	//確定文字列
 	size_t regwordtextpos;		//カーソルインデックス

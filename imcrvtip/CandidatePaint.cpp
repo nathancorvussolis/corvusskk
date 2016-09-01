@@ -4,9 +4,6 @@
 #include "CandidateList.h"
 #include "CandidateWindow.h"
 
-#define MERGIN_X 2
-#define MERGIN_Y 4
-
 const int colors_compback[DISPLAY_COLOR_NUM] =
 {
 	CL_COLOR_BG, CL_COLOR_FR, CL_COLOR_CA, CL_COLOR_CO,
@@ -126,7 +123,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 			}
 
-			if(_pTextService->cx_verticalcand || _comp)
+			if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 			{
 				if(i != 0)
 				{
@@ -177,7 +174,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
 
-		if(_pTextService->cx_verticalcand || _comp)
+		if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 		{
 			pt.x = MERGIN_X;
 			pt.y += height;
@@ -294,7 +291,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 	std::wstring an = candidates[count + _uShowedCount + idx].first.second;
 
 	int color_cycle = cycle;
-	if(_comp && ca.compare(0, searchkey.size(), searchkey) != 0)
+	if((_mode == wm_complement) && (ca.compare(0, searchkey.size(), searchkey) != 0))
 	{
 		//補完かつ後方一致
 		color_cycle = colors_compback[cycle];
@@ -310,7 +307,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_SE:
-		if(!_comp)
+		if(_mode == wm_candidate)
 		{
 			s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)][0]);
 		}
@@ -321,14 +318,14 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_CO:
-		if(!_comp)
+		if(_mode == wm_candidate)
 		{
 			s.append(markNo);
 		}
 		break;
 
 	case CL_COLOR_CA:
-		if(!_comp)
+		if(_mode == wm_candidate)
 		{
 			s.append(std::regex_replace(ca,
 				std::wregex(markSP), std::wstring(markNBSP)));
@@ -354,7 +351,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_SC:
-		if(!_comp)
+		if(_mode == wm_candidate)
 		{
 			if(_pTextService->cx_annotation && !an.empty())
 			{
@@ -371,7 +368,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 		break;
 
 	case CL_COLOR_AN:
-		if(!_comp)
+		if(_mode == wm_candidate)
 		{
 			if(_pTextService->cx_annotation && !an.empty())
 			{
@@ -419,7 +416,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 		s = _MakeCandidateString(page, count, idx, cycle);
 
 		int color_cycle = cycle;
-		if(_comp && ca.compare(0, searchkey.size(), searchkey) != 0)
+		if((_mode == wm_complement) && (ca.compare(0, searchkey.size(), searchkey) != 0))
 		{
 			//補完かつ後方一致
 			color_cycle = colors_compback[cycle];
@@ -441,7 +438,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 			rd2d = D2D1::RectF((FLOAT)r.left, (FLOAT)r.top, (FLOAT)r.right, (FLOAT)r.bottom);
 
-			if(_comp && (count + _uShowedCount + idx == candidx) &&
+			if((_mode == wm_complement) &&
+				(count + _uShowedCount + idx == candidx) &&
 				(color_cycle == CL_COLOR_SE || color_cycle == CL_COLOR_CA))
 			{
 				_pD2DDCRT->FillRectangle(&rd2d, _pD2DBrush[CL_COLOR_SE]);
@@ -464,7 +462,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 			r_ex.right = r.right;
 
-			if(_comp && (count + _uShowedCount + idx == candidx) &&
+			if((_mode == wm_complement) &&
+				(count + _uShowedCount + idx == candidx) &&
 				(color_cycle == CL_COLOR_SE || color_cycle == CL_COLOR_CA))
 			{
 				SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
@@ -651,7 +650,7 @@ void CCandidateWindow::_CalcWindowRect()
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 			}
 
-			if(_pTextService->cx_verticalcand || _comp)
+			if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 			{
 				if(i != 0)
 				{
@@ -696,7 +695,7 @@ void CCandidateWindow::_CalcWindowRect()
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
 
-		if(_pTextService->cx_verticalcand || _comp)
+		if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 		{
 			pt.x = 0;
 			pt.y += height;

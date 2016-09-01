@@ -265,7 +265,7 @@ private:
 };
 
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
-	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, BOOL reg, BOOL comp)
+	ITfContext *pContext, TfEditCookie ec, ITfRange *pRange, int mode)
 {
 	HRESULT hrRet = E_FAIL;
 	TfEditCookie ecTextStore;
@@ -294,7 +294,6 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	_pRangeComposition->AddRef();
 
 	_ec = ec;
-	_comp = comp;
 
 	if(_AdviseContextKeyEventSink() != S_OK)
 	{
@@ -323,7 +322,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			SafeRelease(&pContextView);
 		}
 
-		if(!_pCandidateWindow->_Create(hwnd, nullptr, 0, 0, reg, comp))
+		if(!_pCandidateWindow->_Create(hwnd, nullptr, 0, 0, mode))
 		{
 			goto exit;
 		}
@@ -486,11 +485,11 @@ void CCandidateList::_Show(BOOL bShow)
 	}
 }
 
-void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, BOOL showcandlist, BOOL showreg)
+void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, int mode)
 {
 	if(_pCandidateWindow != nullptr)
 	{
-		_pCandidateWindow->_SetText(text, fixed, showcandlist, showreg);
+		_pCandidateWindow->_SetText(text, fixed, mode);
 	}
 }
 
