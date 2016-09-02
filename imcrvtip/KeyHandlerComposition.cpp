@@ -43,32 +43,25 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 			if(!fixed)
 			{
-				if(purgedicmode)
+				if(cx_annotation && !cx_annotatlst && !candidates[candidx].first.second.empty())
 				{
-					comptext.append(L" [削除?(Y/n)]");
+					comptext.append(markAnnotation + candidates[candidx].first.second);
 				}
-				else
+
+				if(cx_untilcandlist == 0 && cx_dispcandnum)
 				{
-					if(cx_annotation && !cx_annotatlst && !candidates[candidx].first.second.empty())
-					{
-						comptext.append(markAnnotation + candidates[candidx].first.second);
-					}
+					comptext.append(L" (");
+					_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
+					comptext.append(candidatecount);
+					comptext.append(L"/");
+					_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidates.size());
+					comptext.append(candidatecount);
+					comptext.append(L")");
+				}
 
-					if(cx_untilcandlist == 0 && cx_dispcandnum)
-					{
-						comptext.append(L" (");
-						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidx + 1);
-						comptext.append(candidatecount);
-						comptext.append(L"/");
-						_snwprintf_s(candidatecount, _TRUNCATE, L"%u", (UINT)candidates.size());
-						comptext.append(candidatecount);
-						comptext.append(L")");
-					}
-
-					if(!showmodemark && comptext.empty())
-					{
-						comptext.append(markSP);
-					}
+				if(!showmodemark && comptext.empty())
+				{
+					comptext.append(markSP);
 				}
 			}
 

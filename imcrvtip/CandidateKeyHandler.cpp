@@ -25,6 +25,55 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 	_GetChSf(uVKey, ch, sf);
 
+	//辞書削除
+	if(_mode == wm_delete)
+	{
+		switch(ch)
+		{
+		case L'Y': case L'y':
+			sf = SKK_ENTER;
+			break;
+		case L'N': case L'n':
+			sf = SKK_CANCEL;
+			break;
+		default:
+			break;
+		}
+
+		switch(sf)
+		{
+		case SKK_ENTER:
+			if(_pCandidateWindowParent == nullptr)
+			{
+				_InvokeSfHandler(SKK_ENTER);
+			}
+			else
+			{
+				_PreEndReq();
+				_HandleKey(0, SKK_ENTER);
+				_EndReq();
+			}
+			break;
+		case SKK_CANCEL:
+			if(_pCandidateWindowParent == nullptr)
+			{
+				_InvokeSfHandler(SKK_CANCEL);
+			}
+			else
+			{
+				_PreEndReq();
+				_HandleKey(0, SKK_CANCEL);
+				_EndReq();
+			}
+			return S_OK;
+			break;
+		default:
+			break;
+		}
+
+		return S_OK;
+	}
+
 	//複数補完/複数動的補完
 	if(_mode == wm_complement)
 	{
@@ -188,8 +237,9 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_RestoreStatusReg();
 		_ClearStatusReg();
 
+		ulword = FALSE;
+
 		regwordfixed = FALSE;
-		regwordul = FALSE;
 		regword = FALSE;
 
 		//スペースのみのとき空として扱う
@@ -203,17 +253,17 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			regwordtext.clear();
 			regwordtextpos = 0;
 
-			if((_mode == wm_candidate) || (_mode == wm_complement))
+			if(_mode == wm_candidate)
 			{
-				_InitList();
-				_uIndex = _PageIndex[_PageIndex.size() - 1];
-				_Update();
-				_UpdateUIElement();
-
 				if(_pInputModeWindow != nullptr)
 				{
 					_pInputModeWindow->_Show(FALSE);
 				}
+
+				_InitList();
+				_uIndex = _PageIndex[_PageIndex.size() - 1];
+				_Update();
+				_UpdateUIElement();
 			}
 			else
 			{
@@ -318,24 +368,25 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_RestoreStatusReg();
 		_ClearStatusReg();
 
+		ulword = FALSE;
+
 		regwordfixed = FALSE;
-		regwordul = FALSE;
 		regword = FALSE;
 
 		regwordtext.clear();
 		regwordtextpos = 0;
 
-		if((_mode == wm_candidate) || (_mode == wm_complement))
+		if(_mode == wm_candidate)
 		{
-			_InitList();
-			_uIndex = _PageIndex[_PageIndex.size() - 1];
-			_Update();
-			_UpdateUIElement();
-
 			if(_pInputModeWindow != nullptr)
 			{
 				_pInputModeWindow->_Show(FALSE);
 			}
+
+			_InitList();
+			_uIndex = _PageIndex[_PageIndex.size() - 1];
+			_Update();
+			_UpdateUIElement();
 		}
 		else
 		{

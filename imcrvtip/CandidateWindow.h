@@ -85,7 +85,8 @@ private:
 	//Paint
 	void _WindowProcPaint(HWND hWnd);
 	std::wstring _MakeRegWordString();
-	void _PaintRegWord(HDC hdc, LPRECT lpr);
+	std::wstring _MakeDelWordString();
+	void _PaintWord(HDC hdc, LPRECT lpr);
 	std::wstring _MakeCandidateString(UINT page, UINT count, UINT idx, int cycle);
 	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
 	void _CalcWindowRect();
@@ -132,10 +133,12 @@ private:
 	CANDIDATES candidates;		//描画用候補
 	size_t candidx;				//描画用候補インデックス
 	std::wstring searchkey;		//描画用見出し語
+	std::wstring searchkeyorg;	//描画用見出し語オリジナル
+
+	BOOL ulword;	//UILess 辞書登録/辞書削除
 
 	//辞書登録
 	BOOL regword;				//辞書登録モード
-	BOOL regwordul;				//辞書登録モード(UILess)
 	BOOL regwordfixed;			//未確定文字列を確定
 	std::wstring regwordtext;	//確定文字列
 	size_t regwordtextpos;		//カーソルインデックス

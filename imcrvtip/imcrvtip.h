@@ -102,11 +102,9 @@ enum WindowMode {
 	wm_none = 0,	//なし
 	wm_candidate,	//候補一覧
 	wm_register,	//辞書登録
-	wm_complement	//補完一覧
+	wm_complement,	//補完一覧
+	wm_delete		//候補削除
 };
-
-#define MERGIN_X 2
-#define MERGIN_Y 4
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR LangbarItemDesc;
@@ -133,6 +131,7 @@ extern const GUID c_guidDisplayAttributeConvAnnot;
 extern LPCWSTR markNo;
 extern LPCWSTR markAnnotation;
 extern LPCWSTR markCursor;
+extern LPCWSTR markDel;
 extern LPCWSTR markReg;
 extern LPCWSTR markRegL;
 extern LPCWSTR markRegR;

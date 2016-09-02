@@ -339,8 +339,17 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			else
 			{
 				purgedicmode = TRUE;
-				_Update(ec, pContext);
+				if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
+				{
+					_pCandidateList->_SetText(L"", FALSE, wm_delete);
+				}
+				else
+				{
+					showcandlist = FALSE;
+					_ShowCandidateList(ec, pContext, wm_delete);
+				}
 			}
+
 			return S_OK;
 		}
 		break;

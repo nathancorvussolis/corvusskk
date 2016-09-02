@@ -131,23 +131,14 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 			break;
 		case SKK_CANCEL:
 			purgedicmode = FALSE;
+			if(pContext != nullptr)
+			{
+				_EndCandidateList();
+			}
 			_Update(ec, pContext);
 			return S_OK;
 			break;
 		default:
-			switch(ch)
-			{
-			case L'Y': case L'y':
-				sf = SKK_PURGE_DIC;
-				break;
-			case L'N': case L'n':
-				purgedicmode = FALSE;
-				_Update(ec, pContext);
-				return S_OK;
-				break;
-			default:
-				return S_FALSE;
-			}
 			break;
 		}
 	}

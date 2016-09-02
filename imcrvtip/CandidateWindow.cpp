@@ -5,6 +5,8 @@
 #include "CandidateWindow.h"
 #include "InputModeWindow.h"
 
+#define NEXT_MERGIN_Y 4
+
 BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, int mode)
 {
 	_hwndParent = hwndParent;
@@ -66,14 +68,19 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	candidates = _pTextService->candidates;
 	candidx = _pTextService->candidx;
 	searchkey = _pTextService->searchkey;
+	searchkeyorg = _pTextService->searchkeyorg;
+
+	if((mode == wm_register) || (mode == wm_delete))
+	{
+		if(_hwnd == nullptr)
+		{
+			ulword = TRUE;
+		}
+	}
 
 	if(mode == wm_register)
 	{
 		//辞書登録開始
-		if(_hwnd == nullptr)
-		{
-			regwordul = TRUE;
-		}
 		regword = TRUE;
 		regwordtext.clear();
 		regwordtextpos = 0;
@@ -215,7 +222,7 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 			rc.left = _rect.left;
 			rc.top += _rect.bottom;
 			rc.right = _rect.right;
-			rc.bottom += _rect.bottom + MERGIN_Y;
+			rc.bottom += _rect.bottom + NEXT_MERGIN_Y;
 			_pCandidateWindow->_Move(&rc);
 #else
 			_pCandidateWindow->_Move(&_rect);
@@ -351,25 +358,28 @@ void CCandidateWindow::_SetText(const std::wstring &text, BOOL fixed, int mode)
 		return;
 	}
 
-	if((_mode == wm_candidate) || (_mode == wm_register))
+	if((mode == wm_candidate) || (mode == wm_register) || (mode == wm_delete))
 	{
 		_CreateNext(mode);
 	}
 
-	regwordfixed = fixed;
+	if((mode == wm_candidate) || (mode == wm_register) || (mode == wm_none))
+	{
+		regwordfixed = fixed;
 
-	if(fixed)
-	{
-		comptext.clear();
-		regwordtext.insert(regwordtextpos, text);
-		regwordtextpos += text.size();
-	}
-	else
-	{
-		comptext = text;
-		if(comptext.empty())
+		if(fixed)
 		{
-			regwordfixed = TRUE;
+			comptext.clear();
+			regwordtext.insert(regwordtextpos, text);
+			regwordtextpos += text.size();
+		}
+		else
+		{
+			comptext = text;
+			if(comptext.empty())
+			{
+				regwordfixed = TRUE;
+			}
 		}
 	}
 
@@ -523,29 +533,22 @@ void CCandidateWindow::_NextPage()
 		{
 			if(_hwnd == nullptr)
 			{
-				regwordul = TRUE;
+				ulword = TRUE;
 			}
 
-			if(!regword)
-			{
-				//辞書登録開始
-				regword = TRUE;
-				regwordtext.clear();
-				regwordtextpos = 0;
-				comptext.clear();
-				regwordfixed = TRUE;
+			//辞書登録開始
+			regword = TRUE;
+			regwordtext.clear();
+			regwordtextpos = 0;
+			comptext.clear();
+			regwordfixed = TRUE;
 
-				_BackUpStatus();
-				_ClearStatus();
+			_BackUpStatus();
+			_ClearStatus();
 
-				if(_pInputModeWindow != nullptr)
-				{
-					_pInputModeWindow->_Show(TRUE);
-				}
-			}
-			else
+			if(_pInputModeWindow != nullptr)
 			{
-				_CreateNext(wm_register);
+				_pInputModeWindow->_Show(TRUE);
 			}
 
 			_Update();
@@ -721,12 +724,16 @@ void CCandidateWindow::_PrevComp()
 
 void CCandidateWindow::_Update()
 {
-	if(regwordul || regword)
+	if(regword)
 	{
 		disptext = _MakeRegWordString();
 	}
+	else if(_mode == wm_delete)
+	{
+		disptext = _MakeDelWordString();
+	}
 
-	if(regwordul)
+	if(ulword)
 	{
 		_dwFlags = TF_CLUIE_COUNT | TF_CLUIE_SELECTION | TF_CLUIE_STRING |
 			TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;
@@ -835,7 +842,7 @@ void CCandidateWindow::_CreateNext(int mode)
 		rc.left = _rect.left;
 		rc.top += _rect.bottom;
 		rc.right = _rect.right;
-		rc.bottom += _rect.bottom + MERGIN_Y;
+		rc.bottom += _rect.bottom + NEXT_MERGIN_Y;
 		_pCandidateWindow->_Move(&rc);
 #else
 		_pCandidateWindow->_Move(&_rect);

@@ -4,6 +4,9 @@
 #include "CandidateList.h"
 #include "CandidateWindow.h"
 
+#define MERGIN_X 2
+#define MERGIN_Y 4
+
 const int colors_compback[DISPLAY_COLOR_NUM] =
 {
 	CL_COLOR_BG, CL_COLOR_FR, CL_COLOR_CA, CL_COLOR_CO,
@@ -76,16 +79,16 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		height = tm.tmHeight;
 	}
 
-	if(regwordul || regword)
+	if(regword || (_mode == wm_delete))
 	{
 		r.left += MERGIN_X;
 		r.top += MERGIN_Y;
 		r.right -= MERGIN_X;
 		r.bottom -= MERGIN_Y;
 
-		_PaintRegWord(hmemdc, &r);
+		_PaintWord(hmemdc, &r);
 	}
-	else if(_CandCount.size() != 0)
+	else if(((_mode == wm_candidate) || (_mode == wm_complement)) && (_CandCount.size() != 0))
 	{
 		pt.x = MERGIN_X;
 		pt.y = MERGIN_Y;
@@ -260,12 +263,43 @@ std::wstring CCandidateWindow::_MakeRegWordString()
 	return s;
 }
 
-void CCandidateWindow::_PaintRegWord(HDC hdc, LPRECT lpr)
+std::wstring CCandidateWindow::_MakeDelWordString()
+{
+	std::wstring s;
+
+	s.append(markNBSP);
+	s.append(markRegL);
+	s.append(markDel);
+	s.append(markRegR);
+
+	s.append(markNBSP + searchkeyorg + markNBSP);
+	s.append(L"/" + candidates[candidx].second.first);
+	if(!candidates[candidx].second.second.empty())
+	{
+		s.append(markAnnotation + candidates[candidx].second.second);
+	}
+	s.append(L"/");
+	s.append(markRegKeyEnd);
+
+	s.append(L"(Y/n)");
+	s.append(markNBSP);
+
+	return s;
+}
+
+void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 {
 	std::wstring s;
 	D2D1_RECT_F rd2d;
 
-	s = _MakeRegWordString();
+	if(regword)
+	{
+		s = _MakeRegWordString();
+	}
+	else if(_mode == wm_delete)
+	{
+		s = _MakeDelWordString();
+	}
 
 	if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 	{
@@ -534,7 +568,7 @@ void CCandidateWindow::_CalcWindowRect()
 		r.right = 1;
 	}
 
-	if(regwordul || regword)
+	if(regword || (_mode == wm_delete))
 	{
 		if(_pDWFactory != nullptr)
 		{
@@ -552,7 +586,7 @@ void CCandidateWindow::_CalcWindowRect()
 		cx = r.right + MERGIN_X * 2;
 		cy = height + MERGIN_Y * 2;
 	}
-	else if(_CandCount.size() != 0)
+	else if(((_mode == wm_candidate) || (_mode == wm_complement)) && (_CandCount.size() != 0))
 	{
 		pt.x = 0;
 		pt.y = 0;
