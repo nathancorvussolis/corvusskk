@@ -272,7 +272,7 @@ std::wstring CCandidateWindow::_MakeDelWordString()
 	s.append(L"削除");
 	s.append(markSqbR);
 
-	s.append(markNBSP + searchkeyorg + markNBSP);
+	s.append(markNBSP + ((candorgcnt <= candidx) ? searchkey : searchkeyorg) + markNBSP);
 	s.append(L"/" + candidates[candidx].second.first);
 	if(!candidates[candidx].second.second.empty())
 	{

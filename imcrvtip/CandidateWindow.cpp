@@ -67,6 +67,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 	candidates = _pTextService->candidates;
 	candidx = _pTextService->candidx;
+	candorgcnt =  _pTextService->candorgcnt;
 	searchkey = _pTextService->searchkey;
 	searchkeyorg = _pTextService->searchkeyorg;
 

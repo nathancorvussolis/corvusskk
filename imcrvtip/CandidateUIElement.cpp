@@ -55,6 +55,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 
 	candidates.clear();
 	candidx = 0;
+	candorgcnt = 0;
 	searchkey.clear();
 	searchkeyorg.clear();
 

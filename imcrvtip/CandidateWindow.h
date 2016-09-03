@@ -132,8 +132,9 @@ private:
 
 	CANDIDATES candidates;		//描画用候補
 	size_t candidx;				//描画用候補インデックス
+	size_t candorgcnt;			//オリジナル見出し語の候補数
 	std::wstring searchkey;		//描画用見出し語
-	std::wstring searchkeyorg;	//描画用見出し語オリジナル
+	std::wstring searchkeyorg;	//描画用オリジナル見出し語
 
 	BOOL ulword;	//UILess 辞書登録/辞書削除
 
