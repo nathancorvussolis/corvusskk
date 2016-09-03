@@ -40,6 +40,14 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 			break;
 		}
 
+		if(_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
+		{
+			if(sf == SKK_ENTER)
+			{
+				return S_OK;
+			}
+		}
+
 		switch(sf)
 		{
 		case SKK_ENTER:

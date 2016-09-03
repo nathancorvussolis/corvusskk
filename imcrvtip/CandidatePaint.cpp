@@ -243,16 +243,16 @@ std::wstring CCandidateWindow::_MakeRegWordString()
 	s.append(markNBSP);
 	for(i = 0; i < _depth + 1; i++)
 	{
-		s.append(markRegL);
+		s.append(markSqbL);
 	}
-	s.append(markReg);
+	s.append(L"登録");
 	for(i = 0; i < _depth + 1; i++)
 	{
-		s.append(markRegR);
+		s.append(markSqbR);
 	}
 	s.append(markNBSP);
 
-	s.append((searchkey_bak.empty() ? searchkeyorg_bak : searchkey_bak) + markRegKeyEnd);
+	s.append((searchkey_bak.empty() ? searchkeyorg_bak : searchkey_bak) + L"：");
 
 	s.append(regwordtext.substr(0, regwordtextpos));
 
@@ -268,9 +268,9 @@ std::wstring CCandidateWindow::_MakeDelWordString()
 	std::wstring s;
 
 	s.append(markNBSP);
-	s.append(markRegL);
-	s.append(markDel);
-	s.append(markRegR);
+	s.append(markSqbL);
+	s.append(L"削除");
+	s.append(markSqbR);
 
 	s.append(markNBSP + searchkeyorg + markNBSP);
 	s.append(L"/" + candidates[candidx].second.first);
@@ -279,9 +279,9 @@ std::wstring CCandidateWindow::_MakeDelWordString()
 		s.append(markAnnotation + candidates[candidx].second.second);
 	}
 	s.append(L"/");
-	s.append(markRegKeyEnd);
 
-	s.append(L"(Y/n)");
+	s.append(markNBSP);
+	s.append(L"？(Y/n)");
 	s.append(markNBSP);
 
 	return s;
