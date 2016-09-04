@@ -129,21 +129,20 @@ private:
 	IDWriteTextFormat *_pDWTF;
 
 	int _mode;		//モード
+	BOOL _ulsingle;	//UILess 辞書登録/辞書削除
+
+	//辞書登録
+	BOOL _regmode;				//辞書登録モード
+	BOOL _regfixed;				//未確定文字列を確定
+	std::wstring _regtext;		//確定文字列
+	size_t _regtextpos;			//カーソルインデックス
+	std::wstring _regcomp;		//未確定文字列
 
 	CANDIDATES candidates;		//描画用候補
 	size_t candidx;				//描画用候補インデックス
 	size_t candorgcnt;			//オリジナル見出し語の候補数
 	std::wstring searchkey;		//描画用見出し語
 	std::wstring searchkeyorg;	//描画用オリジナル見出し語
-
-	BOOL ulword;	//UILess 辞書登録/辞書削除
-
-	//辞書登録
-	BOOL regword;				//辞書登録モード
-	BOOL regwordfixed;			//未確定文字列を確定
-	std::wstring regwordtext;	//確定文字列
-	size_t regwordtextpos;		//カーソルインデックス
-	std::wstring comptext;		//未確定文字列
 
 	//辞書登録前の状態バックアップ
 	int inputmode_bak;

@@ -17,7 +17,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	}
 
 	//辞書登録モード
-	if(regword)
+	if(_regmode)
 	{
 		_OnKeyDownRegword(uVKey);
 		return S_OK;
@@ -118,7 +118,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	case SKK_CANCEL:
 		if(_pCandidateList != nullptr)
 		{
-			if(!regword)
+			if(!_regmode)
 			{
 				if(_pCandidateWindowParent == nullptr)
 				{
@@ -167,7 +167,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 					index = (UINT)(_pTextService->cx_untilcandlist - 1) + _PageIndex[page] + i;
 					if(index < _pTextService->candidates.size())
 					{
-						if(!regword)
+						if(!_regmode)
 						{
 							if(_pCandidateWindowParent == nullptr)
 							{
@@ -211,7 +211,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 	_GetChSf(uVKey, ch, sf);
 
 	//確定していないとき
-	if(!regwordfixed)
+	if(!_regfixed)
 	{
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
 		_HandleKey((WPARAM)uVKey, SKK_NULL);
@@ -245,21 +245,21 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_RestoreStatusReg();
 		_ClearStatusReg();
 
-		ulword = FALSE;
+		_ulsingle = FALSE;
 
-		regwordfixed = FALSE;
-		regword = FALSE;
+		_regfixed = FALSE;
+		_regmode = FALSE;
 
 		//スペースのみのとき空として扱う
-		if(std::regex_match(regwordtext, std::wregex(L"^\\s+$")))
+		if(std::regex_match(_regtext, std::wregex(L"^\\s+$")))
 		{
-			regwordtext.clear();
+			_regtext.clear();
 		}
 
-		if(regwordtext.empty())	//空のときはキャンセル扱い
+		if(_regtext.empty())	//空のときはキャンセル扱い
 		{
-			regwordtext.clear();
-			regwordtextpos = 0;
+			_regtext.clear();
+			_regtextpos = 0;
 
 			if(_mode == wm_candidate)
 			{
@@ -310,14 +310,14 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			std::wstring okurikey;
 
 			//候補と注釈を、行頭以外の最後のセミコロンで分割
-			if(std::regex_search(regwordtext, result, std::wregex(L".+;")))
+			if(std::regex_search(_regtext, result, std::wregex(L".+;")))
 			{
 				candidate = result.str().substr(0, result.str().size() - 1);
 				annotation = result.suffix();
 			}
 			else
 			{
-				candidate = regwordtext;
+				candidate = _regtext;
 				annotation.clear();
 			}
 
@@ -356,8 +356,8 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
 			_pTextService->candorgcnt = 0;
 
-			regwordtext.clear();
-			regwordtextpos = 0;
+			_regtext.clear();
+			_regtextpos = 0;
 
 			if(_pCandidateWindowParent == nullptr)
 			{
@@ -376,13 +376,13 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_RestoreStatusReg();
 		_ClearStatusReg();
 
-		ulword = FALSE;
+		_ulsingle = FALSE;
 
-		regwordfixed = FALSE;
-		regword = FALSE;
+		_regfixed = FALSE;
+		_regmode = FALSE;
 
-		regwordtext.clear();
-		regwordtextpos = 0;
+		_regtext.clear();
+		_regtextpos = 0;
 
 		if(_mode == wm_candidate)
 		{
@@ -426,89 +426,89 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		break;
 
 	case SKK_BACK:
-		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
+		if(_regcomp.empty() && _regtextpos > 0 && _regtext.size() > 0)
 		{
 			// surrogate pair
-			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
-				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
+			if(_regtext.size() >= 2 && _regtextpos >= 2 &&
+				IS_SURROGATE_PAIR(_regtext[_regtextpos - 2], _regtext[_regtextpos - 1]))
 			{
-				regwordtextpos -= 2;
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				_regtextpos -= 2;
+				_regtext.erase(_regtext.begin() + _regtextpos);
+				_regtext.erase(_regtext.begin() + _regtextpos);
 			}
 			else
 			{
-				--regwordtextpos;
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				--_regtextpos;
+				_regtext.erase(_regtext.begin() + _regtextpos);
 			}
 			_Update();
 		}
 		break;
 
 	case SKK_DELETE:
-		if(comptext.empty() && regwordtextpos < regwordtext.size())
+		if(_regcomp.empty() && _regtextpos < _regtext.size())
 		{
 			// surrogate pair
-			if(regwordtext.size() >= regwordtextpos + 2 &&
-				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
+			if(_regtext.size() >= _regtextpos + 2 &&
+				IS_SURROGATE_PAIR(_regtext[_regtextpos + 0], _regtext[_regtextpos + 1]))
 			{
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				_regtext.erase(_regtext.begin() + _regtextpos);
+				_regtext.erase(_regtext.begin() + _regtextpos);
 			}
 			else
 			{
-				regwordtext.erase(regwordtext.begin() + regwordtextpos);
+				_regtext.erase(_regtext.begin() + _regtextpos);
 			}
 			_Update();
 		}
 		break;
 
 	case SKK_LEFT:
-		if(comptext.empty() && regwordtextpos > 0 && regwordtext.size() > 0)
+		if(_regcomp.empty() && _regtextpos > 0 && _regtext.size() > 0)
 		{
 			// surrogate pair
-			if(regwordtext.size() >= 2 && regwordtextpos >= 2 &&
-				IS_SURROGATE_PAIR(regwordtext[regwordtextpos - 2], regwordtext[regwordtextpos - 1]))
+			if(_regtext.size() >= 2 && _regtextpos >= 2 &&
+				IS_SURROGATE_PAIR(_regtext[_regtextpos - 2], _regtext[_regtextpos - 1]))
 			{
-				regwordtextpos -= 2;
+				_regtextpos -= 2;
 			}
 			else
 			{
-				--regwordtextpos;
+				--_regtextpos;
 			}
 			_Update();
 		}
 		break;
 
 	case SKK_UP:
-		if(comptext.empty())
+		if(_regcomp.empty())
 		{
-			regwordtextpos = 0;
+			_regtextpos = 0;
 			_Update();
 		}
 		break;
 
 	case SKK_RIGHT:
-		if(comptext.empty() && regwordtextpos < regwordtext.size())
+		if(_regcomp.empty() && _regtextpos < _regtext.size())
 		{
 			// surrogate pair
-			if(regwordtext.size() >= regwordtextpos + 2 &&
-				IS_SURROGATE_PAIR(regwordtext[regwordtextpos + 0], regwordtext[regwordtextpos + 1]))
+			if(_regtext.size() >= _regtextpos + 2 &&
+				IS_SURROGATE_PAIR(_regtext[_regtextpos + 0], _regtext[_regtextpos + 1]))
 			{
-				regwordtextpos += 2;
+				_regtextpos += 2;
 			}
 			else
 			{
-				++regwordtextpos;
+				++_regtextpos;
 			}
 			_Update();
 		}
 		break;
 
 	case SKK_DOWN:
-		if(comptext.empty())
+		if(_regcomp.empty())
 		{
-			regwordtextpos = regwordtext.size();
+			_regtextpos = _regtext.size();
 			_Update();
 		}
 		break;
@@ -526,8 +526,8 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 					{
 						std::wstring scb = std::regex_replace(std::wstring(pwCB),
 							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
-						regwordtext.insert(regwordtextpos, scb);
-						regwordtextpos += scb.size();
+						_regtext.insert(_regtextpos, scb);
+						_regtextpos += scb.size();
 						_Update();
 						_UpdateUIElement();
 						GlobalUnlock(hCB);

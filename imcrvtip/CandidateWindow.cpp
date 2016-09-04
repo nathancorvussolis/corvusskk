@@ -75,18 +75,18 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	{
 		if(_hwnd == nullptr)
 		{
-			ulword = TRUE;
+			_ulsingle = TRUE;
 		}
 	}
 
 	if(mode == wm_register)
 	{
 		//辞書登録開始
-		regword = TRUE;
-		regwordtext.clear();
-		regwordtextpos = 0;
-		comptext.clear();
-		regwordfixed = TRUE;
+		_regmode = TRUE;
+		_regtext.clear();
+		_regtextpos = 0;
+		_regcomp.clear();
+		_regfixed = TRUE;
 
 		_BackUpStatus();
 		_ClearStatus();
@@ -366,20 +366,20 @@ void CCandidateWindow::_SetText(const std::wstring &text, BOOL fixed, int mode)
 
 	if((mode == wm_candidate) || (mode == wm_register) || (mode == wm_none))
 	{
-		regwordfixed = fixed;
+		_regfixed = fixed;
 
 		if(fixed)
 		{
-			comptext.clear();
-			regwordtext.insert(regwordtextpos, text);
-			regwordtextpos += text.size();
+			_regcomp.clear();
+			_regtext.insert(_regtextpos, text);
+			_regtextpos += text.size();
 		}
 		else
 		{
-			comptext = text;
-			if(comptext.empty())
+			_regcomp = text;
+			if(_regcomp.empty())
 			{
-				regwordfixed = TRUE;
+				_regfixed = TRUE;
 			}
 		}
 	}
@@ -534,15 +534,15 @@ void CCandidateWindow::_NextPage()
 		{
 			if(_hwnd == nullptr)
 			{
-				ulword = TRUE;
+				_ulsingle = TRUE;
 			}
 
 			//辞書登録開始
-			regword = TRUE;
-			regwordtext.clear();
-			regwordtextpos = 0;
-			comptext.clear();
-			regwordfixed = TRUE;
+			_regmode = TRUE;
+			_regtext.clear();
+			_regtextpos = 0;
+			_regcomp.clear();
+			_regfixed = TRUE;
 
 			_BackUpStatus();
 			_ClearStatus();
@@ -582,7 +582,7 @@ void CCandidateWindow::_PrevPage()
 	{
 		if(_pCandidateList != nullptr)
 		{
-			if(!regword)
+			if(!_regmode)
 			{
 				if(_pTextService->cx_untilcandlist == 1)
 				{
@@ -725,7 +725,7 @@ void CCandidateWindow::_PrevComp()
 
 void CCandidateWindow::_Update()
 {
-	if(regword)
+	if(_regmode)
 	{
 		disptext = _MakeRegWordString();
 	}
@@ -734,7 +734,7 @@ void CCandidateWindow::_Update()
 		disptext = _MakeDelWordString();
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		_dwFlags = TF_CLUIE_COUNT | TF_CLUIE_SELECTION | TF_CLUIE_STRING |
 			TF_CLUIE_PAGEINDEX | TF_CLUIE_CURRENTPAGE;

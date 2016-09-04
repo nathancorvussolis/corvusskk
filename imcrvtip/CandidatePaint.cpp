@@ -79,7 +79,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd)
 		height = tm.tmHeight;
 	}
 
-	if(regword || (_mode == wm_delete))
+	if(_regmode || (_mode == wm_delete))
 	{
 		r.left += MERGIN_X;
 		r.top += MERGIN_Y;
@@ -254,11 +254,11 @@ std::wstring CCandidateWindow::_MakeRegWordString()
 
 	s.append((searchkey_bak.empty() ? searchkeyorg_bak : searchkey_bak) + L"：");
 
-	s.append(regwordtext.substr(0, regwordtextpos));
+	s.append(_regtext.substr(0, _regtextpos));
 
-	s.append(comptext + markCursor);
+	s.append(_regcomp + markCursor);
 
-	s.append(regwordtext.substr(regwordtextpos) + markNBSP);
+	s.append(_regtext.substr(_regtextpos) + markNBSP);
 
 	return s;
 }
@@ -292,7 +292,7 @@ void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 	std::wstring s;
 	D2D1_RECT_F rd2d;
 
-	if(regword)
+	if(_regmode)
 	{
 		s = _MakeRegWordString();
 	}
@@ -568,7 +568,7 @@ void CCandidateWindow::_CalcWindowRect()
 		r.right = 1;
 	}
 
-	if(regword || (_mode == wm_delete))
+	if(_regmode || (_mode == wm_delete))
 	{
 		if(_pDWFactory != nullptr)
 		{

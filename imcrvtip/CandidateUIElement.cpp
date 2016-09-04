@@ -52,21 +52,19 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_pDWTF = nullptr;
 
 	_mode = 0;
+	_ulsingle = FALSE;
+
+	_regmode = FALSE;
+	_regfixed = FALSE;
+	_regtext.clear();
+	_regtextpos = 0;
+	_regcomp.clear();
 
 	candidates.clear();
 	candidx = 0;
 	candorgcnt = 0;
 	searchkey.clear();
 	searchkeyorg.clear();
-
-	ulword = FALSE;
-
-	regword = FALSE;
-	regwordfixed = FALSE;
-
-	regwordtext.clear();
-	regwordtextpos = 0;
-	comptext.clear();
 
 	_ClearStatusReg();
 }
@@ -209,7 +207,7 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	}
 #endif
 
-	if(_pInputModeWindow != nullptr && regword)
+	if(_pInputModeWindow != nullptr && _regmode)
 	{
 #ifndef _DEBUG
 		if(_pCandidateWindow == nullptr)
@@ -282,7 +280,7 @@ STDAPI CCandidateWindow::GetCount(UINT *puCount)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		*puCount = 1;
 	}
@@ -306,7 +304,7 @@ STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		*puIndex = 0;
 	}
@@ -330,7 +328,7 @@ STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		*pstr = SysAllocString(disptext.c_str());
 	}
@@ -364,7 +362,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		if(uSize > 0)
 		{
@@ -412,7 +410,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		if(uPageCnt > 0)
 		{
@@ -507,7 +505,7 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		*puPage = 0;
 	}
@@ -554,7 +552,7 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 		return E_INVALIDARG;
 	}
 
-	if(ulword)
+	if(_ulsingle)
 	{
 		_Update();
 	}
