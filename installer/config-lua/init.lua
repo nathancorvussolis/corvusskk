@@ -867,8 +867,12 @@ function convert_s_to_table(s)
 	local c = ""
 	local b = ""
 	local r = ""
+	local dqrep = "\u{f022}"
 	local bsrep = "\u{f05c}"
+	local dbsrep = "\u{f15c}"
 
+	s = string.gsub(s, "\\\\", dbsrep)
+	s = string.gsub(s, "\\\"", dqrep)
 	s = string.gsub(s, "\\", bsrep)
 
 	for i = 1, string.len(s) do
@@ -911,6 +915,8 @@ function convert_s_to_table(s)
 	end
 
 	ret = string.gsub(ret, bsrep, "\\\\")
+	ret = string.gsub(ret, dqrep, "\\\"")
+	ret = string.gsub(ret, dbsrep, "\\\\\\\\")
 
 	return ret
 end
