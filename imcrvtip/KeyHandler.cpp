@@ -523,16 +523,17 @@ void CTextService::_ResetStatus()
 	purgedicmode = FALSE;
 	hintmode = FALSE;
 
+	roman.clear();
+	kana.clear();
+	okuriidx = 0;
+
 	searchkey.clear();
 	searchkeyorg.clear();
 
 	candidates.clear();
 	candidates.shrink_to_fit();
 	candidx = 0;
-
-	roman.clear();
-	kana.clear();
-	okuriidx = 0;
+	candorgcnt = 0;
 
 	cursoridx = 0;
 }
