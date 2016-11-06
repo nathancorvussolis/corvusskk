@@ -2,7 +2,7 @@
 #include "configxml.h"
 #include "imcrvmgr.h"
 
-#define MAX_COMPLEMENT_RESULT 1024
+#define MAX_COMPLEMENT_RESULT 256
 
 //ユーザー辞書
 SKKDIC userdic;
