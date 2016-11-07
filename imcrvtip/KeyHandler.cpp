@@ -522,10 +522,12 @@ void CTextService::_ResetStatus()
 	complement = FALSE;
 	purgedicmode = FALSE;
 	hintmode = FALSE;
+	reconversion = FALSE;
 
 	roman.clear();
 	kana.clear();
 	okuriidx = 0;
+	reconvsrc.clear();
 
 	searchkey.clear();
 	searchkeyorg.clear();

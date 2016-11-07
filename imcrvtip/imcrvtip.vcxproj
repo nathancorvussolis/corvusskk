@@ -209,6 +209,9 @@ ver &gt; nul</Command>
     <ClInclude Include="DisplayAttributeInfo.h" />
     <ClInclude Include="EditSession.h" />
     <ClInclude Include="EnumDisplayAttributeInfo.h" />
+    <ClInclude Include="FnCandidateList.h" />
+    <ClInclude Include="FnCandidateString.h" />
+    <ClInclude Include="FnEnumCandidates.h" />
     <ClInclude Include="imcrvtip.h" />
     <ClInclude Include="InputModeWindow.h" />
     <ClInclude Include="LanguageBar.h" />

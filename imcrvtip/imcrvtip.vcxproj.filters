@@ -33,6 +33,15 @@
     <ClInclude Include="EnumDisplayAttributeInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FnCandidateList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FnCandidateString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FnEnumCandidates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="imcrvtip.h">
       <Filter>Header Files</Filter>
     </ClInclude>

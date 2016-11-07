@@ -639,9 +639,16 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			{
 				_ConvRoman();
 
-				kana.clear();
-				okuriidx = 0;
-				cursoridx = 0;
+				if(reconversion)
+				{
+					kana = reconvsrc;
+				}
+				else
+				{
+					kana.clear();
+					okuriidx = 0;
+					cursoridx = 0;
+				}
 				_HandleCharReturn(ec, pContext);
 			}
 		}

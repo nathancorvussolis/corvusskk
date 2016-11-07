@@ -23,6 +23,7 @@ class CTextService :
 	public ITfFunctionProvider,
 	public ITfFnConfigure,
 	public ITfFnShowHelp,
+	public ITfFnReconversion,
 	public ITfFnGetPreferredTouchKeyboardLayout
 {
 public:
@@ -86,6 +87,11 @@ public:
 
 	// ITfFnShowHelp
 	STDMETHODIMP Show(HWND hwndParent);
+
+	// ITfFnReconversion
+	STDMETHODIMP QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *pfConvertable);
+	STDMETHODIMP GetReconversion(ITfRange *pRange, ITfCandidateList **ppCandList);
+	STDMETHODIMP Reconvert(ITfRange *pRange);
 
 	// ITfFnGetPreferredTouchKeyboardLayout
 	STDMETHODIMP GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId);
@@ -209,6 +215,10 @@ public:
 	void _StartInputModeWindow();
 	void _EndInputModeWindow();
 
+	// FunctionProvider
+	HRESULT _GetRangeText(ITfRange *pRange, std::wstring &text);
+	HRESULT _SetReconvertResult(const std::wstring &fnsearchkey, const CANDIDATES &fncandidates, UINT index);
+
 private:
 	LONG _cRef;
 
@@ -320,6 +330,7 @@ public:
 	BOOL complement;		//補完
 	BOOL purgedicmode;		//辞書削除モード
 	BOOL hintmode;			//ヒントモード
+	BOOL reconversion;		//再変換
 
 	//動作設定
 	WCHAR cx_fontname[LF_FACESIZE];	//候補一覧のフォント設定(フォント名)
@@ -359,6 +370,7 @@ public:
 	std::wstring roman;		//ローマ字
 	std::wstring kana;		//仮名
 	size_t okuriidx;		//送り仮名インデックス
+	std::wstring reconvsrc;	//再変換元
 
 	//検索用見出し語
 	std::wstring searchkey;		//数値変換で数値→#
