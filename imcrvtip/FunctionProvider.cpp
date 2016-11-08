@@ -1,6 +1,7 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
+#include "EditSession.h"
 #include "FnCandidateList.h"
 
 HRESULT CTextService::GetType(GUID *pguid)
@@ -334,9 +335,27 @@ HRESULT CTextService::_GetRangeText(ITfRange *pRange, std::wstring &text)
 	return hr;
 }
 
-HRESULT CTextService::_SetReconvertResult(const std::wstring &fnsearchkey, const CANDIDATES &fncandidates, UINT index)
+class CSetResultEditSession : public CEditSessionBase
 {
-	HRESULT hr = S_OK;
+public:
+	CSetResultEditSession(CTextService *pTextService, ITfContext *pContext) : CEditSessionBase(pTextService, pContext)
+	{
+	}
+
+	~CSetResultEditSession()
+	{
+	}
+
+	// ITfEditSession
+	STDMETHODIMP DoEditSession(TfEditCookie ec)
+	{
+		return _pTextService->_HandleCharReturn(ec, _pContext);
+	}
+};
+
+HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDATES &fncandidates, UINT index)
+{
+	HRESULT hr = E_FAIL;
 
 	if(index >= (ULONG)fncandidates.size())
 	{
@@ -368,7 +387,7 @@ HRESULT CTextService::_SetReconvertResult(const std::wstring &fnsearchkey, const
 			}
 			catch(...)
 			{
-				hr = E_FAIL;
+				hr = E_OUTOFMEMORY;
 			}
 
 			SafeRelease(&pContext);

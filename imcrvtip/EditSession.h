@@ -18,6 +18,7 @@ public:
 		_pTextService = pTextService;
 		_pTextService->AddRef();
 	}
+
 	virtual ~CEditSessionBase()
 	{
 		SafeRelease(&_pContext);
@@ -47,10 +48,12 @@ public:
 
 		return E_NOINTERFACE;
 	}
+
 	STDMETHODIMP_(ULONG) AddRef(void)
 	{
 		return ++_cRef;
 	}
+
 	STDMETHODIMP_(ULONG) Release(void)
 	{
 		if(--_cRef == 0)

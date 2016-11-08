@@ -12,7 +12,7 @@ public:
 		DllAddRef();
 
 		_cRef = 1;
-		_iIndex = 0;
+		_nIndex = 0;
 		_candidates = candidates;
 	}
 
@@ -21,6 +21,7 @@ public:
 		DllRelease();
 	}
 
+	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
 		if(ppvObj == nullptr)
@@ -60,6 +61,7 @@ public:
 		return _cRef;
 	}
 
+	// IEnumTfCandidates
 	STDMETHODIMP Clone(IEnumTfCandidates **ppEnum)
 	{
 		CFnEnumCandidates *pClone;
@@ -80,7 +82,7 @@ public:
 			return E_OUTOFMEMORY;
 		}
 
-		pClone->_iIndex = _iIndex;
+		pClone->_nIndex = _nIndex;
 
 		*ppEnum = pClone;
 
@@ -104,14 +106,14 @@ public:
 
 		while(cFetched < ulCount)
 		{
-			if(_iIndex >= (LONG)_candidates.size())
+			if(_nIndex >= (ULONG)_candidates.size())
 			{
 				break;
 			}
 
 			try
 			{
-				pCandidateString = new CFnCandidateString(_iIndex, _candidates[_iIndex].first.first);
+				pCandidateString = new CFnCandidateString(_nIndex, _candidates[_nIndex].first.first);
 			}
 			catch(...)
 			{
@@ -119,13 +121,12 @@ public:
 				{
 					delete *(ppCand + i);
 				}
-				cFetched = 0;
 				return E_OUTOFMEMORY;
 			}
 
 			*(ppCand + cFetched) = pCandidateString;
 			cFetched++;
-			_iIndex++;
+			_nIndex++;
 		}
 
 		if(pcFetched != nullptr)
@@ -138,26 +139,25 @@ public:
 
 	STDMETHODIMP Reset(void)
 	{
-		_iIndex = 0;
+		_nIndex = 0;
 		return S_OK;
 	}
 
 	STDMETHODIMP Skip(ULONG ulCount)
 	{
-		if((ulCount < (ULONG)_candidates.size()) &&
-			((_iIndex + ulCount) < (ULONG)_candidates.size()))
+		if((_nIndex + ulCount) >= (ULONG)_candidates.size())
 		{
-			_iIndex += ulCount;
-			return S_OK;
+			_nIndex = (ULONG)_candidates.size();
+			return S_FALSE;
 		}
 
-		_iIndex = (LONG)_candidates.size();
-		return S_FALSE;
+		_nIndex += ulCount;
+		return S_OK;
 	}
 
 private:
 	LONG _cRef;
-	LONG _iIndex;
+	ULONG _nIndex;
 	CANDIDATES _candidates;
 };
 

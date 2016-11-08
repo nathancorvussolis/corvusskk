@@ -10,7 +10,7 @@ public:
 		DllAddRef();
 
 		_cRef = 1;
-		_iIndex = index;
+		_nIndex = index;
 		_candidate = candidate;
 	}
 
@@ -19,6 +19,7 @@ public:
 		DllRelease();
 	}
 
+	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
 		if(ppvObj == nullptr)
@@ -58,6 +59,7 @@ public:
 		return _cRef;
 	}
 
+	// ITfCandidateString
 	STDMETHODIMP GetString(BSTR *pbstr)
 	{
 		BSTR bstr;
@@ -88,14 +90,14 @@ public:
 			return E_INVALIDARG;
 		}
 
-		*pnIndex = _iIndex;
+		*pnIndex = _nIndex;
 
 		return S_OK;
 	}
 
 private:
 	LONG _cRef;
-	LONG _iIndex;
+	ULONG _nIndex;
 	std::wstring _candidate;
 };
 

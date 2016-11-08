@@ -217,7 +217,7 @@ public:
 
 	// FunctionProvider
 	HRESULT _GetRangeText(ITfRange *pRange, std::wstring &text);
-	HRESULT _SetReconvertResult(const std::wstring &fnsearchkey, const CANDIDATES &fncandidates, UINT index);
+	HRESULT _SetResult(const std::wstring &fnsearchkey, const CANDIDATES &fncandidates, UINT index);
 
 private:
 	LONG _cRef;

@@ -10,8 +10,9 @@ public:
 		DllAddRef();
 
 		_cRef = 1;
-		_iIndex = 0;
+		_nIndex = 0;
 	}
+
 	~CEnumDisplayAttributeInfo()
 	{
 		DllRelease();
@@ -40,10 +41,12 @@ public:
 
 		return E_NOINTERFACE;
 	}
+
 	STDMETHODIMP_(ULONG) AddRef(void)
 	{
 		return ++_cRef;
 	}
+
 	STDMETHODIMP_(ULONG) Release(void)
 	{
 		if(--_cRef == 0)
@@ -76,12 +79,13 @@ public:
 			return E_OUTOFMEMORY;
 		}
 
-		pClone->_iIndex = _iIndex;
+		pClone->_nIndex = _nIndex;
 
 		*ppEnum = pClone;
 
 		return S_OK;
 	}
+
 	STDMETHODIMP Next(ULONG ulCount, ITfDisplayAttributeInfo **rgInfo, ULONG *pcFetched)
 	{
 		ULONG cFetched = 0;
@@ -99,7 +103,7 @@ public:
 
 		while(cFetched < ulCount)
 		{
-			if(_iIndex >= DISPLAYATTRIBUTE_INFO_NUM)
+			if(_nIndex >= DISPLAYATTRIBUTE_INFO_NUM)
 			{
 				break;
 			}
@@ -107,7 +111,7 @@ public:
 			try
 			{
 				pDisplayAttributeInfo = new CDisplayAttributeInfo(
-					c_gdDisplayAttributeInfo[_iIndex].guid, &CTextService::display_attribute_info[_iIndex]);
+					c_gdDisplayAttributeInfo[_nIndex].guid, &CTextService::display_attribute_info[_nIndex]);
 			}
 			catch(...)
 			{
@@ -115,13 +119,12 @@ public:
 				{
 					delete *(rgInfo + i);
 				}
-				cFetched = 0;
 				return E_OUTOFMEMORY;
 			}
 
 			*(rgInfo + cFetched) = pDisplayAttributeInfo;
 			cFetched++;
-			_iIndex++;
+			_nIndex++;
 		}
 
 		if(pcFetched != nullptr)
@@ -131,27 +134,28 @@ public:
 
 		return (cFetched == ulCount) ? S_OK : S_FALSE;
 	}
+
 	STDMETHODIMP Reset()
 	{
-		_iIndex = 0;
+		_nIndex = 0;
 		return S_OK;
 	}
+
 	STDMETHODIMP Skip(ULONG ulCount)
 	{
-		if((ulCount < DISPLAYATTRIBUTE_INFO_NUM) &&
-			((_iIndex + ulCount) < DISPLAYATTRIBUTE_INFO_NUM))
+		if((_nIndex + ulCount) >= DISPLAYATTRIBUTE_INFO_NUM)
 		{
-			_iIndex += ulCount;
-			return S_OK;
+			_nIndex = DISPLAYATTRIBUTE_INFO_NUM;
+			return S_FALSE;
 		}
 
-		_iIndex = DISPLAYATTRIBUTE_INFO_NUM;
-		return S_FALSE;
+		_nIndex += ulCount;
+		return S_OK;
 	}
 
 private:
-	LONG _iIndex;
 	LONG _cRef;
+	ULONG _nIndex;
 };
 
 #endif //ENUMDISPLAYATTRIBUTEINFO_H

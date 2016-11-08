@@ -3,27 +3,8 @@
 #define FNCANDIDATELIST_H
 
 #include "TextService.h"
-#include "EditSession.h"
 #include "FnCandidateString.h"
 #include "FnEnumCandidates.h"
-
-class CSetResultEditSession : public CEditSessionBase
-{
-public:
-	CSetResultEditSession(CTextService *pTextService, ITfContext *pContext) : CEditSessionBase(pTextService, pContext)
-	{
-	}
-
-	~CSetResultEditSession()
-	{
-	}
-
-	// ITfEditSession
-	STDMETHODIMP DoEditSession(TfEditCookie ec)
-	{
-		return _pTextService->_HandleCharReturn(ec, _pContext);
-	}
-};
 
 class CFnCandidateList : public ITfCandidateList
 {
@@ -48,6 +29,7 @@ public:
 		DllRelease();
 	}
 
+	// IUnknown
 	STDMETHODIMP QueryInterface(REFIID riid, void **ppvObj)
 	{
 		if(ppvObj == nullptr)
@@ -87,6 +69,7 @@ public:
 		return _cRef;
 	}
 
+	// ITfCandidateList
 	STDMETHODIMP EnumCandidates(IEnumTfCandidates **ppEnum)
 	{
 		CFnEnumCandidates *pCandidateEnum;
@@ -155,7 +138,14 @@ public:
 		HRESULT hr = S_OK;
 		if(imcr == CAND_FINALIZED)
 		{
-			hr = _pTextService->_SetReconvertResult(_searchkey, _candidates, nIndex);
+			try
+			{
+				hr = _pTextService->_SetResult(_searchkey, _candidates, nIndex);
+			}
+			catch(...)
+			{
+				hr = E_FAIL;
+			}
 		}
 
 		return hr;

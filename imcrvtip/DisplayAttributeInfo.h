@@ -14,6 +14,7 @@ public:
 		_pguid = &guid;
 		_pDisplayAttribute = pDisplayAttribute;
 	}
+
 	~CDisplayAttributeInfo()
 	{
 		DllRelease();
@@ -42,10 +43,12 @@ public:
 
 		return E_NOINTERFACE;
 	}
+
 	STDMETHODIMP_(ULONG) AddRef(void)
 	{
 		return ++_cRef;
 	}
+
 	STDMETHODIMP_(ULONG) Release(void)
 	{
 		if(--_cRef == 0)
@@ -74,6 +77,7 @@ public:
 
 		return S_OK;
 	}
+
 	STDMETHODIMP GetDescription(BSTR *pbstrDesc)
 	{
 		BSTR bstrDesc;
@@ -96,6 +100,7 @@ public:
 
 		return S_OK;
 	}
+
 	STDMETHODIMP GetAttributeInfo(TF_DISPLAYATTRIBUTE *pda)
 	{
 		if(pda == nullptr)
@@ -107,10 +112,12 @@ public:
 
 		return S_OK;
 	}
+
 	STDMETHODIMP SetAttributeInfo(const TF_DISPLAYATTRIBUTE *pda)
 	{
 		return S_OK;
 	}
+
 	STDMETHODIMP Reset()
 	{
 		return SetAttributeInfo(_pDisplayAttribute);
