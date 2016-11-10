@@ -4,7 +4,7 @@
 #include "EditSession.h"
 #include "FnCandidateList.h"
 
-HRESULT CTextService::GetType(GUID *pguid)
+STDAPI CTextService::GetType(GUID *pguid)
 {
 	if(pguid == nullptr)
 	{
@@ -16,7 +16,7 @@ HRESULT CTextService::GetType(GUID *pguid)
 	return S_OK;
 }
 
-HRESULT CTextService::GetDescription(BSTR *pbstrDesc)
+STDAPI CTextService::GetDescription(BSTR *pbstrDesc)
 {
 	BSTR bstrDesc;
 
@@ -39,7 +39,7 @@ HRESULT CTextService::GetDescription(BSTR *pbstrDesc)
 	return S_OK;
 }
 
-HRESULT CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
+STDAPI CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 {
 	if(ppunk == nullptr)
 	{
@@ -80,7 +80,7 @@ HRESULT CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 	return E_NOINTERFACE;
 }
 
-HRESULT CTextService::GetDisplayName(BSTR *pbstrName)
+STDAPI CTextService::GetDisplayName(BSTR *pbstrName)
 {
 	BSTR bstrName;
 
@@ -103,7 +103,7 @@ HRESULT CTextService::GetDisplayName(BSTR *pbstrName)
 	return S_OK;
 }
 
-HRESULT CTextService::Show(HWND hwndParent, LANGID langid, REFGUID rguidProfile)
+STDAPI CTextService::Show(HWND hwndParent, LANGID langid, REFGUID rguidProfile)
 {
 	if(!IsEqualGUID(rguidProfile, c_guidProfile))
 	{
@@ -115,14 +115,14 @@ HRESULT CTextService::Show(HWND hwndParent, LANGID langid, REFGUID rguidProfile)
 	return S_OK;
 }
 
-HRESULT CTextService::Show(HWND hwndParent)
+STDAPI CTextService::Show(HWND hwndParent)
 {
 	_StartConfigure();
 
 	return S_OK;
 }
 
-HRESULT CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *pfConvertable)
+STDAPI CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *pfConvertable)
 {
 	if(pRange == nullptr || pfConvertable == nullptr)
 	{
@@ -148,7 +148,7 @@ HRESULT CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *
 	return hr;
 }
 
-HRESULT CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCandList)
+STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCandList)
 {
 	if(pRange == nullptr || ppCandList == nullptr)
 	{
@@ -194,7 +194,7 @@ HRESULT CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCan
 	return hr;
 }
 
-HRESULT CTextService::Reconvert(ITfRange *pRange)
+STDAPI CTextService::Reconvert(ITfRange *pRange)
 {
 	if(pRange == nullptr)
 	{
@@ -241,7 +241,7 @@ HRESULT CTextService::Reconvert(ITfRange *pRange)
 	return hr;
 }
 
-HRESULT CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId)
+STDAPI CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId)
 {
 	if(pTKBLayoutType == nullptr || pwPreferredLayoutId == nullptr)
 	{
