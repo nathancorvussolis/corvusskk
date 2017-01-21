@@ -378,7 +378,7 @@ STDAPI CLangBarItemButton::UnadviseSink(DWORD dwCookie)
 	return S_OK;
 }
 
-STDAPI CLangBarItemButton::_Update()
+HRESULT CLangBarItemButton::_Update()
 {
 	VARIANT var;
 
@@ -427,7 +427,7 @@ STDAPI CLangBarItemButton::_Update()
 	return _pLangBarItemSink->OnUpdate(TF_LBI_ICON | TF_LBI_STATUS);
 }
 
-STDAPI CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
+HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
 {
 	size_t iconindex = 0;
 	WORD iconid = 0;

@@ -82,6 +82,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
 			ret = _ConvRomanKana(&rkc);
 
+			//sent from touch-optimized keyboard
 			if(ret == E_ABORT && wParam == VK_PACKET && ch != TKB_NEXT_PAGE && ch != TKB_PREV_PAGE)
 			{
 				rkc.roman[0] = rkc.hiragana[0] = rkc.katakana[0] = rkc.katakana_ank[0] = ch;

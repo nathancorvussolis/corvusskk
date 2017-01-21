@@ -32,8 +32,8 @@ public:
 	STDMETHODIMP AdviseSink(REFIID riid, IUnknown *punk, DWORD *pdwCookie);
 	STDMETHODIMP UnadviseSink(DWORD dwCookie);
 
-	STDMETHODIMP _Update();
-	STDMETHODIMP _GetIcon(HICON *phIcon, BOOL bNT62);
+	HRESULT _Update();
+	HRESULT _GetIcon(HICON *phIcon, BOOL bNT62);
 
 private:
 	LONG _cRef;
