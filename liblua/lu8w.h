@@ -30,6 +30,7 @@ char *u8tmpnam(char *str);
 int u8system(const char *command);
 int u8remove(const char *fname);
 int u8rename(const char *oldfname, const char *newfname);
+size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *ptm);
 
 #if !defined(lu8w_c)
 #if defined(LUA_U8W) || defined(LUA_CORE) || defined(LUA_LIB) || defined(lua_c) || defined(luac_c)
@@ -51,6 +52,8 @@ int u8rename(const char *oldfname, const char *newfname);
 #define system u8system
 #define remove u8remove
 #define rename u8rename
+#define strftime u8strftime
+
 #endif /* LUA_U8W or LUA_CORE or LUA_LIB or lua_c or luac_c */
 #endif /* not lu8w_c */
 
