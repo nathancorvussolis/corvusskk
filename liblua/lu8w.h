@@ -6,6 +6,7 @@
 #define U8W_H
 
 #include <stdio.h>
+#include <time.h>
 #include <windows.h>
 
 /* from utf-8 to utf-16 */
