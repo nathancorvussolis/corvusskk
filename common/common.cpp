@@ -188,7 +188,7 @@ USHORT ntohsc(USHORT n)
 	return htonsc(n);
 }
 
-BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
+BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 {
 	BOOL bRet = FALSE;
 	CONST DWORD dwProvType = PROV_RSA_AES;
@@ -196,6 +196,11 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
 	CONST DWORD dwDigestLen = 20;
 	CONST USHORT maskVersion = 0x5000;
 	GUID lguid = rguid;
+
+	if(name == nullptr || namelen == 0 || puuid == nullptr)
+	{
+		return FALSE;
+	}
 
 	PBYTE pMessage = (PBYTE)LocalAlloc(LPTR, sizeof(lguid) + namelen);
 	if(pMessage != nullptr)
@@ -224,7 +229,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID uuid)
 			dguid.Data4[0] &= 0x3F;
 			dguid.Data4[0] |= 0x80;
 
-			*uuid = dguid;
+			*puuid = dguid;
 
 			bRet = TRUE;
 		}
