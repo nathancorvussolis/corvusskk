@@ -670,7 +670,7 @@ pandoc 1.18
     > installer\_solution_build.cmd
     > installer\_build.cmd
 
-ビルド ＆ 署名
+ビルド ＆ 署名 ＆ 検証
 
     > installer\_solution_build.cmd
     > installer\_sign.cmd <URL 1> <pfx file 1> <password 1> <URL 2> <pfx file 2> <password 2>
@@ -679,6 +679,8 @@ pandoc 1.18
         * <pfx file 1> : pfx file for SHA-1 file digest algorithm
         * <URL 2> : SHA-256 RFC-3161 timestamp server
         * <pfx file 2> : pfx file for SHA-256 file digest algorithm
+
+    > installer\_verify.cmd
 
 クリア
 

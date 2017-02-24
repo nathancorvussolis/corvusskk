@@ -48,6 +48,7 @@
     <None Include="_solution_build_debug.cmd" />
     <None Include="_solution_clean.cmd" />
     <None Include="_solution_clean_debug.cmd" />
+    <None Include="_verify.cmd" />
     <None Include="_version.cmd" />
     <None Include="ucrt\Windows6.0-KB3118401-x64.msu" />
     <None Include="ucrt\Windows6.0-KB3118401-x86.msu" />

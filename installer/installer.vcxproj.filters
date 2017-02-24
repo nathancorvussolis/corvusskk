@@ -72,6 +72,9 @@
     <None Include="_solution_clean_debug.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_verify.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="_version.cmd">
       <Filter>Installer Files</Filter>
     </None>
