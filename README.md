@@ -689,7 +689,7 @@ pandoc 1.18
 
 ---
 
-Copyright (C) 2011-2016 SASAKI Nobuyuki
+Copyright (C) 2011-2017 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
