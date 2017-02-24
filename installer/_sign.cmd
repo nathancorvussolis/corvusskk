@@ -9,11 +9,11 @@ call _version.cmd
 
 
 
-rem > _sign.cmd <URL 1> <pfx file 1> <password 1> <URL 2> <pfx file 2> <password 2>
+rem > _sign.cmd <URL 1> <SHA-1 hash 1> <URL 2> <SHA-1 hash 2>
 rem     * <URL 1> : SHA-1 Authenticode timestamp server
-rem     * <pfx file 1> : pfx file for SHA-1 file digest algorithm
+rem     * <SHA-1 hash 1> : SHA-1 hash of certificate for SHA-1 file digest algorithm
 rem     * <URL 2> : SHA-256 RFC-3161 timestamp server
-rem     * <pfx file 2> : pfx file for SHA-256 file digest algorithm
+rem     * <SHA-1 hash 2> : SHA-1 hash of certificate for SHA-256 file digest algorithm
 
 
 
@@ -21,38 +21,32 @@ set DESCRIPTION="CorvusSKK"
 
 rem option "/fd sha1 /t <SHA-1 Authenticode timestamp server>"
 set TIMESTAMPSERVER1=%1
-set PFXFILE1=%2
-set PASSWORD1=%3
+set SHA1HASH1=%2
 
 rem option "/fd sha256 /tr <SHA-2 RFC-3161 timestamp server> /td sha256"
-set TIMESTAMPSERVER2=%4
-set PFXFILE2=%5
-set PASSWORD2=%6
+set TIMESTAMPSERVER2=%3
+set SHA1HASH2=%4
 
-set BINFILESX86="..\Win32\Release\*.dll" "..\Win32\Release\*.exe"
-set MSIFILESX86="%TARGETDIR%\x86.msi"
-set BINFILESX64="..\x64\Release\*.dll" "..\x64\Release\*.exe"
-set MSIFILESX64="%TARGETDIR%\x64.msi"
+set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
+set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
 
-set SIGNCOMMAND1=signtool sign /v /d %DESCRIPTION% /f %PFXFILE1% /p %PASSWORD1% /fd sha1 /t %TIMESTAMPSERVER1%
-set SIGNCOMMAND2=signtool sign /v /as /d %DESCRIPTION% /f %PFXFILE2% /p %PASSWORD2% /fd sha256 /tr %TIMESTAMPSERVER2% /td sha256
-set SIGNCOMMANDMSI=signtool sign /v /d %DESCRIPTION% /f %PFXFILE2% /p %PASSWORD2% /fd sha1 /t %TIMESTAMPSERVER1%
+set SIGNCOMMAND1=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH1% /fd sha1 /t %TIMESTAMPSERVER1%
+set SIGNCOMMAND2=signtool sign /v /as /d %DESCRIPTION% /sha1 %SHA1HASH2% /fd sha256 /tr %TIMESTAMPSERVER2% /td sha256
+set SIGNCOMMANDMSI=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH2% /fd sha1 /t %TIMESTAMPSERVER1%
 
 
 
 call _clean.cmd
 
-%SIGNCOMMAND1% %BINFILESX86%
-%SIGNCOMMAND2% %BINFILESX86%
-call _build_x86.cmd
-%SIGNCOMMANDMSI% %MSIFILESX86%
+%SIGNCOMMAND1% %BINFILES%
+%SIGNCOMMAND2% %BINFILES%
 
-%SIGNCOMMAND1% %BINFILESX64%
-%SIGNCOMMAND2% %BINFILESX64%
+call _build_x86.cmd
 call _build_x64.cmd
-%SIGNCOMMANDMSI% %MSIFILESX64%
+
+%SIGNCOMMANDMSI% %MSIFILES%
 
 call _build_bundle.cmd
 

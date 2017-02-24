@@ -673,12 +673,12 @@ pandoc 1.18
 ビルド ＆ 署名 ＆ 検証
 
     > installer\_solution_build.cmd
-    > installer\_sign.cmd <URL 1> <pfx file 1> <password 1> <URL 2> <pfx file 2> <password 2>
+    > installer\_sign.cmd <URL 1> <SHA-1 hash 1> <URL 2> <SHA-1 hash 2>
 
         * <URL 1> : SHA-1 Authenticode timestamp server
-        * <pfx file 1> : pfx file for SHA-1 file digest algorithm
+        * <SHA-1 hash 1> : SHA-1 hash of certificate for SHA-1 file digest algorithm
         * <URL 2> : SHA-256 RFC-3161 timestamp server
-        * <pfx file 2> : pfx file for SHA-256 file digest algorithm
+        * <SHA-1 hash 2> : SHA-1 hash of certificate for SHA-256 file digest algorithm
 
     > installer\_verify.cmd
 
