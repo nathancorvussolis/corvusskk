@@ -9,23 +9,23 @@ call _version.cmd
 
 
 
-rem > _sign.cmd <URL 1> <SHA-1 hash 1> <URL 2> <SHA-1 hash 2>
-rem     * <URL 1> : SHA-1 Authenticode timestamp server
+rem > _sign.cmd  <SHA-1 hash 1> <URL 1> <SHA-1 hash 2> <URL 2>
 rem     * <SHA-1 hash 1> : SHA-1 hash of certificate for SHA-1 file digest algorithm
-rem     * <URL 2> : SHA-256 RFC-3161 timestamp server
+rem     * <URL 1> : SHA-1 Authenticode timestamp server
 rem     * <SHA-1 hash 2> : SHA-1 hash of certificate for SHA-256 file digest algorithm
+rem     * <URL 2> : SHA-256 RFC-3161 timestamp server
 
 
 
 set DESCRIPTION="CorvusSKK"
 
 rem option "/fd sha1 /t <SHA-1 Authenticode timestamp server>"
-set TIMESTAMPSERVER1=%1
-set SHA1HASH1=%2
+set SHA1HASH1=%1
+set TIMESTAMPSERVER1=%2
 
 rem option "/fd sha256 /tr <SHA-2 RFC-3161 timestamp server> /td sha256"
-set TIMESTAMPSERVER2=%3
-set SHA1HASH2=%4
+set SHA1HASH2=%3
+set TIMESTAMPSERVER2=%4
 
 set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
 set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
