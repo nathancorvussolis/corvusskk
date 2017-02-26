@@ -787,6 +787,21 @@ local function skk_omikuji(t)
 	return skk_gadget_omikuji_table[math.random(1, #skk_gadget_omikuji_table)]
 end
 
+-- skk-strftime
+local function skk_strftime(t)
+	local format = t[1]
+	local unit = t[2]
+	local diff = t[3]
+
+	local skk_gadget_time_table = os.date('*t', skk_gadget_time)
+
+	if (unit and skk_gadget_time_table[unit] and diff) then
+		skk_gadget_time_table[unit] = skk_gadget_time_table[unit] + tonumber(diff)
+	end
+
+	return os.date(format, os.time(skk_gadget_time_table))
+end
+
 -- 関数テーブル
 local skk_gadget_func_table_org = {
 	{"concat", concat},
@@ -816,6 +831,7 @@ local skk_gadget_func_table_org = {
 	{"skk-relative-date", skk_relative_date},
 	{"skk-gadget-units-conversion", skk_gadget_units_conversion},
 	{"skk-omikuji", skk_omikuji},
+	{"skk-strftime", skk_strftime},
 }
 local skk_gadget_func_table = {}
 for i, v in ipairs(skk_gadget_func_table_org) do

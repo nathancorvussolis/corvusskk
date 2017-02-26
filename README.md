@@ -548,7 +548,8 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 | skk-default-current-date |  |
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
-| skk-omikuji | 独自実装。おみくじを引くことができます。<br>『(skk-omikuji)』 |
+| skk-omikuji | 独自実装。おみくじを引くことができます。『(skk-omikuji)』 |
+| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://msdn.microsoft.com/en-us/library/fe06s4ak.aspx<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |

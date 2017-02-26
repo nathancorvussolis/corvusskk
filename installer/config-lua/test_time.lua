@@ -65,6 +65,12 @@ el_test_time_table = {
 
 {"あした！",	"(skk-relative-date nil nil nil :dd 1)"},
 
+{"あした",		"(skk-strftime \"%Y年%#m月%#d日(%a)\" \"day\" 1)"},
+{"にちじ",		"(skk-strftime \"%x %X\")"},
+{"にちじ",		"(skk-strftime \"%#c\")"},
+{"こんげつ",		"(skk-strftime \"%B\")"},
+{"ようび",		"(skk-strftime \"%A\")"},
+
 }
 
 
