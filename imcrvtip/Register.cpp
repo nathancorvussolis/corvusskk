@@ -31,17 +31,17 @@ BOOL RegisterProfiles()
 	HRESULT hr = E_FAIL;
 	WCHAR fileName[MAX_PATH];
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-		hr = pInputProcessorProfilesMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID,
-			c_guidProfile, TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName),
-			TEXTSERVICE_ICON_INDEX, nullptr, 0, TRUE, 0);
+		hr = pInputProcessorProfileMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
+			TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName), TEXTSERVICE_ICON_INDEX,
+			nullptr, 0, TRUE, 0);
 
-		SafeRelease(&pInputProcessorProfilesMgr);
+		SafeRelease(&pInputProcessorProfileMgr);
 	}
 
 	return (hr == S_OK);
@@ -51,12 +51,12 @@ void UnregisterProfiles()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
 	{
-		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, 0);
+		hr = pInputProcessorProfileMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
 
-		SafeRelease(&pInputProcessorProfilesMgr);
+		SafeRelease(&pInputProcessorProfileMgr);
 	}
 }
 
