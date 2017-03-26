@@ -5,7 +5,7 @@ pushd "%~dp0"
 
 call "%VS140COMNTOOLS%VsDevCmd.bat"
 
-msbuild "..\imcrvskk.sln" /nologo /maxcpucount /verbosity:normal /target:Clean /property:Configuration=Debug,Platform=Win32
+msbuild "..\imcrvskk.sln" /nologo /maxcpucount /verbosity:normal /target:Clean /property:Configuration=Debug,Platform=x86
 msbuild "..\imcrvskk.sln" /nologo /maxcpucount /verbosity:normal /target:Clean /property:Configuration=Debug,Platform=x64
 
 popd
