@@ -1,9 +1,12 @@
 ﻿
 #include "imcrvtip.h"
+#include "input.h"
+
+#pragma comment(lib, "input.lib")
 
 #define CLSID_STRLEN	38
 #define TEXTSERVICE_MODEL	L"Apartment"
-#define TEXTSERVICE_LANGID	MAKELANGID(LANG_JAPANESE, SUBLANG_DEFAULT)
+#define TEXTSERVICE_LANGID	MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN)
 #define TEXTSERVICE_ICON_INDEX	0
 
 static const WCHAR c_szInfoKeyPrefix[] = L"CLSID\\";
@@ -195,50 +198,33 @@ void UnregisterServer()
 	SHDeleteKeyW(HKEY_CLASSES_ROOT, szInfoKey);
 }
 
-BOOL InstallLayoutOrTip(DWORD dwFlags)
+BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 {
-	typedef BOOL (WINAPI *PTF_INSTALLLAYOUTORTIP)(LPCWSTR psz, DWORD dwFlags);
+	WCHAR clsid[CLSID_STRLEN + 1];
+	WCHAR guidprofile[CLSID_STRLEN + 1];
+	WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
 
-	BOOL fRet = FALSE;
-	WCHAR fileName[MAX_PATH];
-
-	PWSTR systemfolder = nullptr;
-
-	ZeroMemory(fileName, sizeof(fileName));
-
-	if(SHGetKnownFolderPath(FOLDERID_System, KF_FLAG_DONT_VERIFY, nullptr, &systemfolder) == S_OK)
+	if(StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
 	{
-		_snwprintf_s(fileName, _TRUNCATE, L"%s\\%s", systemfolder, L"input.dll");
-
-		CoTaskMemFree(systemfolder);
+		return FALSE;
 	}
 
-	HMODULE hInputDLL = LoadLibraryW(fileName);
-
-	if(hInputDLL != nullptr)
+	if(StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile)) == 0)
 	{
-		PTF_INSTALLLAYOUTORTIP pfnInstallLayoutOrTip =
-			(PTF_INSTALLLAYOUTORTIP)GetProcAddress(hInputDLL, "InstallLayoutOrTip");
-
-		if(pfnInstallLayoutOrTip != nullptr)
-		{
-			WCHAR clsid[CLSID_STRLEN + 1];
-			WCHAR guidprofile[CLSID_STRLEN + 1];
-			WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
-
-			int clsidlen = StringFromGUID2(c_clsidTextService, clsid, _countof(clsid));
-			int guidprofilelen = StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile));
-
-			if(clsidlen != 0 && guidprofilelen != 0)
-			{
-				_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
-
-				fRet = (*pfnInstallLayoutOrTip)(profilelist, dwFlags);
-			}
-		}
-
-		FreeLibrary(hInputDLL);
+		return FALSE;
 	}
 
-	return fRet;
+	_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
+
+	return InstallLayoutOrTip(profilelist, dwFlags);
+}
+
+BOOL EnableTextService()
+{
+	return InstallLayoutOrTipProfileList(ILOT_INSTALL);
+}
+
+void DisableTextService()
+{
+	InstallLayoutOrTipProfileList(ILOT_UNINSTALL);
 }

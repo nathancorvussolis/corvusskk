@@ -213,6 +213,7 @@ ver &gt; nul</Command>
     <ClInclude Include="FnCandidateString.h" />
     <ClInclude Include="FnEnumCandidates.h" />
     <ClInclude Include="imcrvtip.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="InputModeWindow.h" />
     <ClInclude Include="LanguageBar.h" />
     <ClInclude Include="resource.h" />
@@ -233,6 +234,28 @@ ver &gt; nul</Command>
     <ClCompile Include="FnConfig.cpp" />
     <ClCompile Include="FunctionProvider.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <CustomBuild Include="input.cpp">
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+    </CustomBuild>
     <ClCompile Include="InputModeWindow.cpp" />
     <ClCompile Include="KeyEventSink.cpp" />
     <ClCompile Include="KeyHandler.cpp" />
@@ -257,6 +280,7 @@ ver &gt; nul</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="imcrvtip.def" />
+    <None Include="input.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvtip.rc" />

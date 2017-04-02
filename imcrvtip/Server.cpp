@@ -9,8 +9,8 @@ BOOL RegisterCategories();
 void UnregisterCategories();
 BOOL RegisterServer();
 void UnregisterServer();
-
-BOOL InstallLayoutOrTip(DWORD dwFlags);
+BOOL EnableTextService();
+void DisableTextService();
 
 static LONG g_cRefDll = 0;
 
@@ -143,7 +143,7 @@ STDAPI DllRegisterServer(void)
 
 	if(IsWindowsVersion62OrLater())
 	{
-		InstallLayoutOrTip(0);
+		EnableTextService();
 	}
 
 	return S_OK;
@@ -153,7 +153,7 @@ STDAPI DllUnregisterServer(void)
 {
 	if(IsWindowsVersion62OrLater())
 	{
-		InstallLayoutOrTip(ILOT_UNINSTALL);
+		DisableTextService();
 	}
 
 	UnregisterProfiles();

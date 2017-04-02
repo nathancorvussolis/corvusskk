@@ -1,0 +1,13 @@
+LIBRARY		input.dll
+
+EXPORTS
+	EnumEnabledLayoutOrTip
+	EnumLayoutOrTipForSetup
+	InstallLayoutOrTip
+	InstallLayoutOrTipUserReg
+	QueryLayoutOrTipString
+	QueryLayoutOrTipStringUserReg
+	SaveDefaultUserInputSettings
+	SaveSystemAcctInputSettings
+	SetDefaultLayoutOrTip
+	SetDefaultLayoutOrTipUserReg
