@@ -100,4 +100,9 @@ template<class T> void SafeRelease(T **ppT)
 	}
 }
 
+#ifdef DEFXP
+HRESULT XP_SHGetKnownFolderPath(__in REFKNOWNFOLDERID rfid, __in DWORD dwFlags, __in_opt HANDLE hToken, __deref_out PWSTR *ppszPath);
+#define SHGetKnownFolderPath XP_SHGetKnownFolderPath
+#endif
+
 #endif //COMMON_H

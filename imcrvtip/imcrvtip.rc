@@ -47,12 +47,14 @@ IDI_X_KATAKANA     ICON  "Icon\\xKatakana.ico"
 IDI_X_KATAKANA1    ICON  "Icon\\xKatakana1.ico"
 IDI_X_JLATIN       ICON  "Icon\\xJLatin.ico"
 IDI_X_ASCII        ICON  "Icon\\xAscii.ico"
+#ifndef DEFXP
 IDI_Z_DEFAULT      ICON  "Icon\\zDefault.ico"
 IDI_Z_HIRAGANA     ICON  "Icon\\zHiragana.ico"
 IDI_Z_KATAKANA     ICON  "Icon\\zKatakana.ico"
 IDI_Z_KATAKANA1    ICON  "Icon\\zKatakana1.ico"
 IDI_Z_JLATIN       ICON  "Icon\\zJLatin.ico"
 IDI_Z_ASCII        ICON  "Icon\\zAscii.ico"
+#endif
 
 IDR_SYSTRAY_MENU MENU
 {

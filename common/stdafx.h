@@ -15,5 +15,8 @@
 #include <Ole2.h>
 #include <msctf.h>
 #include <xmllite.h>
+#ifdef DEFXP
+#include <ShlObj.h>
+#endif
 #include <Shlwapi.h>
 #include <NTSecAPI.h>

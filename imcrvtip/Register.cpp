@@ -31,8 +31,9 @@ BOOL RegisterProfiles()
 	HRESULT hr = E_FAIL;
 	WCHAR fileName[MAX_PATH];
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+#ifndef DEFXP
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
@@ -43,6 +44,30 @@ BOOL RegisterProfiles()
 
 		SafeRelease(&pInputProcessorProfilesMgr);
 	}
+#else
+	ITfInputProcessorProfiles *pInputProcessorProfiles;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfiles)) == S_OK)
+	{
+		ZeroMemory(fileName, sizeof(fileName));
+		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
+
+		hr = pInputProcessorProfiles->Register(c_clsidTextService);
+
+		if(hr == S_OK)
+		{
+			hr = pInputProcessorProfiles->AddLanguageProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
+				TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName), TEXTSERVICE_ICON_INDEX);
+		}
+
+		if(hr == S_OK)
+		{
+			HKL hKL = LoadKeyboardLayoutW(L"E0010411", KLF_ACTIVATE);
+			hr = pInputProcessorProfiles->SubstituteKeyboardLayout(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, hKL);
+		}
+
+		SafeRelease(&pInputProcessorProfiles);
+	}
+#endif
 
 	return (hr == S_OK);
 }
@@ -51,13 +76,23 @@ void UnregisterProfiles()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfilesMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfilesMgr)) == S_OK)
+#ifndef DEFXP
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
 	{
 		hr = pInputProcessorProfilesMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, 0);
 
 		SafeRelease(&pInputProcessorProfilesMgr);
 	}
+#else
+	ITfInputProcessorProfiles *pInputProcessorProfiles;
+	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfiles)) == S_OK)
+	{
+		hr = pInputProcessorProfiles->Unregister(c_clsidTextService);
+
+		SafeRelease(&pInputProcessorProfiles);
+	}
+#endif
 }
 
 BOOL RegisterCategories()

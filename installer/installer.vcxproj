@@ -105,22 +105,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -153,7 +153,7 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeReBuildCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>DEFXP;WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -172,12 +172,12 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeReBuildCommandLine>
-    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>DEFXP;WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>DEFXP;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
@@ -185,7 +185,7 @@ copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\"
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakePreprocessorDefinitions>DEFXP;WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
     <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
     <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>

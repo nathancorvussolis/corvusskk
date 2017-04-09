@@ -34,11 +34,13 @@ static const WORD iconIDX[] =
 {
 	IDI_X_DEFAULT, IDI_X_HIRAGANA, IDI_X_KATAKANA, IDI_X_KATAKANA1, IDI_X_JLATIN, IDI_X_ASCII
 };
+#ifndef DEFXP
 // png icons
 static const WORD iconIDZ[] =
 {
 	IDI_Z_DEFAULT, IDI_Z_HIRAGANA, IDI_Z_KATAKANA, IDI_Z_KATAKANA1, IDI_Z_JLATIN, IDI_Z_ASCII
 };
+#endif
 
 CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 {
@@ -456,6 +458,7 @@ HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
 		}
 	}
 
+#ifndef DEFXP
 	if(bNT62)
 	{
 		if(iconindex < _countof(iconIDZ))
@@ -464,6 +467,7 @@ HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
 		}
 	}
 	else
+#endif
 	{
 		if(iconindex < _countof(iconIDX))
 		{

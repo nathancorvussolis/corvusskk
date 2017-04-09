@@ -11,12 +11,14 @@
 #define IDI_X_JLATIN     205
 #define IDI_X_ASCII      206
 
+#ifndef DEFXP
 #define IDI_Z_DEFAULT    301
 #define IDI_Z_HIRAGANA   302
 #define IDI_Z_KATAKANA   303
 #define IDI_Z_KATAKANA1  304
 #define IDI_Z_JLATIN     305
 #define IDI_Z_ASCII      306
+#endif
 
 #define IDR_SYSTRAY_MENU    1000
 #define IDM_NONE            1001

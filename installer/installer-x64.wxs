@@ -7,7 +7,7 @@
     Language="1033" UpgradeCode="DBDB315C-1F74-4051-8A67-705D0FD16497">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK (x64)" Comments="ver. $(var.version)"
-      Platform="x64" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
+      Platform="x64" InstallerVersion="301" InstallScope="perMachine" InstallPrivileges="elevated" />
 
     <Media Id="1" Cabinet="x64.cab" CompressionLevel="high" EmbedCab="yes" />
 
@@ -79,7 +79,7 @@
     </InstallExecuteSequence>
 
     <Condition Message="This application does not support this version of Windows.">
-      <![CDATA[VersionNT64 >= 600]]>
+      <![CDATA[(VersionNT = 502)]]>
     </Condition>
 
   </Product>

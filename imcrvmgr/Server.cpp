@@ -369,7 +369,11 @@ HANDLE SrvStart()
 		sa.bInheritHandle = FALSE;
 
 		hPipe = CreateNamedPipeW(mgrpipename, PIPE_ACCESS_DUPLEX | FILE_FLAG_FIRST_PIPE_INSTANCE,
+#ifndef DEFXP
 			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT | PIPE_REJECT_REMOTE_CLIENTS,
+#else
+			PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT,
+#endif
 			1, PIPEBUFSIZE * sizeof(WCHAR), PIPEBUFSIZE * sizeof(WCHAR), 0, &sa);
 
 		LocalFree(psd);

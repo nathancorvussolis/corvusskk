@@ -418,3 +418,54 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 
 	return bRet;
 }
+
+#ifdef DEFXP
+HRESULT XP_SHGetKnownFolderPath(__in REFKNOWNFOLDERID rfid, __in DWORD dwFlags, __in_opt HANDLE hToken, __deref_out PWSTR *ppszPath)
+{
+	if(ppszPath == nullptr) return E_INVALIDARG;
+
+	int csidl = 0;
+
+	if(IsEqualIID(rfid, FOLDERID_RoamingAppData))
+	{
+		csidl = CSIDL_APPDATA;
+	}
+	else if(IsEqualIID(rfid, FOLDERID_Windows))
+	{
+		csidl = CSIDL_WINDOWS;
+	}
+	else
+	{
+		return E_INVALIDARG;
+	}
+
+	if(dwFlags & KF_FLAG_DONT_VERIFY)
+	{
+		csidl |= CSIDL_FLAG_DONT_VERIFY;
+	}
+
+	int flags = SHGFP_TYPE_CURRENT;
+
+	if(dwFlags & KF_FLAG_DEFAULT_PATH)
+	{
+		flags = SHGFP_TYPE_DEFAULT;
+	}
+
+	WCHAR path[MAX_PATH];
+
+	if(SHGetFolderPathW(nullptr, csidl, nullptr, flags, path) == S_OK)
+	{
+		size_t pszlen = wcslen(path) + 1;
+		PWSTR psz = (PWSTR)CoTaskMemAlloc(pszlen * sizeof(WCHAR));
+		if(psz != nullptr)
+		{
+			wcsncpy_s(psz, pszlen, path, _TRUNCATE);
+			*ppszPath = psz;
+
+			return S_OK;
+		}
+	}
+
+	return E_FAIL;
+}
+#endif

@@ -266,6 +266,10 @@ void CCandidateWindow::_BeginUIElement()
 		_bShow = bShow;
 	}
 
+#ifdef DEFXP
+	_bShow = TRUE;
+#endif
+
 	if(_bShow)
 	{
 		if(_hwnd != nullptr)

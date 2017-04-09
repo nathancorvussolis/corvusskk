@@ -7,7 +7,7 @@
     Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
     <Package Id="*" Compressed="yes" Description="CorvusSKK (x86)" Comments="ver. $(var.version)"
-      Platform="x86" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
+      Platform="x86" InstallerVersion="301" InstallScope="perMachine" InstallPrivileges="elevated" />
 
     <Media Id="1" Cabinet="x86.cab" CompressionLevel="high" EmbedCab="yes" />
 
@@ -120,11 +120,11 @@
     <InstallExecuteSequence>
       <ScheduleReboot After="InstallFinalize" />
     </InstallExecuteSequence>
-
+    
     <Condition Message="This application does not support this version of Windows.">
-      <![CDATA[VersionNT >= 600]]>
+      <![CDATA[(VersionNT = 501) OR (VersionNT = 502)]]>
     </Condition>
-
+    
   </Product>
 
 </Wix>
