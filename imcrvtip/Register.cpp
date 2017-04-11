@@ -2,8 +2,6 @@
 #include "imcrvtip.h"
 #include "input.h"
 
-#pragma comment(lib, "input.lib")
-
 #define CLSID_STRLEN	38
 #define TEXTSERVICE_MODEL	L"Apartment"
 #define TEXTSERVICE_LANGID	MAKELANGID(LANG_JAPANESE, SUBLANG_JAPANESE_JAPAN)
@@ -216,7 +214,16 @@ BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 
 	_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
 
-	return InstallLayoutOrTip(profilelist, dwFlags);
+	//try delay load
+	__try
+	{
+		return InstallLayoutOrTip(profilelist, dwFlags);
+	}
+	__except(EXCEPTION_EXECUTE_HANDLER)
+	{
+	}
+
+	return FALSE;
 }
 
 BOOL EnableTextService()
