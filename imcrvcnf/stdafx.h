@@ -23,3 +23,4 @@
 #include <CommCtrl.h>
 #include <CommDlg.h>
 #include <WinInet.h>
+#include <ShellScalingApi.h>

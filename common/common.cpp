@@ -91,7 +91,7 @@ const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM] =
 	FALSE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE
 };
 
-BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, WORD wServicePackMajor)
+BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD dwBuildNumber)
 {
 	OSVERSIONINFOEXW osvi;
 	DWORDLONG mask = 0;
@@ -100,28 +100,13 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, WORD wS
 	osvi.dwOSVersionInfoSize = sizeof(osvi);
 	osvi.dwMajorVersion = dwMajorVersion;
 	osvi.dwMinorVersion = dwMinorVersion;
-	osvi.wServicePackMajor = wServicePackMajor;
+	osvi.dwBuildNumber = dwBuildNumber;
 
 	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
 	VER_SET_CONDITION(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(mask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(mask, VER_BUILDNUMBER, VER_GREATER_EQUAL);
 
-	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_SERVICEPACKMAJOR, mask);
-}
-
-BOOL IsWindowsVersion62OrLater()
-{
-	return IsWindowsVersionOrLater(6, 2, 0);
-}
-
-BOOL IsWindowsVersion63OrLater()
-{
-	return IsWindowsVersionOrLater(6, 3, 0);
-}
-
-BOOL IsWindowsVersion100OrLater()
-{
-	return IsWindowsVersionOrLater(10, 0, 0);
+	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER, mask);
 }
 
 BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, DWORD digestlen)

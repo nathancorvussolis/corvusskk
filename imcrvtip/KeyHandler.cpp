@@ -353,7 +353,10 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_GetActiveFlags();
 
-		_InitFont();
+		HDC hdc = GetDC(nullptr);
+		int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+		ReleaseDC(nullptr, hdc);
+		_InitFont(dpi);
 
 		//OnPreservedKey(), CLangBarItemButton::OnClick(),
 		//CLangBarItemButton::OnMenuSelect() 経由ならひらがなモード

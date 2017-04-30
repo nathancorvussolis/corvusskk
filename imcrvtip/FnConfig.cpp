@@ -934,12 +934,8 @@ void CTextService::_LoadJLatin()
 	}
 }
 
-void CTextService::_InitFont()
+void CTextService::_InitFont(int dpi)
 {
-	HDC hdc = GetDC(nullptr);
-	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
-	ReleaseDC(nullptr, hdc);
-
 	LOGFONTW logfont;
 	logfont.lfHeight = -MulDiv(cx_fontpoint, dpi, 72);
 	logfont.lfWidth = 0;

@@ -42,6 +42,15 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
+
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+
+		return TRUE;
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
 		switch(LOWORD(wParam))

@@ -285,7 +285,8 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	}
 
 	HDC hdc = GetDC(nullptr);
-	_size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
+	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	_size = MulDiv(16, _dpi, 96);
 	ReleaseDC(nullptr, hdc);
 
 	if(_bCandidateWindow)
@@ -403,7 +404,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 		Rectangle(hmemdc, 0, 0, r.right, r.bottom);
 
-		_pTextService->_GetIcon(&hIcon);
+		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, 96));
 		DrawIconEx(hmemdc, IM_MERGIN_X, IM_MERGIN_Y, hIcon, _size, _size, 0, nbrush, DI_NORMAL);
 
 		SelectObject(hmemdc, pen);
@@ -420,6 +421,13 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		DeleteObject(hmemdc);
 
 		EndPaint(hWnd, &ps);
+		break;
+	case WM_DPICHANGED:
+		_dpi = HIWORD(wParam);
+		_size = MulDiv(16, _dpi, 96);
+		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0,
+			_size + IM_MERGIN_X * 2, _size + IM_MERGIN_Y * 2, SWP_NOACTIVATE | SWP_NOMOVE);
+		_Redraw();
 		break;
 	case WM_MOUSEACTIVATE:
 		return MA_NOACTIVATE;

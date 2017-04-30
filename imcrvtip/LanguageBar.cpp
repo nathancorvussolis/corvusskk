@@ -310,7 +310,16 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 
 STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 {
-	_GetIcon(phIcon, IsWindowsVersion62OrLater());
+	if(phIcon == nullptr)
+	{
+		return E_INVALIDARG;
+	}
+
+	HDC hdc = GetDC(nullptr);
+	int size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
+	ReleaseDC(nullptr, hdc);
+
+	_GetIcon(phIcon, size, IsWindowsVersion62OrLater());
 
 	return (*phIcon != nullptr) ? S_OK : E_FAIL;
 }
@@ -427,7 +436,7 @@ HRESULT CLangBarItemButton::_Update()
 	return _pLangBarItemSink->OnUpdate(TF_LBI_ICON | TF_LBI_STATUS);
 }
 
-HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
+HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, INT size, BOOL bNT62)
 {
 	size_t iconindex = 0;
 	WORD iconid = 0;
@@ -470,12 +479,6 @@ HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, BOOL bNT62)
 			iconid = iconIDX[iconindex];
 		}
 	}
-
-	//DPIを考慮
-	HDC hdc = GetDC(nullptr);
-	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
-	ReleaseDC(nullptr, hdc);
-	int size = MulDiv(16, dpi, 96);
 
 	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
 
@@ -585,10 +588,10 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 	}
 }
 
-void CTextService::_GetIcon(HICON *phIcon)
+void CTextService::_GetIcon(HICON *phIcon, INT size)
 {
 	if(_pLangBarItem != nullptr)
 	{
-		_pLangBarItem->_GetIcon(phIcon, FALSE);
+		_pLangBarItem->_GetIcon(phIcon, size, FALSE);
 	}
 }

@@ -57,6 +57,17 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		hWndListView = GetDlgItem(hDlg, IDC_LIST_KANATBL);
+
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 3, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 4, GetScaledSizeX(hDlg, 30));
+
+		return TRUE;
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_KANATBL);
 		switch(LOWORD(wParam))

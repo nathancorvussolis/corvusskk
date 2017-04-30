@@ -78,12 +78,39 @@ BOOL SetFileDacl(LPCWSTR path)
 	return bRet;
 }
 
-int GetScaledSizeX(HWND hwnd, int size)
+int GetDpi(HWND hwnd)
 {
 	HDC hdc = GetDC(hwnd);
 	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
 	ReleaseDC(hwnd, hdc);
-	return MulDiv(size, dpi, 96);
+
+	if(IsWindowsVersion100RS2OrLater())
+	{
+		__try
+		{
+			HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+			UINT dpiX, dpiY;
+			if(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY) == S_OK)
+			{
+				dpi = (int)dpiX;
+			}
+		}
+		__except(EXCEPTION_EXECUTE_HANDLER)
+		{
+		}
+	}
+
+	return dpi;
+}
+
+int GetScaledSizeX(HWND hwnd, int size)
+{
+	return MulDiv(size, GetDpi(hwnd), 96);
+}
+
+int GetFontHeight(HWND hwnd, int size)
+{
+	return -MulDiv(size, GetDpi(hwnd), 72);
 }
 
 void DrawSelectColor(HWND hDlg, int id, COLORREF col)

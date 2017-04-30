@@ -151,7 +151,10 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	switch(uMsg)
 	{
 	case WM_PAINT:
-		_WindowProcPaint(hWnd);
+		_WindowProcPaint(hWnd, uMsg, wParam, lParam);
+		break;
+	case WM_DPICHANGED:
+		_WindowProcDpiChanged(hWnd, uMsg, wParam, lParam);
 		break;
 	case WM_ERASEBKGND:
 		break;

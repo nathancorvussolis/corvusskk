@@ -50,6 +50,7 @@ private:
 	BOOL _bCandidateWindow;
 
 	int _size;
+	int _dpi;
 };
 
 #endif //INPUTMODEWINDOW_H

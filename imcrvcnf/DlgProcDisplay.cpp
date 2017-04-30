@@ -32,7 +32,7 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
 	LOGFONTW lf;
-	HFONT hFont;
+	static HFONT hFont;
 	RECT rect;
 	POINT pt;
 	LONG w;
@@ -72,12 +72,10 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		}
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname);
-		hdc = GetDC(hDlg);
-		hFont = CreateFontW(-MulDiv(DISPLAY_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72), 0, 0, 0,
+		hFont = CreateFontW(GetFontHeight(hDlg, DISPLAY_FONTSIZE), 0, 0, 0,
 			fontweight, fontitalic, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, fontname);
 		SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
-		ReleaseDC(hDlg, hdc);
 
 		SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, fontpoint, FALSE);
 
@@ -153,6 +151,15 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		GetObjectW(hFont, sizeof(lf), &lf);
+		lf.lfHeight = GetFontHeight(hDlg, DISPLAY_FONTSIZE);
+		DeleteObject(hFont);
+		hFont = CreateFontIndirectW(&lf);
+		SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
+
+		return TRUE;
+
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
@@ -175,12 +182,8 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		switch(LOWORD(wParam))
 		{
 		case IDC_BUTTON_CHOOSEFONT:
-			hdc = GetDC(hDlg);
-
-			hFont = (HFONT)SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_GETFONT, 0, 0);
 			GetObjectW(hFont, sizeof(lf), &lf);
-			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), GetDeviceCaps(hdc, LOGPIXELSY), 72);
-			lf.lfCharSet = SHIFTJIS_CHARSET;
+			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), 96, 72);
 
 			ZeroMemory(&cf, sizeof(cf));
 			cf.lStructSize = sizeof(cf);
@@ -193,13 +196,13 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				SetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, lf.lfFaceName);
-				lf.lfHeight = -MulDiv(DISPLAY_FONTSIZE, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-				hFont = CreateFontIndirect(&lf);
-				SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
-				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / DISPLAY_FONTSIZE, FALSE);
-			}
+				SetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, cf.iPointSize / 10, FALSE);
 
-			ReleaseDC(hDlg, hdc);
+				lf.lfHeight = GetFontHeight(hDlg, DISPLAY_FONTSIZE);
+				DeleteObject(hFont);
+				hFont = CreateFontIndirectW(&lf);
+				SendMessageW(GetDlgItem(hDlg, IDC_EDIT_FONTNAME), WM_SETFONT, (WPARAM)hFont, 0);
+			}
 			return TRUE;
 
 		case IDC_EDIT_MAXWIDTH:
@@ -365,6 +368,11 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			break;
 		}
 		break;
+
+	case WM_DESTROY:
+		DeleteObject(hFont);
+		PostQuitMessage(0);
+		return TRUE;
 
 	default:
 		break;

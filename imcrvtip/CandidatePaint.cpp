@@ -13,7 +13,7 @@ const int colors_compback[DISPLAY_COLOR_NUM] =
 	CL_COLOR_SE, CL_COLOR_SC, CL_COLOR_AN, CL_COLOR_NO
 };
 
-void CCandidateWindow::_WindowProcPaint(HWND hWnd)
+void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
@@ -836,4 +836,43 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 	}
 
 	return hr;
+}
+
+void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	SafeRelease(&_pDWTF);
+	SafeRelease(&_pDWFactory);
+	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	{
+		SafeRelease(&_pD2DBrush[i]);
+	}
+	SafeRelease(&_pD2DDCRT);
+	SafeRelease(&_pD2DFactory);
+
+	_pTextService->_UninitFont();
+
+	_pTextService->_InitFont(HIWORD(wParam));
+
+	hFont = _pTextService->hFont;
+
+	if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != nullptr)
+	{
+		_drawtext_option = _pTextService->_drawtext_option;
+		_pD2DFactory = _pTextService->_pD2DFactory;
+		_pD2DFactory->AddRef();
+		_pD2DDCRT = _pTextService->_pD2DDCRT;
+		_pD2DDCRT->AddRef();
+		for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+		{
+			_pD2DBrush[i] = _pTextService->_pD2DBrush[i];
+			_pD2DBrush[i]->AddRef();
+		}
+		_pDWFactory = _pTextService->_pDWFactory;
+		_pDWFactory->AddRef();
+		_pDWTF = _pTextService->_pDWTF;
+		_pDWTF->AddRef();
+	}
+
+	_CalcWindowRect();
+	_Redraw();
 }

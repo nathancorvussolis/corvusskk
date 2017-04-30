@@ -73,9 +73,14 @@ extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvOkuri;
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvAnnot;
 extern const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM];
 
-BOOL IsWindowsVersion62OrLater();
-BOOL IsWindowsVersion63OrLater();
-BOOL IsWindowsVersion100OrLater();
+BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD dwBuildNumber);
+#define IsWindowsVersion62OrLater() IsWindowsVersionOrLater(6, 2, 0)
+#define IsWindowsVersion63OrLater() IsWindowsVersionOrLater(6, 3, 0)
+#define IsWindowsVersion100OrLater() IsWindowsVersionOrLater(10, 0, 0)
+#define IsWindowsVersion100TH1OrLater() IsWindowsVersionOrLater(10, 0, 10240)
+#define IsWindowsVersion100TH2OrLater() IsWindowsVersionOrLater(10, 0, 10586)
+#define IsWindowsVersion100RS1OrLater() IsWindowsVersionOrLater(10, 0, 14393)
+#define IsWindowsVersion100RS2OrLater() IsWindowsVersionOrLater(10, 0, 15063)
 
 BOOL GetUserUUID(LPWSTR *ppszUUID);
 BOOL GetUserSid(LPWSTR *ppszUserSid);

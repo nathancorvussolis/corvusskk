@@ -66,6 +66,13 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
+
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+
+		return TRUE;
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 

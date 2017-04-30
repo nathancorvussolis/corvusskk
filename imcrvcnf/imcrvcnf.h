@@ -13,6 +13,7 @@ void CreateConfigPath();
 void CreateIpcName();
 BOOL SetFileDacl(LPCWSTR path);
 int GetScaledSizeX(HWND hwnd, int size);
+int GetFontHeight(HWND hwnd, int size);
 void DrawSelectColor(HWND hDlg, int id, COLORREF col);
 
 // PropertyConfDictionary
@@ -64,5 +65,14 @@ extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathskkdic[MAX_PATH];	//取込SKK辞書
+
+// Per-Monitor DPI Awareness V2
+#ifndef NTDDI_WIN10_RS2
+#if (WINVER < 0x0605)
+#define WM_DPICHANGED_BEFOREPARENT      0x02E2
+#define WM_DPICHANGED_AFTERPARENT       0x02E3
+#define WM_GETDPISCALEDSIZE             0x02E4
+#endif //(WINVER < 0x0605)
+#endif //NTDDI_WIN10_RS2
 
 #endif //IMCRVCNF_H

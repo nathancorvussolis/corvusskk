@@ -83,7 +83,7 @@ private:
 	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
 
 	//Paint
-	void _WindowProcPaint(HWND hWnd);
+	void _WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	std::wstring _MakeRegWordString();
 	std::wstring _MakeDelWordString();
 	void _PaintWord(HDC hdc, LPRECT lpr);
@@ -91,6 +91,7 @@ private:
 	void _PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx);
 	void _CalcWindowRect();
 	HRESULT _GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *metrics);
+	void _WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	DWORD _dwUIElementId;
 	BOOL _bShow;

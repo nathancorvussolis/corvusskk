@@ -38,6 +38,14 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
+
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+
+		return TRUE;
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
 		switch(LOWORD(wParam))

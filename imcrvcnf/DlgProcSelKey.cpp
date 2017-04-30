@@ -19,7 +19,6 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	switch(message)
 	{
 	case WM_INITDIALOG:
-
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
@@ -68,6 +67,15 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			item.iSubItem = 2;
 			ListView_SetItem(hWndListView, &item);
 		}
+		return TRUE;
+
+	case WM_DPICHANGED_AFTERPARENT:
+		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
+
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+
 		return TRUE;
 
 	case WM_COMMAND:

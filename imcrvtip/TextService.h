@@ -128,7 +128,7 @@ public:
 
 	// LanguageBar
 	void _UpdateLanguageBar(BOOL showinputmode = TRUE);
-	void _GetIcon(HICON *phIcon);
+	void _GetIcon(HICON *phIcon, INT size);
 
 	// DisplayAttribureProvider
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);
@@ -143,7 +143,7 @@ public:
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
 	void _GetActiveFlags();
-	void _InitFont();
+	void _InitFont(int dpi);
 	void _UninitFont();
 
 	// KeyHandlerChar

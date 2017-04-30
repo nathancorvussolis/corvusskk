@@ -59,6 +59,19 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 		return TRUE;
 
+	case WM_DPICHANGED_AFTERPARENT:
+		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
+		{
+			hWndListView = GetDlgItem(hDlg, preservedkeyTextInfo[i].id);
+
+			ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 90));
+			ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+			ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+			ListView_SetColumnWidth(hWndListView, 3, GetScaledSizeX(hDlg, 60));
+		}
+
+		return TRUE;
+
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg,
 			IsDlgButtonChecked(hDlg, IDC_RADIO_PRSRVKEY_ON) ? IDC_LIST_PRSRVKEY_ON : IDC_LIST_PRSRVKEY_OFF);
