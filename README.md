@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.5.1
+# CorvusSKK ver. 2.5.2
 
 Windowsで動作するSKK風のIMEです。
 
