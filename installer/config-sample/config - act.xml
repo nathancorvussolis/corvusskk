@@ -628,6 +628,22 @@
       <row ro="pn," hi="ぴょう" ka="ピョウ" an="ﾋﾟｮｳ" so="0" />
       <row ro="pny" hi="ぴゅい" ka="ピュイ" an="ﾋﾟｭｲ" so="0" />
 
+      <row ro="dba" hi="でゃ" ka="デャ" an="ﾃﾞｬ" so="0" />
+      <row ro="dbi" hi="でぃ" ka="ディ" an="ﾃﾞｨ" so="0" />
+      <row ro="dbu" hi="でゅ" ka="デュ" an="ﾃﾞｭ" so="0" />
+      <row ro="dbe" hi="でぇ" ka="デェ" an="ﾃﾞｪ" so="0" />
+      <row ro="dbo" hi="でょ" ka="デョ" an="ﾃﾞｮ" so="0" />
+      <row ro="db;" hi="でゃん" ka="デャン" an="ﾃﾞｬﾝ" so="0" />
+      <row ro="dbx" hi="でぃん" ka="ディン" an="ﾃﾞｨﾝ" so="0" />
+      <row ro="dbk" hi="でゅん" ka="デュン" an="ﾃﾞｭﾝ" so="0" />
+      <row ro="dbj" hi="でぇん" ka="デェン" an="ﾃﾞｪﾝ" so="0" />
+      <row ro="dbq" hi="でょん" ka="デョン" an="ﾃﾞｮﾝ" so="0" />
+      <row ro="db'" hi="でゃう" ka="デャウ" an="ﾃﾞｬｳ" so="0" />
+      <row ro="dbp" hi="でゅう" ka="デュウ" an="ﾃﾞｭｳ" so="0" />
+      <row ro="db." hi="でぇい" ka="デェイ" an="ﾃﾞｪｲ" so="0" />
+      <row ro="db," hi="でょう" ka="デョウ" an="ﾃﾞｮｳ" so="0" />
+      <row ro="dby" hi="でゅい" ka="デュイ" an="ﾃﾞｭｲ" so="0" />
+
 <!-- 拗音(2ストローク系)、撥音拡張、二重母音拡張 -->
 
       <row ro="fa" hi="ふぁ" ka="ファ" an="ﾌｧ" so="0" />
