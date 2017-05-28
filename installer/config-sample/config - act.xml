@@ -628,6 +628,24 @@
       <row ro="pn," hi="ぴょう" ka="ピョウ" an="ﾋﾟｮｳ" so="0" />
       <row ro="pny" hi="ぴゅい" ka="ピュイ" an="ﾋﾟｭｲ" so="0" />
 
+<!-- 拗音(外来語) -->
+
+      <row ro="twa" hi="てゃ" ka="テャ" an="ﾃｬ" so="0" />
+      <row ro="twi" hi="てぃ" ka="ティ" an="ﾃｨ" so="0" />
+      <row ro="twu" hi="てゅ" ka="テュ" an="ﾃｭ" so="0" />
+      <row ro="twe" hi="てぇ" ka="テェ" an="ﾃｪ" so="0" />
+      <row ro="two" hi="てょ" ka="テョ" an="ﾃｮ" so="0" />
+      <row ro="tw;" hi="てゃん" ka="テャン" an="ﾃｬﾝ" so="0" />
+      <row ro="twx" hi="てぃん" ka="ティン" an="ﾃｨﾝ" so="0" />
+      <row ro="twk" hi="てゅん" ka="テュン" an="ﾃｭﾝ" so="0" />
+      <row ro="twj" hi="てぇん" ka="テェン" an="ﾃｪﾝ" so="0" />
+      <row ro="twq" hi="てょん" ka="テョン" an="ﾃｮﾝ" so="0" />
+      <row ro="tw'" hi="てゃう" ka="テャウ" an="ﾃｬｳ" so="0" />
+      <row ro="twp" hi="てゅう" ka="テュウ" an="ﾃｭｳ" so="0" />
+      <row ro="tw." hi="てぇい" ka="テェイ" an="ﾃｪｲ" so="0" />
+      <row ro="tw," hi="てょう" ka="テョウ" an="ﾃｮｳ" so="0" />
+      <row ro="twy" hi="てゅい" ka="テュイ" an="ﾃｭｲ" so="0" />
+
       <row ro="dba" hi="でゃ" ka="デャ" an="ﾃﾞｬ" so="0" />
       <row ro="dbi" hi="でぃ" ka="ディ" an="ﾃﾞｨ" so="0" />
       <row ro="dbu" hi="でゅ" ka="デュ" an="ﾃﾞｭ" so="0" />
@@ -643,6 +661,22 @@
       <row ro="db." hi="でぇい" ka="デェイ" an="ﾃﾞｪｲ" so="0" />
       <row ro="db," hi="でょう" ka="デョウ" an="ﾃﾞｮｳ" so="0" />
       <row ro="dby" hi="でゅい" ka="デュイ" an="ﾃﾞｭｲ" so="0" />
+
+      <row ro="wma" hi="うぁ" ka="ウァ" an="ｳｧ" so="0" />
+      <row ro="wmi" hi="うぃ" ka="ウィ" an="ｳｨ" so="0" />
+      <row ro="wmu" hi="うぅ" ka="ウゥ" an="ｳｩ" so="0" />
+      <row ro="wme" hi="うぇ" ka="ウェ" an="ｳｪ" so="0" />
+      <row ro="wmo" hi="うぉ" ka="ウォ" an="ｳｫ" so="0" />
+      <row ro="wm;" hi="うぁん" ka="ウァン" an="ｳｧﾝ" so="0" />
+      <row ro="wmx" hi="うぃん" ka="ウィン" an="ｳｨﾝ" so="0" />
+      <row ro="wmk" hi="うぅん" ka="ウゥン" an="ｳｩﾝ" so="0" />
+      <row ro="wmj" hi="うぇん" ka="ウェン" an="ｳｪﾝ" so="0" />
+      <row ro="wmq" hi="うぉん" ka="ウォン" an="ｳｫﾝ" so="0" />
+      <row ro="wm'" hi="うぁう" ka="ウァウ" an="ｳｧｳ" so="0" />
+      <row ro="wmp" hi="うぅう" ka="ウゥウ" an="ｳｩｳ" so="0" />
+      <row ro="wm." hi="うぇい" ka="ウェイ" an="ｳｪｲ" so="0" />
+      <row ro="wm," hi="うぉう" ka="ウォウ" an="ｳｫｳ" so="0" />
+      <row ro="wmy" hi="うぅい" ka="ウゥイ" an="ｳｩｲ" so="0" />
 
 <!-- 拗音(2ストローク系)、撥音拡張、二重母音拡張 -->
 
