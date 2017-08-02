@@ -5,7 +5,7 @@
 #include "CandidateWindow.h"
 #include "InputModeWindow.h"
 
-#define NEXT_MERGIN_Y 4
+#define NEXT_MARGIN_Y 4
 
 BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWindowParent, DWORD dwUIElementId, UINT depth, int mode)
 {
@@ -226,7 +226,7 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 			rc.left = _rect.left;
 			rc.top += _rect.bottom;
 			rc.right = _rect.right;
-			rc.bottom += _rect.bottom + NEXT_MERGIN_Y;
+			rc.bottom += _rect.bottom + NEXT_MARGIN_Y;
 			_pCandidateWindow->_Move(&rc);
 #else
 			_pCandidateWindow->_Move(&_rect);
@@ -846,7 +846,7 @@ void CCandidateWindow::_CreateNext(int mode)
 		rc.left = _rect.left;
 		rc.top += _rect.bottom;
 		rc.right = _rect.right;
-		rc.bottom += _rect.bottom + NEXT_MERGIN_Y;
+		rc.bottom += _rect.bottom + NEXT_MARGIN_Y;
 		_pCandidateWindow->_Move(&rc);
 #else
 		_pCandidateWindow->_Move(&_rect);

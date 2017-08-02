@@ -4,8 +4,8 @@
 #include "CandidateList.h"
 #include "CandidateWindow.h"
 
-#define MERGIN_X 2
-#define MERGIN_Y 4
+#define MARGIN_X 2
+#define MARGIN_Y 4
 
 const int colors_compback[DISPLAY_COLOR_NUM] =
 {
@@ -81,17 +81,17 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 	if(_regmode || (_mode == wm_delete))
 	{
-		r.left += MERGIN_X;
-		r.top += MERGIN_Y;
-		r.right -= MERGIN_X;
-		r.bottom -= MERGIN_Y;
+		r.left += MARGIN_X;
+		r.top += MARGIN_Y;
+		r.right -= MARGIN_X;
+		r.bottom -= MARGIN_Y;
 
 		_PaintWord(hmemdc, &r);
 	}
 	else if(((_mode == wm_candidate) || (_mode == wm_complement)) && (_CandCount.size() != 0))
 	{
-		pt.x = MERGIN_X;
-		pt.y = MERGIN_Y;
+		pt.x = MARGIN_X;
+		pt.y = MARGIN_Y;
 
 		GetCurrentPage(&page);
 		count = 0;
@@ -130,19 +130,19 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			{
 				if(i != 0)
 				{
-					pt.x = MERGIN_X;
+					pt.x = MARGIN_X;
 					pt.y += height;
 				}
 			}
 			else
 			{
-				if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
+				if(pt.x == MARGIN_X && r.right > cx - MARGIN_X)
 				{
 					cx = r.right;
 				}
-				else if(pt.x + r.right > cx - MERGIN_X)
+				else if(pt.x + r.right > cx - MARGIN_X)
 				{
-					pt.x = MERGIN_X;
+					pt.x = MARGIN_X;
 					pt.y += height;
 				}
 			}
@@ -179,18 +179,18 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 		if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 		{
-			pt.x = MERGIN_X;
+			pt.x = MARGIN_X;
 			pt.y += height;
 		}
 		else
 		{
-			if(pt.x == MERGIN_X && r.right > cx - MERGIN_X)
+			if(pt.x == MARGIN_X && r.right > cx - MARGIN_X)
 			{
 				cx = r.right;
 			}
-			else if(pt.x + r.right > cx - MERGIN_X)
+			else if(pt.x + r.right > cx - MARGIN_X)
 			{
-				pt.x = MERGIN_X;
+				pt.x = MARGIN_X;
 				pt.y += height;
 			}
 		}
@@ -562,7 +562,7 @@ void CCandidateWindow::_CalcWindowRect()
 	}
 
 	ZeroMemory(&r, sizeof(r));
-	r.right = _pTextService->cx_maxwidth - MERGIN_X * 2;
+	r.right = _pTextService->cx_maxwidth - MARGIN_X * 2;
 	if(r.right <= 0)
 	{
 		r.right = 1;
@@ -583,8 +583,8 @@ void CCandidateWindow::_CalcWindowRect()
 				DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
 
-		cx = r.right + MERGIN_X * 2;
-		cy = height + MERGIN_Y * 2;
+		cx = r.right + MARGIN_X * 2;
+		cy = height + MARGIN_Y * 2;
 	}
 	else if(((_mode == wm_candidate) || (_mode == wm_complement)) && (_CandCount.size() != 0))
 	{
@@ -751,8 +751,8 @@ void CCandidateWindow::_CalcWindowRect()
 		}
 
 		//候補ウィンドウの幅、高さ
-		cx = xmax + MERGIN_X * 2;
-		cy = pt.y + height + MERGIN_Y * 2;
+		cx = xmax + MARGIN_X * 2;
+		cy = pt.y + height + MARGIN_Y * 2;
 	}
 
 	//表示位置を算出

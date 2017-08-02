@@ -5,6 +5,9 @@
 
 #define INPUTMODE_TIMER_ID		0x54ab516b
 
+#define IM_MARGIN_X 2
+#define IM_MARGIN_Y 2
+
 class CInputModeWindowGetTextExtEditSession : public CEditSessionBase
 {
 public:
@@ -80,19 +83,19 @@ public:
 
 		if(mi.rcWork.bottom < rc.top)
 		{
-			rc.bottom = mi.rcWork.bottom - height - IM_MERGIN_Y;
+			rc.bottom = mi.rcWork.bottom - height - IM_MARGIN_Y;
 		}
-		else if(mi.rcWork.bottom < (rc.bottom + height + IM_MERGIN_Y))
+		else if(mi.rcWork.bottom < (rc.bottom + height + IM_MARGIN_Y))
 		{
-			rc.bottom = rc.top - height - IM_MERGIN_Y * 2;
+			rc.bottom = rc.top - height - IM_MARGIN_Y * 2;
 		}
 
 		if(rc.bottom < mi.rcWork.top)
 		{
-			rc.bottom = mi.rcWork.top - IM_MERGIN_Y;
+			rc.bottom = mi.rcWork.top - IM_MARGIN_Y;
 		}
 
-		_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MERGIN_Y);
+		_pInputModeWindow->_Move(rc.left, rc.bottom + IM_MARGIN_Y);
 		_pInputModeWindow->_Show(TRUE);
 
 		SafeRelease(&tfSelection.range);
@@ -298,8 +301,8 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		ClientToScreen(_hwndParent, &pt);
 	}
 
-	SetWindowPos(_hwnd, HWND_TOPMOST, pt.x, pt.y + IM_MERGIN_Y,
-		_size + IM_MERGIN_X * 2, _size + IM_MERGIN_Y * 2, SWP_NOACTIVATE);
+	SetWindowPos(_hwnd, HWND_TOPMOST, pt.x, pt.y + IM_MARGIN_Y,
+		_size + IM_MARGIN_X * 2, _size + IM_MARGIN_Y * 2, SWP_NOACTIVATE);
 
 	return TRUE;
 }
@@ -405,7 +408,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		Rectangle(hmemdc, 0, 0, r.right, r.bottom);
 
 		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, 96));
-		DrawIconEx(hmemdc, IM_MERGIN_X, IM_MERGIN_Y, hIcon, _size, _size, 0, nbrush, DI_NORMAL);
+		DrawIconEx(hmemdc, IM_MARGIN_X, IM_MARGIN_Y, hIcon, _size, _size, 0, nbrush, DI_NORMAL);
 
 		SelectObject(hmemdc, pen);
 		SelectObject(hmemdc, brush);
@@ -426,7 +429,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		_dpi = HIWORD(wParam);
 		_size = MulDiv(16, _dpi, 96);
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0,
-			_size + IM_MERGIN_X * 2, _size + IM_MERGIN_Y * 2, SWP_NOACTIVATE | SWP_NOMOVE);
+			_size + IM_MARGIN_X * 2, _size + IM_MARGIN_Y * 2, SWP_NOACTIVATE | SWP_NOMOVE);
 		_Redraw();
 		break;
 	case WM_MOUSEACTIVATE:

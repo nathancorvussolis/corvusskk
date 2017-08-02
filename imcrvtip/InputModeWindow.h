@@ -5,9 +5,6 @@
 #include "TextService.h"
 #include "EditSession.h"
 
-#define IM_MERGIN_X 2
-#define IM_MERGIN_Y 2
-
 class CInputModeWindow : public ITfTextLayoutSink
 {
 public:
