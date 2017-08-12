@@ -248,8 +248,8 @@ void CCandidateWindow::_BeginUIElement()
 
 	if((_hwnd == nullptr) && (_depth == 0))
 	{
-		ITfUIElementMgr *pUIElementMgr;
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
+		ITfUIElementMgr *pUIElementMgr = nullptr;
+		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 			if(!bShow)
@@ -296,8 +296,8 @@ void CCandidateWindow::_EndUIElement()
 {
 	if((_hwnd == nullptr) && (_depth == 0))
 	{
-		ITfUIElementMgr *pUIElementMgr;
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
+		ITfUIElementMgr *pUIElementMgr = nullptr;
+		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->EndUIElement(_dwUIElementId);
 			SafeRelease(&pUIElementMgr);
@@ -327,8 +327,8 @@ BOOL CCandidateWindow::_CanShowUIElement()
 {
 	BOOL bShow = TRUE;
 
-	ITfUIElementMgr *pUIElementMgr;
-	if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
+	ITfUIElementMgr *pUIElementMgr = nullptr;
+	if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 	{
 		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 		pUIElementMgr->EndUIElement(_dwUIElementId);
@@ -516,8 +516,8 @@ void CCandidateWindow::_UpdateUIElement()
 {
 	if(!_bShow)
 	{
-		ITfUIElementMgr *pUIElementMgr;
-		if(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr)) == S_OK)
+		ITfUIElementMgr *pUIElementMgr = nullptr;
+		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->UpdateUIElement(_dwUIElementId);
 			SafeRelease(&pUIElementMgr);

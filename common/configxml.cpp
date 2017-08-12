@@ -186,23 +186,25 @@ LPCWSTR SectionKana = L"kana";
 
 LPCWSTR SectionJLatin = L"jlatin";
 
+
+
 HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream)
 {
 	HRESULT hr = S_FALSE;
 
 	if(ppReader != nullptr && ppFileStream != nullptr)
 	{
-		hr = CreateXmlReader(IID_PPV_ARGS(ppReader), nullptr);
+		hr = SHCreateStreamOnFileW(path, STGM_READ, ppFileStream);
 		EXIT_NOT_S_OK(hr);
 
-		hr = SHCreateStreamOnFileW(path, STGM_READ, ppFileStream);
+		hr = CreateXmlReader(IID_PPV_ARGS(ppReader), nullptr);
 		EXIT_NOT_S_OK(hr);
 
 		hr = (*ppReader)->SetInput(*ppFileStream);
 		EXIT_NOT_S_OK(hr);
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
@@ -320,7 +322,7 @@ HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 			case 1:
 				if(wcscmp(TagRoot, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			case 2:
@@ -332,19 +334,19 @@ HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 			case 3:
 				if(wcscmp(TagSection, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			case 4:
 				if(wcscmp(TagSection, pwszLocalName) == 0 || wcscmp(TagList, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			case 5:
 				if(wcscmp(TagList, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			default:
@@ -357,8 +359,8 @@ HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 		}
 	}
 
-NOT_S_OK:
-exit:
+L_NOT_S_OK:
+L_EXIT:
 	CloseStreamReader(pReader, pFileStream);
 	return hr;
 }
@@ -436,7 +438,7 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 					if(wcscmp(AttributeValue, pwszAttributeName) == 0)
 					{
 						strxmlval.assign(pwszAttributeValue);
-						goto exit;
+						goto L_EXIT;
 					}
 					break;
 				default:
@@ -454,7 +456,7 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 			case 1:
 				if(wcscmp(TagRoot, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			case 2:
@@ -468,7 +470,7 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 			case 5:
 				if(wcscmp(TagSection, pwszLocalName) == 0)
 				{
-					goto exit;
+					goto L_EXIT;
 				}
 				break;
 			default:
@@ -481,8 +483,8 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 		}
 	}
 
-NOT_S_OK:
-exit:
+L_NOT_S_OK:
+L_EXIT:
 	CloseStreamReader(pReader, pFileStream);
 	return hr;
 }
@@ -493,16 +495,17 @@ HRESULT CreateStreamWriter(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFile
 
 	if(ppWriter != nullptr && ppFileStream != nullptr)
 	{
-		hr = CreateXmlWriter(IID_PPV_ARGS(ppWriter), nullptr);
-		EXIT_NOT_S_OK(hr);
-
 		hr = SHCreateStreamOnFileW(path, STGM_WRITE | STGM_CREATE, ppFileStream);
 		EXIT_NOT_S_OK(hr);
 
+		hr = CreateXmlWriter(IID_PPV_ARGS(ppWriter), nullptr);
+		EXIT_NOT_S_OK(hr);
+
 		hr = (*ppWriter)->SetOutput(*ppFileStream);
+		EXIT_NOT_S_OK(hr);
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
@@ -528,7 +531,7 @@ HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **pFileStream, B
 		EXIT_NOT_S_OK(hr);
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
@@ -542,9 +545,10 @@ HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream)
 		EXIT_NOT_S_OK(hr);
 
 		hr = (*ppWriter)->Flush();
+		EXIT_NOT_S_OK(hr);
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	if(ppWriter != nullptr && ppFileStream != nullptr)
 	{
 		CloseStreamWriter(*ppWriter, *ppFileStream);
@@ -602,14 +606,18 @@ HRESULT WriterAttribute(IXmlWriter *pWriter, LPCWSTR name, LPCWSTR value)
 
 HRESULT WriterStartSection(IXmlWriter *pWriter, LPCWSTR name)
 {
-	HRESULT hr;
+	HRESULT hr = S_FALSE;
 
-	hr = WriterStartElement(pWriter, TagSection);
-	EXIT_NOT_S_OK(hr);
+	if(pWriter != nullptr)
+	{
+		hr = WriterStartElement(pWriter, TagSection);
+		EXIT_NOT_S_OK(hr);
 
-	hr = WriterAttribute(pWriter, AttributeName, name);
+		hr = WriterAttribute(pWriter, AttributeName, name);
+		EXIT_NOT_S_OK(hr);
+	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
@@ -634,9 +642,10 @@ HRESULT WriterKey(IXmlWriter *pWriter, LPCWSTR key, LPCWSTR value)
 		EXIT_NOT_S_OK(hr);
 
 		hr = WriterEndElement(pWriter);	//key
+		EXIT_NOT_S_OK(hr);
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
@@ -644,38 +653,26 @@ HRESULT WriterRow(IXmlWriter *pWriter, const APPDATAXMLROW &row)
 {
 	HRESULT hr = S_FALSE;
 
-	FORWARD_ITERATION_I(r_itr, row)
+	if(pWriter != nullptr)
 	{
-		hr = WriterAttribute(pWriter, r_itr->first.c_str(), r_itr->second.c_str());
-		EXIT_NOT_S_OK(hr);
+		FORWARD_ITERATION_I(r_itr, row)
+		{
+			hr = WriterAttribute(pWriter, r_itr->first.c_str(), r_itr->second.c_str());
+			EXIT_NOT_S_OK(hr);
+		}
 	}
 
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }
 
 HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list, BOOL newline)
 {
-	HRESULT hr;
+	HRESULT hr = S_FALSE;
 
-	hr = WriterStartElement(pWriter, TagList);
-	EXIT_NOT_S_OK(hr);
-
-	if(newline)
+	if(pWriter != nullptr)
 	{
-		hr = WriterNewLine(pWriter);
-		EXIT_NOT_S_OK(hr);
-	}
-
-	FORWARD_ITERATION_I(l_itr, list)
-	{
-		hr = WriterStartElement(pWriter, TagRow);
-		EXIT_NOT_S_OK(hr);
-
-		hr = WriterRow(pWriter, *l_itr);
-		EXIT_NOT_S_OK(hr);
-
-		hr = WriterEndElement(pWriter);	//row
+		hr = WriterStartElement(pWriter, TagList);
 		EXIT_NOT_S_OK(hr);
 
 		if(newline)
@@ -683,11 +680,29 @@ HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list, BOOL newline
 			hr = WriterNewLine(pWriter);
 			EXIT_NOT_S_OK(hr);
 		}
+
+		FORWARD_ITERATION_I(l_itr, list)
+		{
+			hr = WriterStartElement(pWriter, TagRow);
+			EXIT_NOT_S_OK(hr);
+
+			hr = WriterRow(pWriter, *l_itr);
+			EXIT_NOT_S_OK(hr);
+
+			hr = WriterEndElement(pWriter);	//row
+			EXIT_NOT_S_OK(hr);
+
+			if(newline)
+			{
+				hr = WriterNewLine(pWriter);
+				EXIT_NOT_S_OK(hr);
+			}
+		}
+
+		hr = WriterEndElement(pWriter);	//list
+		EXIT_NOT_S_OK(hr);
 	}
 
-	hr = WriterEndElement(pWriter);	//list
-	EXIT_NOT_S_OK(hr);
-
-NOT_S_OK:
+L_NOT_S_OK:
 	return hr;
 }

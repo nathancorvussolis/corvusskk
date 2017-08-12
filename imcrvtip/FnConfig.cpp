@@ -69,7 +69,7 @@ void CTextService::_CreateConfigPath()
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 
 	//%AppData%\\CorvusSKK\\config.xml
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
 
@@ -91,7 +91,7 @@ void CTextService::_CreateConfigPath()
 		}
 #else
 		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
-		if(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath) == S_OK)
+		if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 		{
 			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
 
@@ -326,7 +326,7 @@ void CTextService::_LoadPreservedKey()
 	//for compatibility
 	HRESULT hr = ReadList(pathconfigxml, SectionPreservedKey, list);
 
-	if(hr == S_OK && list.size() != 0)
+	if(SUCCEEDED(hr) && list.size() != 0)
 	{
 		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
 		{
@@ -659,7 +659,7 @@ void CTextService::_LoadConvPoint()
 
 	HRESULT hr = ReadList(pathconfigxml, SectionConvPoint, list);
 
-	if(hr == S_OK && list.size() != 0)
+	if(SUCCEEDED(hr) && list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
@@ -722,7 +722,7 @@ void CTextService::_LoadKana()
 
 	HRESULT hr = ReadList(pathconfigxml, SectionKana, list);
 
-	if(hr == S_OK && list.size() != 0)
+	if(SUCCEEDED(hr) && list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
@@ -776,7 +776,7 @@ void CTextService::_LoadKana()
 			i++;
 		}
 	}
-	else if(hr != S_OK)
+	else if(FAILED(hr))
 	{
 		ZeroMemory(&rkc, sizeof(rkc));
 
@@ -875,7 +875,7 @@ void CTextService::_LoadJLatin()
 
 	HRESULT hr = ReadList(pathconfigxml, SectionJLatin, list);
 
-	if(hr == S_OK && list.size() != 0)
+	if(SUCCEEDED(hr) && list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
@@ -920,7 +920,7 @@ void CTextService::_LoadJLatin()
 			i++;
 		}
 	}
-	else if(hr != S_OK)
+	else if(FAILED(hr))
 	{
 		ZeroMemory(&ajc, sizeof(ajc));
 
@@ -967,7 +967,7 @@ void CTextService::_InitFont(int dpi)
 
 			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
 
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				D2D1_RENDER_TARGET_PROPERTIES d2dprops = D2D1::RenderTargetProperties(
 					D2D1_RENDER_TARGET_TYPE_DEFAULT,
@@ -977,24 +977,24 @@ void CTextService::_InitFont(int dpi)
 				hr = _pD2DFactory->CreateDCRenderTarget(&d2dprops, &_pD2DDCRT);
 			}
 
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
 				{
 					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
-					if(hr != S_OK)
+					if(FAILED(hr))
 					{
 						break;
 					}
 				}
 			}
 
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
 			}
 
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				hr = _pDWFactory->CreateTextFormat(cx_fontname, nullptr,
 					static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
@@ -1002,12 +1002,12 @@ void CTextService::_InitFont(int dpi)
 					DWRITE_FONT_STRETCH_NORMAL, (FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"JPN", &_pDWTF);
 			}
 
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 			}
 
-			if(hr != S_OK)
+			if(FAILED(hr))
 			{
 				_UninitFont();
 

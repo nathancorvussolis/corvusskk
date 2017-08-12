@@ -6,11 +6,11 @@ HRESULT CTextService::_SetCompartment(REFGUID rguid, const VARIANT *pvar)
 {
 	HRESULT hr = E_FAIL;
 
-	ITfCompartmentMgr *pCompartmentMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+	ITfCompartmentMgr *pCompartmentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr))) && (pCompartmentMgr != nullptr))
 	{
-		ITfCompartment *pCompartment;
-		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
+		ITfCompartment *pCompartment = nullptr;
+		if(SUCCEEDED(pCompartmentMgr->GetCompartment(rguid, &pCompartment)) && (pCompartment != nullptr))
 		{
 			hr = pCompartment->SetValue(_ClientId, pvar);
 			SafeRelease(&pCompartment);
@@ -30,21 +30,23 @@ HRESULT CTextService::_GetCompartment(REFGUID rguid, VARIANT *pvar)
 		return hr;
 	}
 
-	ITfCompartmentMgr *pCompartmentMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+	ITfCompartmentMgr *pCompartmentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr))) && (pCompartmentMgr != nullptr))
 	{
-		ITfCompartment *pCompartment;
-		if(pCompartmentMgr->GetCompartment(rguid, &pCompartment) == S_OK)
+		ITfCompartment *pCompartment = nullptr;
+		if(SUCCEEDED(pCompartmentMgr->GetCompartment(rguid, &pCompartment)) && (pCompartment != nullptr))
 		{
 			VARIANT var;
-			if(pCompartment->GetValue(&var) == S_OK)
+			VariantInit(&var);
+			if(SUCCEEDED(pCompartment->GetValue(&var)))
 			{
-				if(var.vt == VT_I4)
+				if(V_VT(&var) == VT_I4)
 				{
-					*pvar = var;
+					VariantCopy(pvar, &var);
 					hr = S_OK;
 				}
 			}
+			VariantClear(&var);
 			SafeRelease(&pCompartment);
 		}
 		SafeRelease(&pCompartmentMgr);
@@ -57,39 +59,48 @@ BOOL CTextService::_IsKeyboardDisabled()
 {
 	BOOL fDisabled = FALSE;
 
-	ITfDocumentMgr *pDocumentMgr;
-	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+	ITfDocumentMgr *pDocumentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 	{
-		ITfContext *pContext;
-		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+		ITfContext *pContext = nullptr;
+		if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 		{
-			ITfCompartmentMgr *pCompartmentMgr;
-			if(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+			ITfCompartmentMgr *pCompartmentMgr = nullptr;
+			if(SUCCEEDED(pContext->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr))) && (pCompartmentMgr != nullptr))
 			{
-				ITfCompartment *pCompartment;
-				if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_DISABLED, &pCompartment) == S_OK)
 				{
-					VARIANT var;
-					if(pCompartment->GetValue(&var) == S_OK)
+					ITfCompartment *pCompartment = nullptr;
+					if(SUCCEEDED(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_DISABLED, &pCompartment)) && (pCompartment != nullptr))
 					{
-						if(var.vt == VT_I4)
+						VARIANT var;
+						VariantInit(&var);
+						if(SUCCEEDED(pCompartment->GetValue(&var)))
 						{
-							fDisabled = (BOOL)var.lVal;
+							if(V_VT(&var) == VT_I4)
+							{
+								fDisabled = (V_I4(&var) == 0 ? FALSE : TRUE);
+							}
 						}
+						VariantClear(&var);
+						SafeRelease(&pCompartment);
 					}
-					SafeRelease(&pCompartment);
 				}
-				if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_EMPTYCONTEXT, &pCompartment) == S_OK)
 				{
-					VARIANT var;
-					if(pCompartment->GetValue(&var) == S_OK)
+					ITfCompartment *pCompartment = nullptr;
+					if(SUCCEEDED(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_EMPTYCONTEXT, &pCompartment)) && (pCompartment != nullptr))
 					{
-						if(var.vt == VT_I4)
+						VARIANT var;
+						VariantInit(&var);
+						if(SUCCEEDED(pCompartment->GetValue(&var)))
 						{
-							fDisabled = (BOOL)var.lVal;
+							if(V_VT(&var) == VT_I4)
+							{
+								fDisabled = (V_I4(&var) == 0 ? FALSE : TRUE);
+							}
 						}
+						VariantClear(&var);
+						SafeRelease(&pCompartment);
 					}
-					SafeRelease(&pCompartment);
 				}
 				SafeRelease(&pCompartmentMgr);
 			}
@@ -113,20 +124,22 @@ BOOL CTextService::_IsKeyboardOpen()
 {
 	BOOL fOpen = FALSE;
 
-	ITfCompartmentMgr *pCompartmentMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+	ITfCompartmentMgr *pCompartmentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr))) && (pCompartmentMgr != nullptr))
 	{
-		ITfCompartment *pCompartment;
-		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
+		ITfCompartment *pCompartment = nullptr;
+		if(SUCCEEDED(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment)) && (pCompartment != nullptr))
 		{
 			VARIANT var;
-			if(S_OK == pCompartment->GetValue(&var))
+			VariantInit(&var);
+			if(SUCCEEDED(pCompartment->GetValue(&var)))
 			{
-				if(var.vt == VT_I4)
+				if(V_VT(&var) == VT_I4)
 				{
-					fOpen = (BOOL)var.lVal;
+					fOpen = (V_I4(&var) == 0 ? FALSE : TRUE);
 				}
 			}
+			VariantClear(&var);
 			SafeRelease(&pCompartment);
 		}
 		SafeRelease(&pCompartmentMgr);
@@ -139,16 +152,18 @@ HRESULT CTextService::_SetKeyboardOpen(BOOL fOpen)
 {
 	HRESULT hr = E_FAIL;
 
-	ITfCompartmentMgr *pCompartmentMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr)) == S_OK)
+	ITfCompartmentMgr *pCompartmentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pCompartmentMgr))) && (pCompartmentMgr != nullptr))
 	{
-		ITfCompartment *pCompartment;
-		if(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment) == S_OK)
+		ITfCompartment *pCompartment = nullptr;
+		if(SUCCEEDED(pCompartmentMgr->GetCompartment(GUID_COMPARTMENT_KEYBOARD_OPENCLOSE, &pCompartment)) && (pCompartment != nullptr))
 		{
 			VARIANT var;
-			var.vt = VT_I4;
-			var.lVal = fOpen;
+			VariantInit(&var);
+			V_VT(&var) = VT_I4;
+			V_I4(&var) = fOpen;
 			hr = pCompartment->SetValue(_ClientId, &var);
+			VariantClear(&var);
 			SafeRelease(&pCompartment);
 		}
 		SafeRelease(&pCompartmentMgr);

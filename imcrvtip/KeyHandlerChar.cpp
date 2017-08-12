@@ -322,12 +322,15 @@ HRESULT CTextService::_HandleCharShift(TfEditCookie ec, ITfContext *pContext)
 
 		if(pContext != nullptr)
 		{
-			ITfRange *pRange;
-			if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+			if(_IsComposing())
 			{
-				pRange->Collapse(ec, TF_ANCHOR_END);
-				_pComposition->ShiftStart(ec, pRange);
-				SafeRelease(&pRange);
+				ITfRange *pRange = nullptr;
+				if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+				{
+					pRange->Collapse(ec, TF_ANCHOR_END);
+					_pComposition->ShiftStart(ec, pRange);
+					SafeRelease(&pRange);
+				}
 			}
 		}
 

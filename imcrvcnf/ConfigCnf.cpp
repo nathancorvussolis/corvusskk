@@ -20,7 +20,7 @@ void CreateConfigPath()
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 
-	if(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder) == S_OK)
+	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder)))
 	{
 		WCHAR appdir[MAX_PATH];
 
@@ -90,7 +90,7 @@ int GetDpi(HWND hwnd)
 		{
 			HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 			UINT dpiX, dpiY;
-			if(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY) == S_OK)
+			if(SUCCEEDED(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY)))
 			{
 				dpi = (int)dpiX;
 			}

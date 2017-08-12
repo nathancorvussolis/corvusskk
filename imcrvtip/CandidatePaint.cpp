@@ -48,7 +48,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		rd2d = D2D1::RectF(0.5F, 0.5F, ((FLOAT)cx) - 0.5F, ((FLOAT)cy) - 0.5F);
 		_pD2DDCRT->DrawRectangle(rd2d, _pD2DBrush[CL_COLOR_FR]);
 
-		if(_GetTextMetrics(L"\x20", &dwTM) == S_OK)
+		if(SUCCEEDED(_GetTextMetrics(L"\x20", &dwTM)))
 		{
 			height = (LONG)ceil(dwTM.height);
 		}
@@ -115,7 +115,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 			if(_pDWFactory != nullptr)
 			{
-				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
+				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 				}
@@ -166,7 +166,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 		if(_pDWFactory != nullptr)
 		{
-			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
+			if(SUCCEEDED(_GetTextMetrics(strPage, &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -458,7 +458,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
 		{
-			if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
+			if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -547,7 +547,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(_pDWFactory != nullptr)
 	{
-		if(_GetTextMetrics(L"\x20", &dwTM) == S_OK)
+		if(SUCCEEDED(_GetTextMetrics(L"\x20", &dwTM)))
 		{
 			height = (LONG)ceil(dwTM.height);
 		}
@@ -572,7 +572,7 @@ void CCandidateWindow::_CalcWindowRect()
 	{
 		if(_pDWFactory != nullptr)
 		{
-			if(_GetTextMetrics(disptext.c_str(), &dwTM) == S_OK)
+			if(SUCCEEDED(_GetTextMetrics(disptext.c_str(), &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -615,7 +615,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != nullptr)
 			{
-				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
+				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 				}
@@ -641,7 +641,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		if(_pDWFactory != nullptr)
 		{
-			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
+			if(SUCCEEDED(_GetTextMetrics(strPage, &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -673,7 +673,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != nullptr)
 			{
-				if(_GetTextMetrics(s.c_str(), &dwTM) == S_OK)
+				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 				{
 					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 				}
@@ -718,7 +718,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		if(_pDWFactory != nullptr)
 		{
-			if(_GetTextMetrics(strPage, &dwTM) == S_OK)
+			if(SUCCEEDED(_GetTextMetrics(strPage, &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -827,8 +827,8 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 
 	if(metrics != nullptr && _pDWFactory != nullptr && _pDWTF != nullptr)
 	{
-		IDWriteTextLayout *pdwTL;
-		if(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL) == S_OK)
+		IDWriteTextLayout *pdwTL = nullptr;
+		if(SUCCEEDED(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL)) && (pdwTL != nullptr))
 		{
 			hr = pdwTL->GetMetrics(metrics);
 			SafeRelease(&pdwTL);

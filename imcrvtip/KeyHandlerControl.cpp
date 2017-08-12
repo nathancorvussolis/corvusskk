@@ -74,7 +74,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			for(size_t i = 0; i < roman.size(); i++)
 			{
 				ajc.ascii[0] = roman[i];
-				if(_ConvAsciiJLatin(&ajc) == S_OK)
+				if(SUCCEEDED(_ConvAsciiJLatin(&ajc)))
 				{
 					kana.append(ajc.jlatin);
 				}
@@ -658,7 +658,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 	case SKK_BACK:
 		if(showentry)
 		{
-			if(_HandleControl(ec, pContext, (cx_backincenter ? SKK_ENTER : SKK_PREV_CAND), ch) == S_OK)
+			if(SUCCEEDED(_HandleControl(ec, pContext, (cx_backincenter ? SKK_ENTER : SKK_PREV_CAND), ch)))
 			{
 				return S_OK;
 			}

@@ -323,10 +323,6 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 
 HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std::wstring &text, LONG cchCursor, LONG cchOkuri, BOOL fixed)
 {
-	TF_SELECTION tfSelection;
-	ULONG cFetched = 0;
-	LONG cch, cchRes;
-
 	if(pContext == nullptr && _pCandidateList != nullptr)	//辞書登録用
 	{
 		_pCandidateList->_SetText(text, fixed, wm_none);
@@ -341,7 +337,9 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		}
 	}
 
-	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
+	TF_SELECTION tfSelection;
+	ULONG cFetched = 0;
+	if(FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 	{
 		return S_FALSE;
 	}
@@ -352,11 +350,19 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		return S_FALSE;
 	}
 
-	ITfRange *pRange;
-	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+	if(!_IsComposing())
+	{
+		SafeRelease(&tfSelection.range);
+		return S_OK;
+	}
+
+	ITfRange *pRange = nullptr;
+	if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 	{
 		if(_IsRangeCovered(ec, tfSelection.range, pRange))
 		{
+			LONG cch, cchRes;
+
 			pRange->SetText(ec, 0, text.c_str(), (LONG)text.size());
 
 			// shift from end to start.
@@ -393,8 +399,8 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			//composition attribute
 			if(!fixed)
 			{
-				ITfRange *pRangeClone;
-				if(pRange->Clone(&pRangeClone) == S_OK)
+				ITfRange *pRangeClone = nullptr;
+				if(SUCCEEDED(pRange->Clone(&pRangeClone)) && (pRangeClone != nullptr))
 				{
 					pRangeClone->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
 					pRangeClone->ShiftStartToRange(ec, pRange, TF_ANCHOR_START);
@@ -473,52 +479,57 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			// for Excel's PHONETIC function
 			if(fixed && !text.empty())
 			{
-				ITfProperty *pProperty;
-				if(pContext->GetProperty(GUID_PROP_READING, &pProperty) == S_OK)
+				std::wstring phone(kana);
+
+				if(okuriidx == 0)
 				{
-					VARIANT var;
-					var.vt = VT_BSTR;
-					std::wstring phone(kana);
-					if(okuriidx == 0)
+					switch(inputmode)
 					{
-						switch(inputmode)
+					case im_hiragana:
+					case im_katakana:
+					case im_katakana_ank:
+						//接辞
+						if(!abbrevmode && kana.size() >= 2)
 						{
-						case im_hiragana:
-						case im_katakana:
-						case im_katakana_ank:
-							//接辞
-							if(!abbrevmode && kana.size() >= 2)
+							if(kana.front() == L'>')
 							{
-								if(kana.front() == L'>')
-								{
-									phone = kana.substr(1);
-								}
-								else if(kana.back() == L'>')
-								{
-									phone = kana.substr(0, kana.size() - 1);
-								}
+								phone = kana.substr(1);
 							}
-							break;
-						default:
-							break;
+							else if(kana.back() == L'>')
+							{
+								phone = kana.substr(0, kana.size() - 1);
+							}
 						}
+						break;
+					default:
+						break;
 					}
-					else
+				}
+				else
+				{
+					if(kana.size() > (okuriidx + 1))
 					{
-						if(kana.size() > (okuriidx + 1))
-						{
-							phone = kana.substr(0, okuriidx) + kana.substr(okuriidx + 1);
-						}
-						else if(kana.size() >= okuriidx)
-						{
-							phone = kana.substr(0, okuriidx);
-						}
+						phone = kana.substr(0, okuriidx) + kana.substr(okuriidx + 1);
 					}
-					if(!phone.empty())
+					else if(kana.size() >= okuriidx)
 					{
-						var.bstrVal = SysAllocString(phone.c_str());
+						phone = kana.substr(0, okuriidx);
+					}
+				}
+
+				if(!phone.empty())
+				{
+					ITfProperty *pProperty = nullptr;
+					if(SUCCEEDED(pContext->GetProperty(GUID_PROP_READING, &pProperty)) && (pProperty != nullptr))
+					{
+						VARIANT var;
+						VariantInit(&var);
+						V_VT(&var) = VT_BSTR;
+						V_BSTR(&var) = SysAllocString(phone.c_str());
+
 						pProperty->SetValue(ec, pRange, &var);
-						SysFreeString(var.bstrVal);
+
+						VariantClear(&var);
 					}
 					SafeRelease(&pProperty);
 				}
@@ -544,19 +555,22 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 			_pCandidateList = new CCandidateList(this);
 		}
 
-		ITfDocumentMgr *pDocumentMgr;
-		if((pContext->GetDocumentMgr(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+		ITfDocumentMgr *pDocumentMgr = nullptr;
+		if(SUCCEEDED(pContext->GetDocumentMgr(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
-			ITfRange *pRange;
-			if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+			if(_IsComposing())
 			{
-				hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, mode);
-				SafeRelease(&pRange);
+				ITfRange *pRange = nullptr;
+				if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+				{
+					hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, mode);
+					SafeRelease(&pRange);
+				}
 			}
 			SafeRelease(&pDocumentMgr);
 		}
 
-		if(hr != S_OK)
+		if(FAILED(hr))
 		{
 			_ResetStatus();
 			_CancelComposition(ec, pContext);
@@ -592,23 +606,28 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 
 	if(pContext != nullptr)
 	{
-		ITfRange *pRange;
-		if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+		if(_IsComposing())
 		{
-			ITfReadOnlyProperty *pReadOnlyProperty;
-			if(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty) == S_OK)
+			ITfRange *pRange = nullptr;
+			if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 			{
-				VARIANT var;
-				if(pReadOnlyProperty->GetValue(ec, pRange, &var) == S_OK)
+				ITfReadOnlyProperty *pReadOnlyProperty = nullptr;
+				if(SUCCEEDED(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty)) && (pReadOnlyProperty != nullptr))
 				{
-					if(var.vt == VT_BOOL)
+					VARIANT var;
+					VariantInit(&var);
+					if(SUCCEEDED(pReadOnlyProperty->GetValue(ec, pRange, &var)))
 					{
-						ret = var.boolVal;
+						if(V_VT(&var) == VT_BOOL)
+						{
+							ret = V_BOOL(&var);
+						}
 					}
+					VariantClear(&var);
+					SafeRelease(&pReadOnlyProperty);
 				}
-				SafeRelease(&pReadOnlyProperty);
+				SafeRelease(&pRange);
 			}
-			SafeRelease(&pRange);
 		}
 	}
 

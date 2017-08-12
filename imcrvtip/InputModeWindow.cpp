@@ -31,7 +31,7 @@ public:
 	{
 		TF_SELECTION tfSelection;
 		ULONG cFetched = 0;
-		if(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
+		if(FAILED(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 		{
 			return E_FAIL;
 		}
@@ -42,9 +42,9 @@ public:
 			return E_FAIL;
 		}
 
-		RECT rc;
+		RECT rc = {};
 		BOOL fClipped;
-		if(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped) != S_OK)
+		if(FAILED(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped)))
 		{
 			SafeRelease(&tfSelection.range);
 			return E_FAIL;
@@ -209,8 +209,8 @@ HRESULT CInputModeWindow::_AdviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource;
-	if(_pContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+	ITfSource *pSource = nullptr;
+	if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
 		SafeRelease(&pSource);
@@ -225,8 +225,8 @@ HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 
 	if(_pContext != nullptr)
 	{
-		ITfSource *pSource;
-		if(_pContext->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+		ITfSource *pSource = nullptr;
+		if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
 			SafeRelease(&pSource);
@@ -244,7 +244,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	{
 		_pContext = pContext;
 		_pContext->AddRef();
-		if(_AdviseTextLayoutSink() != S_OK)
+		if(FAILED(_AdviseTextLayoutSink()))
 		{
 			return FALSE;
 		}
@@ -266,8 +266,8 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	}
 	else
 	{
-		ITfContextView *pContextView;
-		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		ITfContextView *pContextView = nullptr;
+		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == nullptr)
 			{
@@ -513,8 +513,8 @@ public:
 	{
 		HRESULT hr;
 
-		ITfContextView *pContextView;
-		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		ITfContextView *pContextView = nullptr;
+		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			try
 			{
@@ -547,49 +547,46 @@ void CTextService::_StartInputModeWindow()
 	case im_katakana_ank:
 	case im_jlatin:
 	case im_ascii:
-		_EndInputModeWindow();
-
-		ITfDocumentMgr *pDocumentMgr;
-		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
 		{
-			ITfContext *pContext;
-			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+			_EndInputModeWindow();
+
+			ITfDocumentMgr *pDocumentMgr = nullptr;
+			if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 			{
-				try
+				ITfContext *pContext = nullptr;
+				if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 				{
-					_pInputModeWindow = new CInputModeWindow();
-
-					if(_pInputModeWindow->_Create(this, pContext, FALSE, nullptr))
+					try
 					{
-						HRESULT hr = E_FAIL;
-						HRESULT hrSession = E_FAIL;
+						_pInputModeWindow = new CInputModeWindow();
 
-						try
+						if(_pInputModeWindow->_Create(this, pContext, FALSE, nullptr))
 						{
+							HRESULT hr = E_FAIL;
+							HRESULT hrSession = E_FAIL;
+
 							CInputModeWindowEditSession *pEditSession = new CInputModeWindowEditSession(this, pContext, _pInputModeWindow);
 							// Asynchronous, read-only
 							hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
 							SafeRelease(&pEditSession);
 
 							// It is possible that asynchronous requests are treated as synchronous requests.
-							if(hr != S_OK || (hrSession != TF_S_ASYNC && hrSession != S_OK))
+							if(FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
 							{
 								_EndInputModeWindow();
 							}
 						}
-						catch(...)
-						{
-						}
 					}
-				}
-				catch(...)
-				{
+					catch(...)
+					{
+						_EndInputModeWindow();
+					}
+
+					SafeRelease(&pContext);
 				}
 
-				SafeRelease(&pContext);
+				SafeRelease(&pDocumentMgr);
 			}
-
-			SafeRelease(&pDocumentMgr);
 		}
 		break;
 	default:

@@ -64,16 +64,19 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 
 void CTextService::_ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext)
 {
-	ITfRange *pRange;
-	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+	if(_IsComposing())
 	{
-		ITfProperty *pProperty;
-		if(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty) == S_OK)
+		ITfRange *pRange = nullptr;
+		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
-			pProperty->Clear(ec, pRange);
-			SafeRelease(&pProperty);
+			ITfProperty *pProperty = nullptr;
+			if(SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
+			{
+				pProperty->Clear(ec, pRange);
+				SafeRelease(&pProperty);
+			}
+			SafeRelease(&pRange);
 		}
-		SafeRelease(&pRange);
 	}
 }
 
@@ -81,17 +84,21 @@ BOOL CTextService::_SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext 
 {
 	HRESULT hr = E_FAIL;
 
-	ITfProperty *pProperty;
-	if(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty) == S_OK)
+	ITfProperty *pProperty = nullptr;
+	if(SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
 	{
 		VARIANT var;
-		var.vt = VT_I4;
-		var.lVal = gaDisplayAttribute;
+		VariantInit(&var);
+		V_VT(&var) = VT_I4;
+		V_I4(&var) = gaDisplayAttribute;
+
 		hr = pProperty->SetValue(ec, pRange, &var);
+
+		VariantClear(&var);
 		SafeRelease(&pProperty);
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 BOOL CTextService::_InitDisplayAttributeGuidAtom()
@@ -110,8 +117,9 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 		{c_guidDisplayAttributeConvAnnot,	&_gaDisplayAttributeConvAnnot}
 	};
 
-	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	ITfCategoryMgr *pCategoryMgr = nullptr;
+	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
+	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
 		for(int i = 0; i < _countof(displayAttributeAtom); i++)
 		{
@@ -120,7 +128,7 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 		SafeRelease(&pCategoryMgr);
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 BOOL CTextService::display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM] =

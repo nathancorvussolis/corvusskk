@@ -11,8 +11,8 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 
 	if(pComposition != nullptr)
 	{
-		ITfRange *pRange;
-		if(pComposition->GetRange(&pRange) == S_OK)
+		ITfRange *pRange = nullptr;
+		if(SUCCEEDED(pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
 			pRange->SetText(ecWrite, 0, L"", 0);
 			SafeRelease(&pRange);
@@ -41,12 +41,12 @@ BOOL CTextService::_IsRangeCovered(TfEditCookie ec, ITfRange *pRangeTest, ITfRan
 {
 	LONG lResult;
 
-	if(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult) != S_OK || lResult > 0)
+	if(FAILED(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult)) || lResult > 0)
 	{
 		return FALSE;
 	}
 
-	if(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult) != S_OK || lResult < 0)
+	if(FAILED(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult)) || lResult < 0)
 	{
 		return FALSE;
 	}
@@ -66,17 +66,17 @@ public:
 	{
 		HRESULT hr = E_FAIL;
 
-		ITfInsertAtSelection *pInsertAtSelection;
-		if(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection)) == S_OK)
+		ITfInsertAtSelection *pInsertAtSelection = nullptr;
+		if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection))) && (pInsertAtSelection != nullptr))
 		{
-			ITfRange *pRange;
-			if(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, nullptr, 0, &pRange) == S_OK)
+			ITfRange *pRange = nullptr;
+			if(SUCCEEDED(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, nullptr, 0, &pRange)) && (pRange != nullptr))
 			{
-				ITfContextComposition *pContextComposition;
-				if(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition)) == S_OK)
+				ITfContextComposition *pContextComposition = nullptr;
+				if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition))) && (pContextComposition != nullptr))
 				{
-					ITfComposition *pComposition;
-					if((pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition) == S_OK) && (pComposition != nullptr))
+					ITfComposition *pComposition = nullptr;
+					if(SUCCEEDED(pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition)) && (pComposition != nullptr))
 					{
 						_pTextService->_SetComposition(pComposition);
 
@@ -111,7 +111,7 @@ BOOL CTextService::_StartComposition(ITfContext *pContext)
 	{
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 class CEndCompositionEditSession : public CEditSessionBase
@@ -178,8 +178,7 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 {
 	TF_SELECTION tfSelection;
 	ULONG cFetched = 0;
-
-	if(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched) != S_OK)
+	if(FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 	{
 		return;
 	}
@@ -190,19 +189,22 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 		return;
 	}
 
-	ITfRange *pRange;
-	if(_IsComposing() && _pComposition->GetRange(&pRange) == S_OK)
+	if(_IsComposing())
 	{
-		if(_IsRangeCovered(ec, tfSelection.range, pRange))
+		ITfRange *pRange = nullptr;
+		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
-			pRange->SetText(ec, 0, L"", 0);
+			if(_IsRangeCovered(ec, tfSelection.range, pRange))
+			{
+				pRange->SetText(ec, 0, L"", 0);
 
-			tfSelection.range->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
-			tfSelection.range->Collapse(ec, TF_ANCHOR_END);
+				tfSelection.range->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
+				tfSelection.range->Collapse(ec, TF_ANCHOR_END);
 
-			pContext->SetSelection(ec, 1, &tfSelection);
+				pContext->SetSelection(ec, 1, &tfSelection);
+			}
+			SafeRelease(&pRange);
 		}
-		SafeRelease(&pRange);
 	}
 
 	SafeRelease(&tfSelection.range);
@@ -221,11 +223,11 @@ void CTextService::_ClearComposition()
 
 	if(_IsComposing())
 	{
-		ITfDocumentMgr *pDocumentMgr;
-		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+		ITfDocumentMgr *pDocumentMgr = nullptr;
+		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
-			ITfContext *pContext;
-			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+			ITfContext *pContext = nullptr;
+			if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 			{
 				_ResetStatus();
 

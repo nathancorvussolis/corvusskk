@@ -29,10 +29,9 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		RECT rc;
+		RECT rc = {};
 		BOOL fClipped;
-
-		if(_pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
+		if(SUCCEEDED(_pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped)))
 		{
 			_pCandidateWindow->_Move(&rc, ec, _pContext);
 		}
@@ -240,12 +239,12 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		ITfContextView *pContextView;
-		if(_pContext->GetActiveView(&pContextView) == S_OK)
+		ITfContextView *pContextView = nullptr;
+		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
-			RECT rc;
+			RECT rc = {};
 			BOOL fClipped;
-			if(pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped) == S_OK)
+			if(SUCCEEDED(pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped)))
 			{
 				_pCandidateWindow->_Move(&rc, ec, _pContext);
 			}
@@ -269,17 +268,15 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 {
 	HRESULT hrRet = E_FAIL;
 	TfEditCookie ecTextStore;
-	ITfContextView *pContextView;
-	HWND hwnd = nullptr;
 
 	_EndCandidateList();
 
-	if(pDocumentMgr->CreateContext(tfClientId, 0, nullptr, &_pContextCandidateWindow, &ecTextStore) != S_OK)
+	if(FAILED(pDocumentMgr->CreateContext(tfClientId, 0, nullptr, &_pContextCandidateWindow, &ecTextStore)))
 	{
 		return E_FAIL;
 	}
 
-	if(pDocumentMgr->Push(_pContextCandidateWindow) != S_OK)
+	if(FAILED(pDocumentMgr->Push(_pContextCandidateWindow)))
 	{
 		goto exit;
 	}
@@ -295,12 +292,12 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 	_ec = ec;
 
-	if(_AdviseContextKeyEventSink() != S_OK)
+	if(FAILED(_AdviseContextKeyEventSink()))
 	{
 		goto exit;
 	}
 
-	if(_AdviseTextLayoutSink() != S_OK)
+	if(FAILED(_AdviseTextLayoutSink()))
 	{
 		goto exit;
 	}
@@ -309,7 +306,9 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	{
 		_pCandidateWindow = new CCandidateWindow(_pTextService, this);
 
-		if(pContext->GetActiveView(&pContextView) == S_OK)
+		HWND hwnd = nullptr;
+		ITfContextView *pContextView = nullptr;
+		if(SUCCEEDED(pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
 			{
@@ -344,7 +343,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		SafeRelease(&pEditSession);
 
 		// It is possible that asynchronous requests are treated as synchronous requests.
-		if(hr != S_OK || (hrSession != TF_S_ASYNC && hrSession != S_OK))
+		if(FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
 		{
 			goto exit;
 		}
@@ -357,7 +356,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	hrRet = S_OK;
 
 exit:
-	if(hrRet != S_OK)
+	if(FAILED(hrRet))
 	{
 		_EndCandidateList();
 	}
@@ -419,8 +418,8 @@ HRESULT CCandidateList::_AdviseContextKeyEventSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource;
-	if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+	ITfSource *pSource = nullptr;
+	if(SUCCEEDED(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfContextKeyEventSink *)this), &_dwCookieContextKeyEventSink);
 		SafeRelease(&pSource);
@@ -433,10 +432,10 @@ HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource;
 	if(_pContextCandidateWindow != nullptr)
 	{
-		if(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+		ITfSource *pSource = nullptr;
+		if(SUCCEEDED(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieContextKeyEventSink);
 			SafeRelease(&pSource);
@@ -450,8 +449,8 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource;
-	if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+	ITfSource *pSource = nullptr;
+	if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
 		SafeRelease(&pSource);
@@ -466,8 +465,8 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 
 	if(_pContextDocument != nullptr)
 	{
-		ITfSource *pSource;
-		if(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+		ITfSource *pSource = nullptr;
+		if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
 			SafeRelease(&pSource);

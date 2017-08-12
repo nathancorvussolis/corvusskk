@@ -140,7 +140,7 @@ STDAPI CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *p
 
 	HRESULT hr = pRange->Clone(ppNewRange);
 
-	if(hr == S_OK)
+	if(SUCCEEDED(hr))
 	{
 		*pfConvertable = TRUE;
 	}
@@ -160,7 +160,7 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if((_GetRangeText(pRange, text) == S_OK) && !text.empty())
+	if(SUCCEEDED((_GetRangeText(pRange, text))) && !text.empty())
 	{
 		std::wstring key;
 		_ConvKanaToKana(text, im_katakana, key, im_hiragana);
@@ -209,13 +209,13 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if((_GetRangeText(pRange, text) == S_OK) && !text.empty())
+	if(SUCCEEDED(_GetRangeText(pRange, text)) && !text.empty())
 	{
-		ITfDocumentMgr *pDocumentMgr;
-		if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+		ITfDocumentMgr *pDocumentMgr = nullptr;
+		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
-			ITfContext *pContext;
-			if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+			ITfContext *pContext = nullptr;
+			if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 			{
 				reconversion = TRUE;
 				reconvsrc = text;
@@ -283,7 +283,7 @@ public:
 			ZeroMemory(buf, sizeof(buf));
 			cch = _countof(buf) - 1;
 			hr = _pRange->GetText(ec, TF_TF_MOVESTART, buf, cch, &cch);
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				_Text.append(buf);
 			}
@@ -311,14 +311,14 @@ HRESULT CTextService::_GetRangeText(ITfRange *pRange, std::wstring &text)
 {
 	HRESULT hr = E_FAIL;
 
-	ITfContext *pContext;
-	if(pRange->GetContext(&pContext) == S_OK)
+	ITfContext *pContext = nullptr;
+	if(SUCCEEDED(pRange->GetContext(&pContext)) && (pContext != nullptr))
 	{
 		try
 		{
 			CGetRangeTextEditSession *pEditSession = new CGetRangeTextEditSession(this, pContext, pRange);
 			pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-			if(hr == S_OK)
+			if(SUCCEEDED(hr))
 			{
 				text = pEditSession->_GetText();
 			}
@@ -362,11 +362,11 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 		return E_FAIL;
 	}
 
-	ITfDocumentMgr *pDocumentMgr;
-	if((_pThreadMgr->GetFocus(&pDocumentMgr) == S_OK) && (pDocumentMgr != nullptr))
+	ITfDocumentMgr *pDocumentMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 	{
-		ITfContext *pContext;
-		if((pDocumentMgr->GetTop(&pContext) == S_OK) && (pContext != nullptr))
+		ITfContext *pContext = nullptr;
+		if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 		{
 			inputkey = TRUE;
 			searchkey = fnsearchkey;
@@ -402,20 +402,20 @@ BOOL CTextService::_InitFunctionProvider()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSourceSingle *pSourceSingle;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
+	ITfSourceSingle *pSourceSingle = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS((ITfFunctionProvider *)this));
 		SafeRelease(&pSourceSingle);
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 void CTextService::_UninitFunctionProvider()
 {
-	ITfSourceSingle *pSourceSingle;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle)) == S_OK)
+	ITfSourceSingle *pSourceSingle = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		pSourceSingle->UnadviseSingleSink(_ClientId, IID_ITfFunctionProvider);
 		SafeRelease(&pSourceSingle);

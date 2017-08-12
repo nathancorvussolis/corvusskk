@@ -35,10 +35,10 @@ BOOL CTextService::_InitThreadMgrEventSink()
 {
 	BOOL fRet = FALSE;
 
-	ITfSource *pSource;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+	ITfSource *pSource = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
-		if(pSource->AdviseSink(IID_IUNK_ARGS((ITfThreadMgrEventSink *)this), &_dwThreadMgrEventSinkCookie) == S_OK)
+		if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS((ITfThreadMgrEventSink *)this), &_dwThreadMgrEventSinkCookie)))
 		{
 			fRet = TRUE;
 		}
@@ -58,8 +58,8 @@ void CTextService::_UninitThreadMgrEventSink()
 
 	if(_dwThreadMgrEventSinkCookie != TF_INVALID_COOKIE)
 	{
-		ITfSource *pSource;
-		if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource)) == S_OK)
+		ITfSource *pSource = nullptr;
+		if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwThreadMgrEventSinkCookie);
 			SafeRelease(&pSource);

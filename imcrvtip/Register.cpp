@@ -32,8 +32,9 @@ BOOL RegisterProfiles()
 	HRESULT hr = E_FAIL;
 	WCHAR fileName[MAX_PATH];
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr = nullptr;
+	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
+	if(SUCCEEDED(hr) & (pInputProcessorProfileMgr != nullptr))
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
@@ -45,15 +46,16 @@ BOOL RegisterProfiles()
 		SafeRelease(&pInputProcessorProfileMgr);
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 void UnregisterProfiles()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr;
-	if(CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr)) == S_OK)
+	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr = nullptr;
+	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
+	if(SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
 		hr = pInputProcessorProfileMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
 
@@ -66,14 +68,15 @@ BOOL RegisterCategories()
 	BOOL fRet = TRUE;
 	HRESULT hr;
 
-	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	ITfCategoryMgr *pCategoryMgr = nullptr;
+	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
+	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{
 			hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 
-			if(hr != S_OK)
+			if(FAILED(hr))
 			{
 				fRet = FALSE;
 			}
@@ -86,7 +89,7 @@ BOOL RegisterCategories()
 			{
 				hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 
-				if(hr != S_OK)
+				if(FAILED(hr))
 				{
 					fRet = FALSE;
 				}
@@ -107,8 +110,9 @@ void UnregisterCategories()
 {
 	HRESULT hr;
 
-	ITfCategoryMgr *pCategoryMgr;
-	if(CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr)) == S_OK)
+	ITfCategoryMgr *pCategoryMgr = nullptr;
+	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
+	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
 		for(int i = 0; i < _countof(c_guidCategory); i++)
 		{

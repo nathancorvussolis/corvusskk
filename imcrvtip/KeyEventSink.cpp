@@ -231,21 +231,21 @@ BOOL CTextService::_InitKeyEventSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfKeystrokeMgr *pKeystrokeMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
+	ITfKeystrokeMgr *pKeystrokeMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
 		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, (ITfKeyEventSink *)this, TRUE);
 
 		SafeRelease(&pKeystrokeMgr);
 	}
 
-	return (hr == S_OK);
+	return SUCCEEDED(hr);
 }
 
 void CTextService::_UninitKeyEventSink()
 {
-	ITfKeystrokeMgr *pKeystrokeMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
+	ITfKeystrokeMgr *pKeystrokeMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
 		pKeystrokeMgr->UnadviseKeyEventSink(_ClientId);
 
@@ -263,8 +263,8 @@ BOOL CTextService::_InitPreservedKey(int onoff)
 		return FALSE;
 	}
 
-	ITfKeystrokeMgr *pKeystrokeMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
+	ITfKeystrokeMgr *pKeystrokeMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
 		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
@@ -276,7 +276,7 @@ BOOL CTextService::_InitPreservedKey(int onoff)
 			hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPreservedKeyOnOff[onoff],
 				&preservedkey[onoff][i], c_PreservedKeyDesc[onoff], (ULONG)wcslen(c_PreservedKeyDesc[onoff]));
 
-			if(hr != S_OK)
+			if(FAILED(hr))
 			{
 				fRet = FALSE;
 			}
@@ -301,8 +301,8 @@ void CTextService::_UninitPreservedKey(int onoff)
 		return;
 	}
 
-	ITfKeystrokeMgr *pKeystrokeMgr;
-	if(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr)) == S_OK)
+	ITfKeystrokeMgr *pKeystrokeMgr = nullptr;
+	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
 		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{

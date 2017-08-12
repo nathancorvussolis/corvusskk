@@ -138,14 +138,7 @@ public:
 		HRESULT hr = S_OK;
 		if(imcr == CAND_FINALIZED)
 		{
-			try
-			{
-				hr = _pTextService->_SetResult(_searchkey, _candidates, nIndex);
-			}
-			catch(...)
-			{
-				hr = E_FAIL;
-			}
+			hr = _pTextService->_SetResult(_searchkey, _candidates, nIndex);
 		}
 
 		return hr;
