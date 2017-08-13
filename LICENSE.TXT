@@ -141,7 +141,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 WiX Toolset
 
-Copyright (c) 2004, Outercurve Foundation.
+Copyright (c) .NET Foundation and contributors.
 This software is released under the Microsoft Reciprocal License (MS-RL)
 (the "License");
 you may not use the software except in compliance with the License.
