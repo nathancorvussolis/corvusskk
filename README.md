@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.5.2
+# CorvusSKK ver. 2.5.3
 
 Windowsで動作するSKK風のIMEです。
 
@@ -225,7 +225,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 表示
 
-![](installer/resource-md/04_display.png)
+![](installer/resource-md/04_display1.png)
 
 | 機能 | 備考 |
 |---|---|
@@ -237,16 +237,22 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 | 候補一覧が表示無しのとき候補数を表示する  | (<現在の候補の番号>/<候補数>) の形式を追加して表示します。 |
 | 候補一覧を縦に表示する                    | 候補一覧で候補を縦に並べて表示します。 |
 | 注釈を表示する                            | <候補><セミコロン><注釈> の形式で注釈を表示します。<br>「候補一覧」の指定で候補一覧に限定されます。 |
-| 入力モードを表示する                      | キャレットまたは辞書登録ウィンドウ付近に入力モードを表示します。<br>タイミングは、IME ON/OFF 変更、入力モード変更、IME ON/OFF キー押下、「\*無効\*」キー押下のときです。<br>表示する秒数として1〜60秒を設定してください。デフォルト値は3秒です。 |
 | ▽▼\*マークを表示する                    | 大切なものは目に見えないようです。 |
 | ローマ字を表示する                        | 仮名文字のローマ字プレフィックスを表示します。 |
+
+![](installer/resource-md/05_display2.png)
+
+| 機能 | 備考 |
+|---|---|
+| 入力モードを表示する                      | キャレットまたは辞書登録ウィンドウ付近に入力モードを表示します。<br>タイミングは、IME ON/OFF 変更、入力モード変更、IME ON/OFF キー押下、「\*無効\*」キー押下のときです。<br>表示する秒数として1〜60秒を設定してください。デフォルト値は3秒です。 |
+| 入力モードの色                            | 入力モード表示の色を指定します。 |
 
 
 ### 表示属性
 
-![](installer/resource-md/05_display_attribute_1.png)
+![](installer/resource-md/06_display_attribute_1.png)
 
-![](installer/resource-md/06_display_attribute_2.png)
+![](installer/resource-md/07_display_attribute_2.png)
 
 入力中文字列の表示属性を設定します。
 
@@ -257,7 +263,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 候補一覧選択キー
 
-![](installer/resource-md/07_select_key.png)
+![](installer/resource-md/08_select_key.png)
 
 候補一覧での確定は、デフォルトで 1〜7 と ASDFJKL と asdfjkl を使用します。
 
@@ -274,7 +280,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### キー設定（ON/OFF）
 
-![](installer/resource-md/08_on_off_key.png)
+![](installer/resource-md/09_on_off_key.png)
 
 IME ON/OFF のキーをそれぞれ指定します。
 
@@ -289,9 +295,9 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 ### キー設定（文字）、キー設定（仮想キー）
 
-![](installer/resource-md/09_key1_character.png)
+![](installer/resource-md/10_key1_character.png)
 
-![](installer/resource-md/10_key2_virtual_key.png)
+![](installer/resource-md/11_key2_virtual_key.png)
 
 各機能に対してキーを正規表現で設定してください。
 
@@ -396,7 +402,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 
 ### 変換位置指定
 
-![](installer/resource-md/11_conversion_point.png)
+![](installer/resource-md/12_conversion_point.png)
 
 変換位置での挙動を指定します。最大で256行です。
 
@@ -417,7 +423,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 
 ### ローマ字・仮名変換表
 
-![](installer/resource-md/12_kana.png)
+![](installer/resource-md/13_kana.png)
 
 ローマ字、平仮名、片仮名、所謂半角片仮名、促音/撥音(ん)、待機の組み合せを指定します。
 
@@ -466,7 +472,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 
 ### ASCII・全英変換表
 
-![](installer/resource-md/13_full_width_latin.png)
+![](installer/resource-md/14_full_width_latin.png)
 
 ASCII、全英文字の組み合せを指定します。最大で128行です。
 
@@ -659,7 +665,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 Visual Studio Community 2015 Update 3
 
-WiX Toolset v3.10.3
+WiX Toolset v3.11
 
 pandoc 1.19.2.1
 
