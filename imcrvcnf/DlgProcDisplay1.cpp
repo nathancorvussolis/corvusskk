@@ -9,26 +9,26 @@ static struct {
 	int id;
 	LPCWSTR value;
 	COLORREF color;
-} displayColor[DISPLAY_COLOR_NUM] =
+} displayListColor[DISPLAY_LIST_COLOR_NUM] =
 {
-	{IDC_COL_BG, ValueColorBG, RGB(0xFF,0xFF,0xFF)},
-	{IDC_COL_FR, ValueColorFR, RGB(0x00,0x00,0x00)},
-	{IDC_COL_SE, ValueColorSE, RGB(0x00,0x00,0xFF)},
-	{IDC_COL_CO, ValueColorCO, RGB(0x80,0x80,0x80)},
-	{IDC_COL_CA, ValueColorCA, RGB(0x00,0x00,0x00)},
-	{IDC_COL_SC, ValueColorSC, RGB(0x80,0x80,0x80)},
-	{IDC_COL_AN, ValueColorAN, RGB(0x80,0x80,0x80)},
-	{IDC_COL_NO, ValueColorNO, RGB(0x00,0x00,0x00)}
+	{IDC_COL_BG, ValueColorBG, RGB(0xFF, 0xFF, 0xFF)},
+	{IDC_COL_FR, ValueColorFR, RGB(0x00, 0x00, 0x00)},
+	{IDC_COL_SE, ValueColorSE, RGB(0x00, 0x00, 0xFF)},
+	{IDC_COL_CO, ValueColorCO, RGB(0x80, 0x80, 0x80)},
+	{IDC_COL_CA, ValueColorCA, RGB(0x00, 0x00, 0x00)},
+	{IDC_COL_SC, ValueColorSC, RGB(0x80, 0x80, 0x80)},
+	{IDC_COL_AN, ValueColorAN, RGB(0x80, 0x80, 0x80)},
+	{IDC_COL_NO, ValueColorNO, RGB(0x00, 0x00, 0x00)}
 };
 
-INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwnd;
 	HDC hdc;
 	PAINTSTRUCT ps;
 	WCHAR num[16];
 	WCHAR fontname[LF_FACESIZE];
-	INT fontpoint, fontweight, x, y, count;
+	INT fontpoint, fontweight, count;
 	BOOL fontitalic;
 	CHOOSEFONTW cf;
 	LOGFONTW lf;
@@ -93,12 +93,12 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			customColor[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
-		for(int i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayListColor); i++)
 		{
-			ReadValue(pathconfigxml, SectionDisplay, displayColor[i].value, strxmlval);
+			ReadValue(pathconfigxml, SectionDisplay, displayListColor[i].value, strxmlval);
 			if(!strxmlval.empty())
 			{
-				displayColor[i].color = wcstoul(strxmlval.c_str(), nullptr, 0);
+				displayListColor[i].color = wcstoul(strxmlval.c_str(), nullptr, 0);
 			}
 		}
 
@@ -248,12 +248,12 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 		break;
 
 	case WM_LBUTTONDOWN:
-		for(int i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayListColor); i++)
 		{
-			hwnd = GetDlgItem(hDlg, displayColor[i].id);
+			hwnd = GetDlgItem(hDlg, displayListColor[i].id);
 			GetWindowRect(hwnd, &rect);
-			pt.x = x = GET_X_LPARAM(lParam);
-			pt.y = y = GET_Y_LPARAM(lParam);
+			pt.x = GET_X_LPARAM(lParam);
+			pt.y = GET_Y_LPARAM(lParam);
 			ClientToScreen(hDlg, &pt);
 
 			if(rect.left <= pt.x && pt.x <= rect.right &&
@@ -262,16 +262,16 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 				cc.lStructSize = sizeof(cc);
 				cc.hwndOwner = hDlg;
 				cc.hInstance = nullptr;
-				cc.rgbResult = displayColor[i].color;
+				cc.rgbResult = displayListColor[i].color;
 				cc.lpCustColors = customColor;
-				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+				cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ENABLEHOOK;
 				cc.lCustData = 0;
 				cc.lpfnHook = nullptr;
 				cc.lpTemplateName = nullptr;
 				if(ChooseColorW(&cc))
 				{
-					DrawSelectColor(hDlg, displayColor[i].id, cc.rgbResult);
-					displayColor[i].color = cc.rgbResult;
+					DrawSelectColor(hDlg, displayListColor[i].id, cc.rgbResult);
+					displayListColor[i].color = cc.rgbResult;
 					PropSheet_Changed(GetParent(hDlg), hDlg);
 					return TRUE;
 				}
@@ -282,9 +282,9 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(int i = 0; i < _countof(displayColor); i++)
+		for(int i = 0; i < _countof(displayListColor); i++)
 		{
-			DrawSelectColor(hDlg, displayColor[i].id, displayColor[i].color);
+			DrawSelectColor(hDlg, displayListColor[i].id, displayListColor[i].color);
 		}
 		EndPaint(hDlg, &ps);
 
@@ -322,10 +322,10 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 			WriterKey(pXmlWriter, ValueMaxWidth, num);
 
-			for(int i = 0; i < _countof(displayColor); i++)
+			for(int i = 0; i < _countof(displayListColor); i++)
 			{
-				_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayColor[i].color);
-				WriterKey(pXmlWriter, displayColor[i].value, num);
+				_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayListColor[i].color);
+				WriterKey(pXmlWriter, displayListColor[i].value, num);
 			}
 
 			SaveCheckButton(hDlg, IDC_RADIO_API_D2D, ValueDrawAPI);
@@ -346,21 +346,11 @@ INT_PTR CALLBACK DlgProcDisplay(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			SaveCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, ValueAnnotation);
 			SaveCheckButton(hDlg, IDC_RADIO_ANNOTATLST, ValueAnnotatLst);
 
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
-			GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
-			count = _wtoi(num);
-			if(count <= 0 || count > 60)
-			{
-				count = 3;
-			}
-			_snwprintf_s(num, _TRUNCATE, L"%d", count);
-			SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
-			WriterKey(pXmlWriter, ValueShowModeSec, num);
-
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, ValueShowModeMark);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, ValueShowRoman);
 
-			WriterEndSection(pXmlWriter);	//End of SectionDisplay
+			//at DlgProcDisplay2
+			//WriterEndSection(pXmlWriter);	//End of SectionDisplay
 
 			return TRUE;
 

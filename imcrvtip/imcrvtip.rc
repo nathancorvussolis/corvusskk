@@ -63,7 +63,7 @@ IDR_SYSTRAY_MENU MENU
         MENUITEM "［－ｶﾅ］", IDM_KATAKANA_ANK
         MENUITEM "［全英］", IDM_JLATIN
         MENUITEM "［SKK］",  IDM_ASCII
-        MENUITEM "［－－］", IDM_DEFAULT
+        MENUITEM "［－－］", IDM_DIRECT
         MENUITEM SEPARATOR
         MENUITEM "設定",     IDM_CONFIG
     }

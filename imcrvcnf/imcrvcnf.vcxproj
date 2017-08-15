@@ -213,8 +213,9 @@
     <ClCompile Include="DlgProcBehavior1.cpp" />
     <ClCompile Include="DlgProcBehavior2.cpp" />
     <ClCompile Include="DlgProcConvPoint.cpp" />
-    <ClCompile Include="DlgProcDisplay.cpp" />
+    <ClCompile Include="DlgProcDisplay1.cpp" />
     <ClCompile Include="DlgProcDictionary.cpp" />
+    <ClCompile Include="DlgProcDisplay2.cpp" />
     <ClCompile Include="DlgProcDisplayAttr.cpp" />
     <ClCompile Include="DlgProcJLatin.cpp" />
     <ClCompile Include="DlgProcKana.cpp" />

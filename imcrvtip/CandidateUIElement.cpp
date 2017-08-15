@@ -43,7 +43,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 
 	_pD2DFactory = nullptr;
 	_pD2DDCRT = nullptr;
-	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		_pD2DBrush[i] = nullptr;
 	}

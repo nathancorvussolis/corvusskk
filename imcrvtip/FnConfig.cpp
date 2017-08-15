@@ -48,16 +48,31 @@ static const TF_PRESERVEDKEY configpreservedkey[] =
 static const struct {
 	LPCWSTR value;
 	COLORREF color;
-} colorsxmlvalue[DISPLAY_COLOR_NUM] =
+} listcolorsxmlvalue[DISPLAY_LIST_COLOR_NUM] =
 {
-	{ValueColorBG, RGB(0xFF,0xFF,0xFF)},
-	{ValueColorFR, RGB(0x00,0x00,0x00)},
-	{ValueColorSE, RGB(0x00,0x00,0xFF)},
-	{ValueColorCO, RGB(0x80,0x80,0x80)},
-	{ValueColorCA, RGB(0x00,0x00,0x00)},
-	{ValueColorSC, RGB(0x80,0x80,0x80)},
-	{ValueColorAN, RGB(0x80,0x80,0x80)},
-	{ValueColorNO, RGB(0x00,0x00,0x00)}
+	{ValueColorBG, RGB(0xFF, 0xFF, 0xFF)},
+	{ValueColorFR, RGB(0x00, 0x00, 0x00)},
+	{ValueColorSE, RGB(0x00, 0x00, 0xFF)},
+	{ValueColorCO, RGB(0x80, 0x80, 0x80)},
+	{ValueColorCA, RGB(0x00, 0x00, 0x00)},
+	{ValueColorSC, RGB(0x80, 0x80, 0x80)},
+	{ValueColorAN, RGB(0x80, 0x80, 0x80)},
+	{ValueColorNO, RGB(0x00, 0x00, 0x00)}
+};
+
+static const struct {
+	LPCWSTR value;
+	COLORREF color;
+} modecolorsxmlvalue[DISPLAY_MODE_COLOR_NUM] =
+{
+	{ValueColorMC, RGB(0xFF, 0xFF, 0xFF)},
+	{ValueColorMF, RGB(0x00, 0x00, 0x00)},
+	{ValueColorHR, RGB(0xC0, 0x00, 0x00)},
+	{ValueColorKT, RGB(0x00, 0xC0, 0x00)},
+	{ValueColorKA, RGB(0x00, 0xC0, 0x80)},
+	{ValueColorJL, RGB(0x00, 0x00, 0xC0)},
+	{ValueColorAC, RGB(0x00, 0x80, 0xC0)},
+	{ValueColorDR, RGB(0x80, 0x80, 0x80)}
 };
 
 LPCWSTR sectionpreservedkeyonoff[PRESERVEDKEY_NUM] = {SectionPreservedKeyON, SectionPreservedKeyOFF};
@@ -190,13 +205,13 @@ void CTextService::_LoadBehavior()
 		cx_maxwidth = MAX_WIDTH_DEFAULT;
 	}
 
-	for(int i = 0; i < _countof(cx_colors); i++)
+	for(int i = 0; i < _countof(cx_list_colors); i++)
 	{
-		cx_colors[i] = colorsxmlvalue[i].color;
-		ReadValue(pathconfigxml, SectionDisplay, colorsxmlvalue[i].value, strxmlval);
+		cx_list_colors[i] = listcolorsxmlvalue[i].color;
+		ReadValue(pathconfigxml, SectionDisplay, listcolorsxmlvalue[i].value, strxmlval);
 		if(!strxmlval.empty())
 		{
-			cx_colors[i] = wcstoul(strxmlval.c_str(), nullptr, 0);
+			cx_list_colors[i] = wcstoul(strxmlval.c_str(), nullptr, 0);
 		}
 	}
 
@@ -215,6 +230,9 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
 
+	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
+
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
 	cx_showmodesec = _wtoi(strxmlval.c_str());
@@ -223,8 +241,15 @@ void CTextService::_LoadBehavior()
 		cx_showmodesec = 3;
 	}
 
-	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
-	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
+	for(int i = 0; i < _countof(cx_mode_colors); i++)
+	{
+		cx_mode_colors[i] = modecolorsxmlvalue[i].color;
+		ReadValue(pathconfigxml, SectionDisplay, modecolorsxmlvalue[i].value, strxmlval);
+		if(!strxmlval.empty())
+		{
+			cx_mode_colors[i] = wcstoul(strxmlval.c_str(), nullptr, 0);
+		}
+	}
 }
 
 void CTextService::_LoadDisplayAttr()
@@ -979,9 +1004,9 @@ void CTextService::_InitFont(int dpi)
 
 			if(SUCCEEDED(hr))
 			{
-				for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+				for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 				{
-					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_colors[i])), &_pD2DBrush[i]);
+					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_list_colors[i])), &_pD2DBrush[i]);
 					if(FAILED(hr))
 					{
 						break;
@@ -1033,7 +1058,7 @@ void CTextService::_UninitFont()
 
 	SafeRelease(&_pDWTF);
 	SafeRelease(&_pDWFactory);
-	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		SafeRelease(&_pD2DBrush[i]);
 	}

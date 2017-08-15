@@ -61,7 +61,8 @@ extern LPCWSTR fnuserbak;	//ユーザー辞書バックアッププレフィッ�
 extern LPCWSTR fnskkdic;	//取込SKK辞書
 extern LPCWSTR fninitlua;	//init.lua
 
-#define DISPLAY_COLOR_NUM	8
+#define DISPLAY_LIST_COLOR_NUM	8
+#define DISPLAY_MODE_COLOR_NUM	8
 #define DISPLAYATTRIBUTE_INFO_NUM	7
 
 extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeInputMark;

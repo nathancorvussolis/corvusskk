@@ -11,7 +11,7 @@
 enum InputMode
 {
 	im_disable = -1,	//無効
-	im_default,			//デフォルト
+	im_direct,			//直接
 	im_hiragana,		//ひらがな
 	im_katakana,		//カタカナ
 	im_katakana_ank,	//半角ｶﾀｶﾅ
@@ -96,6 +96,16 @@ typedef struct ROMAN_KANA_NODE {
 #define CL_COLOR_SC		5	//;
 #define CL_COLOR_AN		6	//注釈
 #define CL_COLOR_NO		7	//番号
+
+//入力モードの色 cx_mode_colors のインデックス
+#define CL_COLOR_MC		0	//文字
+#define CL_COLOR_MF		1	//枠
+#define CL_COLOR_HR		2	//かな
+#define CL_COLOR_KT		3	//カナ
+#define CL_COLOR_KA		4	//－ｶﾅ
+#define CL_COLOR_JL		5	//全英
+#define CL_COLOR_AC		6	//ASCII
+#define CL_COLOR_DR		7	//直接
 
 //候補ウィンドウモード
 enum WindowMode {

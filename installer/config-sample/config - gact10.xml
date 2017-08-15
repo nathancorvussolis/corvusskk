@@ -93,10 +93,18 @@
     <key name="verticalcand" value="0" />
     <key name="annotation" value="1" />
     <key name="annotatlst" value="0" />
-    <key name="showmodeinl" value="1" />
-    <key name="showmodesec" value="3" />
     <key name="showmodemark" value="1" />
     <key name="showroman" value="1" />
+    <key name="showmodeinl" value="1" />
+    <key name="showmodesec" value="3" />
+    <key name="colormc" value="0xFFFFFF" />
+    <key name="colormf" value="0x000000" />
+    <key name="colorhr" value="0x0000C0" />
+    <key name="colorkt" value="0x00C000" />
+    <key name="colorka" value="0x80C000" />
+    <key name="colorjl" value="0xC00000" />
+    <key name="colorac" value="0xC08000" />
+    <key name="colordr" value="0x808080" />
   </section>
   <section name="displayattr">
     <key name="inputmark" value="0,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />

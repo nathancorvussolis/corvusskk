@@ -35,7 +35,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 			_pD2DFactory->AddRef();
 			_pD2DDCRT = _pTextService->_pD2DDCRT;
 			_pD2DDCRT->AddRef();
-			for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+			for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 			{
 				_pD2DBrush[i] = _pTextService->_pD2DBrush[i];
 				_pD2DBrush[i]->AddRef();
@@ -183,7 +183,7 @@ void CCandidateWindow::_Destroy()
 
 	SafeRelease(&_pDWTF);
 	SafeRelease(&_pDWFactory);
-	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		SafeRelease(&_pD2DBrush[i]);
 	}
@@ -805,7 +805,7 @@ void CCandidateWindow::_RestoreStatusReg()
 
 void CCandidateWindow::_ClearStatusReg()
 {
-	inputmode_bak = im_default;
+	inputmode_bak = im_direct;
 	abbrevmode_bak = FALSE;
 	kana_bak.clear();
 	okuriidx_bak = 0;

@@ -109,10 +109,19 @@ LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueVerticalCand = L"verticalcand";
 LPCWSTR ValueAnnotation = L"annotation";
 LPCWSTR ValueAnnotatLst = L"annotatlst";
-LPCWSTR ValueShowModeInl = L"showmodeinl";
-LPCWSTR ValueShowModeSec = L"showmodesec";
 LPCWSTR ValueShowModeMark = L"showmodemark";
 LPCWSTR ValueShowRoman = L"showroman";
+
+LPCWSTR ValueShowModeInl = L"showmodeinl";
+LPCWSTR ValueShowModeSec = L"showmodesec";
+LPCWSTR ValueColorMC = L"colormc";
+LPCWSTR ValueColorMF = L"colormf";
+LPCWSTR ValueColorHR = L"colorhr";
+LPCWSTR ValueColorKT = L"colorkt";
+LPCWSTR ValueColorKA = L"colorka";
+LPCWSTR ValueColorJL = L"colorjl";
+LPCWSTR ValueColorAC = L"colorac";
+LPCWSTR ValueColorDR = L"colordr";
 
 //displayattr section
 

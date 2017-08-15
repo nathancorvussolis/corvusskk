@@ -22,7 +22,7 @@ static const struct {
 	{im_katakana_ank,	IDM_KATAKANA_ANK,	0, L"［－ｶﾅ］"},
 	{im_jlatin,			IDM_JLATIN,			0, L"［全英］"},
 	{im_ascii,			IDM_ASCII,			0, L"［SKK］"},
-	{im_default,		IDM_DEFAULT,		0, L"［－－］"},
+	{im_direct,			IDM_DIRECT,			0, L"［－－］"},
 	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
 	{im_disable,		IDM_CONFIG,			0, L"設定"},
 	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
@@ -189,7 +189,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 				HMENU hMenu = LoadMenuW(g_hInst, MAKEINTRESOURCEW(IDR_SYSTRAY_MENU));
 				if(hMenu)
 				{
-					UINT check = IDM_DEFAULT;
+					UINT check = IDM_DIRECT;
 					for(int i = 0; i < _countof(menuItems); i++)
 					{
 						if(_pTextService->inputmode == menuItems[i].inputmode)
@@ -198,7 +198,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 							break;
 						}
 					}
-					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DEFAULT, check, MF_BYCOMMAND);
+					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DIRECT, check, MF_BYCOMMAND);
 					HMENU hSubMenu = GetSubMenu(hMenu, 0);
 					if(hSubMenu)
 					{
@@ -292,12 +292,12 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 			}
 		}
 		break;
-	case IDM_DEFAULT:
+	case IDM_DIRECT:
 		if(_pTextService->_IsKeyboardOpen())
 		{
 			_pTextService->_ClearComposition();
 
-			_pTextService->inputmode = im_default;
+			_pTextService->inputmode = im_direct;
 			_pTextService->_SetKeyboardOpen(FALSE);
 		}
 		break;

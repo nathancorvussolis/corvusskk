@@ -7,7 +7,7 @@
 #define MARGIN_X 2
 #define MARGIN_Y 4
 
-const int colors_compback[DISPLAY_COLOR_NUM] =
+const int colors_compback[DISPLAY_LIST_COLOR_NUM] =
 {
 	CL_COLOR_BG, CL_COLOR_FR, CL_COLOR_CA, CL_COLOR_CO,
 	CL_COLOR_SE, CL_COLOR_SC, CL_COLOR_AN, CL_COLOR_NO
@@ -44,7 +44,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		_pD2DDCRT->BindDC(hdc, &r);
 		_pD2DDCRT->BeginDraw();
 		_pD2DDCRT->SetTransform(D2D1::Matrix3x2F::Identity());
-		_pD2DDCRT->Clear(D2D1::ColorF(SWAPRGB(_pTextService->cx_colors[CL_COLOR_BG])));
+		_pD2DDCRT->Clear(D2D1::ColorF(SWAPRGB(_pTextService->cx_list_colors[CL_COLOR_BG])));
 		rd2d = D2D1::RectF(0.5F, 0.5F, ((FLOAT)cx) - 0.5F, ((FLOAT)cy) - 0.5F);
 		_pD2DDCRT->DrawRectangle(rd2d, _pD2DBrush[CL_COLOR_FR]);
 
@@ -59,9 +59,9 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		hmembmp = CreateCompatibleBitmap(hdc, cx, cy);
 		bmp = SelectObject(hmemdc, hmembmp);
 
-		npen = CreatePen(PS_SOLID, 1, _pTextService->cx_colors[CL_COLOR_FR]);
+		npen = CreatePen(PS_SOLID, 1, _pTextService->cx_list_colors[CL_COLOR_FR]);
 		pen = SelectObject(hmemdc, npen);
-		nbrush = CreateSolidBrush(_pTextService->cx_colors[CL_COLOR_BG]);
+		nbrush = CreateSolidBrush(_pTextService->cx_list_colors[CL_COLOR_BG]);
 		brush = SelectObject(hmemdc, nbrush);
 
 		Rectangle(hmemdc, 0, 0, cx, cy);
@@ -103,7 +103,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}
@@ -209,7 +209,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		}
 		else
 		{
-			SetTextColor(hmemdc, _pTextService->cx_colors[CL_COLOR_NO]);
+			SetTextColor(hmemdc, _pTextService->cx_list_colors[CL_COLOR_NO]);
 			SetBkMode(hdc, TRANSPARENT);
 
 			DrawTextW(hmemdc, strPage, -1, &rc,
@@ -310,7 +310,7 @@ void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 	}
 	else
 	{
-		SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_CA]);
+		SetTextColor(hdc, _pTextService->cx_list_colors[CL_COLOR_CA]);
 		SetBkMode(hdc, TRANSPARENT);
 
 		DrawTextW(hdc, s.c_str(), -1, lpr,
@@ -445,7 +445,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 	std::wstring ca = candidates[count + _uShowedCount + idx].first.first;
 
-	for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
+	for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 	{
 		s = _MakeCandidateString(page, count, idx, cycle);
 
@@ -500,13 +500,13 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 				(count + _uShowedCount + idx == candidx) &&
 				(color_cycle == CL_COLOR_SE || color_cycle == CL_COLOR_CA))
 			{
-				SetTextColor(hdc, _pTextService->cx_colors[CL_COLOR_BG]);
-				SetBkColor(hdc, _pTextService->cx_colors[CL_COLOR_SE]);
+				SetTextColor(hdc, _pTextService->cx_list_colors[CL_COLOR_BG]);
+				SetBkColor(hdc, _pTextService->cx_list_colors[CL_COLOR_SE]);
 				SetBkMode(hdc, OPAQUE);
 			}
 			else
 			{
-				SetTextColor(hdc, _pTextService->cx_colors[color_cycle]);
+				SetTextColor(hdc, _pTextService->cx_list_colors[color_cycle]);
 				SetBkMode(hdc, TRANSPARENT);
 			}
 
@@ -603,7 +603,7 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}
@@ -661,7 +661,7 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 			{
 				s += _MakeCandidateString(page, count, i, cycle);
 			}
@@ -842,7 +842,7 @@ void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam
 {
 	SafeRelease(&_pDWTF);
 	SafeRelease(&_pDWFactory);
-	for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		SafeRelease(&_pD2DBrush[i]);
 	}
@@ -862,7 +862,7 @@ void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam
 		_pD2DFactory->AddRef();
 		_pD2DDCRT = _pTextService->_pD2DDCRT;
 		_pD2DDCRT->AddRef();
-		for(int i = 0; i < DISPLAY_COLOR_NUM; i++)
+		for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 		{
 			_pD2DBrush[i] = _pTextService->_pD2DBrush[i];
 			_pD2DBrush[i]->AddRef();

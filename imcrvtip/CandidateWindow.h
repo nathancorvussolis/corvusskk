@@ -124,7 +124,7 @@ private:
 	//Direct2D/DirectWrite
 	ID2D1Factory *_pD2DFactory;
 	ID2D1DCRenderTarget *_pD2DDCRT;
-	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_COLOR_NUM];
+	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_LIST_COLOR_NUM];
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 	IDWriteFactory *_pDWFactory;
 	IDWriteTextFormat *_pDWTF;

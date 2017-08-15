@@ -25,7 +25,7 @@
 #define IDM_KATAKANA_ANK    1013
 #define IDM_JLATIN          1014
 #define IDM_ASCII           1015
-#define IDM_DEFAULT         1020
+#define IDM_DIRECT          1020
 #define IDM_CONFIG          1021
 
 #endif //RESOURCE_H

@@ -137,10 +137,19 @@ extern LPCWSTR ValueDispCandNo;
 extern LPCWSTR ValueVerticalCand;
 extern LPCWSTR ValueAnnotation;
 extern LPCWSTR ValueAnnotatLst;
-extern LPCWSTR ValueShowModeInl;
-extern LPCWSTR ValueShowModeSec;
 extern LPCWSTR ValueShowModeMark;
 extern LPCWSTR ValueShowRoman;
+
+extern LPCWSTR ValueShowModeInl;
+extern LPCWSTR ValueShowModeSec;
+extern LPCWSTR ValueColorMC;
+extern LPCWSTR ValueColorMF;
+extern LPCWSTR ValueColorHR;
+extern LPCWSTR ValueColorKT;
+extern LPCWSTR ValueColorKA;
+extern LPCWSTR ValueColorJL;
+extern LPCWSTR ValueColorAC;
+extern LPCWSTR ValueColorDR;
 
 //displayattr section
 

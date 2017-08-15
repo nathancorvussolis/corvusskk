@@ -309,7 +309,7 @@ private:
 public:
 	ID2D1Factory *_pD2DFactory;
 	ID2D1DCRenderTarget *_pD2DDCRT;
-	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_COLOR_NUM];
+	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_LIST_COLOR_NUM];
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 	IDWriteFactory *_pDWFactory;
 	IDWriteTextFormat *_pDWTF;
@@ -339,7 +339,7 @@ public:
 	BOOL cx_fontitalic;				//候補一覧のフォント設定(イタリック)
 
 	LONG cx_maxwidth;			//候補一覧の最大幅
-	COLORREF cx_colors[DISPLAY_COLOR_NUM];		//候補一覧の色
+	COLORREF cx_list_colors[DISPLAY_LIST_COLOR_NUM];		//候補一覧の色
 	BOOL cx_drawapi;			//候補一覧の描画API(FALSE:GDI/TRUE:Direct2D)
 	BOOL cx_colorfont;			//候補一覧の描画API 彩色(Direct2Dのときカラーフォントにする)
 	UINT cx_untilcandlist;		//候補一覧表示に要する変換回数(0:表示なし/1:1回目...)
@@ -347,10 +347,12 @@ public:
 	BOOL cx_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL cx_annotation;			//注釈を表示する
 	BOOL cx_annotatlst;			//注釈を表示する(FALSE:全て/TRUE:候補一覧のみ)
-	BOOL cx_showmodeinl;		//入力モードを表示する
-	UINT cx_showmodesec;		//入力モードの表示秒数
 	BOOL cx_showmodemark;		//▽▼*マークを表示する
 	BOOL cx_showroman;			//ローマ字を表示する
+
+	BOOL cx_showmodeinl;		//入力モードを表示する
+	UINT cx_showmodesec;		//入力モードの表示秒数
+	COLORREF cx_mode_colors[DISPLAY_MODE_COLOR_NUM];		//入力モードの色
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す

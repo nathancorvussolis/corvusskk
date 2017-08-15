@@ -362,13 +362,13 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 {
 	PAINTSTRUCT ps;
 	HDC hdc;
-	HDC hmemdc;
-	HBITMAP hmembmp;
-	HPEN npen;
-	HBRUSH nbrush;
-	HGDIOBJ bmp, pen, brush;
+	HDC hmemdc, hmemdcR;
+	HBITMAP hmembmp, bmp, hmembmpR, bmpR;
+	HPEN pen, npen, penR, npenR;
+	HBRUSH brush, nbrush, brushR, nbrushR;
 	HICON hIcon;
 	RECT r;
+	COLORREF color;
 
 	switch(uMsg)
 	{
@@ -398,23 +398,83 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 		hmemdc = CreateCompatibleDC(hdc);
 		hmembmp = CreateCompatibleBitmap(hdc, r.right, r.bottom);
-		bmp = SelectObject(hmemdc, hmembmp);
+		bmp = (HBITMAP)SelectObject(hmemdc, hmembmp);
 
-		npen = CreatePen(PS_SOLID, 1, RGB(0x00, 0x00, 0x00));
-		pen = SelectObject(hmemdc, npen);
-		nbrush = CreateSolidBrush(RGB(0xFF, 0xFF, 0xFF));
-		brush = SelectObject(hmemdc, nbrush);
+		npen = CreatePen(PS_SOLID, 1, _pTextService->cx_mode_colors[CL_COLOR_MF]);
+		pen = (HPEN)SelectObject(hmemdc, npen);
+
+		color = RGB(0xFF, 0xFF, 0xFF);
+		switch(_pTextService->inputmode)
+		{
+		case im_direct:
+			color = _pTextService->cx_mode_colors[CL_COLOR_DR];
+			break;
+		case im_hiragana:
+			color = _pTextService->cx_mode_colors[CL_COLOR_HR];
+			break;
+		case im_katakana:
+			color = _pTextService->cx_mode_colors[CL_COLOR_KT];
+			break;
+		case im_katakana_ank:
+			color = _pTextService->cx_mode_colors[CL_COLOR_KA];
+			break;
+		case im_jlatin:
+			color = _pTextService->cx_mode_colors[CL_COLOR_JL];
+			break;
+		case im_ascii:
+			color = _pTextService->cx_mode_colors[CL_COLOR_AC];
+			break;
+		default:
+			break;
+		}
+		nbrush = CreateSolidBrush(color);
+		brush = (HBRUSH)SelectObject(hmemdc, nbrush);
 
 		Rectangle(hmemdc, 0, 0, r.right, r.bottom);
-
-		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, 96));
-		DrawIconEx(hmemdc, IM_MARGIN_X, IM_MARGIN_Y, hIcon, _size, _size, 0, nbrush, DI_NORMAL);
 
 		SelectObject(hmemdc, pen);
 		SelectObject(hmemdc, brush);
 
 		DeleteObject(npen);
 		DeleteObject(nbrush);
+
+		hmemdcR = CreateCompatibleDC(hdc);
+		hmembmpR = CreateCompatibleBitmap(hdc, r.right, r.bottom);
+		bmpR = (HBITMAP)SelectObject(hmemdcR, hmembmpR);
+
+		penR = (HPEN)SelectObject(hmemdcR, GetStockObject(WHITE_PEN));
+		brushR = (HBRUSH)SelectObject(hmemdcR, GetStockObject(WHITE_BRUSH));
+
+		Rectangle(hmemdcR, 0, 0, r.right, r.bottom);
+
+		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, 96));
+		DrawIconEx(hmemdcR, IM_MARGIN_X, IM_MARGIN_Y, hIcon, _size, _size, 0, (HBRUSH)GetStockObject(WHITE_BRUSH), DI_NORMAL);
+
+		SelectObject(hmemdcR, penR);
+		SelectObject(hmemdcR, brushR);
+
+		npenR = CreatePen(PS_SOLID, 1, _pTextService->cx_mode_colors[CL_COLOR_MC]);
+		penR = (HPEN)SelectObject(hmemdcR, npenR);
+		nbrushR = CreateSolidBrush(_pTextService->cx_mode_colors[CL_COLOR_MC]);
+		brushR = (HBRUSH)SelectObject(hmemdcR, nbrushR);
+
+		SetROP2(hmemdcR, R2_XORPEN);
+
+		Rectangle(hmemdcR, 0, 0, r.right, r.bottom);
+
+		SelectObject(hmemdcR, penR);
+		SelectObject(hmemdcR, brushR);
+
+		DeleteObject(npenR);
+		DeleteObject(nbrushR);
+
+		GdiTransparentBlt(hmemdc, 0, 0, r.right, r.bottom, hmemdcR, 0, 0, r.right, r.bottom,
+			(_pTextService->cx_mode_colors[CL_COLOR_MC] ^ RGB(0xFF, 0xFF, 0xFF)));
+
+		SelectObject(hmemdcR, bmpR);
+
+		DeleteObject(hmembmpR);
+		DeleteObject(hmemdcR);
 
 		BitBlt(hdc, 0, 0, r.right, r.bottom, hmemdc, 0, 0, SRCCOPY);
 
@@ -541,7 +601,7 @@ void CTextService::_StartInputModeWindow()
 {
 	switch(inputmode)
 	{
-	case im_default:
+	case im_direct:
 	case im_hiragana:
 	case im_katakana:
 	case im_katakana_ank:

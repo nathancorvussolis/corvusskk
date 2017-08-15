@@ -374,7 +374,7 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 	}
 	else
 	{
-		inputmode = im_default;
+		inputmode = im_direct;
 
 		_SaveUserDic();
 

@@ -53,9 +53,6 @@
     <ClCompile Include="DlgProcDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DlgProcDisplay.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DlgProcDisplayAttr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +75,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PropertyConfDictionary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplay1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplay2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
