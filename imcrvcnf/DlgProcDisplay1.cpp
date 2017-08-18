@@ -206,7 +206,6 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			return TRUE;
 
 		case IDC_EDIT_MAXWIDTH:
-		case IDC_EDIT_SHOWMODESEC:
 			switch(HIWORD(wParam))
 			{
 			case EN_CHANGE:
@@ -236,7 +235,6 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_CHECKBOX_ANNOTATION:
 		case IDC_RADIO_ANNOTATALL:
 		case IDC_RADIO_ANNOTATLST:
-		case IDC_CHECKBOX_SHOWMODEINL:
 		case IDC_CHECKBOX_SHOWMODEMARK:
 		case IDC_CHECKBOX_SHOWROMAN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);

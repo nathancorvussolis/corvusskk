@@ -79,6 +79,10 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 			break;
 
+		case IDC_CHECKBOX_SHOWMODEINL:
+			PropSheet_Changed(GetParent(hDlg), hDlg);
+			break;
+
 		default:
 			break;
 		}
