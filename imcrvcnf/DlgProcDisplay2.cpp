@@ -13,7 +13,7 @@ static struct {
 	{IDC_COL_MODE_MF, ValueColorMF, RGB(0x00, 0x00, 0x00)},
 	{IDC_COL_MODE_HR, ValueColorHR, RGB(0xC0, 0x00, 0x00)},
 	{IDC_COL_MODE_KT, ValueColorKT, RGB(0x00, 0xC0, 0x00)},
-	{IDC_COL_MODE_KA, ValueColorKA, RGB(0x00, 0xC0, 0x80)},
+	{IDC_COL_MODE_KA, ValueColorKA, RGB(0x80, 0x00, 0xC0)},
 	{IDC_COL_MODE_JL, ValueColorJL, RGB(0x00, 0x00, 0xC0)},
 	{IDC_COL_MODE_AC, ValueColorAC, RGB(0x00, 0x80, 0xC0)},
 	{IDC_COL_MODE_DR, ValueColorDR, RGB(0x80, 0x80, 0x80)}

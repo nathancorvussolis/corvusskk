@@ -66,7 +66,7 @@
     <key name="colormf" value="0x000000" />
     <key name="colorhr" value="0x0000C0" />
     <key name="colorkt" value="0x00C000" />
-    <key name="colorka" value="0x80C000" />
+    <key name="colorka" value="0xC00080" />
     <key name="colorjl" value="0xC00000" />
     <key name="colorac" value="0xC08000" />
     <key name="colordr" value="0x808080" />
