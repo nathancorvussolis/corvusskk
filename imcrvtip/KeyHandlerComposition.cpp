@@ -122,13 +122,28 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 	}
 	else
 	{
+		std::wstring romandisp = roman;
+		if(cx_showromanjlat)
+		{
+			ASCII_JLATIN_CONV ajc;
+			ajc.ascii[1] = L'\0';
+			for(size_t i = 0; i < romandisp.size(); i++)
+			{
+				ajc.ascii[0] = romandisp[i];
+				if(SUCCEEDED(_ConvAsciiJLatin(&ajc)))
+				{
+					romandisp[i] = ajc.jlatin[0];
+				}
+			}
+		}
+
 		if(inputkey)
 		{
 			if(!fixed)
 			{
 				if(!showmodemark)
 				{
-					if(kana.empty() && roman.empty())
+					if(kana.empty() && romandisp.empty())
 					{
 						comptext.append(markSP);
 					}
@@ -146,7 +161,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				}
 			}
 
-			if(!roman.empty() || !kana.empty())
+			if(!romandisp.empty() || !kana.empty())
 			{
 				if(okuriidx == 0)
 				{
@@ -168,7 +183,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					{
 						comptext.append(kana.substr(okuriidx + 1));
 					}
-					if(pContext == nullptr && !fixed && roman.empty() && cursoridx != kana.size())	//辞書登録用
+					if(pContext == nullptr && !fixed && romandisp.empty() && cursoridx != kana.size())	//辞書登録用
 					{
 						if(!showmodemark)
 						{
@@ -192,7 +207,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 						}
 					}
 				}
-				if(!fixed && !roman.empty())
+				if(!fixed && !romandisp.empty())
 				{
 					if(!showmodemark)
 					{
@@ -200,7 +215,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 						{
 							if(cx_showroman)
 							{
-								comptext.insert(cursoridx - 1, roman);
+								comptext.insert(cursoridx - 1, romandisp);
 							}
 							else
 							{
@@ -211,7 +226,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 						{
 							if(cx_showroman)
 							{
-								comptext.insert(cursoridx, roman);
+								comptext.insert(cursoridx, romandisp);
 							}
 							else
 							{
@@ -223,7 +238,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					{
 						if(cx_showroman)
 						{
-							comptext.insert(cursoridx + 1, roman);
+							comptext.insert(cursoridx + 1, romandisp);
 						}
 						else
 						{
@@ -234,7 +249,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 					{
 						if(cx_showroman)
 						{
-							cchOkuri += (LONG)roman.size();
+							cchOkuri += (LONG)romandisp.size();
 						}
 						else
 						{
@@ -261,7 +276,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 				{
 					if(cx_showroman)
 					{
-						comptext.append(roman);
+						comptext.append(romandisp);
 					}
 					else
 					{

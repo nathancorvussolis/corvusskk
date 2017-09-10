@@ -232,6 +232,7 @@ void CTextService::_LoadBehavior()
 
 	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowRomanJLat, cx_showromanjlat, FALSE);
 
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);

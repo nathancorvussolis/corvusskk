@@ -349,6 +349,7 @@ public:
 	BOOL cx_annotatlst;			//注釈を表示する(FALSE:全て/TRUE:候補一覧のみ)
 	BOOL cx_showmodemark;		//▽▼*マークを表示する
 	BOOL cx_showroman;			//ローマ字を表示する
+	BOOL cx_showromanjlat;		//ローマ字を表示する(FALSE:ASCII/TRUE:全英)
 
 	BOOL cx_showmodeinl;		//入力モードを表示する
 	UINT cx_showmodesec;		//入力モードの表示秒数

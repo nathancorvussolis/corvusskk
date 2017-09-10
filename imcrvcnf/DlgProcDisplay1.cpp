@@ -148,6 +148,11 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionDisplay, ValueShowModeMark, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, SectionDisplay, ValueShowRoman, L"1");
+		LoadCheckButton(hDlg, IDC_RADIO_SHOWROMANJLATIN, SectionDisplay, ValueShowRomanJLat);
+		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_SHOWROMANJLATIN))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_SHOWROMANASCII, BST_CHECKED);
+		}
 
 		return TRUE;
 
@@ -237,6 +242,8 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_RADIO_ANNOTATLST:
 		case IDC_CHECKBOX_SHOWMODEMARK:
 		case IDC_CHECKBOX_SHOWROMAN:
+		case IDC_RADIO_SHOWROMANASCII:
+		case IDC_RADIO_SHOWROMANJLATIN:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return TRUE;
 
@@ -346,6 +353,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, ValueShowModeMark);
 			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, ValueShowRoman);
+			SaveCheckButton(hDlg, IDC_RADIO_SHOWROMANJLATIN, ValueShowRomanJLat);
 
 			//at DlgProcDisplay2
 			//WriterEndSection(pXmlWriter);	//End of SectionDisplay
