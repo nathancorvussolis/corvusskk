@@ -269,7 +269,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 				cc.hInstance = nullptr;
 				cc.rgbResult = displayListColor[i].color;
 				cc.lpCustColors = customColor;
-				cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_ENABLEHOOK;
+				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
 				cc.lCustData = 0;
 				cc.lpfnHook = nullptr;
 				cc.lpTemplateName = nullptr;
