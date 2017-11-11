@@ -676,7 +676,6 @@ void CTextService::_LoadVKeyMap()
 void CTextService::_LoadConvPoint()
 {
 	APPDATAXMLLIST list;
-	CONV_POINT cp;
 
 	conv_point_s.clear();
 	conv_point_s.shrink_to_fit();
@@ -695,7 +694,7 @@ void CTextService::_LoadConvPoint()
 				break;
 			}
 
-			ZeroMemory(&cp, sizeof(cp));
+			CONV_POINT cp = {};
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
@@ -737,14 +736,11 @@ void CTextService::_LoadConvPoint()
 void CTextService::_LoadKana()
 {
 	APPDATAXMLLIST list;
-	ROMAN_KANA_CONV rkc;
+
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
-	roman_kana_tree.ch = L'\0';
-	ZeroMemory(&roman_kana_tree.conv, sizeof(roman_kana_tree.conv));
-	roman_kana_tree.nodes.clear();
-	roman_kana_tree.nodes.shrink_to_fit();
+	roman_kana_tree = ROMAN_KANA_NODE{};
 
 	HRESULT hr = ReadList(pathconfigxml, SectionKana, list);
 
@@ -758,7 +754,7 @@ void CTextService::_LoadKana()
 				break;
 			}
 
-			ZeroMemory(&rkc, sizeof(rkc));
+			ROMAN_KANA_CONV rkc = {};
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
@@ -804,7 +800,7 @@ void CTextService::_LoadKana()
 	}
 	else if(FAILED(hr))
 	{
-		ZeroMemory(&rkc, sizeof(rkc));
+		ROMAN_KANA_CONV rkc = {};
 
 		for(WCHAR ch = 0x20; ch <= 0x7E; ch++)
 		{
@@ -860,9 +856,7 @@ BOOL CTextService::_AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int 
 
 void CTextService::_AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int depth)
 {
-	ROMAN_KANA_NODE rkn;
-
-	ZeroMemory(&rkn, sizeof(rkn));
+	ROMAN_KANA_NODE rkn = {};
 
 	if((_countof(rkc.roman) <= (depth + 1)) || (rkc.roman[depth] == L'\0'))
 	{
@@ -892,7 +886,7 @@ void CTextService::_AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, 
 void CTextService::_LoadJLatin()
 {
 	APPDATAXMLLIST list;
-	ASCII_JLATIN_CONV ajc;
+
 	std::wregex re(L"[\\x00-\\x19]");
 	std::wstring fmt(L"");
 
@@ -911,7 +905,7 @@ void CTextService::_LoadJLatin()
 				break;
 			}
 
-			ZeroMemory(&ajc, sizeof(ajc));
+			ASCII_JLATIN_CONV ajc = {};
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
@@ -948,7 +942,7 @@ void CTextService::_LoadJLatin()
 	}
 	else if(FAILED(hr))
 	{
-		ZeroMemory(&ajc, sizeof(ajc));
+		ASCII_JLATIN_CONV ajc = {};
 
 		for(WCHAR ch = 0x20; ch <= 0x7E; ch++)
 		{

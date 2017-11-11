@@ -114,11 +114,14 @@ CInputModeWindow::CInputModeWindow()
 
 	_cRef = 1;
 
-	_hwnd = nullptr;
-	_hwndParent = nullptr;
-	_pTextService = nullptr;
 	_pContext = nullptr;
+	_dwCookieTextLayoutSink= TF_INVALID_COOKIE;
+	_pTextService = nullptr;
+	_hwndParent = nullptr;
+	_hwnd = nullptr;
+	_bCandidateWindow = FALSE;
 	_size = 0;
+	_dpi = 96;
 }
 
 CInputModeWindow::~CInputModeWindow()
