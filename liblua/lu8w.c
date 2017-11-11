@@ -191,11 +191,13 @@ int u8fprintf(FILE *file, const char *format, ...)
 
 	buflen = _vscprintf(format, argptr) + 1;
 	if(buflen <= 0) {
+		va_end(argptr);
 		return -1;
 	}
 
 	buf = (char *)calloc(buflen, sizeof(char));
 	if(buf == NULL) {
+		va_end(argptr);
 		return -1;
 	}
 
@@ -231,11 +233,13 @@ int u8printf(const char *format, ...)
 
 	buflen = _vscprintf(format, argptr) + 1;
 	if(buflen <= 0) {
+		va_end(argptr);
 		return -1;
 	}
 
 	buf = (char *)calloc(buflen, sizeof(char));
 	if(buf == NULL) {
+		va_end(argptr);
 		return -1;
 	}
 
