@@ -378,7 +378,8 @@ void CTextService::_LoadCKeyMap()
 	std::wregex re;
 	std::wstring strxmlval;
 
-	ZeroMemory(&ckeymap, sizeof(ckeymap));
+	ckeymap = CKEYMAP{};
+
 	key[1] = L'\0';
 
 	for(int i = 0; i < _countof(configkeymap); i++)
@@ -501,7 +502,7 @@ void CTextService::_LoadVKeyMap()
 
 	for(int i = 0; i < _countof(pkeymaps); i++)
 	{
-		ZeroMemory(pkeymaps[i], sizeof(*pkeymaps[i]));
+		*pkeymaps[i] = VKEYMAP{};
 	}
 
 	for(int i = 0; i < _countof(configkeymap); i++)

@@ -386,7 +386,6 @@ void SaveConvPoint(HWND hwnd)
 void LoadConfigKana()
 {
 	APPDATAXMLLIST list;
-	ROMAN_KANA_CONV rkc;
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
@@ -403,7 +402,7 @@ void LoadConfigKana()
 				break;
 			}
 
-			ZeroMemory(&rkc, sizeof(rkc));
+			ROMAN_KANA_CONV rkc = {};
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{

@@ -123,8 +123,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		case IDC_BUTTON_SKK_DIC_ADD_FILE:
 			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(OPENFILENAMEW));
-			ofn.lStructSize = sizeof(OPENFILENAMEW);
+			ZeroMemory(&ofn, sizeof(ofn));
+			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
 			ofn.lpstrTitle = L"ファイル追加";

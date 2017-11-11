@@ -192,7 +192,7 @@ HRESULT CTextService::_SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KA
 
 	if(ret == E_ABORT)
 	{
-		ZeroMemory(pconv, sizeof(*pconv));
+		*pconv = ROMAN_KANA_CONV{};
 	}
 
 	return ret;
@@ -218,7 +218,7 @@ HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 
 	if(ret == E_ABORT)
 	{
-		ZeroMemory(pconv, sizeof(*pconv));
+		*pconv = ASCII_JLATIN_CONV{};
 	}
 
 	return ret;
