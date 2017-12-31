@@ -17,6 +17,9 @@ static const struct {
 	LPCWSTR text;
 } menuItems[] =
 {
+	{im_disable,		IDM_CAPSLOCK,		0, L"CAPS"},
+	{im_disable,		IDM_KANALOCK,		0, L"KANA"},
+	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
 	{im_hiragana,		IDM_HIRAGANA,		0, L"［かな］"},
 	{im_katakana,		IDM_KATAKANA,		0, L"［カナ］"},
 	{im_katakana_ank,	IDM_KATAKANA_ANK,	0, L"［－ｶﾅ］"},
@@ -199,6 +202,10 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 						}
 					}
 					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DIRECT, check, MF_BYCOMMAND);
+					CheckMenuItem(hMenu, IDM_CAPSLOCK,
+						MF_BYCOMMAND | ((GetKeyState(VK_CAPITAL) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
+					CheckMenuItem(hMenu, IDM_KANALOCK,
+						MF_BYCOMMAND | ((GetKeyState(VK_KANA) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
 					HMENU hSubMenu = GetSubMenu(hMenu, 0);
 					if(hSubMenu)
 					{
@@ -252,9 +259,30 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 
 	for(int i = 0; i < _countof(menuItems); i++)
 	{
-		pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-			(_pTextService->inputmode == menuItems[i].inputmode ? TF_LBMENUF_RADIOCHECKED : 0),
-			nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+		switch(menuItems[i].id)
+		{
+		case IDM_CAPSLOCK:
+			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
+				((GetKeyState(VK_CAPITAL) & 1) == 1 ? TF_LBMENUF_CHECKED : 0),
+				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			break;
+		case IDM_KANALOCK:
+			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
+				((GetKeyState(VK_KANA) & 1) == 1 ? TF_LBMENUF_CHECKED : 0),
+				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			break;
+		case IDM_HIRAGANA:
+		case IDM_KATAKANA:
+		case IDM_KATAKANA_ANK:
+		case IDM_JLATIN:
+		case IDM_ASCII:
+		case IDM_DIRECT:
+		default:
+			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
+				(_pTextService->inputmode == menuItems[i].inputmode ? TF_LBMENUF_RADIOCHECKED : 0),
+				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			break;
+		}
 	}
 
 	return S_OK;
@@ -264,6 +292,30 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 {
 	switch(wID)
 	{
+	case IDM_CAPSLOCK:
+	case IDM_KANALOCK:
+		{
+			INPUT input = {INPUT_KEYBOARD};
+			switch(wID)
+			{
+			case IDM_CAPSLOCK:
+				input.ki.wVk = VK_CAPITAL;
+				break;
+			case IDM_KANALOCK:
+				input.ki.wVk = VK_KANA;
+				break;
+			default:
+				break;
+			}
+			input.ki.wScan = MapVirtualKeyW(input.ki.wVk, 0);
+			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+			input.ki.time = 0;
+			input.ki.dwExtraInfo = GetMessageExtraInfo();
+			INPUT input2[] = {input, input};
+			input2[1].ki.dwFlags |= KEYEVENTF_KEYUP;
+			SendInput(2, input2, sizeof(INPUT));
+		}
+		break;
 	case IDM_CONFIG:
 		_pTextService->_StartConfigure();
 		break;

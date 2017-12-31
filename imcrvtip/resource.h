@@ -27,5 +27,7 @@
 #define IDM_ASCII           1015
 #define IDM_DIRECT          1020
 #define IDM_CONFIG          1021
+#define IDM_CAPSLOCK		1022
+#define IDM_KANALOCK		1023
 
 #endif //RESOURCE_H
