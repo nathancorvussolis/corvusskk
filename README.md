@@ -368,8 +368,8 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 | ひらがな   | Ctrl+0x4A (Ctrl+j)     | ひらがなモード |
 | abbrev     |                        | abbrevモード |
 | 接辞       |                        | 接頭辞・接尾辞 |
-| 次候補     |                        | 辞書検索開始、次候補 |
-| 前候補     |                        | 「後退」のキーも使用可 |
+| 次候補     | 0x22 (PgDn)            | 辞書検索開始、次候補 |
+| 前候補     | 0x21 (PgUp)            | 「後退」のキーも使用可 |
 | 辞書削除   |                        | ユーザー辞書から候補を削除 |
 | 次補完     |                        | 補完開始、次見出し語候補 |
 | 前補完     | Shift+0x09(Shift+Tab)  | 前見出し語候補 |
@@ -659,6 +659,9 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "EnableCompatibilityKeyboard"=dword:00000001
+
+* Windows 10 (Ver.1709 から) の場合
+    +  ハードウェアキーボードに準拠したレイアウトはMS-IMEでのみ使用できるようです。
 
 
 ### 開発環境
