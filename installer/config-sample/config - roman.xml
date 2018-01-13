@@ -143,8 +143,8 @@
     <key name="jmode" value="C\x4A" />
     <key name="abbrev" value="" />
     <key name="affix" value="" />
-    <key name="nextcand" value="" />
-    <key name="prevcand" value="" />
+    <key name="nextcand" value="\x22" />
+    <key name="prevcand" value="\x21" />
     <key name="purgedic" value="" />
     <key name="nextcomp" value="" />
     <key name="prevcomp" value="S\x09" />
