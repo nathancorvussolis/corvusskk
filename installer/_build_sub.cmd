@@ -13,7 +13,7 @@ set PATH=%PATH%;%LocalAppData%\Pandoc;%ProgramFiles%\Pandoc;%ProgramFiles(x86)%\
 
 set DESCRIPTION=CorvusSKK
 
-pandoc.exe -s -f gfm-ascii_identifiers -t html5 -V lang:"ja" -V title-prefix:"%DESCRIPTION%" -V pagetitle:"Manual" -V title:"%DESCRIPTION% Manual" --self-contained -c "installer\resource-md\markdown.css" --columns=1024 --toc -o "installer\%TARGETDIR%\README.html" README.md
+pandoc.exe -s -f gfm-ascii_identifiers -t html5 -V lang:"ja" -V title-prefix:"%DESCRIPTION%" -V pagetitle:"Manual" -V title:"%DESCRIPTION% Manual" --self-contained -c "installer\resource-md\markdown.css" --toc -o "installer\%TARGETDIR%\README.html" README.md
 
 popd
 
