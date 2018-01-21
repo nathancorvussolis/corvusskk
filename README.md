@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.5.6
+# CorvusSKK ver. 2.5.7
 
 Windowsで動作するSKK風のIMEです。
 
@@ -670,7 +670,7 @@ Visual Studio Community 2015 Update 3
 
 WiX Toolset v3.11
 
-pandoc 2.0.1.1
+pandoc 2.1.1
 
 
 ### ビルド手順
@@ -699,7 +699,7 @@ pandoc 2.0.1.1
 
 ---
 
-Copyright (C) 2011-2017 SASAKI Nobuyuki
+Copyright (C) 2011-2018 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
