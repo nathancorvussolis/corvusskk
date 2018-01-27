@@ -294,26 +294,16 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 	{
 	case IDM_CAPSLOCK:
 	case IDM_KANALOCK:
+		switch(wID)
 		{
-			INPUT input = {INPUT_KEYBOARD};
-			switch(wID)
-			{
-			case IDM_CAPSLOCK:
-				input.ki.wVk = VK_CAPITAL;
-				break;
-			case IDM_KANALOCK:
-				input.ki.wVk = VK_KANA;
-				break;
-			default:
-				break;
-			}
-			input.ki.wScan = MapVirtualKeyW(input.ki.wVk, 0);
-			input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
-			input.ki.time = 0;
-			input.ki.dwExtraInfo = GetMessageExtraInfo();
-			INPUT input2[] = {input, input};
-			input2[1].ki.dwFlags |= KEYEVENTF_KEYUP;
-			SendInput(2, input2, sizeof(INPUT));
+		case IDM_CAPSLOCK:
+			_pTextService->_CommandDic(REQ_CAPS_LOCK);
+			break;
+		case IDM_KANALOCK:
+			_pTextService->_CommandDic(REQ_KANA_LOCK);
+			break;
+		default:
+			break;
 		}
 		break;
 	case IDM_CONFIG:

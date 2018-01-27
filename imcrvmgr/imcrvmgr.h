@@ -27,6 +27,7 @@ std::wstring SearchUnicode(const std::wstring &searchkey);
 std::wstring SearchJISX0213(const std::wstring &searchkey);
 std::wstring SearchJISX0208(const std::wstring &searchkey);
 std::wstring SearchCharacterCode(const std::wstring &searchkey);
+void SendKeyboardInput(WCHAR command);
 
 // SearchDictionary
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc);

@@ -256,6 +256,25 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	return candidate;
 }
 
+void SendKeyboardInput(WCHAR command)
+{
+	INPUT input = { INPUT_KEYBOARD };
+	switch (command)
+	{
+	case REQ_CAPS_LOCK:
+		input.ki.wVk = VK_CAPITAL;
+		break;
+	case REQ_KANA_LOCK:
+		input.ki.wVk = VK_KANA;
+		break;
+	}
+
+	INPUT input2[] = { input, input };
+	input2[1].ki.dwFlags |= KEYEVENTF_KEYUP;
+
+	SendInput(2, input2, sizeof(INPUT));
+}
+
 //JIS X 0208 有効区点テーブル
 const USHORT jisx0208b[ROWNUM][COLNUM] =
 {

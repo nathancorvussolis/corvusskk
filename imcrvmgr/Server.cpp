@@ -39,6 +39,12 @@
 //create configuration dialog process
 //  request "P\n"
 //  reply   "T\n"
+//caps lock
+//  request "I\n"
+//  reply   "T\n"
+//kana lock
+//  request "J\n"
+//  reply   "T\n"
 //
 
 void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
@@ -237,6 +243,14 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_EXEC_CNF:
 		StartProcess(hInst, IMCRVCNFEXE);
+
+		result = REP_OK;
+		result += L"\n";
+		break;
+
+	case REQ_CAPS_LOCK:
+	case REQ_KANA_LOCK:
+		SendKeyboardInput(command);
 
 		result = REP_OK;
 		result += L"\n";
