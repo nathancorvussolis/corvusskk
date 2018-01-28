@@ -32,6 +32,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateProperty();
 
+	ReleaseMutex(hMutex);
+	CloseHandle(hMutex);
+
 	return 0;
 }
 

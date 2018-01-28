@@ -77,13 +77,14 @@ extern const TF_DISPLAYATTRIBUTE c_daDisplayAttributeConvAnnot;
 extern const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM];
 
 BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD dwBuildNumber);
-#define IsWindowsVersion62OrLater() IsWindowsVersionOrLater(6, 2, 0)
-#define IsWindowsVersion63OrLater() IsWindowsVersionOrLater(6, 3, 0)
-#define IsWindowsVersion100OrLater() IsWindowsVersionOrLater(10, 0, 0)
-#define IsWindowsVersion100TH1OrLater() IsWindowsVersionOrLater(10, 0, 10240)
-#define IsWindowsVersion100TH2OrLater() IsWindowsVersionOrLater(10, 0, 10586)
-#define IsWindowsVersion100RS1OrLater() IsWindowsVersionOrLater(10, 0, 14393)
-#define IsWindowsVersion100RS2OrLater() IsWindowsVersionOrLater(10, 0, 15063)
+#define IsWindowsVersion62OrLater() IsWindowsVersionOrLater(6, 2, 0) // Windows 8
+#define IsWindowsVersion63OrLater() IsWindowsVersionOrLater(6, 3, 0) // Windows 8.1
+#define IsWindowsVersion100OrLater() IsWindowsVersionOrLater(10, 0, 0) // Windows 10
+#define IsWindowsVersion100TH1OrLater() IsWindowsVersionOrLater(10, 0, 10240) // Windows 10 ver.1507
+#define IsWindowsVersion100TH2OrLater() IsWindowsVersionOrLater(10, 0, 10586) // Windows 10 ver.1511
+#define IsWindowsVersion100RS1OrLater() IsWindowsVersionOrLater(10, 0, 14393) // Windows 10 ver.1607
+#define IsWindowsVersion100RS2OrLater() IsWindowsVersionOrLater(10, 0, 15063) // Windows 10 ver.1703
+#define IsWindowsVersion100RS3OrLater() IsWindowsVersionOrLater(10, 0, 16299) // Windows 10 ver.1709
 
 BOOL GetUserUUID(LPWSTR *ppszUUID);
 BOOL GetUserSid(LPWSTR *ppszUserSid);

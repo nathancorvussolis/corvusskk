@@ -288,17 +288,7 @@ void CTextService::_StartConfigure()
 		return;
 	}
 
-	hMutex = OpenMutexW(SYNCHRONIZE, FALSE, mgrmutexname);
-	if(hMutex != nullptr)
-	{
-		CloseHandle(hMutex);
+	AllowSetForegroundWindow(ASFW_ANY);
 
-		AllowSetForegroundWindow(ASFW_ANY);
-
-		_CommandDic(REQ_EXEC_CNF);
-	}
-	else
-	{
-		StartProcess(g_hInst, IMCRVCNFEXE);
-	}
+	_CommandDic(REQ_EXEC_CNF);
 }

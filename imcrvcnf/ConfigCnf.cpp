@@ -84,6 +84,7 @@ int GetDpi(HWND hwnd)
 	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
 	ReleaseDC(hwnd, hdc);
 
+	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
 	if(IsWindowsVersion100RS2OrLater())
 	{
 		__try
