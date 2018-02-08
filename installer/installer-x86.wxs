@@ -3,13 +3,29 @@
 
   <?include installer-version.wxi ?>
 
-  <Product Id="*" Name="CorvusSKK (x86)" Version="$(var.version)" Manufacturer="nathancorvussolis"
-    Language="1033" UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
+  <Product
+    Id="*"
+    Name="CorvusSKK (x86)"
+    Version="$(var.version)"
+    Manufacturer="nathancorvussolis"
+    Language="1033"
+    UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
-    <Package Id="*" Compressed="yes" Description="CorvusSKK (x86)" Comments="ver. $(var.version)"
-      Platform="x86" InstallerVersion="405" InstallScope="perMachine" InstallPrivileges="elevated" />
+    <Package
+      Id="*"
+      Compressed="yes"
+      Description="CorvusSKK (x86)"
+      Comments="ver. $(var.version)"
+      Platform="x86"
+      InstallerVersion="405"
+      InstallScope="perMachine"
+      InstallPrivileges="elevated" />
 
-    <Media Id="1" Cabinet="x86.cab" CompressionLevel="high" EmbedCab="yes" />
+    <Media
+      Id="1"
+      Cabinet="x86.cab"
+      CompressionLevel="high"
+      EmbedCab="yes" />
 
     <!-- disable advertised shortcuts -->
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
@@ -31,41 +47,41 @@
     </Directory>
 
     <DirectoryRef Id="IMCRVSKK_X86">
-      <Component Guid="B3338B63-FB00-4206-8678-6352340F6685" Id="CNF_X86">
+      <Component Id="CNF_X86" Guid="B3338B63-FB00-4206-8678-6352340F6685">
         <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
       </Component>
-      <Component Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7" Id="MGR_X86">
+      <Component Id="MGR_X86" Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7">
         <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
       </Component>
-      <Component Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B" Id="TIP_X86">
+      <Component Id="TIP_X86" Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B">
         <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
       </Component>
-      <Component Guid="288FF289-0EAA-405B-87ED-4F367D40546F" Id="LUAEXE_X86">
+      <Component Id="LUAEXE_X86" Guid="288FF289-0EAA-405B-87ED-4F367D40546F">
         <File Id="F_luaexe_x86" Name="lua.exe" Source="..\Win32\Release\lua.exe" />
       </Component>
-      <Component Guid="84898511-4C96-4114-A7EE-8F32E260D28A" Id="LUADLL_X86">
+      <Component Id="LUADLL_X86" Guid="84898511-4C96-4114-A7EE-8F32E260D28A">
         <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_WIN">
-      <Component Guid="12FF814A-8F58-44C4-B653-23258B7F1705" Id="CONFIG_XML">
+      <Component Id="CONFIG_XML" Guid="12FF814A-8F58-44C4-B653-23258B7F1705">
         <File Id="F_config_xml" Name="config.xml" Source="build\config.xml" />
       </Component>
-      <Component Guid="6EE61E3E-BB06-4A30-9C67-8CD769B2AE09" Id="INIT_LUA">
+      <Component Id="INIT_LUA" Guid="6EE61E3E-BB06-4A30-9C67-8CD769B2AE09">
         <File Id="F_init_lua" Name="init.lua" Source="build\init.lua" />
       </Component>
-      <Component Guid="E2626079-9F1C-4B10-9A68-034B12D6DB73" Id="SKKDICT_TXT">
+      <Component Id="SKKDICT_TXT" Guid="E2626079-9F1C-4B10-9A68-034B12D6DB73">
         <File Id="F_skkdict_txt" Name="skkdict.txt" Source="build\skkdict.txt" />
       </Component>
-      <Component Guid="C4067E27-5681-4FE1-89BE-38080A9C40E5" Id="README_HTML">
+      <Component Id="README_HTML" Guid="C4067E27-5681-4FE1-89BE-38080A9C40E5">
         <File Id="F_readme_html" Name="README.html" Source="build\README.html" KeyPath="yes">
           <Shortcut Id="S_readme_html" Name="README.html" Directory="IMCRVSKK_MENU"
             WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
         </File>
         <RemoveFolder Id="RF_readme_html" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
-      <Component Guid="9C25E720-D44D-46E7-9FBF-041A00A825A8" Id="LICENSE_TXT">
+      <Component Id="LICENSE_TXT" Guid="9C25E720-D44D-46E7-9FBF-041A00A825A8">
         <File Id="F_license_txt" Name="LICENSE.txt" Source="build\LICENSE.txt" KeyPath="yes">
           <Shortcut Id="S_license_txt" Name="LICENSE.txt" Directory="IMCRVSKK_MENU"
             WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
@@ -74,7 +90,7 @@
       </Component>
     </DirectoryRef>
 
-    <Component Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Id="REG_X86" Directory="TARGETDIR">
+    <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
       <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
         <RegistryValue Action="write" Type="string" Name="imcrvmgr"
           Value="&quot;[%SystemRoot]\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" />

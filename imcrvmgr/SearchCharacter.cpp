@@ -259,7 +259,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 void SendKeyboardInput(WCHAR command)
 {
 	INPUT input = { INPUT_KEYBOARD };
-	switch (command)
+	switch(command)
 	{
 	case REQ_CAPS_LOCK:
 		input.ki.wVk = VK_CAPITAL;
