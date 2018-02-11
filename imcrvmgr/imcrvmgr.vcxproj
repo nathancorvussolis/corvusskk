@@ -108,6 +108,9 @@
       <Culture>0x0411</Culture>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>imcrvmgr.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -130,6 +133,9 @@
       <Culture>0x0411</Culture>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>imcrvmgr.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -157,6 +163,9 @@
       <Culture>0x0411</Culture>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>imcrvmgr.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -184,6 +193,9 @@
       <Culture>0x0411</Culture>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>imcrvmgr.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="imcrvmgr.h" />
@@ -206,6 +218,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvmgr.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="imcrvmgr.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

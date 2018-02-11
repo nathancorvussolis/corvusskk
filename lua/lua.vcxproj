@@ -106,6 +106,9 @@
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>lua.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,6 +129,9 @@
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>lua.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -151,6 +157,9 @@
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>lua.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -176,6 +185,9 @@
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
+    <Manifest>
+      <AdditionalManifestFiles>lua.manifest %(AdditionalManifestFiles)</AdditionalManifestFiles>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -192,6 +204,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="lua.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="lua.manifest" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
