@@ -396,7 +396,9 @@ void CTextService::_StartSubConv(WCHAR command)
 
 				if(!kanaconv.empty())
 				{
-					candidates.push_back(CANDIDATE(CANDIDATEBASE(kanaconv, L""), CANDIDATEBASE(kanaconv, L"")));
+					candidates.push_back(std::make_pair(
+						std::make_pair(kanaconv, std::wstring(L"")),
+						std::make_pair(kanaconv, std::wstring(L""))));
 				}
 			}
 			break;

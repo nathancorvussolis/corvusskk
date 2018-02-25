@@ -160,7 +160,7 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 
 		if(!candidate.empty())
 		{
-			c.push_back(SKKDICCANDIDATE(candidate, annotation));
+			c.push_back(std::make_pair(candidate, annotation));
 		}
 	}
 }
@@ -187,7 +187,7 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 		std::reverse(okurics.begin(), okurics.end());
 
-		o.insert(o.begin(), SKKDICOKURIBLOCK(okurik, okurics));
+		o.insert(o.begin(), std::make_pair(okurik, okurics));
 		so = m.suffix();
 	}
 }

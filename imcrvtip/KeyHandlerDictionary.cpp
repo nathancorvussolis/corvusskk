@@ -106,7 +106,8 @@ void CTextService::_SearchDic(WCHAR command)
 			sad = sar;
 		}
 
-		candidates.push_back(CANDIDATE(CANDIDATEBASE(scd, sad), CANDIDATEBASE(scr, sar)));
+		candidates.push_back(std::make_pair(
+			std::make_pair(scd, sad), std::make_pair(scr, sar)));
 	}
 
 exit:

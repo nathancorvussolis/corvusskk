@@ -350,9 +350,9 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 				conv = candidate;
 			}
 
-			_pTextService->candidates.push_back(CANDIDATE
-				(CANDIDATEBASE(conv, annotation),
-				(CANDIDATEBASE(candidate, annotation))));
+			_pTextService->candidates.push_back(std::make_pair(
+				std::make_pair(conv, annotation),
+				std::make_pair(candidate, annotation)));
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
 			_pTextService->candorgcnt = 0;
 

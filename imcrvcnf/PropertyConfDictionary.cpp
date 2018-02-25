@@ -110,7 +110,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	if(skkdic_itr == skkdic.end())
 	{
 		skkdicentry.first = key;
-		skkdicentry.second.push_back(SKKDICCANDIDATE(candidate, annotation_seps));
+		skkdicentry.second.push_back(std::make_pair(candidate, annotation_seps));
 		skkdic.insert(skkdicentry);
 	}
 	else
@@ -139,7 +139,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 		}
 		if(!exist)
 		{
-			skkdic_itr->second.push_back(SKKDICCANDIDATE(candidate, MakeConcat(annotation_seps)));
+			skkdic_itr->second.push_back(std::make_pair(candidate, MakeConcat(annotation_seps)));
 		}
 	}
 }
