@@ -133,25 +133,6 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			}
 			break;
 
-		case PSN_APPLY:
-			WriterStartSection(pXmlWriter, SectionSelKey);
-
-			hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-			for(index = 0; index < MAX_SELKEY_C; index++)
-			{
-				ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
-				key[0] = num[0];
-				ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
-				key[1] = num[0];
-				key[2] = L'\0';
-				_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
-				WriterKey(pXmlWriter, num, key);
-			}
-
-			WriterEndSection(pXmlWriter);
-
-			return TRUE;
-
 		default:
 			break;
 		}
@@ -161,4 +142,24 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 	}
 	return FALSE;
+}
+
+void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
+{
+	HWND hWndListView;
+	int index;
+	WCHAR num[2];
+	WCHAR key[4];
+
+	hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
+	for (index = 0; index < MAX_SELKEY_C; index++)
+	{
+		ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
+		key[0] = num[0];
+		ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
+		key[1] = num[0];
+		key[2] = L'\0';
+		_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
+		WriterKey(pWriter, num, key);
+	}
 }

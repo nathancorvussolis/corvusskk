@@ -7,7 +7,6 @@
 // imcrvcnf
 void CreateProperty();
 int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam);
-
 // ConfigCnf
 void CreateConfigPath();
 void CreateIpcName();
@@ -15,57 +14,63 @@ BOOL SetFileDacl(LPCWSTR path);
 int GetScaledSizeX(HWND hwnd, int size);
 int GetFontHeight(HWND hwnd, int size);
 void DrawSelectColor(HWND hDlg, int id, COLORREF col);
-
-// PropertyConfDictionary
-void LoadDictionary(HWND hwnd);
-void SaveDictionary(HWND hwnd);
-void MakeSKKDic(HWND hwnd);
-
-// PropertyConfConv
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault = L"");
-void SaveCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
-void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault);
-void SaveKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
-void LoadPreservedKey(HWND hwnd);
-void SavePreservedKey(HWND hwnd);
-void LoadConvPoint(HWND hwnd);
-void SaveConvPoint(HWND hwnd);
-void LoadKana(HWND hwnd);
-void SaveKana(HWND hwnd);
-void LoadJLatin(HWND hwnd);
-void SaveJLatin(HWND hwnd);
-void LoadConfigKanaTxt(LPCWSTR path);
-void LoadKanaTxt(HWND hwnd, LPCWSTR path);
-void SaveKanaTxt(HWND hwnd, LPCWSTR path);
-
-// dialog procedures
-INT_PTR CALLBACK DlgProcDictionary(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcBehavior1(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcBehavior2(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplay1(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplay2(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplayAttrInput(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcDisplayAttrConv(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcSelKey(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcPreservedKey(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKeyMap1(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKeyMap2(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcConvPoint(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcKana(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK DlgProcJLatin(HWND, UINT, WPARAM, LPARAM);
+void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
+void SaveConfigXml(HWND hDlg);
+// DlgDicMake
+void MakeSKKDic(HWND hDlg);
+// DlgDicAddUrl
+INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+// DlgProcDictionary
+INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDictionary(IXmlWriter *pWriter, HWND hDlg);
+void SaveServer(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcBehavior1
+INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveFont(IXmlWriter *pWriter, HWND hDlg);
+void SaveBehavior1(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcBehavior2
+INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveBehavior2(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcDisplay1
+INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcDisplay2
+INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcDisplayAttr
+INT_PTR CALLBACK DlgProcDisplayAttr1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK DlgProcDisplayAttr2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDisplayAttr1(IXmlWriter *pWriter, HWND hDlg);
+void SaveDisplayAttr2(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcSelKey
+INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveSelKey(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcPreservedKey
+INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SavePreservedKeyON(IXmlWriter *pWriter, HWND hDlg);
+void SavePreservedKeyOFF(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcKeyMap
+INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg);
+void SaveVKeyMap(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcConvPoint
+INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveConvPoint(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcKana
+INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveKana(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcJLatin
+INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveJLatin(IXmlWriter *pWriter, HWND hDlg);
 
 extern LPCWSTR TextServiceDesc;
-
-extern IXmlWriter *pXmlWriter;
-extern IStream *pXmlFileStream;
-
 extern HINSTANCE hInst;
-
 extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
-
-// ファイルパス
-extern WCHAR pathconfigxml[MAX_PATH];	//設定
-extern WCHAR pathskkdic[MAX_PATH];	//取込SKK辞書
+extern WCHAR pathconfigxml[MAX_PATH];		//設定
+extern WCHAR pathskkdic[MAX_PATH];			//取込SKK辞書
+extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
 
 // Per-Monitor DPI Awareness V2
 #ifndef NTDDI_WIN10_RS2

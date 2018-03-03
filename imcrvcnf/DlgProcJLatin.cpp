@@ -4,6 +4,10 @@
 #include "convtable.h"
 #include "resource.h"
 
+ASCII_JLATIN_CONV ascii_jlatin_conv[ASCII_JLATIN_TBL_NUM];
+
+void LoadJLatin(HWND hDlg);
+
 INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
@@ -161,21 +165,133 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			}
 			break;
 
-		case PSN_APPLY:
-			SaveJLatin(hDlg);
-
-			WriterEndElement(pXmlWriter);	//TagRoot
-
-			WriterNewLine(pXmlWriter);
-
-			WriterFinal(&pXmlWriter, &pXmlFileStream);
-
-			return TRUE;
-
 		default:
 			break;
 		}
 		break;
 	}
 	return FALSE;
+}
+
+void LoadConfigJLatin()
+{
+	APPDATAXMLLIST list;
+
+	ZeroMemory(ascii_jlatin_conv, sizeof(ascii_jlatin_conv));
+
+	HRESULT hr = ReadList(pathconfigxml, SectionJLatin, list);
+
+	if(SUCCEEDED(hr) && list.size() != 0)
+	{
+		int i = 0;
+		FORWARD_ITERATION_I(l_itr, list)
+		{
+			if(i >= ASCII_JLATIN_TBL_NUM)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
+			{
+				WCHAR *pszb = nullptr;
+				size_t blen = 0;
+
+				if(r_itr->first == AttributeLatin)
+				{
+					pszb = ascii_jlatin_conv[i].ascii;
+					blen = _countof(ascii_jlatin_conv[i].ascii);
+				}
+				else if(r_itr->first == AttributeJLatin)
+				{
+					pszb = ascii_jlatin_conv[i].jlatin;
+					blen = _countof(ascii_jlatin_conv[i].jlatin);
+				}
+
+				if(pszb != nullptr)
+				{
+					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
+				}
+			}
+
+			i++;
+		}
+	}
+	else if(FAILED(hr))
+	{
+		memcpy_s(ascii_jlatin_conv, sizeof(ascii_jlatin_conv),
+			ascii_jlatin_conv_default, sizeof(ascii_jlatin_conv_default));
+	}
+}
+
+void LoadJLatin(HWND hDlg)
+{
+	LVITEMW item;
+
+	LoadConfigJLatin();
+
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
+
+	for(int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
+	{
+		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
+			ascii_jlatin_conv[i].jlatin[0] == L'\0')
+		{
+			break;
+		}
+
+		item.mask = LVIF_TEXT;
+		item.pszText = ascii_jlatin_conv[i].ascii;
+		item.iItem = i;
+		item.iSubItem = 0;
+		ListView_InsertItem(hWndListView, &item);
+		item.pszText = ascii_jlatin_conv[i].jlatin;
+		item.iItem = i;
+		item.iSubItem = 1;
+		ListView_SetItem(hWndListView, &item);
+	}
+}
+
+void SaveJLatin(IXmlWriter *pWriter, HWND hDlg)
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLROW row;
+	APPDATAXMLATTR attr;
+	ASCII_JLATIN_CONV ajc;
+
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
+	int count = ListView_GetItemCount(hWndListView);
+
+	for(int i = 0; i < count && i < ASCII_JLATIN_TBL_NUM; i++)
+	{
+		ListView_GetItemText(hWndListView, i, 0, ajc.ascii, _countof(ajc.ascii));
+		ListView_GetItemText(hWndListView, i, 1, ajc.jlatin, _countof(ajc.jlatin));
+		ascii_jlatin_conv[i] = ajc;
+	}
+	if(count < ASCII_JLATIN_TBL_NUM)
+	{
+		ascii_jlatin_conv[count].ascii[0] = L'\0';
+		ascii_jlatin_conv[count].jlatin[0] = L'\0';
+	}
+
+	for(int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
+	{
+		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
+			ascii_jlatin_conv[i].jlatin[0] == L'\0')
+		{
+			break;
+		}
+
+		attr.first = AttributeLatin;
+		attr.second = ascii_jlatin_conv[i].ascii;
+		row.push_back(attr);
+
+		attr.first = AttributeJLatin;
+		attr.second = ascii_jlatin_conv[i].jlatin;
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
+	}
+
+	WriterList(pWriter, list);
 }

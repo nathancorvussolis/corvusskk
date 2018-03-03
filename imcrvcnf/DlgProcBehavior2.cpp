@@ -6,7 +6,7 @@
 INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwnd;
-	WCHAR num[16];
+	WCHAR num[2];
 	std::wstring strxmlval;
 	int count;
 
@@ -21,10 +21,10 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueCompMultiNum, strxmlval);
-		count = strxmlval.empty() ? COMPMULTIDISP_NUM : _wtoi(strxmlval.c_str());
+		count = strxmlval.empty() ? COMPMULTIDISP_DEF : _wtoi(strxmlval.c_str());
 		if(count > MAX_SELKEY_C || count < 1)
 		{
-			count = COMPMULTIDISP_NUM;
+			count = COMPMULTIDISP_DEF;
 		}
 		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)(count - 1), 0);
 
@@ -65,35 +65,30 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		}
 		break;
 
-	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
-		{
-		case PSN_APPLY:
-			hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
-			count = 1;
-			count += (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
-			num[0] = L'0' + (WCHAR)count;
-			num[1] = L'\0';
-			WriterKey(pXmlWriter, ValueCompMultiNum, num);
-
-			SaveCheckButton(hDlg, IDC_CHECKBOX_STACOMPMULTI, ValueStaCompMulti);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DYNAMINCOMP, ValueDynamicComp);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_DYNCOMPMULTI, ValueDynCompMulti);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_COMPUSERDIC, ValueCompUserDic);
-			SaveCheckButton(hDlg, IDC_CHECKBOX_COMPINCBACK, ValueCompIncBack);
-
-			WriterEndSection(pXmlWriter);	//End of SectionBehavior
-
-			return TRUE;
-
-		default:
-			break;
-		}
-		break;
-
 	default:
 		break;
 	}
 
 	return FALSE;
+}
+
+void SaveBehavior2(IXmlWriter *pWriter, HWND hDlg)
+{
+	WCHAR num[2];
+
+	HWND hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
+	int count = 1 + (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
+	if(count > MAX_SELKEY_C || count < 1)
+	{
+		count = COMPMULTIDISP_DEF;
+	}
+	num[0] = L'0' + (WCHAR)count;
+	num[1] = L'\0';
+	WriterKey(pWriter, ValueCompMultiNum, num);
+
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_STACOMPMULTI, ValueStaCompMulti);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DYNAMINCOMP, ValueDynamicComp);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DYNCOMPMULTI, ValueDynCompMulti);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_COMPUSERDIC, ValueCompUserDic);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_COMPINCBACK, ValueCompIncBack);
 }

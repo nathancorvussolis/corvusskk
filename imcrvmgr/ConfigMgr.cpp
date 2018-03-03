@@ -19,8 +19,8 @@ WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 
 // 辞書サーバー設定
 BOOL serv = FALSE;		//SKK辞書サーバーを使用する
-WCHAR host[MAX_SKKSERVER_HOST] = {L'\0'};	//ホスト
-WCHAR port[MAX_SKKSERVER_PORT] = {L'\0'};	//ポート
+WCHAR host[MAX_SKKSERVER_HOST] = {};	//ホスト
+WCHAR port[MAX_SKKSERVER_PORT] = {};	//ポート
 DWORD encoding = 0;		//エンコーディング
 DWORD timeout = 1000;	//タイムアウト
 

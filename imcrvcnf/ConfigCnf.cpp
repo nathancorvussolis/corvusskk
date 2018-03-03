@@ -1,15 +1,12 @@
 ﻿
 #include "configxml.h"
 #include "imcrvcnf.h"
+#include "resource.h"
+
+#define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
-
-IXmlWriter *pXmlWriter;
-IStream *pXmlFileStream;
-
 WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
-
-// ファイルパス
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 
@@ -53,7 +50,7 @@ void CreateIpcName()
 BOOL SetFileDacl(LPCWSTR path)
 {
 	BOOL bRet = FALSE;
-	WCHAR sddl[MAX_KRNLOBJNAME] = {L'\0'};
+	WCHAR sddl[MAX_KRNLOBJNAME] = {};
 	PSECURITY_DESCRIPTOR psd = nullptr;
 	LPWSTR pszUserSid;
 
@@ -128,4 +125,174 @@ void DrawSelectColor(HWND hDlg, int id, COLORREF col)
 	Rectangle(hdc, rect.left, rect.top, rect.right, rect.bottom);
 
 	ReleaseDC(hwnd, hdc);
+}
+
+void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault)
+{
+	std::wstring strxmlval;
+
+	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval, lpDefault);
+	CheckDlgButton(hDlg, nIDDlgItem, (_wtoi(strxmlval.c_str()) == TRUE ? BST_CHECKED : BST_UNCHECKED));
+}
+
+void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
+{
+	WCHAR num[2];
+
+	num[0] = L'0' + IsDlgButtonChecked(hDlg, nIDDlgItem);
+	num[1] = L'\0';
+	WriterKey(pWriter, lpKeyName, num);
+}
+
+void SaveConfigXml(HWND hPropSheetDlg)
+{
+	IXmlWriter *pWriter;
+	IStream *pFileStream;
+
+	WriterInit(pathconfigxml, &pWriter, &pFileStream);
+
+	//skk
+	{
+		WriterStartElement(pWriter, TagRoot);
+
+		//dictionary
+		{
+			WriterStartSection(pWriter, SectionDictionary);
+
+			SaveDictionary(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY));
+
+			WriterEndSection(pWriter);
+		}
+
+		//server
+		{
+			WriterStartSection(pWriter, SectionServer);
+
+			SaveServer(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY));
+
+			WriterEndSection(pWriter);
+		}
+
+		//behavior
+		{
+			WriterStartSection(pWriter, SectionBehavior);
+
+			SaveBehavior1(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_BEHAVIOR1));
+
+			SaveBehavior2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_BEHAVIOR2));
+
+			WriterEndSection(pWriter);
+		}
+
+		//font
+		{
+			WriterStartSection(pWriter, SectionFont);
+
+			SaveFont(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DISPLAY1));
+
+			WriterEndSection(pWriter);
+		}
+
+		//display
+		{
+			WriterStartSection(pWriter, SectionDisplay);
+
+			SaveDisplay1(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DISPLAY1));
+
+			SaveDisplay2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DISPLAY2));
+
+			WriterEndSection(pWriter);
+		}
+
+		//displayAttr
+		{
+			WriterStartSection(pWriter, SectionDisplayAttr);
+
+			SaveDisplayAttr1(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DISPLAYATTR1));
+
+			SaveDisplayAttr2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DISPLAYATTR2));
+
+			WriterEndSection(pWriter);
+		}
+
+		//selKey
+		{
+			WriterStartSection(pWriter, SectionSelKey);
+
+			SaveSelKey(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_SELKEY));
+
+			WriterEndSection(pWriter);
+		}
+
+		//preservedKeyon
+		{
+			WriterStartSection(pWriter, SectionPreservedKeyON);
+
+			SavePreservedKeyON(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_PRSRVKEY));
+
+			WriterEndSection(pWriter);
+		}
+
+		//preservedKeyoff
+		{
+			WriterStartSection(pWriter, SectionPreservedKeyOFF);
+
+			SavePreservedKeyOFF(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_PRSRVKEY));
+
+			WriterEndSection(pWriter);
+		}
+
+		//keymap
+		{
+			WriterStartSection(pWriter, SectionKeyMap);
+
+			SaveCKeyMap(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_KEYMAP1));
+
+			WriterEndSection(pWriter);
+		}
+
+		//vkeymap
+		{
+			WriterStartSection(pWriter, SectionVKeyMap);
+
+			SaveVKeyMap(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_KEYMAP2));
+
+			WriterEndSection(pWriter);
+		}
+
+		//convpoint
+		{
+			WriterStartSection(pWriter, SectionConvPoint);
+
+			SaveConvPoint(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_CONVPOINT));
+
+			WriterEndSection(pWriter);
+		}
+
+		//kana
+		{
+			WriterStartSection(pWriter, SectionKana);
+
+			SaveKana(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_KANATBL));
+
+			WriterEndSection(pWriter);
+		}
+
+		//jlatin
+		{
+			WriterStartSection(pWriter, SectionJLatin);
+
+			SaveJLatin(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_JLATTBL));
+
+			WriterEndSection(pWriter);
+		}
+
+		WriterEndElement(pWriter);
+	}
+
+	WriterNewLine(pWriter);
+
+	WriterFinal(&pWriter, &pFileStream);
+
+	SetFileDacl(pathconfigxml);
 }

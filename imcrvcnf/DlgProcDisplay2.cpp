@@ -25,7 +25,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HDC hdc;
 	PAINTSTRUCT ps;
 	WCHAR num[16];
-	INT count;
+	int count;
 	RECT rect;
 	POINT pt;
 	std::wstring strxmlval;
@@ -40,7 +40,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
 		if(count > 60 || count <= 0)
 		{
-			count = 3;
+			count = SHOWMODESEC_DEF;
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", count);
 		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
@@ -131,36 +131,6 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		return TRUE;
 
-	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
-		{
-		case PSN_APPLY:
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
-			GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
-			count = _wtoi(num);
-			if(count <= 0 || count > 60)
-			{
-				count = 3;
-			}
-			_snwprintf_s(num, _TRUNCATE, L"%d", count);
-			SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
-			WriterKey(pXmlWriter, ValueShowModeSec, num);
-
-			for(int i = 0; i < _countof(displayModeColor); i++)
-			{
-				_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayModeColor[i].color);
-				WriterKey(pXmlWriter, displayModeColor[i].value, num);
-			}
-
-			WriterEndSection(pXmlWriter);	//End of SectionDisplay
-
-			return TRUE;
-
-		default:
-			break;
-		}
-		break;
-
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return TRUE;
@@ -170,4 +140,27 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	}
 
 	return FALSE;
+}
+
+void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
+{
+	WCHAR num[16];
+	int count;
+
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
+	GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
+	count = _wtoi(num);
+	if (count <= 0 || count > 60)
+	{
+		count = SHOWMODESEC_DEF;
+	}
+	_snwprintf_s(num, _TRUNCATE, L"%d", count);
+	SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
+	WriterKey(pWriter, ValueShowModeSec, num);
+
+	for (int i = 0; i < _countof(displayModeColor); i++)
+	{
+		_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayModeColor[i].color);
+		WriterKey(pWriter, displayModeColor[i].value, num);
+	}
 }

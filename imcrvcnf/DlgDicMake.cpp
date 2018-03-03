@@ -27,73 +27,6 @@ LPCWSTR SkkDicErrorMsg[] =
 	L"文字コード"
 };
 
-void LoadDictionary(HWND hwnd)
-{
-	APPDATAXMLLIST list;
-	LVITEMW item;
-
-	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
-
-	if(SUCCEEDED(hr) && list.size() != 0)
-	{
-		HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-		int i = 0;
-		FORWARD_ITERATION_I(l_itr, list)
-		{
-			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
-			{
-				continue;
-			}
-			item.mask = LVIF_TEXT;
-			item.pszText = (LPWSTR)(*l_itr)[0].second.c_str();
-			item.iItem = i;
-			item.iSubItem = 0;
-			ListView_InsertItem(hWndListView, &item);
-
-			BOOL check = TRUE;
-			if(l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
-			{
-				check = _wtoi((*l_itr)[1].second.c_str());
-			}
-			ListView_SetCheckState(hWndListView, i, check);
-
-			i++;
-		}
-		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
-	}
-}
-
-void SaveDictionary(HWND hwnd)
-{
-	APPDATAXMLLIST list;
-	APPDATAXMLROW row;
-	APPDATAXMLATTR attr;
-	WCHAR path[MAX_PATH];
-
-	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
-	int count = ListView_GetItemCount(hWndListView);
-
-	for(int i = 0; i < count; i++)
-	{
-		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
-
-		BOOL check = ListView_GetCheckState(hWndListView, i);
-
-		attr.first = AttributePath;
-		attr.second = path;
-		row.push_back(attr);
-
-		attr.first = AttributeEnabled;
-		attr.second = (check ? L"1" : L"0");
-		row.push_back(attr);
-
-		list.push_back(row);
-		row.clear();
-	}
-
-	WriterList(pXmlWriter, list);
-}
-
 void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
 	SKKDICENTRY skkdicentry;
@@ -324,7 +257,7 @@ BOOL CheckWideCharFile(LPCWSTR path)
 	return bRet;
 }
 
-HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
+HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	WCHAR path[MAX_PATH];
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
@@ -334,7 +267,7 @@ HRESULT LoadSKKDic(HWND hwnd, SKKDIC &entries_a, SKKDIC &entries_n)
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
 
-	HWND hWndListView = GetDlgItem(hwnd, IDC_LIST_SKK_DIC);
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
 
 	for(int i = 0; i < count; i++)
@@ -649,8 +582,8 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	return FALSE;
 }
 
-void MakeSKKDic(HWND hwnd)
+void MakeSKKDic(HWND hDlg)
 {
-	SkkDicInfo.parent = hwnd;
-	DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_MAKE), hwnd, DlgProcSKKDic);
+	SkkDicInfo.parent = hDlg;
+	DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_MAKE), hDlg, DlgProcSKKDic);
 }

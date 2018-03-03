@@ -41,6 +41,12 @@
     <ClCompile Include="convtable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DlgDicAddUrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgDicMake.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="DlgProcBehavior1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,12 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcSelKey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertyConfConv.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PropertyConfDictionary.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcDisplay1.cpp">

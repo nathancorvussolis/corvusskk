@@ -7,9 +7,7 @@ static LPCWSTR defaultHost = L"localhost";
 static LPCWSTR defaultPort = L"1178";
 static LPCWSTR defaultTimeOut = L"1000";
 
-static WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
-
-INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void LoadDictionary(HWND hDlg);
 
 INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -22,11 +20,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR pathBak[MAX_PATH];
 	BOOL check;
 	BOOL checkBak;
-	WCHAR num[32];
-	WCHAR host[MAX_SKKSERVER_HOST];
-	WCHAR port[MAX_SKKSERVER_PORT];
 	std::wstring strxmlval;
-	FILE *fp;
 	static HWND hEdit;
 
 	switch(message)
@@ -264,48 +258,6 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				break;
 			}
 		}
-
-		switch(((LPNMHDR)lParam)->code)
-		{
-		case PSN_APPLY:
-			_wfopen_s(&fp, pathconfigxml, L"ab");
-			if(fp != nullptr)
-			{
-				fclose(fp);
-			}
-			SetFileDacl(pathconfigxml);
-
-			WriterInit(pathconfigxml, &pXmlWriter, &pXmlFileStream);
-
-			WriterStartElement(pXmlWriter, TagRoot);
-
-			WriterStartSection(pXmlWriter, SectionDictionary);	//Start of SectionDictionary
-
-			SaveDictionary(hDlg);
-
-			WriterEndSection(pXmlWriter);	//End of SectionDictionary
-
-			WriterStartSection(pXmlWriter, SectionServer);	//Start of SectionServer
-
-			SaveCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, ValueServerServ);
-
-			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, host, _countof(host));
-			WriterKey(pXmlWriter, ValueServerHost, host);
-
-			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port, _countof(port));
-			WriterKey(pXmlWriter, ValueServerPort, port);
-
-			SaveCheckButton(hDlg, IDC_RADIO_UTF8, ValueServerEncoding);
-
-			GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
-			WriterKey(pXmlWriter, ValueServerTimeOut, num);
-
-			WriterEndSection(pXmlWriter);	//End of SectionServer
-
-			return TRUE;
-		default:
-			break;
-		}
 		break;
 
 	default:
@@ -315,46 +267,89 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	return FALSE;
 }
 
-INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+void LoadDictionary(HWND hDlg)
 {
-	switch(message)
-	{
-	case WM_INITDIALOG:
-		return TRUE;
-	case WM_CTLCOLORDLG:
-	case WM_CTLCOLORSTATIC:
-	case WM_CTLCOLORBTN:
-		SetBkMode((HDC)wParam, TRANSPARENT);
-		SetTextColor((HDC)wParam, GetSysColor(COLOR_WINDOWTEXT));
-		return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
-	case WM_COMMAND:
-		switch(LOWORD(wParam))
-		{
-		case IDOK:
-			GetDlgItemTextW(hDlg, IDC_EDIT_SKK_DIC_URL, urlskkdic, _countof(urlskkdic));
-			{
-				// trim
-				std::wstring strurl = std::regex_replace(std::wstring(urlskkdic),
-					std::wregex(L"^\\s+|\\s+$"), std::wstring(L""));
-				_snwprintf_s(urlskkdic, _TRUNCATE, L"%s", strurl.c_str());
+	APPDATAXMLLIST list;
+	LVITEMW item;
 
-				if(urlskkdic[0] == L'\0')
-				{
-					EndDialog(hDlg, IDCANCEL);
-				}
+	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
+
+	if (SUCCEEDED(hr) && list.size() != 0)
+	{
+		HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
+		int i = 0;
+		FORWARD_ITERATION_I(l_itr, list)
+		{
+			if (l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
+			{
+				continue;
 			}
-			EndDialog(hDlg, IDOK);
-			break;
-		case IDCANCEL:
-			urlskkdic[0] = L'\0';
-			EndDialog(hDlg, IDCANCEL);
-			break;
-		default:
-			break;
+			item.mask = LVIF_TEXT;
+			item.pszText = (LPWSTR)(*l_itr)[0].second.c_str();
+			item.iItem = i;
+			item.iSubItem = 0;
+			ListView_InsertItem(hWndListView, &item);
+
+			BOOL check = TRUE;
+			if (l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
+			{
+				check = _wtoi((*l_itr)[1].second.c_str());
+			}
+			ListView_SetCheckState(hWndListView, i, check);
+
+			i++;
 		}
-		break;
-	default:
-		break;
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
 	}
-	return FALSE;
+}
+
+void SaveDictionary(IXmlWriter *pWriter, HWND hDlg)
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLROW row;
+	APPDATAXMLATTR attr;
+	WCHAR path[MAX_PATH];
+
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
+	int count = ListView_GetItemCount(hWndListView);
+
+	for (int i = 0; i < count; i++)
+	{
+		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
+
+		BOOL check = ListView_GetCheckState(hWndListView, i);
+
+		attr.first = AttributePath;
+		attr.second = path;
+		row.push_back(attr);
+
+		attr.first = AttributeEnabled;
+		attr.second = (check ? L"1" : L"0");
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
+	}
+
+	WriterList(pWriter, list);
+}
+
+void SaveServer(IXmlWriter *pWriter, HWND hDlg)
+{
+	WCHAR num[16];
+	WCHAR host[MAX_SKKSERVER_HOST];
+	WCHAR port[MAX_SKKSERVER_PORT];
+
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SKKSRV, ValueServerServ);
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, host, _countof(host));
+	WriterKey(pWriter, ValueServerHost, host);
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, port, _countof(port));
+	WriterKey(pWriter, ValueServerPort, port);
+
+	SaveCheckButton(pWriter, hDlg, IDC_RADIO_UTF8, ValueServerEncoding);
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, num, _countof(num));
+	WriterKey(pWriter, ValueServerTimeOut, num);
 }

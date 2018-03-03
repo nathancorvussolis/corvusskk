@@ -65,7 +65,7 @@ static const struct {
 			{IDC_COL_FG_OKURI, &displayAttr[1][2].da.crText.cr},
 			{IDC_COL_BG_OKURI, &displayAttr[1][2].da.crBk.cr},
 			{IDC_COL_UL_OKURI, &displayAttr[1][2].da.crLine.cr}
-			},
+		},
 		{
 			{IDC_COL_FG_ANNOT, &displayAttr[1][3].da.crText.cr},
 			{IDC_COL_BG_ANNOT, &displayAttr[1][3].da.crBk.cr},
@@ -92,7 +92,7 @@ static const int displayAttrID[4][13] =
 		IDC_RADIO_UL_STD_TEXT, IDC_RADIO_UL_SEL_TEXT, IDC_COL_UL_TEXT,
 		IDC_COMBO_ATTR_TEXT
 	},
-		{
+	{
 		IDC_CHECKBOX_SERIES_OKURI,
 		IDC_RADIO_FG_STD_OKURI, IDC_RADIO_FG_SEL_OKURI, IDC_COL_FG_OKURI,
 		IDC_RADIO_BG_STD_OKURI, IDC_RADIO_BG_SEL_OKURI, IDC_COL_BG_OKURI,
@@ -100,7 +100,7 @@ static const int displayAttrID[4][13] =
 		IDC_RADIO_UL_STD_OKURI, IDC_RADIO_UL_SEL_OKURI, IDC_COL_UL_OKURI,
 		IDC_COMBO_ATTR_OKURI
 	},
-		{
+	{
 		IDC_CHECKBOX_SERIES_ANNOT,
 		IDC_RADIO_FG_STD_ANNOT, IDC_RADIO_FG_SEL_ANNOT, IDC_COL_FG_ANNOT,
 		IDC_RADIO_BG_STD_ANNOT, IDC_RADIO_BG_SEL_ANNOT, IDC_COL_BG_ANNOT,
@@ -130,15 +130,14 @@ static LPCWSTR displayAttrFormat = L"%d,%d,0x%06X,%d,0x%06X,%d,%d,%d,0x%06X,%d";
 
 INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no);
 void DisplayAttrSeriesChecked(HWND hDlg, int id);
-void LoadConfigDisplayAttr(int no);
-void SaveConfigDisplayAttr(int no);
+void LoadDisplayAttr(int no);
 
-INT_PTR CALLBACK DlgProcDisplayAttrInput(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProcDisplayAttr1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	return DlgProcDisplayAttr(hDlg, message, wParam, lParam, 0);
 }
 
-INT_PTR CALLBACK DlgProcDisplayAttrConv(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProcDisplayAttr2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	return DlgProcDisplayAttr(hDlg, message, wParam, lParam, 1);
 }
@@ -176,7 +175,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			colCust[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
-		LoadConfigDisplayAttr(no);
+		LoadDisplayAttr(no);
 
 		for(int i = 0; i < _countof(displayAttr[no]); i++)
 		{
@@ -335,34 +334,6 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 		return TRUE;
 
-	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
-		{
-		case PSN_APPLY:
-			for(int i = 0; i < _countof(displayAttr[no]); i++)
-			{
-				displayAttr[no][i].se =
-					(IsDlgButtonChecked(hDlg, displayAttrID[i][0]) == BST_CHECKED ? TRUE : FALSE);
-				displayAttr[no][i].da.crText.type =
-					(IsDlgButtonChecked(hDlg, displayAttrID[i][2]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
-				displayAttr[no][i].da.crBk.type =
-					(IsDlgButtonChecked(hDlg, displayAttrID[i][5]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
-				displayAttr[no][i].da.lsStyle =
-					(TF_DA_LINESTYLE)SendMessageW(GetDlgItem(hDlg, displayAttrID[i][7]), CB_GETCURSEL, 0, 0);
-				displayAttr[no][i].da.fBoldLine =
-					(IsDlgButtonChecked(hDlg, displayAttrID[i][8]) == BST_CHECKED ? TRUE : FALSE);
-				displayAttr[no][i].da.crLine.type =
-					(IsDlgButtonChecked(hDlg, displayAttrID[i][10]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
-				displayAttr[no][i].da.bAttr =
-					(TF_DA_ATTR_INFO)SendMessageW(GetDlgItem(hDlg, displayAttrID[i][12]), CB_GETCURSEL, 0, 0);
-			}
-			SaveConfigDisplayAttr(no);
-			return TRUE;
-		default:
-			break;
-		}
-		break;
-
 	default:
 		break;
 	}
@@ -401,7 +372,7 @@ void DisplayAttrSeriesChecked(HWND hDlg, int id)
 	}
 }
 
-void LoadConfigDisplayAttr(int no)
+void LoadDisplayAttr(int no)
 {
 	std::wstring strxmlval;
 	BOOL se;
@@ -423,13 +394,26 @@ void LoadConfigDisplayAttr(int no)
 	}
 }
 
-void SaveConfigDisplayAttr(int no)
+void SaveDisplayAttr(IXmlWriter *pWriter, HWND hDlg, int no)
 {
 	WCHAR num[64];
 
-	if(no == 0)
+	for (int i = 0; i < _countof(displayAttr[no]); i++)
 	{
-		WriterStartSection(pXmlWriter, SectionDisplayAttr);	//Start of SectionDisplayAttr
+		displayAttr[no][i].se =
+			(IsDlgButtonChecked(hDlg, displayAttrID[i][0]) == BST_CHECKED ? TRUE : FALSE);
+		displayAttr[no][i].da.crText.type =
+			(IsDlgButtonChecked(hDlg, displayAttrID[i][2]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
+		displayAttr[no][i].da.crBk.type =
+			(IsDlgButtonChecked(hDlg, displayAttrID[i][5]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
+		displayAttr[no][i].da.lsStyle =
+			(TF_DA_LINESTYLE)SendMessageW(GetDlgItem(hDlg, displayAttrID[i][7]), CB_GETCURSEL, 0, 0);
+		displayAttr[no][i].da.fBoldLine =
+			(IsDlgButtonChecked(hDlg, displayAttrID[i][8]) == BST_CHECKED ? TRUE : FALSE);
+		displayAttr[no][i].da.crLine.type =
+			(IsDlgButtonChecked(hDlg, displayAttrID[i][10]) == BST_CHECKED ? TF_CT_COLORREF : TF_CT_NONE);
+		displayAttr[no][i].da.bAttr =
+			(TF_DA_ATTR_INFO)SendMessageW(GetDlgItem(hDlg, displayAttrID[i][12]), CB_GETCURSEL, 0, 0);
 	}
 
 	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
@@ -441,11 +425,16 @@ void SaveConfigDisplayAttr(int no)
 			displayAttr[no][i].da.lsStyle, displayAttr[no][i].da.fBoldLine,
 			displayAttr[no][i].da.crLine.type, displayAttr[no][i].da.crLine.cr,
 			displayAttr[no][i].da.bAttr);
-		WriterKey(pXmlWriter, displayAttr[no][i].key, num);
+		WriterKey(pWriter, displayAttr[no][i].key, num);
 	}
+}
 
-	if(no == 1)
-	{
-		WriterEndSection(pXmlWriter);	//End of SectionDisplayAttr
-	}
+void SaveDisplayAttr1(IXmlWriter *pWriter, HWND hDlg)
+{
+	SaveDisplayAttr(pWriter, hDlg, 0);
+}
+
+void SaveDisplayAttr2(IXmlWriter *pWriter, HWND hDlg)
+{
+	SaveDisplayAttr(pWriter, hDlg, 1);
 }

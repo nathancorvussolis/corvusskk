@@ -210,6 +210,8 @@
   <ItemGroup>
     <ClCompile Include="ConfigCnf.cpp" />
     <ClCompile Include="convtable.cpp" />
+    <ClCompile Include="DlgDicAddUrl.cpp" />
+    <ClCompile Include="DlgDicMake.cpp" />
     <ClCompile Include="DlgProcBehavior1.cpp" />
     <ClCompile Include="DlgProcBehavior2.cpp" />
     <ClCompile Include="DlgProcConvPoint.cpp" />
@@ -223,8 +225,6 @@
     <ClCompile Include="DlgProcPreservedKey.cpp" />
     <ClCompile Include="DlgProcSelKey.cpp" />
     <ClCompile Include="imcrvcnf.cpp" />
-    <ClCompile Include="PropertyConfConv.cpp" />
-    <ClCompile Include="PropertyConfDictionary.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

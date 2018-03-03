@@ -164,7 +164,7 @@ void CTextService::_LoadBehavior()
 	cx_compmultinum = _wtoi(strxmlval.c_str());
 	if(cx_compmultinum > MAX_SELKEY_C || cx_compmultinum < 1)
 	{
-		cx_compmultinum = COMPMULTIDISP_NUM;
+		cx_compmultinum = COMPMULTIDISP_DEF;
 	}
 	_ReadBoolValue(SectionBehavior, ValueStaCompMulti, cx_stacompmulti, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueDynamicComp, cx_dynamiccomp, FALSE);
@@ -185,7 +185,7 @@ void CTextService::_LoadBehavior()
 
 	if(cx_fontpoint < 8 || cx_fontpoint > 72)
 	{
-		cx_fontpoint = 12;
+		cx_fontpoint = FONT_POINT_DEF;
 	}
 	if(cx_fontweight < 0 || cx_fontweight > 1000)
 	{
@@ -219,10 +219,10 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueColorFont, cx_colorfont, TRUE);
 
 	ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
-	cx_untilcandlist = _wtoi(strxmlval.c_str());
-	if(cx_untilcandlist > 9 || strxmlval.empty())
+	cx_untilcandlist = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+	if(cx_untilcandlist > 9 || cx_untilcandlist < 0)
 	{
-		cx_untilcandlist = 5;
+		cx_untilcandlist = UNTILCANDLIST_DEF;
 	}
 
 	_ReadBoolValue(SectionDisplay, ValueDispCandNo, cx_dispcandnum, FALSE);
@@ -236,10 +236,10 @@ void CTextService::_LoadBehavior()
 
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
-	cx_showmodesec = _wtoi(strxmlval.c_str());
+	cx_showmodesec = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
 	if(cx_showmodesec > 60 || cx_showmodesec <= 0)
 	{
-		cx_showmodesec = 3;
+		cx_showmodesec = SHOWMODESEC_DEF;
 	}
 
 	for(int i = 0; i < _countof(cx_mode_colors); i++)

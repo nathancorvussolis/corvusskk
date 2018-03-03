@@ -3,6 +3,10 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+WCHAR conv_point[MAX_CONV_POINT][3][2];
+
+void LoadConvPoint(HWND hDlg);
+
 INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
@@ -192,10 +196,6 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 			}
 			break;
 
-		case PSN_APPLY:
-			SaveConvPoint(hDlg);
-			return TRUE;
-
 		default:
 			break;
 		}
@@ -206,4 +206,139 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	}
 
 	return FALSE;
+}
+
+void LoadConfigConvPoint()
+{
+	APPDATAXMLLIST list;
+
+	ZeroMemory(conv_point, sizeof(conv_point));
+
+	HRESULT hr = ReadList(pathconfigxml, SectionConvPoint, list);
+
+	if(SUCCEEDED(hr) && list.size() != 0)
+	{
+		int i = 0;
+		FORWARD_ITERATION_I(l_itr, list)
+		{
+			if(i >= MAX_CONV_POINT)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
+			{
+				if(r_itr->first == AttributeCPStart)
+				{
+					conv_point[i][0][0] = r_itr->second.c_str()[0];
+				}
+				else if(r_itr->first == AttributeCPAlter)
+				{
+					conv_point[i][1][0] = r_itr->second.c_str()[0];
+				}
+				else if(r_itr->first == AttributeCPOkuri)
+				{
+					conv_point[i][2][0] = r_itr->second.c_str()[0];
+				}
+			}
+
+			i++;
+		}
+	}
+	else if(FAILED(hr))
+	{
+		for(int i = 0; i < 26; i++)
+		{
+			conv_point[i][0][0] = L'A' + (WCHAR)i;
+			conv_point[i][1][0] = L'a' + (WCHAR)i;
+			conv_point[i][2][0] = L'a' + (WCHAR)i;
+		}
+	}
+}
+
+void LoadConvPoint(HWND hDlg)
+{
+	LVITEMW item;
+
+	LoadConfigConvPoint();
+
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
+
+	for(int i = 0; i < MAX_CONV_POINT; i++)
+	{
+		if(conv_point[i][0][0] == L'\0' &&
+			conv_point[i][1][0] == L'\0' &&
+			conv_point[i][2][0] == L'\0')
+		{
+			break;
+		}
+
+		item.mask = LVIF_TEXT;
+		item.pszText = conv_point[i][0];
+		item.iItem = i;
+		item.iSubItem = 0;
+		ListView_InsertItem(hWndListView, &item);
+		item.pszText = conv_point[i][1];
+		item.iItem = i;
+		item.iSubItem = 1;
+		ListView_SetItem(hWndListView, &item);
+		item.pszText = conv_point[i][2];
+		item.iItem = i;
+		item.iSubItem = 2;
+		ListView_SetItem(hWndListView, &item);
+	}
+}
+
+void SaveConvPoint(IXmlWriter *pWriter, HWND hDlg)
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLROW row;
+	APPDATAXMLATTR attr;
+	WCHAR key[2];
+
+	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
+	int count = ListView_GetItemCount(hWndListView);
+
+	for(int i = 0; i < count && i < MAX_CONV_POINT; i++)
+	{
+		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
+		wcsncpy_s(conv_point[i][0], key, _TRUNCATE);
+		ListView_GetItemText(hWndListView, i, 1, key, _countof(key));
+		wcsncpy_s(conv_point[i][1], key, _TRUNCATE);
+		ListView_GetItemText(hWndListView, i, 2, key, _countof(key));
+		wcsncpy_s(conv_point[i][2], key, _TRUNCATE);
+	}
+	if(count < MAX_CONV_POINT)
+	{
+		conv_point[count][0][0] = L'\0';
+		conv_point[count][1][0] = L'\0';
+		conv_point[count][2][0] = L'\0';
+	}
+
+	for(int i = 0; i < MAX_CONV_POINT; i++)
+	{
+		if(conv_point[i][0][0] == L'\0' &&
+			conv_point[i][1][0] == L'\0' &&
+			conv_point[i][2][0] == L'\0')
+		{
+			break;
+		}
+
+		attr.first = AttributeCPStart;
+		attr.second = conv_point[i][0];
+		row.push_back(attr);
+
+		attr.first = AttributeCPAlter;
+		attr.second = conv_point[i][1];
+		row.push_back(attr);
+
+		attr.first = AttributeCPOkuri;
+		attr.second = conv_point[i][2];
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
+	}
+
+	WriterList(pWriter, list);
 }

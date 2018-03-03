@@ -3,13 +3,18 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
+
 static const struct {
 	int id;
 	LPWSTR text;
-} preservedkeyTextInfo[PRESERVEDKEY_NUM] = {
-	{IDC_LIST_PRSRVKEY_ON, L"ON 仮想ｷｰ"},
-	{IDC_LIST_PRSRVKEY_OFF, L"OFF 仮想ｷｰ"},
+	LPCWSTR section;
+} preservedkeyInfo[PRESERVEDKEY_NUM] = {
+	{IDC_LIST_PRSRVKEY_ON, L"ON 仮想ｷｰ", SectionPreservedKeyON},
+	{IDC_LIST_PRSRVKEY_OFF, L"OFF 仮想ｷｰ", SectionPreservedKeyOFF},
 };
+
+void LoadPreservedKey(HWND hDlg);
 
 INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -26,14 +31,14 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	case WM_INITDIALOG:
 		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
 		{
-			hWndListView = GetDlgItem(hDlg, preservedkeyTextInfo[i].id);
+			hWndListView = GetDlgItem(hDlg, preservedkeyInfo[i].id);
 			ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 			lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 			lvc.fmt = LVCFMT_CENTER;
 
 			lvc.iSubItem = 0;
 			lvc.cx = GetScaledSizeX(hDlg, 90);
-			lvc.pszText = preservedkeyTextInfo[i].text;
+			lvc.pszText = preservedkeyInfo[i].text;
 			ListView_InsertColumn(hWndListView, 0, &lvc);
 			lvc.iSubItem = 1;
 			lvc.cx = GetScaledSizeX(hDlg, 60);
@@ -62,7 +67,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	case WM_DPICHANGED_AFTERPARENT:
 		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
 		{
-			hWndListView = GetDlgItem(hDlg, preservedkeyTextInfo[i].id);
+			hWndListView = GetDlgItem(hDlg, preservedkeyInfo[i].id);
 
 			ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 90));
 			ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
@@ -293,10 +298,6 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			}
 			break;
 
-		case PSN_APPLY:
-			SavePreservedKey(hDlg);
-			return TRUE;
-
 		default:
 			break;
 		}
@@ -307,4 +308,198 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	}
 
 	return FALSE;
+}
+
+void SetConfigPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
+{
+	if(onoff != 0 && onoff != 1)
+	{
+		return;
+	}
+
+	ZeroMemory(preservedkey[onoff], sizeof(preservedkey[onoff]));
+
+	if(list.size() != 0)
+	{
+		int i = 0;
+		FORWARD_ITERATION_I(l_itr, list)
+		{
+			if(i >= MAX_PRESERVEDKEY)
+			{
+				break;
+			}
+
+			FORWARD_ITERATION_I(r_itr, *l_itr)
+			{
+				if(r_itr->first == AttributeVKey)
+				{
+					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), nullptr, 0);
+				}
+				else if(r_itr->first == AttributeMKey)
+				{
+					preservedkey[onoff][i].uModifiers = wcstoul(r_itr->second.c_str(), nullptr, 0);
+					if(preservedkey[onoff][i].uModifiers == 0)
+					{
+						preservedkey[onoff][i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+					}
+				}
+			}
+
+			i++;
+		}
+	}
+	else
+	{
+		preservedkey[onoff][0].uVKey = VK_OEM_3/*0xC0*/;
+		preservedkey[onoff][0].uModifiers = TF_MOD_ALT;
+		preservedkey[onoff][1].uVKey = VK_KANJI/*0x19*/;
+		preservedkey[onoff][1].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+		preservedkey[onoff][2].uVKey = VK_OEM_AUTO/*0xF3*/;
+		preservedkey[onoff][2].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+		preservedkey[onoff][3].uVKey = VK_OEM_ENLW/*0xF4*/;
+		preservedkey[onoff][3].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+	}
+}
+
+void LoadConfigPreservedKey()
+{
+	APPDATAXMLLIST list;
+
+	//for compatibility
+	HRESULT hr = ReadList(pathconfigxml, SectionPreservedKey, list);
+
+	if(SUCCEEDED(hr) && list.size() != 0)
+	{
+		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		{
+			SetConfigPreservedKeyONOFF(k, list);
+		}
+	}
+	else
+	{
+		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		{
+			list.clear();
+			hr = ReadList(pathconfigxml, preservedkeyInfo[k].section, list);
+			SetConfigPreservedKeyONOFF(k, list);
+		}
+	}
+}
+
+void LoadPreservedKey(HWND hDlg)
+{
+	LVITEMW item;
+	WCHAR num[16];
+
+	LoadConfigPreservedKey();
+
+	for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+	{
+		HWND hWndListView = GetDlgItem(hDlg, preservedkeyInfo[k].id);
+
+		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
+		{
+			if(preservedkey[k][i].uVKey == 0 &&
+				preservedkey[k][i].uModifiers == 0)
+			{
+				break;
+			}
+
+			item.mask = LVIF_TEXT;
+			_snwprintf_s(num, _TRUNCATE, L"0x%02X", preservedkey[k][i].uVKey);
+			item.pszText = num;
+			item.iItem = i;
+			item.iSubItem = 0;
+			ListView_InsertItem(hWndListView, &item);
+			_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[k][i].uModifiers & TF_MOD_ALT ? 1 : 0);
+			item.pszText = num;
+			item.iItem = i;
+			item.iSubItem = 1;
+			ListView_SetItem(hWndListView, &item);
+			_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[k][i].uModifiers & TF_MOD_CONTROL ? 1 : 0);
+			item.pszText = num;
+			item.iItem = i;
+			item.iSubItem = 2;
+			ListView_SetItem(hWndListView, &item);
+			_snwprintf_s(num, _TRUNCATE, L"%d", preservedkey[k][i].uModifiers & TF_MOD_SHIFT ? 1 : 0);
+			item.pszText = num;
+			item.iItem = i;
+			item.iSubItem = 3;
+			ListView_SetItem(hWndListView, &item);
+		}
+	}
+}
+
+void SavePreservedKey(IXmlWriter *pWriter, HWND hDlg, int no)
+{
+	APPDATAXMLLIST list;
+	APPDATAXMLROW row;
+	APPDATAXMLATTR attr;
+	WCHAR key[8];
+
+	list.clear();
+
+	HWND hWndListView = GetDlgItem(hDlg, preservedkeyInfo[no].id);
+	int count = ListView_GetItemCount(hWndListView);
+
+	for(int i = 0; i < count && i < MAX_PRESERVEDKEY; i++)
+	{
+		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
+		preservedkey[no][i].uVKey = wcstoul(key, nullptr, 0);
+		preservedkey[no][i].uModifiers = 0;
+		ListView_GetItemText(hWndListView, i, 1, key, _countof(key));
+		if(key[0] == L'1')
+		{
+			preservedkey[no][i].uModifiers |= TF_MOD_ALT;
+		}
+		ListView_GetItemText(hWndListView, i, 2, key, _countof(key));
+		if(key[0] == L'1')
+		{
+			preservedkey[no][i].uModifiers |= TF_MOD_CONTROL;
+		}
+		ListView_GetItemText(hWndListView, i, 3, key, _countof(key));
+		if(key[0] == L'1')
+		{
+			preservedkey[no][i].uModifiers |= TF_MOD_SHIFT;
+		}
+	}
+	if(count < MAX_PRESERVEDKEY)
+	{
+		preservedkey[no][count].uVKey = 0;
+		preservedkey[no][count].uModifiers = 0;
+	}
+
+	for(int i = 0; i < MAX_PRESERVEDKEY; i++)
+	{
+		if(preservedkey[no][i].uVKey == 0 &&
+			preservedkey[no][i].uModifiers == 0)
+		{
+			break;
+		}
+
+		attr.first = AttributeVKey;
+		_snwprintf_s(key, _TRUNCATE, L"0x%02X", preservedkey[no][i].uVKey);
+		attr.second = key;
+		row.push_back(attr);
+
+		attr.first = AttributeMKey;
+		_snwprintf_s(key, _TRUNCATE, L"%X", preservedkey[no][i].uModifiers);
+		attr.second = key;
+		row.push_back(attr);
+
+		list.push_back(row);
+		row.clear();
+	}
+
+	WriterList(pWriter, list);
+}
+
+void SavePreservedKeyON(IXmlWriter *pWriter, HWND hDlg)
+{
+	SavePreservedKey(pWriter, hDlg, 0);
+}
+
+void SavePreservedKeyOFF(IXmlWriter *pWriter, HWND hDlg)
+{
+	SavePreservedKey(pWriter, hDlg, 1);
 }

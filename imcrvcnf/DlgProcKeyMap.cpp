@@ -68,6 +68,7 @@ static const struct {
 static LPCWSTR SectionName[2] = {SectionKeyMap, SectionVKeyMap};
 
 INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no);
+void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault);
 
 INT_PTR CALLBACK DlgProcKeyMap1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -132,29 +133,43 @@ INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		}
 		break;
 
-	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
-		{
-		case PSN_APPLY:
-			WriterStartSection(pXmlWriter, SectionName[no]);	//Start of SectionKeyMap or SectionVKeyMap
-
-			for(int i = 0; i < _countof(KeyMap[no]); i++)
-			{
-				SaveKeyMap(hDlg, KeyMap[no][i].idd, KeyMap[no][i].keyName);
-			}
-
-			WriterEndSection(pXmlWriter);	//End of SectionKeyMap or SectionVKeyMap
-
-			return TRUE;
-
-		default:
-			break;
-		}
-		break;
-
 	default:
 		break;
 	}
 
 	return FALSE;
+}
+
+void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault)
+{
+	std::wstring strxmlval;
+	LPCWSTR lpDefVal = L"\uFFFF";
+
+	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval, lpDefVal);
+	if(strxmlval == lpDefVal) strxmlval = lpDefault;
+	SetDlgItemTextW(hDlg, nIDDlgItem, strxmlval.c_str());
+}
+
+void SaveKeyMap(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
+{
+	WCHAR keyre[MAX_KEYRE];
+
+	GetDlgItemTextW(hDlg, nIDDlgItem, keyre, _countof(keyre));
+	WriterKey(pWriter, lpKeyName, keyre);
+}
+
+void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg)
+{
+	for (int i = 0; i < _countof(KeyMap[0]); i++)
+	{
+		SaveKeyMap(pWriter, hDlg, KeyMap[0][i].idd, KeyMap[0][i].keyName);
+	}
+}
+
+void SaveVKeyMap(IXmlWriter *pWriter, HWND hDlg)
+{
+	for (int i = 0; i < _countof(KeyMap[1]); i++)
+	{
+		SaveKeyMap(pWriter, hDlg, KeyMap[1][i].idd, KeyMap[1][i].keyName);
+	}
 }

@@ -40,17 +40,17 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 void CreateProperty()
 {
-	struct {
+	const struct {
 		int id;
 		DLGPROC DlgProc;
-	} DlgPage[] = {
+	} DlgPages[] = {
 		{IDD_DIALOG_DICTIONARY,		DlgProcDictionary},
 		{IDD_DIALOG_BEHAVIOR1,		DlgProcBehavior1},
 		{IDD_DIALOG_BEHAVIOR2,		DlgProcBehavior2},
 		{IDD_DIALOG_DISPLAY1,		DlgProcDisplay1},
 		{IDD_DIALOG_DISPLAY2,		DlgProcDisplay2},
-		{IDD_DIALOG_DISPLAYATTR1,	DlgProcDisplayAttrInput},
-		{IDD_DIALOG_DISPLAYATTR2,	DlgProcDisplayAttrConv},
+		{IDD_DIALOG_DISPLAYATTR1,	DlgProcDisplayAttr1},
+		{IDD_DIALOG_DISPLAYATTR2,	DlgProcDisplayAttr2},
 		{IDD_DIALOG_SELKEY,			DlgProcSelKey},
 		{IDD_DIALOG_PRSRVKEY,		DlgProcPreservedKey},
 		{IDD_DIALOG_KEYMAP1,		DlgProcKeyMap1},
@@ -60,15 +60,15 @@ void CreateProperty()
 		{IDD_DIALOG_JLATTBL,		DlgProcJLatin}
 	};
 
-	PROPSHEETPAGEW psp[_countof(DlgPage)];
+	PROPSHEETPAGEW psp[_countof(DlgPages)];
 	ZeroMemory(&psp, sizeof(psp));
 	for(int i = 0; i < _countof(psp); i++)
 	{
 		psp[i].dwSize = sizeof(psp[i]);
 		psp[i].dwFlags = PSP_PREMATURE;
 		psp[i].hInstance = hInst;
-		psp[i].pszTemplate = MAKEINTRESOURCE(DlgPage[i].id);
-		psp[i].pfnDlgProc = DlgPage[i].DlgProc;
+		psp[i].pszTemplate = MAKEINTRESOURCE(DlgPages[i].id);
+		psp[i].pfnDlgProc = DlgPages[i].DlgProc;
 	}
 
 	PROPSHEETHEADERW psh;
@@ -100,6 +100,10 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	case PSCB_PRECREATE:
 		break;
 	case PSCB_BUTTONPRESSED:
+		if(lParam == PSBTN_OK || lParam == PSBTN_APPLYNOW)
+		{
+			SaveConfigXml(hwndDlg);
+		}
 		break;
 	default:
 		break;
