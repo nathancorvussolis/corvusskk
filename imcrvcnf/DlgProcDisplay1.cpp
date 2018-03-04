@@ -306,7 +306,7 @@ void SaveFont(IXmlWriter *pWriter, HWND hDlg)
 {
 	WCHAR fontname[LF_FACESIZE];
 	HFONT hFont;
-	LOGFONTW lf;
+	LOGFONTW lf = {};
 	WCHAR num[16];
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));

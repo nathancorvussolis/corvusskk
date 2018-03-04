@@ -116,6 +116,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 						}
 					}
 				}
+				break;
 			default:
 				break;
 			}
