@@ -29,7 +29,7 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		TF_SELECTION tfSelection;
+		TF_SELECTION tfSelection = {};
 		ULONG cFetched = 0;
 		if(FAILED(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 		{
@@ -57,16 +57,16 @@ public:
 			return E_FAIL;
 		}
 
-		POINT pt;
+		POINT pt = {};
 		pt.x = rc.left;
 		pt.y = rc.bottom;
 		HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
 
-		MONITORINFO mi;
+		MONITORINFO mi = {};
 		mi.cbSize = sizeof(mi);
 		GetMonitorInfoW(hMonitor, &mi);
 
-		RECT rw;
+		RECT rw = {};
 		_pInputModeWindow->_GetRect(&rw);
 		LONG height = rw.bottom - rw.top;
 		LONG width = rw.right - rw.left;
@@ -241,7 +241,7 @@ HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 
 BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext, BOOL bCandidateWindow, HWND hWnd)
 {
-	POINT pt = {0, 0};
+	POINT pt = {};
 
 	if(pContext != nullptr)
 	{
@@ -297,7 +297,7 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 
 	if(_bCandidateWindow)
 	{
-		RECT r;
+		RECT r = {};
 		GetClientRect(_hwndParent, &r);
 		pt.x = r.left;
 		pt.y = r.bottom;
@@ -312,9 +312,8 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 
 BOOL CInputModeWindow::_InitClass()
 {
-	WNDCLASSEXW wcex;
+	WNDCLASSEXW wcex = {};
 
-	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(wcex);
 	wcex.style = CS_VREDRAW | CS_HREDRAW;
 	wcex.lpfnWndProc = CInputModeWindow::_WindowPreProc;
@@ -370,7 +369,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	HPEN pen, npen, penR, npenR;
 	HBRUSH brush, nbrush, brushR, nbrushR;
 	HICON hIcon;
-	RECT r;
+	RECT r = {};
 	COLORREF color;
 
 	switch(uMsg)
@@ -548,7 +547,7 @@ void CInputModeWindow::_GetRect(LPRECT lpRect)
 {
 	if(lpRect != nullptr)
 	{
-		ZeroMemory(lpRect, sizeof(*lpRect));
+		*lpRect = RECT{};
 		if(_hwnd != nullptr)
 		{
 			GetClientRect(_hwnd, lpRect);

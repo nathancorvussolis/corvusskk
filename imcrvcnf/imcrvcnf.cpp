@@ -60,8 +60,7 @@ void CreateProperty()
 		{IDD_DIALOG_JLATTBL,		DlgProcJLatin}
 	};
 
-	PROPSHEETPAGEW psp[_countof(DlgPages)];
-	ZeroMemory(&psp, sizeof(psp));
+	PROPSHEETPAGEW psp[_countof(DlgPages)] = {};
 	for(int i = 0; i < _countof(psp); i++)
 	{
 		psp[i].dwSize = sizeof(psp[i]);
@@ -71,8 +70,7 @@ void CreateProperty()
 		psp[i].pfnDlgProc = DlgPages[i].DlgProc;
 	}
 
-	PROPSHEETHEADERW psh;
-	ZeroMemory(&psh, sizeof(psh));
+	PROPSHEETHEADERW psh = {};
 	psh.dwSize = sizeof(psh);
 	psh.dwFlags = PSH_PROPSHEETPAGE | PSH_NOCONTEXTHELP | PSH_USECALLBACK;
 	psh.hwndParent = nullptr;

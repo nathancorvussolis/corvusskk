@@ -23,7 +23,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	ROMAN_KANA_CONV rkcBak;
 	WCHAR soku[2];
 	NMLISTVIEW *pListView;
-	OPENFILENAMEW ofn;
+	OPENFILENAMEW ofn = {};
 	WCHAR path[MAX_PATH];
 
 	switch(message)
@@ -83,7 +83,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		{
 		case IDC_BUTTON_LOADKANA:
 			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(ofn));
+
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
@@ -91,6 +91,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 			ofn.lpstrTitle = L"Load Kana Table File";
 			ofn.lpstrFilter = L"*.txt\0*.txt\0" L"*.*\0*.*\0\0";
+
 			if(GetOpenFileNameW(&ofn))
 			{
 				LoadKanaTxt(hDlg, ofn.lpstrFile);
@@ -100,7 +101,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 		case IDC_BUTTON_SAVEKANA:
 			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(ofn));
+
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
@@ -109,6 +110,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 			ofn.lpstrTitle = L"Save Kana Table File";
 			ofn.lpstrFilter = L"*.txt\0*.txt\0" L"*.*\0*.*\0\0";
 			ofn.lpstrDefExt = L"txt";
+
 			if(GetSaveFileNameW(&ofn))
 			{
 				SaveKanaTxt(hDlg, ofn.lpstrFile);
@@ -326,7 +328,6 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	wchar_t b[CONFKANALEN];
 	const wchar_t seps[] = L"\t\n\0";
 	size_t sidx, eidx;
-	ROMAN_KANA_CONV rkc;
 	WCHAR soku[2];
 
 	roman_kana_conv.clear();
@@ -347,7 +348,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 			break;
 		}
 
-		ZeroMemory(&rkc, sizeof(rkc));
+		ROMAN_KANA_CONV rkc = {};
 
 		sidx = 0;
 		eidx = wcscspn(&b[sidx], seps);

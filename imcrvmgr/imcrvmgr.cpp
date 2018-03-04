@@ -5,7 +5,7 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 CRITICAL_SECTION csSaveUserDic;
 BOOL bUserDicChg;
-FILETIME ftConfig, ftSKKDic;
+FILETIME ftConfig = {}, ftSKKDic = {};
 #ifdef _DEBUG
 HWND hWndEdit;
 HFONT hFont;
@@ -19,7 +19,6 @@ lua_State *lua;
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
 	MSG msg;
-	WNDCLASSEXW wc;
 	HWND hWnd;
 
 	_wsetlocale(LC_ALL, L"JPN");
@@ -38,7 +37,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	hInst = hInstance;
 
-	ZeroMemory(&wc, sizeof(wc));
+	WNDCLASSEXW wc = {};
 	wc.cbSize = sizeof(wc);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WndProc;
@@ -90,7 +89,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HANDLE hPipe;
 	WSADATA wsaData;
 #ifdef _DEBUG
-	RECT r;
+	RECT r = {};
 	HDC hDC;
 #endif
 
@@ -115,13 +114,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateConfigPath();
 		UpdateConfigPath();
 
-		ZeroMemory(&ftConfig, sizeof(ftConfig));
 		if(IsFileModified(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
 		}
 
-		ZeroMemory(&ftSKKDic, sizeof(ftSKKDic));
 		if(IsFileModified(pathskkdic, &ftSKKDic))
 		{
 			MakeSKKDicPos();

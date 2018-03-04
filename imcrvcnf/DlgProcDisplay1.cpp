@@ -30,14 +30,12 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	WCHAR fontname[LF_FACESIZE];
 	INT fontpoint, fontweight, count;
 	BOOL fontitalic;
-	CHOOSEFONTW cf;
-	LOGFONTW lf;
+	CHOOSEFONTW cf = {};
+	LOGFONTW lf = {};
 	static HFONT hFont;
-	RECT rect;
-	POINT pt;
 	LONG w;
 	std::wstring strxmlval;
-	CHOOSECOLORW cc;
+	CHOOSECOLORW cc = {};
 	static COLORREF customColor[16];
 
 	switch(message)
@@ -180,7 +178,6 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			GetObjectW(hFont, sizeof(lf), &lf);
 			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), 96, 72);
 
-			ZeroMemory(&cf, sizeof(cf));
 			cf.lStructSize = sizeof(cf);
 			cf.hwndOwner = hDlg;
 			cf.lpLogFont = &lf;
@@ -206,6 +203,47 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 				return TRUE;
+			default:
+				break;
+			}
+			break;
+
+		case IDC_COL_BG:
+		case IDC_COL_FR:
+		case IDC_COL_SE:
+		case IDC_COL_CO:
+		case IDC_COL_CA:
+		case IDC_COL_SC:
+		case IDC_COL_AN:
+		case IDC_COL_NO:
+			switch(HIWORD(wParam))
+			{
+			case STN_CLICKED:
+			case STN_DBLCLK:
+				for(int i = 0; i < _countof(displayListColor); i++)
+				{
+					if(LOWORD(wParam) == displayListColor[i].id)
+					{
+						cc.lStructSize = sizeof(cc);
+						cc.hwndOwner = hDlg;
+						cc.hInstance = nullptr;
+						cc.rgbResult = displayListColor[i].color;
+						cc.lpCustColors = customColor;
+						cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+						cc.lCustData = 0;
+						cc.lpfnHook = nullptr;
+						cc.lpTemplateName = nullptr;
+
+						if(ChooseColorW(&cc))
+						{
+							DrawSelectColor(hDlg, displayListColor[i].id, cc.rgbResult);
+							displayListColor[i].color = cc.rgbResult;
+							PropSheet_Changed(GetParent(hDlg), hDlg);
+							return TRUE;
+						}
+					}
+				}
+				break;
 			default:
 				break;
 			}
@@ -239,39 +277,6 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		default:
 			break;
-		}
-		break;
-
-	case WM_LBUTTONDOWN:
-		for(int i = 0; i < _countof(displayListColor); i++)
-		{
-			hwnd = GetDlgItem(hDlg, displayListColor[i].id);
-			GetWindowRect(hwnd, &rect);
-			pt.x = GET_X_LPARAM(lParam);
-			pt.y = GET_Y_LPARAM(lParam);
-			ClientToScreen(hDlg, &pt);
-
-			if(rect.left <= pt.x && pt.x <= rect.right &&
-				rect.top <= pt.y && pt.y <= rect.bottom)
-			{
-				cc.lStructSize = sizeof(cc);
-				cc.hwndOwner = hDlg;
-				cc.hInstance = nullptr;
-				cc.rgbResult = displayListColor[i].color;
-				cc.lpCustColors = customColor;
-				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-				cc.lCustData = 0;
-				cc.lpfnHook = nullptr;
-				cc.lpTemplateName = nullptr;
-				if(ChooseColorW(&cc))
-				{
-					DrawSelectColor(hDlg, displayListColor[i].id, cc.rgbResult);
-					displayListColor[i].color = cc.rgbResult;
-					PropSheet_Changed(GetParent(hDlg), hDlg);
-					return TRUE;
-				}
-				break;
-			}
 		}
 		break;
 

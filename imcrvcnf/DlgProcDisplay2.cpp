@@ -26,10 +26,8 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	PAINTSTRUCT ps;
 	WCHAR num[16];
 	int count;
-	RECT rect;
-	POINT pt;
 	std::wstring strxmlval;
-	CHOOSECOLORW cc;
+	CHOOSECOLORW cc = {};
 	static COLORREF customColor[16];
 
 	switch(message)
@@ -81,43 +79,50 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		case IDC_CHECKBOX_SHOWMODEINL:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
+			return TRUE;
+
+		case IDC_COL_MODE_MC:
+		case IDC_COL_MODE_MF:
+		case IDC_COL_MODE_HR:
+		case IDC_COL_MODE_KT:
+		case IDC_COL_MODE_KA:
+		case IDC_COL_MODE_JL:
+		case IDC_COL_MODE_AC:
+		case IDC_COL_MODE_DR:
+			switch(HIWORD(wParam))
+			{
+			case STN_CLICKED:
+			case STN_DBLCLK:
+				for(int i = 0; i < _countof(displayModeColor); i++)
+				{
+					if(LOWORD(wParam) == displayModeColor[i].id)
+					{
+						cc.lStructSize = sizeof(cc);
+						cc.hwndOwner = hDlg;
+						cc.hInstance = nullptr;
+						cc.rgbResult = displayModeColor[i].color;
+						cc.lpCustColors = customColor;
+						cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+						cc.lCustData = 0;
+						cc.lpfnHook = nullptr;
+						cc.lpTemplateName = nullptr;
+
+						if(ChooseColorW(&cc))
+						{
+							DrawSelectColor(hDlg, displayModeColor[i].id, cc.rgbResult);
+							displayModeColor[i].color = cc.rgbResult;
+							PropSheet_Changed(GetParent(hDlg), hDlg);
+							return TRUE;
+						}
+					}
+				}
+			default:
+				break;
+			}
 			break;
 
 		default:
 			break;
-		}
-		break;
-
-	case WM_LBUTTONDOWN:
-		for(int i = 0; i < _countof(displayModeColor); i++)
-		{
-			hwnd = GetDlgItem(hDlg, displayModeColor[i].id);
-			GetWindowRect(hwnd, &rect);
-			pt.x = GET_X_LPARAM(lParam);
-			pt.y = GET_Y_LPARAM(lParam);
-			ClientToScreen(hDlg, &pt);
-
-			if(rect.left <= pt.x && pt.x <= rect.right &&
-				rect.top <= pt.y && pt.y <= rect.bottom)
-			{
-				cc.lStructSize = sizeof(cc);
-				cc.hwndOwner = hDlg;
-				cc.hInstance = nullptr;
-				cc.rgbResult = displayModeColor[i].color;
-				cc.lpCustColors = customColor;
-				cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-				cc.lCustData = 0;
-				cc.lpfnHook = nullptr;
-				cc.lpTemplateName = nullptr;
-				if(ChooseColorW(&cc))
-				{
-					DrawSelectColor(hDlg, displayModeColor[i].id, cc.rgbResult);
-					displayModeColor[i].color = cc.rgbResult;
-					PropSheet_Changed(GetParent(hDlg), hDlg);
-					return TRUE;
-				}
-				break;
-			}
 		}
 		break;
 

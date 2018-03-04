@@ -93,15 +93,13 @@ const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM] =
 
 BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD dwBuildNumber)
 {
-	OSVERSIONINFOEXW osvi;
-	DWORDLONG mask = 0;
-
-	ZeroMemory(&osvi, sizeof(osvi));
+	OSVERSIONINFOEXW osvi = {};
 	osvi.dwOSVersionInfoSize = sizeof(osvi);
 	osvi.dwMajorVersion = dwMajorVersion;
 	osvi.dwMinorVersion = dwMinorVersion;
 	osvi.dwBuildNumber = dwBuildNumber;
 
+	DWORDLONG mask = 0;
 	VER_SET_CONDITION(mask, VER_MAJORVERSION, VER_GREATER_EQUAL);
 	VER_SET_CONDITION(mask, VER_MINORVERSION, VER_GREATER_EQUAL);
 	VER_SET_CONDITION(mask, VER_BUILDNUMBER, VER_GREATER_EQUAL);
@@ -377,8 +375,6 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 {
 	WCHAR path[MAX_PATH];
-	PROCESS_INFORMATION pi;
-	STARTUPINFOW si;
 
 	if(GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
 	{
@@ -390,8 +386,8 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 		}
 	}
 
-	ZeroMemory(&pi, sizeof(pi));
-	ZeroMemory(&si, sizeof(si));
+	PROCESS_INFORMATION pi = {};
+	STARTUPINFOW si = {};
 	si.cb = sizeof(si);
 
 	BOOL bRet = CreateProcessW(path, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);

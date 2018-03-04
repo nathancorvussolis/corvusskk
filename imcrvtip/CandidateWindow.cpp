@@ -97,9 +97,8 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 
 BOOL CCandidateWindow::_InitClass()
 {
-	WNDCLASSEXW wcex;
+	WNDCLASSEXW wcex = {};
 
-	ZeroMemory(&wcex, sizeof(wcex));
 	wcex.cbSize = sizeof(wcex);
 	wcex.style = CS_VREDRAW | CS_HREDRAW;
 	wcex.lpfnWndProc = CCandidateWindow::_WindowPreProc;
@@ -221,13 +220,13 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 		if(_pCandidateWindow != nullptr)
 		{
 #ifdef _DEBUG
-			RECT rc;
-			GetClientRect(_hwnd, &rc);
-			rc.left = _rect.left;
-			rc.top += _rect.bottom;
-			rc.right = _rect.right;
-			rc.bottom += _rect.bottom + NEXT_MARGIN_Y;
-			_pCandidateWindow->_Move(&rc);
+			RECT r = {};
+			GetClientRect(_hwnd, &r);
+			r.left = _rect.left;
+			r.top += _rect.bottom;
+			r.right = _rect.right;
+			r.bottom += _rect.bottom + NEXT_MARGIN_Y;
+			_pCandidateWindow->_Move(&r);
 #else
 			_pCandidateWindow->_Move(&_rect);
 #endif
@@ -841,13 +840,13 @@ void CCandidateWindow::_CreateNext(int mode)
 		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, mode);
 
 #ifdef _DEBUG
-		RECT rc;
-		GetClientRect(_hwnd, &rc);
-		rc.left = _rect.left;
-		rc.top += _rect.bottom;
-		rc.right = _rect.right;
-		rc.bottom += _rect.bottom + NEXT_MARGIN_Y;
-		_pCandidateWindow->_Move(&rc);
+		RECT r = {};
+		GetClientRect(_hwnd, &r);
+		r.left = _rect.left;
+		r.top += _rect.bottom;
+		r.right = _rect.right;
+		r.bottom += _rect.bottom + NEXT_MARGIN_Y;
+		_pCandidateWindow->_Move(&r);
 #else
 		_pCandidateWindow->_Move(&_rect);
 #endif

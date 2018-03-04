@@ -15,7 +15,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	LV_COLUMNW lvc;
 	LVITEMW item;
 	int	index, count;
-	OPENFILENAMEW ofn;
+	OPENFILENAMEW ofn = {};
 	WCHAR path[MAX_PATH];
 	WCHAR pathBak[MAX_PATH];
 	BOOL check;
@@ -117,13 +117,13 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		case IDC_BUTTON_SKK_DIC_ADD_FILE:
 			path[0] = L'\0';
-			ZeroMemory(&ofn, sizeof(ofn));
 			ofn.lStructSize = sizeof(ofn);
 			ofn.hwndOwner = hDlg;
 			ofn.lpstrFile = path;
 			ofn.lpstrTitle = L"ファイル追加";
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_FILEMUSTEXIST;
+
 			if(GetOpenFileNameW(&ofn) != 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);

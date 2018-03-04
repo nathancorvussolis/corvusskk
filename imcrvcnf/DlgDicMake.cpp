@@ -261,7 +261,6 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	WCHAR path[MAX_PATH];
 	WCHAR url[INTERNET_MAX_URL_LENGTH];
-	URL_COMPONENTSW urlc;
 	FILE *fp;
 	std::wstring key;
 	SKKDICCANDIDATES sc;
@@ -286,7 +285,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
 		//download
-		ZeroMemory(&urlc, sizeof(urlc));
+		URL_COMPONENTSW urlc = {};
 		urlc.dwStructSize = sizeof(urlc);
 		if(InternetCrackUrlW(path, 0, 0, &urlc))
 		{

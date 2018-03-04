@@ -145,13 +145,10 @@ INT_PTR CALLBACK DlgProcDisplayAttr2(HWND hDlg, UINT message, WPARAM wParam, LPA
 INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no)
 {
 	HWND hwnd;
-	int x, y;
-	RECT rect;
-	POINT pt;
-	CHOOSECOLORW cc;
 	PAINTSTRUCT ps;
 	HDC hdc;
-	static COLORREF colCust[16];
+	CHOOSECOLORW cc = {};
+	static COLORREF customColor[16];
 
 	switch(message)
 	{
@@ -170,9 +167,9 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				SendMessageW(GetDlgItem(hDlg, cbULAttrID[i]), CB_ADDSTRING, 0, (LPARAM)cbULAttrText[j]);
 			}
 		}
-		for(int i = 0; i < _countof(colCust); i++)
+		for(int i = 0; i < _countof(customColor); i++)
 		{
-			colCust[i] = RGB(0xFF, 0xFF, 0xFF);
+			customColor[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
 		LoadDisplayAttr(no);
@@ -276,48 +273,56 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			}
 			break;
 
+		case IDC_COL_FG_MARK:
+		case IDC_COL_FG_TEXT:
+		case IDC_COL_FG_OKURI:
+		case IDC_COL_FG_ANNOT:
+		case IDC_COL_BG_MARK:
+		case IDC_COL_BG_TEXT:
+		case IDC_COL_BG_OKURI:
+		case IDC_COL_BG_ANNOT:
+		case IDC_COL_UL_MARK:
+		case IDC_COL_UL_TEXT:
+		case IDC_COL_UL_OKURI:
+		case IDC_COL_UL_ANNOT:
+			switch(HIWORD(wParam))
+			{
+			case STN_CLICKED:
+			case STN_DBLCLK:
+				for(int i = 0; i < _countof(displayAttrColor[no]); i++)
+				{
+					for(int j = 0; j < _countof(displayAttrColor[no][i]); j++)
+					{
+						if(LOWORD(wParam) == displayAttrColor[no][i][j].id)
+						{
+							cc.lStructSize = sizeof(cc);
+							cc.hwndOwner = hDlg;
+							cc.hInstance = nullptr;
+							cc.rgbResult = *displayAttrColor[no][i][j].color;
+							cc.lpCustColors = customColor;
+							cc.Flags = CC_FULLOPEN | CC_RGBINIT;
+							cc.lCustData = 0;
+							cc.lpfnHook = nullptr;
+							cc.lpTemplateName = nullptr;
+
+							if(ChooseColorW(&cc))
+							{
+								DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, cc.rgbResult);
+								*displayAttrColor[no][i][j].color = cc.rgbResult;
+								PropSheet_Changed(GetParent(hDlg), hDlg);
+								return TRUE;
+							}
+						}
+					}
+				}
+				break;
+			default:
+				break;
+			}
+			break;
+
 		default:
 			break;
-		}
-		break;
-
-	case WM_LBUTTONDOWN:
-		for(int i = 0; i < _countof(displayAttrColor[no]); i++)
-		{
-			for(int j = 0; j < _countof(displayAttrColor[no][i]); j++)
-			{
-				hwnd = GetDlgItem(hDlg, displayAttrColor[no][i][j].id);
-				if(!IsWindowEnabled(hwnd))
-				{
-					continue;
-				}
-				GetWindowRect(hwnd, &rect);
-				pt.x = x = GET_X_LPARAM(lParam);
-				pt.y = y = GET_Y_LPARAM(lParam);
-				ClientToScreen(hDlg, &pt);
-
-				if(rect.left <= pt.x && pt.x <= rect.right &&
-					rect.top <= pt.y && pt.y <= rect.bottom)
-				{
-					cc.lStructSize = sizeof(cc);
-					cc.hwndOwner = hDlg;
-					cc.hInstance = nullptr;
-					cc.rgbResult = *displayAttrColor[no][i][j].color;
-					cc.lpCustColors = colCust;
-					cc.Flags = CC_FULLOPEN | CC_RGBINIT;
-					cc.lCustData = 0;
-					cc.lpfnHook = nullptr;
-					cc.lpTemplateName = nullptr;
-					if(ChooseColorW(&cc))
-					{
-						DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, cc.rgbResult);
-						*displayAttrColor[no][i][j].color = cc.rgbResult;
-						PropSheet_Changed(GetParent(hDlg), hDlg);
-						return TRUE;
-					}
-					break;
-				}
-			}
 		}
 		break;
 

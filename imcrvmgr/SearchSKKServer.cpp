@@ -114,14 +114,13 @@ end:
 
 void ConnectSKKServer()
 {
-	ADDRINFOW aiwHints;
 	ADDRINFOW *paiwResult;
 	ADDRINFOW *paiw;
 	u_long mode;
 	timeval tv;
 	fd_set fdw, fde;
 
-	ZeroMemory(&aiwHints, sizeof(aiwHints));
+	ADDRINFOW aiwHints = {};
 	aiwHints.ai_family = AF_UNSPEC;
 	aiwHints.ai_socktype = SOCK_STREAM;
 	aiwHints.ai_protocol = IPPROTO_TCP;

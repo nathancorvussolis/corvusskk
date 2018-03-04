@@ -22,8 +22,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	HPEN npen;
 	HBRUSH nbrush;
 	HGDIOBJ bmp = nullptr, font = nullptr, pen, brush;
-	RECT r, rc;
-	POINT pt;
+	RECT r = {}, rc = {};
 	int cx, cy;
 	UINT page, count, i;
 	std::wstring s;
@@ -90,6 +89,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	}
 	else if(((_mode == wm_candidate) || (_mode == wm_complement)) && (_CandCount.size() != 0))
 	{
+		POINT pt = {};
 		pt.x = MARGIN_X;
 		pt.y = MARGIN_Y;
 
@@ -434,12 +434,11 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT count, UINT idx)
 {
 	std::wstring s;
-	RECT r, r_ex;
 	D2D1_RECT_F rd2d;
 	DWRITE_TEXT_METRICS dwTM;
 
-	r = *lpr;
-	r_ex = *lpr;
+	RECT r = *lpr;
+	RECT r_ex = *lpr;
 	r_ex.right = r_ex.left;
 
 	std::wstring ca = candidates[count + _uShowedCount + idx].first.first;
@@ -517,12 +516,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 void CCandidateWindow::_CalcWindowRect()
 {
-	HMONITOR hMonitor;
-	MONITORINFO mi;
 	HDC hdc = nullptr;
 	HGDIOBJ font = nullptr;
-	RECT r, rw;
-	POINT pt;
 	int x, y, cx = 0, cy = 0, xmax = 0;
 	UINT page, count, i;
 	std::wstring s;
@@ -536,13 +531,14 @@ void CCandidateWindow::_CalcWindowRect()
 		return;
 	}
 
+	POINT pt = {};
 	pt.x = _rect.left;
 	pt.y = _rect.bottom;
-	hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
-	ZeroMemory(&mi, sizeof(mi));
+	HMONITOR hMonitor = MonitorFromPoint(pt, MONITOR_DEFAULTTONEAREST);
+	MONITORINFO mi = {};
 	mi.cbSize = sizeof(mi);
 	GetMonitorInfoW(hMonitor, &mi);
-	rw = mi.rcWork;
+	RECT rw = mi.rcWork;
 
 	if(_pDWFactory != nullptr)
 	{
@@ -560,7 +556,7 @@ void CCandidateWindow::_CalcWindowRect()
 		height = tm.tmHeight;
 	}
 
-	ZeroMemory(&r, sizeof(r));
+	RECT r = {};
 	r.right = _pTextService->cx_maxwidth - MARGIN_X * 2;
 	if(r.right <= 0)
 	{

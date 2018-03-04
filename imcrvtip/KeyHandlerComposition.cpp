@@ -352,7 +352,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		}
 	}
 
-	TF_SELECTION tfSelection;
+	TF_SELECTION tfSelection = {};
 	ULONG cFetched = 0;
 	if(FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 	{
