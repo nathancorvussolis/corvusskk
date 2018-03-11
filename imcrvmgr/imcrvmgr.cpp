@@ -184,7 +184,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		WSACleanup();
 
-		PostQuitMessage(0);
+		if(message == WM_DESTROY)
+		{
+			PostQuitMessage(0);
+		}
 		break;
 
 	default:
