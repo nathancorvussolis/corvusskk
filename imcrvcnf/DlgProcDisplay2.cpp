@@ -21,7 +21,6 @@ static struct {
 
 INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HWND hwnd;
 	HDC hdc;
 	PAINTSTRUCT ps;
 	WCHAR num[16];
@@ -112,8 +111,8 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 							DrawSelectColor(hDlg, displayModeColor[i].id, cc.rgbResult);
 							displayModeColor[i].color = cc.rgbResult;
 							PropSheet_Changed(GetParent(hDlg), hDlg);
-							return TRUE;
 						}
+						return TRUE;
 					}
 				}
 				break;

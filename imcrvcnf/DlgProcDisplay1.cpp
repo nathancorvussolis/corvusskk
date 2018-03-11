@@ -167,7 +167,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			{
 				EnableWindow(hwnd, FALSE);
 			}
-			break;
+			return TRUE;
 		default:
 			break;
 		}
@@ -239,8 +239,8 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 							DrawSelectColor(hDlg, displayListColor[i].id, cc.rgbResult);
 							displayListColor[i].color = cc.rgbResult;
 							PropSheet_Changed(GetParent(hDlg), hDlg);
-							return TRUE;
 						}
+						return TRUE;
 					}
 				}
 				break;

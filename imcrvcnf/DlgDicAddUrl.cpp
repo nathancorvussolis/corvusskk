@@ -34,11 +34,11 @@ INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPA
 				}
 			}
 			EndDialog(hDlg, IDOK);
-			break;
+			return TRUE;
 		case IDCANCEL:
 			urlskkdic[0] = L'\0';
 			EndDialog(hDlg, IDCANCEL);
-			break;
+			return TRUE;
 		default:
 			break;
 		}

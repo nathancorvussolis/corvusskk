@@ -144,7 +144,6 @@ INT_PTR CALLBACK DlgProcDisplayAttr2(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no)
 {
-	HWND hwnd;
 	PAINTSTRUCT ps;
 	HDC hdc;
 	CHOOSECOLORW cc = {};
@@ -310,8 +309,8 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 								DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, cc.rgbResult);
 								*displayAttrColor[no][i][j].color = cc.rgbResult;
 								PropSheet_Changed(GetParent(hDlg), hDlg);
-								return TRUE;
 							}
+							return TRUE;
 						}
 					}
 				}

@@ -97,7 +97,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				LoadKanaTxt(hDlg, ofn.lpstrFile);
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 			}
-			break;
+			return TRUE;
 
 		case IDC_BUTTON_SAVEKANA:
 			path[0] = L'\0';
@@ -116,7 +116,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				SaveKanaTxt(hDlg, ofn.lpstrFile);
 				MessageBoxW(hDlg, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 			}
-			break;
+			return TRUE;
 
 		case IDC_BUTTON_KANATBL_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);

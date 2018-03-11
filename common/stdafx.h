@@ -1,6 +1,8 @@
 ﻿
 #pragma once
 
+#define WIN32_LEAN_AND_MEAN
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,3 +19,4 @@
 #include <xmllite.h>
 #include <Shlwapi.h>
 #include <NTSecAPI.h>
+#include <wincrypt.h>

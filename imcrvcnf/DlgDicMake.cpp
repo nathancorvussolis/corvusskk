@@ -570,9 +570,13 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SetTextColor((HDC)wParam, GetSysColor(COLOR_WINDOWTEXT));
 		return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
 	case WM_COMMAND:
-		if(LOWORD(wParam) == IDC_BUTTON_ABORT_DIC_MAKE)
+		switch(LOWORD(wParam))
 		{
+		case IDC_BUTTON_ABORT_DIC_MAKE:
 			SkkDicInfo.cancel = TRUE;
+			return TRUE;
+		default:
+			break;
 		}
 		break;
 	default:
