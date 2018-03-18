@@ -88,9 +88,12 @@ void CreateProperty()
 
 int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 {
+	static HWND hwndInit = nullptr;
+
 	switch(uMsg)
 	{
 	case PSCB_INITIALIZED:
+		hwndInit = hwndDlg;
 		//imcrvmgr.exeから実行されるときimcrvtip.dllで
 		//AllowSetForegroundWindow関数が実行済みのはず
 		SetForegroundWindow(hwndDlg);
@@ -100,6 +103,12 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	case PSCB_BUTTONPRESSED:
 		if(lParam == PSBTN_OK || lParam == PSBTN_APPLYNOW)
 		{
+			// hwndDlg is NULL on Vista
+			if(hwndDlg == nullptr)
+			{
+				hwndDlg = hwndInit;
+			}
+
 			SaveConfigXml(hwndDlg);
 		}
 		break;
