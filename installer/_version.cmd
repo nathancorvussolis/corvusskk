@@ -1,4 +1,4 @@
 
-set VERSION=2.6.0
+set VERSION=2.6.1
 
 set TARGETDIR=build
