@@ -16,6 +16,7 @@
 #include <Windows.h>
 #include <windowsx.h>
 #include <sddl.h>
+#include <AclAPI.h>
 #include <Ole2.h>
 #include <msctf.h>
 #include <xmllite.h>

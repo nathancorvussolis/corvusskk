@@ -10,7 +10,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam);
 // ConfigCnf
 void CreateConfigPath();
 void CreateIpcName();
-BOOL SetFileDacl(LPCWSTR path);
+BOOL SetFileDacl(LPWSTR path);
 int GetScaledSizeX(HWND hwnd, int size);
 int GetFontHeight(HWND hwnd, int size);
 void DrawSelectColor(HWND hDlg, int id, COLORREF col);

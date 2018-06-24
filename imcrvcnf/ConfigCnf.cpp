@@ -47,7 +47,7 @@ void CreateIpcName()
 	}
 }
 
-BOOL SetFileDacl(LPCWSTR path)
+BOOL SetFileDacl(LPWSTR path)
 {
 	BOOL bRet = FALSE;
 	WCHAR sddl[MAX_KRNLOBJNAME] = {};
@@ -65,10 +65,19 @@ BOOL SetFileDacl(LPCWSTR path)
 
 	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, nullptr))
 	{
-		if(SetFileSecurityW(path, DACL_SECURITY_INFORMATION, psd))
+		BOOL bDaclPresent = FALSE;
+		PACL pDacl = nullptr;
+		BOOL bDaclDefaulted = FALSE;
+		if(GetSecurityDescriptorDacl(psd, &bDaclPresent, &pDacl, &bDaclDefaulted))
 		{
-			bRet = TRUE;
+			if(SetNamedSecurityInfoW(path, SE_FILE_OBJECT,
+				DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
+				nullptr, nullptr, pDacl, nullptr) == ERROR_SUCCESS)
+			{
+				bRet = TRUE;
+			}
 		}
+
 		LocalFree(psd);
 	}
 
