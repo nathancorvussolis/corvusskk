@@ -815,6 +815,7 @@ local skk_gadget_func_table_org = {
 	{"current-time-string", current_time_string},
 	{"car", car},
 	{"cdr", cdr},
+--[[
 	{"1+", plus_1},
 	{"1-", minus_1},
 	{"+", plus},
@@ -822,6 +823,7 @@ local skk_gadget_func_table_org = {
 	{"*", mul},
 	{"/", div},
 	{"%", mod},
+--]]
 	{"skk-version", skk_version},
 	{"skk-server-version", skk_server_version},
 	{"skk-ad-to-gengo", skk_ad_to_gengo},
@@ -1060,7 +1062,7 @@ local function skk_convert_candidate(key, candidate, okuri)
 			temp = skk_convert_gadget(key, temp)
 			ret = temp
 		end
-
+--[[
 		-- concat関数で"/"関数が\057にエスケープされる為再度実行する
 		if (string.match(temp, "^%(.+%)$")) then
 			temp = skk_convert_gadget(key, temp)
@@ -1069,6 +1071,7 @@ local function skk_convert_candidate(key, candidate, okuri)
 				ret = temp
 			end
 		end
+--]]
 	end
 
 	return ret
