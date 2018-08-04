@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.6.1
+# CorvusSKK ver. 2.7.0
 
 Windowsで動作するSKK風のIMEです。
 
@@ -210,6 +210,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 | 取消のとき送り仮名を削除する         | ▼モードから▽モードに遷移する際、送り仮名の部分を削除します。 |
 | 後退に確定を含める                   | ▼モードのとき後退すると一文字削除した上で確定します。<br>OFFでは▼モードのとき後退は前候補と同じ機能を有します。 |
 | 候補に片仮名変換を追加する           | 見出し語を片仮名に変換した候補を追加します。 |
+| キー設定「直接入力」を確定入力で使用する | 確定入力のとき、キー設定の「直接入力」で設定された文字で始まるローマ字を仮名変換しません。<br>(ひらがな/カタカナ/半角カタカナモードのとき) |
 
 ![](installer/resource-md/03_behavior_2.png)
 
@@ -343,6 +344,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 | 辞書削除   | X  Ctrl+x              | ユーザー辞書から候補を削除 |
 | 次補完     | Ctrl+i(Tab)            | 補完開始、次見出し語候補 |
 | 前補完     | Ctrl+u                 | 前見出し語候補 |
+| 補完と変換 | .                      | 最初の見出し語候補で辞書検索開始<br>skk-start-henkan-with-completion-char |
 | 絞り込み   |                        | 候補を絞り込む見出し語の入力開始<br>skk-hint-start-char |
 | 変換位置   |                        | 変換位置指定<br>2回連続入力で文字自体が確定する<br>skk-sticky-key |
 | 直接入力   | 0〜9                   | 見出し語入力でローマ字仮名変換しない |
@@ -373,6 +375,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 | 辞書削除   |                        | ユーザー辞書から候補を削除 |
 | 次補完     |                        | 補完開始、次見出し語候補 |
 | 前補完     | Shift+0x09(Shift+Tab)  | 前見出し語候補 |
+| 補完と変換 |                        | 先頭の見出し語候補で辞書検索開始<br>skk-start-henkan-with-completion-char |
 | 絞り込み   |                        | 候補を絞り込む見出し語の入力開始<br>skk-hint-start-char |
 | 変換位置   |                        | 変換位置指定<br>skk-sticky-key |
 | 直接入力   |                        | 見出し語入力でローマ字仮名変換しない（不使用） |
@@ -485,7 +488,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.3.4です。
+現在使用しているLuaのバージョンは5.3.5です。
 
 詳細はこちらを参照ください。http://www.lua.org/manual/5.3/manual.html
 
@@ -542,9 +545,6 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 | 1- |  |
 | + |  |
 | - |  |
-| \* |  |
-| / |  |
-| % |  |
 | skk-version |  |
 | skk-server-version |  |
 | skk-gadget-units-conversion |  |
@@ -670,7 +670,7 @@ Visual Studio Community 2015 Update 3
 
 WiX Toolset v3.11.1
 
-pandoc 2.1.3
+pandoc 2.2.2.1
 
 
 ### ビルド手順

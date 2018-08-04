@@ -19,7 +19,7 @@ FILESUBTYPE        VFT2_UNKNOWN
 		BLOCK "000004B0"
 		{
 			VALUE "CompanyName", "Lua.org, PUC-Rio"
-			VALUE "FileDescription", "Lua Language Library"
+			VALUE "FileDescription", "Lua Language Library with Wide Character Patch"
 			VALUE "FileVersion", "5.3.5"
 			VALUE "InternalName", "lua53"
 			VALUE "LegalCopyright", "Copyright (C) 1994-2018 Lua.org, PUC-Rio."
