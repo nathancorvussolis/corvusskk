@@ -63,6 +63,12 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		case SKK_ABBREV:
 			return TRUE;
 			break;
+		case SKK_DIRECT:
+			if(cx_setbydirect && !inputkey && roman.empty())
+			{
+				return FALSE;
+			}
+			break;
 		default:
 			break;
 		}
@@ -75,6 +81,12 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		case SKK_JLATIN:
 		case SKK_ASCII:
 			return TRUE;
+			break;
+		case SKK_DIRECT:
+			if(cx_setbydirect && !inputkey && roman.empty())
+			{
+				return FALSE;
+			}
 			break;
 		default:
 			break;

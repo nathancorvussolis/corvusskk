@@ -52,6 +52,7 @@
 #define IDC_CHECKBOX_DELOKURICNCL               1209
 #define IDC_CHECKBOX_BACKINCENTER               1210
 #define IDC_CHECKBOX_ADDCANDKTKN                1211
+#define IDC_CHECKBOX_SETBYDIRECT				1212
 
 #define IDC_COMBO_COMPMULTINUM                  1301
 #define IDC_CHECKBOX_STACOMPMULTI               1302
