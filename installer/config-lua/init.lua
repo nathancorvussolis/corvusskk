@@ -497,63 +497,44 @@ end
 
 -- +
 local function plus(t)
-	local n1 = tonumber(t[1])
-	local n2 = tonumber(t[2])
+	local n = 0
 
-	if (not n1 or not n2) then
-		return ""
+	for i, v in ipairs(t) do
+		local n1 = tonumber(v)
+		if (not n1) then
+			return ""
+		end
+		n = n + n1
 	end
-	return float_to_integer(n1 + n2)
+
+	return float_to_integer(n)
 end
 
 -- -
 local function minus(t)
-	local n1 = tonumber(t[1])
-	local n2 = tonumber(t[2])
+	local n = 0
 
-	if (not n1 or not n2) then
-		return ""
+	if (#t == 1) then
+		local n1 = tonumber(t[1])
+		if (not n1) then
+			return ""
+		end
+		n = -n1
+	else
+		for i, v in ipairs(t) do
+			local n1 = tonumber(v)
+			if (not n1) then
+				return ""
+			end
+			if (i == 1) then
+				n = n1
+			else
+				n = n - n1
+			end
+		end
 	end
-	return float_to_integer(n1 - n2)
-end
 
--- *
-local function mul(t)
-	local n1 = tonumber(t[1])
-	local n2 = tonumber(t[2])
-
-	if (not n1 or not n2) then
-		return ""
-	end
-	return float_to_integer(n1 * n2)
-end
-
--- /
-local function div(t)
-	local n1 = tonumber(t[1])
-	local n2 = tonumber(t[2])
-
-	if (not n1 or not n2) then
-		return ""
-	end
-	if (n2 == 0) then
-		return ""
-	end
-	return float_to_integer(n1 / n2)
-end
-
--- %
-local function mod(t)
-	local n1 = tonumber(t[1])
-	local n2 = tonumber(t[2])
-
-	if (not n1 or not n2) then
-		return ""
-	end
-	if (n2 == 0) then
-		return ""
-	end
-	return float_to_integer(n1 % n2)
+	return float_to_integer(n)
 end
 
 -- skk-version
@@ -815,15 +796,10 @@ local skk_gadget_func_table_org = {
 	{"current-time-string", current_time_string},
 	{"car", car},
 	{"cdr", cdr},
---[[
 	{"1+", plus_1},
 	{"1-", minus_1},
 	{"+", plus},
 	{"-", minus},
-	{"*", mul},
-	{"/", div},
-	{"%", mod},
---]]
 	{"skk-version", skk_version},
 	{"skk-server-version", skk_server_version},
 	{"skk-ad-to-gengo", skk_ad_to_gengo},
@@ -1035,7 +1011,11 @@ local function skk_convert_gadget(key, candidate)
 	-- 乱数
 	math.randomseed(skk_gadget_time)
 
-	return eval_table(load("return " .. convert_s_to_table(candidate))())
+	local f =  load("return " .. convert_s_to_table(candidate))
+	if (not f) then
+		return candidate
+	end
+	return eval_table(f())
 end
 
 -- 候補変換処理
@@ -1062,16 +1042,6 @@ local function skk_convert_candidate(key, candidate, okuri)
 			temp = skk_convert_gadget(key, temp)
 			ret = temp
 		end
---[[
-		-- concat関数で"/"関数が\057にエスケープされる為再度実行する
-		if (string.match(temp, "^%(.+%)$")) then
-			temp = skk_convert_gadget(key, temp)
-			-- 正常な実行結果であれば上書きする
-			if (temp ~= "") then
-				ret = temp
-			end
-		end
---]]
 	end
 
 	return ret

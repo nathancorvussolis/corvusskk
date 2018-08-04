@@ -82,6 +82,9 @@ for i, v in ipairs(el_test_time_table) do
 	local s = lua_skk_convert_candidate(v[1], v[2], "")
 
 	if (s) then
+		if (s == "") then
+			s = v[2]
+		end
 		print("=> \"" .. s .. "\"")
 	else
 		print("=> nil")
