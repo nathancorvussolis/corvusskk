@@ -21,6 +21,7 @@ static const struct {
 	{SKK_PURGE_DIC,	ValueKeyMapPurgeDic},
 	{SKK_NEXT_COMP,	ValueKeyMapNextComp},
 	{SKK_PREV_COMP,	ValueKeyMapPrevComp},
+	{SKK_COMP_CAND,	ValueKeyMapCompCand},
 	{SKK_HINT,		ValueKeyMapHint},
 	{SKK_CONV_POINT,ValueKeyMapConvPoint},
 	{SKK_DIRECT,	ValueKeyMapDirect},

@@ -37,6 +37,7 @@ enum InputMode
 #define SKK_PURGE_DIC	0x58	// 辞書削除		X
 #define SKK_NEXT_COMP	0x09	// 次補完		c-i(HT)
 #define SKK_PREV_COMP	0x15	// 前補完		c-u
+#define SKK_COMP_CAND	0x2E	// 補完と変換	.
 #define SKK_HINT		0x3B	// 絞り込み		;
 
 #define SKK_CONV_POINT	0x51	// 変換位置		Q ;

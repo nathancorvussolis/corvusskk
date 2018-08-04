@@ -460,6 +460,17 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		}
 		break;
 
+	case SKK_COMP_CAND:
+		if(SUCCEEDED(_HandleControl(ec, pContext, SKK_NEXT_COMP, ch)))
+		{
+			if(complement)
+			{
+				return _HandleKey(ec, pContext, 0, SKK_NEXT_CAND);
+			}
+			return S_OK;
+		}
+		break;
+
 	case SKK_HINT:
 		if(!inputkey || abbrevmode)
 		{

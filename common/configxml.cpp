@@ -171,6 +171,7 @@ LPCWSTR ValueKeyMapPrevCand = L"prevcand";
 LPCWSTR ValueKeyMapPurgeDic = L"purgedic";
 LPCWSTR ValueKeyMapNextComp = L"nextcomp";
 LPCWSTR ValueKeyMapPrevComp = L"prevcomp";
+LPCWSTR ValueKeyMapCompCand = L"compcand";
 LPCWSTR ValueKeyMapHint = L"hint";
 LPCWSTR ValueKeyMapConvPoint = L"convpoint";
 LPCWSTR ValueKeyMapDirect = L"direct";
