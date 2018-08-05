@@ -158,9 +158,6 @@ STDAPI CTextService::OnKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam, BO
 		return E_INVALIDARG;
 	}
 
-	if(wParam == '\x1b') {
-		int x = 0;
-	}
 	*pfEaten = _IsKeyEaten(pic, wParam);
 
 	if(*pfEaten)
