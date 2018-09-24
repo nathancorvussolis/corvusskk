@@ -304,9 +304,9 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 	{
 		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
 		ListView_SetItemText(hWndListView, i, 1, L"");
-		ListView_SetColumnWidth(hWndListView, 1, 80);
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
 		ListView_SetItemText(hWndListView, i, 2, L"");
-		ListView_SetColumnWidth(hWndListView, 2, 80);
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 	}
 
 	for(int i = 0; i < count; i++)

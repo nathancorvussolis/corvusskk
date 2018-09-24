@@ -76,8 +76,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 
 		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-		ListView_SetColumnWidth(hWndListView, 1, 80);
-		ListView_SetColumnWidth(hWndListView, 2, 80);
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 
 		return TRUE;
 
@@ -159,8 +159,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-				ListView_SetColumnWidth(hWndListView, 1, 80);
-				ListView_SetColumnWidth(hWndListView, 2, 80);
+				ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+				ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
@@ -194,8 +194,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-				ListView_SetColumnWidth(hWndListView, 1, 80);
-				ListView_SetColumnWidth(hWndListView, 2, 80);
+				ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+				ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
@@ -209,8 +209,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 				ListView_DeleteItem(hWndListView, index);
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-				ListView_SetColumnWidth(hWndListView, 1, 80);
-				ListView_SetColumnWidth(hWndListView, 2, 80);
+				ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+				ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 			}
 			return TRUE;
 
@@ -272,8 +272,8 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				ListView_SetItemText(hWndListView, pdi->item.iItem, 0, urlskkdic);
 				urlskkdic[0] = L'\0';
 				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-				ListView_SetColumnWidth(hWndListView, 1, 80);
-				ListView_SetColumnWidth(hWndListView, 2, 80);
+				ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+				ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 				return TRUE;
 
 			default:
@@ -322,8 +322,8 @@ void LoadDictionary(HWND hDlg)
 			i++;
 		}
 		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-		ListView_SetColumnWidth(hWndListView, 1, 80);
-		ListView_SetColumnWidth(hWndListView, 2, 80);
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
 	}
 }
 
