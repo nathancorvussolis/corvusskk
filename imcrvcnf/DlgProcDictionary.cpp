@@ -29,12 +29,24 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		lvc.fmt = LVCFMT_CENTER;
 
+		lvc.fmt = LVCFMT_LEFT;
 		lvc.iSubItem = 0;
 		lvc.cx = 220;
-		lvc.pszText = L"";
+		lvc.pszText = L"ファイル/URL";
 		ListView_InsertColumn(hWndListView, 0, &lvc);
+
+		lvc.fmt = LVCFMT_RIGHT;
+		lvc.iSubItem = 1;
+		lvc.cx = 80;
+		lvc.pszText = L"　見出し";
+		ListView_InsertColumn(hWndListView, 1, &lvc);
+
+		lvc.fmt = LVCFMT_RIGHT;
+		lvc.iSubItem = 2;
+		lvc.cx = 80;
+		lvc.pszText = L"　　候補";
+		ListView_InsertColumn(hWndListView, 2, &lvc);
 
 		LoadDictionary(hDlg);
 
@@ -63,7 +75,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	case WM_DPICHANGED_AFTERPARENT:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 
-		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetColumnWidth(hWndListView, 1, 80);
+		ListView_SetColumnWidth(hWndListView, 2, 80);
 
 		return TRUE;
 
@@ -144,7 +158,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
-				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+				ListView_SetColumnWidth(hWndListView, 1, 80);
+				ListView_SetColumnWidth(hWndListView, 2, 80);
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
@@ -177,7 +193,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
 				ListView_SetItemState(hWndListView, index, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
-				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+				ListView_SetColumnWidth(hWndListView, 1, 80);
+				ListView_SetColumnWidth(hWndListView, 2, 80);
 				ListView_SetCheckState(hWndListView, index, TRUE);
 				ListView_EnsureVisible(hWndListView, index, FALSE);
 			}
@@ -190,7 +208,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				ListView_DeleteItem(hWndListView, index);
-				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+				ListView_SetColumnWidth(hWndListView, 1, 80);
+				ListView_SetColumnWidth(hWndListView, 2, 80);
 			}
 			return TRUE;
 
@@ -251,7 +271,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				}
 				ListView_SetItemText(hWndListView, pdi->item.iItem, 0, urlskkdic);
 				urlskkdic[0] = L'\0';
-				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+				ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+				ListView_SetColumnWidth(hWndListView, 1, 80);
+				ListView_SetColumnWidth(hWndListView, 2, 80);
 				return TRUE;
 
 			default:
@@ -299,7 +321,9 @@ void LoadDictionary(HWND hDlg)
 
 			i++;
 		}
-		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE);
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetColumnWidth(hWndListView, 1, 80);
+		ListView_SetColumnWidth(hWndListView, 2, 80);
 	}
 }
 

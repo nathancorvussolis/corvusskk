@@ -12,82 +12,30 @@ struct {
 	BOOL cancel;
 	int error;
 	WCHAR path[MAX_PATH];
+	DWORD status;
 } SkkDicInfo;
 
-#define SKKDIC_OK       0
-#define SKKDIC_DOWNLOAD 1
-#define SKKDIC_FILEIO   2
-#define SKKDIC_ENCODING 3
+enum errorCode {
+	SKKDIC_OK = 0,
+	SKKDIC_DOWNLOAD,
+	SKKDIC_FILEIO,
+	SKKDIC_FORMAT,
+	SKKDIC_ENCODING
+};
 
 LPCWSTR SkkDicErrorMsg[] =
 {
 	L"",
 	L"ダウンロード",
 	L"ファイル入出力",
+	L"ファイルフォーマット",
 	L"文字コード"
 };
 
-void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
+HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
 {
-	SKKDICENTRY skkdicentry;
-	LPCWSTR seps = L",";
-	std::wstring annotation_seps;
-	std::wstring annotation_esc;
-
-	if(!annotation.empty())
-	{
-		annotation_seps = seps + ParseConcat(annotation) + seps;
-	}
-
-	auto skkdic_itr = skkdic.find(key);
-	if(skkdic_itr == skkdic.end())
-	{
-		skkdicentry.first = key;
-		skkdicentry.second.push_back(std::make_pair(candidate, annotation_seps));
-		skkdic.insert(skkdicentry);
-	}
-	else
-	{
-		bool exist = false;
-		FORWARD_ITERATION_I(sc_itr, skkdic_itr->second)
-		{
-			if(sc_itr->first == candidate)
-			{
-				annotation_esc = ParseConcat(sc_itr->second);
-				if(annotation_esc.find(annotation_seps) == std::wstring::npos)
-				{
-					if(annotation_esc.empty())
-					{
-						sc_itr->second.assign(MakeConcat(annotation_seps));
-					}
-					else
-					{
-						annotation_esc.append(ParseConcat(annotation) + seps);
-						sc_itr->second.assign(MakeConcat(annotation_esc));
-					}
-				}
-				exist = true;
-				break;
-			}
-		}
-		if(!exist)
-		{
-			skkdic_itr->second.push_back(std::make_pair(candidate, MakeConcat(annotation_seps)));
-		}
-	}
-}
-
-HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
-{
-	HRESULT hr = E_FAIL;
-	HINTERNET hInet;
-	HINTERNET hUrl;
-	CHAR rbuf[RECVBUFSIZE];
-	BOOL retRead;
-	DWORD bytesRead = 0;
 	WCHAR dir[MAX_PATH];
 	WCHAR fname[MAX_PATH];
-	FILE *fp;
 
 	DWORD temppathlen = GetTempPathW(_countof(dir), dir);
 	if(temppathlen == 0 || temppathlen > _countof(dir))
@@ -113,22 +61,56 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, fname);
 
-	hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
+	return S_OK;
+}
+
+HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
+{
+	HRESULT hr = E_FAIL;
+
+	if(FAILED(DownloadMakePath(url, path, len)))
+	{
+		return E_FAIL;
+	}
+
+	HINTERNET hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
 	if(hInet == nullptr)
 	{
 		return E_FAIL;
 	}
 
-	hUrl = InternetOpenUrlW(hInet, url, nullptr, 0, 0, 0);
+	HINTERNET hUrl = InternetOpenUrlW(hInet, url, nullptr, 0, 0, 0);
 	if(hUrl == nullptr)
+	{
+		goto exit_i;
+	}
+
+	DWORD dwStatusCode = 0;
+	DWORD dwQueryLength = sizeof(dwStatusCode);
+	if(HttpQueryInfoW(hUrl, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &dwStatusCode, &dwQueryLength, 0) == FALSE)
 	{
 		goto exit_u;
 	}
 
+	switch(dwStatusCode)
+	{
+	case HTTP_STATUS_OK:
+		break;
+	default:
+		hr = MAKE_HRESULT(SEVERITY_ERROR, FACILITY_HTTP, dwStatusCode);
+		goto exit_u;
+		break;
+	}
+
+	CHAR rbuf[RECVBUFSIZE];
+	BOOL retRead;
+	DWORD bytesRead = 0;
+	FILE *fp;
+
 	_wfopen_s(&fp, path, WB);
 	if(fp == nullptr)
 	{
-		goto exit_f;
+		goto exit_u;
 	}
 
 	while(true)
@@ -136,7 +118,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 		if(SkkDicInfo.cancel)
 		{
 			hr = E_ABORT;
-			goto exit;
+			goto exit_f;
 		}
 
 		ZeroMemory(rbuf, sizeof(rbuf));
@@ -150,7 +132,7 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 		}
 		else
 		{
-			goto exit;
+			goto exit_f;
 		}
 
 		fwrite(rbuf, bytesRead, 1, fp);
@@ -158,11 +140,11 @@ HRESULT DownloadDic(LPCWSTR url, LPWSTR path, size_t len)
 
 	hr = S_OK;
 
-exit:
-	fclose(fp);
 exit_f:
-	InternetCloseHandle(hUrl);
+	fclose(fp);
 exit_u:
+	InternetCloseHandle(hUrl);
+exit_i:
 	InternetCloseHandle(hInet);
 
 	return hr;
@@ -257,10 +239,59 @@ BOOL CheckWideCharFile(LPCWSTR path)
 	return bRet;
 }
 
+void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
+{
+	SKKDICENTRY skkdicentry;
+	LPCWSTR seps = L",";
+	std::wstring annotation_seps;
+	std::wstring annotation_esc;
+
+	if(!annotation.empty())
+	{
+		annotation_seps = seps + ParseConcat(annotation) + seps;
+	}
+
+	auto skkdic_itr = skkdic.find(key);
+	if(skkdic_itr == skkdic.end())
+	{
+		skkdicentry.first = key;
+		skkdicentry.second.push_back(std::make_pair(candidate, annotation_seps));
+		skkdic.insert(skkdicentry);
+	}
+	else
+	{
+		bool exist = false;
+		FORWARD_ITERATION_I(sc_itr, skkdic_itr->second)
+		{
+			if(sc_itr->first == candidate)
+			{
+				annotation_esc = ParseConcat(sc_itr->second);
+				if(annotation_esc.find(annotation_seps) == std::wstring::npos)
+				{
+					if(annotation_esc.empty())
+					{
+						sc_itr->second.assign(MakeConcat(annotation_seps));
+					}
+					else
+					{
+						annotation_esc.append(ParseConcat(annotation) + seps);
+						sc_itr->second.assign(MakeConcat(annotation_esc));
+					}
+				}
+				exist = true;
+				break;
+			}
+		}
+		if(!exist)
+		{
+			skkdic_itr->second.push_back(std::make_pair(candidate, MakeConcat(annotation_seps)));
+		}
+	}
+}
+
 HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	WCHAR path[MAX_PATH];
-	WCHAR url[INTERNET_MAX_URL_LENGTH];
 	FILE *fp;
 	std::wstring key;
 	SKKDICCANDIDATES sc;
@@ -268,6 +299,15 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
+
+	for(int i = 0; i < count; i++)
+	{
+		ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
+		ListView_SetItemText(hWndListView, i, 1, L"");
+		ListView_SetColumnWidth(hWndListView, 1, 80);
+		ListView_SetItemText(hWndListView, i, 2, L"");
+		ListView_SetColumnWidth(hWndListView, 2, 80);
+	}
 
 	for(int i = 0; i < count; i++)
 	{
@@ -282,7 +322,12 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 			continue;
 		}
 
+		ListView_SetItemState(hWndListView, i, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+		ListView_EnsureVisible(hWndListView, i, FALSE);
+
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
+
+		wcscpy_s(SkkDicInfo.path, path);
 
 		//download
 		URL_COMPONENTSW urlc = {};
@@ -294,13 +339,18 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 			case INTERNET_SCHEME_HTTP:
 			case INTERNET_SCHEME_HTTPS:
 				{
+					WCHAR url[INTERNET_MAX_URL_LENGTH];
 					wcsncpy_s(url, path, _TRUNCATE);
 
 					HRESULT hrd = DownloadDic(url, path, _countof(path));
 					if(FAILED(hrd))
 					{
 						SkkDicInfo.error = SKKDIC_DOWNLOAD;
-						_snwprintf_s(SkkDicInfo.path, _TRUNCATE, L"%s", url);
+						if(HRESULT_FACILITY(hrd) == FACILITY_HTTP)
+						{
+							SkkDicInfo.status = HRESULT_CODE(hrd);
+						}
+						wcsncpy_s(SkkDicInfo.path, url, _TRUNCATE);
 						return hrd;
 					}
 				}
@@ -311,7 +361,6 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		}
 
 		SkkDicInfo.error = SKKDIC_FILEIO;
-		wcscpy_s(SkkDicInfo.path, path);
 		int encoding = 0;
 
 		//check BOM
@@ -380,6 +429,8 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		}
 
 		int okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
+		int count_key = 0;
+		int count_cand = 0;
 
 		while(true)
 		{
@@ -401,6 +452,17 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 				continue;
 			}
 
+			switch(okuri)
+			{
+			case 1:
+			case 0:
+				++count_key;
+				count_cand += (int)sc.size();
+				break;
+			default:
+				break;
+			}
+
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
 				if(SkkDicInfo.cancel)
@@ -414,6 +476,24 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		}
 
 		fclose(fp);
+
+		if(okuri == -1)
+		{
+			SkkDicInfo.error = SKKDIC_FORMAT;
+			return E_FAIL;
+		}
+
+		{
+			WCHAR scount[16];
+			LV_ITEM lvi = {};
+			lvi.mask = LVFIF_TEXT;
+			lvi.iItem = i;
+
+			_snwprintf_s(scount, _TRUNCATE, L"%d", count_key);
+			ListView_SetItemText(hWndListView, i, 1, scount);
+			_snwprintf_s(scount, _TRUNCATE, L"%d", count_cand);
+			ListView_SetItemText(hWndListView, i, 2, scount);
+		}
 	}
 
 	SkkDicInfo.error = SKKDIC_OK;
@@ -498,8 +578,9 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 	return S_OK;
 }
 
-unsigned int __stdcall MakeSKKDicThread(void *p)
+void MakeSKKDicThread(void *p)
 {
+	WCHAR msg[1024];
 	SKKDIC entries_a, entries_n;
 
 	SkkDicInfo.hr = LoadSKKDic(SkkDicInfo.parent, entries_a, entries_n);
@@ -507,18 +588,6 @@ unsigned int __stdcall MakeSKKDicThread(void *p)
 	{
 		SkkDicInfo.hr = WriteSKKDic(entries_a, entries_n);
 	}
-
-	return 0;
-}
-
-void MakeSKKDicWaitThread(void *p)
-{
-	WCHAR msg[512];
-	HANDLE hThread;
-
-	hThread = (HANDLE)_beginthreadex(nullptr, 0, MakeSKKDicThread, nullptr, 0, nullptr);
-	WaitForSingleObject(hThread, INFINITE);
-	CloseHandle(hThread);
 
 	EndDialog(SkkDicInfo.child, TRUE);
 
@@ -535,17 +604,28 @@ void MakeSKKDicWaitThread(void *p)
 	else
 	{
 		LPCWSTR errmsg = L"";
+
 		switch(SkkDicInfo.error)
 		{
 		case SKKDIC_DOWNLOAD:
 		case SKKDIC_FILEIO:
+		case SKKDIC_FORMAT:
 		case SKKDIC_ENCODING:
 			errmsg = SkkDicErrorMsg[SkkDicInfo.error];
 			break;
 		default:
 			break;
 		}
+
 		_snwprintf_s(msg, _TRUNCATE, L"失敗しました。(%s)\n\n%s", errmsg, SkkDicInfo.path);
+
+		if(SkkDicInfo.error == SKKDIC_DOWNLOAD && SkkDicInfo.status != 0)
+		{
+			WCHAR sts[256];
+			_snwprintf_s(sts, _TRUNCATE, L"\n\nHTTP %d", SkkDicInfo.status);
+			wcsncat_s(msg, sts, _TRUNCATE);
+		}
+
 		MessageBoxW(SkkDicInfo.parent, msg, TextServiceDesc, MB_OK | MB_ICONERROR);
 	}
 	return;
@@ -560,8 +640,9 @@ INT_PTR CALLBACK DlgProcSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SkkDicInfo.hr = S_OK;
 		SkkDicInfo.child = hDlg;
 		SkkDicInfo.path[0] = L'\0';
-		_beginthread(MakeSKKDicWaitThread, 0, nullptr);
-		SendMessage(GetDlgItem(hDlg, IDC_PROGRESS_DIC_MAKE), PBM_SETMARQUEE, TRUE, 0);
+		SkkDicInfo.status = 0;
+		_beginthread(MakeSKKDicThread, 0, nullptr);
+		SendMessageW(GetDlgItem(hDlg, IDC_PROGRESS_DIC_MAKE), PBM_SETMARQUEE, TRUE, 0);
 		return TRUE;
 	case WM_CTLCOLORDLG:
 	case WM_CTLCOLORSTATIC:
