@@ -102,7 +102,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		s = std::regex_replace(s, re, fmt);
 	}
 
-	re.assign(L"([^0x20]+)\x20+(/.+/)");
+	re.assign(L"([^\x20]+)\x20+(/.+/)");
 	if(std::regex_match(s, re) == false)
 	{
 		return 1;
