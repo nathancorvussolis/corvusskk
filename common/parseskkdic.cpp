@@ -80,13 +80,6 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		okuri = 0;
 		return 1;
 	}
-	else
-	{
-		if(L'\0' <= wsbuf.front() && wsbuf.front() <= L'\x20')
-		{
-			return 1;
-		}
-	}
 
 	if(okuri == -1)
 	{
@@ -109,19 +102,16 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		s = std::regex_replace(s, re, fmt);
 	}
 
-	is = s.find_first_of(L'\x20');
-	if(is == std::wstring::npos)
+	re.assign(L"([^0x20]+)\x20+(/.+/)");
+	if(std::regex_match(s, re) == false)
 	{
 		return 1;
 	}
-	key = s.substr(0, is);
 
-	is = s.find_first_of(L'/', is);
-	if(is == std::wstring::npos)
-	{
-		return 1;
-	}
-	s = s.substr(is);
+	fmt.assign(L"$1");
+	key = std::regex_replace(s, re, fmt);
+	fmt.assign(L"$2");
+	s = std::regex_replace(s, re, fmt);
 
 	ParseSKKDicCandiate(s, c);
 
@@ -167,7 +157,7 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 {
-	std::wstring so, okurik, okuric;
+	std::wstring so, okurik, okuric, fmt;
 	std::wregex re, reb;
 	std::wsmatch m;
 	SKKDICCANDIDATES okurics;
@@ -180,8 +170,10 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 	{
 		okurics.clear();
 
-		okurik = std::regex_replace(m.str(), reb, std::wstring(L"$1"));
-		okuric = std::regex_replace(m.str(), reb, std::wstring(L"$2"));
+		fmt.assign(L"$1");
+		okurik = std::regex_replace(m.str(), reb, fmt);
+		fmt.assign(L"$2");
+		okuric = std::regex_replace(m.str(), reb, fmt);
 
 		ParseSKKDicCandiate(okuric, okurics);
 

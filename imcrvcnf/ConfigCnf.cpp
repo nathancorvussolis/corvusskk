@@ -3,8 +3,6 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-#define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
-
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
 WCHAR pathconfigxml[MAX_PATH];	//設定

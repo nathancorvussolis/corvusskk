@@ -72,6 +72,8 @@ extern WCHAR pathconfigxml[MAX_PATH];		//設定
 extern WCHAR pathskkdic[MAX_PATH];			//取込SKK辞書
 extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
 
+#define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
+
 // Per-Monitor DPI Awareness V2
 #ifndef NTDDI_WIN10_RS2
 #if (WINVER < 0x0605)
