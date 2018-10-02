@@ -12,16 +12,9 @@
 #define E_MAKESKKDIC_FILEIO		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 2)
 #define E_MAKESKKDIC_ENCODING	MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 3)
 
-BOOL IsMakeSKKDicCanceled()
+BOOL IsMakeSKKDicCanceled(HANDLE hCancelEvent)
 {
-	BOOL canceled = FALSE;
-	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, IMCRVCNF_MAKE_SKKDIC_CANCEL_EVENT);
-	if(hCancelEvent != nullptr)
-	{
-		canceled = (WaitForSingleObject(hCancelEvent, 0) == WAIT_OBJECT_0);
-		CloseHandle(hCancelEvent);
-	}
-	return canceled;
+	return (WaitForSingleObject(hCancelEvent, 0) == WAIT_OBJECT_0);
 }
 
 HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
@@ -56,7 +49,7 @@ HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
 	return S_OK;
 }
 
-HRESULT DownloadSKKDic(LPCWSTR url, LPWSTR path, size_t len)
+HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len)
 {
 	HRESULT hr = E_MAKESKKDIC_DOWNLOAD;
 
@@ -108,7 +101,7 @@ HRESULT DownloadSKKDic(LPCWSTR url, LPWSTR path, size_t len)
 
 	while(true)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			hr = E_ABORT;
 			fclose(fp);
@@ -146,7 +139,7 @@ exit_r:
 	return hr;
 }
 
-HRESULT CheckMultiByteFile(LPCWSTR path, int encoding)
+HRESULT CheckMultiByteFile(HANDLE hCancelEvent, LPCWSTR path, int encoding)
 {
 	HRESULT hr = S_OK;
 	FILE *fp;
@@ -162,7 +155,7 @@ HRESULT CheckMultiByteFile(LPCWSTR path, int encoding)
 
 	while(fgets(buf, _countof(buf), fp) != nullptr)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			fclose(fp);
 			return E_ABORT;
@@ -206,7 +199,7 @@ HRESULT CheckMultiByteFile(LPCWSTR path, int encoding)
 	return hr;
 }
 
-HRESULT CheckWideCharFile(LPCWSTR path)
+HRESULT CheckWideCharFile(HANDLE hCancelEvent, LPCWSTR path)
 {
 	HRESULT hr = S_OK;
 	FILE *fp;
@@ -221,7 +214,7 @@ HRESULT CheckWideCharFile(LPCWSTR path)
 
 	while(fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			fclose(fp);
 			return E_ABORT;
@@ -297,7 +290,7 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	}
 }
 
-HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
+HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 {
 	WCHAR path[MAX_PATH];
 	FILE *fp;
@@ -320,7 +313,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 
 	for(int i = 0; i < count; i++)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			return E_ABORT;
 		}
@@ -349,7 +342,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 					WCHAR url[INTERNET_MAX_URL_LENGTH];
 					wcsncpy_s(url, path, _TRUNCATE);
 
-					HRESULT hrd = DownloadSKKDic(url, path, _countof(path));
+					HRESULT hrd = DownloadSKKDic(hCancelEvent, url, path, _countof(path));
 					if(FAILED(hrd))
 					{
 						return hrd;
@@ -377,7 +370,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 			//UTF-16LE
 			encoding = 16;
 
-			HRESULT hr = CheckWideCharFile(path);
+			HRESULT hr = CheckWideCharFile(hCancelEvent, path);
 			switch(hr)
 			{
 			case S_OK:
@@ -396,7 +389,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		//UTF-8 ?
 		if(encoding == 0)
 		{
-			HRESULT hr = CheckMultiByteFile(path, 8);
+			HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 8);
 			switch(hr)
 			{
 			case S_OK:
@@ -414,7 +407,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 		//EUC-JIS-2004 ?
 		if(encoding == 0)
 		{
-			HRESULT hr = CheckMultiByteFile(path, 1);
+			HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 1);
 			switch(hr)
 			{
 			case S_OK:
@@ -462,7 +455,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 
 		while(true)
 		{
-			if(IsMakeSKKDicCanceled())
+			if(IsMakeSKKDicCanceled(hCancelEvent))
 			{
 				fclose(fp);
 				return E_ABORT;
@@ -493,7 +486,7 @@ HRESULT LoadSKKDic(HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				if(IsMakeSKKDicCanceled())
+				if(IsMakeSKKDicCanceled(hCancelEvent))
 				{
 					fclose(fp);
 					return E_ABORT;
@@ -542,7 +535,7 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES 
 	fwrite(line.c_str(), line.size() * sizeof(WCHAR), 1, fp);
 }
 
-HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
+HRESULT WriteSKKDic(HANDLE hCancelEvent, const SKKDIC &entries_a, const SKKDIC &entries_n)
 {
 	FILE *fp;
 	WCHAR bom = BOM;
@@ -564,7 +557,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	REVERSE_ITERATION_I(entries_ritr, entries_a)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			fclose(fp);
 			DeleteFileW(pathskkdic);
@@ -581,7 +574,7 @@ HRESULT WriteSKKDic(const SKKDIC &entries_a, const SKKDIC &entries_n)
 
 	FORWARD_ITERATION_I(entries_itr, entries_n)
 	{
-		if(IsMakeSKKDicCanceled())
+		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
 			fclose(fp);
 			DeleteFileW(pathskkdic);
@@ -604,11 +597,15 @@ void MakeSKKDicThread(void *p)
 	HWND child = (HWND)p;
 	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY);
 
-	HRESULT hr = LoadSKKDic(parent, entries_a, entries_n);
+	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, IMCRVCNF_MAKE_SKKDIC_CANCEL_EVENT);
+
+	HRESULT hr = LoadSKKDic(hCancelEvent, parent, entries_a, entries_n);
 	if(SUCCEEDED(hr))
 	{
-		hr = WriteSKKDic(entries_a, entries_n);
+		hr = WriteSKKDic(hCancelEvent, entries_a, entries_n);
 	}
+
+	CloseHandle(hCancelEvent);
 
 	EndDialog(child, TRUE);
 

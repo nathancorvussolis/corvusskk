@@ -13,7 +13,6 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	std::string sbuf;
 	WCHAR wbuf[READBUFSIZE];
 	std::wstring wsbuf;
-	size_t is;
 	void *rp;
 	std::wstring s, fmt;
 	std::wregex re;
