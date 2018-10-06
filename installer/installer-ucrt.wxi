@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Include>
+
+  <!-- Windows Vista (x86) -->
+  <MsuPackage
+    Name="Windows6.0-KB2999226-x86-6.0.1.6.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.0 AND NOT VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.0 AND NOT VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/D/8/3/D838D576-232C-4C17-A402-75913F27113B/Windows6.0-KB2999226-x86.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.0.1.6"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="38A521378445B34BD222FA354D2D5059707285A6"
+      Size="681351" />
+  </MsuPackage>
+
+  <!-- Windows Vista (x64) -->
+  <MsuPackage
+    Name="Windows6.0-KB2999226-x64-6.0.1.6.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.0 AND VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.0 AND VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/5/4/E/54E27BE2-CFB2-4FC9-AB03-C39302CA68A0/Windows6.0-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.0.1.6"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="0BEFBB0B78588F7C9F17EAD1DA3ABEDA2B6F4C7F"
+      Size="1131241" />
+  </MsuPackage>
+
+  <!-- Windows 7 (x86) -->
+  <MsuPackage
+    Name="Windows6.1-KB2999226-x86-6.1.1.7.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.1 AND NOT VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.1 AND NOT VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/4/F/E/4FE73868-5EDD-4B47-8B33-CE1BB7B2B16A/Windows6.1-KB2999226-x86.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.1.1.7"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="564F02E6419B9858949B0CD5A65E2C8C0944DD88"
+      Size="629006" />
+  </MsuPackage>
+
+  <!-- Windows 7 (x64) -->
+  <MsuPackage
+    Name="Windows6.1-KB2999226-x64-6.1.1.7.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.1 AND VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.1 AND VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/1/1/5/11565A9A-EA09-4F0A-A57E-520D5D138140/Windows6.1-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.1.1.7"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="54050A5F8AE7F0C56E553F0090146C17A1D2BF8D"
+      Size="1034556" />
+  </MsuPackage>
+
+  <!-- Windows 8 (x86) -->
+  <MsuPackage
+    Name="Windows8-RT-KB2999226-x86-6.2.1.9.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.2 AND NOT VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.2 AND NOT VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/1/E/8/1E8AFE90-5217-464D-9292-7D0B95A56CE4/Windows8-RT-KB2999226-x86.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.2.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="2D93B4FF5C396FC6922BB7BAE2FFB12DCBF7B0A6"
+      Size="625544" />
+  </MsuPackage>
+
+  <!-- Windows 8 (x64) -->
+  <MsuPackage
+    Name="Windows8-RT-KB2999226-x64-6.2.1.9.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.2 AND VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.2 AND VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/A/C/1/AC15393F-A6E6-469B-B222-C44B3BB6ECCC/Windows8-RT-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.2.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="B5943B2700B56F5F8DC307A9E237F23FCA5D8B70"
+      Size="1359820" />
+  </MsuPackage>
+
+  <!-- Windows 8.1 (x86) -->
+  <MsuPackage
+    Name="Windows8.1-KB2999226-x86-6.3.1.9.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.3 AND NOT VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.3 AND NOT VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/E/4/6/E4694323-8290-4A08-82DB-81F2EB9452C2/Windows8.1-KB2999226-x86.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.3.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="9B1962825FA58DB8AAB777C72AF58B21E0AA276E"
+      Size="603348" />
+  </MsuPackage>
+
+  <!-- Windows 8.1 (x64) -->
+  <MsuPackage
+    Name="Windows8.1-KB2999226-x64-6.3.1.9.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.3 AND VersionNT64 AND NTProductType = 1"
+    DetectCondition="VersionNT = v6.3 AND VersionNT64 AND NTProductType = 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/9/6/F/96FD0525-3DDF-423D-8845-5F92F4A6883E/Windows8.1-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.3.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="3ACBF3890FC9C8A6F3D2155ECF106028E5F55164"
+      Size="1005170" />
+  </MsuPackage>
+
+  <!-- Windows Server 2008 (x86) -->
+  <MsuPackage
+    Name="Windows6.0-KB2999226-x86-6.0.1.6-s.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.0 AND NOT VersionNT64 AND NTProductType &lt;&gt; 1"
+    DetectCondition="VersionNT = v6.0 AND NOT VersionNT64 AND NTProductType &lt;&gt; 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/B/5/7/B5757251-DAB0-4E23-AA46-ABC233FDB90E/Windows6.0-KB2999226-x86.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.0.1.6"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="38A521378445B34BD222FA354D2D5059707285A6"
+      Size="681351" />
+  </MsuPackage>
+
+  <!-- Windows Server 2008 (x64) -->
+  <MsuPackage
+    Name="Windows6.0-KB2999226-x64-6.0.1.6-s.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.0 AND VersionNT64 AND NTProductType &lt;&gt; 1"
+    DetectCondition="VersionNT = v6.0 AND VersionNT64 AND NTProductType &lt;&gt; 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/A/7/A/A7A70B17-ADF9-4FC3-A722-69FA89B79756/Windows6.0-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.0.1.6"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="0BEFBB0B78588F7C9F17EAD1DA3ABEDA2B6F4C7F"
+      Size="1131241" />
+  </MsuPackage>
+
+  <!-- Windows Server 2008 R2 (x64) -->
+  <MsuPackage
+    Name="Windows6.1-KB2999226-x64-6.1.1.7-s.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.1 AND VersionNT64 AND NTProductType &lt;&gt; 1"
+    DetectCondition="VersionNT = v6.1 AND VersionNT64 AND NTProductType &lt;&gt; 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/F/1/3/F13BEC9A-8FC6-4489-9D6A-F84BDC9496FE/Windows6.1-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.1.1.7"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="54050A5F8AE7F0C56E553F0090146C17A1D2BF8D"
+      Size="1034556" />
+  </MsuPackage>
+
+  <!-- Windows Server 2012 (x64) -->
+  <MsuPackage
+    Name="Windows8-RT-KB2999226-x64-6.2.1.9-s.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.2 AND VersionNT64 AND NTProductType &lt;&gt; 1"
+    DetectCondition="VersionNT = v6.2 AND VersionNT64 AND NTProductType &lt;&gt; 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/9/3/E/93E0745A-EAE9-4B5A-B50C-012F2D3B6659/Windows8-RT-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.2.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="B5943B2700B56F5F8DC307A9E237F23FCA5D8B70"
+      Size="1359820" />
+  </MsuPackage>
+
+  <!-- Windows Server 2012 R2 (x64) -->
+  <MsuPackage
+    Name="Windows8.1-KB2999226-x64-6.3.1.9-s.msu"
+    DisplayName="Universal CRT"
+    KB="KB2999226"
+    Cache="no"
+    Compressed="no"
+    Permanent="yes"
+    InstallCondition="VersionNT = v6.3 AND VersionNT64 AND NTProductType &lt;&gt; 1"
+    DetectCondition="VersionNT = v6.3 AND VersionNT64 AND NTProductType &lt;&gt; 1 AND UCRTBASEVER >= UCRTVER"
+    DownloadUrl="https://download.microsoft.com/download/D/1/3/D13E3150-3BB2-4B22-9D8A-47EE2D609FFF/Windows8.1-KB2999226-x64.msu" >
+    <RemotePayload
+      ProductName="Package_for_KB2999226"
+      Version="6.3.1.9"
+      Description="http://support.microsoft.com?kbid=2999226"
+      CertificatePublicKey="52868DFCA6E3AF2632389E6C1EE7D0468D3797D0"
+      CertificateThumbprint="3BDA323E552DB1FDE5F4FBEE75D6D5B2B187EEDC"
+      Hash="3ACBF3890FC9C8A6F3D2155ECF106028E5F55164"
+      Size="1005170" />
+  </MsuPackage>
+
+</Include>

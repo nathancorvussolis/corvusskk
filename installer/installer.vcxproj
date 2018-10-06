@@ -27,6 +27,7 @@
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
     <None Include="installer-bundle.wxs" />
+    <None Include="installer-ucrt.wxi" />
     <None Include="installer-version.wxi" />
     <None Include="installer-x64.wxs" />
     <None Include="installer-x86.wxs" />
@@ -50,14 +51,6 @@
     <None Include="_solution_clean_debug.cmd" />
     <None Include="_verify.cmd" />
     <None Include="_version.cmd" />
-    <None Include="ucrt\Windows6.0-KB3118401-x64.msu" />
-    <None Include="ucrt\Windows6.0-KB3118401-x86.msu" />
-    <None Include="ucrt\Windows6.1-KB3118401-x64.msu" />
-    <None Include="ucrt\Windows6.1-KB3118401-x86.msu" />
-    <None Include="ucrt\Windows8-RT-KB3118401-x64.msu" />
-    <None Include="ucrt\Windows8-RT-KB3118401-x86.msu" />
-    <None Include="ucrt\Windows8.1-KB3118401-x64.msu" />
-    <None Include="ucrt\Windows8.1-KB3118401-x86.msu" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
