@@ -88,12 +88,11 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	FILE *fp;
-	std::wstring candidate, wsbuf, kbuf, cbuf, fmt;
+	std::wstring candidate, wsbuf, kbuf, cbuf;
 	WCHAR wbuf[READBUFSIZE];
 	PWCHAR pwb;
 	long pos, left, mid, right;
 	size_t cidx;
-	std::wregex re(L"([^\x20]+)\x20+(/.+/\n)");
 
 	_wfopen_s(&fp, pathskkdic, RB);
 	if(fp == nullptr)
@@ -150,12 +149,10 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 			wsbuf.push_back(L'\n');
 		}
 
-		if(std::regex_match(wsbuf, re))
+		if((cidx = wsbuf.find(L"\x20/")) != std::wstring::npos)
 		{
-			fmt.assign(L"$1");
-			kbuf = std::regex_replace(wsbuf, re, fmt);
-			fmt.assign(L"$2");
-			cbuf = std::regex_replace(wsbuf, re, fmt);
+			kbuf = wsbuf.substr(0, cidx);
+			cbuf = wsbuf.substr(cidx + 1);
 		}
 
 		int cmpkey = searchkey.compare(kbuf);

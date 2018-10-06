@@ -105,7 +105,7 @@ end:
 				break;
 			}
 
-			s = m.suffix();
+			s = m.suffix().str();
 		}
 	}
 

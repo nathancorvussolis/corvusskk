@@ -86,7 +86,7 @@ void CTextService::_SearchDic(WCHAR command)
 	while(std::regex_search(s, m, r))
 	{
 		se = m.str();
-		s = m.suffix();
+		s = m.suffix().str();
 
 		fmt.assign(L"$1");
 		scd = std::regex_replace(se, r, fmt);

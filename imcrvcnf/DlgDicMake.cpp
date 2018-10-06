@@ -5,8 +5,6 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-#define IMCRVCNF_MAKE_SKKDIC_CANCEL_EVENT	IMCRVKRNLOBJ L"cnf-make-skkdic-cancel"
-
 #define E_MAKESKKDIC_OK			MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0)
 #define E_MAKESKKDIC_DOWNLOAD	MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 1)
 #define E_MAKESKKDIC_FILEIO		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 2)
@@ -597,12 +595,41 @@ void MakeSKKDicThread(void *p)
 	HWND child = (HWND)p;
 	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY);
 
-	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, IMCRVCNF_MAKE_SKKDIC_CANCEL_EVENT);
+	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, cnfcanceldiceventname);
+
+	LONGLONG t = 0;
+
+	LARGE_INTEGER qpf = {};
+	BOOL bHRT = QueryPerformanceFrequency(&qpf);
+
+	LONGLONG t0 = 0;
+	if(bHRT)
+	{
+		LARGE_INTEGER qpt = {};
+		QueryPerformanceCounter(&qpt);
+		t0 = qpt.QuadPart;
+	}
+	else
+	{
+		t0 = GetTickCount();
+	}
 
 	HRESULT hr = LoadSKKDic(hCancelEvent, parent, entries_a, entries_n);
 	if(SUCCEEDED(hr))
 	{
 		hr = WriteSKKDic(hCancelEvent, entries_a, entries_n);
+	}
+
+	if(bHRT)
+	{
+		LARGE_INTEGER qpt = {};
+		QueryPerformanceCounter(&qpt);
+
+		t = (LONGLONG)(((double)(qpt.QuadPart - t0) / (double)qpf.QuadPart) * 1000);
+	}
+	else
+	{
+		t = GetTickCount() - (DWORD)t0;
 	}
 
 	CloseHandle(hCancelEvent);
@@ -611,7 +638,9 @@ void MakeSKKDicThread(void *p)
 
 	if(SUCCEEDED(hr))
 	{
-		MessageBoxW(parent, L"完了しました。", TextServiceDesc, MB_OK | MB_ICONINFORMATION);
+		_snwprintf_s(msg, _TRUNCATE, L"完了しました。\r\n\r\n%lld msec", t);
+
+		MessageBoxW(parent, msg, TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 	}
 	else if(hr == E_ABORT)
 	{
@@ -671,7 +700,7 @@ INT_PTR CALLBACK DlgProcMakeSKKDic(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	{
 	case WM_INITDIALOG:
 		SendMessageW(GetDlgItem(hDlg, IDC_PROGRESS_DIC_MAKE), PBM_SETMARQUEE, TRUE, 0);
-		hCancelEvent = CreateEventW(nullptr, FALSE, FALSE, IMCRVCNF_MAKE_SKKDIC_CANCEL_EVENT);
+		hCancelEvent = CreateEventW(nullptr, FALSE, FALSE, cnfcanceldiceventname);
 		_beginthread(MakeSKKDicThread, 0, hDlg);
 		return TRUE;
 	case WM_CTLCOLORDLG:

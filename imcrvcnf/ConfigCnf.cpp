@@ -5,6 +5,7 @@
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
 WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
+WCHAR cnfcanceldiceventname[MAX_KRNLOBJNAME];	//辞書取込キャンセルイベント
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 
@@ -34,12 +35,14 @@ void CreateConfigPath()
 void CreateIpcName()
 {
 	ZeroMemory(cnfmutexname, sizeof(cnfmutexname));
+	ZeroMemory(cnfcanceldiceventname, sizeof(cnfcanceldiceventname));
 
 	LPWSTR pszUserUUID = nullptr;
 
 	if(GetUserUUID(&pszUserUUID))
 	{
 		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
+		_snwprintf_s(cnfcanceldiceventname, _TRUNCATE, L"%s%s", IMCRVKRNLOBJ L"cnf-cancel-dic-", pszUserUUID);
 
 		LocalFree(pszUserUUID);
 	}
