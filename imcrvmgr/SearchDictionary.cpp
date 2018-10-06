@@ -92,7 +92,7 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 	WCHAR wbuf[READBUFSIZE];
 	PWCHAR pwb;
 	long pos, left, mid, right;
-	size_t cidx;
+	size_t is, ie;
 
 	_wfopen_s(&fp, pathskkdic, RB);
 	if(fp == nullptr)
@@ -143,16 +143,22 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 		}
 
 		// CR+LF -> LF
-		if((cidx = wsbuf.find_last_of(L'/')) != std::wstring::npos)
+		is = wsbuf.find_last_of(L'/');
+		if(is != std::wstring::npos)
 		{
-			wsbuf.erase(cidx + 1);
+			wsbuf.erase(is + 1);
 			wsbuf.push_back(L'\n');
 		}
 
-		if((cidx = wsbuf.find(L"\x20/")) != std::wstring::npos)
+		is = wsbuf.find(L"\x20/");
+		if(is != std::wstring::npos)
 		{
-			kbuf = wsbuf.substr(0, cidx);
-			cbuf = wsbuf.substr(cidx + 1);
+			ie = wsbuf.find_last_not_of(L'\x20', is);
+			if(is != std::wstring::npos)
+			{
+				kbuf = wsbuf.substr(0, ie + 1);
+			}
+			cbuf = wsbuf.substr(is + 1);
 		}
 
 		int cmpkey = searchkey.compare(kbuf);

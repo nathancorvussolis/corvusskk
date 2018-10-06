@@ -13,7 +13,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	std::string sbuf;
 	WCHAR wbuf[READBUFSIZE];
 	std::wstring wsbuf, s, fmt;
-	size_t is;
+	size_t is, ie;
 	void *rp;
 
 	c.clear();
@@ -106,7 +106,14 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	{
 		return 1;
 	}
-	key = s.substr(0, is);
+
+	ie = s.find_last_not_of(L'\x20', is);
+	if(ie == std::wstring::npos)
+	{
+		return 1;
+	}
+	key = s.substr(0, ie + 1);
+
 	s = s.substr(is + 1);
 
 	ParseSKKDicCandiate(s, c);
