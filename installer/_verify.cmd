@@ -3,7 +3,7 @@ setlocal
 
 pushd "%~dp0"
 
-call "%VS140COMNTOOLS%VsDevCmd.bat"
+call "%VS140COMNTOOLS%vsvars32.bat" 8.1
 
 call _version.cmd
 
