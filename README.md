@@ -344,7 +344,7 @@ Visual C++ 2015 の 正規表現で、文法は ECMAScript を使用していま
 | 辞書削除   | X  Ctrl+x              | ユーザー辞書から候補を削除 |
 | 次補完     | Ctrl+i(Tab)            | 補完開始、次見出し語候補 |
 | 前補完     | Ctrl+u                 | 前見出し語候補 |
-| 補完と変換 | .                      | 最初の見出し語候補で辞書検索開始<br>skk-start-henkan-with-completion-char |
+| 補完と変換 | Ctrl+c                 | 最初の見出し語候補で辞書検索開始<br>skk-start-henkan-with-completion-char |
 | 絞り込み   |                        | 候補を絞り込む見出し語の入力開始<br>skk-hint-start-char |
 | 変換位置   |                        | 変換位置指定<br>2回連続入力で文字自体が確定する<br>skk-sticky-key |
 | 直接入力   | 0〜9                   | 見出し語入力でローマ字仮名変換しない |
@@ -670,7 +670,7 @@ Visual Studio Community 2015 Update 3
 
 WiX Toolset v3.11.1
 
-pandoc 2.2.2.1
+pandoc 2.3.1
 
 
 ### ビルド手順

@@ -22,7 +22,7 @@ static const struct {
 		{IDC_EDIT_PURGE_DIC,	ValueKeyMapPurgeDic,	L"X|\\cx"},
 		{IDC_EDIT_NEXT_COMP,	ValueKeyMapNextComp,	L"\\ci"},
 		{IDC_EDIT_PREV_COMP,	ValueKeyMapPrevComp,	L"\\cu"},
-		{IDC_EDIT_COMP_CAND,	ValueKeyMapCompCand,	L"\\."},
+		{IDC_EDIT_COMP_CAND,	ValueKeyMapCompCand,	L"\\cc"},
 		{IDC_EDIT_HINT,			ValueKeyMapHint,		L""},
 		{IDC_EDIT_CONV_POINT,	ValueKeyMapConvPoint,	L""},
 		{IDC_EDIT_DIRECT,		ValueKeyMapDirect,		L"[0-9]"},

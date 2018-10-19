@@ -124,7 +124,7 @@
     <key name="purgedic" value="X|\cx" />
     <key name="nextcomp" value="\ci" />
     <key name="prevcomp" value="\cu" />
-    <key name="compcand" value="\." />
+    <key name="compcand" value="\cc" />
     <key name="hint" value="" />
     <key name="convpoint" value="" />
     <key name="direct" value="[0-9]" />
