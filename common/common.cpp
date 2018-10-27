@@ -1,6 +1,8 @@
 ﻿
 #include "common.h"
 
+#pragma comment(lib, "bcrypt.lib")
+
 #define CCSUTF16 L", ccs=UTF-16LE"
 #define CCSUTF8 L", ccs=UTF-8"
 LPCWSTR RccsUTF16 = L"r" CCSUTF16;
@@ -107,11 +109,9 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER, mask);
 }
 
-BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, DWORD digestlen)
+BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, DWORD digestlen)
 {
 	BOOL bRet = FALSE;
-	HCRYPTPROV hProv = NULL;
-	HCRYPTHASH hHash = NULL;
 
 	if(digest == nullptr || data == nullptr)
 	{
@@ -120,17 +120,37 @@ BOOL GetDigest(DWORD dwProvType, ALG_ID AlgId, CONST PBYTE data, DWORD datalen, 
 
 	ZeroMemory(digest, digestlen);
 
-	if(CryptAcquireContextW(&hProv, nullptr, nullptr, dwProvType, CRYPT_VERIFYCONTEXT))
+	BCRYPT_ALG_HANDLE  hAlg;
+	NTSTATUS status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, nullptr, 0);
+	if (BCRYPT_SUCCESS(status))
 	{
-		if(CryptCreateHash(hProv, AlgId, 0, 0, &hHash))
+		DWORD cbHashObject;
+		ULONG cbResult;
+		status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbResult, 0);
+		if (BCRYPT_SUCCESS(status))
 		{
-			if(CryptHashData(hHash, data, datalen, 0))
+			PBYTE pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
+			if(pbHashObject != nullptr)
 			{
-				bRet = CryptGetHashParam(hHash, HP_HASHVAL, digest, &digestlen, 0);
+				BCRYPT_HASH_HANDLE hHash;
+				status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, nullptr, 0, 0);
+				if(BCRYPT_SUCCESS(status))
+				{
+					status = BCryptHashData(hHash, data, datalen, 0);
+					if(BCRYPT_SUCCESS(status))
+					{
+						status = BCryptFinishHash(hHash, digest, digestlen, 0);
+						if(BCRYPT_SUCCESS(status))
+						{
+							bRet = TRUE;
+						}
+					}
+					BCryptDestroyHash(hHash);
+				}
+				HeapFree(GetProcessHeap(), 0, pbHashObject);
 			}
-			CryptDestroyHash(hHash);
 		}
-		CryptReleaseContext(hProv, 0);
+		BCryptCloseAlgorithmProvider(hAlg, 0);
 	}
 
 	return bRet;
@@ -174,8 +194,7 @@ USHORT ntohsc(USHORT n)
 BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 {
 	BOOL bRet = FALSE;
-	CONST DWORD dwProvType = PROV_RSA_AES;
-	CONST ALG_ID AlgId = CALG_SHA1;
+	CONST LPCWSTR pszAlgId = BCRYPT_SHA1_ALGORITHM;
 	CONST DWORD dwDigestLen = 20;
 	CONST USHORT maskVersion = 0x5000;
 	GUID lguid = rguid;
@@ -197,7 +216,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
 
 		BYTE digest[dwDigestLen];
-		if(GetDigest(dwProvType, AlgId,
+		if(GetDigest(pszAlgId,
 			pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
 		{
 			GUID dguid = *(GUID *)digest;

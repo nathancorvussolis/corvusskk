@@ -18,5 +18,4 @@
 #include <msctf.h>
 #include <xmllite.h>
 #include <Shlwapi.h>
-#include <NTSecAPI.h>
-#include <wincrypt.h>
+#include <bcrypt.h>
