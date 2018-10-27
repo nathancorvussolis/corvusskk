@@ -163,7 +163,7 @@ void CreateIpcName()
 		// (SDDL_MANDATORY_LABEL, SDDL_NO_WRITE_UP, SDDL_ML_LOW)
 		wcsncat_s(krnlobjsddl, L"S:(ML;;NW;;;LW)", _TRUNCATE);
 
-		LocalFree(pszUserSid);
+		HeapFree(GetProcessHeap(), 0, pszUserSid);
 	}
 
 	LPWSTR pszUserUUID = nullptr;
@@ -173,7 +173,7 @@ void CreateIpcName()
 		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszUserUUID);
 		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszUserUUID);
 
-		LocalFree(pszUserUUID);
+		HeapFree(GetProcessHeap(), 0, pszUserUUID);
 	}
 }
 

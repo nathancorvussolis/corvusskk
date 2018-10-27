@@ -44,7 +44,7 @@ void CreateIpcName()
 		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
 		_snwprintf_s(cnfcanceldiceventname, _TRUNCATE, L"%s%s", IMCRVKRNLOBJ L"cnf-cancel-dic-", pszUserUUID);
 
-		LocalFree(pszUserUUID);
+		HeapFree(GetProcessHeap(), 0, pszUserUUID);
 	}
 }
 
@@ -61,7 +61,7 @@ BOOL SetFileDacl(LPWSTR path)
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
 			(IsWindowsVersion62OrLater() ? L"(A;;FR;;;AC)" : L""), pszUserSid);
 
-		LocalFree(pszUserSid);
+		HeapFree(GetProcessHeap(), 0, pszUserSid);
 	}
 
 	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, nullptr))

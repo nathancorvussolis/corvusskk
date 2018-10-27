@@ -131,7 +131,7 @@ void CTextService::_CreateIpcName()
 		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszUserUUID);
 		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
 
-		LocalFree(pszUserUUID);
+		HeapFree(GetProcessHeap(), 0, pszUserUUID);
 	}
 }
 
