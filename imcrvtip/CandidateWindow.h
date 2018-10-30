@@ -1,6 +1,4 @@
-﻿
-#ifndef CANDIDATEWINDOW_H
-#define CANDIDATEWINDOW_H
+﻿#pragma once
 
 #include "TextService.h"
 #include "CandidateList.h"
@@ -157,5 +155,3 @@ private:
 	size_t candidx_bak;
 	size_t candorgcnt_bak;
 };
-
-#endif //CANDIDATEWINDOW_H

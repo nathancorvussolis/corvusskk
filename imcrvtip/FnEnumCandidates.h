@@ -1,6 +1,4 @@
-﻿
-#ifndef FNENUMCANDIDATES_H
-#define FNENUMCANDIDATES_H
+﻿#pragma once
 
 #include "FnCandidateString.h"
 
@@ -160,5 +158,3 @@ private:
 	ULONG _nIndex;
 	CANDIDATES _candidates;
 };
-
-#endif //FNENUMCANDIDATES_H

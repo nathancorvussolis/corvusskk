@@ -1,6 +1,4 @@
-﻿
-#ifndef FNCANDIDATESTRING_H
-#define FNCANDIDATESTRING_H
+﻿#pragma once
 
 class CFnCandidateString : public ITfCandidateString
 {
@@ -100,5 +98,3 @@ private:
 	ULONG _nIndex;
 	std::wstring _candidate;
 };
-
-#endif //FNCANDIDATESTRING_H

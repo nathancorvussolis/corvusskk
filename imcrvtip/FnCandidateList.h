@@ -1,6 +1,4 @@
-﻿
-#ifndef FNCANDIDATELIST_H
-#define FNCANDIDATELIST_H
+﻿#pragma once
 
 #include "TextService.h"
 #include "FnCandidateString.h"
@@ -150,5 +148,3 @@ private:
 	std::wstring _searchkey;
 	CANDIDATES _candidates;
 };
-
-#endif //FNCANDIDATELIST_H

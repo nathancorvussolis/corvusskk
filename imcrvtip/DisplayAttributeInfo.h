@@ -1,6 +1,4 @@
-﻿
-#ifndef DISPLAYATTRIBUTEINFO_H
-#define DISPLAYATTRIBUTEINFO_H
+﻿#pragma once
 
 class CDisplayAttributeInfo : public ITfDisplayAttributeInfo
 {
@@ -130,5 +128,3 @@ protected:
 private:
 	LONG _cRef;
 };
-
-#endif //DISPLAYATTRIBUTEINFO_H

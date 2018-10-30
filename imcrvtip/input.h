@@ -1,6 +1,4 @@
-﻿
-#ifndef INPUT_H
-#define INPUT_H
+﻿#pragma once
 
 #include <Windows.h>
 
@@ -109,5 +107,3 @@ BOOL WINAPI SetDefaultLayoutOrTipUserReg(
 );
 
 }
-
-#endif //INPUT_H

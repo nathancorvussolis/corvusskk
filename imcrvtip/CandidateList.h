@@ -1,6 +1,4 @@
-﻿
-#ifndef CANDIDATELIST_H
-#define CANDIDATELIST_H
+﻿#pragma once
 
 class CCandidateWindow;
 
@@ -60,5 +58,3 @@ private:
 
 	CCandidateWindow *_pCandidateWindow;
 };
-
-#endif //CANDIDATELIST_H

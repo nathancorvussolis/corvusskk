@@ -1,6 +1,4 @@
-﻿
-#ifndef RESOURCE_H
-#define RESOURCE_H
+﻿#pragma once
 
 #define IDI_0_IME        100
 
@@ -29,5 +27,3 @@
 #define IDM_CONFIG          1021
 #define IDM_CAPSLOCK		1022
 #define IDM_KANALOCK		1023
-
-#endif //RESOURCE_H

@@ -1,6 +1,4 @@
-﻿
-#ifndef IMCRVTIP_H
-#define IMCRVTIP_H
+﻿#pragma once
 
 #include <tsattrs.h>
 
@@ -214,5 +212,3 @@ extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
 #define D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT (static_cast<D2D1_DRAW_TEXT_OPTIONS>(0x00000004))
 
 #endif //_WIN32_WINNT_WINBLUE
-
-#endif //IMCRVTIP_H

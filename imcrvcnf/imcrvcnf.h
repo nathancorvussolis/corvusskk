@@ -1,6 +1,4 @@
-﻿
-#ifndef IMCRVCNF_H
-#define IMCRVCNF_H
+﻿#pragma once
 
 #include "common.h"
 
@@ -83,5 +81,3 @@ extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
 #define WM_GETDPISCALEDSIZE             0x02E4
 #endif //(WINVER < 0x0605)
 #endif //NTDDI_WIN10_RS2
-
-#endif //IMCRVCNF_H

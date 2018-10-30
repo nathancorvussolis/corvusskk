@@ -1,6 +1,4 @@
-﻿
-#ifndef EUCJIS2004TABLE_H
-#define EUCJIS2004TABLE_H
+﻿#pragma once
 
 #define CMBCHARNUM	25
 #define ANKNUM		94
@@ -19,5 +17,3 @@ extern const UCSCHAR euc1[ROWNUM][CELLNUM];		//JIS X 0213 第一面
 extern const UCSCHAR eucK[ANKNUM];				//JIS X 0201
 extern const BYTE euc2i[ROWNUM];				//JIS X 0213 第二面インデックス
 extern const UCSCHAR euc2[ROW2NUM][CELLNUM];	//JIS X 0213 第二面
-
-#endif //EUCJIS2004TABLE_H

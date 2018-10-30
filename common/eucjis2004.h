@@ -1,6 +1,4 @@
-﻿
-#ifndef EUCJIS2004_H
-#define EUCJIS2004_H
+﻿#pragma once
 
 // Unicode Code PointをUTF-16へ変換
 //   戻り値
@@ -63,5 +61,3 @@ std::wstring eucjis2004_string_to_wstring(const std::string &s);
 
 #define WCTOEUC(w) wstring_to_eucjis2004_string(w).c_str()
 #define EUCTOWC(u) eucjis2004_string_to_wstring(u).c_str()
-
-#endif //EUCJIS2004_H

@@ -1,6 +1,4 @@
-﻿
-#ifndef INPUTMODEWINDOW_H
-#define INPUTMODEWINDOW_H
+﻿#pragma once
 
 #include "TextService.h"
 #include "EditSession.h"
@@ -49,5 +47,3 @@ private:
 	int _size;
 	int _dpi;
 };
-
-#endif //INPUTMODEWINDOW_H

@@ -1,6 +1,4 @@
-﻿
-#ifndef EDITSESSION_H
-#define EDITSESSION_H
+﻿#pragma once
 
 #include "imcrvtip.h"
 #include "TextService.h"
@@ -75,5 +73,3 @@ protected:
 private:
 	LONG _cRef;
 };
-
-#endif //EDITSESSION_H

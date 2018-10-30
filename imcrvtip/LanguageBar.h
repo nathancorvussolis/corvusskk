@@ -1,6 +1,4 @@
-﻿
-#ifndef LANGUAGEBAR_H
-#define LANGUAGEBAR_H
+﻿#pragma once
 
 class CLangBarItemButton :
 	public ITfLangBarItemButton,
@@ -43,5 +41,3 @@ private:
 	ITfLangBarItemSink *_pLangBarItemSink;
 	TF_LANGBARITEMINFO _LangBarItemInfo;
 };
-
-#endif //LANGUAGEBAR_H

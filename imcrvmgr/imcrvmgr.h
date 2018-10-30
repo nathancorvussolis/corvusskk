@@ -1,6 +1,4 @@
-﻿
-#ifndef IMCRVMGR_H
-#define IMCRVMGR_H
+﻿#pragma once
 
 #include "common.h"
 #include "parseskkdic.h"
@@ -119,5 +117,3 @@ extern DWORD timeout;	//タイムアウト
 
 extern BOOL precedeokuri;	//送り仮名が一致した候補を優先する
 extern BOOL compincback;	//前方一致と後方一致で補完する
-
-#endif //IMCRVMGR_H

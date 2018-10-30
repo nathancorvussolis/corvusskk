@@ -1,6 +1,4 @@
-﻿
-#ifndef PARSESKKDIC_H
-#define PARSESKKDIC_H
+﻿#pragma once
 
 //変換済み検索結果
 typedef std::pair< std::wstring, std::wstring > CANDIDATEBASE; //候補、注釈
@@ -36,5 +34,3 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c);
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o);
 std::wstring ParseConcat(const std::wstring &s);
 std::wstring MakeConcat(const std::wstring &s);
-
-#endif //PARSESKKDIC_H

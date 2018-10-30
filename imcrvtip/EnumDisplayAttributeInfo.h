@@ -1,6 +1,4 @@
-﻿
-#ifndef ENUMDISPLAYATTRIBUTEINFO_H
-#define ENUMDISPLAYATTRIBUTEINFO_H
+﻿#pragma once
 
 class CEnumDisplayAttributeInfo : public IEnumTfDisplayAttributeInfo
 {
@@ -157,5 +155,3 @@ private:
 	LONG _cRef;
 	ULONG _nIndex;
 };
-
-#endif //ENUMDISPLAYATTRIBUTEINFO_H

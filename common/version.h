@@ -1,6 +1,4 @@
-﻿
-#ifndef VERSION_H
-#define VERSION_H
+﻿#pragma once
 
 #define TEXTSERVICE_NAME	L"CorvusSKK"
 #ifndef _DEBUG
@@ -16,5 +14,3 @@
 #define RC_PRODUCT			"CorvusSKK"
 #define RC_VERSION			"2.7.1"
 #define RC_VERSION_D		2,7,1,0
-
-#endif

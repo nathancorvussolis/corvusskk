@@ -1,6 +1,4 @@
-﻿
-#ifndef RESOURCE_H
-#define RESOURCE_H
+﻿#pragma once
 
 #ifndef IDC_STATIC
 #define IDC_STATIC (-1)
@@ -227,5 +225,3 @@
 #define IDC_BUTTON_JLATTBL_DOWN                 4305
 #define IDC_BUTTON_JLATTBL_W                    4306
 #define IDC_BUTTON_JLATTBL_D                    4307
-
-#endif //RESOURCE_H

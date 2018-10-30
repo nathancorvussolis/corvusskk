@@ -1,6 +1,4 @@
-﻿
-#ifndef CONFIGXML_H
-#define CONFIGXML_H
+﻿#pragma once
 
 //tag
 
@@ -227,5 +225,3 @@ HRESULT WriterEndSection(IXmlWriter *pWriter);
 HRESULT WriterKey(IXmlWriter *pWriter, LPCWSTR key, LPCWSTR value);
 HRESULT WriterRow(IXmlWriter *pWriter, const APPDATAXMLROW &row);
 HRESULT WriterList(IXmlWriter *pWriter, const APPDATAXMLLIST &list, BOOL newline = FALSE);
-
-#endif //CONFIGXML_H

@@ -1,6 +1,4 @@
-﻿
-#ifndef COMMON_H
-#define COMMON_H
+﻿#pragma once
 
 #include "version.h"
 
@@ -111,5 +109,3 @@ template<class T> void SafeRelease(T **ppT)
 		*ppT = nullptr;
 	}
 }
-
-#endif //COMMON_H

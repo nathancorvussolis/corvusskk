@@ -1,6 +1,4 @@
-﻿
-#ifndef TEXTSERVICE_H
-#define TEXTSERVICE_H
+﻿#pragma once
 
 #include "imcrvtip.h"
 #include "convtype.h"
@@ -397,5 +395,3 @@ public:
 	static BOOL display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM];
 	static TF_DISPLAYATTRIBUTE display_attribute_info[DISPLAYATTRIBUTE_INFO_NUM];
 };
-
-#endif //TEXTSERVICE_H
