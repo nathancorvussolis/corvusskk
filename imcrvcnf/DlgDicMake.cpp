@@ -36,10 +36,14 @@ HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
 	}
 	wcsncpy_s(fname, fnurl + 1, _TRUNCATE);
 
-	LPWSTR pfname = fname;
-	while((pfname = wcspbrk(pfname, L"\\/:*?\"<>|")) != nullptr)
+	for (int i = 0; i < _countof(fname) && fname[i] != L'\0'; i++)
 	{
-		*pfname = L'_';
+		UINT type = PathGetCharTypeW(fname[i]);
+
+		if ((type & (GCT_LFNCHAR | GCT_SHORTCHAR)) == 0)
+		{
+			fname[i] = L'_';
+		}
 	}
 
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", dir, fname);
@@ -448,8 +452,8 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 		// 「;; okuri-ari entries.」、「;; okuri-nasi entries.」がない辞書のエントリは送りなしとする
 		int okuri = 0;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
 
-		int count_key = 0;
-		int count_cand = 0;
+		size_t count_key = 0;
+		size_t count_cand = 0;
 
 		while(true)
 		{
@@ -476,7 +480,7 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 			case 1:
 			case 0:
 				++count_key;
-				count_cand += (int)sc.size();
+				count_cand += sc.size();
 				break;
 			default:
 				break;
@@ -502,9 +506,9 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 			lvi.mask = LVFIF_TEXT;
 			lvi.iItem = i;
 
-			_snwprintf_s(scount, _TRUNCATE, L"%d", count_key);
+			_snwprintf_s(scount, _TRUNCATE, L"%Iu", count_key);
 			ListView_SetItemText(hWndListView, i, 1, scount);
-			_snwprintf_s(scount, _TRUNCATE, L"%d", count_cand);
+			_snwprintf_s(scount, _TRUNCATE, L"%Iu", count_cand);
 			ListView_SetItemText(hWndListView, i, 2, scount);
 		}
 	}

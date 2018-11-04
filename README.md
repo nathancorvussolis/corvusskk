@@ -670,7 +670,7 @@ Visual Studio Community 2015 Update 3
 
 WiX Toolset v3.11.1
 
-pandoc 2.3.1
+pandoc 2.4
 
 
 ### ビルド手順
