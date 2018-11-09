@@ -338,7 +338,7 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 		GUID uuid = GUID_NULL;
 		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)HeapSize(GetProcessHeap(), 0, pLogonInfo), &uuid))
 		{
-			*ppszUUID = (LPWSTR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, 37 * sizeof(WCHAR));
+			*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
 			if(*ppszUUID != nullptr)
 			{
 				_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
