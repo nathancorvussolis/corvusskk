@@ -14,7 +14,7 @@ int GetFontHeight(HWND hwnd, int size);
 void DrawSelectColor(HWND hDlg, int id, COLORREF col);
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault = L"");
 void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
-void SaveConfigXml(HWND hDlg);
+BOOL SaveConfigXml(HWND hDlg);
 // DlgDicMake
 void MakeSKKDic(HWND hDlg);
 // DlgDicAddUrl

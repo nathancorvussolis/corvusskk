@@ -153,12 +153,17 @@ void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpK
 	WriterKey(pWriter, lpKeyName, num);
 }
 
-void SaveConfigXml(HWND hPropSheetDlg)
+BOOL SaveConfigXml(HWND hPropSheetDlg)
 {
-	IXmlWriter *pWriter;
-	IStream *pFileStream;
+	IXmlWriter *pWriter = nullptr;
+	IStream *pFileStream = nullptr;
 
-	WriterInit(pathconfigxml, &pWriter, &pFileStream);
+	HRESULT hr = WriterInit(pathconfigxml, &pWriter, &pFileStream);
+	if (FAILED(hr))
+	{
+		CloseStreamWriter(pWriter, pFileStream);
+		return FALSE;
+	}
 
 	//skk
 	{
@@ -303,5 +308,11 @@ void SaveConfigXml(HWND hPropSheetDlg)
 
 	WriterFinal(&pWriter, &pFileStream);
 
-	SetFileDacl(pathconfigxml);
+	BOOL ret = SetFileDacl(pathconfigxml);
+	if(ret == FALSE)
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }

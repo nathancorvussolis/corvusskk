@@ -109,7 +109,10 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 				hwndDlg = hwndInit;
 			}
 
-			SaveConfigXml(hwndDlg);
+			if(SaveConfigXml(hwndDlg) == FALSE)
+			{
+				MessageBoxW(hwndDlg, L"保存に失敗しました。", TextServiceDesc, MB_OK | MB_ICONERROR);
+			}
 		}
 		break;
 	default:
