@@ -129,7 +129,7 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 		status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbResult, 0);
 		if (BCRYPT_SUCCESS(status))
 		{
-			PBYTE pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, cbHashObject);
+			PBYTE pbHashObject = (PBYTE)LocalAlloc(LPTR, cbHashObject);
 			if(pbHashObject != nullptr)
 			{
 				BCRYPT_HASH_HANDLE hHash;
@@ -147,7 +147,7 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 					}
 					BCryptDestroyHash(hHash);
 				}
-				HeapFree(GetProcessHeap(), 0, pbHashObject);
+				LocalFree(pbHashObject);
 			}
 		}
 		BCryptCloseAlgorithmProvider(hAlg, 0);
@@ -204,7 +204,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		return FALSE;
 	}
 
-	PBYTE pMessage = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(lguid) + namelen);
+	PBYTE pMessage = (PBYTE)LocalAlloc(LPTR, sizeof(lguid) + namelen);
 	if(pMessage != nullptr)
 	{
 		//network byte order
@@ -236,7 +236,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 			bRet = TRUE;
 		}
 
-		HeapFree(GetProcessHeap(), 0, pMessage);
+		LocalFree(pMessage);
 	}
 
 	return bRet;
@@ -259,21 +259,21 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
-		PTOKEN_USER pTokenUser = (PTOKEN_USER)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwLength);
+		PTOKEN_USER pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
 		if(pTokenUser != nullptr)
 		{
 			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
 				dwUserSidLen = GetLengthSid(pTokenUser->User.Sid);
-				*ppLogonInfo = (PBYTE)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwUserSidLen + sizeof(LUID));
+				*ppLogonInfo = (PBYTE)LocalAlloc(LPTR, dwUserSidLen + sizeof(LUID));
 				if(*ppLogonInfo != nullptr)
 				{
 					bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
 				}
 			}
 
-			HeapFree(GetProcessHeap(), 0, pTokenUser);
+			LocalFree(pTokenUser);
 		}
 
 		if(bRet)
@@ -310,7 +310,7 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 		{
 			if(*ppLogonInfo != nullptr)
 			{
-				HeapFree(GetProcessHeap(), 0, *ppLogonInfo);
+				LocalFree(*ppLogonInfo);
 			}
 		}
 
@@ -336,7 +336,7 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 	if(GetLogonInfo(&pLogonInfo))
 	{
 		GUID uuid = GUID_NULL;
-		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)HeapSize(GetProcessHeap(), 0, pLogonInfo), &uuid))
+		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)LocalSize(pLogonInfo), &uuid))
 		{
 			*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
 			if(*ppszUUID != nullptr)
@@ -352,7 +352,7 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 			}
 		}
 
-		HeapFree(GetProcessHeap(), 0, pLogonInfo);
+		LocalFree(pLogonInfo);
 	}
 
 	return bRet;
@@ -373,7 +373,7 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
-		pTokenUser = (PTOKEN_USER)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, dwLength);
+		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
 		if(pTokenUser != nullptr)
 		{
@@ -382,7 +382,7 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 				bRet = ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid);
 			}
 
-			HeapFree(GetProcessHeap(), 0, pTokenUser);
+			LocalFree(pTokenUser);
 		}
 
 		CloseHandle(hToken);
