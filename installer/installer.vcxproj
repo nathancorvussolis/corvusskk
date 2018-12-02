@@ -1,6 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ARM">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -8,6 +16,14 @@
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM">
+      <Configuration>Release</Configuration>
+      <Platform>ARM</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -26,6 +42,8 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
+    <None Include="installer-arm-bundle.wxs" />
+    <None Include="installer-arm.wxs" />
     <None Include="installer-bundle.wxs" />
     <None Include="installer-ucrt.wxi" />
     <None Include="installer-version.wxi" />
@@ -35,12 +53,8 @@
     <None Include="theme-bundle\license.rtf" />
     <None Include="_build.cmd" />
     <None Include="_build_bundle.cmd" />
-    <None Include="_build_x64.cmd" />
-    <None Include="_build_x86.cmd" />
+    <None Include="_build_msi.cmd" />
     <None Include="_clean.cmd" />
-    <None Include="_clean_sub.cmd" />
-    <None Include="_clean_x64.cmd" />
-    <None Include="_clean_x86.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
     <None Include="_build_sub.cmd" />
@@ -51,6 +65,7 @@
     <None Include="_solution_clean_debug.cmd" />
     <None Include="_verify.cmd" />
     <None Include="_version.cmd" />
+    <None Include="_vsdev.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
@@ -99,22 +114,42 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -125,10 +160,22 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -170,6 +217,42 @@ copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\"
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakeBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeBuildCommandLine>
+    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
+copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
+</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>WIN32;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
@@ -185,6 +268,20 @@ copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\"
     <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
     <OutDir>build\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
+    <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
+    <NMakePreprocessorDefinitions>WIN32;NDEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <NMakeBuildCommandLine>echo build &gt; nul</NMakeBuildCommandLine>
+    <NMakeReBuildCommandLine>echo rebuild &gt; nul</NMakeReBuildCommandLine>
+    <NMakeCleanCommandLine>echo clean &gt; nul</NMakeCleanCommandLine>
   </PropertyGroup>
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>

@@ -2,3 +2,5 @@
 set VERSION=2.7.1
 
 set TARGETDIR=build
+
+set ENABLE_PLATFORM_ARM=0

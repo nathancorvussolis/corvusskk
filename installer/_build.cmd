@@ -5,8 +5,7 @@ pushd "%~dp0"
 
 call _clean.cmd
 
-call _build_x86.cmd
-call _build_x64.cmd
+call _build_msi.cmd
 
 call _build_bundle.cmd
 

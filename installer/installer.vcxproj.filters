@@ -27,25 +27,13 @@
     <None Include="_build_bundle.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_build_msi.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="_build_sub.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_x64.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_build_x86.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="_clean.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_clean_sub.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_clean_x64.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_clean_x86.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_debug_reg.cmd">
@@ -75,6 +63,9 @@
     <None Include="_version.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_vsdev.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="config-lua\init.lua">
       <Filter>config-lua</Filter>
     </None>
@@ -95,6 +86,12 @@
     </None>
     <None Include="resource-md\markdown.css">
       <Filter>resource-md</Filter>
+    </None>
+    <None Include="installer-arm.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-arm-bundle.wxs">
+      <Filter>Installer Files</Filter>
     </None>
     <None Include="installer-bundle.wxs">
       <Filter>Installer Files</Filter>

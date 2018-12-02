@@ -67,16 +67,20 @@
 
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="CRT_X64" DiskId="1" Language="0"
-        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC140_CRT_x64.msm" />
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_x64.msm" />
+      <!--
       <Merge Id="AMP_X64" DiskId="1" Language="0"
-        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC140_CXXAMP_x64.msm" />
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_x64.msm" />
       <Merge Id="OMP_X64" DiskId="1" Language="0"
-        SourceFile="$(env.CommonProgramFiles)\Merge Modules\Microsoft_VC140_OpenMP_x64.msm" />
-    </DirectoryRef>
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_x64.msm" />
+      -->
+      </DirectoryRef>
     <Feature Id="VCRedist" Title="Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="CRT_X64" />
+      <!--
       <MergeRef Id="AMP_X64" />
       <MergeRef Id="OMP_X64" />
+      -->
     </Feature>
 
     <UIRef Id="WixUI_Minimal" />
