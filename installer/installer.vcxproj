@@ -70,6 +70,8 @@
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
     <Text Include="config-sample\kanatable.txt" />
+    <Text Include="config-sample\skk-omikuji.txt" />
+    <Text Include="config-sample\skk-strftime.txt" />
     <Text Include="config-share\skkdict.txt" />
   </ItemGroup>
   <ItemGroup>

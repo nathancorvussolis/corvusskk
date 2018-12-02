@@ -562,6 +562,10 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 | skk-henkan-key | 変換する見出し語 |
 | skk-num-list | 変換する見出し語に含まれる数値文字列のリスト |
 
+skk-omikuji 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-omikuji.txt
+
+skk-strftime 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-strftime.txt
+
 
 ### 数値変換
 

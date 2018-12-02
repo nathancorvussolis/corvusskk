@@ -121,6 +121,12 @@
     <Text Include="config-share\skkdict.txt">
       <Filter>config-share</Filter>
     </Text>
+    <Text Include="config-sample\skk-omikuji.txt">
+      <Filter>config-sample</Filter>
+    </Text>
+    <Text Include="config-sample\skk-strftime.txt">
+      <Filter>config-sample</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="config-sample\config - act.xml">

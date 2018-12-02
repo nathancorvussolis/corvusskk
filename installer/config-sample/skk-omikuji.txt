@@ -1,0 +1,6 @@
+﻿;; licensed under CC0.
+;; https://creativecommons.org/publicdomain/zero/1.0/
+;;
+;; okuri-ari entries.
+;; okuri-nasi entries.
+おみくじ /(skk-omikuji)/

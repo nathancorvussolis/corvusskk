@@ -1,0 +1,43 @@
+﻿;; licensed under CC0.
+;; https://creativecommons.org/publicdomain/zero/1.0/
+;;
+;; okuri-ari entries.
+;; okuri-nasi entries.
+いま /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒")/
+#びょうご /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "sec" #0)/
+#びょうまえ /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "sec" -#0)/
+#ふんご /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "min" #0)/
+#ふんまえ /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "min" -#0)/
+#じかんご /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "hour" #0)/
+#じかんまえ /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "hour" -#0)/
+きょう /(skk-strftime "%Y年%#m月%#d日(%a)")/
+あした /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 1)/
+あす /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 1)/
+みょうごにち /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 2)/
+あさって /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 2)/
+しあさって /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 3)/
+みょうみょうごにち /(skk-strftime "%Y年%#m月%#d日(%a)" "day" 3)/
+きのう /(skk-strftime "%Y年%#m月%#d日(%a)" "day" -1)/
+おととい /(skk-strftime "%Y年%#m月%#d日(%a)" "day" -2)/
+おとつい /(skk-strftime "%Y年%#m月%#d日(%a)" "day" -2)/
+いっさくじつ /(skk-strftime "%Y年%#m月%#d日(%a)" "day" -2)/
+#にちご /(skk-strftime "%Y年%#m月%#d日(%a)" "day" #0)/
+#にちまえ /(skk-strftime "%Y年%#m月%#d日(%a)" "day" -#0)/
+こんげつ /(skk-strftime "%Y年%#m月")/
+らいげつ /(skk-strftime "%Y年%#m月" "month" 1)/
+さらいげつ /(skk-strftime "%Y年%#m月" "month" 2)/
+せんげつ /(skk-strftime "%Y年%#m月" "month" -1)/
+せんせんげつ /(skk-strftime "%Y年%#m月" "month" -2)/
+#かげつご /(skk-strftime "%Y年%#m月" "month" #0)/
+#かげつまえ /(skk-strftime "%Y年%#m月" "month" -#0)/
+ことし /(skk-strftime "%Y年")/
+らいねん /(skk-strftime "%Y年" "year" 1)/
+みょうねん /(skk-strftime "%Y年" "year" 1)/
+さらいねん /(skk-strftime "%Y年" "year" 2)/
+みょうごねん /(skk-strftime "%Y年" "year" 2)/
+きょねん /(skk-strftime "%Y年" "year" -1)/
+さくねん /(skk-strftime "%Y年" "year" -1)/
+おととし /(skk-strftime "%Y年" "year" -2)/
+いっさくねん /(skk-strftime "%Y年" "year" -2)/
+#ねんご /(skk-strftime "%Y年" "year" #0)/
+#ねんまえ /(skk-strftime "%Y年" "year" -#0)/
