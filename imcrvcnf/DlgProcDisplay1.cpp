@@ -100,7 +100,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			}
 		}
 
-		LoadCheckButton(hDlg, IDC_RADIO_API_D2D, SectionDisplay, ValueDrawAPI);
+		LoadCheckButton(hDlg, IDC_RADIO_API_D2D, SectionDisplay, ValueDrawAPI, L"1");
 		EnableWindow(GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT), TRUE);
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
 		{
@@ -125,18 +125,18 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)count, 0);
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand, L"1");
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ANNOTATION, SectionDisplay, ValueAnnotation, L"1");
-		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionDisplay, ValueAnnotatLst);
+		LoadCheckButton(hDlg, IDC_RADIO_ANNOTATLST, SectionDisplay, ValueAnnotatLst, L"1");
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_ANNOTATLST))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_ANNOTATALL, BST_CHECKED);
 		}
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionDisplay, ValueShowModeMark, L"1");
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEMARK, SectionDisplay, ValueShowModeMark);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWROMAN, SectionDisplay, ValueShowRoman, L"1");
-		LoadCheckButton(hDlg, IDC_RADIO_SHOWROMANJLATIN, SectionDisplay, ValueShowRomanJLat);
+		LoadCheckButton(hDlg, IDC_RADIO_SHOWROMANJLATIN, SectionDisplay, ValueShowRomanJLat, L"1");
 		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_SHOWROMANJLATIN))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_SHOWROMANASCII, BST_CHECKED);

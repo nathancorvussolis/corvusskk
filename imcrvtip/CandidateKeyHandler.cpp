@@ -159,7 +159,8 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 		{
 			if(ch == (L'1' + i) ||
 				(ch == _pTextService->selkey[i][0][0] && _pTextService->selkey[i][0][0] != L'\0') ||
-				(ch == _pTextService->selkey[i][1][0] && _pTextService->selkey[i][1][0] != L'\0'))
+				(ch == _pTextService->selkey[i][1][0] && _pTextService->selkey[i][1][0] != L'\0') ||
+				(ch == _pTextService->selkey[i][2][0] && _pTextService->selkey[i][2][0] != L'\0'))
 			{
 				GetCurrentPage(&page);
 				if(i < _CandCount[page])

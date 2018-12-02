@@ -217,7 +217,7 @@ void CTextService::_LoadBehavior()
 		}
 	}
 
-	_ReadBoolValue(SectionDisplay, ValueDrawAPI, cx_drawapi, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueDrawAPI, cx_drawapi, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueColorFont, cx_colorfont, TRUE);
 
 	ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
@@ -228,13 +228,13 @@ void CTextService::_LoadBehavior()
 	}
 
 	_ReadBoolValue(SectionDisplay, ValueDispCandNo, cx_dispcandnum, FALSE);
-	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);
-	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueAnnotatLst, cx_annotatlst, TRUE);
 
-	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, TRUE);
+	_ReadBoolValue(SectionDisplay, ValueShowModeMark, cx_showmodemark, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueShowRoman, cx_showroman, TRUE);
-	_ReadBoolValue(SectionDisplay, ValueShowRomanJLat, cx_showromanjlat, FALSE);
+	_ReadBoolValue(SectionDisplay, ValueShowRomanJLat, cx_showromanjlat, TRUE);
 
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
 	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
@@ -296,6 +296,7 @@ void CTextService::_LoadSelKey()
 		wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
 		selkey[i][0][0] = key[0];
 		selkey[i][1][0] = key[1];
+		selkey[i][2][0] = key[2];
 	}
 }
 
@@ -982,7 +983,7 @@ void CTextService::_InitFont(int dpi)
 
 	if(cx_drawapi && !_UILessMode && (_pD2DFactory == nullptr))
 	{
-		//try delay load
+		//try delay load d2d1.dll and dwrite.dll
 		__try
 		{
 			_drawtext_option = (IsWindowsVersion63OrLater() && cx_colorfont) ?

@@ -218,7 +218,7 @@ BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 
 	_snwprintf_s(profilelist, _TRUNCATE, L"0x%04X:%s%s", TEXTSERVICE_LANGID, clsid, guidprofile);
 
-	//try delay load
+	//try delay load input.dll
 	__try
 	{
 		return InstallLayoutOrTip(profilelist, dwFlags);

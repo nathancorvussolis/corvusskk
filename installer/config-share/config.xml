@@ -45,16 +45,16 @@
     <key name="colorsc" value="0x808080" />
     <key name="coloran" value="0x808080" />
     <key name="colorno" value="0x000000" />
-    <key name="drawapi" value="0" />
+    <key name="drawapi" value="1" />
     <key name="colorfont" value="1" />
     <key name="untilcandlist" value="5" />
     <key name="dispcandno" value="0" />
-    <key name="verticalcand" value="0" />
+    <key name="verticalcand" value="1" />
     <key name="annotation" value="1" />
-    <key name="annotatlst" value="0" />
-    <key name="showmodemark" value="1" />
+    <key name="annotatlst" value="1" />
+    <key name="showmodemark" value="0" />
     <key name="showroman" value="1" />
-    <key name="showromanjlat" value="0" />
+    <key name="showromanjlat" value="1" />
     <key name="showmodeinl" value="1" />
     <key name="showmodesec" value="3" />
     <key name="colormc" value="0xFFFFFF" />
@@ -76,15 +76,15 @@
     <key name="convannot" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,2" />
   </section>
   <section name="selkey">
-    <key name="1" value="Aa" />
-    <key name="2" value="Ss" />
-    <key name="3" value="Dd" />
-    <key name="4" value="Ff" />
-    <key name="5" value="Jj" />
-    <key name="6" value="Kk" />
-    <key name="7" value="Ll" />
-    <key name="8" value="Gg" />
-    <key name="9" value="Hh" />
+    <key name="1" value="ＡAa" />
+    <key name="2" value="ＳSs" />
+    <key name="3" value="ＤDd" />
+    <key name="4" value="ＦFf" />
+    <key name="5" value="ＪJj" />
+    <key name="6" value="ＫKk" />
+    <key name="7" value="ＬLl" />
+    <key name="8" value="ＧGg" />
+    <key name="9" value="ＨHh" />
   </section>
   <section name="preservedkeyon">
     <list>

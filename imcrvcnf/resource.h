@@ -151,8 +151,9 @@
 
 #define IDC_LIST_SELKEY                         3101
 #define IDC_EDIT_SELKEY_DISP                    3102
-#define IDC_EDIT_SELKEY_SPARE                   3103
-#define IDC_BUTTON_SELKEY_W                     3104
+#define IDC_EDIT_SELKEY_SPARE1                  3103
+#define IDC_EDIT_SELKEY_SPARE2                  3104
+#define IDC_BUTTON_SELKEY_W                     3105
 
 #define IDC_LIST_PRSRVKEY_ON                    3201
 #define IDC_LIST_PRSRVKEY_OFF                   3202

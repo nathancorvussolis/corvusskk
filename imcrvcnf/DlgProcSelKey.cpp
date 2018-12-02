@@ -3,7 +3,8 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
-static LPCWSTR listSelKey[MAX_SELKEY_C] = {L"Aa",L"Ss",L"Dd",L"Ff",L"Jj",L"Kk",L"Ll",L"Gg",L"Hh"};
+static LPCWSTR listSelKey[MAX_SELKEY_C] =
+{L"ＡAa", L"ＳSs", L"ＤDd", L"ＦFf", L"ＪJj", L"ＫKk", L"ＬLl", L"ＧGg", L"ＨHh"};
 
 INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -34,11 +35,15 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"予備";
+		lvc.pszText = L"予備1";
 		ListView_InsertColumn(hWndListView, 2, &lvc);
+		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.pszText = L"予備2";
+		ListView_InsertColumn(hWndListView, 3, &lvc);
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");
-		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, L"");
+		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, L"");
 
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 		for(index = 0; index < MAX_SELKEY_C; index++)
@@ -66,6 +71,11 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			item.iItem = index;
 			item.iSubItem = 2;
 			ListView_SetItem(hWndListView, &item);
+			num[0] = key[2];
+			item.pszText = num;
+			item.iItem = index;
+			item.iSubItem = 3;
+			ListView_SetItem(hWndListView, &item);
 		}
 		return TRUE;
 
@@ -75,6 +85,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
 		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
 		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 3, GetScaledSizeX(hDlg, 60));
 
 		return TRUE;
 
@@ -91,14 +102,16 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num, _countof(num));
 				if(num[0] == L'\0')
 				{
-					num[0] = L'1' + index;
-					num[1] = L'\0';
+					break;
 				}
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 				ListView_SetItemText(hWndListView, index, 1, num);
-				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num, _countof(num));
-				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num);
+				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num, _countof(num));
+				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num);
 				ListView_SetItemText(hWndListView, index, 2, num);
+				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num, _countof(num));
+				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num);
+				ListView_SetItemText(hWndListView, index, 3, num);
 
 				return TRUE;
 			}
@@ -120,14 +133,17 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				if(index == -1)
 				{
 					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");
-					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, L"");
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, L"");
 				}
 				else
 				{
 					ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
 					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 					ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
-					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE, num);
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num);
+					ListView_GetItemText(hWndListView, index, 3, num, _countof(num));
+					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num);
 				}
 				return TRUE;
 			}
@@ -158,7 +174,9 @@ void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
 		key[0] = num[0];
 		ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
 		key[1] = num[0];
-		key[2] = L'\0';
+		ListView_GetItemText(hWndListView, index, 3, num, _countof(num));
+		key[2] = num[0];
+		key[3] = L'\0';
 		_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
 		WriterKey(pWriter, num, key);
 	}

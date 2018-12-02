@@ -94,6 +94,7 @@ int GetDpi(HWND hwnd)
 	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
 	if(IsWindowsVersion100RS2OrLater())
 	{
+		// try delay load api-ms-win-shcore-scaling-l1-1-1.dll
 		__try
 		{
 			HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
