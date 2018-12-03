@@ -111,19 +111,15 @@
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="CRT_X86" DiskId="1" Language="0"
         SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_x86.msm" />
-      <!--
       <Merge Id="AMP_X86" DiskId="1" Language="0"
         SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_x86.msm" />
       <Merge Id="OMP_X86" DiskId="1" Language="0"
         SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_x86.msm" />
-      -->
     </DirectoryRef>
     <Feature Id="VCRedist" Title="Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="CRT_X86" />
-      <!--
       <MergeRef Id="AMP_X86" />
       <MergeRef Id="OMP_X86" />
-      -->
     </Feature>
 
     <UIRef Id="WixUI_Minimal" />

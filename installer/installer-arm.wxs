@@ -162,17 +162,29 @@
 -->
     </Feature>
 
-    <!-- TODO: use merge modules instead of local deployment -->
+    <!-- TODO: use merge modules instead of local deployment or static link -->
 <!--
     <DirectoryRef Id="TARGETDIR">
       <Merge Id="CRT_ARM64" DiskId="1" Language="0"
         SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_arm64.msm" />
+      <Merge Id="AMP_ARM64" DiskId="1" Language="0"
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_arm64.msm" />
+      <Merge Id="OMP_ARM64" DiskId="1" Language="0"
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_arm64.msm" />
       <Merge Id="CRT_ARM32" DiskId="1" Language="0"
         SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_arm.msm" />
+      <Merge Id="AMP_ARM32" DiskId="1" Language="0"
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_arm.msm" />
+      <Merge Id="OMP_ARM32" DiskId="1" Language="0"
+        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_arm.msm" />
     </DirectoryRef>
     <Feature Id="VCRedist" Title="Runtime" AllowAdvertise="no" Display="hidden" Level="1">
       <MergeRef Id="CRT_ARM64" />
+      <MergeRef Id="AMP_ARM64" />
+      <MergeRef Id="OMP_ARM64" />
       <MergeRef Id="CRT_ARM32" />
+      <MergeRef Id="AMP_ARM32" />
+      <MergeRef Id="OMP_ARM32" />
     </Feature>
 -->
 
