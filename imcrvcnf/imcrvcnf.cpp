@@ -3,10 +3,10 @@
 #include "resource.h"
 
 HINSTANCE hInst;
+HANDLE hMutex;
 
 int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	HANDLE hMutex;
 	INITCOMMONCONTROLSEX icex;
 
 	_wsetlocale(LC_ALL, L"JPN");
@@ -30,10 +30,30 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
+	LPWSTR tempFile = nullptr;
+	int numArgs = 0;
+	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
+	if (pArgs != nullptr && numArgs >= 2)
+	{
+		if (PathFileExistsW(pArgs[1]) && !PathIsDirectoryW(pArgs[1]))
+		{
+			tempFile = pArgs[1];
+			wcsncpy_s(pathconfigxml, tempFile, _TRUNCATE);
+		}
+	}
+
 	CreateProperty();
 
-	ReleaseMutex(hMutex);
-	CloseHandle(hMutex);
+	if (tempFile != nullptr)
+	{
+		DeleteFileW(tempFile);
+	}
+
+	if (hMutex != nullptr)
+	{
+		ReleaseMutex(hMutex);
+		CloseHandle(hMutex);
+	}
 
 	return 0;
 }
@@ -109,9 +129,34 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 				hwndDlg = hwndInit;
 			}
 
+			CreateConfigPath();
+
 			if(SaveConfigXml(hwndDlg) == FALSE)
 			{
 				MessageBoxW(hwndDlg, L"保存に失敗しました。", TextServiceDesc, MB_OK | MB_ICONERROR);
+
+				if (lParam == PSBTN_OK)
+				{
+					ReleaseMutex(hMutex);
+					CloseHandle(hMutex);
+					hMutex = nullptr;
+
+					WCHAR dir[MAX_PATH] = {};
+					GetCurrentDirectoryW(_countof(dir), dir);
+
+					WCHAR tempfilepath[MAX_PATH] = {};
+					GetTempFileNameW(dir, L"cnf", 0, tempfilepath);
+
+					wcsncpy_s(pathconfigxml, tempfilepath, _TRUNCATE);
+
+					if (SaveConfigXml(hwndDlg) == TRUE)
+					{
+						WCHAR args[MAX_PATH] = {};
+						_snwprintf_s(args, _TRUNCATE, L"\"%s\"", tempfilepath);
+
+						StartProcess(hInst, IMCRVCNFEXE, args);
+					}
+				}
 			}
 		}
 		break;

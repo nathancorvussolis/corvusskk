@@ -391,9 +391,9 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	return bRet;
 }
 
-BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
+BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 {
-	WCHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
 
 	if(GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
 	{
@@ -405,11 +405,17 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName)
 		}
 	}
 
+	WCHAR commandline[8192] = {};
 	PROCESS_INFORMATION pi = {};
 	STARTUPINFOW si = {};
 	si.cb = sizeof(si);
 
-	BOOL bRet = CreateProcessW(path, nullptr, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
+	_snwprintf_s(commandline, _TRUNCATE, L"\"%s\"%s%s",
+		path,
+		(lpArgs == nullptr) ? L"" : L"\x20",
+		(lpArgs == nullptr) ? L"" : lpArgs);
+
+	BOOL bRet = CreateProcessW(nullptr, commandline, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
 	if(bRet)
 	{
 		CloseHandle(pi.hProcess);

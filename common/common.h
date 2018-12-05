@@ -102,7 +102,7 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 BOOL GetUserUUID(LPWSTR *ppszUUID);
 BOOL GetUserSid(LPWSTR *ppszUserSid);
 
-BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName);
+BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = nullptr);
 
 #define FORWARD_ITERATION_I(iterator, container) \
 	for(auto (iterator) = (container).begin(); (iterator) != (container).end(); ++(iterator))
