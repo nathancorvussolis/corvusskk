@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.7.1
+# CorvusSKK ver. 2.7.2
 
 Windowsで動作するSKK風のIMEです。
 
@@ -672,8 +672,8 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 Visual Studio Community 2017 15.9.3
 
-  + Desktop development with C++
-  + C++ compilers and libraries for ARM/ARM64
+* Desktop development with C++
+* C++ compilers and libraries for ARM/ARM64
 
 WiX Toolset v3.11.1
 
