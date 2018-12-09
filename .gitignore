@@ -18,6 +18,9 @@
 [Bb]uild/
 x64/
 x86/
+Win32
+ARM
+ARM64
 bld/
 [Bb]in/
 [Oo]bj/
