@@ -279,23 +279,49 @@ Distributable Code Files for Visual Studio 2017
 
 The following section is the "REDIST list" that is referenced in the
 "Distributable Code" section of the Microsoft Software License Terms for Visual
-Studio Enterprise 2017, Visual Studio Professional 2017, Visual Studio Community
-2017 ("the software"). If you have a validly licensed copy of such software,
-you may copy and distribute with your program the unmodified form of the files
-listed below, subject to the License Terms for the software.
+Studio Enterprise 2017, Visual Studio Professional 2017, Visual Studio
+Community 2017 ("the software"). If you have a validly licensed copy of such
+software, you may copy and distribute with your program the unmodified form of
+the files listed below, subject to the License Terms for the software.
 
 In the lists below...
- [version] represents a folder name that uses a version number.
- [VisualStudioFolder] represents the install location for Visual Studio 2017.
- Subject to the License Terms for the software, you may copy and distribute with
- your program any of the files within the following folder and its subfolders
- except as noted below. You may not modify these files.
+ · [arch] represents the processor architecture identifier, for instance "x86",
+   "x64", or "arm".
+ · [locale] represents a specific language, locale, or culture identifier, for
+   instance "ENU", "en-us", or "1033".
+ · [version] represents a folder name that uses a version number.
+ · [VisualStudioFolder] represents the install location for Visual Studio 2017.
 
- [VisualStudioFolder]\VC\redist
- You may not distribute the contents of the following folders:
-  [VisualStudioFolder]VC\Redist\MSVC\[version]\debug_nonredist
-  [VisualStudioFolder]VC\Redist\MSVC\[version]\debug_nonredist
-  [VisualStudioFolder]\VC\Redist\MSVC\[version]\onecore\debug_nonredist
+
+Visual C++ Runtime Files
+
+Subject to the License Terms for the software, you may copy and distribute
+the following files, unmodified, as a part of the installation package of your
+program:
+
+ · [Program Files (x86)]\Common Files\Merge Modules\
+   · Microsoft_VC140_CRT_[arch].msm
+   · Microsoft_VC140_CXXAMP_[arch].msm
+   · Microsoft_VC140_MFC_[arch].msm
+   · Microsoft_VC140_MFCLOC_[arch].msm
+   · Microsoft_VC140_OpenMP_[arch].msm
+
+Subject to the License Terms for the software, you may copy and distribute with
+your program any of the files within the following folder and its subfolders
+except as noted below. You may not modify these files.
+
+ · [VisualStudioFolder]\VC\redist
+ · You may not distribute the contents of the following folders:
+   · [VisualStudioFolder]VC\Redist\MSVC\[version]\debug_nonredist
+   · [VisualStudioFolder]VC\Redist\MSVC\[version]\debug_nonredist
+   · [VisualStudioFolder]\VC\Redist\MSVC\[version]\onecore\debug_nonredist
+
+Subject to the License Terms for the software, you may copy and distribute the
+following files with your program in your program’s application local folder
+or by deploying them into the Global Assembly Cache (GAC):
+
+ · [VisualStudioFolder]\VC\Tools\MSVC\[version]\atlmfc\lib\[arch]\mfcmifc80.dll
+
 
 
 MICROSOFT SOFTWARE LICENSE TERMS
