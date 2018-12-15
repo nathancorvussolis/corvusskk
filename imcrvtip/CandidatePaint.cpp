@@ -7,6 +7,12 @@
 #define MARGIN_X 2
 #define MARGIN_Y 4
 
+#ifndef _DEBUG
+#define ENABLE_DRAW_CYCLE_RECT FALSE
+#else
+#define ENABLE_DRAW_CYCLE_RECT FALSE
+#endif
+
 const int colors_compback[DISPLAY_LIST_COLOR_NUM] =
 {
 	CL_COLOR_BG, CL_COLOR_FR, CL_COLOR_CA, CL_COLOR_CO,
@@ -103,10 +109,6 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
-			{
-				s += _MakeCandidateString(page, count, i, cycle);
-			}
 
 			r.left = 0;
 			r.top = 0;
@@ -115,13 +117,25 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 			if(_pDWFactory != nullptr)
 			{
-				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+				r.right = 0;
+
+				for (int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 				{
-					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					s = _MakeCandidateString(page, count, i, cycle);
+
+					if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+					{
+						r.right += (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					}
 				}
 			}
 			else
 			{
+				for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
+				{
+					s += _MakeCandidateString(page, count, i, cycle);
+				}
+
 				DrawTextW(hmemdc, s.c_str(), -1, &r,
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 			}
@@ -204,6 +218,14 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		{
 			rd2d = D2D1::RectF((FLOAT)rc.left, (FLOAT)rc.top, (FLOAT)rc.right, (FLOAT)rc.bottom);
 
+#if ENABLE_DRAW_CYCLE_RECT
+			D2D1_RECT_F rrd2d = rd2d;
+			rrd2d.left += 0.5F;
+			rrd2d.top += 0.5F;
+			rrd2d.right -= 0.5F;
+			rrd2d.bottom -= 0.5F;
+			_pD2DDCRT->DrawRectangle(rrd2d, _pD2DBrush[CL_COLOR_FR]);
+#endif
 			_pD2DDCRT->DrawText(strPage, (UINT32)wcslen(strPage),
 				_pDWTF, &rd2d, _pD2DBrush[CL_COLOR_NO], _drawtext_option);
 		}
@@ -211,6 +233,10 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		{
 			SetTextColor(hmemdc, _pTextService->cx_list_colors[CL_COLOR_NO]);
 			SetBkMode(hdc, TRANSPARENT);
+
+#if ENABLE_DRAW_CYCLE_RECT
+			Rectangle(hmemdc, rc.left, rc.top, rc.right, rc.bottom);
+#endif
 
 			DrawTextW(hmemdc, strPage, -1, &rc,
 				DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
@@ -305,6 +331,14 @@ void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 	{
 		rd2d = D2D1::RectF((FLOAT)lpr->left, (FLOAT)lpr->top, (FLOAT)lpr->right, (FLOAT)lpr->bottom);
 
+#if ENABLE_DRAW_CYCLE_RECT
+		D2D1_RECT_F rrd2d = rd2d;
+		rrd2d.left += 0.5F;
+		rrd2d.top += 0.5F;
+		rrd2d.right -= 0.5F;
+		rrd2d.bottom -= 0.5F;
+		_pD2DDCRT->DrawRectangle(rrd2d, _pD2DBrush[CL_COLOR_FR]);
+#endif
 		_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(),
 			_pDWTF, &rd2d, _pD2DBrush[CL_COLOR_CA], _drawtext_option);
 	}
@@ -313,6 +347,9 @@ void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 		SetTextColor(hdc, _pTextService->cx_list_colors[CL_COLOR_CA]);
 		SetBkMode(hdc, TRANSPARENT);
 
+#if ENABLE_DRAW_CYCLE_RECT
+		Rectangle(hdc, lpr->left, lpr->top, lpr->right, lpr->bottom);
+#endif
 		DrawTextW(hdc, s.c_str(), -1, lpr,
 			DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 	}
@@ -480,6 +517,17 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			}
 			else
 			{
+#if ENABLE_DRAW_CYCLE_RECT
+				if (!s.empty())
+				{
+					D2D1_RECT_F rrd2d = rd2d;
+					rrd2d.left += 0.5F;
+					rrd2d.top += 0.5F;
+					rrd2d.right -= 0.5F;
+					rrd2d.bottom -= 0.5F;
+					_pD2DDCRT->DrawRectangle(rrd2d, _pD2DBrush[CL_COLOR_FR]);
+				}
+#endif
 				_pD2DDCRT->DrawText(s.c_str(), (UINT32)s.size(),
 					_pDWTF, &rd2d, _pD2DBrush[color_cycle], _drawtext_option);
 			}
@@ -508,6 +556,9 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 				SetBkMode(hdc, TRANSPARENT);
 			}
 
+#if ENABLE_DRAW_CYCLE_RECT
+			Rectangle(hdc, r.left, r.top, r.right, r.bottom);
+#endif
 			DrawTextW(hdc, s.c_str(), -1, &r,
 				DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 		}
@@ -598,10 +649,6 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
-			{
-				s += _MakeCandidateString(page, count, i, cycle);
-			}
 
 			r.left = 0;
 			r.top = 0;
@@ -610,13 +657,25 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != nullptr)
 			{
-				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+				r.right = 0;
+
+				for (int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 				{
-					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					s = _MakeCandidateString(page, count, i, cycle);
+
+					if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+					{
+						r.right += (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					}
 				}
 			}
 			else
 			{
+				for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
+				{
+					s += _MakeCandidateString(page, count, i, cycle);
+				}
+
 				DrawTextW(hdc, s.c_str(), -1, &r,
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 			}
@@ -656,10 +715,6 @@ void CCandidateWindow::_CalcWindowRect()
 		for(i = 0; i < _CandCount[page]; i++)
 		{
 			s.clear();
-			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
-			{
-				s += _MakeCandidateString(page, count, i, cycle);
-			}
 
 			r.left = 0;
 			r.top = 0;
@@ -668,13 +723,25 @@ void CCandidateWindow::_CalcWindowRect()
 
 			if(_pDWFactory != nullptr)
 			{
-				if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+				r.right = 0;
+
+				for (int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 				{
-					r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					s = _MakeCandidateString(page, count, i, cycle);
+
+					if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+					{
+						r.right += (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
+					}
 				}
 			}
 			else
 			{
+				for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
+				{
+					s += _MakeCandidateString(page, count, i, cycle);
+				}
+
 				DrawTextW(hdc, s.c_str(), -1, &r,
 					DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_SINGLELINE | DT_WORDBREAK | DT_NOFULLWIDTHCHARBREAK);
 			}
