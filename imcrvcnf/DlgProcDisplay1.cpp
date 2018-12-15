@@ -156,24 +156,6 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	case WM_COMMAND:
 		switch(LOWORD(wParam))
 		{
-		case IDC_RADIO_API_GDI:
-		case IDC_RADIO_API_D2D:
-			hwnd = GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT);
-			if(IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
-			{
-				EnableWindow(hwnd, TRUE);
-			}
-			else
-			{
-				EnableWindow(hwnd, FALSE);
-			}
-			return TRUE;
-		default:
-			break;
-		}
-
-		switch(LOWORD(wParam))
-		{
 		case IDC_BUTTON_CHOOSEFONT:
 			GetObjectW(hFont, sizeof(lf), &lf);
 			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), 96, 72);
@@ -262,6 +244,18 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 		case IDC_RADIO_API_GDI:
 		case IDC_RADIO_API_D2D:
+			hwnd = GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT);
+			if (IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
+			{
+				EnableWindow(hwnd, TRUE);
+			}
+			else
+			{
+				EnableWindow(hwnd, FALSE);
+			}
+			PropSheet_Changed(GetParent(hDlg), hDlg);
+			return TRUE;
+
 		case IDC_CHECKBOX_COLOR_FONT:
 		case IDC_CHECKBOX_DISPCANDNO:
 		case IDC_CHECKBOX_VERTICALCAND:
