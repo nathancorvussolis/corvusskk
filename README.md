@@ -670,7 +670,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2017 15.9.3
+Visual Studio Community 2017 15.9.4
 
 * Desktop development with C++
 * C++ compilers and libraries for ARM/ARM64
