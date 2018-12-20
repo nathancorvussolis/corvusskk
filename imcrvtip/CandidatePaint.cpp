@@ -30,7 +30,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	int cx = 0, cy = 0;
 	UINT page, count, i;
 	LONG height = 0;
-	CONST LONG maxwidth = _pTextService->cx_maxwidth;
+	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, 96);
 
 	hdc = BeginPaint(hWnd, &ps);
 
@@ -575,7 +575,7 @@ void CCandidateWindow::_CalcWindowRect()
 	int cx = 0, cy = 0;
 	UINT page, count, i;
 	LONG height = 0;
-	CONST LONG maxwidth = _pTextService->cx_maxwidth;
+	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, 96);
 
 	if(_hwnd == nullptr)
 	{
@@ -850,7 +850,8 @@ void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam
 
 	_pTextService->_UninitFont();
 
-	_pTextService->_InitFont(HIWORD(wParam));
+	_dpi = HIWORD(wParam);
+	_pTextService->_InitFont(_dpi);
 
 	hFont = _pTextService->hFont;
 

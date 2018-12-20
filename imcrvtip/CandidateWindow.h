@@ -118,6 +118,7 @@ private:
 	//候補一覧、辞書登録のウィンドウ
 	std::wstring disptext;		//表示文字列
 	HFONT hFont;				//フォント
+	int _dpi;
 
 	//Direct2D/DirectWrite
 	ID2D1Factory *_pD2DFactory;

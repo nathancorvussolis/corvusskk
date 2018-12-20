@@ -290,10 +290,11 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		return FALSE;
 	}
 
-	HDC hdc = GetDC(nullptr);
+	HDC hdc = GetDC(_hwnd);
 	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	ReleaseDC(_hwnd, hdc);
+
 	_size = MulDiv(16, _dpi, 96);
-	ReleaseDC(nullptr, hdc);
 
 	if(_bCandidateWindow)
 	{

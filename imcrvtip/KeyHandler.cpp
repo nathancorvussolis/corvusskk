@@ -356,6 +356,7 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		HDC hdc = GetDC(nullptr);
 		int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 		ReleaseDC(nullptr, hdc);
+
 		_InitFont(dpi);
 
 		//OnPreservedKey(), CLangBarItemButton::OnClick(),

@@ -26,6 +26,10 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 			return FALSE;
 		}
 
+		HDC hdc = GetDC(_hwnd);
+		_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+		ReleaseDC(_hwnd, hdc);
+
 		hFont = _pTextService->hFont;
 
 		if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != nullptr)

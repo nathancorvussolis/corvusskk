@@ -40,6 +40,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_uPageCandNum = 0;
 
 	hFont = nullptr;
+	_dpi = 96;
 
 	_pD2DFactory = nullptr;
 	_pD2DDCRT = nullptr;
