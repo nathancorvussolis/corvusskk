@@ -258,8 +258,6 @@ void MakeSKKDicPos()
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	std::wstring ret;
-	std::wregex re;
-	std::wstring fmt;
 
 	if(lua != nullptr)
 	{
