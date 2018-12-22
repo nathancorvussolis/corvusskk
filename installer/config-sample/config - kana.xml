@@ -56,7 +56,7 @@
     <key name="italic" value="0" />
   </section>
   <section name="display">
-    <key name="maxwidth" value="800" />
+    <key name="maxwidth" value="320" />
     <key name="colorbg" value="0xFFFFFF" />
     <key name="colorfr" value="0x000000" />
     <key name="colorse" value="0xFF0000" />

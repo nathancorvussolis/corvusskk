@@ -11,7 +11,7 @@
 #define MAX_SKKSERVER_PORT	(5 + 1)		//SKKサーバー ポート 読み込みバッファ
 #define COMPMULTIDISP_DEF	3		//複数補完/複数動的補完の表示数
 #define FONT_POINT_DEF		12		//フォントポイントサイズ
-#define MAX_WIDTH_DEFAULT	800		//候補一覧の最大幅
+#define MAX_WIDTH_DEFAULT	320		//候補一覧の最大幅
 #define UNTILCANDLIST_DEF	5		//候補一覧表示に要する変換回数
 #define SHOWMODESEC_DEF		3		//入力モードを表示する秒数
 #define MAX_SELKEY_C		9		//候補一覧選択キー最大数
