@@ -266,7 +266,6 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 unsigned int __stdcall SrvThread(void *p)
 {
 	HANDLE hPipe = (HANDLE)p;
-	WCHAR pipebuf[PIPEBUFSIZE];
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
 	std::wstring wspipebuf;
@@ -276,6 +275,12 @@ unsigned int __stdcall SrvThread(void *p)
 	std::wregex re;
 	std::wstring fmt;
 #endif
+
+	WCHAR *pipebuf = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * PIPEBUFSIZE);
+	if (pipebuf == nullptr)
+	{
+		return -1;
+	}
 
 	while(true)
 	{
@@ -303,10 +308,10 @@ unsigned int __stdcall SrvThread(void *p)
 			MakeSKKDicPos();
 		}
 
-		ZeroMemory(pipebuf, sizeof(pipebuf));
+		ZeroMemory(pipebuf, sizeof(WCHAR) * PIPEBUFSIZE);
 
 		bytesRead = 0;
-		bRet = ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr);
+		bRet = ReadFile(hPipe, pipebuf, sizeof(WCHAR) * PIPEBUFSIZE, &bytesRead, nullptr);
 		if(bRet == FALSE || bytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe);
@@ -329,7 +334,7 @@ unsigned int __stdcall SrvThread(void *p)
 #endif
 
 		SrvProc(command, &pipebuf[2], wspipebuf);
-		wcsncpy_s(pipebuf, wspipebuf.c_str(), _TRUNCATE);
+		wcsncpy_s(pipebuf, PIPEBUFSIZE, wspipebuf.c_str(), _TRUNCATE);
 
 #ifdef _DEBUG
 		tedit.assign(pipebuf);
@@ -365,6 +370,8 @@ unsigned int __stdcall SrvThread(void *p)
 	}
 
 	CloseHandle(hPipe);
+
+	HeapFree(GetProcessHeap(), 0, pipebuf);
 
 	return 0;
 }

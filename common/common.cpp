@@ -405,12 +405,18 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 		}
 	}
 
-	WCHAR commandline[8192] = {};
+	const int cmdlen = 8192;
+	WCHAR *commandline = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * cmdlen);
+	if (commandline == nullptr)
+	{
+		return FALSE;
+	}
+
 	PROCESS_INFORMATION pi = {};
 	STARTUPINFOW si = {};
 	si.cb = sizeof(si);
 
-	_snwprintf_s(commandline, _TRUNCATE, L"\"%s\"%s%s",
+	_snwprintf_s(commandline, cmdlen, _TRUNCATE, L"\"%s\"%s%s",
 		path,
 		(lpArgs == nullptr) ? L"" : L"\x20",
 		(lpArgs == nullptr) ? L"" : lpArgs);
@@ -421,6 +427,8 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
 	}
+
+	HeapFree(GetProcessHeap(), 0, commandline);
 
 	return bRet;
 }

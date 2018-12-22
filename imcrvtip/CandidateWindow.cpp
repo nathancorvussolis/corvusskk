@@ -26,13 +26,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 			return FALSE;
 		}
 
-		HDC hdc = GetDC(_hwnd);
-		_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
-		ReleaseDC(_hwnd, hdc);
-
-		hFont = _pTextService->hFont;
-
-		if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != nullptr)
+		if(_pTextService->cx_drawapi == DRAW_API_D2D && _pTextService->_pD2DFactory != nullptr)
 		{
 			_drawtext_option = _pTextService->_drawtext_option;
 			_pD2DFactory = _pTextService->_pD2DFactory;
@@ -46,9 +40,9 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 			}
 			_pDWFactory = _pTextService->_pDWFactory;
 			_pDWFactory->AddRef();
-			_pDWTF = _pTextService->_pDWTF;
-			_pDWTF->AddRef();
 		}
+
+		_InitFont();
 	}
 
 	if(_hwnd != nullptr && _pTextService->_ShowInputMode)
@@ -184,7 +178,8 @@ void CCandidateWindow::_Destroy()
 	}
 	SafeRelease(&_pInputModeWindow);
 
-	SafeRelease(&_pDWTF);
+	_UninitFont();
+
 	SafeRelease(&_pDWFactory);
 	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{

@@ -120,8 +120,12 @@ CInputModeWindow::CInputModeWindow()
 	_hwndParent = nullptr;
 	_hwnd = nullptr;
 	_bCandidateWindow = FALSE;
-	_size = 0;
-	_dpi = 96;
+
+	HDC hdc = GetDC(nullptr);
+	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	ReleaseDC(nullptr, hdc);
+
+	_size = MulDiv(16, _dpi, 96);
 }
 
 CInputModeWindow::~CInputModeWindow()
@@ -289,12 +293,6 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 	{
 		return FALSE;
 	}
-
-	HDC hdc = GetDC(_hwnd);
-	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
-	ReleaseDC(_hwnd, hdc);
-
-	_size = MulDiv(16, _dpi, 96);
 
 	if(_bCandidateWindow)
 	{

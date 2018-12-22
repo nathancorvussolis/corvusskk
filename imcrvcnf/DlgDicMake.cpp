@@ -615,7 +615,7 @@ void MakeSKKDicThread(void *p)
 	}
 	else
 	{
-		t0 = GetTickCount();
+		t0 = (LONGLONG)GetTickCount64();
 	}
 
 	HRESULT hr = LoadSKKDic(hCancelEvent, parent, entries_a, entries_n);
@@ -633,7 +633,7 @@ void MakeSKKDicThread(void *p)
 	}
 	else
 	{
-		t = GetTickCount() - (DWORD)t0;
+		t = (LONGLONG)GetTickCount64() - t0;
 	}
 
 	CloseHandle(hCancelEvent);

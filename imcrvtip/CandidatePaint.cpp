@@ -38,7 +38,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	cx = rc.right;
 	cy = rc.bottom;
 
-	if(_pD2DDCRT != nullptr)
+	if(_pDWTF != nullptr)
 	{
 		_pD2DDCRT->BindDC(hdc, &rc);
 		_pD2DDCRT->BeginDraw();
@@ -217,7 +217,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 
 		RECT r = { pt.x, pt.y, pt.x + width, pt.y + height };
 
-		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
+		if(_pDWTF != nullptr)
 		{
 			D2D1_RECT_F rd2d = D2D1::RectF((FLOAT)r.left, (FLOAT)r.top, (FLOAT)r.right, (FLOAT)r.bottom);
 
@@ -247,7 +247,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		}
 	}
 
-	if(_pD2DDCRT != nullptr)
+	if(_pDWTF != nullptr)
 	{
 		_pD2DDCRT->EndDraw();
 	}
@@ -330,7 +330,7 @@ void CCandidateWindow::_PaintWord(HDC hdc, LPRECT lpr)
 		s = _MakeDelWordString();
 	}
 
-	if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
+	if(_pDWTF != nullptr)
 	{
 		D2D1_RECT_F rd2d = D2D1::RectF((FLOAT)lpr->left, (FLOAT)lpr->top, (FLOAT)lpr->right, (FLOAT)lpr->bottom);
 
@@ -492,7 +492,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			color_cycle = colors_compback[cycle];
 		}
 
-		if(_pD2DDCRT != nullptr && _pDWTF != nullptr)
+		if(_pDWTF != nullptr)
 		{
 			DWRITE_TEXT_METRICS dwTM;
 			if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
@@ -824,7 +824,7 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 {
 	HRESULT hr = E_FAIL;
 
-	if(metrics != nullptr && _pDWFactory != nullptr && _pDWTF != nullptr)
+	if(metrics != nullptr && _pDWTF != nullptr)
 	{
 		IDWriteTextLayout *pdwTL = nullptr;
 		if(SUCCEEDED(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL)) && (pdwTL != nullptr))
@@ -837,41 +837,72 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 	return hr;
 }
 
+void CCandidateWindow::_InitFont()
+{
+	LOGFONTW lf = {};
+	lf.lfHeight = -MulDiv(_pTextService->cx_fontpoint, _dpi, 72);
+	lf.lfWidth = 0;
+	lf.lfEscapement = 0;
+	lf.lfOrientation = 0;
+	lf.lfWeight = _pTextService->cx_fontweight;
+	lf.lfItalic = _pTextService->cx_fontitalic;
+	lf.lfUnderline = FALSE;
+	lf.lfStrikeOut = FALSE;
+	lf.lfCharSet = SHIFTJIS_CHARSET;
+	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
+	lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
+	lf.lfQuality = PROOF_QUALITY;
+	lf.lfPitchAndFamily = DEFAULT_PITCH;
+	wcscpy_s(lf.lfFaceName, _pTextService->cx_fontname);
+
+	if (_pDWFactory == nullptr)
+	{
+		hFont = CreateFontIndirectW(&lf);
+	}
+	else
+	{
+		HRESULT hr = _pDWFactory->CreateTextFormat(
+			_pTextService->cx_fontname,
+			nullptr,
+			static_cast<DWRITE_FONT_WEIGHT>(_pTextService->cx_fontweight),
+			(_pTextService->cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL),
+			DWRITE_FONT_STRETCH_NORMAL,
+			(FLOAT)MulDiv(_pTextService->cx_fontpoint, _dpi, 72),
+			L"ja-JP",
+			&_pDWTF);
+
+		if (SUCCEEDED(hr))
+		{
+			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
+		}
+
+		if (FAILED(hr))
+		{
+			_UninitFont();
+
+			//use GDI font
+			hFont = CreateFontIndirectW(&lf);
+		}
+	}
+}
+
+void CCandidateWindow::_UninitFont()
+{
+	if (hFont != nullptr)
+	{
+		DeleteObject(hFont);
+		hFont = nullptr;
+	}
+
+	SafeRelease(&_pDWTF);
+}
+
 void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	SafeRelease(&_pDWTF);
-	SafeRelease(&_pDWFactory);
-	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
-	{
-		SafeRelease(&_pD2DBrush[i]);
-	}
-	SafeRelease(&_pD2DDCRT);
-	SafeRelease(&_pD2DFactory);
-
-	_pTextService->_UninitFont();
-
 	_dpi = HIWORD(wParam);
-	_pTextService->_InitFont(_dpi);
 
-	hFont = _pTextService->hFont;
-
-	if(_pTextService->cx_drawapi && _pTextService->_pD2DFactory != nullptr)
-	{
-		_drawtext_option = _pTextService->_drawtext_option;
-		_pD2DFactory = _pTextService->_pD2DFactory;
-		_pD2DFactory->AddRef();
-		_pD2DDCRT = _pTextService->_pD2DDCRT;
-		_pD2DDCRT->AddRef();
-		for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
-		{
-			_pD2DBrush[i] = _pTextService->_pD2DBrush[i];
-			_pD2DBrush[i]->AddRef();
-		}
-		_pDWFactory = _pTextService->_pDWFactory;
-		_pDWFactory->AddRef();
-		_pDWTF = _pTextService->_pDWTF;
-		_pDWTF->AddRef();
-	}
+	_UninitFont();
+	_InitFont();
 
 	_CalcWindowRect();
 	_Redraw();

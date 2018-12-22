@@ -115,6 +115,10 @@ enum WindowMode {
 	wm_delete		//候補削除
 };
 
+//描画API
+#define DRAW_API_GDI	0	//GDI
+#define DRAW_API_D2D	1	//Direct2D
+
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR LangbarItemDesc;
 extern LPCWSTR CandidateWindowClass;

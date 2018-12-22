@@ -39,8 +39,11 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_CandStr.clear();
 	_uPageCandNum = 0;
 
+	HDC hdc = GetDC(nullptr);
+	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+	ReleaseDC(nullptr, hdc);
+
 	hFont = nullptr;
-	_dpi = 96;
 
 	_pD2DFactory = nullptr;
 	_pD2DDCRT = nullptr;

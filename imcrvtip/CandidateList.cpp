@@ -62,6 +62,8 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 
 	_dwCookieContextKeyEventSink = TF_INVALID_COOKIE;
 	_dwCookieTextLayoutSink = TF_INVALID_COOKIE;
+
+	_ec = TF_INVALID_EDIT_COOKIE;
 }
 
 CCandidateList::~CCandidateList()

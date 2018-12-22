@@ -217,7 +217,18 @@ void CTextService::_LoadBehavior()
 		}
 	}
 
-	_ReadBoolValue(SectionDisplay, ValueDrawAPI, cx_drawapi, TRUE);
+	ReadValue(pathconfigxml, SectionDisplay, ValueDrawAPI, strxmlval);
+	cx_drawapi = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+	switch (cx_drawapi)
+	{
+	case DRAW_API_GDI:
+	case DRAW_API_D2D:
+		break;
+	default:
+		cx_drawapi = DRAW_API_GDI;
+		break;
+	}
+
 	_ReadBoolValue(SectionDisplay, ValueColorFont, cx_colorfont, TRUE);
 
 	ReadValue(pathconfigxml, SectionDisplay, ValueUntilCandList, strxmlval);
@@ -958,30 +969,9 @@ void CTextService::_LoadJLatin()
 	}
 }
 
-void CTextService::_InitFont(int dpi)
+void CTextService::_InitD2D()
 {
-	LOGFONTW lf = {};
-	lf.lfHeight = -MulDiv(cx_fontpoint, dpi, 72);
-	lf.lfWidth = 0;
-	lf.lfEscapement = 0;
-	lf.lfOrientation = 0;
-	lf.lfWeight = cx_fontweight;
-	lf.lfItalic = cx_fontitalic;
-	lf.lfUnderline = FALSE;
-	lf.lfStrikeOut = FALSE;
-	lf.lfCharSet = SHIFTJIS_CHARSET;
-	lf.lfOutPrecision = OUT_DEFAULT_PRECIS;
-	lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
-	lf.lfQuality = PROOF_QUALITY;
-	lf.lfPitchAndFamily = DEFAULT_PITCH;
-	wcscpy_s(lf.lfFaceName, cx_fontname);
-
-	if(hFont == nullptr)
-	{
-		hFont = CreateFontIndirectW(&lf);
-	}
-
-	if(cx_drawapi && !_UILessMode && (_pD2DFactory == nullptr))
+	if((cx_drawapi == DRAW_API_D2D) && !_UILessMode && (_pD2DFactory == nullptr))
 	{
 		//try delay load d2d1.dll and dwrite.dll
 		__try
@@ -1018,44 +1008,20 @@ void CTextService::_InitFont(int dpi)
 				hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
 			}
 
-			if(SUCCEEDED(hr))
-			{
-				hr = _pDWFactory->CreateTextFormat(cx_fontname, nullptr,
-					static_cast<DWRITE_FONT_WEIGHT>(cx_fontweight),
-					(cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL),
-					DWRITE_FONT_STRETCH_NORMAL, (FLOAT)MulDiv(cx_fontpoint, dpi, 72), L"JPN", &_pDWTF);
-			}
-
-			if(SUCCEEDED(hr))
-			{
-				hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
-			}
-
 			if(FAILED(hr))
 			{
-				_UninitFont();
-
-				hFont = CreateFontIndirectW(&lf);
+				_UninitD2D();
 			}
 		}
 		__except(EXCEPTION_EXECUTE_HANDLER)
 		{
-			_UninitFont();
-			//use GDI font
-			hFont = CreateFontIndirectW(&lf);
+			_UninitD2D();
 		}
 	}
 }
 
-void CTextService::_UninitFont()
+void CTextService::_UninitD2D()
 {
-	if(hFont != nullptr)
-	{
-		DeleteObject(hFont);
-		hFont = nullptr;
-	}
-
-	SafeRelease(&_pDWTF);
 	SafeRelease(&_pDWFactory);
 	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
