@@ -30,23 +30,31 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
-	LPWSTR tempFile = nullptr;
+	bool tempMode = false;
+	LPWSTR fileArg = nullptr;
 	int numArgs = 0;
 	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
 	if (pArgs != nullptr && numArgs >= 2)
 	{
-		if (PathFileExistsW(pArgs[1]) && !PathIsDirectoryW(pArgs[1]))
+		for (int i = 0; i < numArgs; i++)
 		{
-			tempFile = pArgs[1];
-			wcsncpy_s(pathconfigxml, tempFile, _TRUNCATE);
+			if (wcscmp(pArgs[i], L"/t") == 0)
+			{
+				tempMode = true;
+			}
+			else if (PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
+			{
+				fileArg = pArgs[i];
+				wcsncpy_s(pathconfigxml, fileArg, _TRUNCATE);
+			}
 		}
 	}
 
 	CreateProperty();
 
-	if (tempFile != nullptr)
+	if (tempMode && fileArg != nullptr)
 	{
-		DeleteFileW(tempFile);
+		DeleteFileW(fileArg);
 	}
 
 	if (hMutex != nullptr)
@@ -152,7 +160,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 					if (SaveConfigXml(hwndDlg) == TRUE)
 					{
 						WCHAR args[MAX_PATH] = {};
-						_snwprintf_s(args, _TRUNCATE, L"\"%s\"", tempfilepath);
+						_snwprintf_s(args, _TRUNCATE, L"/t \"%s\"", tempfilepath);
 
 						StartProcess(hInst, IMCRVCNFEXE, args);
 					}
