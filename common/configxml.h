@@ -64,6 +64,7 @@ extern LPCWSTR ValueDelOkuriCncl;
 extern LPCWSTR ValueBackIncEnter;
 extern LPCWSTR ValueAddCandKtkn;
 extern LPCWSTR ValueSetByDirect;
+extern LPCWSTR ValueEnToggleKana;
 
 extern LPCWSTR ValueCompMultiNum;
 extern LPCWSTR ValueStaCompMulti;

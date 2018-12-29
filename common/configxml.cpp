@@ -69,6 +69,7 @@ LPCWSTR ValueDelOkuriCncl = L"delokuricncl";
 LPCWSTR ValueBackIncEnter = L"backincenter";
 LPCWSTR ValueAddCandKtkn = L"addcandktkn";
 LPCWSTR ValueSetByDirect = L"setbydirect";
+LPCWSTR ValueEnToggleKana = L"entogglekana";
 
 LPCWSTR ValueCompMultiNum = L"compmultinum";
 LPCWSTR ValueStaCompMulti = L"stacompmulti";

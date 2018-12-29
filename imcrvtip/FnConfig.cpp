@@ -161,6 +161,7 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueSetByDirect, cx_setbydirect, FALSE);
+	_ReadBoolValue(SectionBehavior, ValueEnToggleKana, cx_entogglekana, TRUE);
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueCompMultiNum, strxmlval);
 	cx_compmultinum = _wtoi(strxmlval.c_str());

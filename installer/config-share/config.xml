@@ -22,6 +22,7 @@
     <key name="backincenter" value="1" />
     <key name="addcandktkn" value="0" />
     <key name="setbydirect" value="0" />
+    <key name="entogglekana" value="1" />
     <key name="compmultinum" value="3" />
     <key name="stacompmulti" value="0" />
     <key name="dynamiccomp" value="0" />

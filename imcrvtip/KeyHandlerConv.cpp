@@ -120,14 +120,14 @@ BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 					(vk_shift && (vkeymap_shift.keylatin[vk] == SKK_JMODE)) ||
 					(vk_ctrl && (vkeymap_ctrl.keylatin[vk] == SKK_JMODE)))
 				{
-					k = SKK_KANA;
+					k = SKK_JMODE;
 				}
 			}
 			if(k != SKK_KANA && ch < CKEYMAPNUM)
 			{
 				if(ckeymap.keylatin[ch] == SKK_JMODE)
 				{
-					k = SKK_KANA;
+					k = SKK_JMODE;
 				}
 			}
 		}
