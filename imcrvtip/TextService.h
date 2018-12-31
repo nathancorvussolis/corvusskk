@@ -357,8 +357,9 @@ public:
 	BOOL cx_delokuricncl;		//取消のとき送り仮名を削除する
 	BOOL cx_backincenter;		//後退に確定を含める
 	BOOL cx_addcandktkn;		//候補に片仮名変換を追加する
-	BOOL cx_setbydirect;		//キー設定「直接入力」を確定入力で使用する
 	BOOL cx_entogglekana;		//かな／カナ入力モードをトグルする
+	BOOL cx_setbydirect;		//キー設定「直接入力」を確定入力で使用する
+
 	UINT cx_compmultinum;		//複数補完/複数動的補完の表示数
 	BOOL cx_stacompmulti;		//複数補完を使用する
 	BOOL cx_dynamiccomp;		//動的補完を使用する

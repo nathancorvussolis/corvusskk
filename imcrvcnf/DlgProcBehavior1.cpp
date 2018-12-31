@@ -22,8 +22,8 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DELOKURICNCL, SectionBehavior, ValueDelOkuriCncl);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BACKINCENTER, SectionBehavior, ValueBackIncEnter, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ADDCANDKTKN, SectionBehavior, ValueAddCandKtkn);
-		LoadCheckButton(hDlg, IDC_CHECKBOX_SETBYDIRECT, SectionBehavior, ValueSetByDirect);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_ENTOGGLEKANA, SectionBehavior, ValueEnToggleKana, L"1");
+		LoadCheckButton(hDlg, IDC_CHECKBOX_SETBYDIRECT, SectionBehavior, ValueSetByDirect);
 
 		return TRUE;
 
@@ -41,8 +41,8 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case IDC_CHECKBOX_DELOKURICNCL:
 		case IDC_CHECKBOX_BACKINCENTER:
 		case IDC_CHECKBOX_ADDCANDKTKN:
-		case IDC_CHECKBOX_SETBYDIRECT:
 		case IDC_CHECKBOX_ENTOGGLEKANA:
+		case IDC_CHECKBOX_SETBYDIRECT:
 
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -72,6 +72,6 @@ void SaveBehavior1(IXmlWriter *pWriter, HWND hDlg)
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DELOKURICNCL, ValueDelOkuriCncl);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_BACKINCENTER, ValueBackIncEnter);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_ADDCANDKTKN, ValueAddCandKtkn);
-	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SETBYDIRECT, ValueSetByDirect);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_ENTOGGLEKANA, ValueEnToggleKana);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SETBYDIRECT, ValueSetByDirect);
 }

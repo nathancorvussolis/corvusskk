@@ -154,14 +154,15 @@ void CTextService::_LoadBehavior()
 	//Behavior
 
 	_ReadBoolValue(SectionBehavior, ValueBeginCvOkuri, cx_begincvokuri, TRUE);
+	// precedeokuri in dictionary manager
 	_ReadBoolValue(SectionBehavior, ValueShiftNNOkuri, cx_shiftnnokuri, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueSrchAllOkuri, cx_srchallokuri, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueDelCvPosCncl, cx_delcvposcncl, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueDelOkuriCncl, cx_delokuricncl, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueBackIncEnter, cx_backincenter, TRUE);
 	_ReadBoolValue(SectionBehavior, ValueAddCandKtkn, cx_addcandktkn, FALSE);
-	_ReadBoolValue(SectionBehavior, ValueSetByDirect, cx_setbydirect, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueEnToggleKana, cx_entogglekana, TRUE);
+	_ReadBoolValue(SectionBehavior, ValueSetByDirect, cx_setbydirect, FALSE);
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueCompMultiNum, strxmlval);
 	cx_compmultinum = _wtoi(strxmlval.c_str());
