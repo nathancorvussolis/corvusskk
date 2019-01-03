@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.7.3
+# CorvusSKK ver. 2.7.4
 
 Windowsで動作するSKK風のIMEです。
 
@@ -87,6 +87,8 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 * 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
 * 言語バーのヘルプボタンを左クリックし、メニューから「CorvusSKK」を選択する。
 * Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
+* %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する。
+  * コマンドライン引数またはドラッグアンドドロップで後述の設定ファイルを渡すことが可能です。
 
 設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
 
@@ -707,7 +709,7 @@ pandoc 2.5
 
 ---
 
-Copyright (C) 2011-2018 SASAKI Nobuyuki
+Copyright (C) 2011-2019 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
