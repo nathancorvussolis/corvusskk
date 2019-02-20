@@ -442,12 +442,25 @@ local function window_width(t)
 	return window_width_value
 end
 
+-- current-time
+local function current_time(t)
+	return tostring(os.time())
+end
+
 -- current-time-string
 local function current_time_string(t)
 	local d = os.date("*t")
 	return string.format("%s %s %2d %02d:%02d:%02d %04d",
 		skk_gadget_dayofweek_table[d.wday][1], skk_gadget_month_table[d.month][1], d.day,
 		d.hour, d.min, d.sec, d.year)
+end
+
+-- format-time-string
+local function format_time_string(t)
+	local format = t[1]
+	local time = tonumber(t[2])
+
+	return os.date(format, time)
 end
 
 -- car
@@ -793,7 +806,9 @@ local skk_gadget_func_table_org = {
 	{"number-to-string", number_to_string},
 	{"window-width", window_width},
 	{"window-height", window_height},
+	{"current-time", current_time},
 	{"current-time-string", current_time_string},
+	{"format-time-string", format_time_string},
 	{"car", car},
 	{"cdr", cdr},
 	{"1+", plus_1},

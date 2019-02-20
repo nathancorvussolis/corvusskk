@@ -71,6 +71,8 @@ el_test_time_table = {
 {"こんげつ",		"(skk-strftime \"%B\")"},
 {"ようび",		"(skk-strftime \"%A\")"},
 
+{"いま",		"(format-time-string \"%H時%M分\" (current-time))"},
+{"いま",		"(format-time-string \"%p%I時%M分\" (current-time))"},
 }
 
 
