@@ -80,61 +80,7 @@
         <File Id="F_luadll_arm32" Name="lua53.dll" Source="..\ARM\Release\lua53.dll" />
       </Component>
     </DirectoryRef>
-<!--
-    <DirectoryRef Id="IMCRVSKK_ARM64">
-      <Component Id="CONCRT140_ARM64" Guid="12A0B75D-8640-424E-9D25-92F1A6478D27">
-        <File Id="F_concrt140_arm64" Name="concrt140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\concrt140.dll" />
-      </Component>
-      <Component Id="MSVCP140_ARM64" Guid="A69100D8-B774-4F25-A803-613F7F46AA18">
-        <File Id="F_msvcp140_arm64" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\msvcp140.dll" />
-      </Component>
-      <Component Id="MSVCP140_1_ARM64" Guid="8658F1E8-FEF3-42E7-A3F6-43A31EAE552F">
-        <File Id="F_msvcp140_1_arm64" Name="msvcp140_1.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\msvcp140_1.dll" />
-      </Component>
-      <Component Id="MSVCP140_2_ARM64" Guid="79C9719E-C37D-41A4-8218-3653E912E13E">
-        <File Id="F_msvcp140_2_arm64" Name="msvcp140_2.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\msvcp140_2.dll" />
-      </Component>
-      <Component Id="VCCORLIB140_ARM64" Guid="3E26CA30-081C-4BCD-9327-3253D988205D">
-        <File Id="F_vccorlib140_arm64" Name="vccorlib140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\vccorlib140.dll" />
-      </Component>
-      <Component Id="VCRUNTIME140_ARM64" Guid="5B9BA1A7-191D-49D1-B900-A72A9C03368C">
-        <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\vcruntime140.dll" />
-      </Component>
-    </DirectoryRef>
 
-    <DirectoryRef Id="IMCRVSKK_ARM32">
-      <Component Id="CONCRT140_ARM32" Guid="5A8831FD-D554-4138-B57F-D767C0AB97D6">
-        <File Id="F_concrt140_arm32" Name="concrt140.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\concrt140.dll" />
-      </Component>
-      <Component Id="MSVCP140_ARM32" Guid="295E5336-13CA-4CD4-AE10-214F83CD6A15">
-        <File Id="F_msvcp140_arm32" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\msvcp140.dll" />
-      </Component>
-      <Component Id="MSVCP140_1_ARM32" Guid="A4C0FB57-E689-4A44-8221-3E804598E3F6">
-        <File Id="F_msvcp140_1_arm32" Name="msvcp140_1.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\msvcp140_1.dll" />
-      </Component>
-      <Component Id="MSVCP140_2_ARM32" Guid="7EBB3E05-68BD-4187-9666-318DE2A7AD88">
-        <File Id="F_msvcp140_2_arm32" Name="msvcp140_2.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\msvcp140_2.dll" />
-      </Component>
-      <Component Id="VCCORLIB140_ARM32" Guid="0C233947-1B7B-4C59-8803-BA31B7750FAD">
-        <File Id="F_vccorlib140_arm32" Name="vccorlib140.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\vccorlib140.dll" />
-      </Component>
-      <Component Id="VCRUNTIME140_ARM32" Guid="4C30E3DC-68CB-4E55-982B-CC4D52ABF477">
-        <File Id="F_vcruntime140_arm32" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)arm\Microsoft.VC141.CRT\vcruntime140.dll" />
-      </Component>
-    </DirectoryRef>
--->
     <Feature Id="Default" Title="Main" Level="1">
       <ComponentRef Id="CNF_ARM64" />
       <ComponentRef Id="MGR_ARM64" />
@@ -146,47 +92,7 @@
       <ComponentRef Id="TIP_ARM32" />
       <ComponentRef Id="LUAEXE_ARM32" />
       <ComponentRef Id="LUADLL_ARM32" />
- <!--
-      <ComponentRef Id="CONCRT140_ARM64" />
-      <ComponentRef Id="MSVCP140_ARM64" />
-      <ComponentRef Id="MSVCP140_1_ARM64" />
-      <ComponentRef Id="MSVCP140_2_ARM64" />
-      <ComponentRef Id="VCCORLIB140_ARM64" />
-      <ComponentRef Id="VCRUNTIME140_ARM64" />
-      <ComponentRef Id="CONCRT140_ARM32" />
-      <ComponentRef Id="MSVCP140_ARM32" />
-      <ComponentRef Id="MSVCP140_1_ARM32" />
-      <ComponentRef Id="MSVCP140_2_ARM32" />
-      <ComponentRef Id="VCCORLIB140_ARM32" />
-      <ComponentRef Id="VCRUNTIME140_ARM32" />
--->
     </Feature>
-
-    <!-- TODO: use merge modules instead of local deployment or static link -->
-<!--
-    <DirectoryRef Id="TARGETDIR">
-      <Merge Id="CRT_ARM64" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_arm64.msm" />
-      <Merge Id="AMP_ARM64" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_arm64.msm" />
-      <Merge Id="OMP_ARM64" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_arm64.msm" />
-      <Merge Id="CRT_ARM32" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_arm.msm" />
-      <Merge Id="AMP_ARM32" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_arm.msm" />
-      <Merge Id="OMP_ARM32" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_arm.msm" />
-    </DirectoryRef>
-    <Feature Id="VCRedist" Title="Runtime" AllowAdvertise="no" Display="hidden" Level="1">
-      <MergeRef Id="CRT_ARM64" />
-      <MergeRef Id="AMP_ARM64" />
-      <MergeRef Id="OMP_ARM64" />
-      <MergeRef Id="CRT_ARM32" />
-      <MergeRef Id="AMP_ARM32" />
-      <MergeRef Id="OMP_ARM32" />
-    </Feature>
--->
 
     <UIRef Id="WixUI_Minimal" />
     <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
