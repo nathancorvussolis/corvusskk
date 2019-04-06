@@ -445,7 +445,7 @@ end
 
 -- current-time
 local function current_time(t)
-	return tostring(os.time())
+	return tostring(skk_gadget_time)
 end
 
 -- current-time-string
