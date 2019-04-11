@@ -169,9 +169,19 @@ UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込ま
 
 ![](installer/resource-md/01_dictionary.png)
 
-SKK辞書の詳細はこちらを参照ください。 http://openlab.jp/skk/wiki/wiki.cgi?page=FrontPage
+SKK辞書の詳細はこちらを参照ください。
 
-こちらから辞書をダウンロード出来ます。 http://openlab.ring.gr.jp/skk/skk/dic/
+* https://skk-dev.github.io/dict/
+
+* http://openlab.ring.gr.jp/skk/wiki/wiki.cgi
+
+こちらから辞書をダウンロード出来ます。
+
+* https://github.com/skk-dev/dict
+
+* http://openlab.ring.gr.jp/skk/skk/dic/
+
+* https://github.com/nathancorvussolis/skkdic
 
 SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
 
@@ -305,9 +315,9 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 各機能に対してキーを正規表現で設定してください。
 
-Visual C++ 2017 の 正規表現で、文法は ECMAScript を使用しています。
+Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=vs-2017
+正規表現の詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=vs-2019
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -524,7 +534,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承ください。
 
-SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.lisp
+Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://github.com/skk-dev/dict/blob/master/SKK-JISYO.lisp
 
 以下のシンボルに大体対応しています。
 
@@ -541,7 +551,9 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 | number-to-string |  |
 | window-width | 80で固定 |
 | window-height | 23で固定 |
+| current-time |  |
 | current-time-string |  |
+| format-time-string |  |
 | car | ほぼ skk-num-list 用 |
 | cdr | ほぼ skk-num-list 用 |
 | 1+ |  |
@@ -558,7 +570,7 @@ SKK Openlab の Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要�
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
 | skk-omikuji | 独自実装。おみくじを引くことができます。『(skk-omikuji)』 |
-| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=vs-2017<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
+| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=vs-2019<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |
@@ -673,17 +685,22 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2017 15.9.4
+Visual Studio Community 2019 16.0.1
 
 * Desktop development with C++
-* C++ compilers and libraries for ARM/ARM64
+* MSVC v142 - VS 2019 C++ ARM build tools
+* MSVC v142 - VS 2019 C++ ARM64 build tools
 
 WiX Toolset v3.11.1
 
-pandoc 2.5
+pandoc 2.7.2
 
 
 ### ビルド手順
+
+Windows 10 on ARM の場合、installer\\_version.cmd で以下のように編集してからビルドしてください。
+
+    set ENABLE_PLATFORM_ARM=1
 
 ビルド
 

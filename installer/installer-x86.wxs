@@ -60,6 +60,17 @@
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="IMCRVSKK_X86">
+        <Component Id="MSVCP140_X86" Guid="4484CE80-10EA-42B9-96DA-9922CAB7EC32">
+        <File Id="F_msvcp140_x86" Name="msvcp140.dll"
+          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC141.CRT\msvcp140.dll" />
+      </Component>
+      <Component Id="VCRUNTIME140_X86" Guid="A6C80254-BC21-41A9-9C36-A90A7EB33655">
+        <File Id="F_vcruntime140_x86" Name="vcruntime140.dll"
+          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC141.CRT\vcruntime140.dll" />
+      </Component>
+    </DirectoryRef>
+
     <DirectoryRef Id="IMCRVSKK_WIN">
       <Component Id="CONFIG_XML" Guid="12FF814A-8F58-44C4-B653-23258B7F1705">
         <File Id="F_config_xml" Name="config.xml" Source="build\config.xml" />
@@ -100,26 +111,14 @@
       <ComponentRef Id="TIP_X86" />
       <ComponentRef Id="LUAEXE_X86" />
       <ComponentRef Id="LUADLL_X86" />
+      <ComponentRef Id="MSVCP140_X86" />
+      <ComponentRef Id="VCRUNTIME140_X86" />
       <ComponentRef Id="CONFIG_XML" />
       <ComponentRef Id="INIT_LUA" />
       <ComponentRef Id="SKKDICT_TXT" />
       <ComponentRef Id="LICENSE_TXT" />
       <ComponentRef Id="README_HTML" />
       <ComponentRef Id="REG_X86" />
-    </Feature>
-
-    <DirectoryRef Id="TARGETDIR">
-      <Merge Id="CRT_X86" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CRT_x86.msm" />
-      <Merge Id="AMP_X86" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_CXXAMP_x86.msm" />
-      <Merge Id="OMP_X86" DiskId="1" Language="0"
-        SourceFile="$(env.VCToolsRedistDir)MergeModules\Microsoft_VC141_OpenMP_x86.msm" />
-    </DirectoryRef>
-    <Feature Id="VCRedist" Title="Runtime" AllowAdvertise="no" Display="hidden" Level="1">
-      <MergeRef Id="CRT_X86" />
-      <MergeRef Id="AMP_X86" />
-      <MergeRef Id="OMP_X86" />
     </Feature>
 
     <UIRef Id="WixUI_Minimal" />

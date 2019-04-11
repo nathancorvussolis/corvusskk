@@ -62,6 +62,18 @@
       </Component>
     </DirectoryRef>
 
+    <DirectoryRef Id="IMCRVSKK_ARM64">
+      <Component Id="MSVCP140_ARM64" Guid="5D44F83D-5E1F-47AD-BB50-465ECCDA6807">
+        <File Id="F_msvcp140_arm64" Name="msvcp140.dll"
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\msvcp140.dll" />
+      </Component>
+      <Component Id="VCRUNTIME140_ARM64" Guid="3637D9F3-4617-42D4-9711-FC6E5D89F503">
+        <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\vcruntime140.dll" />
+      </Component>
+    </DirectoryRef>
+
+    <!-- arm32 modules use static crt library. -->
     <DirectoryRef Id="IMCRVSKK_ARM32">
       <Component Id="CNF_ARM32" Guid="48AA4637-1781-4099-857F-5FAFB6ED05AE">
         <File Id="F_imcrvcnf_arm32" Name="imcrvcnf.exe" Source="..\ARM\Release\imcrvcnf.exe" />
@@ -87,6 +99,8 @@
       <ComponentRef Id="TIP_ARM64" />
       <ComponentRef Id="LUAEXE_ARM64" />
       <ComponentRef Id="LUADLL_ARM64" />
+      <ComponentRef Id="MSVCP140_ARM64" />
+      <ComponentRef Id="VCRUNTIME140_ARM64" />
       <ComponentRef Id="CNF_ARM32" />
       <ComponentRef Id="MGR_ARM32" />
       <ComponentRef Id="TIP_ARM32" />
