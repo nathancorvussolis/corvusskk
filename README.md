@@ -24,24 +24,30 @@ Windowsで動作するSKK風のIMEです。
 
     + S14 Update ( [KB2919355](https://support.microsoft.com/en-us/kb/2919355) )
 
-* Windows 10    (32-bit / 64-bit)
+* Windows 10    (32-bit / 64-bit / ARM)
 
 
 ### インストール
 
-corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン番号)
+corvusskk-X.Y.Z.exe を実行してください。ARM 版 では corvusskk-X.Y.Z-arm.exe を実行してください。 (X, Y, Z はバージョン番号)
 
 アップデートの後はOSを再起動しておくと安全です。
 
 インストール先
 
-* 32bit版 Windows
+* 32bit 版 Windows
 
     + %SystemRoot%\System32\IME\IMCRVSKK
 
-* 64bit版 Windows
+* 64bit 版 Windows
 
     + %SystemRoot%\System32\IME\IMCRVSKK
+    + %SystemRoot%\SysWOW64\IME\IMCRVSKK
+
+* ARM 版 Windows
+
+    + %SystemRoot%\System32\IME\IMCRVSKK
+    + %SystemRoot%\SysArm32\IME\IMCRVSKK
     + %SystemRoot%\SysWOW64\IME\IMCRVSKK
 
 * 共通
@@ -697,10 +703,6 @@ pandoc 2.7.2
 
 
 ### ビルド手順
-
-Windows 10 on ARM の場合、installer\\_version.cmd で以下のように編集してからビルドしてください。
-
-    set ENABLE_PLATFORM_ARM=1
 
 ビルド
 

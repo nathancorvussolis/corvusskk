@@ -52,7 +52,7 @@
         <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" />
       </Component>
       <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
-        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" />
+        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
         <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" />
@@ -115,14 +115,6 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 
-    <CustomAction Id="REGARM64DLL"
-      Directory="IMCRVSKK_ARM64"
-      Execute="deferred" Impersonate="no"
-      ExeCommand="regsvr32 /s [#F_imcrvtip_arm64]" />
-    <CustomAction Id="UNREGARM64DLL"
-      Directory="IMCRVSKK_ARM64"
-      Execute="deferred" Impersonate="no"
-      ExeCommand="regsvr32 /s /u [#F_imcrvtip_arm64]" />
     <CustomAction Id="REGARM32DLL"
       Directory="IMCRVSKK_ARM32"
       Execute="deferred" Impersonate="no"
@@ -134,9 +126,7 @@
 
     <InstallExecuteSequence>
       <ScheduleReboot After="InstallFinalize" />
-      <Custom Action="UNREGARM64DLL" Before="RemoveFiles">Installed</Custom>
       <Custom Action="UNREGARM32DLL" Before="RemoveFiles">Installed</Custom>
-      <Custom Action="REGARM64DLL" After="InstallFiles">NOT REMOVE</Custom>
       <Custom Action="REGARM32DLL" After="InstallFiles">NOT REMOVE</Custom>
     </InstallExecuteSequence>
 
