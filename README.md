@@ -710,12 +710,10 @@ Windows 10 on ARM の場合、installer\\_version.cmd で以下のように編�
 ビルド ＆ 署名 ＆ 検証
 
     > installer\_solution_build.cmd
-    > installer\_sign.cmd <SHA-1 hash 1> <URL 1> <SHA-1 hash 2> <URL 2>
+    > installer\_sign.cmd <SHA-1 hash> <URL>
 
-        * <SHA-1 hash 1> : SHA-1 hash of certificate for SHA-1 file digest algorithm
-        * <URL 1> : SHA-1 Authenticode timestamp server
-        * <SHA-1 hash 2> : SHA-1 hash of certificate for SHA-256 file digest algorithm
-        * <URL 2> : SHA-256 RFC-3161 timestamp server
+        * <SHA-1 hash> : SHA-1 hash of certificate for SHA-256 file digest algorithm
+        * <URL> : SHA-256 RFC-3161 timestamp server
 
     > installer\_verify.cmd
 
