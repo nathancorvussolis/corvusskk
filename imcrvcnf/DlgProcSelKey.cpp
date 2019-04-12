@@ -16,6 +16,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	WCHAR num[2];
 	WCHAR key[4];
 	std::wstring strxmlval;
+	WCHAR text[16];
 
 	switch(message)
 	{
@@ -24,21 +25,23 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvc.fmt = LVCFMT_CENTER;
+		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"数字";
+		wcsncpy_s(text, L"数字", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"表示";
+		wcsncpy_s(text, L"表示", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"予備1";
+		wcsncpy_s(text, L"予備1", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
+		lvc.iSubItem = 3;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"予備2";
+		wcsncpy_s(text, L"予備2", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 3, &lvc);
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");

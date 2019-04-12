@@ -182,11 +182,13 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 		goto exit;
 	}
 
-	ITfDocumentMgr *pDocumentMgr = nullptr;
-	if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 	{
-		_InitTextEditSink(pDocumentMgr);
-		SafeRelease(&pDocumentMgr);
+		ITfDocumentMgr* pDocumentMgr = nullptr;
+		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		{
+			_InitTextEditSink(pDocumentMgr);
+			SafeRelease(&pDocumentMgr);
+		}
 	}
 
 	if(!_InitLanguageBar())

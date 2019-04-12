@@ -333,11 +333,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		goto exit;
 	}
 
-	HRESULT hr = E_FAIL;
-	HRESULT hrSession = E_FAIL;
-
 	try
 	{
+		HRESULT hr = E_FAIL;
+		HRESULT hrSession = E_FAIL;
+
 		CCandidateWindowEditSession *pEditSession =
 			new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow);
 		// Asynchronous, read-only

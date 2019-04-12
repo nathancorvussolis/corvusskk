@@ -25,6 +25,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	NMLISTVIEW *pListView;
 	OPENFILENAMEW ofn = {};
 	WCHAR path[MAX_PATH];
+	WCHAR text[16] = {};
 
 	switch(message)
 	{
@@ -33,26 +34,27 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvc.fmt = LVCFMT_CENTER;
+		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"ﾛｰﾏ字";
+		wcsncpy_s(text, L"ﾛｰﾏ字", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"かな";
+		wcsncpy_s(text, L"かな", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"カナ";
+		wcsncpy_s(text, L"カナ", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 		lvc.iSubItem = 3;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"ｶﾅ";
+		wcsncpy_s(text, L"ｶﾅ", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 3, &lvc);
 		lvc.iSubItem = 4;
 		lvc.cx = GetScaledSizeX(hDlg, 30);
-		lvc.pszText = L"…";
+		wcsncpy_s(text, L"…", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 4, &lvc);
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_R, L"");

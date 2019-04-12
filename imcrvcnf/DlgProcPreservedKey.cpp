@@ -7,7 +7,7 @@ TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
 
 static const struct {
 	int id;
-	LPWSTR text;
+	LPCWSTR text;
 	LPCWSTR section;
 } preservedkeyInfo[PRESERVEDKEY_NUM] = {
 	{IDC_LIST_PRSRVKEY_ON, L"ON 仮想ｷｰ", SectionPreservedKeyON},
@@ -25,6 +25,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	WCHAR key[8];
 	WCHAR keyBak[8];
 	NMLISTVIEW *pListView;
+	WCHAR text[16] = {};
 
 	switch(message)
 	{
@@ -35,22 +36,23 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
 			lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 			lvc.fmt = LVCFMT_CENTER;
+			lvc.pszText = text;
 
 			lvc.iSubItem = 0;
 			lvc.cx = GetScaledSizeX(hDlg, 90);
-			lvc.pszText = preservedkeyInfo[i].text;
+			wcsncpy_s(text, preservedkeyInfo[i].text, _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 0, &lvc);
 			lvc.iSubItem = 1;
 			lvc.cx = GetScaledSizeX(hDlg, 60);
-			lvc.pszText = L"ALT";
+			wcsncpy_s(text, L"ALT", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 1, &lvc);
 			lvc.iSubItem = 2;
 			lvc.cx = GetScaledSizeX(hDlg, 60);
-			lvc.pszText = L"CTRL";
+			wcsncpy_s(text, L"CTRL", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 2, &lvc);
 			lvc.iSubItem = 3;
 			lvc.cx = GetScaledSizeX(hDlg, 60);
-			lvc.pszText = L"SHIFT";
+			wcsncpy_s(text, L"SHIFT", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 3, &lvc);
 		}
 
@@ -93,18 +95,19 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
 				ListView_SetItemText(hWndListView, index, 0, key);
-				ListView_SetItemText(hWndListView, index, 1,
-					IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT) == BST_CHECKED ? L"1" : L"0");
-				ListView_SetItemText(hWndListView, index, 2,
-					IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL) == BST_CHECKED ? L"1" : L"0");
-				ListView_SetItemText(hWndListView, index, 3,
-					IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT) == BST_CHECKED ? L"1" : L"0");
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
+				ListView_SetItemText(hWndListView, index, 1, text);
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
+				ListView_SetItemText(hWndListView, index, 2, text);
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
+				ListView_SetItemText(hWndListView, index, 3, text);
 			}
 			else if(count < MAX_PRESERVEDKEY)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				item.mask = LVIF_TEXT;
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key, _countof(key));
 				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
@@ -112,16 +115,16 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				item.iItem = count;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
-				item.pszText = IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT) == BST_CHECKED ? L"1" : L"0";
-				item.iItem = count;
+
+				item.pszText = text;
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
 				item.iSubItem = 1;
 				ListView_SetItem(hWndListView, &item);
-				item.pszText = IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL) == BST_CHECKED ? L"1" : L"0";
-				item.iItem = count;
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_CTRL) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
+				item.pszText = text;
 				item.iSubItem = 2;
 				ListView_SetItem(hWndListView, &item);
-				item.pszText = IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT) == BST_CHECKED ? L"1" : L"0";
-				item.iItem = count;
+				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
 				item.iSubItem = 3;
 				ListView_SetItem(hWndListView, &item);
 			}

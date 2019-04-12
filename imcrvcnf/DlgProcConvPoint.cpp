@@ -16,6 +16,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	WCHAR key[2];
 	WCHAR keyBak[2];
 	NMLISTVIEW *pListView;
+	WCHAR text[16] = {};
 
 	switch(message)
 	{
@@ -24,18 +25,19 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvc.fmt = LVCFMT_CENTER;
+		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"開始";
+		wcsncpy_s(text, L"開始", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"代替";
+		wcsncpy_s(text, L"代替", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"送り";
+		wcsncpy_s(text, L"送り", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, L"");

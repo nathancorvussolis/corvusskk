@@ -53,30 +53,33 @@ HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
 
 HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len)
 {
-	HRESULT hr = E_MAKESKKDIC_DOWNLOAD;
-
 	if(FAILED(DownloadMakePath(url, path, len)))
 	{
-		goto exit_r;
+		return E_MAKESKKDIC_DOWNLOAD;
 	}
 
 	HINTERNET hInet = InternetOpenW(TEXTSERVICE_NAME L"/" TEXTSERVICE_VER, INTERNET_OPEN_TYPE_PRECONFIG, nullptr, nullptr, 0);
 	if(hInet == nullptr)
 	{
-		goto exit_r;
+		return E_MAKESKKDIC_DOWNLOAD;
 	}
 
 	HINTERNET hUrl = InternetOpenUrlW(hInet, url, nullptr, 0, 0, 0);
 	if(hUrl == nullptr)
 	{
-		goto exit_i;
+		InternetCloseHandle(hInet);
+
+		return E_MAKESKKDIC_DOWNLOAD;
 	}
 
 	DWORD dwStatusCode = 0;
 	DWORD dwQueryLength = sizeof(dwStatusCode);
 	if(HttpQueryInfoW(hUrl, HTTP_QUERY_STATUS_CODE | HTTP_QUERY_FLAG_NUMBER, &dwStatusCode, &dwQueryLength, 0) == FALSE)
 	{
-		goto exit_u;
+		InternetCloseHandle(hUrl);
+		InternetCloseHandle(hInet);
+
+		return E_MAKESKKDIC_DOWNLOAD;
 	}
 
 	switch(dwStatusCode)
@@ -84,8 +87,10 @@ HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len
 	case HTTP_STATUS_OK:
 		break;
 	default:
-		hr = MAKE_HRESULT(SEVERITY_ERROR, FACILITY_HTTP, dwStatusCode);
-		goto exit_u;
+		InternetCloseHandle(hUrl);
+		InternetCloseHandle(hInet);
+
+		return MAKE_HRESULT(SEVERITY_ERROR, FACILITY_HTTP, dwStatusCode);
 		break;
 	}
 
@@ -97,18 +102,23 @@ HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len
 	_wfopen_s(&fp, path, WB);
 	if(fp == nullptr)
 	{
-		hr = E_MAKESKKDIC_FILEIO;
-		goto exit_u;
+		InternetCloseHandle(hUrl);
+		InternetCloseHandle(hInet);
+
+		return E_MAKESKKDIC_FILEIO;
 	}
 
 	while(true)
 	{
 		if(IsMakeSKKDicCanceled(hCancelEvent))
 		{
-			hr = E_ABORT;
 			fclose(fp);
 			DeleteFileW(path);
-			goto exit_u;
+
+			InternetCloseHandle(hUrl);
+			InternetCloseHandle(hInet);
+
+			return E_ABORT;
 		}
 
 		ZeroMemory(rbuf, sizeof(rbuf));
@@ -124,21 +134,22 @@ HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len
 		{
 			fclose(fp);
 			DeleteFileW(path);
-			goto exit_u;
+
+			InternetCloseHandle(hUrl);
+			InternetCloseHandle(hInet);
+
+			return E_MAKESKKDIC_DOWNLOAD;
 		}
 
 		fwrite(rbuf, bytesRead, 1, fp);
 	}
 
-	hr = S_OK;
-
 	fclose(fp);
-exit_u:
+
 	InternetCloseHandle(hUrl);
-exit_i:
 	InternetCloseHandle(hInet);
-exit_r:
-	return hr;
+
+	return S_OK;
 }
 
 HRESULT CheckMultiByteFile(HANDLE hCancelEvent, LPCWSTR path, int encoding)
@@ -299,14 +310,15 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 	std::wstring key;
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
+	WCHAR text[16] = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
 
 	for(int i = 0; i < count; i++)
 	{
-		ListView_SetItemText(hWndListView, i, 1, L"");
-		ListView_SetItemText(hWndListView, i, 2, L"");
+		ListView_SetItemText(hWndListView, i, 1, text);
+		ListView_SetItemText(hWndListView, i, 2, text);
 	}
 
 	ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);

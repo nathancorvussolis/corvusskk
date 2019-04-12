@@ -22,6 +22,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	WCHAR pathBak[MAX_PATH];
 	BOOL check;
 	BOOL checkBak;
+	WCHAR text[16] = {};
 	std::wstring strxmlval;
 	static HWND hEdit;
 
@@ -31,23 +32,24 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_CHECKBOXES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+		lvc.pszText = text;
 
 		lvc.fmt = LVCFMT_LEFT;
 		lvc.iSubItem = 0;
 		lvc.cx = 220;
-		lvc.pszText = L"ファイル/URL";
+		wcsncpy_s(text, L"ファイル/URL", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 
 		lvc.fmt = LVCFMT_RIGHT;
 		lvc.iSubItem = 1;
 		lvc.cx = 80;
-		lvc.pszText = L"　見出し";
+		wcsncpy_s(text, L"　見出し", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 
 		lvc.fmt = LVCFMT_RIGHT;
 		lvc.iSubItem = 2;
 		lvc.cx = 80;
-		lvc.pszText = L"　　候補";
+		wcsncpy_s(text, L"　　候補", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 
 		LoadDictionary(hDlg);

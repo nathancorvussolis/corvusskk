@@ -17,6 +17,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	ASCII_JLATIN_CONV ajc;
 	ASCII_JLATIN_CONV ajcBak;
 	NMLISTVIEW *pListView;
+	WCHAR text[16] = {};
 
 	switch(message)
 	{
@@ -25,14 +26,15 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 		lvc.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		lvc.fmt = LVCFMT_CENTER;
+		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"ASCII";
+		wcsncpy_s(text, L"ASCII", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
 		lvc.cx = GetScaledSizeX(hDlg, 60);
-		lvc.pszText = L"全英";
+		wcsncpy_s(text, L"全英", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 
 		SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, L"");
