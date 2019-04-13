@@ -36,13 +36,6 @@
         ForcePerMachine="yes"
         Compressed="yes" />
 
-      <!-- x86 modules -->
-      <MsiPackage
-        SourceFile="build\x86.msi"
-        DisplayName="x86 modules"
-        ForcePerMachine="yes"
-        Compressed="yes" />
-
     </Chain>
 
   </Bundle>
