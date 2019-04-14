@@ -29,7 +29,9 @@ Windowsで動作するSKK風のIMEです。
 
 ### インストール
 
-corvusskk-X.Y.Z.exe を実行してください。ARM 版 では corvusskk-X.Y.Z-arm.exe を実行してください。 (X, Y, Z はバージョン番号)
+corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン番号)
+
+Windows 10 on ARM では corvusskk-X.Y.Z-arm.exe を実行してください。
 
 アップデートの後はOSを再起動しておくと安全です。
 
@@ -93,7 +95,7 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 * 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
 * 言語バーのヘルプボタンを左クリックし、メニューから「CorvusSKK」を選択する。
 * Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
-* %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する。
+* imcrvcnf.exe を直接実行する。
   * コマンドライン引数またはドラッグアンドドロップで後述の設定ファイルを渡すことが可能です。
 
 設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
@@ -517,7 +519,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 辞書管理プロセスのカレントディレクトリは %AppData%\CorvusSKK になっています。
 
-コンソールプログラムのlua.exeが %SystemRoot%\System32\IME\IMCRVSKK と %SystemRoot%\SysWOW64\IME\IMCRVSKK にあるので、カスタマイズする際のデバッグ用に使ってください。
+カスタマイズする際のデバッグ用にコンソールプログラムの lua.exe を使用してください。
 
 辞書管理プロセスの起動時にスクリプトファイル (init.lua) が下記の優先順位で読み込まれます。
 
