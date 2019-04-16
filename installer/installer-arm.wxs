@@ -59,19 +59,19 @@
     </Directory>
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
-      <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843" Win64="yes">
+      <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843">
         <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" />
       </Component>
-      <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779" Win64="yes">
+      <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779">
         <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" />
       </Component>
-      <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
+      <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5">
         <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" SelfRegCost="1" />
       </Component>
-      <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
+      <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A">
         <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" />
       </Component>
-      <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86" Win64="yes">
+      <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86">
         <File Id="F_luadll_arm64" Name="lua53.dll" Source="..\ARM64\Release\lua53.dll" />
       </Component>
     </DirectoryRef>
@@ -87,23 +87,11 @@
       </Component>
     </DirectoryRef>
 
-    <!-- arm32 modules use static crt library. -->
+    <!-- TIP only for ARM32 -->
     <DirectoryRef Id="IMCRVSKK_ARM32">
-      <Component Id="CNF_ARM32" Guid="48AA4637-1781-4099-857F-5FAFB6ED05AE">
-        <File Id="F_imcrvcnf_arm32" Name="imcrvcnf.exe" Source="..\ARM\Release\imcrvcnf.exe" />
-      </Component>
-      <Component Id="MGR_ARM32" Guid="9956BAD3-8620-4795-ACD0-C3796DEA2F1C">
-        <File Id="F_imcrvmgr_arm32" Name="imcrvmgr.exe" Source="..\ARM\Release\imcrvmgr.exe" />
-      </Component>
       <Component Id="TIP_ARM32" Guid="26DEC436-067C-4629-AB3C-E15EEBF4349B">
         <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
         <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll" Source="..\ARM\Release\imcrvtip.dll" />
-      </Component>
-      <Component Id="LUAEXE_ARM32" Guid="64A7B38E-BF1A-44BB-A5D7-0834F8BB8EFA">
-        <File Id="F_luaexe_arm32" Name="lua.exe" Source="..\ARM\Release\lua.exe" />
-      </Component>
-      <Component Id="LUADLL_ARM32" Guid="AC159140-BFBC-488E-AE0A-A9BE63B2F3C7">
-        <File Id="F_luadll_arm32" Name="lua53.dll" Source="..\ARM\Release\lua53.dll" />
       </Component>
     </DirectoryRef>
 
@@ -177,11 +165,7 @@
       <ComponentRef Id="LUADLL_ARM64" />
       <ComponentRef Id="MSVCP140_ARM64" />
       <ComponentRef Id="VCRUNTIME140_ARM64" />
-      <ComponentRef Id="CNF_ARM32" />
-      <ComponentRef Id="MGR_ARM32" />
       <ComponentRef Id="TIP_ARM32" />
-      <ComponentRef Id="LUAEXE_ARM32" />
-      <ComponentRef Id="LUADLL_ARM32" />
       <ComponentRef Id="CNF_X86" />
       <ComponentRef Id="MGR_X86" />
       <ComponentRef Id="TIP_X86" />

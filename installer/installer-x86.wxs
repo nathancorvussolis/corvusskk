@@ -61,7 +61,7 @@
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_X86">
-        <Component Id="MSVCP140_X86" Guid="4484CE80-10EA-42B9-96DA-9922CAB7EC32">
+      <Component Id="MSVCP140_X86" Guid="4484CE80-10EA-42B9-96DA-9922CAB7EC32">
         <File Id="F_msvcp140_x86" Name="msvcp140.dll"
           Source="$(env.VCToolsRedistDir)x86\Microsoft.VC141.CRT\msvcp140.dll" />
       </Component>
