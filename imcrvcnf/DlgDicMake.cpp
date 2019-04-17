@@ -2,6 +2,8 @@
 #include "eucjis2004.h"
 #include "parseskkdic.h"
 #include "configxml.h"
+#include "utf8.h"
+#include "zlib.h"
 #include "imcrvcnf.h"
 #include "resource.h"
 
@@ -9,6 +11,11 @@
 #define E_MAKESKKDIC_DOWNLOAD	MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 1)
 #define E_MAKESKKDIC_FILEIO		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 2)
 #define E_MAKESKKDIC_ENCODING	MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 3)
+#define E_MAKESKKDIC_UNGZIP		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 4)
+#define E_MAKESKKDIC_UNTAR		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 5)
+
+#define GZBUFSIZE		16384
+#define TARBLOCKSIZE	512
 
 BOOL IsMakeSKKDicCanceled(HANDLE hCancelEvent)
 {
@@ -303,13 +310,453 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 	}
 }
 
-HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
+HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, size_t &count_cand, SKKDIC &entries_a, SKKDIC &entries_n)
 {
-	WCHAR path[MAX_PATH];
 	FILE *fp;
 	std::wstring key;
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
+
+	int encoding = 0;
+
+	//check BOM
+	_wfopen_s(&fp, path, RB);
+	if (fp == nullptr)
+	{
+		return E_MAKESKKDIC_FILEIO;
+	}
+
+	WCHAR bom = L'\0';
+	fread(&bom, 2, 1, fp);
+	fclose(fp);
+
+	if (bom == BOM)
+	{
+		//UTF-16LE
+		encoding = 16;
+
+		HRESULT hr = CheckWideCharFile(hCancelEvent, path);
+		switch (hr)
+		{
+		case S_OK:
+			break;
+		case E_ABORT:
+		case E_MAKESKKDIC_FILEIO:
+			return hr;
+			break;
+		default:
+			//Error
+			encoding = -1;
+			break;
+		}
+	}
+
+	//UTF-8 ?
+	if (encoding == 0)
+	{
+		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 8);
+		switch (hr)
+		{
+		case S_OK:
+			encoding = 8;
+			break;
+		case E_ABORT:
+		case E_MAKESKKDIC_FILEIO:
+			return hr;
+			break;
+		default:
+			break;
+		}
+	}
+
+	//EUC-JIS-2004 ?
+	if (encoding == 0)
+	{
+		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 1);
+		switch (hr)
+		{
+		case S_OK:
+			encoding = 1;
+			break;
+		case E_ABORT:
+		case E_MAKESKKDIC_FILEIO:
+			return hr;
+			break;
+		default:
+			break;
+		}
+	}
+
+	switch (encoding)
+	{
+	case 1:
+		//EUC-JIS-2004
+		bom = L'\0';
+		_wfopen_s(&fp, path, RB);
+		break;
+	case 8:
+		//UTF-8
+		bom = BOM;
+		_wfopen_s(&fp, path, RccsUTF8);
+		break;
+	case 16:
+		//UTF-16LE
+		_wfopen_s(&fp, path, RccsUTF16);
+		break;
+	default:
+		return E_MAKESKKDIC_ENCODING;
+		break;
+	}
+	if (fp == nullptr)
+	{
+		return E_MAKESKKDIC_FILEIO;
+	}
+
+	// 「;; okuri-ari entries.」、「;; okuri-nasi entries.」がない辞書のエントリは送りなしとする
+	int okuri = 0;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
+
+	while (true)
+	{
+		if (IsMakeSKKDicCanceled(hCancelEvent))
+		{
+			fclose(fp);
+			return E_ABORT;
+		}
+
+		int rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
+		if (rl == -1)
+		{
+			//EOF
+			break;
+		}
+		else if (rl == 1)
+		{
+			//comment
+			continue;
+		}
+
+		switch (okuri)
+		{
+		case 1:
+		case 0:
+			++count_key;
+			count_cand += sc.size();
+			break;
+		default:
+			break;
+		}
+
+		FORWARD_ITERATION_I(sc_itr, sc)
+		{
+			if (IsMakeSKKDicCanceled(hCancelEvent))
+			{
+				fclose(fp);
+				return E_ABORT;
+			}
+
+			LoadSKKDicAdd((okuri == 0 ? entries_n : entries_a), key, sc_itr->first, sc_itr->second);
+		}
+	}
+
+	fclose(fp);
+
+	return S_OK;
+}
+
+HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
+{
+	HRESULT ret = E_MAKESKKDIC_UNGZIP;
+
+	WCHAR drive[_MAX_DRIVE];
+	WCHAR dir[_MAX_DIR];
+	WCHAR fname[_MAX_FNAME];
+	WCHAR ext[_MAX_EXT];
+
+	_wsplitpath_s(gzpath, drive, dir, fname, ext);
+
+	if (_wcsicmp(ext, L".tgz") == 0)
+	{
+		wcsncpy_s(fname, L".tar", _TRUNCATE);
+	}
+	else if (_wcsicmp(ext, L".gz") != 0)
+	{
+		return S_FALSE;
+	}
+
+	WCHAR tempdir[MAX_PATH];
+
+	DWORD temppathlen = GetTempPathW(_countof(tempdir), tempdir);
+	if (temppathlen == 0 || temppathlen > _countof(tempdir))
+	{
+		return E_MAKESKKDIC_UNGZIP;
+	}
+	wcsncat_s(tempdir, TEXTSERVICE_NAME, _TRUNCATE);
+
+	CreateDirectoryW(tempdir, nullptr);
+
+	gzFile gzf = gzopen_w(gzpath, "rb");
+	if (gzf == NULL)
+	{
+		return E_MAKESKKDIC_UNGZIP;
+	}
+
+	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", tempdir, fname);
+
+	FILE *fpo;
+	_wfopen_s(&fpo, path, L"wb");
+	if (fpo == nullptr)
+	{
+		gzclose(gzf);
+		return E_MAKESKKDIC_UNGZIP;
+	}
+
+	PCHAR buf = (PCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, GZBUFSIZE);
+
+	if (buf != nullptr)
+	{
+		while (true)
+		{
+			int len = gzread(gzf, buf, sizeof(buf));
+
+			if (len == 0)
+			{
+				ret = S_OK;
+				break;
+			}
+			else if (len < 0)
+			{
+				ret = E_MAKESKKDIC_UNGZIP;
+				break;
+			}
+
+			if (fwrite(buf, len, 1, fpo) != 1)
+			{
+				ret = E_MAKESKKDIC_UNGZIP;
+				break;
+			}
+		}
+
+		HeapFree(GetProcessHeap(), 0, buf);
+	}
+
+	fclose(fpo);
+
+	if (FAILED(ret))
+	{
+		DeleteFileW(path);
+	}
+
+	gzclose(gzf);
+
+	return ret;
+}
+
+int TarParseOct(const char *p, int n)
+{
+	int i = 0;
+
+	while ((*p < '0' || *p > '7') && n > 0)
+	{
+		++p;
+		--n;
+	}
+
+	while (*p >= '0' && *p <= '7' && n > 0)
+	{
+		i *= 8;
+		i += *p - '0';
+		++p;
+		--n;
+	}
+
+	return i;
+}
+
+bool TarIsEnd(const char *p)
+{
+	for (int n = 0; n < TARBLOCKSIZE; ++n)
+	{
+		if (p[n] != '\0')
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool TarVerify(const char *p)
+{
+	int u = 0;
+
+	for (int n = 0; n < TARBLOCKSIZE; ++n)
+	{
+		if (n < 148 || n > 155)
+		{
+			u += ((unsigned char *)p)[n];
+		}
+		else
+		{
+			u += 0x20;
+		}
+	}
+
+	return (u == TarParseOct(p + 148, 8));
+}
+
+HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &entries_a, SKKDIC &entries_n)
+{
+	HRESULT ret = E_MAKESKKDIC_UNTAR;
+
+	WCHAR drive[_MAX_DRIVE];
+	WCHAR dir[_MAX_DIR];
+	WCHAR fname[_MAX_FNAME];
+	WCHAR ext[_MAX_EXT];
+
+	_wsplitpath_s(tarpath, drive, dir, fname, ext);
+
+	if (_wcsicmp(ext, L".tar") != 0)
+	{
+		return S_FALSE;
+	}
+
+	FILE *fpi = nullptr;
+	_wfopen_s(&fpi, tarpath, RB);
+	if (fpi == nullptr)
+	{
+		return E_MAKESKKDIC_FILEIO;
+	}
+
+	WCHAR path[MAX_PATH];
+	char buff[TARBLOCKSIZE];
+	FILE *fpo = nullptr;
+	size_t bytes_read;
+	int filesize;
+
+	for (;;)
+	{
+		bytes_read = fread(buff, 1, TARBLOCKSIZE, fpi);
+
+		if (bytes_read < TARBLOCKSIZE)
+		{
+			fclose(fpi);
+			return E_MAKESKKDIC_UNTAR;
+		}
+
+		if (TarIsEnd(buff))
+		{
+			fclose(fpi);
+			return S_OK;
+		}
+
+		if (!TarVerify(buff))
+		{
+			fclose(fpi);
+			return E_MAKESKKDIC_UNTAR;
+		}
+
+		filesize = TarParseOct(buff + 124, 12);
+
+		switch (buff[156]) {
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '6':
+			break;
+		case '5':
+			filesize = 0;
+			break;
+		default:
+			char *p = strrchr(buff, '/');
+			if (p == nullptr)
+			{
+				p = buff;
+			}
+			else
+			{
+				++p;
+			}
+
+			{
+				WCHAR tfname[MAX_PATH];
+
+				wcsncpy_s(tfname, U8TOWC(p), _TRUNCATE);
+
+				for (int i = 0; i < _countof(tfname) && tfname[i] != L'\0'; i++)
+				{
+					UINT type = PathGetCharTypeW(tfname[i]);
+
+					if ((type & (GCT_LFNCHAR | GCT_SHORTCHAR)) == 0)
+					{
+						tfname[i] = L'_';
+					}
+				}
+
+				WCHAR dir[MAX_PATH];
+
+				DWORD temppathlen = GetTempPathW(_countof(dir), dir);
+				if (temppathlen == 0 || temppathlen > _countof(dir))
+				{
+					return E_MAKESKKDIC_DOWNLOAD;
+				}
+				wcsncat_s(dir, TEXTSERVICE_NAME, _TRUNCATE);
+
+				_snwprintf_s(path, _TRUNCATE, L"%s\\%s", dir, tfname);
+
+				if (wcsstr(tfname, fname) == nullptr) break;
+			}
+
+			_wfopen_s(&fpo, path, WB);
+			break;
+		}
+
+		while (filesize > 0)
+		{
+			bytes_read = fread(buff, 1, TARBLOCKSIZE, fpi);
+
+			if (bytes_read < TARBLOCKSIZE)
+			{
+				fclose(fpi);
+				return E_MAKESKKDIC_UNTAR;
+			}
+
+			if (filesize < TARBLOCKSIZE)
+			{
+				bytes_read = filesize;
+			}
+
+			if (fpo != nullptr)
+			{
+				if (fwrite(buff, 1, bytes_read, fpo) != bytes_read)
+				{
+					fclose(fpo);
+					fpo = nullptr;
+
+					fclose(fpi);
+					return E_MAKESKKDIC_FILEIO;
+				}
+			}
+
+			filesize -= (int)bytes_read;
+		}
+
+		if (fpo != nullptr)
+		{
+			fclose(fpo);
+			fpo = nullptr;
+
+			LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
+		}
+	}
+
+	fclose(fpi);
+	return S_OK;
+}
+
+HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
+{
+	WCHAR path[MAX_PATH];
 	WCHAR text[16] = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
@@ -343,6 +790,9 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 
+		size_t count_key = 0;
+		size_t count_cand = 0;
+
 		//download
 		URL_COMPONENTSW urlc = {};
 		urlc.dwStructSize = sizeof(urlc);
@@ -368,149 +818,34 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 			}
 		}
 
-		int encoding = 0;
-
-		//check BOM
-		_wfopen_s(&fp, path, RB);
-		if(fp == nullptr)
+		//decompress
 		{
-			return E_MAKESKKDIC_FILEIO;
-		}
-		WCHAR bom = L'\0';
-		fread(&bom, 2, 1, fp);
-		fclose(fp);
-		if(bom == BOM)
-		{
-			//UTF-16LE
-			encoding = 16;
+			WCHAR gzpath[MAX_PATH];
+			wcsncpy_s(gzpath, path, _TRUNCATE);
 
-			HRESULT hr = CheckWideCharFile(hCancelEvent, path);
-			switch(hr)
+			HRESULT hrg = UnGzip(gzpath, path, _countof(path));
+			if (FAILED(hrg))
 			{
-			case S_OK:
-				break;
-			case E_ABORT:
-			case E_MAKESKKDIC_FILEIO:
-				return hr;
-				break;
-			default:
-				//Error
-				encoding = -1;
-				break;
+				return hrg;
 			}
 		}
 
-		//UTF-8 ?
-		if(encoding == 0)
+		//untar
 		{
-			HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 8);
-			switch(hr)
+			WCHAR tarpath[MAX_PATH];
+			wcsncpy_s(tarpath, path, _TRUNCATE);
+
+			HRESULT hrg = UnTar(hCancelEvent, tarpath, count_key, count_cand, entries_a, entries_n);
+			if (FAILED(hrg))
 			{
-			case S_OK:
-				encoding = 8;
-				break;
-			case E_ABORT:
-			case E_MAKESKKDIC_FILEIO:
-				return hr;
-				break;
-			default:
-				break;
+				return hrg;
+			}
+
+			if (hrg == S_FALSE)
+			{
+				LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
 			}
 		}
-
-		//EUC-JIS-2004 ?
-		if(encoding == 0)
-		{
-			HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 1);
-			switch(hr)
-			{
-			case S_OK:
-				encoding = 1;
-				break;
-			case E_ABORT:
-			case E_MAKESKKDIC_FILEIO:
-				return hr;
-				break;
-			default:
-				break;
-			}
-		}
-
-		switch(encoding)
-		{
-		case 1:
-			//EUC-JIS-2004
-			bom = L'\0';
-			_wfopen_s(&fp, path, RB);
-			break;
-		case 8:
-			//UTF-8
-			bom = BOM;
-			_wfopen_s(&fp, path, RccsUTF8);
-			break;
-		case 16:
-			//UTF-16LE
-			_wfopen_s(&fp, path, RccsUTF16);
-			break;
-		default:
-			return E_MAKESKKDIC_ENCODING;
-			break;
-		}
-		if(fp == nullptr)
-		{
-			return E_MAKESKKDIC_FILEIO;
-		}
-
-		// 「;; okuri-ari entries.」、「;; okuri-nasi entries.」がない辞書のエントリは送りなしとする
-		int okuri = 0;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
-
-		size_t count_key = 0;
-		size_t count_cand = 0;
-
-		while(true)
-		{
-			if(IsMakeSKKDicCanceled(hCancelEvent))
-			{
-				fclose(fp);
-				return E_ABORT;
-			}
-
-			int rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
-			if(rl == -1)
-			{
-				//EOF
-				break;
-			}
-			else if(rl == 1)
-			{
-				//comment
-				continue;
-			}
-
-			switch(okuri)
-			{
-			case 1:
-			case 0:
-				++count_key;
-				count_cand += sc.size();
-				break;
-			default:
-				break;
-			}
-
-			FORWARD_ITERATION_I(sc_itr, sc)
-			{
-				if(IsMakeSKKDicCanceled(hCancelEvent))
-				{
-					fclose(fp);
-					return E_ABORT;
-				}
-
-				LoadSKKDicAdd((okuri == 0 ? entries_n : entries_a), key, sc_itr->first, sc_itr->second);
-			}
-		}
-
-		fclose(fp);
 
 		{
 			WCHAR scount[16];
@@ -518,9 +853,9 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 			lvi.mask = LVFIF_TEXT;
 			lvi.iItem = i;
 
-			_snwprintf_s(scount, _TRUNCATE, L"%Iu", count_key);
+			_snwprintf_s(scount, _TRUNCATE, L"%zu", count_key);
 			ListView_SetItemText(hWndListView, i, 1, scount);
-			_snwprintf_s(scount, _TRUNCATE, L"%Iu", count_cand);
+			_snwprintf_s(scount, _TRUNCATE, L"%zu", count_cand);
 			ListView_SetItemText(hWndListView, i, 2, scount);
 		}
 	}
@@ -678,6 +1013,12 @@ void MakeSKKDicThread(void *p)
 			break;
 		case E_MAKESKKDIC_ENCODING:
 			wcsncpy_s(errmsg, L"文字コード", _TRUNCATE);
+			break;
+		case E_MAKESKKDIC_UNGZIP:
+			wcsncpy_s(errmsg, L"GZIP展開", _TRUNCATE);
+			break;
+		case E_MAKESKKDIC_UNTAR:
+			wcsncpy_s(errmsg, L"TAR展開", _TRUNCATE);
 			break;
 		default:
 			break;

@@ -58,6 +58,9 @@
       <Component Id="LUADLL_X86" Guid="84898511-4C96-4114-A7EE-8F32E260D28A">
         <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
       </Component>
+      <Component Id="ZLIBDLL_X86" Guid="190D4F82-EFE6-4907-8DD6-B53E771D781E">
+        <File Id="F_zlibdll_x86" Name="zlib1.dll" Source="..\Win32\Release\zlib1.dll" />
+      </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_X86">
@@ -111,6 +114,7 @@
       <ComponentRef Id="TIP_X86" />
       <ComponentRef Id="LUAEXE_X86" />
       <ComponentRef Id="LUADLL_X86" />
+      <ComponentRef Id="ZLIBDLL_X86" />
       <ComponentRef Id="MSVCP140_X86" />
       <ComponentRef Id="VCRUNTIME140_X86" />
       <ComponentRef Id="CONFIG_XML" />
