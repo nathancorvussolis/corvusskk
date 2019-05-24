@@ -23,7 +23,7 @@ set TIMESTAMPSERVER=%2
 
 set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
 if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM\Release\*.exe" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
+  set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
 )
 set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
 if "%ENABLE_PLATFORM_ARM%" neq "0" (

@@ -697,11 +697,12 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2019 16.0.1
+Visual Studio Community 2019 16.1.0
 
 * Desktop development with C++
-* MSVC v142 - VS 2019 C++ ARM build tools
-* MSVC v142 - VS 2019 C++ ARM64 build tools
+* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.21)
+* MSVC v142 - VS 2019 C++ ARM build tools (v14.21)
+* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.21)
 
 WiX Toolset v3.11.1
 

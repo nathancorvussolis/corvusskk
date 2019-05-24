@@ -82,11 +82,11 @@
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="MSVCP140_ARM64" Guid="5D44F83D-5E1F-47AD-BB50-465ECCDA6807">
         <File Id="F_msvcp140_arm64" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\msvcp140.dll" />
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\msvcp140.dll" />
       </Component>
       <Component Id="VCRUNTIME140_ARM64" Guid="3637D9F3-4617-42D4-9711-FC6E5D89F503">
         <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC141.CRT\vcruntime140.dll" />
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140.dll" />
       </Component>
     </DirectoryRef>
 
@@ -122,11 +122,11 @@
     <DirectoryRef Id="IMCRVSKK_X86">
       <Component Id="MSVCP140_X86" Guid="4484CE80-10EA-42B9-96DA-9922CAB7EC32">
         <File Id="F_msvcp140_x86" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC141.CRT\msvcp140.dll" />
+          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC142.CRT\msvcp140.dll" />
       </Component>
       <Component Id="VCRUNTIME140_X86" Guid="A6C80254-BC21-41A9-9C36-A90A7EB33655">
         <File Id="F_vcruntime140_x86" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC141.CRT\vcruntime140.dll" />
+          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC142.CRT\vcruntime140.dll" />
       </Component>
     </DirectoryRef>
 
