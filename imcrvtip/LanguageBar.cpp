@@ -358,7 +358,7 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 	}
 
 	HDC hdc = GetDC(nullptr);
-	int size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), 96);
+	int size = MulDiv(16, GetDeviceCaps(hdc, LOGPIXELSY), C_USER_DEFAULT_SCREEN_DPI);
 	ReleaseDC(nullptr, hdc);
 
 	_GetIcon(phIcon, size, IsWindowsVersion62OrLater());

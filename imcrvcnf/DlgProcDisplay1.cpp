@@ -158,7 +158,8 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		{
 		case IDC_BUTTON_CHOOSEFONT:
 			GetObjectW(hFont, sizeof(lf), &lf);
-			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE), 96, 72);
+			lf.lfHeight = -MulDiv(GetDlgItemInt(hDlg, IDC_EDIT_FONTPOINT, nullptr, FALSE),
+				C_USER_DEFAULT_SCREEN_DPI, C_FONT_LOGICAL_HEIGHT_PPI);
 
 			cf.lStructSize = sizeof(cf);
 			cf.hwndOwner = hDlg;

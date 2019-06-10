@@ -125,7 +125,7 @@ CInputModeWindow::CInputModeWindow()
 	_dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 	ReleaseDC(nullptr, hdc);
 
-	_size = MulDiv(16, _dpi, 96);
+	_size = MulDiv(16, _dpi, C_USER_DEFAULT_SCREEN_DPI);
 }
 
 CInputModeWindow::~CInputModeWindow()
@@ -448,7 +448,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 		Rectangle(hmemdcR, 0, 0, r.right, r.bottom);
 
-		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, 96));
+		_pTextService->_GetIcon(&hIcon, MulDiv(16, _dpi, C_USER_DEFAULT_SCREEN_DPI));
 		DrawIconEx(hmemdcR, IM_MARGIN_X, IM_MARGIN_Y, hIcon, _size, _size, 0, (HBRUSH)GetStockObject(WHITE_BRUSH), DI_NORMAL);
 
 		SelectObject(hmemdcR, penR);
@@ -488,7 +488,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		break;
 	case WM_DPICHANGED:
 		_dpi = HIWORD(wParam);
-		_size = MulDiv(16, _dpi, 96);
+		_size = MulDiv(16, _dpi, C_USER_DEFAULT_SCREEN_DPI);
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0,
 			_size + IM_MARGIN_X * 2, _size + IM_MARGIN_Y * 2, SWP_NOACTIVATE | SWP_NOMOVE);
 		_Redraw();

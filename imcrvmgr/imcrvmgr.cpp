@@ -102,7 +102,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_LEFT | ES_MULTILINE | ES_READONLY,
 			0, 0, r.right, r.bottom, hWnd, nullptr, hInst, nullptr);
 		hDC = GetDC(hWndEdit);
-		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), 72), 0, 0, 0,
+		hFont = CreateFontW(-MulDiv(10, GetDeviceCaps(hDC, LOGPIXELSY), C_FONT_LOGICAL_HEIGHT_PPI), 0, 0, 0,
 			FW_NORMAL, FALSE, FALSE, FALSE, SHIFTJIS_CHARSET,
 			OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, PROOF_QUALITY, DEFAULT_PITCH,
 			L"Meiryo");

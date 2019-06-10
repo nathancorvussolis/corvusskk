@@ -101,6 +101,9 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 //// Windows 10 ver.1903 19H1 May 2019 Update
 //#define IsWindowsVersion10019H1OrLater() IsWindowsVersionOrLater(10, 0, 18362)
 
+#define C_USER_DEFAULT_SCREEN_DPI	USER_DEFAULT_SCREEN_DPI
+#define C_FONT_LOGICAL_HEIGHT_PPI	72
+
 BOOL GetUserUUID(LPWSTR *ppszUUID);
 BOOL GetUserSid(LPWSTR *ppszUserSid);
 

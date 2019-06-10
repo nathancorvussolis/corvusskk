@@ -114,12 +114,12 @@ int GetDpi(HWND hwnd)
 
 int GetScaledSizeX(HWND hwnd, int size)
 {
-	return MulDiv(size, GetDpi(hwnd), 96);
+	return MulDiv(size, GetDpi(hwnd), C_USER_DEFAULT_SCREEN_DPI);
 }
 
 int GetFontHeight(HWND hwnd, int size)
 {
-	return -MulDiv(size, GetDpi(hwnd), 72);
+	return -MulDiv(size, GetDpi(hwnd), C_FONT_LOGICAL_HEIGHT_PPI);
 }
 
 void DrawSelectColor(HWND hDlg, int id, COLORREF col)

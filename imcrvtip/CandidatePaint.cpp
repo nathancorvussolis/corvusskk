@@ -30,7 +30,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 	int cx = 0, cy = 0;
 	UINT page, count, i;
 	LONG height = 0;
-	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, 96);
+	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, C_USER_DEFAULT_SCREEN_DPI);
 
 	hdc = BeginPaint(hWnd, &ps);
 
@@ -579,7 +579,7 @@ void CCandidateWindow::_CalcWindowRect()
 	int cx = 0, cy = 0;
 	UINT page, count, i;
 	LONG height = 0;
-	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, 96);
+	CONST LONG maxwidth = (LONG)MulDiv(_pTextService->cx_maxwidth, _dpi, C_USER_DEFAULT_SCREEN_DPI);
 
 	if(_hwnd == nullptr)
 	{
@@ -844,7 +844,7 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 void CCandidateWindow::_InitFont()
 {
 	LOGFONTW lf = {};
-	lf.lfHeight = -MulDiv(_pTextService->cx_fontpoint, _dpi, 72);
+	lf.lfHeight = -MulDiv(_pTextService->cx_fontpoint, _dpi, C_FONT_LOGICAL_HEIGHT_PPI);
 	lf.lfWidth = 0;
 	lf.lfEscapement = 0;
 	lf.lfOrientation = 0;
@@ -871,7 +871,7 @@ void CCandidateWindow::_InitFont()
 			static_cast<DWRITE_FONT_WEIGHT>(_pTextService->cx_fontweight),
 			(_pTextService->cx_fontitalic ? DWRITE_FONT_STYLE_ITALIC : DWRITE_FONT_STYLE_NORMAL),
 			DWRITE_FONT_STRETCH_NORMAL,
-			(FLOAT)MulDiv(_pTextService->cx_fontpoint, _dpi, 72),
+			(FLOAT)MulDiv(_pTextService->cx_fontpoint, _dpi, C_FONT_LOGICAL_HEIGHT_PPI),
 			L"ja-JP",
 			&_pDWTF);
 
