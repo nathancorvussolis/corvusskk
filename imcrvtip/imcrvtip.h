@@ -213,6 +213,8 @@ extern const IID IID_ITfFnGetPreferredTouchKeyboardLayout;
 // added in Windows 8.1 SDK
 #ifndef _WIN32_WINNT_WINBLUE
 
+#define WM_DPICHANGED                   0x02E0
+
 #define D2D1_DRAW_TEXT_OPTIONS_ENABLE_COLOR_FONT (static_cast<D2D1_DRAW_TEXT_OPTIONS>(0x00000004))
 
 #endif //_WIN32_WINNT_WINBLUE
