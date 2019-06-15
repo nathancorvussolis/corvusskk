@@ -59,32 +59,32 @@
     </Directory>
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
-      <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843">
+      <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843" Win64="yes">
         <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" />
       </Component>
-      <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779">
+      <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779" Win64="yes">
         <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" />
       </Component>
-      <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5">
+      <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
         <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" SelfRegCost="1" />
       </Component>
-      <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A">
+      <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
         <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" />
       </Component>
-      <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86">
+      <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86" Win64="yes">
         <File Id="F_luadll_arm64" Name="lua53.dll" Source="..\ARM64\Release\lua53.dll" />
       </Component>
-      <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508">
+      <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508" Win64="yes">
         <File Id="F_zlibdll_ARM64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
-      <Component Id="MSVCP140_ARM64" Guid="5D44F83D-5E1F-47AD-BB50-465ECCDA6807">
+      <Component Id="MSVCP140_ARM64" Guid="5D44F83D-5E1F-47AD-BB50-465ECCDA6807" Win64="yes">
         <File Id="F_msvcp140_arm64" Name="msvcp140.dll"
           Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\msvcp140.dll" />
       </Component>
-      <Component Id="VCRUNTIME140_ARM64" Guid="3637D9F3-4617-42D4-9711-FC6E5D89F503">
+      <Component Id="VCRUNTIME140_ARM64" Guid="3637D9F3-4617-42D4-9711-FC6E5D89F503" Win64="yes">
         <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
           Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140.dll" />
       </Component>
