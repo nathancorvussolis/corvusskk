@@ -476,7 +476,7 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 
 	if (_wcsicmp(ext, L".tgz") == 0)
 	{
-		wcsncpy_s(fname, L".tar", _TRUNCATE);
+		wcsncat_s(fname, L".tar", _TRUNCATE);
 	}
 	else if (_wcsicmp(ext, L".gz") != 0)
 	{
