@@ -472,7 +472,10 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 	WCHAR fname[_MAX_FNAME];
 	WCHAR ext[_MAX_EXT];
 
-	_wsplitpath_s(gzpath, drive, dir, fname, ext);
+	if (_wsplitpath_s(gzpath, drive, dir, fname, ext) != 0)
+	{
+		return E_MAKESKKDIC_UNGZIP;
+	}
 
 	if (_wcsicmp(ext, L".tgz") == 0)
 	{
@@ -613,7 +616,10 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 	WCHAR fname[_MAX_FNAME];
 	WCHAR ext[_MAX_EXT];
 
-	_wsplitpath_s(tarpath, drive, dir, fname, ext);
+	if (_wsplitpath_s(tarpath, drive, dir, fname, ext) != 0)
+	{
+		return E_MAKESKKDIC_UNTAR;
+	}
 
 	if (_wcsicmp(ext, L".tar") != 0)
 	{
