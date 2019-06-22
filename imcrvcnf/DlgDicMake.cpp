@@ -645,20 +645,18 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 
 		if (bytes_read < TARBLOCKSIZE)
 		{
-			fclose(fpi);
-			return E_MAKESKKDIC_UNTAR;
+			break;
 		}
 
 		if (TarIsEnd(buff))
 		{
-			fclose(fpi);
-			return S_OK;
+			ret = S_OK;
+			break;
 		}
 
 		if (!TarVerify(buff))
 		{
-			fclose(fpi);
-			return E_MAKESKKDIC_UNTAR;
+			break;
 		}
 
 		filesize = TarParseOct(buff + 124, 12);
@@ -699,21 +697,49 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 					}
 				}
 
-				WCHAR dir[MAX_PATH];
+				WCHAR tempdir[MAX_PATH];
 
-				DWORD temppathlen = GetTempPathW(_countof(dir), dir);
-				if (temppathlen == 0 || temppathlen > _countof(dir))
+				DWORD temppathlen = GetTempPathW(_countof(tempdir), tempdir);
+				if (temppathlen == 0 || temppathlen > _countof(tempdir))
 				{
-					return E_MAKESKKDIC_DOWNLOAD;
+					fclose(fpi);
+					return E_MAKESKKDIC_UNTAR;
 				}
-				wcsncat_s(dir, TEXTSERVICE_NAME, _TRUNCATE);
+				wcsncat_s(tempdir, TEXTSERVICE_NAME, _TRUNCATE);
 
-				_snwprintf_s(path, _TRUNCATE, L"%s\\%s", dir, tfname);
+				_snwprintf_s(path, _TRUNCATE, L"%s\\%s", tempdir, tfname);
 
-				if (wcsstr(tfname, fname) == nullptr) break;
+				// extract file if tar filename without extension equals tail of filename.
+
+				size_t tfnamelen = wcslen(tfname);
+				size_t fnamelen = wcslen(fname);
+
+				if (tfnamelen < fnamelen) break;
+
+				if (wcscmp(tfname + tfnamelen - fnamelen, fname) != 0) break;
+
+				// extract file if filename without extension is not empty.
+
+				WCHAR ttfname[_MAX_FNAME];
+
+				if (_wsplitpath_s(tfname,
+					nullptr, 0, nullptr, 0, ttfname, _countof(ttfname), nullptr, 0) != 0)
+				{
+					break;
+				}
+
+				if (wcslen(ttfname) == 0) break;
 			}
 
 			_wfopen_s(&fpo, path, WB);
+
+			if (fpo == nullptr)
+			{
+				ret = E_MAKESKKDIC_FILEIO;
+				filesize = 0;
+				break;
+			}
+
 			break;
 		}
 
@@ -723,6 +749,7 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 
 			if (bytes_read < TARBLOCKSIZE)
 			{
+				if (fpo != nullptr) fclose(fpo);
 				fclose(fpi);
 				return E_MAKESKKDIC_UNTAR;
 			}
@@ -737,8 +764,6 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 				if (fwrite(buff, 1, bytes_read, fpo) != bytes_read)
 				{
 					fclose(fpo);
-					fpo = nullptr;
-
 					fclose(fpi);
 					return E_MAKESKKDIC_FILEIO;
 				}
@@ -752,12 +777,18 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 			fclose(fpo);
 			fpo = nullptr;
 
-			LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
+			HRESULT hr = LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
+			if (FAILED(hr))
+			{
+				fclose(fpi);
+				return hr;
+			}
 		}
 	}
 
 	fclose(fpi);
-	return S_OK;
+
+	return ret;
 }
 
 HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
@@ -849,7 +880,11 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 
 			if (hrg == S_FALSE)
 			{
-				LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
+				HRESULT hr = LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
+				if (FAILED(hr))
+				{
+					return hr;
+				}
 			}
 		}
 
