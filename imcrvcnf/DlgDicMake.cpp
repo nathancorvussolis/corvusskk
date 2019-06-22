@@ -519,7 +519,7 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 	{
 		while (true)
 		{
-			int len = gzread(gzf, buf, sizeof(buf));
+			int len = gzread(gzf, buf, GZBUFSIZE);
 
 			if (len == 0)
 			{
