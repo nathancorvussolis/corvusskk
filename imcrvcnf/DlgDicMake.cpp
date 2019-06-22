@@ -494,77 +494,59 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 
 	CreateDirectoryW(tempdir, nullptr);
 
-	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", tempdir, fname);
-
-	HANDLE hFileS = nullptr, hFileD = nullptr;
-	HANDLE hMapS = nullptr, hMapD = nullptr;
-	Bytef *pViewS = nullptr, *pViewD = nullptr;
-	uInt slen, dlen;
-
-	hFileS = CreateFileW(gzpath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, 0, nullptr);
-	if (hFileS == INVALID_HANDLE_VALUE) goto ungzip_end;
-
-	slen = GetFileSize(hFileS, nullptr);
-	if (slen == INVALID_FILE_SIZE) goto ungzip_end;
-
-	hMapS = CreateFileMappingW(hFileS, nullptr, PAGE_READONLY, 0, 0, nullptr);
-	if (hMapS == nullptr) goto ungzip_end;
-
-	pViewS = (Bytef *)MapViewOfFile(hMapS, FILE_MAP_READ, 0, 0, 0);
-	if(pViewS == nullptr) goto ungzip_end;
-
-	dlen = (uInt)pViewS[slen - 1] << 24 |
-		(uInt)pViewS[slen - 2] << 16 |
-		(uInt)pViewS[slen - 3] << 8 |
-		(uInt)pViewS[slen - 4];
-
-	hFileD = CreateFileW(path, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-	if (hFileD == INVALID_HANDLE_VALUE) goto ungzip_end;
-
-	hMapD = CreateFileMappingW(hFileD, nullptr, PAGE_READWRITE, 0, dlen, nullptr);
-	if (hMapD == nullptr) goto ungzip_end;
-
-	pViewD = (Bytef *)MapViewOfFile(hMapD, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 0);
-	if (pViewD == nullptr) goto ungzip_end;
-
+	gzFile gzf = gzopen_w(gzpath, "rb");
+	if (gzf == NULL)
 	{
-		z_stream z;
-
-		z.zalloc = Z_NULL;
-		z.zfree = Z_NULL;
-		z.opaque = Z_NULL;
-
-		z.next_in = pViewS;
-		z.avail_in = slen;
-
-		z.next_out = pViewD;
-		z.avail_out = dlen;
-
-		int rinit2 = inflateInit2(&z, 16 + MAX_WBITS);
-		if (rinit2 == Z_OK)
-		{
-			int rinfl = inflate(&z, Z_FINISH);
-			if (rinfl == Z_STREAM_END)
-			{
-				ret = S_OK;
-			}
-			inflateEnd(&z);
-		}
+		return E_MAKESKKDIC_UNGZIP;
 	}
 
-ungzip_end:
-	if (pViewD != nullptr) UnmapViewOfFile(pViewD);
-	if (hMapD != nullptr) CloseHandle(hMapD);
-	if (hFileD != nullptr) CloseHandle(hFileD);
+	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", tempdir, fname);
 
-	if (pViewS != nullptr) UnmapViewOfFile(pViewS);
-	if (hMapS != nullptr) CloseHandle(hMapS);
-	if (hFileS != nullptr) CloseHandle(hFileS);
+	FILE *fpo;
+	_wfopen_s(&fpo, path, L"wb");
+	if (fpo == nullptr)
+	{
+		gzclose(gzf);
+		return E_MAKESKKDIC_UNGZIP;
+	}
+
+	PCHAR buf = (PCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, GZBUFSIZE);
+
+	if (buf != nullptr)
+	{
+		while (true)
+		{
+			int len = gzread(gzf, buf, sizeof(buf));
+
+			if (len == 0)
+			{
+				ret = S_OK;
+				break;
+			}
+			else if (len < 0)
+			{
+				ret = E_MAKESKKDIC_UNGZIP;
+				break;
+			}
+
+			if (fwrite(buf, len, 1, fpo) != 1)
+			{
+				ret = E_MAKESKKDIC_UNGZIP;
+				break;
+			}
+		}
+
+		HeapFree(GetProcessHeap(), 0, buf);
+	}
+
+	fclose(fpo);
 
 	if (FAILED(ret))
 	{
 		DeleteFileW(path);
 	}
+
+	gzclose(gzf);
 
 	return ret;
 }
@@ -696,7 +678,6 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 				++p;
 			}
 
-			// extract file if tar filename without extension equals tail of filename.
 			{
 				WCHAR tfname[MAX_PATH];
 
@@ -723,21 +704,10 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 
 				_snwprintf_s(path, _TRUNCATE, L"%s\\%s", dir, tfname);
 
-				size_t tfnamelen = wcslen(tfname);
-				size_t fnamelen = wcslen(fname);
-
-				if (tfnamelen < fnamelen) break;
-
-				if (wcscmp(tfname + tfnamelen - fnamelen, fname) != 0) break;
+				if (wcsstr(tfname, fname) == nullptr) break;
 			}
 
 			_wfopen_s(&fpo, path, WB);
-
-			if (fpo == nullptr)
-			{
-				return E_MAKESKKDIC_FILEIO;
-			}
-
 			break;
 		}
 
@@ -776,11 +746,7 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 			fclose(fpo);
 			fpo = nullptr;
 
-			HRESULT hr = LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
-			if (FAILED(hr))
-			{
-				return hr;
-			}
+			LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
 		}
 	}
 
@@ -877,11 +843,7 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 
 			if (hrg == S_FALSE)
 			{
-				HRESULT hr = LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
-				if (FAILED(hr))
-				{
-					return hr;
-				}
+				LoadSKKDicFile(hCancelEvent, path, count_key, count_cand, entries_a, entries_n);
 			}
 		}
 
