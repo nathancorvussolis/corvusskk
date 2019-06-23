@@ -725,7 +725,8 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 				if (_wsplitpath_s(tfname,
 					nullptr, 0, nullptr, 0, ttfname, _countof(ttfname), nullptr, 0) != 0)
 				{
-					break;
+					fclose(fpi);
+					return E_MAKESKKDIC_UNTAR;
 				}
 
 				if (wcslen(ttfname) == 0) break;
@@ -735,9 +736,8 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 
 			if (fpo == nullptr)
 			{
-				ret = E_MAKESKKDIC_FILEIO;
-				filesize = 0;
-				break;
+				fclose(fpi);
+				return E_MAKESKKDIC_FILEIO;
 			}
 
 			break;
