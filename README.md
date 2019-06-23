@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.7.6
+# CorvusSKK ver. 2.7.7
 
 Windowsで動作するSKK風のIMEです。
 
@@ -193,9 +193,15 @@ SKK辞書の詳細はこちらを参照ください。
 
 SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
 
-アーカイブファイルフォーマットは tar、gzip に対応しています。対応する拡張子は、 .gz、.tar、.tar.gz、.tgz です。
+アーカイブファイルフォーマットは tar、gzip に対応しています。
 
-拡張子が .tar、.tar.gz、.tgz の場合、拡張子を除いたアーカイブファイル名をファイル名に含むファイルが対象となります。
+* 対応する拡張子は、 .gz、.tar、.tar.gz、.tgz です。
+
+* 拡張子が .tar、.tar.gz、.tgz の場合、拡張子を除いたアーカイブファイル名をファイル名の末尾に含むファイルが対象となります。(ただしドットファイルは対象外)
+
+    +  zipcode.tar.gz の場合、SKK-JISYO.zipcode や SKK-JISYO.office.zipcode などが対象となり、SKK-JISYO.zipcode.orig や SKK-JISYO.office.zipcode.orig、.zipcode などは対象外となります。
+
+    +  SKK-JISYO.edict.tar.gz の場合、SKK-JISYO.edict などが対象となります。
 
 設定ダイアログのリストにSKK辞書を追加し、取込ボタンを押してください。取込済SKK辞書に変換されて使用可能となります。
 
@@ -697,7 +703,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2019 16.1.0
+Visual Studio Community 2019 16.1.3
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.21)
@@ -706,7 +712,7 @@ Visual Studio Community 2019 16.1.0
 
 WiX Toolset v3.11.1
 
-pandoc 2.7.2
+pandoc 2.7.3
 
 
 ### ビルド手順
