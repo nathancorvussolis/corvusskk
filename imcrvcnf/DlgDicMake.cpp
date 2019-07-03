@@ -982,7 +982,7 @@ HRESULT WriteSKKDic(HANDLE hCancelEvent, const SKKDIC &entries_a, const SKKDIC &
 void MakeSKKDicThread(void *p)
 {
 	WCHAR msg[1024];
-	SKKDIC entries_a, entries_n;
+	HRESULT hr = S_OK;
 
 	HWND child = (HWND)p;
 	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY);
@@ -1006,10 +1006,14 @@ void MakeSKKDicThread(void *p)
 		t0 = (LONGLONG)GetTickCount64();
 	}
 
-	HRESULT hr = LoadSKKDic(hCancelEvent, parent, entries_a, entries_n);
-	if(SUCCEEDED(hr))
 	{
-		hr = WriteSKKDic(hCancelEvent, entries_a, entries_n);
+		SKKDIC entries_a, entries_n;
+
+		hr = LoadSKKDic(hCancelEvent, parent, entries_a, entries_n);
+		if (SUCCEEDED(hr))
+		{
+			hr = WriteSKKDic(hCancelEvent, entries_a, entries_n);
+		}
 	}
 
 	if(bHRT)
