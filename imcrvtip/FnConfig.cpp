@@ -1024,11 +1024,11 @@ void CTextService::_InitD2D()
 
 void CTextService::_UninitD2D()
 {
-	SafeRelease(&_pDWFactory);
+	_pDWFactory.Release();
 	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
-		SafeRelease(&_pD2DBrush[i]);
+		_pD2DBrush[i].Release();
 	}
-	SafeRelease(&_pD2DDCRT);
-	SafeRelease(&_pD2DFactory);
+	_pD2DDCRT.Release();
+	_pD2DFactory.Release();
 }

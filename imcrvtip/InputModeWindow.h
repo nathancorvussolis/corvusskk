@@ -35,11 +35,11 @@ private:
 	HRESULT _AdviseTextLayoutSink();
 	HRESULT _UnadviseTextLayoutSink();
 
-	ITfContext *_pContext;
+	CComPtr<ITfContext> _pContext;
 
 	DWORD _dwCookieTextLayoutSink;
 
-	CTextService *_pTextService;
+	CComPtr<CTextService> _pTextService;
 	HWND _hwndParent;
 	HWND _hwnd;
 	BOOL _bCandidateWindow;

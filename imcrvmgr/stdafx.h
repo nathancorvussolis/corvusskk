@@ -21,3 +21,5 @@
 #include <msctf.h>
 #include <xmllite.h>
 #include <ShlObj.h>
+
+#include <atlbase.h>

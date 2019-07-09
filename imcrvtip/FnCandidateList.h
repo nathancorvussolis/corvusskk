@@ -14,7 +14,6 @@ public:
 		_cRef = 1;
 
 		_pTextService = pTextService;
-		_pTextService->AddRef();
 
 		_searchkey = searchkey;
 		_candidates = candidates;
@@ -22,7 +21,7 @@ public:
 
 	~CFnCandidateList()
 	{
-		SafeRelease(&_pTextService);
+		_pTextService.Release();
 
 		DllRelease();
 	}
@@ -70,7 +69,7 @@ public:
 	// ITfCandidateList
 	STDMETHODIMP EnumCandidates(IEnumTfCandidates **ppEnum)
 	{
-		CFnEnumCandidates *pCandidateEnum;
+		IEnumTfCandidates *pEnumCandidates = nullptr;
 
 		if(ppEnum == nullptr)
 		{
@@ -81,20 +80,22 @@ public:
 
 		try
 		{
-			pCandidateEnum = new CFnEnumCandidates(_candidates);
+			pEnumCandidates = new CFnEnumCandidates(_candidates);
 		}
 		catch(...)
 		{
 			return E_OUTOFMEMORY;
 		}
 
-		*ppEnum = pCandidateEnum;
+		*ppEnum = pEnumCandidates;
 
 		return S_OK;
 	}
 
 	STDMETHODIMP GetCandidate(ULONG nIndex, ITfCandidateString **ppCand)
 	{
+		ITfCandidateString *pCandidateString = nullptr;
+
 		if(ppCand == nullptr)
 		{
 			return E_INVALIDARG;
@@ -109,12 +110,14 @@ public:
 
 		try
 		{
-			*ppCand = new CFnCandidateString(nIndex, _candidates[nIndex].first.first);
+			pCandidateString = new CFnCandidateString(nIndex, _candidates[nIndex].first.first);
 		}
 		catch(...)
 		{
 			return E_OUTOFMEMORY;
 		}
+
+		*ppCand = pCandidateString;
 
 		return S_OK;
 	}
@@ -144,7 +147,7 @@ public:
 
 private:
 	LONG _cRef;
-	CTextService *_pTextService;
+	CComPtr<CTextService> _pTextService;
 	std::wstring _searchkey;
 	CANDIDATES _candidates;
 };

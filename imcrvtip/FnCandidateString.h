@@ -60,7 +60,7 @@ public:
 	// ITfCandidateString
 	STDMETHODIMP GetString(BSTR *pbstr)
 	{
-		BSTR bstr;
+		BSTR bstr = nullptr;
 
 		if(pbstr == nullptr)
 		{

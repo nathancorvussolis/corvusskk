@@ -59,7 +59,7 @@ public:
 	// IEnumTfDisplayAttributeInfo
 	STDMETHODIMP Clone(IEnumTfDisplayAttributeInfo **ppEnum)
 	{
-		CEnumDisplayAttributeInfo *pClone;
+		CEnumDisplayAttributeInfo *pClone = nullptr;
 
 		if(ppEnum == nullptr)
 		{
@@ -87,7 +87,7 @@ public:
 	STDMETHODIMP Next(ULONG ulCount, ITfDisplayAttributeInfo **rgInfo, ULONG *pcFetched)
 	{
 		ULONG cFetched = 0;
-		ITfDisplayAttributeInfo *pDisplayAttributeInfo;
+		ITfDisplayAttributeInfo *pDisplayAttributeInfo = nullptr;
 
 		if(rgInfo == nullptr)
 		{

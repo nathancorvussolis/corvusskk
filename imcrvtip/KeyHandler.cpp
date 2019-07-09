@@ -43,9 +43,10 @@ HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPA
 
 	try
 	{
-		CKeyHandlerEditSession *pEditSession = new CKeyHandlerEditSession(this, pContext, wParam, bSf);
+		CComPtr<ITfEditSession> pEditSession;
+		pEditSession.Attach(
+			new CKeyHandlerEditSession(this, pContext, wParam, bSf));
 		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-		SafeRelease(&pEditSession);
 	}
 	catch(...)
 	{
@@ -394,36 +395,37 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 void CTextService::_KeyboardInputConversionChanged()
 {
-	VARIANT var;
+	CComVariant var;
 	int inputmode_bak = inputmode;
-
-	VariantInit(&var);
 
 	if(SUCCEEDED(_GetCompartment(GUID_COMPARTMENT_KEYBOARD_INPUTMODE_CONVERSION, &var)))
 	{
 		if(_IsKeyboardOpen())
 		{
-			LONG lval = V_I4(&var) & (TF_CONVERSIONMODE_ALPHANUMERIC |
-				TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE);
-			switch(lval)
+			if(V_VT(&var) == VT_I4)
 			{
-			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE:
-				inputmode = im_hiragana;
-				break;
-			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE:
-				inputmode = im_katakana;
-				break;
-			case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA:
-				inputmode = im_katakana_ank;
-				break;
-			case TF_CONVERSIONMODE_ALPHANUMERIC | TF_CONVERSIONMODE_FULLSHAPE:
-				inputmode = im_jlatin;
-				break;
-			case TF_CONVERSIONMODE_ALPHANUMERIC:
-				inputmode = im_ascii;
-				break;
-			default:
-				break;
+				LONG lval = V_I4(&var) & (TF_CONVERSIONMODE_ALPHANUMERIC |
+					TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE);
+				switch(lval)
+				{
+				case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_FULLSHAPE:
+					inputmode = im_hiragana;
+					break;
+				case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA | TF_CONVERSIONMODE_FULLSHAPE:
+					inputmode = im_katakana;
+					break;
+				case TF_CONVERSIONMODE_NATIVE | TF_CONVERSIONMODE_KATAKANA:
+					inputmode = im_katakana_ank;
+					break;
+				case TF_CONVERSIONMODE_ALPHANUMERIC | TF_CONVERSIONMODE_FULLSHAPE:
+					inputmode = im_jlatin;
+					break;
+				case TF_CONVERSIONMODE_ALPHANUMERIC:
+					inputmode = im_ascii;
+					break;
+				default:
+					break;
+				}
 			}
 		}
 	}
@@ -443,17 +445,13 @@ void CTextService::_KeyboardInputConversionChanged()
 		_ClearComposition();
 		_UpdateLanguageBar();
 	}
-
-	VariantClear(&var);
 }
 
 BOOL CTextService::_KeyboardSetDefaultMode()
 {
 	BOOL open = FALSE;
 	BOOL mode = FALSE;
-	VARIANT var;
-
-	VariantInit(&var);
+	CComVariant var;
 
 	_ReadBoolValue(SectionBehavior, ValueDefaultMode, open, FALSE);
 	if(open)
@@ -479,8 +477,6 @@ BOOL CTextService::_KeyboardSetDefaultMode()
 			_SetKeyboardOpen(TRUE);
 		}
 	}
-
-	VariantClear(&var);
 
 	return open;
 }
@@ -555,11 +551,10 @@ void CTextService::_GetActiveFlags()
 	_UILessMode = FALSE;
 	_ShowInputMode = FALSE;
 
-	ITfThreadMgrEx *pThreadMgrEx = nullptr;
+	CComPtr<ITfThreadMgrEx> pThreadMgrEx;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx))) && (pThreadMgrEx != nullptr))
 	{
 		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
-		SafeRelease(&pThreadMgrEx);
 	}
 
 	if((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)

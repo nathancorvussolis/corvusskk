@@ -156,13 +156,12 @@ void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpK
 
 BOOL SaveConfigXml(HWND hPropSheetDlg)
 {
-	IXmlWriter *pWriter = nullptr;
-	IStream *pFileStream = nullptr;
+	CComPtr<IXmlWriter> pWriter;
+	CComPtr<IStream> pFileStream;
 
 	HRESULT hr = WriterInit(pathconfigxml, &pWriter, &pFileStream);
 	if (FAILED(hr))
 	{
-		CloseStreamWriter(pWriter, pFileStream);
 		return FALSE;
 	}
 
@@ -307,7 +306,7 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 
 	WriterNewLine(pWriter);
 
-	WriterFinal(&pWriter, &pFileStream);
+	WriterFinal(pWriter);
 
 	BOOL ret = SetFileDacl(pathconfigxml);
 	if(ret == FALSE)

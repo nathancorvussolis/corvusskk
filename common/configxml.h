@@ -205,16 +205,14 @@ typedef std::vector<APPDATAXMLATTR> APPDATAXMLROW;
 typedef std::vector<APPDATAXMLROW> APPDATAXMLLIST;
 
 HRESULT CreateStreamReader(LPCWSTR path, IXmlReader **ppReader, IStream **ppFileStream);
-void CloseStreamReader(IXmlReader *pReader, IStream *pFileStream);
 
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list);
 HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval = L"");
 
 HRESULT CreateStreamWriter(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream);
-void CloseStreamWriter(IXmlWriter *pWriter, IStream *pFileStream);
 
 HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **ppFileStream, BOOL indent = TRUE);
-HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream);
+HRESULT WriterFinal(IXmlWriter *pWriter);
 
 HRESULT WriterNewLine(IXmlWriter *pWriter);
 HRESULT WriterStartElement(IXmlWriter *pWriter, LPCWSTR element);

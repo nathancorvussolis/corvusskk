@@ -78,7 +78,7 @@ public:
 
 	STDMETHODIMP GetDescription(BSTR *pbstrDesc)
 	{
-		BSTR bstrDesc;
+		BSTR bstrDesc = nullptr;
 
 		if(pbstrDesc == nullptr)
 		{

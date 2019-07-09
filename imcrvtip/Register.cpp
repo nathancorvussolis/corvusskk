@@ -32,7 +32,7 @@ BOOL RegisterProfiles()
 	HRESULT hr = E_FAIL;
 	WCHAR fileName[MAX_PATH];
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr = nullptr;
+	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
 	if(SUCCEEDED(hr) & (pInputProcessorProfileMgr != nullptr))
 	{
@@ -42,8 +42,6 @@ BOOL RegisterProfiles()
 		hr = pInputProcessorProfileMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
 			TextServiceDesc, (ULONG)wcslen(TextServiceDesc), fileName, (ULONG)wcslen(fileName), TEXTSERVICE_ICON_INDEX,
 			nullptr, 0, TRUE, 0);
-
-		SafeRelease(&pInputProcessorProfileMgr);
 	}
 
 	return SUCCEEDED(hr);
@@ -53,13 +51,11 @@ void UnregisterProfiles()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfInputProcessorProfileMgr *pInputProcessorProfileMgr = nullptr;
+	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
 	if(SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
 		hr = pInputProcessorProfileMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
-
-		SafeRelease(&pInputProcessorProfileMgr);
 	}
 }
 
@@ -68,7 +64,7 @@ BOOL RegisterCategories()
 	BOOL fRet = TRUE;
 	HRESULT hr;
 
-	ITfCategoryMgr *pCategoryMgr = nullptr;
+	CComPtr<ITfCategoryMgr> pCategoryMgr;
 	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
 	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
@@ -95,8 +91,6 @@ BOOL RegisterCategories()
 				}
 			}
 		}
-
-		SafeRelease(&pCategoryMgr);
 	}
 	else
 	{
@@ -110,7 +104,7 @@ void UnregisterCategories()
 {
 	HRESULT hr;
 
-	ITfCategoryMgr *pCategoryMgr = nullptr;
+	CComPtr<ITfCategoryMgr> pCategoryMgr;
 	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
 	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
@@ -127,8 +121,6 @@ void UnregisterCategories()
 				hr = pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}
 		}
-
-		SafeRelease(&pCategoryMgr);
 	}
 }
 

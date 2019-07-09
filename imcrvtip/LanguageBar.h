@@ -36,8 +36,8 @@ public:
 private:
 	LONG _cRef;
 
-	CTextService *_pTextService;
+	CComPtr<CTextService> _pTextService;
 
-	ITfLangBarItemSink *_pLangBarItemSink;
+	CComPtr<ITfLangBarItemSink> _pLangBarItemSink;
 	TF_LANGBARITEMINFO _LangBarItemInfo;
 };

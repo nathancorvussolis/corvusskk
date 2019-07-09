@@ -105,11 +105,11 @@ private:
 	std::vector< std::wstring > _CandStr;
 	UINT _uPageCandNum;
 
-	CTextService *_pTextService;
-	CCandidateList *_pCandidateList;
-	CCandidateWindow *_pCandidateWindow;		//子
-	CCandidateWindow *_pCandidateWindowParent;	//親
-	CInputModeWindow *_pInputModeWindow;
+	CComPtr<CTextService> _pTextService;
+	CComPtr<CCandidateList> _pCandidateList;
+	CComPtr<CCandidateWindow> _pCandidateWindow;		//子
+	CComPtr<CCandidateWindow> _pCandidateWindowParent;	//親
+	CComPtr<CInputModeWindow> _pInputModeWindow;
 	HWND _hwnd;			//自分
 	HWND _hwndParent;	//親
 	BOOL _preEnd;		//親に対する終了要求
@@ -123,12 +123,12 @@ private:
 	int _dpi;
 
 	//Direct2D/DirectWrite
-	ID2D1Factory *_pD2DFactory;
-	ID2D1DCRenderTarget *_pD2DDCRT;
-	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_LIST_COLOR_NUM];
+	CComPtr<ID2D1Factory> _pD2DFactory;
+	CComPtr<ID2D1DCRenderTarget> _pD2DDCRT;
+	CComPtr<ID2D1SolidColorBrush> _pD2DBrush[DISPLAY_LIST_COLOR_NUM];
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
-	IDWriteFactory *_pDWFactory;
-	IDWriteTextFormat *_pDWTF;
+	CComPtr<IDWriteFactory> _pDWFactory;
+	CComPtr<IDWriteTextFormat> _pDWTF;
 
 	int _mode;		//モード
 	BOOL _ulsingle;	//UILess 辞書登録/辞書削除

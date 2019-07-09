@@ -830,11 +830,10 @@ HRESULT CCandidateWindow::_GetTextMetrics(LPCWSTR text, DWRITE_TEXT_METRICS *met
 
 	if(metrics != nullptr && _pDWTF != nullptr)
 	{
-		IDWriteTextLayout *pdwTL = nullptr;
+		CComPtr<IDWriteTextLayout> pdwTL;
 		if(SUCCEEDED(_pDWFactory->CreateTextLayout(text, (UINT32)wcslen(text), _pDWTF, 0.0F, 0.0F, &pdwTL)) && (pdwTL != nullptr))
 		{
 			hr = pdwTL->GetMetrics(metrics);
-			SafeRelease(&pdwTL);
 		}
 	}
 
@@ -898,7 +897,7 @@ void CCandidateWindow::_UninitFont()
 		hFont = nullptr;
 	}
 
-	SafeRelease(&_pDWTF);
+	_pDWTF.Release();
 }
 
 void CCandidateWindow::_WindowProcDpiChanged(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

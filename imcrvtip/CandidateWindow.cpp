@@ -30,16 +30,12 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		{
 			_drawtext_option = _pTextService->_drawtext_option;
 			_pD2DFactory = _pTextService->_pD2DFactory;
-			_pD2DFactory->AddRef();
 			_pD2DDCRT = _pTextService->_pD2DDCRT;
-			_pD2DDCRT->AddRef();
 			for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 			{
 				_pD2DBrush[i] = _pTextService->_pD2DBrush[i];
-				_pD2DBrush[i]->AddRef();
 			}
 			_pDWFactory = _pTextService->_pDWFactory;
-			_pDWFactory->AddRef();
 		}
 
 		_InitFont();
@@ -49,11 +45,11 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 	{
 		try
 		{
-			_pInputModeWindow = new CInputModeWindow();
+			_pInputModeWindow.Attach(new CInputModeWindow());
 			if(!_pInputModeWindow->_Create(_pTextService, nullptr, TRUE, _hwnd))
 			{
 				_pInputModeWindow->_Destroy();
-				SafeRelease(&_pInputModeWindow);
+				_pInputModeWindow.Release();
 			}
 		}
 		catch(...)
@@ -166,27 +162,36 @@ LRESULT CALLBACK CCandidateWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CCandidateWindow::_Destroy()
 {
+	if(_pCandidateWindow != nullptr)
+	{
+		_pCandidateWindow->_EndUIElement();
+		_pCandidateWindow->_Destroy();
+	}
+	_pCandidateWindow.Release();
+
+	if(_pInputModeWindow != nullptr)
+	{
+		_pInputModeWindow->_Destroy();
+	}
+	_pInputModeWindow.Release();
+
+	_pCandidateWindowParent.Release();
+
 	if(_hwnd != nullptr)
 	{
 		DestroyWindow(_hwnd);
 		_hwnd = nullptr;
 	}
 
-	if(_pInputModeWindow != nullptr)
-	{
-		_pInputModeWindow->_Destroy();
-	}
-	SafeRelease(&_pInputModeWindow);
-
 	_UninitFont();
 
-	SafeRelease(&_pDWFactory);
+	_pDWFactory.Release();
 	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
-		SafeRelease(&_pD2DBrush[i]);
+		_pD2DBrush[i].Release();
 	}
-	SafeRelease(&_pD2DDCRT);
-	SafeRelease(&_pD2DFactory);
+	_pD2DDCRT.Release();
+	_pD2DFactory.Release();
 }
 
 void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
@@ -246,7 +251,7 @@ void CCandidateWindow::_BeginUIElement()
 
 	if((_hwnd == nullptr) && (_depth == 0))
 	{
-		ITfUIElementMgr *pUIElementMgr = nullptr;
+		CComPtr<ITfUIElementMgr> pUIElementMgr;
 		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
@@ -254,7 +259,6 @@ void CCandidateWindow::_BeginUIElement()
 			{
 				pUIElementMgr->UpdateUIElement(_dwUIElementId);
 			}
-			SafeRelease(&pUIElementMgr);
 		}
 	}
 
@@ -294,11 +298,10 @@ void CCandidateWindow::_EndUIElement()
 {
 	if((_hwnd == nullptr) && (_depth == 0))
 	{
-		ITfUIElementMgr *pUIElementMgr = nullptr;
+		CComPtr<ITfUIElementMgr> pUIElementMgr;
 		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->EndUIElement(_dwUIElementId);
-			SafeRelease(&pUIElementMgr);
 		}
 	}
 
@@ -325,12 +328,11 @@ BOOL CCandidateWindow::_CanShowUIElement()
 {
 	BOOL bShow = TRUE;
 
-	ITfUIElementMgr *pUIElementMgr = nullptr;
+	CComPtr<ITfUIElementMgr> pUIElementMgr;
 	if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 	{
 		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
 		pUIElementMgr->EndUIElement(_dwUIElementId);
-		SafeRelease(&pUIElementMgr);
 	}
 
 	return bShow;
@@ -413,7 +415,7 @@ void CCandidateWindow::_End()
 	{
 		_pCandidateWindow->_Destroy();
 	}
-	SafeRelease(&_pCandidateWindow);
+	_pCandidateWindow.Release();
 
 	if(_hwnd == nullptr)
 	{
@@ -514,11 +516,10 @@ void CCandidateWindow::_UpdateUIElement()
 {
 	if(!_bShow)
 	{
-		ITfUIElementMgr *pUIElementMgr = nullptr;
+		CComPtr<ITfUIElementMgr> pUIElementMgr;
 		if(SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
 			pUIElementMgr->UpdateUIElement(_dwUIElementId);
-			SafeRelease(&pUIElementMgr);
 		}
 	}
 }
@@ -835,7 +836,7 @@ void CCandidateWindow::_CreateNext(int mode)
 {
 	try
 	{
-		_pCandidateWindow = new CCandidateWindow(_pTextService, _pCandidateList);
+		_pCandidateWindow.Attach(new CCandidateWindow(_pTextService, _pCandidateList));
 		_pCandidateWindow->_Create(_hwndParent, this, _dwUIElementId, _depth + 1, mode);
 
 #ifdef _DEBUG

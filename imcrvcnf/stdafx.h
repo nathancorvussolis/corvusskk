@@ -26,3 +26,5 @@
 #include <ShellScalingApi.h>
 #include <Shlwapi.h>
 #include <shellapi.h>
+
+#include <atlbase.h>

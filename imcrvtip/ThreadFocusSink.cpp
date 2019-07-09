@@ -40,7 +40,7 @@ BOOL CTextService::_InitThreadFocusSink()
 {
 	BOOL fRet = FALSE;
 
-	ITfSource *pSource = nullptr;
+	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS((ITfThreadFocusSink *)this), &_dwThreadFocusSinkCookie)))
@@ -51,7 +51,6 @@ BOOL CTextService::_InitThreadFocusSink()
 		{
 			_dwThreadFocusSinkCookie = TF_INVALID_COOKIE;
 		}
-		SafeRelease(&pSource);
 	}
 
 	return fRet;
@@ -59,10 +58,9 @@ BOOL CTextService::_InitThreadFocusSink()
 
 void CTextService::_UninitThreadFocusSink()
 {
-	ITfSource *pSource = nullptr;
+	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		pSource->UnadviseSink(_dwThreadFocusSinkCookie);
-		SafeRelease(&pSource);
 	}
 }

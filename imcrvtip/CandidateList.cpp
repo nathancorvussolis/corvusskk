@@ -12,18 +12,15 @@ public:
 		ITfContextView *pContextView, ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
 	{
 		_pCandidateWindow = pCandidateWindow;
-		_pCandidateWindow->AddRef();
 		_pRangeComposition = pRange;
-		_pRangeComposition->AddRef();
 		_pContextView = pContextView;
-		_pContextView->AddRef();
 	}
 
 	~CCandidateListGetTextExtEditSession()
 	{
-		SafeRelease(&_pCandidateWindow);
-		SafeRelease(&_pRangeComposition);
-		SafeRelease(&_pContextView);
+		_pCandidateWindow.Release();
+		_pRangeComposition.Release();
+		_pContextView.Release();
 	}
 
 	// ITfEditSession
@@ -40,9 +37,9 @@ public:
 	}
 
 private:
-	ITfContextView *_pContextView;
-	ITfRange *_pRangeComposition;
-	CCandidateWindow *_pCandidateWindow;
+	CComPtr<ITfContextView> _pContextView;
+	CComPtr<ITfRange> _pRangeComposition;
+	CComPtr<CCandidateWindow> _pCandidateWindow;
 };
 
 CCandidateList::CCandidateList(CTextService *pTextService)
@@ -52,7 +49,6 @@ CCandidateList::CCandidateList(CTextService *pTextService)
 	_cRef = 1;
 
 	_pTextService = pTextService;
-	_pTextService->AddRef();
 
 	_pCandidateWindow = nullptr;
 	_pRangeComposition = nullptr;
@@ -70,7 +66,7 @@ CCandidateList::~CCandidateList()
 {
 	_EndCandidateList();
 
-	SafeRelease(&_pTextService);
+	_pTextService.Release();
 
 	DllRelease();
 }
@@ -198,10 +194,10 @@ STDAPI CCandidateList::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode, 
 		{
 			try
 			{
-				CCandidateListGetTextExtEditSession *pEditSession =
-					new CCandidateListGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow);
+				CComPtr<ITfEditSession> pEditSession;
+				pEditSession.Attach(
+					new CCandidateListGetTextExtEditSession(_pTextService, pContext, pContextView, _pRangeComposition, _pCandidateWindow));
 				pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-				SafeRelease(&pEditSession);
 			}
 			catch(...)
 			{
@@ -227,21 +223,19 @@ public:
 		ITfRange *pRange, CCandidateWindow *pCandidateWindow) : CEditSessionBase(pTextService, pContext)
 	{
 		_pCandidateWindow = pCandidateWindow;
-		_pCandidateWindow->AddRef();
 		_pRangeComposition = pRange;
-		_pRangeComposition->AddRef();
 	}
 
 	~CCandidateWindowEditSession()
 	{
-		SafeRelease(&_pCandidateWindow);
-		SafeRelease(&_pRangeComposition);
+		_pCandidateWindow.Release();
+		_pRangeComposition.Release();
 	}
 
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		ITfContextView *pContextView = nullptr;
+		CComPtr<ITfContextView> pContextView;
 		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			RECT rc = {};
@@ -250,8 +244,6 @@ public:
 			{
 				_pCandidateWindow->_Move(&rc, ec, _pContext);
 			}
-
-			SafeRelease(&pContextView);
 		}
 
 		_pCandidateWindow->_BeginUIElement();
@@ -261,8 +253,8 @@ public:
 	}
 
 private:
-	ITfRange *_pRangeComposition;
-	CCandidateWindow *_pCandidateWindow;
+	CComPtr<ITfRange> _pRangeComposition;
+	CComPtr<CCandidateWindow> _pCandidateWindow;
 };
 
 HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMgr *pDocumentMgr,
@@ -284,14 +276,8 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 	}
 
 	_pDocumentMgr = pDocumentMgr;
-	_pDocumentMgr->AddRef();
-
 	_pContextDocument = pContext;
-	_pContextDocument->AddRef();
-
 	_pRangeComposition = pRange;
-	_pRangeComposition->AddRef();
-
 	_ec = ec;
 
 	if(FAILED(_AdviseContextKeyEventSink()))
@@ -306,10 +292,10 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 
 	try
 	{
-		_pCandidateWindow = new CCandidateWindow(_pTextService, this);
+		_pCandidateWindow.Attach(new CCandidateWindow(_pTextService, this));
 
 		HWND hwnd = nullptr;
-		ITfContextView *pContextView = nullptr;
+		CComPtr<ITfContextView> pContextView;
 		if(SUCCEEDED(pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			if(!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
@@ -319,8 +305,6 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 					hwnd = GetFocus();
 				}
 			}
-
-			SafeRelease(&pContextView);
 		}
 
 		if(!_pCandidateWindow->_Create(hwnd, nullptr, 0, 0, mode))
@@ -338,11 +322,11 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		HRESULT hr = E_FAIL;
 		HRESULT hrSession = E_FAIL;
 
-		CCandidateWindowEditSession *pEditSession =
-			new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow);
+		CComPtr<ITfEditSession> pEditSession;
+		pEditSession.Attach(
+			new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow));
 		// Asynchronous, read-only
 		hr = pContext->RequestEditSession(ec, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
-		SafeRelease(&pEditSession);
 
 		// It is possible that asynchronous requests are treated as synchronous requests.
 		if(FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
@@ -392,18 +376,18 @@ void CCandidateList::_EndCandidateList()
 		_pDocumentMgr->Pop(0);
 	}
 
-	SafeRelease(&_pContextCandidateWindow);
-	SafeRelease(&_pDocumentMgr);
+	_pContextCandidateWindow.Release();
+	_pDocumentMgr.Release();
 
 	if(_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->_EndUIElement();
 		_pCandidateWindow->_Destroy();
 	}
-	SafeRelease(&_pCandidateWindow);
+	_pCandidateWindow.Release();
 
-	SafeRelease(&_pRangeComposition);
-	SafeRelease(&_pContextDocument);
+	_pRangeComposition.Release();
+	_pContextDocument.Release();
 }
 
 BOOL CCandidateList::_IsShowCandidateWindow()
@@ -420,11 +404,10 @@ HRESULT CCandidateList::_AdviseContextKeyEventSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource = nullptr;
+	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfContextKeyEventSink *)this), &_dwCookieContextKeyEventSink);
-		SafeRelease(&pSource);
 	}
 
 	return hr;
@@ -436,11 +419,10 @@ HRESULT CCandidateList::_UnadviseContextKeyEventSink()
 
 	if(_pContextCandidateWindow != nullptr)
 	{
-		ITfSource *pSource = nullptr;
+		CComPtr<ITfSource> pSource;
 		if(SUCCEEDED(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieContextKeyEventSink);
-			SafeRelease(&pSource);
 		}
 	}
 
@@ -451,11 +433,10 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSource *pSource = nullptr;
-	if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+	CComPtr<ITfSource> pSource;
+	if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
-		SafeRelease(&pSource);
 	}
 
 	return hr;
@@ -467,11 +448,10 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 
 	if(_pContextDocument != nullptr)
 	{
-		ITfSource *pSource = nullptr;
-		if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+		CComPtr<ITfSource> pSource;
+		if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))))
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
-			SafeRelease(&pSource);
 		}
 	}
 

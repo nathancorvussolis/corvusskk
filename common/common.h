@@ -117,12 +117,3 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = n
 	for(auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); ++(reverse_iterator))
 #define REVERSE_ITERATION(reverse_iterator, container) \
 	for(auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); )
-
-template<class T> void SafeRelease(T **ppT)
-{
-	if(*ppT != nullptr)
-	{
-		(*ppT)->Release();
-		*ppT = nullptr;
-	}
-}

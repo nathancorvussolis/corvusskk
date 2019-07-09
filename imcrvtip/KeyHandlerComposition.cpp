@@ -359,19 +359,20 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 		return S_FALSE;
 	}
 
+	CComPtr<ITfRange> pRangeSelection;
+	pRangeSelection.Attach(tfSelection.range);
+
 	if(cFetched != 1)
 	{
-		SafeRelease(&tfSelection.range);
 		return S_FALSE;
 	}
 
 	if(!_IsComposing())
 	{
-		SafeRelease(&tfSelection.range);
 		return S_OK;
 	}
 
-	ITfRange *pRange = nullptr;
+	CComPtr<ITfRange> pRange;
 	if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 	{
 		if(_IsRangeCovered(ec, tfSelection.range, pRange))
@@ -414,7 +415,7 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 			//composition attribute
 			if(!fixed)
 			{
-				ITfRange *pRangeClone = nullptr;
+				CComPtr<ITfRange> pRangeClone;
 				if(SUCCEEDED(pRange->Clone(&pRangeClone)) && (pRangeClone != nullptr))
 				{
 					pRangeClone->ShiftEndToRange(ec, pRange, TF_ANCHOR_END);
@@ -487,7 +488,6 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 							_SetCompositionDisplayAttributes(ec, pContext, pRangeClone, _gaDisplayAttributeConvAnnot);
 						}
 					}
-					SafeRelease(&pRangeClone);
 				}
 			}
 
@@ -534,27 +534,21 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 				if(!phone.empty())
 				{
-					ITfProperty *pProperty = nullptr;
+					CComPtr<ITfProperty> pProperty;
 					if(SUCCEEDED(pContext->GetProperty(GUID_PROP_READING, &pProperty)) && (pProperty != nullptr))
 					{
-						VARIANT var;
-						VariantInit(&var);
+						CComVariant var;
 						V_VT(&var) = VT_BSTR;
 						V_BSTR(&var) = SysAllocString(phone.c_str());
-
-						pProperty->SetValue(ec, pRange, &var);
-
-						VariantClear(&var);
+						if(V_BSTR(&var) != nullptr)
+						{
+							pProperty->SetValue(ec, pRange, &var);
+						}
 					}
-					SafeRelease(&pProperty);
 				}
 			}
 		}
-
-		SafeRelease(&pRange);
 	}
-
-	SafeRelease(&tfSelection.range);
 
 	return S_OK;
 }
@@ -567,22 +561,20 @@ HRESULT CTextService::_ShowCandidateList(TfEditCookie ec, ITfContext *pContext, 
 	{
 		if(_pCandidateList == nullptr)
 		{
-			_pCandidateList = new CCandidateList(this);
+			_pCandidateList.Attach(new CCandidateList(this));
 		}
 
-		ITfDocumentMgr *pDocumentMgr = nullptr;
+		CComPtr<ITfDocumentMgr> pDocumentMgr;
 		if(SUCCEEDED(pContext->GetDocumentMgr(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
 			if(_IsComposing())
 			{
-				ITfRange *pRange = nullptr;
+				CComPtr<ITfRange> pRange;
 				if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 				{
 					hr = _pCandidateList->_StartCandidateList(_ClientId, pDocumentMgr, pContext, ec, pRange, mode);
-					SafeRelease(&pRange);
 				}
 			}
-			SafeRelease(&pDocumentMgr);
 		}
 
 		if(FAILED(hr))
@@ -604,7 +596,7 @@ void CTextService::_EndCandidateList()
 	{
 		_pCandidateList->_EndCandidateList();
 	}
-	SafeRelease(&_pCandidateList);
+	_pCandidateList.Release();
 }
 
 void CTextService::_EndCompletionList(TfEditCookie ec, ITfContext *pContext)
@@ -623,14 +615,13 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 	{
 		if(_IsComposing())
 		{
-			ITfRange *pRange = nullptr;
+			CComPtr<ITfRange> pRange;
 			if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 			{
-				ITfReadOnlyProperty *pReadOnlyProperty = nullptr;
+				CComPtr<ITfReadOnlyProperty> pReadOnlyProperty;
 				if(SUCCEEDED(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty)) && (pReadOnlyProperty != nullptr))
 				{
-					VARIANT var;
-					VariantInit(&var);
+					CComVariant var;
 					if(SUCCEEDED(pReadOnlyProperty->GetValue(ec, pRange, &var)))
 					{
 						if(V_VT(&var) == VT_BOOL)
@@ -638,10 +629,7 @@ BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
 							ret = V_BOOL(&var);
 						}
 					}
-					VariantClear(&var);
-					SafeRelease(&pReadOnlyProperty);
 				}
-				SafeRelease(&pRange);
 			}
 		}
 	}

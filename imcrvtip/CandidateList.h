@@ -49,12 +49,12 @@ private:
 	DWORD _dwCookieContextKeyEventSink;
 	DWORD _dwCookieTextLayoutSink;
 
-	CTextService *_pTextService;
-	ITfRange *_pRangeComposition;
-	ITfContext *_pContextCandidateWindow;
-	ITfContext *_pContextDocument;
-	ITfDocumentMgr *_pDocumentMgr;
+	CComPtr<CTextService> _pTextService;
+	CComPtr<ITfRange> _pRangeComposition;
+	CComPtr<ITfContext> _pContextCandidateWindow;
+	CComPtr<ITfContext> _pContextDocument;
+	CComPtr<ITfDocumentMgr> _pDocumentMgr;
 	TfEditCookie _ec;
 
-	CCandidateWindow *_pCandidateWindow;
+	CComPtr<CCandidateWindow> _pCandidateWindow;
 };

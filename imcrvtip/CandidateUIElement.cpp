@@ -11,10 +11,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_cRef = 1;
 
 	_pTextService = pTextService;
-	_pTextService->AddRef();
-
 	_pCandidateList = pCandidateList;
-	_pCandidateList->AddRef();
 
 	_pCandidateWindow = nullptr;
 	_pCandidateWindowParent = nullptr;
@@ -75,15 +72,10 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 
 CCandidateWindow::~CCandidateWindow()
 {
-	if(_pCandidateWindow != nullptr)
-	{
-		_pCandidateWindow->_EndUIElement();
-		_pCandidateWindow->_Destroy();
-	}
-	SafeRelease(&_pCandidateWindow);
+	_Destroy();
 
-	SafeRelease(&_pCandidateList);
-	SafeRelease(&_pTextService);
+	_pCandidateList.Release();
+	_pTextService.Release();
 
 	DllRelease();
 }
@@ -132,7 +124,7 @@ STDAPI_(ULONG) CCandidateWindow::Release()
 
 STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 {
-	BSTR bstrDesc;
+	BSTR bstrDesc = nullptr;
 
 	if(bstr == nullptr)
 	{

@@ -62,7 +62,7 @@ STDAPI_(ULONG) CClassFactory::Release()
 STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **ppvObj)
 {
 	HRESULT hr;
-	CTextService *pTextService;
+	CComPtr<CTextService> pTextService;
 
 	if(ppvObj == nullptr)
 	{
@@ -78,7 +78,7 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 
 	try
 	{
-		pTextService = new CTextService();
+		pTextService.Attach(new CTextService());
 	}
 	catch(...)
 	{
@@ -87,7 +87,7 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 
 	hr = pTextService->QueryInterface(riid, ppvObj);
 
-	SafeRelease(&pTextService);
+	pTextService.Release();
 
 	return hr;
 }

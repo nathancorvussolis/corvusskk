@@ -1,7 +1,9 @@
 ﻿
 #include "imcrvtip.h"
 #include "TextService.h"
+#include "LanguageBar.h"
 #include "CandidateList.h"
+#include "InputModeWindow.h"
 
 CTextService::CTextService()
 {
@@ -159,7 +161,6 @@ STDAPI CTextService::Activate(ITfThreadMgr *ptim, TfClientId tid)
 STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlags)
 {
 	_pThreadMgr = ptim;
-	_pThreadMgr->AddRef();
 	_ClientId = tid;
 
 	if (!_IsKeyboardOpen())
@@ -183,11 +184,10 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	}
 
 	{
-		ITfDocumentMgr* pDocumentMgr = nullptr;
-		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		CComPtr<ITfDocumentMgr> pDocumentMgr;
+		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
 			_InitTextEditSink(pDocumentMgr);
-			SafeRelease(&pDocumentMgr);
 		}
 	}
 
@@ -252,8 +252,7 @@ STDAPI CTextService::Deactivate()
 
 	_UninitD2D();
 
-	SafeRelease(&_pThreadMgr);
-
+	_pThreadMgr.Release();
 	_ClientId = TF_CLIENTID_NULL;
 
 	return S_OK;

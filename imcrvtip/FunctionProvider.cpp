@@ -18,7 +18,7 @@ STDAPI CTextService::GetType(GUID *pguid)
 
 STDAPI CTextService::GetDescription(BSTR *pbstrDesc)
 {
-	BSTR bstrDesc;
+	BSTR bstrDesc = nullptr;
 
 	if(pbstrDesc == nullptr)
 	{
@@ -82,7 +82,7 @@ STDAPI CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 
 STDAPI CTextService::GetDisplayName(BSTR *pbstrName)
 {
-	BSTR bstrName;
+	BSTR bstrName = nullptr;
 
 	if(pbstrName == nullptr)
 	{
@@ -165,12 +165,11 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 		std::wstring key;
 		_ConvKanaToKana(text, im_katakana, key, im_hiragana);
 
-		CTextService *pTextService = nullptr;
+		CComPtr<CTextService> pTextService;
 
 		try
 		{
-			pTextService = new CTextService();
-			pTextService->AddRef();
+			pTextService.Attach(new CTextService());
 
 			pTextService->_ResetStatus();
 			pTextService->_CreateConfigPath();
@@ -187,8 +186,6 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 		{
 			return E_OUTOFMEMORY;
 		}
-
-		SafeRelease(&pTextService);
 	}
 
 	return hr;
@@ -211,10 +208,10 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 	std::wstring text;
 	if(SUCCEEDED(_GetRangeText(pRange, text)) && !text.empty())
 	{
-		ITfDocumentMgr *pDocumentMgr = nullptr;
+		CComPtr<ITfDocumentMgr> pDocumentMgr;
 		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
-			ITfContext *pContext = nullptr;
+			CComPtr<ITfContext> pContext;
 			if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 			{
 				reconversion = TRUE;
@@ -231,10 +228,7 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 				_ConvKanaToKana(text, im_katakana, kana, im_hiragana);
 
 				hr = _InvokeKeyHandler(pContext, 0, 0, SKK_NEXT_CAND);
-
-				SafeRelease(&pContext);
 			}
-			SafeRelease(&pDocumentMgr);
 		}
 	}
 
@@ -261,12 +255,11 @@ public:
 	CGetRangeTextEditSession(CTextService *pTextService, ITfContext *pContext, ITfRange *pRange) : CEditSessionBase(pTextService, pContext)
 	{
 		_pRange = pRange;
-		_pRange->AddRef();
 	}
 
 	~CGetRangeTextEditSession()
 	{
-		SafeRelease(&_pRange);
+		_pRange.Release();
 	}
 
 	// ITfEditSession
@@ -303,7 +296,7 @@ public:
 	}
 
 private:
-	ITfRange *_pRange;
+	CComPtr<ITfRange> _pRange;
 	std::wstring _Text;
 };
 
@@ -311,25 +304,24 @@ HRESULT CTextService::_GetRangeText(ITfRange *pRange, std::wstring &text)
 {
 	HRESULT hr = E_FAIL;
 
-	ITfContext *pContext = nullptr;
+	CComPtr<ITfContext> pContext;
 	if(SUCCEEDED(pRange->GetContext(&pContext)) && (pContext != nullptr))
 	{
 		try
 		{
-			CGetRangeTextEditSession *pEditSession = new CGetRangeTextEditSession(this, pContext, pRange);
+			CComPtr<CGetRangeTextEditSession> pEditSession;
+			pEditSession.Attach(
+				new CGetRangeTextEditSession(this, pContext, pRange));
 			pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 			if(SUCCEEDED(hr))
 			{
 				text = pEditSession->_GetText();
 			}
-			SafeRelease(&pEditSession);
 		}
 		catch(...)
 		{
 			return E_OUTOFMEMORY;
 		}
-
-		SafeRelease(&pContext);
 	}
 
 	return hr;
@@ -362,10 +354,10 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 		return E_FAIL;
 	}
 
-	ITfDocumentMgr *pDocumentMgr = nullptr;
+	CComPtr<ITfDocumentMgr> pDocumentMgr;
 	if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 	{
-		ITfContext *pContext = nullptr;
+		CComPtr<ITfContext> pContext;
 		if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 		{
 			inputkey = TRUE;
@@ -381,18 +373,16 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 
 			try
 			{
-				CSetResultEditSession *pEditSession = new CSetResultEditSession(this, pContext);
+				CComPtr<ITfEditSession> pEditSession;
+				pEditSession.Attach(
+					new CSetResultEditSession(this, pContext));
 				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
-				SafeRelease(&pEditSession);
 			}
 			catch(...)
 			{
 				hr = E_OUTOFMEMORY;
 			}
-
-			SafeRelease(&pContext);
 		}
-		SafeRelease(&pDocumentMgr);
 	}
 
 	return hr;
@@ -402,11 +392,10 @@ BOOL CTextService::_InitFunctionProvider()
 {
 	HRESULT hr = E_FAIL;
 
-	ITfSourceSingle *pSourceSingle = nullptr;
+	CComPtr<ITfSourceSingle> pSourceSingle;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS((ITfFunctionProvider *)this));
-		SafeRelease(&pSourceSingle);
 	}
 
 	return SUCCEEDED(hr);
@@ -414,10 +403,9 @@ BOOL CTextService::_InitFunctionProvider()
 
 void CTextService::_UninitFunctionProvider()
 {
-	ITfSourceSingle *pSourceSingle = nullptr;
+	CComPtr<ITfSourceSingle> pSourceSingle;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		pSourceSingle->UnadviseSingleSink(_ClientId, IID_ITfFunctionProvider);
-		SafeRelease(&pSourceSingle);
 	}
 }

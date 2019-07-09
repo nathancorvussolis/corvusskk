@@ -18,3 +18,5 @@
 #include <xmllite.h>
 #include <Shlwapi.h>
 #include <bcrypt.h>
+
+#include <atlbase.h>

@@ -247,7 +247,7 @@ private:
 
 	BOOL _IsKeyEaten(ITfContext *pContext, WPARAM wParam);
 
-	ITfThreadMgr *_pThreadMgr;
+	CComPtr<ITfThreadMgr> _pThreadMgr;
 	TfClientId _ClientId;
 
 	DWORD _dwThreadMgrEventSinkCookie;
@@ -255,17 +255,17 @@ private:
 	DWORD _dwCompartmentEventSinkOpenCloseCookie;
 	DWORD _dwCompartmentEventSinkInputmodeConversionCookie;
 
-	ITfContext *_pTextEditSinkContext;
+	CComPtr<ITfContext> _pTextEditSinkContext;
 	DWORD _dwTextEditSinkCookie;
 
-	ITfComposition *_pComposition;
+	CComPtr<ITfComposition> _pComposition;
 
-	CLangBarItemButton *_pLangBarItem;
-	CLangBarItemButton *_pLangBarItemI;
+	CComPtr<CLangBarItemButton> _pLangBarItem;
+	CComPtr<CLangBarItemButton> _pLangBarItemI;
 
-	CCandidateList *_pCandidateList;
+	CComPtr<CCandidateList> _pCandidateList;
 
-	CInputModeWindow *_pInputModeWindow;
+	CComPtr<CInputModeWindow> _pInputModeWindow;
 
 	TfGuidAtom _gaDisplayAttributeInputMark;
 	TfGuidAtom _gaDisplayAttributeInputText;
@@ -305,11 +305,11 @@ private:
 	std::vector<ASCII_JLATIN_CONV> ascii_jlatin_conv;
 
 public:
-	ID2D1Factory *_pD2DFactory;
-	ID2D1DCRenderTarget *_pD2DDCRT;
-	ID2D1SolidColorBrush *_pD2DBrush[DISPLAY_LIST_COLOR_NUM];
+	CComPtr<ID2D1Factory> _pD2DFactory;
+	CComPtr<ID2D1DCRenderTarget> _pD2DDCRT;
+	CComPtr<ID2D1SolidColorBrush> _pD2DBrush[DISPLAY_LIST_COLOR_NUM];
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
-	IDWriteFactory *_pDWFactory;
+	CComPtr<IDWriteFactory> _pDWFactory;
 
 	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
 	BOOL _ImmersiveMode;	//Immersive Mode

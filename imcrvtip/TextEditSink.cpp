@@ -7,7 +7,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 {
 	if(_IsComposing() && pic != nullptr)
 	{
-		ITfRange *pRange = nullptr;
+		CComPtr<ITfRange> pRange;
 		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
 			// clear when auto completion
@@ -24,7 +24,7 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 			// reposition candidate window
 			if(_pCandidateList != nullptr)
 			{
-				ITfContextView *pContextView = nullptr;
+				CComPtr<ITfContextView> pContextView;
 				if(SUCCEEDED(pic->GetActiveView(&pContextView)) && (pContextView != nullptr))
 				{
 					RECT rc = {};
@@ -33,12 +33,8 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 					{
 						_pCandidateList->_Move(&rc, ecReadOnly, pic);
 					}
-
-					SafeRelease(&pContextView);
 				}
 			}
-
-			SafeRelease(&pRange);
 		}
 	}
 
@@ -51,14 +47,13 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 
 	if(_pTextEditSinkContext != nullptr && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
-		ITfSource *pSource = nullptr;
+		CComPtr<ITfSource> pSource;
 		if(SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			pSource->UnadviseSink(_dwTextEditSinkCookie);
-			SafeRelease(&pSource);
 		}
 
-		SafeRelease(&_pTextEditSinkContext);
+		_pTextEditSinkContext.Release();
 		_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	}
 
@@ -78,7 +73,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 	}
 
 	{
-		ITfSource *pSource = nullptr;
+		CComPtr<ITfSource> pSource;
 		if(SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS((ITfTextEditSink *)this), &_dwTextEditSinkCookie)))
@@ -89,13 +84,12 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 			{
 				_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 			}
-			SafeRelease(&pSource);
 		}
 	}
 
 	if(fRet == FALSE)
 	{
-		SafeRelease(&_pTextEditSinkContext);
+		_pTextEditSinkContext.Release();
 	}
 
 	return fRet;

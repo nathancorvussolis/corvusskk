@@ -62,12 +62,11 @@ CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
 	_pLangBarItemSink = nullptr;
 
 	_pTextService = pTextService;
-	_pTextService->AddRef();
 }
 
 CLangBarItemButton::~CLangBarItemButton()
 {
-	SafeRelease(&_pTextService);
+	_pTextService.Release();
 
 	DllRelease();
 }
@@ -160,7 +159,7 @@ STDAPI CLangBarItemButton::Show(BOOL fShow)
 
 STDAPI CLangBarItemButton::GetTooltipString(BSTR *pbstrToolTip)
 {
-	BSTR bstrToolTip;
+	BSTR bstrToolTip = nullptr;
 
 	if(pbstrToolTip == nullptr)
 	{
@@ -368,7 +367,7 @@ STDAPI CLangBarItemButton::GetIcon(HICON *phIcon)
 
 STDAPI CLangBarItemButton::GetText(BSTR *pbstrText)
 {
-	BSTR bstrText;
+	BSTR bstrText = nullptr;
 
 	if(pbstrText == nullptr)
 	{
@@ -403,7 +402,7 @@ STDAPI CLangBarItemButton::AdviseSink(REFIID riid, IUnknown *punk, DWORD *pdwCoo
 
 	if(FAILED(punk->QueryInterface(IID_PPV_ARGS(&_pLangBarItemSink))))
 	{
-		_pLangBarItemSink = nullptr;
+		_pLangBarItemSink.Release();
 		return E_NOINTERFACE;
 	}
 
@@ -424,16 +423,15 @@ STDAPI CLangBarItemButton::UnadviseSink(DWORD dwCookie)
 		return CONNECT_E_NOCONNECTION;
 	}
 
-	SafeRelease(&_pLangBarItemSink);
+	_pLangBarItemSink.Release();
 
 	return S_OK;
 }
 
 HRESULT CLangBarItemButton::_Update()
 {
-	VARIANT var;
+	CComVariant var;
 
-	VariantInit(&var);
 	V_VT(&var) = VT_I4;
 
 	V_I4(&var) = TF_SENTENCEMODE_PHRASEPREDICT;
@@ -470,8 +468,6 @@ HRESULT CLangBarItemButton::_Update()
 			break;
 		}
 	}
-
-	VariantClear(&var);
 
 	if(_pLangBarItemSink == nullptr)
 	{
@@ -538,19 +534,19 @@ BOOL CTextService::_InitLanguageBar()
 	_pLangBarItem = nullptr;
 	_pLangBarItemI = nullptr;
 
-	ITfLangBarItemMgr *pLangBarItemMgr = nullptr;
+	CComPtr<ITfLangBarItemMgr> pLangBarItemMgr;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr))) && (pLangBarItemMgr != nullptr))
 	{
 		try
 		{
-			_pLangBarItem = new CLangBarItemButton(this, c_guidLangBarItemButton);
+			_pLangBarItem.Attach(new CLangBarItemButton(this, c_guidLangBarItemButton));
 			if(SUCCEEDED(pLangBarItemMgr->AddItem(_pLangBarItem)))
 			{
 				fRet = TRUE;
 			}
 			else
 			{
-				SafeRelease(&_pLangBarItem);
+				_pLangBarItem.Release();
 			}
 		}
 		catch(...)
@@ -561,14 +557,14 @@ BOOL CTextService::_InitLanguageBar()
 		{
 			try
 			{
-				_pLangBarItemI = new CLangBarItemButton(this, GUID_LBI_INPUTMODE);
+				_pLangBarItemI.Attach(new CLangBarItemButton(this, GUID_LBI_INPUTMODE));
 				if(SUCCEEDED(pLangBarItemMgr->AddItem(_pLangBarItemI)))
 				{
 					fRetI = TRUE;
 				}
 				else
 				{
-					SafeRelease(&_pLangBarItemI);
+					_pLangBarItemI.Release();
 				}
 			}
 			catch(...)
@@ -579,8 +575,6 @@ BOOL CTextService::_InitLanguageBar()
 		{
 			fRetI = TRUE;
 		}
-
-		SafeRelease(&pLangBarItemMgr);
 	}
 
 	return (fRet && fRetI);
@@ -588,7 +582,7 @@ BOOL CTextService::_InitLanguageBar()
 
 void CTextService::_UninitLanguageBar()
 {
-	ITfLangBarItemMgr *pLangBarItemMgr = nullptr;
+	CComPtr<ITfLangBarItemMgr> pLangBarItemMgr;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pLangBarItemMgr))) && (pLangBarItemMgr != nullptr))
 	{
 		if(_pLangBarItem != nullptr)
@@ -600,12 +594,10 @@ void CTextService::_UninitLanguageBar()
 		{
 			pLangBarItemMgr->RemoveItem(_pLangBarItemI);
 		}
-
-		SafeRelease(&pLangBarItemMgr);
 	}
 
-	SafeRelease(&_pLangBarItem);
-	SafeRelease(&_pLangBarItemI);
+	_pLangBarItem.Release();
+	_pLangBarItemI.Release();
 }
 
 void CTextService::_UpdateLanguageBar(BOOL showinputmode)

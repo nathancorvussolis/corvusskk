@@ -221,17 +221,11 @@ L_NOT_S_OK:
 	return hr;
 }
 
-void CloseStreamReader(IXmlReader *pReader, IStream *pFileStream)
-{
-	SafeRelease(&pReader);
-	SafeRelease(&pFileStream);
-}
-
 HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 {
 	HRESULT hr;
-	IXmlReader *pReader = nullptr;
-	IStream *pFileStream = nullptr;
+	CComPtr<IXmlReader> pReader;
+	CComPtr<IStream> pFileStream;
 	XmlNodeType nodeType;
 	LPCWSTR pwszLocalName;
 	LPCWSTR pwszAttributeName;
@@ -374,14 +368,13 @@ HRESULT ReadList(LPCWSTR path, LPCWSTR section, APPDATAXMLLIST &list)
 
 L_NOT_S_OK:
 L_EXIT:
-	CloseStreamReader(pReader, pFileStream);
 	return hr;
 }
 
 HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strxmlval, LPCWSTR defval)
 {
-	IXmlReader *pReader = nullptr;
-	IStream *pFileStream = nullptr;
+	CComPtr<IXmlReader> pReader;
+	CComPtr<IStream> pFileStream;
 	HRESULT hr;
 	XmlNodeType nodeType;
 	LPCWSTR pwszLocalName;
@@ -498,7 +491,6 @@ HRESULT ReadValue(LPCWSTR path, LPCWSTR section, LPCWSTR key, std::wstring &strx
 
 L_NOT_S_OK:
 L_EXIT:
-	CloseStreamReader(pReader, pFileStream);
 	return hr;
 }
 
@@ -522,12 +514,6 @@ L_NOT_S_OK:
 	return hr;
 }
 
-void CloseStreamWriter(IXmlWriter *pWriter, IStream *pFileStream)
-{
-	SafeRelease(&pWriter);
-	SafeRelease(&pFileStream);
-}
-
 HRESULT WriterInit(LPCWSTR path, IXmlWriter **ppWriter, IStream **pFileStream, BOOL indent)
 {
 	HRESULT hr = S_FALSE;
@@ -548,24 +534,20 @@ L_NOT_S_OK:
 	return hr;
 }
 
-HRESULT WriterFinal(IXmlWriter **ppWriter, IStream **ppFileStream)
+HRESULT WriterFinal(IXmlWriter *pWriter)
 {
 	HRESULT hr = S_FALSE;
 
-	if(ppWriter != nullptr && *ppWriter != nullptr)
+	if(pWriter != nullptr)
 	{
-		hr = (*ppWriter)->WriteEndDocument();
+		hr = pWriter->WriteEndDocument();
 		EXIT_NOT_S_OK(hr);
 
-		hr = (*ppWriter)->Flush();
+		hr = pWriter->Flush();
 		EXIT_NOT_S_OK(hr);
 	}
 
 L_NOT_S_OK:
-	if(ppWriter != nullptr && ppFileStream != nullptr)
-	{
-		CloseStreamWriter(*ppWriter, *ppFileStream);
-	}
 	return hr;
 }
 
