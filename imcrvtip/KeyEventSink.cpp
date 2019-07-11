@@ -246,7 +246,7 @@ BOOL CTextService::_InitKeyEventSink()
 	CComPtr<ITfKeystrokeMgr> pKeystrokeMgr;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
-		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, (ITfKeyEventSink *)this, TRUE);
+		hr = pKeystrokeMgr->AdviseKeyEventSink(_ClientId, static_cast<ITfKeyEventSink *>(this), TRUE);
 	}
 
 	return SUCCEEDED(hr);

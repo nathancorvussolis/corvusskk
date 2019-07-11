@@ -32,7 +32,7 @@ public:
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfEditSession))
 		{
-			*ppvObj = (ITfEditSession *)this;
+			*ppvObj = static_cast<ITfEditSession *>(this);
 		}
 
 		if(*ppvObj)

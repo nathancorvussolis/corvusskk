@@ -82,11 +82,11 @@ STDAPI CCandidateList::QueryInterface(REFIID riid, void **ppvObj)
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfContextKeyEventSink))
 	{
-		*ppvObj = (ITfContextKeyEventSink *)this;
+		*ppvObj = static_cast<ITfContextKeyEventSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfTextLayoutSink))
 	{
-		*ppvObj = (ITfTextLayoutSink *)this;
+		*ppvObj = static_cast<ITfTextLayoutSink *>(this);
 	}
 
 	if(*ppvObj)
@@ -407,7 +407,7 @@ HRESULT CCandidateList::_AdviseContextKeyEventSink()
 	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pContextCandidateWindow->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
-		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfContextKeyEventSink *)this), &_dwCookieContextKeyEventSink);
+		hr = pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfContextKeyEventSink *>(this)), &_dwCookieContextKeyEventSink);
 	}
 
 	return hr;
@@ -436,7 +436,7 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))))
 	{
-		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
+		hr = pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextLayoutSink *>(this)), &_dwCookieTextLayoutSink);
 	}
 
 	return hr;

@@ -28,7 +28,7 @@ public:
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IEnumTfDisplayAttributeInfo))
 		{
-			*ppvObj = (IEnumTfDisplayAttributeInfo *)this;
+			*ppvObj = static_cast<IEnumTfDisplayAttributeInfo *>(this);
 		}
 
 		if(*ppvObj)

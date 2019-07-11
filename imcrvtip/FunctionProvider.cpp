@@ -56,19 +56,19 @@ STDAPI CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 
 	if(IsEqualIID(riid, IID_ITfFnConfigure))
 	{
-		*ppunk = (ITfFnConfigure *)this;
+		*ppunk = static_cast<ITfFnConfigure *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnShowHelp))
 	{
-		*ppunk = (ITfFnShowHelp *)this;
+		*ppunk = static_cast<ITfFnShowHelp *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnReconversion))
 	{
-		*ppunk = (ITfFnReconversion *)this;
+		*ppunk = static_cast<ITfFnReconversion *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
 	{
-		*ppunk = (ITfFnGetPreferredTouchKeyboardLayout *)this;
+		*ppunk = static_cast<ITfFnGetPreferredTouchKeyboardLayout *>(this);
 	}
 
 	if(*ppunk)
@@ -395,7 +395,7 @@ BOOL CTextService::_InitFunctionProvider()
 	CComPtr<ITfSourceSingle> pSourceSingle;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
-		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS((ITfFunctionProvider *)this));
+		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS(static_cast<ITfFunctionProvider *>(this)));
 	}
 
 	return SUCCEEDED(hr);

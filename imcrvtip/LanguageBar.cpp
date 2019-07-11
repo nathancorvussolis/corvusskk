@@ -84,11 +84,11 @@ STDAPI CLangBarItemButton::QueryInterface(REFIID riid, void **ppvObj)
 		IsEqualIID(riid, IID_ITfLangBarItem) ||
 		IsEqualIID(riid, IID_ITfLangBarItemButton))
 	{
-		*ppvObj = (ITfLangBarItemButton *)this;
+		*ppvObj = static_cast<ITfLangBarItemButton *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfSource))
 	{
-		*ppvObj = (ITfSource *)this;
+		*ppvObj = static_cast<ITfSource *>(this);
 	}
 
 	if(*ppvObj)

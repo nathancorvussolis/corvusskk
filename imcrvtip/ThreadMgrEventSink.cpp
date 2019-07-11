@@ -38,7 +38,7 @@ BOOL CTextService::_InitThreadMgrEventSink()
 	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
-		if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS((ITfThreadMgrEventSink *)this), &_dwThreadMgrEventSinkCookie)))
+		if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfThreadMgrEventSink *>(this)), &_dwThreadMgrEventSinkCookie)))
 		{
 			fRet = TRUE;
 		}

@@ -30,7 +30,7 @@ public:
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfDisplayAttributeInfo))
 		{
-			*ppvObj = (ITfDisplayAttributeInfo *)this;
+			*ppvObj = static_cast<ITfDisplayAttributeInfo *>(this);
 		}
 
 		if(*ppvObj)

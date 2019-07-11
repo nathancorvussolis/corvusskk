@@ -31,7 +31,7 @@ public:
 
 		if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IEnumTfCandidates))
 		{
-			*ppvObj = (IEnumTfCandidates *)this;
+			*ppvObj = static_cast<IEnumTfCandidates *>(this);
 		}
 
 		if(*ppvObj)

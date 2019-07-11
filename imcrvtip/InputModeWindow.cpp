@@ -142,7 +142,7 @@ STDAPI CInputModeWindow::QueryInterface(REFIID riid, void **ppvObj)
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextLayoutSink))
 	{
-		*ppvObj = (ITfTextLayoutSink *)this;
+		*ppvObj = static_cast<ITfTextLayoutSink *>(this);
 	}
 
 	if(*ppvObj)
@@ -215,7 +215,7 @@ HRESULT CInputModeWindow::_AdviseTextLayoutSink()
 	CComPtr<ITfSource> pSource;
 	if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
-		hr = pSource->AdviseSink(IID_IUNK_ARGS((ITfTextLayoutSink *)this), &_dwCookieTextLayoutSink);
+		hr = pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextLayoutSink *>(this)), &_dwCookieTextLayoutSink);
 	}
 
 	return hr;

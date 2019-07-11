@@ -73,59 +73,59 @@ STDAPI CTextService::QueryInterface(REFIID riid, void **ppvObj)
 
 	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextInputProcessor))
 	{
-		*ppvObj = (ITfTextInputProcessor *)this;
+		*ppvObj = static_cast<ITfTextInputProcessor *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfTextInputProcessorEx))
 	{
-		*ppvObj = (ITfTextInputProcessorEx *)this;
+		*ppvObj = static_cast<ITfTextInputProcessorEx *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfThreadMgrEventSink))
 	{
-		*ppvObj = (ITfThreadMgrEventSink *)this;
+		*ppvObj = static_cast<ITfThreadMgrEventSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfThreadFocusSink))
 	{
-		*ppvObj = (ITfThreadFocusSink *)this;
+		*ppvObj = static_cast<ITfThreadFocusSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfCompartmentEventSink))
 	{
-		*ppvObj = (ITfCompartmentEventSink *)this;
+		*ppvObj = static_cast<ITfCompartmentEventSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfTextEditSink))
 	{
-		*ppvObj = (ITfTextEditSink *)this;
+		*ppvObj = static_cast<ITfTextEditSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfKeyEventSink))
 	{
-		*ppvObj = (ITfKeyEventSink *)this;
+		*ppvObj = static_cast<ITfKeyEventSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfCompositionSink))
 	{
-		*ppvObj = (ITfKeyEventSink *)this;
+		*ppvObj = static_cast<ITfKeyEventSink *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
 	{
-		*ppvObj = (ITfDisplayAttributeProvider *)this;
+		*ppvObj = static_cast<ITfDisplayAttributeProvider *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFunctionProvider))
 	{
-		*ppvObj = (ITfFunctionProvider *)this;
+		*ppvObj = static_cast<ITfFunctionProvider *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnConfigure))
 	{
-		*ppvObj = (ITfFnConfigure *)this;
+		*ppvObj = static_cast<ITfFnConfigure *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnShowHelp))
 	{
-		*ppvObj = (ITfFnShowHelp *)this;
+		*ppvObj = static_cast<ITfFnShowHelp *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnReconversion))
 	{
-		*ppvObj = (ITfFnReconversion *)this;
+		*ppvObj = static_cast<ITfFnReconversion *>(this);
 	}
 	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
 	{
-		*ppvObj = (ITfFnGetPreferredTouchKeyboardLayout *)this;
+		*ppvObj = static_cast<ITfFnGetPreferredTouchKeyboardLayout *>(this);
 	}
 
 	if(*ppvObj)

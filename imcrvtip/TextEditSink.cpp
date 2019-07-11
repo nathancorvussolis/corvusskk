@@ -76,7 +76,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		CComPtr<ITfSource> pSource;
 		if(SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
-			if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS((ITfTextEditSink *)this), &_dwTextEditSinkCookie)))
+			if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextEditSink *>(this)), &_dwTextEditSinkCookie)))
 			{
 				fRet = TRUE;
 			}

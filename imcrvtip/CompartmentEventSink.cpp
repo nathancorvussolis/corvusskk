@@ -28,7 +28,7 @@ BOOL CTextService::_InitCompartmentEventSink()
 				CComPtr<ITfSource> pSource;
 				if(SUCCEEDED(pCompartment->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 				{
-					if(FAILED(pSource->AdviseSink(IID_IUNK_ARGS((ITfCompartmentEventSink *)this), &_dwCompartmentEventSinkOpenCloseCookie)))
+					if(FAILED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfCompartmentEventSink *>(this)), &_dwCompartmentEventSinkOpenCloseCookie)))
 					{
 						_dwCompartmentEventSinkOpenCloseCookie = TF_INVALID_COOKIE;
 					}
@@ -42,7 +42,7 @@ BOOL CTextService::_InitCompartmentEventSink()
 				CComPtr<ITfSource> pSource;
 				if(SUCCEEDED(pCompartment->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 				{
-					if(FAILED(pSource->AdviseSink(IID_IUNK_ARGS((ITfCompartmentEventSink *)this), &_dwCompartmentEventSinkInputmodeConversionCookie)))
+					if(FAILED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfCompartmentEventSink *>(this)), &_dwCompartmentEventSinkInputmodeConversionCookie)))
 					{
 						_dwCompartmentEventSinkInputmodeConversionCookie = TF_INVALID_COOKIE;
 					}
