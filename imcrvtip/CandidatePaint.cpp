@@ -57,6 +57,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 #endif
 
 		DWRITE_TEXT_METRICS dwTM = {};
+
 		if(SUCCEEDED(_GetTextMetrics(L"\x20", &dwTM)))
 		{
 			height = (LONG)ceil(dwTM.height);
@@ -496,7 +497,8 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 
 		if(_pDWTF != nullptr)
 		{
-			DWRITE_TEXT_METRICS dwTM;
+			DWRITE_TEXT_METRICS dwTM = {};
+
 			if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 			{
 				r.right = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
@@ -588,7 +590,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 	if(_pDWFactory != nullptr)
 	{
-		DWRITE_TEXT_METRICS dwTM;
+		DWRITE_TEXT_METRICS dwTM = {};
 
 		if(SUCCEEDED(_GetTextMetrics(L"\x20", &dwTM)))
 		{
