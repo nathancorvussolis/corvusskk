@@ -9,7 +9,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 {
 	INITCOMMONCONTROLSEX icex;
 
-	_wsetlocale(LC_ALL, L"JPN");
+	_wsetlocale(LC_ALL, L"ja-JP");
 
 	hInst = hInstance;
 

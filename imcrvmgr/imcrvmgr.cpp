@@ -21,7 +21,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	MSG msg;
 	HWND hWnd;
 
-	_wsetlocale(LC_ALL, L"JPN");
+	_wsetlocale(LC_ALL, L"ja-JP");
 
 	CreateIpcName();
 
