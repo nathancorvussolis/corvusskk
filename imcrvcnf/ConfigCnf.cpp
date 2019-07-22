@@ -160,7 +160,7 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 	CComPtr<IStream> pFileStream;
 
 	HRESULT hr = WriterInit(pathconfigxml, &pWriter, &pFileStream);
-	if (FAILED(hr))
+	if(FAILED(hr))
 	{
 		return FALSE;
 	}

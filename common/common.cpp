@@ -122,12 +122,12 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 
 	BCRYPT_ALG_HANDLE  hAlg;
 	NTSTATUS status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, nullptr, 0);
-	if (BCRYPT_SUCCESS(status))
+	if(BCRYPT_SUCCESS(status))
 	{
 		DWORD cbHashObject;
 		ULONG cbResult;
 		status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbResult, 0);
-		if (BCRYPT_SUCCESS(status))
+		if(BCRYPT_SUCCESS(status))
 		{
 			PBYTE pbHashObject = (PBYTE)LocalAlloc(LPTR, cbHashObject);
 			if(pbHashObject != nullptr)
@@ -407,7 +407,7 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 
 	const int cmdlen = 8192;
 	WCHAR *commandline = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * cmdlen);
-	if (commandline == nullptr)
+	if(commandline == nullptr)
 	{
 		return FALSE;
 	}

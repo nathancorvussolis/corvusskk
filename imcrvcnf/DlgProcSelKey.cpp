@@ -171,7 +171,7 @@ void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
 	WCHAR key[4];
 
 	hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-	for (index = 0; index < MAX_SELKEY_C; index++)
+	for(index = 0; index < MAX_SELKEY_C; index++)
 	{
 		ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
 		key[0] = num[0];

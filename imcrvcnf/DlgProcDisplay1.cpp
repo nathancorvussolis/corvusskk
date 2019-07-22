@@ -246,7 +246,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_RADIO_API_GDI:
 		case IDC_RADIO_API_D2D:
 			hwnd = GetDlgItem(hDlg, IDC_CHECKBOX_COLOR_FONT);
-			if (IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
+			if(IsDlgButtonChecked(hDlg, IDC_RADIO_API_D2D))
 			{
 				EnableWindow(hwnd, TRUE);
 			}
@@ -326,7 +326,7 @@ void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg)
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num, _countof(num));
 	w = _wtol(num);
-	if (w < 0)
+	if(w < 0)
 	{
 		w = MAX_WIDTH_DEFAULT;
 	}
@@ -334,7 +334,7 @@ void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg)
 	SetDlgItemTextW(hDlg, IDC_EDIT_MAXWIDTH, num);
 	WriterKey(pWriter, ValueMaxWidth, num);
 
-	for (int i = 0; i < _countof(displayListColor); i++)
+	for(int i = 0; i < _countof(displayListColor); i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayListColor[i].color);
 		WriterKey(pWriter, displayListColor[i].value, num);
@@ -345,7 +345,7 @@ void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg)
 
 	hwnd = GetDlgItem(hDlg, IDC_COMBO_UNTILCANDLIST);
 	count = (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
-	if (count > 9 || count < 0)
+	if(count > 9 || count < 0)
 	{
 		count = UNTILCANDLIST_DEF;
 	}

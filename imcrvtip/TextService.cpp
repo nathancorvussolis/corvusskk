@@ -163,7 +163,7 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr = ptim;
 	_ClientId = tid;
 
-	if (!_IsKeyboardOpen())
+	if(!_IsKeyboardOpen())
 	{
 		_KeyboardSetDefaultMode();
 	}

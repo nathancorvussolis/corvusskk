@@ -277,7 +277,7 @@ unsigned int __stdcall SrvThread(void *p)
 #endif
 
 	WCHAR *pipebuf = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * PIPEBUFSIZE);
-	if (pipebuf == nullptr)
+	if(pipebuf == nullptr)
 	{
 		return -1;
 	}

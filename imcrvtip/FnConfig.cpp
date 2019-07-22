@@ -221,7 +221,7 @@ void CTextService::_LoadBehavior()
 
 	ReadValue(pathconfigxml, SectionDisplay, ValueDrawAPI, strxmlval);
 	cx_drawapi = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-	switch (cx_drawapi)
+	switch(cx_drawapi)
 	{
 	case DRAW_API_GDI:
 	case DRAW_API_D2D:

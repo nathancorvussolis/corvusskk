@@ -163,7 +163,7 @@ void SaveKeyMap(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyNam
 
 void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg)
 {
-	for (int i = 0; i < _countof(KeyMap[0]); i++)
+	for(int i = 0; i < _countof(KeyMap[0]); i++)
 	{
 		SaveKeyMap(pWriter, hDlg, KeyMap[0][i].idd, KeyMap[0][i].keyName);
 	}
@@ -171,7 +171,7 @@ void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg)
 
 void SaveVKeyMap(IXmlWriter *pWriter, HWND hDlg)
 {
-	for (int i = 0; i < _countof(KeyMap[1]); i++)
+	for(int i = 0; i < _countof(KeyMap[1]); i++)
 	{
 		SaveKeyMap(pWriter, hDlg, KeyMap[1][i].idd, KeyMap[1][i].keyName);
 	}

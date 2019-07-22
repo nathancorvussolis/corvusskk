@@ -155,7 +155,7 @@ void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
 	GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
 	count = _wtoi(num);
-	if (count <= 0 || count > 60)
+	if(count <= 0 || count > 60)
 	{
 		count = SHOWMODESEC_DEF;
 	}
@@ -163,7 +163,7 @@ void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 	SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
 	WriterKey(pWriter, ValueShowModeSec, num);
 
-	for (int i = 0; i < _countof(displayModeColor); i++)
+	for(int i = 0; i < _countof(displayModeColor); i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayModeColor[i].color);
 		WriterKey(pWriter, displayModeColor[i].value, num);

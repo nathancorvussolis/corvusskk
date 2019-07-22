@@ -130,15 +130,15 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		{
 			LONG width = 0;
 
-			for (int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 			{
 				std::wstring s = _MakeCandidateString(page, count, i, cycle);
 
-				if (_pDWFactory != nullptr)
+				if(_pDWFactory != nullptr)
 				{
 					DWRITE_TEXT_METRICS dwTM = {};
 
-					if (SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+					if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 					{
 						width += (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 					}
@@ -154,9 +154,9 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 				}
 			}
 
-			if (_pTextService->cx_verticalcand || (_mode == wm_complement))
+			if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 			{
-				if (i != 0)
+				if(i != 0)
 				{
 					pt.x = MARGIN_X;
 					pt.y += height;
@@ -164,7 +164,7 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			}
 			else
 			{
-				if ((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
+				if((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
 				{
 					pt.x = MARGIN_X;
 					pt.y += height;
@@ -202,14 +202,14 @@ void CCandidateWindow::_WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			width = r.right;
 		}
 
-		if (_pTextService->cx_verticalcand || (_mode == wm_complement))
+		if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 		{
 			pt.x = MARGIN_X;
 			pt.y += height;
 		}
 		else
 		{
-			if ((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
+			if((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
 			{
 				pt.x = MARGIN_X;
 				pt.y += height;
@@ -524,7 +524,7 @@ void CCandidateWindow::_PaintCandidate(HDC hdc, LPRECT lpr, UINT page, UINT coun
 			else
 			{
 #if ENABLE_DRAW_DEBUG_RECT
-				if (!s.empty())
+				if(!s.empty())
 				{
 					_pD2DDCRT->DrawRectangle(
 						D2D1::RectF(
@@ -641,24 +641,24 @@ void CCandidateWindow::_CalcWindowRect()
 
 		GetCurrentPage(&page);
 		count = 0;
-		for (i = 0; i < page; i++)
+		for(i = 0; i < page; i++)
 		{
 			count += _CandCount[i];
 		}
 
-		for (i = 0; i < _CandCount[page]; i++)
+		for(i = 0; i < _CandCount[page]; i++)
 		{
 			LONG width = 0;
 
-			for (int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
+			for(int cycle = 0; cycle < DISPLAY_LIST_COLOR_NUM; cycle++)
 			{
 				std::wstring s = _MakeCandidateString(page, count, i, cycle);
 
-				if (_pDWFactory != nullptr)
+				if(_pDWFactory != nullptr)
 				{
 					DWRITE_TEXT_METRICS dwTM = {};
 
-					if (SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
+					if(SUCCEEDED(_GetTextMetrics(s.c_str(), &dwTM)))
 					{
 						width += (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 					}
@@ -674,9 +674,9 @@ void CCandidateWindow::_CalcWindowRect()
 				}
 			}
 
-			if (_pTextService->cx_verticalcand || (_mode == wm_complement))
+			if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 			{
-				if (i != 0)
+				if(i != 0)
 				{
 					pt.x = MARGIN_X;
 					pt.y += height;
@@ -684,7 +684,7 @@ void CCandidateWindow::_CalcWindowRect()
 			}
 			else
 			{
-				if ((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
+				if((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
 				{
 					pt.x = MARGIN_X;
 					pt.y += height;
@@ -693,7 +693,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 			pt.x += width;
 
-			if (pt.x > xmax)
+			if(pt.x > xmax)
 			{
 				xmax = pt.x;
 			}
@@ -704,11 +704,11 @@ void CCandidateWindow::_CalcWindowRect()
 
 		LONG width = 0;
 
-		if (_pDWFactory != nullptr)
+		if(_pDWFactory != nullptr)
 		{
 			DWRITE_TEXT_METRICS dwTM = {};
 
-			if (SUCCEEDED(_GetTextMetrics(strPage, &dwTM)))
+			if(SUCCEEDED(_GetTextMetrics(strPage, &dwTM)))
 			{
 				width = (LONG)ceil(dwTM.widthIncludingTrailingWhitespace);
 			}
@@ -723,14 +723,14 @@ void CCandidateWindow::_CalcWindowRect()
 			width = r.right;
 		}
 
-		if (_pTextService->cx_verticalcand || (_mode == wm_complement))
+		if(_pTextService->cx_verticalcand || (_mode == wm_complement))
 		{
 			pt.x = MARGIN_X;
 			pt.y += height;
 		}
 		else
 		{
-			if ((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
+			if((pt.x != MARGIN_X) && (pt.x + width > maxwidth - MARGIN_X))
 			{
 				pt.x = MARGIN_X;
 				pt.y += height;
@@ -739,7 +739,7 @@ void CCandidateWindow::_CalcWindowRect()
 
 		pt.x += width;
 
-		if (pt.x > xmax)
+		if(pt.x > xmax)
 		{
 			xmax = pt.x;
 		}
@@ -860,7 +860,7 @@ void CCandidateWindow::_InitFont()
 	lf.lfPitchAndFamily = DEFAULT_PITCH;
 	wcscpy_s(lf.lfFaceName, _pTextService->cx_fontname);
 
-	if (_pDWFactory == nullptr)
+	if(_pDWFactory == nullptr)
 	{
 		hFont = CreateFontIndirectW(&lf);
 	}
@@ -876,12 +876,12 @@ void CCandidateWindow::_InitFont()
 			L"ja-JP",
 			&_pDWTF);
 
-		if (SUCCEEDED(hr))
+		if(SUCCEEDED(hr))
 		{
 			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 		}
 
-		if (FAILED(hr))
+		if(FAILED(hr))
 		{
 			_UninitFont();
 
@@ -893,7 +893,7 @@ void CCandidateWindow::_InitFont()
 
 void CCandidateWindow::_UninitFont()
 {
-	if (hFont != nullptr)
+	if(hFont != nullptr)
 	{
 		DeleteObject(hFont);
 		hFont = nullptr;

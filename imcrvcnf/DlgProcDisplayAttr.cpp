@@ -402,7 +402,7 @@ void SaveDisplayAttr(IXmlWriter *pWriter, HWND hDlg, int no)
 {
 	WCHAR num[64];
 
-	for (int i = 0; i < _countof(displayAttr[no]); i++)
+	for(int i = 0; i < _countof(displayAttr[no]); i++)
 	{
 		displayAttr[no][i].se =
 			(IsDlgButtonChecked(hDlg, displayAttrID[i][0]) == BST_CHECKED ? TRUE : FALSE);

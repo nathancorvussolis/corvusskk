@@ -39,7 +39,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 					_HandleCharReturn(ec, pContext);
 				}
 
-				if (cx_entogglekana || inputmode == im_hiragana)
+				if(cx_entogglekana || inputmode == im_hiragana)
 				{
 					//ひらがな/カタカナモードへ
 					inputmode = (inputmode == im_hiragana ? im_katakana : im_hiragana);
@@ -55,7 +55,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				_HandleCharReturn(ec, pContext);
 			}
 
-			if (cx_entogglekana)
+			if(cx_entogglekana)
 			{
 				//ひらがなモードへ
 				inputmode = im_hiragana;
@@ -129,7 +129,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				_HandleCharReturn(ec, pContext);
 			}
 
-			if (cx_entogglekana || inputmode == im_hiragana)
+			if(cx_entogglekana || inputmode == im_hiragana)
 			{
 				//ひらがなモードへ
 				inputmode = im_hiragana;
@@ -175,7 +175,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 		case im_katakana:
 		case im_katakana_ank:
-			if (inputkey || !kana.empty() || !roman.empty())
+			if(inputkey || !kana.empty() || !roman.empty())
 			{
 				_ConvRoman();
 				_HandleCharReturn(ec, pContext);

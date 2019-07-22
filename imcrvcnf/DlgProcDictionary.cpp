@@ -306,13 +306,13 @@ void LoadDictionary(HWND hDlg)
 
 	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
 
-	if (SUCCEEDED(hr) && list.size() != 0)
+	if(SUCCEEDED(hr) && list.size() != 0)
 	{
 		HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if (l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
+			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
 			{
 				continue;
 			}
@@ -323,7 +323,7 @@ void LoadDictionary(HWND hDlg)
 			ListView_InsertItem(hWndListView, &item);
 
 			BOOL check = TRUE;
-			if (l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
+			if(l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
 			{
 				check = _wtoi((*l_itr)[1].second.c_str());
 			}
@@ -347,7 +347,7 @@ void SaveDictionary(IXmlWriter *pWriter, HWND hDlg)
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for (int i = 0; i < count; i++)
+	for(int i = 0; i < count; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 

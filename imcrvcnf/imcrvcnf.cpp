@@ -34,15 +34,15 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	LPWSTR fileArg = nullptr;
 	int numArgs = 0;
 	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
-	if (pArgs != nullptr && numArgs >= 2)
+	if(pArgs != nullptr && numArgs >= 2)
 	{
-		for (int i = 0; i < numArgs; i++)
+		for(int i = 0; i < numArgs; i++)
 		{
-			if (wcscmp(pArgs[i], L"/t") == 0)
+			if(wcscmp(pArgs[i], L"/t") == 0)
 			{
 				tempMode = true;
 			}
-			else if (PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
+			else if(PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
 			{
 				fileArg = pArgs[i];
 				wcsncpy_s(pathconfigxml, fileArg, _TRUNCATE);
@@ -52,12 +52,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateProperty();
 
-	if (tempMode && fileArg != nullptr)
+	if(tempMode && fileArg != nullptr)
 	{
 		DeleteFileW(fileArg);
 	}
 
-	if (hMutex != nullptr)
+	if(hMutex != nullptr)
 	{
 		ReleaseMutex(hMutex);
 		CloseHandle(hMutex);
@@ -143,7 +143,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 			{
 				MessageBoxW(hwndDlg, L"保存に失敗しました。", TextServiceDesc, MB_OK | MB_ICONERROR);
 
-				if (lParam == PSBTN_OK)
+				if(lParam == PSBTN_OK)
 				{
 					ReleaseMutex(hMutex);
 					CloseHandle(hMutex);
@@ -157,7 +157,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 
 					wcsncpy_s(pathconfigxml, tempfilepath, _TRUNCATE);
 
-					if (SaveConfigXml(hwndDlg) == TRUE)
+					if(SaveConfigXml(hwndDlg) == TRUE)
 					{
 						WCHAR args[MAX_PATH] = {};
 						_snwprintf_s(args, _TRUNCATE, L"/t \"%s\"", tempfilepath);
