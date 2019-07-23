@@ -34,7 +34,7 @@ BOOL RegisterProfiles()
 
 	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
-	if(SUCCEEDED(hr) & (pInputProcessorProfileMgr != nullptr))
+	if(SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
