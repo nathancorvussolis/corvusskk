@@ -9,7 +9,7 @@ POS skkdicpos_n; //送りなしエントリ
 
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
-    std::wstring candidate;
+	std::wstring candidate;
 	std::wregex re;
 	std::wstring fmt;
 
