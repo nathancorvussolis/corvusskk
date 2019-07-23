@@ -19,7 +19,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	NMLISTVIEW *pListView;
 	WCHAR text[16] = {};
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
@@ -54,12 +54,12 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_BUTTON_JLATTBL_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0)
+			if (index >= 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -70,7 +70,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				ListView_SetItemText(hWndListView, index, 0, ajc.ascii);
 				ListView_SetItemText(hWndListView, index, 1, ajc.jlatin);
 			}
-			else if(count < ASCII_JLATIN_TBL_NUM)
+			else if (count < ASCII_JLATIN_TBL_NUM)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -92,7 +92,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 		case IDC_BUTTON_JLATTBL_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index != -1)
+			if (index != -1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -102,7 +102,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 		case IDC_BUTTON_JLATTBL_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index > 0)
+			if (index > 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -121,7 +121,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		case IDC_BUTTON_JLATTBL_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0 && index < count - 1)
+			if (index >= 0 && index < count - 1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -143,15 +143,15 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 
 	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
+		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
 			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
-			if(pListView->uChanged & LVIF_STATE)
+			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-				if(index == -1)
+				if (index == -1)
 				{
 					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, L"");
 					SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, L"");
@@ -183,12 +183,12 @@ void LoadConfigJLatin()
 
 	HRESULT hr = ReadList(pathconfigxml, SectionJLatin, list);
 
-	if(SUCCEEDED(hr) && list.size() != 0)
+	if (SUCCEEDED(hr) && list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if(i >= ASCII_JLATIN_TBL_NUM)
+			if (i >= ASCII_JLATIN_TBL_NUM)
 			{
 				break;
 			}
@@ -198,18 +198,18 @@ void LoadConfigJLatin()
 				WCHAR *pszb = nullptr;
 				size_t blen = 0;
 
-				if(r_itr->first == AttributeLatin)
+				if (r_itr->first == AttributeLatin)
 				{
 					pszb = ascii_jlatin_conv[i].ascii;
 					blen = _countof(ascii_jlatin_conv[i].ascii);
 				}
-				else if(r_itr->first == AttributeJLatin)
+				else if (r_itr->first == AttributeJLatin)
 				{
 					pszb = ascii_jlatin_conv[i].jlatin;
 					blen = _countof(ascii_jlatin_conv[i].jlatin);
 				}
 
-				if(pszb != nullptr)
+				if (pszb != nullptr)
 				{
 					wcsncpy_s(pszb, blen, r_itr->second.c_str(), _TRUNCATE);
 				}
@@ -218,7 +218,7 @@ void LoadConfigJLatin()
 			i++;
 		}
 	}
-	else if(FAILED(hr))
+	else if (FAILED(hr))
 	{
 		memcpy_s(ascii_jlatin_conv, sizeof(ascii_jlatin_conv),
 			ascii_jlatin_conv_default, sizeof(ascii_jlatin_conv_default));
@@ -233,9 +233,9 @@ void LoadJLatin(HWND hDlg)
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
 
-	for(int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
+	for (int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
 	{
-		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
+		if (ascii_jlatin_conv[i].ascii[0] == L'\0' &&
 			ascii_jlatin_conv[i].jlatin[0] == L'\0')
 		{
 			break;
@@ -263,21 +263,21 @@ void SaveJLatin(IXmlWriter *pWriter, HWND hDlg)
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for(int i = 0; i < count && i < ASCII_JLATIN_TBL_NUM; i++)
+	for (int i = 0; i < count && i < ASCII_JLATIN_TBL_NUM; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, ajc.ascii, _countof(ajc.ascii));
 		ListView_GetItemText(hWndListView, i, 1, ajc.jlatin, _countof(ajc.jlatin));
 		ascii_jlatin_conv[i] = ajc;
 	}
-	if(count < ASCII_JLATIN_TBL_NUM)
+	if (count < ASCII_JLATIN_TBL_NUM)
 	{
 		ascii_jlatin_conv[count].ascii[0] = L'\0';
 		ascii_jlatin_conv[count].jlatin[0] = L'\0';
 	}
 
-	for(int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
+	for (int i = 0; i < ASCII_JLATIN_TBL_NUM; i++)
 	{
-		if(ascii_jlatin_conv[i].ascii[0] == L'\0' &&
+		if (ascii_jlatin_conv[i].ascii[0] == L'\0' &&
 			ascii_jlatin_conv[i].jlatin[0] == L'\0')
 		{
 			break;

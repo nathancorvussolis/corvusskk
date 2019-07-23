@@ -26,9 +26,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	CreateIpcName();
 
 	hMutex = CreateMutexW(nullptr, FALSE, mgrmutexname);
-	if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
+	if (hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		if(hMutex != nullptr)
+		if (hMutex != nullptr)
 		{
 			CloseHandle(hMutex);
 		}
@@ -55,7 +55,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		WS_POPUP, 0, 0, 0, 0, nullptr, nullptr, hInst, nullptr);
 #endif
 
-	if(!hWnd)
+	if (!hWnd)
 	{
 		ReleaseMutex(hMutex);
 		CloseHandle(hMutex);
@@ -69,9 +69,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 #endif
 	UpdateWindow(hWnd);
 
-	while(GetMessageW(&msg, nullptr, 0, 0))
+	while (GetMessageW(&msg, nullptr, 0, 0))
 	{
-		if(!TranslateAcceleratorW(msg.hwnd, nullptr, &msg))
+		if (!TranslateAcceleratorW(msg.hwnd, nullptr, &msg))
 		{
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
@@ -93,7 +93,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HDC hDC;
 #endif
 
-	switch(message)
+	switch (message)
 	{
 	case WM_CREATE:
 #ifdef _DEBUG
@@ -114,12 +114,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateConfigPath();
 		UpdateConfigPath();
 
-		if(IsFileModified(pathconfigxml, &ftConfig))
+		if (IsFileModified(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
 		}
 
-		if(IsFileModified(pathskkdic, &ftSKKDic))
+		if (IsFileModified(pathskkdic, &ftSKKDic))
 		{
 			MakeSKKDicPos();
 		}
@@ -133,7 +133,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
-		if(hThreadSrv == nullptr)
+		if (hThreadSrv == nullptr)
 		{
 			DestroyWindow(hWnd);
 		}
@@ -147,7 +147,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif
 
 	case WM_POWERBROADCAST:
-		if(wParam == PBT_APMSUSPEND)
+		if (wParam == PBT_APMSUSPEND)
 		{
 			StartSaveUserDic(FALSE);
 
@@ -163,7 +163,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		bSrvThreadExit = TRUE;
 		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, nullptr);
-		if(hPipe != INVALID_HANDLE_VALUE)
+		if (hPipe != INVALID_HANDLE_VALUE)
 		{
 			CloseHandle(hPipe);
 			WaitForSingleObject(hThreadSrv, INFINITE);
@@ -173,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		StartSaveUserDic(FALSE);
 
-		if(message == WM_ENDSESSION)
+		if (message == WM_ENDSESSION)
 		{
 			BackUpUserDic();
 		}
@@ -184,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		WSACleanup();
 
-		if(message == WM_DESTROY)
+		if (message == WM_DESTROY)
 		{
 			PostQuitMessage(0);
 		}

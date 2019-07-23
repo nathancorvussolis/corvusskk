@@ -26,7 +26,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	std::wstring strxmlval;
 	static HWND hEdit;
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
@@ -57,21 +57,21 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SKKSRV, SectionServer, ValueServerServ);
 
 		ReadValue(pathconfigxml, SectionServer, ValueServerHost, strxmlval);
-		if(strxmlval.empty()) strxmlval = defaultHost;
+		if (strxmlval.empty()) strxmlval = defaultHost;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_HOST, strxmlval.c_str());
 
 		ReadValue(pathconfigxml, SectionServer, ValueServerPort, strxmlval);
-		if(strxmlval.empty()) strxmlval = defaultPort;
+		if (strxmlval.empty()) strxmlval = defaultPort;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_PORT, strxmlval.c_str());
 
 		LoadCheckButton(hDlg, IDC_RADIO_UTF8, SectionServer, ValueServerEncoding);
-		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_UTF8))
+		if (!IsDlgButtonChecked(hDlg, IDC_RADIO_UTF8))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_EUC, BST_CHECKED);
 		}
 
 		ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
-		if(strxmlval.empty()) strxmlval = defaultTimeOut;
+		if (strxmlval.empty()) strxmlval = defaultTimeOut;
 		SetDlgItemTextW(hDlg, IDC_EDIT_SKKSRV_TIMEOUT, strxmlval.c_str());
 
 		return TRUE;
@@ -88,15 +88,15 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_BUTTON_SKK_DIC_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index > 0)
+			if (index > 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				for(int i = 0; i < LISTVIEW_COLUMN_COUNT; i++)
+				for (int i = 0; i < LISTVIEW_COLUMN_COUNT; i++)
 				{
 					ListView_GetItemText(hWndListView, index - 1, i, pathBak, _countof(pathBak));
 					checkBak = ListView_GetCheckState(hWndListView, index - 1);
@@ -117,11 +117,11 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		case IDC_BUTTON_SKK_DIC_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0 && index < count - 1)
+			if (index >= 0 && index < count - 1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
-				for(int i = 0; i < LISTVIEW_COLUMN_COUNT; i++)
+				for (int i = 0; i < LISTVIEW_COLUMN_COUNT; i++)
 				{
 					ListView_GetItemText(hWndListView, index + 1, i, pathBak, _countof(pathBak));
 					checkBak = ListView_GetCheckState(hWndListView, index + 1);
@@ -148,13 +148,13 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			ofn.nMaxFile = MAX_PATH;
 			ofn.Flags = OFN_FILEMUSTEXIST;
 
-			if(GetOpenFileNameW(&ofn) != 0)
+			if (GetOpenFileNameW(&ofn) != 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				count = ListView_GetItemCount(hWndListView);
-				if(index == -1)
+				if (index == -1)
 				{
 					index = count;
 				}
@@ -178,9 +178,9 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		case IDC_BUTTON_SKK_DIC_ADD_URL:
 			urlskkdic[0] = L'\0';
-			if(IDOK == DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_ADD_URL), hDlg, DlgProcSKKDicAddUrl))
+			if (IDOK == DialogBoxW(hInst, MAKEINTRESOURCE(IDD_DIALOG_SKK_DIC_ADD_URL), hDlg, DlgProcSKKDicAddUrl))
 			{
-				if(urlskkdic[0] == L'\0')
+				if (urlskkdic[0] == L'\0')
 				{
 					return TRUE;
 				}
@@ -189,7 +189,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 				count = ListView_GetItemCount(hWndListView);
-				if(index == -1)
+				if (index == -1)
 				{
 					index = count;
 				}
@@ -213,7 +213,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 
 		case IDC_BUTTON_SKK_DIC_DEL:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index != -1)
+			if (index != -1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -225,7 +225,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 			return TRUE;
 
 		case IDC_BUTTON_SKK_DIC_MAKE:
-			if(IDOK == MessageBoxW(hDlg,
+			if (IDOK == MessageBoxW(hDlg,
 				L"SKK辞書を取り込みます。\nよろしいですか？",
 				TextServiceDesc, MB_OKCANCEL | MB_ICONQUESTION))
 			{
@@ -240,7 +240,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		case IDC_EDIT_SKKSRV_HOST:
 		case IDC_EDIT_SKKSRV_PORT:
 		case IDC_EDIT_SKKSRV_TIMEOUT:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -261,11 +261,11 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 		break;
 
 	case WM_NOTIFY:
-		if(wParam == IDC_LIST_SKK_DIC)
+		if (wParam == IDC_LIST_SKK_DIC)
 		{
 			hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 			LPNMLVDISPINFOW pdi = (LPNMLVDISPINFOW)lParam;
-			switch(pdi->hdr.code)
+			switch (pdi->hdr.code)
 			{
 			case LVN_BEGINLABELEDIT:
 				hEdit = ListView_GetEditControl(hWndListView);
@@ -275,7 +275,7 @@ INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				GetWindowTextW(hEdit, urlskkdic, _countof(urlskkdic));
-				if(urlskkdic[0] == L'\0')
+				if (urlskkdic[0] == L'\0')
 				{
 					return FALSE;
 				}
@@ -306,13 +306,13 @@ void LoadDictionary(HWND hDlg)
 
 	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
 
-	if(SUCCEEDED(hr) && list.size() != 0)
+	if (SUCCEEDED(hr) && list.size() != 0)
 	{
 		HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if(l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
+			if (l_itr->size() == 0 || (*l_itr)[0].first != AttributePath)
 			{
 				continue;
 			}
@@ -323,7 +323,7 @@ void LoadDictionary(HWND hDlg)
 			ListView_InsertItem(hWndListView, &item);
 
 			BOOL check = TRUE;
-			if(l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
+			if (l_itr->size() >= 2 && (*l_itr)[1].first == AttributeEnabled)
 			{
 				check = _wtoi((*l_itr)[1].second.c_str());
 			}
@@ -347,7 +347,7 @@ void SaveDictionary(IXmlWriter *pWriter, HWND hDlg)
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for(int i = 0; i < count; i++)
+	for (int i = 0; i < count; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, path, _countof(path));
 

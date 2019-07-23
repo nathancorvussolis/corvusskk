@@ -18,7 +18,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	std::wstring strxmlval;
 	WCHAR text[16];
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
@@ -49,7 +49,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, L"");
 
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-		for(index = 0; index < MAX_SELKEY_C; index++)
+		for (index = 0; index < MAX_SELKEY_C; index++)
 		{
 			_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
 
@@ -61,7 +61,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 			ZeroMemory(key, sizeof(key));
 			ReadValue(pathconfigxml, SectionSelKey, num, strxmlval);
-			if(strxmlval.empty()) strxmlval = listSelKey[index];
+			if (strxmlval.empty()) strxmlval = listSelKey[index];
 			wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
 
 			num[0] = key[0];
@@ -94,16 +94,16 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_BUTTON_SELKEY_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index >= 0)
+			if (index >= 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num, _countof(num));
-				if(num[0] == L'\0')
+				if (num[0] == L'\0')
 				{
 					break;
 				}
@@ -125,15 +125,15 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 
 	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
+		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
 			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
-			if(pListView->uChanged & LVIF_STATE)
+			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-				if(index == -1)
+				if (index == -1)
 				{
 					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, L"");
 					SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, L"");
@@ -171,7 +171,7 @@ void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
 	WCHAR key[4];
 
 	hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
-	for(index = 0; index < MAX_SELKEY_C; index++)
+	for (index = 0; index < MAX_SELKEY_C; index++)
 	{
 		ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
 		key[0] = num[0];

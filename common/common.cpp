@@ -113,7 +113,7 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 {
 	BOOL bRet = FALSE;
 
-	if(digest == nullptr || data == nullptr)
+	if (digest == nullptr || data == nullptr)
 	{
 		return FALSE;
 	}
@@ -122,25 +122,25 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 
 	BCRYPT_ALG_HANDLE  hAlg;
 	NTSTATUS status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, nullptr, 0);
-	if(BCRYPT_SUCCESS(status))
+	if (BCRYPT_SUCCESS(status))
 	{
 		DWORD cbHashObject;
 		ULONG cbResult;
 		status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbResult, 0);
-		if(BCRYPT_SUCCESS(status))
+		if (BCRYPT_SUCCESS(status))
 		{
 			PBYTE pbHashObject = (PBYTE)LocalAlloc(LPTR, cbHashObject);
-			if(pbHashObject != nullptr)
+			if (pbHashObject != nullptr)
 			{
 				BCRYPT_HASH_HANDLE hHash;
 				status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, nullptr, 0, 0);
-				if(BCRYPT_SUCCESS(status))
+				if (BCRYPT_SUCCESS(status))
 				{
 					status = BCryptHashData(hHash, data, datalen, 0);
-					if(BCRYPT_SUCCESS(status))
+					if (BCRYPT_SUCCESS(status))
 					{
 						status = BCryptFinishHash(hHash, digest, digestlen, 0);
-						if(BCRYPT_SUCCESS(status))
+						if (BCRYPT_SUCCESS(status))
 						{
 							bRet = TRUE;
 						}
@@ -164,7 +164,7 @@ BOOL IsLittleEndian()
 
 ULONG htonlc(ULONG h)
 {
-	if(IsLittleEndian())
+	if (IsLittleEndian())
 	{
 		h = (h << 24) | ((h & 0x0000FF00) << 8) |
 			((h >> 8) & 0x0000FF00) | (h >> 24);
@@ -179,7 +179,7 @@ ULONG ntohlc(ULONG n)
 
 USHORT htonsc(USHORT h)
 {
-	if(IsLittleEndian())
+	if (IsLittleEndian())
 	{
 		h = (h << 8) | (h >> 8);
 	}
@@ -199,13 +199,13 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 	CONST USHORT maskVersion = 0x5000;
 	GUID lguid = rguid;
 
-	if(name == nullptr || namelen == 0 || puuid == nullptr)
+	if (name == nullptr || namelen == 0 || puuid == nullptr)
 	{
 		return FALSE;
 	}
 
 	PBYTE pMessage = (PBYTE)LocalAlloc(LPTR, sizeof(lguid) + namelen);
-	if(pMessage != nullptr)
+	if (pMessage != nullptr)
 	{
 		//network byte order
 		lguid.Data1 = htonlc(lguid.Data1);
@@ -216,7 +216,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
 
 		BYTE digest[dwDigestLen];
-		if(GetDigest(pszAlgId,
+		if (GetDigest(pszAlgId,
 			pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
 		{
 			GUID dguid = *(GUID *)digest;
@@ -249,25 +249,25 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 	DWORD dwLength = 0;
 	DWORD dwUserSidLen = 0;
 
-	if(ppLogonInfo == nullptr)
+	if (ppLogonInfo == nullptr)
 	{
 		return FALSE;
 	}
 
 	*ppLogonInfo = nullptr;
 
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
 		PTOKEN_USER pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
-		if(pTokenUser != nullptr)
+		if (pTokenUser != nullptr)
 		{
-			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+			if (GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
 				dwUserSidLen = GetLengthSid(pTokenUser->User.Sid);
 				*ppLogonInfo = (PBYTE)LocalAlloc(LPTR, dwUserSidLen + sizeof(LUID));
-				if(*ppLogonInfo != nullptr)
+				if (*ppLogonInfo != nullptr)
 				{
 					bRet = CopySid(dwUserSidLen, (PSID)*ppLogonInfo, pTokenUser->User.Sid);
 				}
@@ -276,16 +276,16 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 			LocalFree(pTokenUser);
 		}
 
-		if(bRet)
+		if (bRet)
 		{
 			TOKEN_ELEVATION_TYPE tokenElevationType;
-			if(GetTokenInformation(hToken, TokenElevationType,
+			if (GetTokenInformation(hToken, TokenElevationType,
 				&tokenElevationType, sizeof(tokenElevationType), &dwLength))
 			{
-				if(tokenElevationType == TokenElevationTypeFull)
+				if (tokenElevationType == TokenElevationTypeFull)
 				{
 					TOKEN_LINKED_TOKEN tokenLinkedToken;
-					if(GetTokenInformation(hToken, TokenLinkedToken,
+					if (GetTokenInformation(hToken, TokenLinkedToken,
 						&tokenLinkedToken, sizeof(tokenLinkedToken), &dwLength))
 					{
 						CloseHandle(hToken);
@@ -295,7 +295,7 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 			}
 
 			TOKEN_STATISTICS tokenStatistics;
-			if(GetTokenInformation(hToken, TokenStatistics,
+			if (GetTokenInformation(hToken, TokenStatistics,
 				&tokenStatistics, sizeof(tokenStatistics), &dwLength))
 			{
 				*(LUID *)(*ppLogonInfo + dwUserSidLen) = tokenStatistics.AuthenticationId;
@@ -306,9 +306,9 @@ BOOL GetLogonInfo(PBYTE *ppLogonInfo)
 			}
 		}
 
-		if(!bRet)
+		if (!bRet)
 		{
-			if(*ppLogonInfo != nullptr)
+			if (*ppLogonInfo != nullptr)
 			{
 				LocalFree(*ppLogonInfo);
 			}
@@ -328,18 +328,18 @@ BOOL GetUserUUID(LPWSTR *ppszUUID)
 	const GUID NamespaceLogonInfo =
 	{0x8c210750, 0x6502, 0x4a83, {0xae, 0x5c, 0x88, 0xd8, 0x6c, 0xb9, 0x6f, 0x24}};
 
-	if(ppszUUID == nullptr)
+	if (ppszUUID == nullptr)
 	{
 		return FALSE;
 	}
 
-	if(GetLogonInfo(&pLogonInfo))
+	if (GetLogonInfo(&pLogonInfo))
 	{
 		GUID uuid = GUID_NULL;
-		if(GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)LocalSize(pLogonInfo), &uuid))
+		if (GetUUID5(NamespaceLogonInfo, pLogonInfo, (DWORD)LocalSize(pLogonInfo), &uuid))
 		{
 			*ppszUUID = (LPWSTR)LocalAlloc(LPTR, 37 * sizeof(WCHAR));
-			if(*ppszUUID != nullptr)
+			if (*ppszUUID != nullptr)
 			{
 				_snwprintf_s(*ppszUUID, 37, _TRUNCATE,
 					L"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
@@ -365,19 +365,19 @@ BOOL GetUserSid(LPWSTR *ppszUserSid)
 	DWORD dwLength = 0;
 	PTOKEN_USER pTokenUser = nullptr;
 
-	if(ppszUserSid == nullptr)
+	if (ppszUserSid == nullptr)
 	{
 		return FALSE;
 	}
 
-	if(OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
 	{
 		GetTokenInformation(hToken, TokenUser, nullptr, 0, &dwLength);
 		pTokenUser = (PTOKEN_USER)LocalAlloc(LPTR, dwLength);
 
-		if(pTokenUser != nullptr)
+		if (pTokenUser != nullptr)
 		{
-			if(GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
+			if (GetTokenInformation(hToken, TokenUser, pTokenUser, dwLength, &dwLength))
 			{
 				bRet = ConvertSidToStringSidW(pTokenUser->User.Sid, ppszUserSid);
 			}
@@ -395,10 +395,10 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 {
 	WCHAR path[MAX_PATH] = {};
 
-	if(GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
+	if (GetModuleFileNameW(hCurrentModule, path, _countof(path)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(path, L'\\');
-		if(pdir != nullptr)
+		if (pdir != nullptr)
 		{
 			*(pdir + 1) = L'\0';
 			wcsncat_s(path, lpFileName, _TRUNCATE);
@@ -407,7 +407,7 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 
 	const int cmdlen = 8192;
 	WCHAR *commandline = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * cmdlen);
-	if(commandline == nullptr)
+	if (commandline == nullptr)
 	{
 		return FALSE;
 	}
@@ -422,7 +422,7 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 		(lpArgs == nullptr) ? L"" : lpArgs);
 
 	BOOL bRet = CreateProcessW(nullptr, commandline, nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi);
-	if(bRet)
+	if (bRet)
 	{
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);

@@ -29,7 +29,7 @@ public:
 	{
 		TF_SELECTION tfSelection = {};
 		ULONG cFetched = 0;
-		if(FAILED(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
+		if (FAILED(_pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 		{
 			return E_FAIL;
 		}
@@ -37,20 +37,20 @@ public:
 		CComPtr<ITfRange> pRangeSelection;
 		pRangeSelection.Attach(tfSelection.range);
 
-		if(cFetched != 1)
+		if (cFetched != 1)
 		{
 			return E_FAIL;
 		}
 
 		RECT rc = {};
 		BOOL fClipped;
-		if(FAILED(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped)))
+		if (FAILED(_pContextView->GetTextExt(ec, tfSelection.range, &rc, &fClipped)))
 		{
 			return E_FAIL;
 		}
 
 		//ignore abnormal position (from CUAS ?)
-		if((rc.top == rc.bottom) && ((rc.right - rc.left) == 1))
+		if ((rc.top == rc.bottom) && ((rc.right - rc.left) == 1))
 		{
 			return E_FAIL;
 		}
@@ -69,26 +69,26 @@ public:
 		LONG height = rw.bottom - rw.top;
 		LONG width = rw.right - rw.left;
 
-		if(rc.left < mi.rcWork.left)
+		if (rc.left < mi.rcWork.left)
 		{
 			rc.left = mi.rcWork.left;
 		}
 
-		if(mi.rcWork.right < rc.right)
+		if (mi.rcWork.right < rc.right)
 		{
 			rc.left = mi.rcWork.right - width;
 		}
 
-		if(mi.rcWork.bottom < rc.top)
+		if (mi.rcWork.bottom < rc.top)
 		{
 			rc.bottom = mi.rcWork.bottom - height - IM_MARGIN_Y;
 		}
-		else if(mi.rcWork.bottom < (rc.bottom + height + IM_MARGIN_Y))
+		else if (mi.rcWork.bottom < (rc.bottom + height + IM_MARGIN_Y))
 		{
 			rc.bottom = rc.top - height - IM_MARGIN_Y * 2;
 		}
 
-		if(rc.bottom < mi.rcWork.top)
+		if (rc.bottom < mi.rcWork.top)
 		{
 			rc.bottom = mi.rcWork.top - IM_MARGIN_Y;
 		}
@@ -133,19 +133,19 @@ CInputModeWindow::~CInputModeWindow()
 
 STDAPI CInputModeWindow::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextLayoutSink))
+	if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextLayoutSink))
 	{
 		*ppvObj = static_cast<ITfTextLayoutSink *>(this);
 	}
 
-	if(*ppvObj)
+	if (*ppvObj)
 	{
 		AddRef();
 		return S_OK;
@@ -161,7 +161,7 @@ STDAPI_(ULONG) CInputModeWindow::AddRef()
 
 STDAPI_(ULONG) CInputModeWindow::Release()
 {
-	if(--_cRef == 0)
+	if (--_cRef == 0)
 	{
 		delete this;
 		return 0;
@@ -174,12 +174,12 @@ STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode
 {
 	HRESULT hr;
 
-	if(pContext != _pContext)
+	if (pContext != _pContext)
 	{
 		return S_OK;
 	}
 
-	switch(lcode)
+	switch (lcode)
 	{
 	case TF_LC_CREATE:
 		break;
@@ -192,7 +192,7 @@ STDAPI CInputModeWindow::OnLayoutChange(ITfContext *pContext, TfLayoutCode lcode
 				new CInputModeWindowGetTextExtEditSession(_pTextService, pContext, pContextView, this));
 			pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 		}
-		catch(...)
+		catch (...)
 		{
 		}
 		break;
@@ -213,7 +213,7 @@ HRESULT CInputModeWindow::_AdviseTextLayoutSink()
 	HRESULT hr = E_FAIL;
 
 	CComPtr<ITfSource> pSource;
-	if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+	if (SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextLayoutSink *>(this)), &_dwCookieTextLayoutSink);
 	}
@@ -225,10 +225,10 @@ HRESULT CInputModeWindow::_UnadviseTextLayoutSink()
 {
 	HRESULT hr = E_FAIL;
 
-	if(_pContext != nullptr)
+	if (_pContext != nullptr)
 	{
 		CComPtr<ITfSource> pSource;
-		if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+		if (SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
 		}
@@ -241,16 +241,16 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 {
 	POINT pt = {};
 
-	if(pContext != nullptr)
+	if (pContext != nullptr)
 	{
 		_pContext = pContext;
-		if(FAILED(_AdviseTextLayoutSink()))
+		if (FAILED(_AdviseTextLayoutSink()))
 		{
 			return FALSE;
 		}
 	}
 
-	if(!bCandidateWindow && _pContext == nullptr)
+	if (!bCandidateWindow && _pContext == nullptr)
 	{
 		return FALSE;
 	}
@@ -259,16 +259,16 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 
 	_bCandidateWindow = bCandidateWindow;
 
-	if(_bCandidateWindow)
+	if (_bCandidateWindow)
 	{
 		_hwndParent = hWnd;
 	}
 	else
 	{
 		CComPtr<ITfContextView> pContextView;
-		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
+		if (SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
-			if(FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == nullptr)
+			if (FAILED(pContextView->GetWnd(&_hwndParent)) || _hwndParent == nullptr)
 			{
 				_hwndParent = GetFocus();
 			}
@@ -280,12 +280,12 @@ BOOL CInputModeWindow::_Create(CTextService *pTextService, ITfContext *pContext,
 		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
 		_hwndParent, nullptr, g_hInst, this);
 
-	if(_hwnd == nullptr)
+	if (_hwnd == nullptr)
 	{
 		return FALSE;
 	}
 
-	if(_bCandidateWindow)
+	if (_bCandidateWindow)
 	{
 		RECT r = {};
 		GetClientRect(_hwndParent, &r);
@@ -331,7 +331,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM w
 {
 	CInputModeWindow *pInputModeWindow = nullptr;
 
-	switch(uMsg)
+	switch (uMsg)
 	{
 	case WM_NCCREATE:
 		pInputModeWindow = (CInputModeWindow *)((LPCREATESTRUCTW)lParam)->lpCreateParams;
@@ -342,7 +342,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM w
 		break;
 	}
 
-	if(pInputModeWindow != nullptr)
+	if (pInputModeWindow != nullptr)
 	{
 		return pInputModeWindow->_WindowProc(hWnd, uMsg, wParam, lParam);
 	}
@@ -362,23 +362,23 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	RECT r = {};
 	COLORREF color;
 
-	switch(uMsg)
+	switch (uMsg)
 	{
 	case WM_CREATE:
-		if(!_bCandidateWindow)
+		if (!_bCandidateWindow)
 		{
 			SetTimer(hWnd, INPUTMODE_TIMER_ID, _pTextService->cx_showmodesec * 1000, nullptr);
 		}
 		break;
 	case WM_TIMER:
-		if(wParam == INPUTMODE_TIMER_ID)
+		if (wParam == INPUTMODE_TIMER_ID)
 		{
 			// CAUTION!! killing self
 			_pTextService->_EndInputModeWindow();
 		}
 		break;
 	case WM_DESTROY:
-		if(!_bCandidateWindow)
+		if (!_bCandidateWindow)
 		{
 			KillTimer(hWnd, INPUTMODE_TIMER_ID);
 		}
@@ -396,7 +396,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 		pen = (HPEN)SelectObject(hmemdc, npen);
 
 		color = RGB(0xFF, 0xFF, 0xFF);
-		switch(_pTextService->inputmode)
+		switch (_pTextService->inputmode)
 		{
 		case im_direct:
 			color = _pTextService->cx_mode_colors[CL_COLOR_DR];
@@ -495,7 +495,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 
 void CInputModeWindow::_Destroy()
 {
-	if(_hwnd != nullptr)
+	if (_hwnd != nullptr)
 	{
 		DestroyWindow(_hwnd);
 		_hwnd = nullptr;
@@ -509,7 +509,7 @@ void CInputModeWindow::_Destroy()
 
 void CInputModeWindow::_Move(int x, int y)
 {
-	if(_hwnd != nullptr)
+	if (_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, x, y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
 	}
@@ -517,7 +517,7 @@ void CInputModeWindow::_Move(int x, int y)
 
 void CInputModeWindow::_Show(BOOL bShow)
 {
-	if(_hwnd != nullptr)
+	if (_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (bShow ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
@@ -526,7 +526,7 @@ void CInputModeWindow::_Show(BOOL bShow)
 
 void CInputModeWindow::_Redraw()
 {
-	if(_hwnd != nullptr)
+	if (_hwnd != nullptr)
 	{
 		InvalidateRect(_hwnd, nullptr, FALSE);
 		UpdateWindow(_hwnd);
@@ -535,10 +535,10 @@ void CInputModeWindow::_Redraw()
 
 void CInputModeWindow::_GetRect(LPRECT lpRect)
 {
-	if(lpRect != nullptr)
+	if (lpRect != nullptr)
 	{
 		*lpRect = RECT{};
-		if(_hwnd != nullptr)
+		if (_hwnd != nullptr)
 		{
 			GetClientRect(_hwnd, lpRect);
 		}
@@ -565,7 +565,7 @@ public:
 		HRESULT hr;
 
 		CComPtr<ITfContextView> pContextView;
-		if(SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
+		if (SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
 			try
 			{
@@ -574,7 +574,7 @@ public:
 					new CInputModeWindowGetTextExtEditSession(_pTextService, _pContext, pContextView, _pInputModeWindow));
 				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 			}
-			catch(...)
+			catch (...)
 			{
 			}
 		}
@@ -588,7 +588,7 @@ private:
 
 void CTextService::_StartInputModeWindow()
 {
-	switch(inputmode)
+	switch (inputmode)
 	{
 	case im_direct:
 	case im_hiragana:
@@ -600,16 +600,16 @@ void CTextService::_StartInputModeWindow()
 			_EndInputModeWindow();
 
 			CComPtr<ITfDocumentMgr> pDocumentMgr;
-			if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+			if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 			{
 				CComPtr<ITfContext> pContext;
-				if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
+				if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 				{
 					try
 					{
 						_pInputModeWindow.Attach(new CInputModeWindow());
 
-						if(_pInputModeWindow->_Create(this, pContext, FALSE, nullptr))
+						if (_pInputModeWindow->_Create(this, pContext, FALSE, nullptr))
 						{
 							HRESULT hr = E_FAIL;
 							HRESULT hrSession = E_FAIL;
@@ -621,13 +621,13 @@ void CTextService::_StartInputModeWindow()
 							hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
 
 							// It is possible that asynchronous requests are treated as synchronous requests.
-							if(FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
+							if (FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
 							{
 								_EndInputModeWindow();
 							}
 						}
 					}
-					catch(...)
+					catch (...)
 					{
 						_EndInputModeWindow();
 					}
@@ -642,7 +642,7 @@ void CTextService::_StartInputModeWindow()
 
 void CTextService::_EndInputModeWindow()
 {
-	if(_pInputModeWindow != nullptr)
+	if (_pInputModeWindow != nullptr)
 	{
 		_pInputModeWindow->_Destroy();
 	}

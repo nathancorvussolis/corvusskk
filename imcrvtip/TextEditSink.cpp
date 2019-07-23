@@ -5,16 +5,16 @@
 
 STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEditRecord *pEditRecord)
 {
-	if(_IsComposing() && pic != nullptr)
+	if (_IsComposing() && pic != nullptr)
 	{
 		CComPtr<ITfRange> pRange;
-		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+		if (SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
 			// clear when auto completion
 			BOOL fEmpty = FALSE;
-			if(SUCCEEDED(pRange->IsEmpty(ecReadOnly, &fEmpty)) && fEmpty)
+			if (SUCCEEDED(pRange->IsEmpty(ecReadOnly, &fEmpty)) && fEmpty)
 			{
-				if(!roman.empty() || !kana.empty())
+				if (!roman.empty() || !kana.empty())
 				{
 					_ResetStatus();
 					_EndComposition(pic);
@@ -22,14 +22,14 @@ STDAPI CTextService::OnEndEdit(ITfContext *pic, TfEditCookie ecReadOnly, ITfEdit
 			}
 
 			// reposition candidate window
-			if(_pCandidateList != nullptr)
+			if (_pCandidateList != nullptr)
 			{
 				CComPtr<ITfContextView> pContextView;
-				if(SUCCEEDED(pic->GetActiveView(&pContextView)) && (pContextView != nullptr))
+				if (SUCCEEDED(pic->GetActiveView(&pContextView)) && (pContextView != nullptr))
 				{
 					RECT rc = {};
 					BOOL fClipped;
-					if(SUCCEEDED(pContextView->GetTextExt(ecReadOnly, pRange, &rc, &fClipped)))
+					if (SUCCEEDED(pContextView->GetTextExt(ecReadOnly, pRange, &rc, &fClipped)))
 					{
 						_pCandidateList->_Move(&rc, ecReadOnly, pic);
 					}
@@ -45,10 +45,10 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 {
 	BOOL fRet = FALSE;
 
-	if(_pTextEditSinkContext != nullptr && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
+	if (_pTextEditSinkContext != nullptr && _dwTextEditSinkCookie != TF_INVALID_COOKIE)
 	{
 		CComPtr<ITfSource> pSource;
-		if(SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+		if (SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			pSource->UnadviseSink(_dwTextEditSinkCookie);
 		}
@@ -57,26 +57,26 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		_dwTextEditSinkCookie = TF_INVALID_COOKIE;
 	}
 
-	if(pDocumentMgr == nullptr)
+	if (pDocumentMgr == nullptr)
 	{
 		return TRUE;
 	}
 
-	if(FAILED(pDocumentMgr->GetTop(&_pTextEditSinkContext)))
+	if (FAILED(pDocumentMgr->GetTop(&_pTextEditSinkContext)))
 	{
 		return FALSE;
 	}
 
-	if(_pTextEditSinkContext == nullptr)
+	if (_pTextEditSinkContext == nullptr)
 	{
 		return TRUE;
 	}
 
 	{
 		CComPtr<ITfSource> pSource;
-		if(SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
+		if (SUCCEEDED(_pTextEditSinkContext->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
-			if(SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextEditSink *>(this)), &_dwTextEditSinkCookie)))
+			if (SUCCEEDED(pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextEditSink *>(this)), &_dwTextEditSinkCookie)))
 			{
 				fRet = TRUE;
 			}
@@ -87,7 +87,7 @@ BOOL CTextService::_InitTextEditSink(ITfDocumentMgr *pDocumentMgr)
 		}
 	}
 
-	if(fRet == FALSE)
+	if (fRet == FALSE)
 	{
 		_pTextEditSinkContext.Release();
 	}

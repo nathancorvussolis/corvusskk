@@ -27,10 +27,10 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	NMLISTVIEW *pListView;
 	WCHAR text[16] = {};
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
-		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
+		for (int i = 0; i < PRESERVEDKEY_NUM; i++)
 		{
 			hWndListView = GetDlgItem(hDlg, preservedkeyInfo[i].id);
 			ListView_SetExtendedListViewStyle(hWndListView, LVS_EX_GRIDLINES | LVS_EX_FULLROWSELECT);
@@ -67,7 +67,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		return TRUE;
 
 	case WM_DPICHANGED_AFTERPARENT:
-		for(int i = 0; i < PRESERVEDKEY_NUM; i++)
+		for (int i = 0; i < PRESERVEDKEY_NUM; i++)
 		{
 			hWndListView = GetDlgItem(hDlg, preservedkeyInfo[i].id);
 
@@ -82,12 +82,12 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg,
 			IsDlgButtonChecked(hDlg, IDC_RADIO_PRSRVKEY_ON) ? IDC_LIST_PRSRVKEY_ON : IDC_LIST_PRSRVKEY_OFF);
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_BUTTON_PRSRVKEY_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0)
+			if (index >= 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -102,7 +102,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_SHIFT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
 				ListView_SetItemText(hWndListView, index, 3, text);
 			}
-			else if(count < MAX_PRESERVEDKEY)
+			else if (count < MAX_PRESERVEDKEY)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -132,7 +132,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 		case IDC_BUTTON_PRSRVKEY_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index != -1)
+			if (index != -1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -142,7 +142,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 		case IDC_BUTTON_PRSRVKEY_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index > 0)
+			if (index > 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -173,7 +173,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		case IDC_BUTTON_PRSRVKEY_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0 && index < count - 1)
+			if (index >= 0 && index < count - 1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -216,16 +216,16 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 	case WM_NOTIFY:
 		hWndListView = ((LPNMHDR)lParam)->hwndFrom;
-		switch(((LPNMHDR)lParam)->code)
+		switch (((LPNMHDR)lParam)->code)
 		{
 		case PSN_TRANSLATEACCELERATOR:
 			{
 				LPMSG lpMsg = (LPMSG)((LPPSHNOTIFY)lParam)->lParam;
-				switch(lpMsg->message)
+				switch (lpMsg->message)
 				{
 				case WM_KEYDOWN:
 				case WM_SYSKEYDOWN:
-					switch(GetDlgCtrlID(lpMsg->hwnd))
+					switch (GetDlgCtrlID(lpMsg->hwnd))
 					{
 					case IDC_EDIT_DISPVKEY:
 						WCHAR vkeytext[8];
@@ -245,7 +245,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			break;
 
 		case NM_SETFOCUS:
-			switch(((LPNMHDR)lParam)->idFrom)
+			switch (((LPNMHDR)lParam)->idFrom)
 			{
 			case IDC_LIST_PRSRVKEY_ON:
 				CheckRadioButton(hDlg, IDC_RADIO_PRSRVKEY_ON, IDC_RADIO_PRSRVKEY_OFF, IDC_RADIO_PRSRVKEY_ON);
@@ -256,7 +256,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			default:
 				break;
 			}
-			switch(((LPNMHDR)lParam)->idFrom)
+			switch (((LPNMHDR)lParam)->idFrom)
 			{
 			case IDC_LIST_PRSRVKEY_ON:
 			case IDC_LIST_PRSRVKEY_OFF:
@@ -276,10 +276,10 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 		case LVN_ITEMCHANGED:
 			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
-			if(pListView->uChanged & LVIF_STATE)
+			if (pListView->uChanged & LVIF_STATE)
 			{
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-				if(index == -1)
+				if (index == -1)
 				{
 					SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, L"");
 					CheckDlgButton(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT, BST_UNCHECKED);
@@ -315,33 +315,33 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 
 void SetConfigPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 {
-	if(onoff != 0 && onoff != 1)
+	if (onoff != 0 && onoff != 1)
 	{
 		return;
 	}
 
 	ZeroMemory(preservedkey[onoff], sizeof(preservedkey[onoff]));
 
-	if(list.size() != 0)
+	if (list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if(i >= MAX_PRESERVEDKEY)
+			if (i >= MAX_PRESERVEDKEY)
 			{
 				break;
 			}
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
-				if(r_itr->first == AttributeVKey)
+				if (r_itr->first == AttributeVKey)
 				{
 					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), nullptr, 0);
 				}
-				else if(r_itr->first == AttributeMKey)
+				else if (r_itr->first == AttributeMKey)
 				{
 					preservedkey[onoff][i].uModifiers = wcstoul(r_itr->second.c_str(), nullptr, 0);
-					if(preservedkey[onoff][i].uModifiers == 0)
+					if (preservedkey[onoff][i].uModifiers == 0)
 					{
 						preservedkey[onoff][i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
 					}
@@ -371,16 +371,16 @@ void LoadConfigPreservedKey()
 	//for compatibility
 	HRESULT hr = ReadList(pathconfigxml, SectionPreservedKey, list);
 
-	if(SUCCEEDED(hr) && list.size() != 0)
+	if (SUCCEEDED(hr) && list.size() != 0)
 	{
-		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		for (int k = 0; k < PRESERVEDKEY_NUM; k++)
 		{
 			SetConfigPreservedKeyONOFF(k, list);
 		}
 	}
 	else
 	{
-		for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+		for (int k = 0; k < PRESERVEDKEY_NUM; k++)
 		{
 			list.clear();
 			hr = ReadList(pathconfigxml, preservedkeyInfo[k].section, list);
@@ -396,13 +396,13 @@ void LoadPreservedKey(HWND hDlg)
 
 	LoadConfigPreservedKey();
 
-	for(int k = 0; k < PRESERVEDKEY_NUM; k++)
+	for (int k = 0; k < PRESERVEDKEY_NUM; k++)
 	{
 		HWND hWndListView = GetDlgItem(hDlg, preservedkeyInfo[k].id);
 
-		for(int i = 0; i < MAX_PRESERVEDKEY; i++)
+		for (int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
-			if(preservedkey[k][i].uVKey == 0 &&
+			if (preservedkey[k][i].uVKey == 0 &&
 				preservedkey[k][i].uModifiers == 0)
 			{
 				break;
@@ -445,36 +445,36 @@ void SavePreservedKey(IXmlWriter *pWriter, HWND hDlg, int no)
 	HWND hWndListView = GetDlgItem(hDlg, preservedkeyInfo[no].id);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for(int i = 0; i < count && i < MAX_PRESERVEDKEY; i++)
+	for (int i = 0; i < count && i < MAX_PRESERVEDKEY; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
 		preservedkey[no][i].uVKey = wcstoul(key, nullptr, 0);
 		preservedkey[no][i].uModifiers = 0;
 		ListView_GetItemText(hWndListView, i, 1, key, _countof(key));
-		if(key[0] == L'1')
+		if (key[0] == L'1')
 		{
 			preservedkey[no][i].uModifiers |= TF_MOD_ALT;
 		}
 		ListView_GetItemText(hWndListView, i, 2, key, _countof(key));
-		if(key[0] == L'1')
+		if (key[0] == L'1')
 		{
 			preservedkey[no][i].uModifiers |= TF_MOD_CONTROL;
 		}
 		ListView_GetItemText(hWndListView, i, 3, key, _countof(key));
-		if(key[0] == L'1')
+		if (key[0] == L'1')
 		{
 			preservedkey[no][i].uModifiers |= TF_MOD_SHIFT;
 		}
 	}
-	if(count < MAX_PRESERVEDKEY)
+	if (count < MAX_PRESERVEDKEY)
 	{
 		preservedkey[no][count].uVKey = 0;
 		preservedkey[no][count].uModifiers = 0;
 	}
 
-	for(int i = 0; i < MAX_PRESERVEDKEY; i++)
+	for (int i = 0; i < MAX_PRESERVEDKEY; i++)
 	{
-		if(preservedkey[no][i].uVKey == 0 &&
+		if (preservedkey[no][i].uVKey == 0 &&
 			preservedkey[no][i].uModifiers == 0)
 		{
 			break;

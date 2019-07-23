@@ -34,7 +34,7 @@ BOOL RegisterProfiles()
 
 	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
-	if(SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
+	if (SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
 		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
@@ -53,7 +53,7 @@ void UnregisterProfiles()
 
 	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
-	if(SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
+	if (SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
 		hr = pInputProcessorProfileMgr->UnregisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile, TF_URP_ALLPROFILES);
 	}
@@ -66,26 +66,26 @@ BOOL RegisterCategories()
 
 	CComPtr<ITfCategoryMgr> pCategoryMgr;
 	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
-	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
+	if (SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
-		for(int i = 0; i < _countof(c_guidCategory); i++)
+		for (int i = 0; i < _countof(c_guidCategory); i++)
 		{
 			hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 
-			if(FAILED(hr))
+			if (FAILED(hr))
 			{
 				fRet = FALSE;
 			}
 		}
 
 		// for Windows 8 or later
-		if(IsWindowsVersion62OrLater())
+		if (IsWindowsVersion62OrLater())
 		{
-			for(int i = 0; i < _countof(c_guidCategory8); i++)
+			for (int i = 0; i < _countof(c_guidCategory8); i++)
 			{
 				hr = pCategoryMgr->RegisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 
-				if(FAILED(hr))
+				if (FAILED(hr))
 				{
 					fRet = FALSE;
 				}
@@ -106,17 +106,17 @@ void UnregisterCategories()
 
 	CComPtr<ITfCategoryMgr> pCategoryMgr;
 	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
-	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
+	if (SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
-		for(int i = 0; i < _countof(c_guidCategory); i++)
+		for (int i = 0; i < _countof(c_guidCategory); i++)
 		{
 			hr = pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory[i], c_clsidTextService);
 		}
 
 		// for Windows 8 or later
-		if(IsWindowsVersion62OrLater())
+		if (IsWindowsVersion62OrLater())
 		{
-			for(int i = 0; i < _countof(c_guidCategory8); i++)
+			for (int i = 0; i < _countof(c_guidCategory8); i++)
 			{
 				hr = pCategoryMgr->UnregisterCategory(c_clsidTextService, c_guidCategory8[i], c_clsidTextService);
 			}
@@ -132,24 +132,24 @@ BOOL RegisterServer()
 	BOOL fRet = FALSE;
 	WCHAR fileName[MAX_PATH];
 
-	if(StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
+	if (StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
 	{
 		return FALSE;
 	}
 
 	wmemcpy_s(szInfoKey, _countof(szInfoKey), c_szInfoKeyPrefix, _countof(c_szInfoKeyPrefix) - 1);
 
-	if(RegCreateKeyExW(HKEY_CLASSES_ROOT, szInfoKey, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey, nullptr) != ERROR_SUCCESS)
+	if (RegCreateKeyExW(HKEY_CLASSES_ROOT, szInfoKey, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hKey, nullptr) != ERROR_SUCCESS)
 	{
 		return FALSE;
 	}
 
-	if(RegSetValueExW(hKey, nullptr, 0, REG_SZ, (BYTE *)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hKey, nullptr, 0, REG_SZ, (BYTE *)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit;
 	}
 
-	if(RegCreateKeyExW(hKey, c_szInProcSvr32, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hSubKey, nullptr) != ERROR_SUCCESS)
+	if (RegCreateKeyExW(hKey, c_szInProcSvr32, 0, nullptr, REG_OPTION_NON_VOLATILE, KEY_WRITE, nullptr, &hSubKey, nullptr) != ERROR_SUCCESS)
 	{
 		goto exit;
 	}
@@ -157,12 +157,12 @@ BOOL RegisterServer()
 	ZeroMemory(fileName, sizeof(fileName));
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-	if(RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit_sub;
 	}
 
-	if(RegSetValueExW(hSubKey, c_szModelName, 0, REG_SZ, (BYTE *)TEXTSERVICE_MODEL, (DWORD)(wcslen(TEXTSERVICE_MODEL) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hSubKey, c_szModelName, 0, REG_SZ, (BYTE *)TEXTSERVICE_MODEL, (DWORD)(wcslen(TEXTSERVICE_MODEL) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit_sub;
 	}
@@ -182,7 +182,7 @@ void UnregisterServer()
 {
 	WCHAR szInfoKey[_countof(c_szInfoKeyPrefix) + CLSID_STRLEN];
 
-	if(StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
+	if (StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
 	{
 		return;
 	}
@@ -198,12 +198,12 @@ BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 	WCHAR guidprofile[CLSID_STRLEN + 1];
 	WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
 
-	if(StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
+	if (StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
 	{
 		return FALSE;
 	}
 
-	if(StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile)) == 0)
+	if (StringFromGUID2(c_guidProfile, guidprofile, _countof(guidprofile)) == 0)
 	{
 		return FALSE;
 	}
@@ -215,7 +215,7 @@ BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 	{
 		return InstallLayoutOrTip(profilelist, dwFlags);
 	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
+	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 	}
 

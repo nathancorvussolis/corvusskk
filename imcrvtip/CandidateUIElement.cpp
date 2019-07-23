@@ -44,7 +44,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 
 	_pD2DFactory = nullptr;
 	_pD2DDCRT = nullptr;
-	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
+	for (int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		_pD2DBrush[i] = nullptr;
 	}
@@ -82,14 +82,14 @@ CCandidateWindow::~CCandidateWindow()
 
 STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if(IsEqualIID(riid, IID_IUnknown) ||
+	if (IsEqualIID(riid, IID_IUnknown) ||
 		IsEqualIID(riid, IID_ITfUIElement) ||
 		IsEqualIID(riid, IID_ITfCandidateListUIElement) ||
 		IsEqualIID(riid, IID_ITfCandidateListUIElementBehavior))
@@ -97,7 +97,7 @@ STDAPI CCandidateWindow::QueryInterface(REFIID riid, void **ppvObj)
 		*ppvObj = static_cast<ITfCandidateListUIElementBehavior *>(this);
 	}
 
-	if(*ppvObj)
+	if (*ppvObj)
 	{
 		AddRef();
 		return S_OK;
@@ -113,7 +113,7 @@ STDAPI_(ULONG) CCandidateWindow::AddRef()
 
 STDAPI_(ULONG) CCandidateWindow::Release()
 {
-	if(--_cRef == 0)
+	if (--_cRef == 0)
 	{
 		delete this;
 		return 0;
@@ -126,7 +126,7 @@ STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 {
 	BSTR bstrDesc = nullptr;
 
-	if(bstr == nullptr)
+	if (bstr == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -135,7 +135,7 @@ STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 
 	bstrDesc = SysAllocString(TextServiceDesc);
 
-	if(bstrDesc == nullptr)
+	if (bstrDesc == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -147,7 +147,7 @@ STDAPI CCandidateWindow::GetDescription(BSTR *bstr)
 
 STDAPI CCandidateWindow::GetGUID(GUID *pguid)
 {
-	if(pguid == nullptr)
+	if (pguid == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -159,12 +159,12 @@ STDAPI CCandidateWindow::GetGUID(GUID *pguid)
 
 STDAPI CCandidateWindow::Show(BOOL bShow)
 {
-	if(!_bShow)
+	if (!_bShow)
 	{
 		return E_UNEXPECTED;
 	}
 
-	if(_pCandidateWindow != nullptr)
+	if (_pCandidateWindow != nullptr)
 	{
 		_pCandidateWindow->Show(bShow);
 	}
@@ -172,14 +172,14 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	else
 	{
 #endif
-		if(bShow)
+		if (bShow)
 		{
-			if(_hwnd != nullptr)
+			if (_hwnd != nullptr)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
 
-				if(_depth == 0)
+				if (_depth == 0)
 				{
 					NotifyWinEvent(EVENT_OBJECT_IME_SHOW, _hwnd, OBJID_CLIENT, CHILDID_SELF);
 				}
@@ -188,12 +188,12 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 		}
 		else
 		{
-			if(_hwnd != nullptr)
+			if (_hwnd != nullptr)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
 					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_HIDEWINDOW);
 
-				if(_depth == 0)
+				if (_depth == 0)
 				{
 					NotifyWinEvent(EVENT_OBJECT_IME_HIDE, _hwnd, OBJID_CLIENT, CHILDID_SELF);
 				}
@@ -203,10 +203,10 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 	}
 #endif
 
-	if(_pInputModeWindow != nullptr && _regmode)
+	if (_pInputModeWindow != nullptr && _regmode)
 	{
 #ifndef _DEBUG
-		if(_pCandidateWindow == nullptr)
+		if (_pCandidateWindow == nullptr)
 		{
 #endif
 			_pInputModeWindow->_Show(bShow);
@@ -220,12 +220,12 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 
 STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 {
-	if(_pCandidateWindow != nullptr)
+	if (_pCandidateWindow != nullptr)
 	{
 		return _pCandidateWindow->IsShown(pbShow);
 	}
 
-	if(pbShow == nullptr)
+	if (pbShow == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -237,12 +237,12 @@ STDAPI CCandidateWindow::IsShown(BOOL *pbShow)
 
 STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 {
-	if(_pCandidateWindow != nullptr)
+	if (_pCandidateWindow != nullptr)
 	{
 		return _pCandidateWindow->GetUpdatedFlags(pdwFlags);
 	}
 
-	if(pdwFlags == nullptr)
+	if (pdwFlags == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -254,7 +254,7 @@ STDAPI CCandidateWindow::GetUpdatedFlags(DWORD *pdwFlags)
 
 STDAPI CCandidateWindow::GetDocumentMgr(ITfDocumentMgr **ppdim)
 {
-	if(ppdim == nullptr)
+	if (ppdim == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -266,17 +266,17 @@ STDAPI CCandidateWindow::GetDocumentMgr(ITfDocumentMgr **ppdim)
 
 STDAPI CCandidateWindow::GetCount(UINT *puCount)
 {
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->GetCount(puCount);
 	}
 
-	if(puCount == nullptr)
+	if (puCount == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
 		*puCount = 1;
 	}
@@ -290,17 +290,17 @@ STDAPI CCandidateWindow::GetCount(UINT *puCount)
 
 STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
 {
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->GetSelection(puIndex);
 	}
 
-	if(puIndex == nullptr)
+	if (puIndex == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
 		*puIndex = 0;
 	}
@@ -314,23 +314,23 @@ STDAPI CCandidateWindow::GetSelection(UINT *puIndex)
 
 STDAPI CCandidateWindow::GetString(UINT uIndex, BSTR *pstr)
 {
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->GetString(uIndex, pstr);
 	}
 
-	if(pstr == nullptr)
+	if (pstr == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
 		*pstr = SysAllocString(disptext.c_str());
 	}
 	else
 	{
-		if(uIndex < _CandStr.size())
+		if (uIndex < _CandStr.size())
 		{
 			*pstr = SysAllocString(_CandStr[uIndex].c_str());
 		}
@@ -348,19 +348,19 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 	HRESULT hr = S_OK;
 	UINT i;
 
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->GetPageIndex(pIndex, uSize, puPageCnt);
 	}
 
-	if(puPageCnt == nullptr)
+	if (puPageCnt == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
-		if(uSize > 0)
+		if (uSize > 0)
 		{
 			*pIndex = 0;
 		}
@@ -368,7 +368,7 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 	}
 	else
 	{
-		if(uSize >= _uPageCnt)
+		if (uSize >= _uPageCnt)
 		{
 			uSize = _uPageCnt;
 		}
@@ -377,9 +377,9 @@ STDAPI CCandidateWindow::GetPageIndex(UINT *pIndex, UINT uSize, UINT *puPageCnt)
 			hr = S_FALSE;
 		}
 
-		if(pIndex != nullptr)
+		if (pIndex != nullptr)
 		{
-			for(i = 0; i < uSize; i++)
+			for (i = 0; i < uSize; i++)
 			{
 				*pIndex = _PageIndex[i];
 				pIndex++;
@@ -396,29 +396,29 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 {
 	UINT uCandCnt, i, j, k;
 
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->SetPageIndex(pIndex, uPageCnt);
 	}
 
-	if(pIndex == nullptr)
+	if (pIndex == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
-		if(uPageCnt > 0)
+		if (uPageCnt > 0)
 		{
 			*pIndex = 0;
 		}
 	}
 	else
 	{
-		for(j = 0; j < (uPageCnt - 1); j++)
+		for (j = 0; j < (uPageCnt - 1); j++)
 		{
 			uCandCnt = pIndex[j + 1] - pIndex[j];
-			if(uCandCnt > MAX_SELKEY_C)
+			if (uCandCnt > MAX_SELKEY_C)
 			{
 				return E_INVALIDARG;
 			}
@@ -429,9 +429,9 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 		_CandStr.clear();
 		j = 0;
 		k = 0;
-		for(j = 0; j < uPageCnt; j++)
+		for (j = 0; j < uPageCnt; j++)
 		{
-			if(j < (uPageCnt - 1))
+			if (j < (uPageCnt - 1))
 			{
 				uCandCnt = pIndex[j + 1] - pIndex[j];
 			}
@@ -444,14 +444,14 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 			_PageIndex.push_back(k);
 			_CandCount.push_back(uCandCnt);
 
-			for(i = 0; i < uCandCnt; i++)
+			for (i = 0; i < uCandCnt; i++)
 			{
-				if(k == _uCount)
+				if (k == _uCount)
 				{
 					break;
 				}
 
-				if(_mode == wm_candidate)
+				if (_mode == wm_candidate)
 				{
 					_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
 					_CandStr[k].append(markNo);
@@ -463,10 +463,10 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 
 				_CandStr[k].append(candidates[_uShowedCount + k].first.first);
 
-				if(_pTextService->cx_annotation &&
+				if (_pTextService->cx_annotation &&
 					!candidates[_uShowedCount + k].first.second.empty())
 				{
-					if(_mode == wm_candidate)
+					if (_mode == wm_candidate)
 					{
 						_CandStr[k].append(markAnnotation);
 					}
@@ -491,17 +491,17 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 {
 	UINT i;
 
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->GetCurrentPage(puPage);
 	}
 
-	if(puPage == nullptr)
+	if (puPage == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
 		*puPage = 0;
 	}
@@ -509,20 +509,20 @@ STDAPI CCandidateWindow::GetCurrentPage(UINT *puPage)
 	{
 		*puPage = 0;
 
-		if(_uPageCnt == 0)
+		if (_uPageCnt == 0)
 		{
 			return E_UNEXPECTED;
 		}
 
-		if(_uPageCnt == 1)
+		if (_uPageCnt == 1)
 		{
 			*puPage = 0;
 			return S_OK;
 		}
 
-		for(i = 1; i < _uPageCnt; i++)
+		for (i = 1; i < _uPageCnt; i++)
 		{
-			if(_PageIndex[i] > _uIndex)
+			if (_PageIndex[i] > _uIndex)
 			{
 				break;
 			}
@@ -538,17 +538,17 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 {
 	UINT uOldPage, uNewPage;
 
-	if(_pCandidateWindow)
+	if (_pCandidateWindow)
 	{
 		return _pCandidateWindow->SetSelection(nIndex);
 	}
 
-	if(nIndex >= _uCount)
+	if (nIndex >= _uCount)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_ulsingle)
+	if (_ulsingle)
 	{
 		_Update();
 	}
@@ -559,7 +559,7 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 		GetCurrentPage(&uNewPage);
 
 		_dwFlags = TF_CLUIE_SELECTION;
-		if(uNewPage != uOldPage)
+		if (uNewPage != uOldPage)
 		{
 			_dwFlags |= TF_CLUIE_CURRENTPAGE;
 		}
@@ -572,7 +572,7 @@ STDAPI CCandidateWindow::SetSelection(UINT nIndex)
 
 STDAPI CCandidateWindow::Finalize()
 {
-	if(_pCandidateList != nullptr)
+	if (_pCandidateList != nullptr)
 	{
 		_pCandidateList->_EndCandidateList();
 	}
@@ -581,7 +581,7 @@ STDAPI CCandidateWindow::Finalize()
 
 STDAPI CCandidateWindow::Abort()
 {
-	if(_pCandidateList != nullptr)
+	if (_pCandidateList != nullptr)
 	{
 		_pCandidateList->_EndCandidateList();
 	}

@@ -7,7 +7,7 @@ WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
 
 INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		return TRUE;
@@ -18,7 +18,7 @@ INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPA
 		SetTextColor((HDC)wParam, GetSysColor(COLOR_WINDOWTEXT));
 		return (INT_PTR)GetSysColorBrush(COLOR_WINDOW);
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDOK:
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKK_DIC_URL, urlskkdic, _countof(urlskkdic));
@@ -28,7 +28,7 @@ INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPA
 					std::wregex(L"^\\s+|\\s+$"), std::wstring(L""));
 				_snwprintf_s(urlskkdic, _TRUNCATE, L"%s", strurl.c_str());
 
-				if(urlskkdic[0] == L'\0')
+				if (urlskkdic[0] == L'\0')
 				{
 					EndDialog(hDlg, IDCANCEL);
 				}

@@ -149,38 +149,38 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	CHOOSECOLORW cc = {};
 	static COLORREF customColor[16];
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
-		for(int i = 0; i < _countof(cbAttrID); i++)
+		for (int i = 0; i < _countof(cbAttrID); i++)
 		{
-			for(int j = 0; j < _countof(cbAttrText); j++)
+			for (int j = 0; j < _countof(cbAttrText); j++)
 			{
 				SendMessageW(GetDlgItem(hDlg, cbAttrID[i]), CB_ADDSTRING, 0, (LPARAM)cbAttrText[j]);
 			}
 		}
-		for(int i = 0; i < _countof(cbULAttrID); i++)
+		for (int i = 0; i < _countof(cbULAttrID); i++)
 		{
-			for(int j = 0; j < _countof(cbULAttrText); j++)
+			for (int j = 0; j < _countof(cbULAttrText); j++)
 			{
 				SendMessageW(GetDlgItem(hDlg, cbULAttrID[i]), CB_ADDSTRING, 0, (LPARAM)cbULAttrText[j]);
 			}
 		}
-		for(int i = 0; i < _countof(customColor); i++)
+		for (int i = 0; i < _countof(customColor); i++)
 		{
 			customColor[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
 		LoadDisplayAttr(no);
 
-		for(int i = 0; i < _countof(displayAttr[no]); i++)
+		for (int i = 0; i < _countof(displayAttr[no]); i++)
 		{
-			if(displayAttr[no][i].se)
+			if (displayAttr[no][i].se)
 			{
 				CheckDlgButton(hDlg, displayAttrID[i][0], BST_CHECKED);
 				DisplayAttrSeriesChecked(hDlg, displayAttrID[i][0]);
 			}
-			switch(displayAttr[no][i].da.crText.type)
+			switch (displayAttr[no][i].da.crText.type)
 			{
 			case TF_CT_NONE:
 				CheckDlgButton(hDlg, displayAttrID[i][1], BST_CHECKED);
@@ -189,7 +189,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				CheckDlgButton(hDlg, displayAttrID[i][2], BST_CHECKED);
 				break;
 			}
-			switch(displayAttr[no][i].da.crBk.type)
+			switch (displayAttr[no][i].da.crBk.type)
 			{
 			case TF_CT_NONE:
 				CheckDlgButton(hDlg, displayAttrID[i][4], BST_CHECKED);
@@ -200,7 +200,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			}
 			SendMessageW(GetDlgItem(hDlg, displayAttrID[i][7]), CB_SETCURSEL, displayAttr[no][i].da.lsStyle, 0);
 			CheckDlgButton(hDlg, displayAttrID[i][8], (displayAttr[no][i].da.fBoldLine ? BST_CHECKED : BST_UNCHECKED));
-			switch(displayAttr[no][i].da.crLine.type)
+			switch (displayAttr[no][i].da.crLine.type)
 			{
 			case TF_CT_NONE:
 				CheckDlgButton(hDlg, displayAttrID[i][9], BST_CHECKED);
@@ -215,7 +215,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		return TRUE;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_CHECKBOX_SERIES_MARK:
 		case IDC_CHECKBOX_SERIES_TEXT:
@@ -262,7 +262,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		case IDC_COMBO_ATTR_TEXT:
 		case IDC_COMBO_ATTR_OKURI:
 		case IDC_COMBO_ATTR_ANNOT:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case CBN_SELCHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -284,15 +284,15 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		case IDC_COL_UL_TEXT:
 		case IDC_COL_UL_OKURI:
 		case IDC_COL_UL_ANNOT:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case STN_CLICKED:
 			case STN_DBLCLK:
-				for(int i = 0; i < _countof(displayAttrColor[no]); i++)
+				for (int i = 0; i < _countof(displayAttrColor[no]); i++)
 				{
-					for(int j = 0; j < _countof(displayAttrColor[no][i]); j++)
+					for (int j = 0; j < _countof(displayAttrColor[no][i]); j++)
 					{
-						if(LOWORD(wParam) == displayAttrColor[no][i][j].id)
+						if (LOWORD(wParam) == displayAttrColor[no][i][j].id)
 						{
 							cc.lStructSize = sizeof(cc);
 							cc.hwndOwner = hDlg;
@@ -304,7 +304,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 							cc.lpfnHook = nullptr;
 							cc.lpTemplateName = nullptr;
 
-							if(ChooseColorW(&cc))
+							if (ChooseColorW(&cc))
 							{
 								DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, cc.rgbResult);
 								*displayAttrColor[no][i][j].color = cc.rgbResult;
@@ -327,9 +327,9 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(int i = 0; i < _countof(displayAttrColor[no]); i++)
+		for (int i = 0; i < _countof(displayAttrColor[no]); i++)
 		{
-			for(int j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != nullptr; j++)
+			for (int j = 0; j < _countof(displayAttrColor[no][i]) && displayAttr[no][i].key != nullptr; j++)
 			{
 				DrawSelectColor(hDlg, displayAttrColor[no][i][j].id, *displayAttrColor[no][i][j].color);
 			}
@@ -349,7 +349,7 @@ void DisplayAttrSeriesChecked(HWND hDlg, int id)
 {
 	int c = -1;
 
-	switch(id)
+	switch (id)
 	{
 		case IDC_CHECKBOX_SERIES_MARK:
 			c = 0;
@@ -366,9 +366,9 @@ void DisplayAttrSeriesChecked(HWND hDlg, int id)
 		default:
 			break;
 	}
-	if(c > -1)
+	if (c > -1)
 	{
-		for(int i = 1; i < _countof(displayAttrID[c]); i++)
+		for (int i = 1; i < _countof(displayAttrID[c]); i++)
 		{
 			EnableWindow(GetDlgItem(hDlg, displayAttrID[c][i]),
 				(IsDlgButtonChecked(hDlg, id) == BST_CHECKED ? FALSE : TRUE));
@@ -382,12 +382,12 @@ void LoadDisplayAttr(int no)
 	BOOL se;
 	TF_DISPLAYATTRIBUTE da;
 
-	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
+	for (int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
 	{
 		ReadValue(pathconfigxml, SectionDisplayAttr, displayAttr[no][i].key, strxmlval);
-		if(!strxmlval.empty())
+		if (!strxmlval.empty())
 		{
-			if(swscanf_s(strxmlval.c_str(), displayAttrFormat,
+			if (swscanf_s(strxmlval.c_str(), displayAttrFormat,
 				&se, &da.crText.type, &da.crText.cr, &da.crBk.type, &da.crBk.cr,
 				&da.lsStyle, &da.fBoldLine, &da.crLine.type, &da.crLine.cr, &da.bAttr) == 10)
 			{
@@ -402,7 +402,7 @@ void SaveDisplayAttr(IXmlWriter *pWriter, HWND hDlg, int no)
 {
 	WCHAR num[64];
 
-	for(int i = 0; i < _countof(displayAttr[no]); i++)
+	for (int i = 0; i < _countof(displayAttr[no]); i++)
 	{
 		displayAttr[no][i].se =
 			(IsDlgButtonChecked(hDlg, displayAttrID[i][0]) == BST_CHECKED ? TRUE : FALSE);
@@ -420,7 +420,7 @@ void SaveDisplayAttr(IXmlWriter *pWriter, HWND hDlg, int no)
 			(TF_DA_ATTR_INFO)SendMessageW(GetDlgItem(hDlg, displayAttrID[i][12]), CB_GETCURSEL, 0, 0);
 	}
 
-	for(int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
+	for (int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, displayAttrFormat,
 			displayAttr[no][i].se,

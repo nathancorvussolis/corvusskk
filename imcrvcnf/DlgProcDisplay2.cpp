@@ -29,28 +29,28 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	CHOOSECOLORW cc = {};
 	static COLORREF customColor[16];
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, SectionDisplay, ValueShowModeInl, L"1");
 		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
 		count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-		if(count > 60 || count <= 0)
+		if (count > 60 || count <= 0)
 		{
 			count = SHOWMODESEC_DEF;
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", count);
 		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
 
-		for(int i = 0; i < _countof(customColor); i++)
+		for (int i = 0; i < _countof(customColor); i++)
 		{
 			customColor[i] = RGB(0xFF, 0xFF, 0xFF);
 		}
 
-		for(int i = 0; i < _countof(displayModeColor); i++)
+		for (int i = 0; i < _countof(displayModeColor); i++)
 		{
 			ReadValue(pathconfigxml, SectionDisplay, displayModeColor[i].value, strxmlval);
-			if(!strxmlval.empty())
+			if (!strxmlval.empty())
 			{
 				displayModeColor[i].color = wcstoul(strxmlval.c_str(), nullptr, 0);
 			}
@@ -63,10 +63,10 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		return TRUE;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_EDIT_SHOWMODESEC:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -88,13 +88,13 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		case IDC_COL_MODE_JL:
 		case IDC_COL_MODE_AC:
 		case IDC_COL_MODE_DR:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case STN_CLICKED:
 			case STN_DBLCLK:
-				for(int i = 0; i < _countof(displayModeColor); i++)
+				for (int i = 0; i < _countof(displayModeColor); i++)
 				{
-					if(LOWORD(wParam) == displayModeColor[i].id)
+					if (LOWORD(wParam) == displayModeColor[i].id)
 					{
 						cc.lStructSize = sizeof(cc);
 						cc.hwndOwner = hDlg;
@@ -106,7 +106,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 						cc.lpfnHook = nullptr;
 						cc.lpTemplateName = nullptr;
 
-						if(ChooseColorW(&cc))
+						if (ChooseColorW(&cc))
 						{
 							DrawSelectColor(hDlg, displayModeColor[i].id, cc.rgbResult);
 							displayModeColor[i].color = cc.rgbResult;
@@ -128,7 +128,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 	case WM_PAINT:
 		hdc = BeginPaint(hDlg, &ps);
-		for(int i = 0; i < _countof(displayModeColor); i++)
+		for (int i = 0; i < _countof(displayModeColor); i++)
 		{
 			DrawSelectColor(hDlg, displayModeColor[i].id, displayModeColor[i].color);
 		}
@@ -155,7 +155,7 @@ void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
 	GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
 	count = _wtoi(num);
-	if(count <= 0 || count > 60)
+	if (count <= 0 || count > 60)
 	{
 		count = SHOWMODESEC_DEF;
 	}
@@ -163,7 +163,7 @@ void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 	SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
 	WriterKey(pWriter, ValueShowModeSec, num);
 
-	for(int i = 0; i < _countof(displayModeColor); i++)
+	for (int i = 0; i < _countof(displayModeColor); i++)
 	{
 		_snwprintf_s(num, _TRUNCATE, L"0x%06X", displayModeColor[i].color);
 		WriterKey(pWriter, displayModeColor[i].value, num);

@@ -19,9 +19,9 @@ wchar_t *u8stows(const char *s)
 	wchar_t *wbuf = NULL;
 
 	int len = MultiByteToWideChar(CP_UTF8, 0, s, -1, NULL, 0);
-	if(len > 0) {
+	if (len > 0) {
 		wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
-		if(wbuf) {
+		if (wbuf) {
 			MultiByteToWideChar(CP_UTF8, 0, s, -1, wbuf, len);
 		}
 	}
@@ -36,9 +36,9 @@ char *u8wstos(const wchar_t *s)
 	char *buf = NULL;
 
 	int len = WideCharToMultiByte(CP_UTF8, 0, s, -1, NULL, 0, NULL, NULL);
-	if(len > 0) {
+	if (len > 0) {
 		buf = (char *)calloc(len, sizeof(char));
-		if(buf) {
+		if (buf) {
 			WideCharToMultiByte(CP_UTF8, 0, s, -1, buf, len, NULL, NULL);
 		}
 	}
@@ -49,7 +49,7 @@ char *u8wstos(const wchar_t *s)
 
 DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 {
-	if(nSize == 0) return 0;
+	if (nSize == 0) return 0;
 	lpFilename[0] = '\0';
 
 	wchar_t wfname[MAX_PATH];
@@ -59,8 +59,8 @@ DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize)
 	}
 
 	char *b = u8wstos(wfname);
-	if(b) {
-		if(strlen(b) < nSize) {
+	if (b) {
+		if (strlen(b) < nSize) {
 			strcpy(lpFilename, b);
 		}
 	}
@@ -74,7 +74,7 @@ DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD 
 {
 	DWORD len = 0;
 
-	if((lpBuffer == NULL) ||
+	if ((lpBuffer == NULL) ||
 		((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) == 0 && nSize == 0) ||
 		((dwFlags & FORMAT_MESSAGE_IGNORE_INSERTS) == 0) ||
 		((dwFlags & FORMAT_MESSAGE_FROM_STRING) != 0)) {
@@ -84,18 +84,18 @@ DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD 
 	wchar_t *wbuf = NULL;
 	FormatMessageW(dwFlags | FORMAT_MESSAGE_ALLOCATE_BUFFER,
 		lpSource, dwMessageId, dwLanguageId, (LPWSTR)&wbuf, 0, NULL);
-	if(wbuf) {
+	if (wbuf) {
 		char *b = u8wstos(wbuf);
-		if(b) {
-			if((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0) {
+		if (b) {
+			if ((dwFlags & FORMAT_MESSAGE_ALLOCATE_BUFFER) != 0) {
 				nSize = (DWORD)max(strlen(b) + 1, nSize);
 				*((LPSTR *)lpBuffer) = (LPSTR)LocalAlloc(LPTR, nSize);
 				lpBuffer = *((LPSTR *)lpBuffer);
-				if(lpBuffer == NULL) {
+				if (lpBuffer == NULL) {
 					nSize = 0;
 				}
 			}
-			if(strlen(b) < nSize) {
+			if (strlen(b) < nSize) {
 				strcpy(lpBuffer, b);
 				len = (DWORD)strlen(b);
 			}
@@ -112,7 +112,7 @@ HMODULE u8LoadLibraryEx(LPCSTR lpLibFileName, HANDLE hFile, DWORD dwFlags)
 	HMODULE lib = NULL;
 
 	wchar_t *wfname = u8stows(lpLibFileName);
-	if(wfname) {
+	if (wfname) {
 		lib = LoadLibraryExW(wfname, hFile, dwFlags);
 	}
 	free(wfname);
@@ -126,7 +126,7 @@ FILE *u8fopen(const char *fname, const char *mode)
 
 	wchar_t *wfname = u8stows(fname);
 	wchar_t *wmode = u8stows(mode);
-	if(wfname && wmode) {
+	if (wfname && wmode) {
 		fp = _wfopen(wfname, wmode);
 	}
 	free(wfname);
@@ -141,7 +141,7 @@ FILE *u8freopen(const char *fname, const char *mode, FILE *oldfp)
 
 	wchar_t *wfname = u8stows(fname);
 	wchar_t *wmode = u8stows(mode);
-	if(wfname && wmode) {
+	if (wfname && wmode) {
 		fp = _wfreopen(wfname, wmode, oldfp);
 	}
 	free(wfname);
@@ -156,7 +156,7 @@ FILE *u8popen(const char *command, const char *mode)
 
 	wchar_t *wcommand = u8stows(command);
 	wchar_t *wmode = u8stows(mode);
-	if(wcommand && wmode) {
+	if (wcommand && wmode) {
 		fp = _wpopen(wcommand, wmode);
 	}
 	free(wcommand);
@@ -173,13 +173,13 @@ int u8fprintf(FILE *file, const char *format, ...)
 	va_start(argptr, format);
 
 	int buflen = _vscprintf(format, argptr) + 1;
-	if(buflen <= 0) {
+	if (buflen <= 0) {
 		va_end(argptr);
 		return -1;
 	}
 
 	char *buf = (char *)calloc(buflen, sizeof(char));
-	if(buf == NULL) {
+	if (buf == NULL) {
 		va_end(argptr);
 		return -1;
 	}
@@ -188,9 +188,9 @@ int u8fprintf(FILE *file, const char *format, ...)
 
 	va_end(argptr);
 
-	if(file == stdout || file == stderr) {
+	if (file == stdout || file == stderr) {
 		wchar_t *wbuf = u8stows(buf);
-		if(wbuf) {
+		if (wbuf) {
 			ret = fwprintf(file, L"%s", wbuf);
 		}
 		free(wbuf);
@@ -212,13 +212,13 @@ int u8printf(const char *format, ...)
 	va_start(argptr, format);
 
 	int buflen = _vscprintf(format, argptr) + 1;
-	if(buflen <= 0) {
+	if (buflen <= 0) {
 		va_end(argptr);
 		return -1;
 	}
 
 	char *buf = (char *)calloc(buflen, sizeof(char));
-	if(buf == NULL) {
+	if (buf == NULL) {
 		va_end(argptr);
 		return -1;
 	}
@@ -228,7 +228,7 @@ int u8printf(const char *format, ...)
 	va_end(argptr);
 
 	wchar_t *wbuf = u8stows(buf);
-	if(wbuf) {
+	if (wbuf) {
 		ret = wprintf(L"%s", wbuf);
 	}
 	free(wbuf);
@@ -244,14 +244,14 @@ char *u8fgets(char *buf, int len, FILE *file)
 	wchar_t ws[2 + 1];
 	char *b, *dst = NULL;
 
-	if(file == stdin) {
-		if(buf == NULL || len <= 0) return NULL;
+	if (file == stdin) {
+		if (buf == NULL || len <= 0) return NULL;
 
 		buf[0] = '\0';
 		c0 = L'\0';
-		while((c = fgetwc(file)) != WEOF) {
-			if(IS_HIGH_SURROGATE(c0)) {
-				if(IS_LOW_SURROGATE(c)) {
+		while ((c = fgetwc(file)) != WEOF) {
+			if (IS_HIGH_SURROGATE(c0)) {
+				if (IS_LOW_SURROGATE(c)) {
 					ws[0] = c0;
 					ws[1] = c;
 					ws[2] = L'\0';
@@ -262,8 +262,8 @@ char *u8fgets(char *buf, int len, FILE *file)
 					ws[1] = L'\0';
 				}
 			}
-			else if(IS_HIGH_SURROGATE(c)) {
-				if(len <= (int)(strlen(buf) + 4)) {
+			else if (IS_HIGH_SURROGATE(c)) {
+				if (len <= (int)(strlen(buf) + 4)) {
 					ungetwc(c, file);
 					break;
 				}
@@ -277,8 +277,8 @@ char *u8fgets(char *buf, int len, FILE *file)
 			c0 = L'\0';
 
 			b = u8wstos(ws);
-			if(b) {
-				if(len > (int)(strlen(buf) + strlen(b))) {
+			if (b) {
+				if (len > (int)(strlen(buf) + strlen(b))) {
 					strcat(buf, b);
 					free(b);
 				}
@@ -289,10 +289,10 @@ char *u8fgets(char *buf, int len, FILE *file)
 				}
 			}
 
-			if(c == L'\n') break;
+			if (c == L'\n') break;
 		}
 
-		if(strlen(buf) > 0) dst = buf;
+		if (strlen(buf) > 0) dst = buf;
 	}
 	else {
 		dst = fgets(buf, len, file);
@@ -305,9 +305,9 @@ int u8fputs(const char *buf, FILE *file)
 {
 	int ret = 0;
 
-	if(file == stdout || file == stderr) {
+	if (file == stdout || file == stderr) {
 		wchar_t *wbuf = u8stows(buf);
-		if(wbuf) {
+		if (wbuf) {
 			ret = fputws(wbuf, file);
 		}
 		free(wbuf);
@@ -324,9 +324,9 @@ char *u8getenv(const char *varname)
 	char *env = NULL;
 
 	wchar_t *wvarname = u8stows(varname);
-	if(wvarname) {
+	if (wvarname) {
 		wchar_t *wenv = _wgetenv(wvarname);
-		if(wenv) {
+		if (wenv) {
 			env = u8wstos(wenv);
 		}
 	}
@@ -343,16 +343,16 @@ char *u8tmpnam(char *str)
 	wchar_t wbuf[L_tmpnam];
 
 	wchar_t *w = _wtmpnam(wbuf);
-	if(w) {
+	if (w) {
 		char *b = u8wstos(w);
-		if(b) {
-			if(str == NULL) {
+		if (b) {
+			if (str == NULL) {
 				t = buf;
 			}
 			else {
 				t = str;
 			}
-			if(strlen(b) < L_tmpnam) {
+			if (strlen(b) < L_tmpnam) {
 				strcpy(t, b);
 			}
 		}
@@ -367,7 +367,7 @@ int u8system(const char *command)
 	int r = -1;
 
 	wchar_t *wbuf = u8stows(command);
-	if(wbuf) {
+	if (wbuf) {
 		r = _wsystem(wbuf);
 	}
 	free(wbuf);
@@ -380,7 +380,7 @@ int u8remove(const char *fname)
 	int r = -1;
 
 	wchar_t *wfname = u8stows(fname);
-	if(wfname) {
+	if (wfname) {
 		r = _wremove(wfname);
 	}
 	free(wfname);
@@ -394,7 +394,7 @@ int u8rename(const char *oldfname, const char *newfname)
 
 	wchar_t *woldfname = u8stows(oldfname);
 	wchar_t *wnewfname = u8stows(newfname);
-	if(woldfname && wnewfname) {
+	if (woldfname && wnewfname) {
 		r = _wrename(woldfname, wnewfname);
 	}
 	free(woldfname);
@@ -405,16 +405,16 @@ int u8rename(const char *oldfname, const char *newfname)
 
 size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *ptm)
 {
-	if(len == 0) return 0;
+	if (len == 0) return 0;
 	buf[0] = '\0';
 
 	wchar_t *wformat = u8stows(format);
 	wchar_t *wbuf = (wchar_t *)calloc(len, sizeof(wchar_t));
-	if(wformat && wbuf) {
-		if(wcsftime(wbuf, len, wformat, ptm) > 0) {
+	if (wformat && wbuf) {
+		if (wcsftime(wbuf, len, wformat, ptm) > 0) {
 			char *b = u8wstos(wbuf);
-			if(b) {
-				if(strlen(b) < len) {
+			if (b) {
+				if (strlen(b) < len) {
 					strcpy(buf, b);
 				}
 			}

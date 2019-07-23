@@ -19,25 +19,25 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	c.clear();
 	o.clear();
 
-	switch(bom)
+	switch (bom)
 	{
 	case BOM:
-		while((rp = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+		while ((rp = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
 		{
 			wsbuf += wbuf;
 
-			if(!wsbuf.empty() && wsbuf.back() == L'\n')
+			if (!wsbuf.empty() && wsbuf.back() == L'\n')
 			{
 				break;
 			}
 		}
 		break;
 	default:
-		while((rp = fgets(buf, _countof(buf), fp)) != nullptr)
+		while ((rp = fgets(buf, _countof(buf), fp)) != nullptr)
 		{
 			sbuf += buf;
 
-			if(!sbuf.empty() && sbuf.back() == '\n')
+			if (!sbuf.empty() && sbuf.back() == '\n')
 			{
 				break;
 			}
@@ -45,41 +45,41 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		break;
 	}
 
-	if(rp == nullptr)
+	if (rp == nullptr)
 	{
 		return -1;
 	}
 
-	switch(bom)
+	switch (bom)
 	{
 	case BOM:
 		break;
 	default:
 		wsbuf = eucjis2004_string_to_wstring(sbuf);
-		if(wsbuf.empty())
+		if (wsbuf.empty())
 		{
 			return 1;
 		}
 		break;
 	}
 
-	if(wsbuf.empty())
+	if (wsbuf.empty())
 	{
 		return 1;
 	}
 
-	if(wsbuf.compare(EntriesAri) == 0)
+	if (wsbuf.compare(EntriesAri) == 0)
 	{
 		okuri = 1;
 		return 1;
 	}
-	else if(wsbuf.compare(EntriesNasi) == 0)
+	else if (wsbuf.compare(EntriesNasi) == 0)
 	{
 		okuri = 0;
 		return 1;
 	}
 
-	if(okuri == -1)
+	if (okuri == -1)
 	{
 		return 1;
 	}
@@ -90,7 +90,7 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	fmt.assign(L"");
 	s = std::regex_replace(s, rectrl, fmt);
 
-	if(okuri == 1)
+	if (okuri == 1)
 	{
 		//送りありエントリのブロック
 		ParseSKKDicOkuriBlock(s, o);
@@ -102,18 +102,18 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 	}
 
 	is = s.find(L"\x20/");
-	if(is == std::wstring::npos)
+	if (is == std::wstring::npos)
 	{
 		return 1;
 	}
 
 	ie = s.find_last_not_of(L'\x20', is);
-	if(ie == std::wstring::npos)
+	if (ie == std::wstring::npos)
 	{
 		return 1;
 	}
 
-	if(s.find_last_of(L'\x20', ie) != std::wstring::npos)
+	if (s.find_last_of(L'\x20', ie) != std::wstring::npos)
 	{
 		return 1;
 	}
@@ -133,11 +133,11 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 	std::wstring candidate, annotation;
 
 	i = 0;
-	while(i < s.size())
+	while (i < s.size())
 	{
 		is = s.find_first_of(L'/', i);
 		ie = s.find_first_of(L'/', is + 1);
-		if(ie == std::wstring::npos)
+		if (ie == std::wstring::npos)
 		{
 			break;
 		}
@@ -147,7 +147,7 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 
 		ia = candidate.find_first_of(L';');
 
-		if(ia == std::wstring::npos)
+		if (ia == std::wstring::npos)
 		{
 			annotation.clear();
 		}
@@ -157,7 +157,7 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 			candidate = candidate.substr(0, ia);
 		}
 
-		if(!candidate.empty())
+		if (!candidate.empty())
 		{
 			c.push_back(std::make_pair(candidate, annotation));
 		}
@@ -174,7 +174,7 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 	static const std::wregex reblock(L"\\[([^\\[\\]]+?)(/[^\\[\\]]+?/)\\]/");
 
-	while(std::regex_search(so, m, reblock))
+	while (std::regex_search(so, m, reblock))
 	{
 		okurics.clear();
 
@@ -205,7 +205,7 @@ std::wstring ParseConcat(const std::wstring &s)
 
 	static const std::wregex reconcat(L"^\\(\\s*concat\\s+\"(.+)\"\\s*\\)$");
 
-	if(std::regex_search(ret, reconcat))
+	if (std::regex_search(ret, reconcat))
 	{
 		fmt.assign(L"$1");
 		ret = std::regex_replace(ret, reconcat, fmt);
@@ -236,13 +236,13 @@ std::wstring ParseConcat(const std::wstring &s)
 
 		//8進数表記の文字
 		re.assign(L"\\\\[0-3][0-7]{2}");
-		while(std::regex_search(ret, res, re))
+		while (std::regex_search(ret, res, re))
 		{
 			numstr += res.prefix();
 			numtmpstr = res.str();
 			numtmpstr[0] = L'0';
 			u = (wchar_t)wcstoul(numtmpstr.c_str(), nullptr, 0);
-			if(u >= L'\x20' && u <= L'\x7E')
+			if (u >= L'\x20' && u <= L'\x7E')
 			{
 				numstr.append(1, u);
 			}
@@ -274,7 +274,7 @@ std::wstring MakeConcat(const std::wstring &s)
 	// "/" -> \057, ";" -> \073
 	static const std::wregex respcch(L"[/;]");
 
-	if(std::regex_search(ret, respcch))
+	if (std::regex_search(ret, respcch))
 	{
 		// "\"" -> "\\\"", "\\" -> "\\\\"
 		re.assign(L"([\\\"\\\\])");

@@ -10,19 +10,19 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	std::wstring strxmlval;
 	int count;
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
 		num[1] = L'\0';
-		for(int i = 1; i <= 9; i++)
+		for (int i = 1; i <= 9; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
 			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
 		}
 		ReadValue(pathconfigxml, SectionBehavior, ValueCompMultiNum, strxmlval);
 		count = strxmlval.empty() ? COMPMULTIDISP_DEF : _wtoi(strxmlval.c_str());
-		if(count > MAX_SELKEY_C || count < 1)
+		if (count > MAX_SELKEY_C || count < 1)
 		{
 			count = COMPMULTIDISP_DEF;
 		}
@@ -37,10 +37,10 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		return TRUE;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_COMBO_COMPMULTINUM:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case CBN_SELCHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -78,7 +78,7 @@ void SaveBehavior2(IXmlWriter *pWriter, HWND hDlg)
 
 	HWND hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
 	int count = 1 + (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
-	if(count > MAX_SELKEY_C || count < 1)
+	if (count > MAX_SELKEY_C || count < 1)
 	{
 		count = COMPMULTIDISP_DEF;
 	}

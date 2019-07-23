@@ -5,15 +5,15 @@
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 {
-	switch(fdwReason)
+	switch (fdwReason)
 	{
 	case DLL_PROCESS_ATTACH:
 		g_hInst = hinstDLL;
-		if(!CCandidateWindow::_InitClass())
+		if (!CCandidateWindow::_InitClass())
 		{
 			return FALSE;
 		}
-		if(!CInputModeWindow::_InitClass())
+		if (!CInputModeWindow::_InitClass())
 		{
 			return FALSE;
 		}

@@ -17,9 +17,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	CreateIpcName();
 
 	hMutex = CreateMutexW(nullptr, FALSE, cnfmutexname);
-	if(hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
+	if (hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
-		if(hMutex != nullptr)
+		if (hMutex != nullptr)
 		{
 			CloseHandle(hMutex);
 		}
@@ -34,15 +34,15 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	LPWSTR fileArg = nullptr;
 	int numArgs = 0;
 	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
-	if(pArgs != nullptr && numArgs >= 2)
+	if (pArgs != nullptr && numArgs >= 2)
 	{
-		for(int i = 0; i < numArgs; i++)
+		for (int i = 0; i < numArgs; i++)
 		{
-			if(wcscmp(pArgs[i], L"/t") == 0)
+			if (wcscmp(pArgs[i], L"/t") == 0)
 			{
 				tempMode = true;
 			}
-			else if(PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
+			else if (PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
 			{
 				fileArg = pArgs[i];
 				wcsncpy_s(pathconfigxml, fileArg, _TRUNCATE);
@@ -52,12 +52,12 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateProperty();
 
-	if(tempMode && fileArg != nullptr)
+	if (tempMode && fileArg != nullptr)
 	{
 		DeleteFileW(fileArg);
 	}
 
-	if(hMutex != nullptr)
+	if (hMutex != nullptr)
 	{
 		ReleaseMutex(hMutex);
 		CloseHandle(hMutex);
@@ -89,7 +89,7 @@ void CreateProperty()
 	};
 
 	PROPSHEETPAGEW psp[_countof(DlgPages)] = {};
-	for(int i = 0; i < _countof(psp); i++)
+	for (int i = 0; i < _countof(psp); i++)
 	{
 		psp[i].dwSize = sizeof(psp[i]);
 		psp[i].dwFlags = PSP_PREMATURE;
@@ -118,7 +118,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 {
 	static HWND hwndInit = nullptr;
 
-	switch(uMsg)
+	switch (uMsg)
 	{
 	case PSCB_INITIALIZED:
 		hwndInit = hwndDlg;
@@ -129,21 +129,21 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 	case PSCB_PRECREATE:
 		break;
 	case PSCB_BUTTONPRESSED:
-		if(lParam == PSBTN_OK || lParam == PSBTN_APPLYNOW)
+		if (lParam == PSBTN_OK || lParam == PSBTN_APPLYNOW)
 		{
 			// hwndDlg is NULL on Vista
-			if(hwndDlg == nullptr)
+			if (hwndDlg == nullptr)
 			{
 				hwndDlg = hwndInit;
 			}
 
 			CreateConfigPath();
 
-			if(SaveConfigXml(hwndDlg) == FALSE)
+			if (SaveConfigXml(hwndDlg) == FALSE)
 			{
 				MessageBoxW(hwndDlg, L"保存に失敗しました。", TextServiceDesc, MB_OK | MB_ICONERROR);
 
-				if(lParam == PSBTN_OK)
+				if (lParam == PSBTN_OK)
 				{
 					ReleaseMutex(hMutex);
 					CloseHandle(hMutex);
@@ -157,7 +157,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 
 					wcsncpy_s(pathconfigxml, tempfilepath, _TRUNCATE);
 
-					if(SaveConfigXml(hwndDlg) == TRUE)
+					if (SaveConfigXml(hwndDlg) == TRUE)
 					{
 						WCHAR args[MAX_PATH] = {};
 						_snwprintf_s(args, _TRUNCATE, L"/t \"%s\"", tempfilepath);

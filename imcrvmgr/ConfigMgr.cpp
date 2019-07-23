@@ -54,7 +54,7 @@ void CreateConfigPath()
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
-	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		WCHAR appdir[MAX_PATH];
 
@@ -72,7 +72,7 @@ void CreateConfigPath()
 		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s", appdir, fninitlua);
 
 		//for compatibility
-		if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
+		if (GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
 		{
 			WCHAR skkdict[MAX_PATH];
 			_snwprintf_s(skkdict, _TRUNCATE, L"%s\\%s", appdir, L"skkdict.dic");
@@ -89,7 +89,7 @@ void UpdateConfigPath()
 
 	//%AppData%\\CorvusSKK\\config.xml
 	//%AppData%\\CorvusSKK\\skkdict.txt
-	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
 		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnskkdic);
@@ -97,14 +97,14 @@ void UpdateConfigPath()
 		CoTaskMemFree(knownfolderpath);
 	}
 
-	if(GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
+	if (GetFileAttributesW(pathconfigxml) == INVALID_FILE_ATTRIBUTES)
 	{
 #ifdef _DEBUG
 		//<module directory>\\config.xml
-		if(GetModuleFileNameW(hInst, pathconfigxml, _countof(pathconfigxml)) != 0)
+		if (GetModuleFileNameW(hInst, pathconfigxml, _countof(pathconfigxml)) != 0)
 		{
 			WCHAR *pdir = wcsrchr(pathconfigxml, L'\\');
-			if(pdir != nullptr)
+			if (pdir != nullptr)
 			{
 				*(pdir + 1) = L'\0';
 				wcsncat_s(pathconfigxml, fnconfigxml, _TRUNCATE);
@@ -112,7 +112,7 @@ void UpdateConfigPath()
 		}
 #else
 		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
-		if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+		if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 		{
 			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
 
@@ -121,14 +121,14 @@ void UpdateConfigPath()
 #endif
 	}
 
-	if(GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
+	if (GetFileAttributesW(pathskkdic) == INVALID_FILE_ATTRIBUTES)
 	{
 #ifdef _DEBUG
 		//<module directory>\\skkdict.txt
-		if(GetModuleFileNameW(hInst, pathskkdic, _countof(pathskkdic)) != 0)
+		if (GetModuleFileNameW(hInst, pathskkdic, _countof(pathskkdic)) != 0)
 		{
 			WCHAR *pdir = wcsrchr(pathskkdic, L'\\');
-			if(pdir != nullptr)
+			if (pdir != nullptr)
 			{
 				*(pdir + 1) = L'\0';
 				wcsncat_s(pathskkdic, fnskkdic, _TRUNCATE);
@@ -136,7 +136,7 @@ void UpdateConfigPath()
 		}
 #else
 		//%SystemRoot%\\IME\\IMCRVSKK\\skkdict.txt
-		if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+		if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 		{
 			_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnskkdic);
 
@@ -154,7 +154,7 @@ void CreateIpcName()
 
 	LPWSTR pszUserSid = nullptr;
 
-	if(GetUserSid(&pszUserSid))
+	if (GetUserSid(&pszUserSid))
 	{
 		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(krnlobjsddl, _TRUNCATE, L"D:%s(A;;GA;;;RC)(A;;GA;;;SY)(A;;GA;;;BA)(A;;GA;;;%s)",
@@ -168,7 +168,7 @@ void CreateIpcName()
 
 	LPWSTR pszUserUUID = nullptr;
 
-	if(GetUserUUID(&pszUserUUID))
+	if (GetUserUUID(&pszUserUUID))
 	{
 		_snwprintf_s(mgrpipename, _TRUNCATE, L"%s%s", IMCRVMGRPIPE, pszUserUUID);
 		_snwprintf_s(mgrmutexname, _TRUNCATE, L"%s%s", IMCRVMGRMUTEX, pszUserUUID);
@@ -188,7 +188,7 @@ void LoadConfig()
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerServ, strxmlval);
 	servtmp = _wtoi(strxmlval.c_str());
-	if(servtmp != TRUE && servtmp != FALSE)
+	if (servtmp != TRUE && servtmp != FALSE)
 	{
 		servtmp = FALSE;
 	}
@@ -201,20 +201,20 @@ void LoadConfig()
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerEncoding, strxmlval);
 	encodingtmp = _wtoi(strxmlval.c_str());
-	if(encodingtmp != 1)
+	if (encodingtmp != 1)
 	{
 		encodingtmp = 0;
 	}
 
 	ReadValue(pathconfigxml, SectionServer, ValueServerTimeOut, strxmlval);
 	timeouttmp = _wtoi(strxmlval.c_str());
-	if(timeouttmp > 60000)
+	if (timeouttmp > 60000)
 	{
 		timeouttmp = 1000;
 	}
 
 	//変更があったら接続し直す
-	if(servtmp != serv || wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
+	if (servtmp != serv || wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
 		encodingtmp != encoding || timeouttmp != timeout)
 	{
 		serv = servtmp;
@@ -225,7 +225,7 @@ void LoadConfig()
 
 		DisconnectSKKServer();
 
-		if(serv)
+		if (serv)
 		{
 			ConnectSKKServer();
 			GetSKKServerInfo(SKK_VER);
@@ -234,14 +234,14 @@ void LoadConfig()
 
 	ReadValue(pathconfigxml, SectionBehavior, ValuePrecedeOkuri, strxmlval);
 	precedeokuri = _wtoi(strxmlval.c_str());
-	if(precedeokuri != TRUE && precedeokuri != FALSE)
+	if (precedeokuri != TRUE && precedeokuri != FALSE)
 	{
 		precedeokuri = FALSE;
 	}
 
 	ReadValue(pathconfigxml, SectionBehavior, ValueCompIncBack, strxmlval);
 	compincback = _wtoi(strxmlval.c_str());
-	if(compincback != TRUE && compincback != FALSE)
+	if (compincback != TRUE && compincback != FALSE)
 	{
 		compincback = FALSE;
 	}
@@ -253,14 +253,14 @@ BOOL IsFileModified(LPCWSTR path, FILETIME *ft)
 	HANDLE hFile;
 	FILETIME ftn;
 
-	if(path != nullptr && ft != nullptr)
+	if (path != nullptr && ft != nullptr)
 	{
 		hFile = CreateFileW(path, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-		if(hFile != INVALID_HANDLE_VALUE)
+		if (hFile != INVALID_HANDLE_VALUE)
 		{
-			if(GetFileTime(hFile, nullptr, nullptr, &ftn))
+			if (GetFileTime(hFile, nullptr, nullptr, &ftn))
 			{
-				if(((ULARGE_INTEGER *)ft)->QuadPart != ((ULARGE_INTEGER *)&ftn)->QuadPart)
+				if (((ULARGE_INTEGER *)ft)->QuadPart != ((ULARGE_INTEGER *)&ftn)->QuadPart)
 				{
 					*ft = ftn;
 					ret = TRUE;
@@ -278,7 +278,7 @@ void InitLua()
 	CHAR version[64];
 
 	lua = luaL_newstate();
-	if(lua == nullptr)
+	if (lua == nullptr)
 	{
 		return;
 	}
@@ -294,7 +294,7 @@ void InitLua()
 	lua_setglobal(lua, u8"SKK_VERSION");
 
 	//%AppData%\\CorvusSKK\\init.lua
-	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+	if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;
 	}
@@ -303,10 +303,10 @@ void InitLua()
 
 #ifdef _DEBUG
 	//<module directory>\\init.lua
-	if(GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
+	if (GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
 	{
 		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
-		if(pdir != nullptr)
+		if (pdir != nullptr)
 		{
 			*(pdir + 1) = L'\0';
 			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
@@ -316,7 +316,7 @@ void InitLua()
 	PWSTR knownfolderpath = nullptr;
 
 	//%SystemRoot%\\IME\\IMCRVSKK\\init.lua
-	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fninitlua);
 
@@ -324,7 +324,7 @@ void InitLua()
 	}
 #endif
 
-	if(luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+	if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;
 	}
@@ -334,7 +334,7 @@ void InitLua()
 
 void UninitLua()
 {
-	if(lua != nullptr)
+	if (lua != nullptr)
 	{
 		lua_close(lua);
 		lua = nullptr;

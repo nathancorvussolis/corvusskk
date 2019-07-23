@@ -18,7 +18,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	NMLISTVIEW *pListView;
 	WCHAR text[16] = {};
 
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
@@ -59,12 +59,12 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 	case WM_COMMAND:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_BUTTON_CONVPOINT_W:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0)
+			if (index >= 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -78,7 +78,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				ListView_SetItemText(hWndListView, index, 2, key);
 			}
-			else if(count < MAX_CONV_POINT)
+			else if (count < MAX_CONV_POINT)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -106,7 +106,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		case IDC_BUTTON_CONVPOINT_D:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index != -1)
+			if (index != -1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -116,7 +116,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 		case IDC_BUTTON_CONVPOINT_UP:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-			if(index > 0)
+			if (index > 0)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -142,7 +142,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case IDC_BUTTON_CONVPOINT_DOWN:
 			index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
 			count = ListView_GetItemCount(hWndListView);
-			if(index >= 0 && index < count - 1)
+			if (index >= 0 && index < count - 1)
 			{
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -171,15 +171,15 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		break;
 
 	case WM_NOTIFY:
-		switch(((LPNMHDR)lParam)->code)
+		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
 			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
-			if(pListView->uChanged & LVIF_STATE)
+			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);
-				if(index == -1)
+				if (index == -1)
 				{
 					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, L"");
 					SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, L"");
@@ -218,27 +218,27 @@ void LoadConfigConvPoint()
 
 	HRESULT hr = ReadList(pathconfigxml, SectionConvPoint, list);
 
-	if(SUCCEEDED(hr) && list.size() != 0)
+	if (SUCCEEDED(hr) && list.size() != 0)
 	{
 		int i = 0;
 		FORWARD_ITERATION_I(l_itr, list)
 		{
-			if(i >= MAX_CONV_POINT)
+			if (i >= MAX_CONV_POINT)
 			{
 				break;
 			}
 
 			FORWARD_ITERATION_I(r_itr, *l_itr)
 			{
-				if(r_itr->first == AttributeCPStart)
+				if (r_itr->first == AttributeCPStart)
 				{
 					conv_point[i][0][0] = r_itr->second.c_str()[0];
 				}
-				else if(r_itr->first == AttributeCPAlter)
+				else if (r_itr->first == AttributeCPAlter)
 				{
 					conv_point[i][1][0] = r_itr->second.c_str()[0];
 				}
-				else if(r_itr->first == AttributeCPOkuri)
+				else if (r_itr->first == AttributeCPOkuri)
 				{
 					conv_point[i][2][0] = r_itr->second.c_str()[0];
 				}
@@ -247,9 +247,9 @@ void LoadConfigConvPoint()
 			i++;
 		}
 	}
-	else if(FAILED(hr))
+	else if (FAILED(hr))
 	{
-		for(int i = 0; i < 26; i++)
+		for (int i = 0; i < 26; i++)
 		{
 			conv_point[i][0][0] = L'A' + (WCHAR)i;
 			conv_point[i][1][0] = L'a' + (WCHAR)i;
@@ -266,9 +266,9 @@ void LoadConvPoint(HWND hDlg)
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
 
-	for(int i = 0; i < MAX_CONV_POINT; i++)
+	for (int i = 0; i < MAX_CONV_POINT; i++)
 	{
-		if(conv_point[i][0][0] == L'\0' &&
+		if (conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
 			conv_point[i][2][0] == L'\0')
 		{
@@ -301,7 +301,7 @@ void SaveConvPoint(IXmlWriter *pWriter, HWND hDlg)
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
 	int count = ListView_GetItemCount(hWndListView);
 
-	for(int i = 0; i < count && i < MAX_CONV_POINT; i++)
+	for (int i = 0; i < count && i < MAX_CONV_POINT; i++)
 	{
 		ListView_GetItemText(hWndListView, i, 0, key, _countof(key));
 		wcsncpy_s(conv_point[i][0], key, _TRUNCATE);
@@ -310,16 +310,16 @@ void SaveConvPoint(IXmlWriter *pWriter, HWND hDlg)
 		ListView_GetItemText(hWndListView, i, 2, key, _countof(key));
 		wcsncpy_s(conv_point[i][2], key, _TRUNCATE);
 	}
-	if(count < MAX_CONV_POINT)
+	if (count < MAX_CONV_POINT)
 	{
 		conv_point[count][0][0] = L'\0';
 		conv_point[count][1][0] = L'\0';
 		conv_point[count][2][0] = L'\0';
 	}
 
-	for(int i = 0; i < MAX_CONV_POINT; i++)
+	for (int i = 0; i < MAX_CONV_POINT; i++)
 	{
-		if(conv_point[i][0][0] == L'\0' &&
+		if (conv_point[i][0][0] == L'\0' &&
 			conv_point[i][1][0] == L'\0' &&
 			conv_point[i][2][0] == L'\0')
 		{

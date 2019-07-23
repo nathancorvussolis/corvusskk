@@ -84,17 +84,17 @@ INT_PTR CALLBACK DlgProcKeyMap2(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 
 INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam, int no)
 {
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
-		for(int i = 0; i < _countof(KeyMap[no]); i++)
+		for (int i = 0; i < _countof(KeyMap[no]); i++)
 		{
 			LoadKeyMap(hDlg, KeyMap[no][i].idd, SectionName[no], KeyMap[no][i].keyName, KeyMap[no][i].defaultValue);
 		}
 		return TRUE;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_EDIT_KANA:
 		case IDC_EDIT_CONV_CHAR:
@@ -122,7 +122,7 @@ INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		case IDC_EDIT_RIGHT:
 		case IDC_EDIT_DOWN:
 		case IDC_EDIT_PASTE:
-			switch(HIWORD(wParam))
+			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
@@ -149,7 +149,7 @@ void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName,
 	LPCWSTR lpDefVal = L"\uFFFF";
 
 	ReadValue(pathconfigxml, lpAppName, lpKeyName, strxmlval, lpDefVal);
-	if(strxmlval == lpDefVal) strxmlval = lpDefault;
+	if (strxmlval == lpDefVal) strxmlval = lpDefault;
 	SetDlgItemTextW(hDlg, nIDDlgItem, strxmlval.c_str());
 }
 
@@ -163,7 +163,7 @@ void SaveKeyMap(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyNam
 
 void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg)
 {
-	for(int i = 0; i < _countof(KeyMap[0]); i++)
+	for (int i = 0; i < _countof(KeyMap[0]); i++)
 	{
 		SaveKeyMap(pWriter, hDlg, KeyMap[0][i].idd, KeyMap[0][i].keyName);
 	}
@@ -171,7 +171,7 @@ void SaveCKeyMap(IXmlWriter *pWriter, HWND hDlg)
 
 void SaveVKeyMap(IXmlWriter *pWriter, HWND hDlg)
 {
-	for(int i = 0; i < _countof(KeyMap[1]); i++)
+	for (int i = 0; i < _countof(KeyMap[1]); i++)
 	{
 		SaveKeyMap(pWriter, hDlg, KeyMap[1][i].idd, KeyMap[1][i].keyName);
 	}

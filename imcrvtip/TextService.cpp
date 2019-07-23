@@ -35,7 +35,7 @@ CTextService::CTextService()
 
 	_pD2DFactory = nullptr;
 	_pD2DDCRT = nullptr;
-	for(int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
+	for (int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 	{
 		_pD2DBrush[i] = nullptr;
 	}
@@ -64,71 +64,71 @@ CTextService::~CTextService()
 
 STDAPI CTextService::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextInputProcessor))
+	if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_ITfTextInputProcessor))
 	{
 		*ppvObj = static_cast<ITfTextInputProcessor *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfTextInputProcessorEx))
+	else if (IsEqualIID(riid, IID_ITfTextInputProcessorEx))
 	{
 		*ppvObj = static_cast<ITfTextInputProcessorEx *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfThreadMgrEventSink))
+	else if (IsEqualIID(riid, IID_ITfThreadMgrEventSink))
 	{
 		*ppvObj = static_cast<ITfThreadMgrEventSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfThreadFocusSink))
+	else if (IsEqualIID(riid, IID_ITfThreadFocusSink))
 	{
 		*ppvObj = static_cast<ITfThreadFocusSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfCompartmentEventSink))
+	else if (IsEqualIID(riid, IID_ITfCompartmentEventSink))
 	{
 		*ppvObj = static_cast<ITfCompartmentEventSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfTextEditSink))
+	else if (IsEqualIID(riid, IID_ITfTextEditSink))
 	{
 		*ppvObj = static_cast<ITfTextEditSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfKeyEventSink))
+	else if (IsEqualIID(riid, IID_ITfKeyEventSink))
 	{
 		*ppvObj = static_cast<ITfKeyEventSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfCompositionSink))
+	else if (IsEqualIID(riid, IID_ITfCompositionSink))
 	{
 		*ppvObj = static_cast<ITfKeyEventSink *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
+	else if (IsEqualIID(riid, IID_ITfDisplayAttributeProvider))
 	{
 		*ppvObj = static_cast<ITfDisplayAttributeProvider *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFunctionProvider))
+	else if (IsEqualIID(riid, IID_ITfFunctionProvider))
 	{
 		*ppvObj = static_cast<ITfFunctionProvider *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnConfigure))
+	else if (IsEqualIID(riid, IID_ITfFnConfigure))
 	{
 		*ppvObj = static_cast<ITfFnConfigure *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnShowHelp))
+	else if (IsEqualIID(riid, IID_ITfFnShowHelp))
 	{
 		*ppvObj = static_cast<ITfFnShowHelp *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnReconversion))
+	else if (IsEqualIID(riid, IID_ITfFnReconversion))
 	{
 		*ppvObj = static_cast<ITfFnReconversion *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
+	else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
 	{
 		*ppvObj = static_cast<ITfFnGetPreferredTouchKeyboardLayout *>(this);
 	}
 
-	if(*ppvObj)
+	if (*ppvObj)
 	{
 		AddRef();
 		return S_OK;
@@ -144,7 +144,7 @@ STDAPI_(ULONG) CTextService::AddRef()
 
 STDAPI_(ULONG) CTextService::Release()
 {
-	if(--_cRef == 0)
+	if (--_cRef == 0)
 	{
 		delete this;
 		return 0;
@@ -163,50 +163,50 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 	_pThreadMgr = ptim;
 	_ClientId = tid;
 
-	if(!_IsKeyboardOpen())
+	if (!_IsKeyboardOpen())
 	{
 		_KeyboardSetDefaultMode();
 	}
 
-	if(!_InitThreadMgrEventSink())
+	if (!_InitThreadMgrEventSink())
 	{
 		goto exit;
 	}
 
-	if(!_InitThreadFocusSink())
+	if (!_InitThreadFocusSink())
 	{
 		goto exit;
 	}
 
-	if(!_InitCompartmentEventSink())
+	if (!_InitCompartmentEventSink())
 	{
 		goto exit;
 	}
 
 	{
 		CComPtr<ITfDocumentMgr> pDocumentMgr;
-		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
 			_InitTextEditSink(pDocumentMgr);
 		}
 	}
 
-	if(!_InitLanguageBar())
+	if (!_InitLanguageBar())
 	{
 		goto exit;
 	}
 
-	if(!_InitKeyEventSink())
+	if (!_InitKeyEventSink())
 	{
 		goto exit;
 	}
 
-	if(!_InitDisplayAttributeGuidAtom())
+	if (!_InitDisplayAttributeGuidAtom())
 	{
 		goto exit;
 	}
 
-	if(!_InitFunctionProvider())
+	if (!_InitFunctionProvider())
 	{
 		goto exit;
 	}
@@ -222,7 +222,7 @@ exit:
 
 STDAPI CTextService::Deactivate()
 {
-	if(_pThreadMgr == nullptr)
+	if (_pThreadMgr == nullptr)
 	{
 		return S_OK;
 	}

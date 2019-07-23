@@ -8,7 +8,7 @@ STDAPI CTextService::EnumDisplayAttributeInfo(IEnumTfDisplayAttributeInfo **ppEn
 {
 	IEnumTfDisplayAttributeInfo *pEnumDisplayAttributeInfo = nullptr;
 
-	if(ppEnum == nullptr)
+	if (ppEnum == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -19,7 +19,7 @@ STDAPI CTextService::EnumDisplayAttributeInfo(IEnumTfDisplayAttributeInfo **ppEn
 	{
 		pEnumDisplayAttributeInfo = new CEnumDisplayAttributeInfo();
 	}
-	catch(...)
+	catch (...)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -33,22 +33,22 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 {
 	ITfDisplayAttributeInfo *pDisplayAttributeInfo = nullptr;
 
-	if(ppInfo == nullptr)
+	if (ppInfo == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppInfo = nullptr;
 
-	for(int i = 0; i < _countof(c_gdDisplayAttributeInfo); i++)
+	for (int i = 0; i < _countof(c_gdDisplayAttributeInfo); i++)
 	{
-		if(IsEqualGUID(guid, c_gdDisplayAttributeInfo[i].guid))
+		if (IsEqualGUID(guid, c_gdDisplayAttributeInfo[i].guid))
 		{
 			try
 			{
 				pDisplayAttributeInfo = new CDisplayAttributeInfo(c_gdDisplayAttributeInfo[i].guid, &display_attribute_info[i]);
 			}
-			catch(...)
+			catch (...)
 			{
 				return E_OUTOFMEMORY;
 			}
@@ -56,7 +56,7 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 		}
 	}
 
-	if(pDisplayAttributeInfo == nullptr)
+	if (pDisplayAttributeInfo == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -68,13 +68,13 @@ STDAPI CTextService::GetDisplayAttributeInfo(REFGUID guid, ITfDisplayAttributeIn
 
 void CTextService::_ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext)
 {
-	if(_IsComposing())
+	if (_IsComposing())
 	{
 		CComPtr<ITfRange> pRange;
-		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+		if (SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
 			CComPtr<ITfProperty> pProperty;
-			if(SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
+			if (SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
 			{
 				pProperty->Clear(ec, pRange);
 			}
@@ -87,7 +87,7 @@ BOOL CTextService::_SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext 
 	HRESULT hr = E_FAIL;
 
 	CComPtr<ITfProperty> pProperty;
-	if(SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
+	if (SUCCEEDED(pContext->GetProperty(GUID_PROP_ATTRIBUTE, &pProperty)) && (pProperty != nullptr))
 	{
 		CComVariant var;
 		V_VT(&var) = VT_I4;
@@ -116,9 +116,9 @@ BOOL CTextService::_InitDisplayAttributeGuidAtom()
 
 	CComPtr<ITfCategoryMgr> pCategoryMgr;
 	hr = CoCreateInstance(CLSID_TF_CategoryMgr, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pCategoryMgr));
-	if(SUCCEEDED(hr) && (pCategoryMgr != nullptr))
+	if (SUCCEEDED(hr) && (pCategoryMgr != nullptr))
 	{
-		for(int i = 0; i < _countof(displayAttributeAtom); i++)
+		for (int i = 0; i < _countof(displayAttributeAtom); i++)
 		{
 			hr = pCategoryMgr->RegisterGUID(displayAttributeAtom[i].guid, displayAttributeAtom[i].patom);
 		}

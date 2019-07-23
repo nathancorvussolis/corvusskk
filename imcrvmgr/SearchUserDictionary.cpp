@@ -21,27 +21,27 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 	SKKDICCANDIDATE okuric;
 
 	auto userdic_itr = userdic.find(searchkey);
-	if(userdic_itr != userdic.end())
+	if (userdic_itr != userdic.end())
 	{
 		sc = userdic_itr->second;
 		std::reverse(sc.begin(), sc.end());
 	}
 
 	//送り仮名が一致した候補を優先する
-	if(precedeokuri && !okuri.empty())
+	if (precedeokuri && !okuri.empty())
 	{
 		auto userokuri_itr = userokuri.find(searchkey);
-		if(userokuri_itr != userokuri.end())
+		if (userokuri_itr != userokuri.end())
 		{
 			REVERSE_ITERATION_I(so_ritr, userokuri_itr->second.o)
 			{
-				if(so_ritr->first == okuri)
+				if (so_ritr->first == okuri)
 				{
 					FORWARD_ITERATION_I(okuri_itr, so_ritr->second)
 					{
 						FORWARD_ITERATION_I(sc_itr, sc)
 						{
-							if(sc_itr->first == okuri_itr->first)
+							if (sc_itr->first == okuri_itr->first)
 							{
 								okuric = *sc_itr;
 								sc.erase(sc_itr);
@@ -59,12 +59,12 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 	FORWARD_ITERATION_I(sc_itr, sc)
 	{
 		candidate.append(L"/" + sc_itr->first);
-		if(!sc_itr->second.empty())
+		if (!sc_itr->second.empty())
 		{
 			candidate.append(L";" + sc_itr->second);
 		}
 	}
-	if(!candidate.empty())
+	if (!candidate.empty())
 	{
 		candidate += L"/\n";
 	}
@@ -76,24 +76,24 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 {
 	size_t count = 0;
 
-	if(!complements.empty())
+	if (!complements.empty())
 	{
 		REVERSE_ITERATION_I(keyorder_ritr, complements)
 		{
-			if(count >= MAX_COMPLEMENT_RESULT)
+			if (count >= MAX_COMPLEMENT_RESULT)
 			{
 				break;
 			}
 
-			if(searchkey.size() < keyorder_ritr->size())
+			if (searchkey.size() < keyorder_ritr->size())
 			{
-				if(keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0)
+				if (keyorder_ritr->compare(0, searchkey.size(), searchkey) == 0)
 				{
 					//前方一致
 					sc.push_back(std::make_pair(*keyorder_ritr, std::wstring(L"")));
 					++count;
 				}
-				else if(compincback &&
+				else if (compincback &&
 					keyorder_ritr->compare((keyorder_ritr->size() - searchkey.size()),
 					searchkey.size(), searchkey) == 0)
 				{
@@ -113,7 +113,7 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 	std::wstring fmt(L"");
 	SKKDICCANDIDATES scc;
 
-	if(max >= 9 || max <= 0)
+	if (max >= 9 || max <= 0)
 	{
 		return;
 	}
@@ -131,24 +131,24 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 		int i = 0;
 		FORWARD_ITERATION_I(scc_itr, scc)
 		{
-			if(max <= i++)
+			if (max <= i++)
 			{
 				break;
 			}
 
 			conv = ConvertCandidate(sc_itr->first, scc_itr->first, L"");
-			if(conv.empty())
+			if (conv.empty())
 			{
 				conv = scc_itr->first;
 			}
 			sc_itr->second += L"/" + conv;
 		}
 
-		if(!sc_itr->second.empty())
+		if (!sc_itr->second.empty())
 		{
 			sc_itr->second += L"/";
 
-			if(i < (int)scc.size())
+			if (i < (int)scc.size())
 			{
 				sc_itr->second += L"…";
 			}
@@ -158,11 +158,11 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 
 void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 {
-	if(!keyorder.empty())
+	if (!keyorder.empty())
 	{
 		FORWARD_ITERATION_I(keyorder_itr, keyorder)
 		{
-			if(searchkey == *keyorder_itr)
+			if (searchkey == *keyorder_itr)
 			{
 				keyorder.erase(keyorder_itr);
 				break;
@@ -187,7 +187,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	USEROKURIENTRY userokurientry;
 	SKKDICCANDIDATES okurics;
 
-	if(searchkey.empty() || candidate.empty())
+	if (searchkey.empty() || candidate.empty())
 	{
 		return;
 	}
@@ -197,7 +197,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	//ユーザー辞書
 	auto userdic_itr = userdic.find(searchkey);
-	if(userdic_itr == userdic.end())
+	if (userdic_itr == userdic.end())
 	{
 		userdicentry.first = searchkey;
 		userdicentry.second.push_back(std::make_pair(candidate_esc, annotation_esc));
@@ -207,7 +207,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	{
 		FORWARD_ITERATION_I(sc_itr, userdic_itr->second)
 		{
-			if(sc_itr->first == candidate_esc)
+			if (sc_itr->first == candidate_esc)
 			{
 				userdic_itr->second.erase(sc_itr);
 				break;
@@ -217,7 +217,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	}
 
 	//見出し語順序
-	switch(command)
+	switch (command)
 	{
 	case REQ_USER_ADD_0:
 		AddKeyOrder(searchkey, accompaniments);
@@ -231,10 +231,10 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	//ユーザー辞書送りブロック
 	re.assign(L"[\\[\\]]"); //角括弧を含む候補を除外
-	if(command == REQ_USER_ADD_0 && !okuri.empty() && !std::regex_search(candidate_esc, re))
+	if (command == REQ_USER_ADD_0 && !okuri.empty() && !std::regex_search(candidate_esc, re))
 	{
 		auto userokuri_itr = userokuri.find(searchkey);
-		if(userokuri_itr == userokuri.end())
+		if (userokuri_itr == userokuri.end())
 		{
 			okurics.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
 			userokurientry.first = searchkey;
@@ -246,12 +246,12 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 			bool hit_okuri = false;
 			FORWARD_ITERATION_I(so_itr, userokuri_itr->second.o)
 			{
-				if(so_itr->first == okuri)
+				if (so_itr->first == okuri)
 				{
 					bool hit_candidate = false;
 					FORWARD_ITERATION_I(sc_itr, so_itr->second)
 					{
-						if(sc_itr->first == candidate_esc)
+						if (sc_itr->first == candidate_esc)
 						{
 							sc_itr = so_itr->second.erase(sc_itr);
 							so_itr->second.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
@@ -260,7 +260,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 							break;
 						}
 					}
-					if(!hit_candidate)
+					if (!hit_candidate)
 					{
 						so_itr->second.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
 					}
@@ -273,7 +273,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 					break;
 				}
 			}
-			if(!hit_okuri)
+			if (!hit_okuri)
 			{
 				okurics.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
 				userokuri_itr->second.o.push_back(std::make_pair(okuri, okurics));
@@ -288,23 +288,23 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 {
 	//ユーザー辞書
 	auto userdic_itr = userdic.find(searchkey);
-	if(userdic_itr != userdic.end())
+	if (userdic_itr != userdic.end())
 	{
 		FORWARD_ITERATION_I(sc_itr, userdic_itr->second)
 		{
-			if(sc_itr->first == candidate)
+			if (sc_itr->first == candidate)
 			{
 				userdic_itr->second.erase(sc_itr);
 				break;
 			}
 		}
 
-		if(userdic_itr->second.empty())
+		if (userdic_itr->second.empty())
 		{
 			userdic.erase(userdic_itr);
 
 			//見出し語順序
-			switch(command)
+			switch (command)
 			{
 			case REQ_USER_DEL_0:
 				DelKeyOrder(searchkey, accompaniments);
@@ -322,13 +322,13 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	//ユーザー辞書送りブロック
 	auto userokuri_itr = userokuri.find(searchkey);
-	if(userokuri_itr != userokuri.end())
+	if (userokuri_itr != userokuri.end())
 	{
 		FORWARD_ITERATION(so_itr, userokuri_itr->second.o)
 		{
 			FORWARD_ITERATION(sc_itr, so_itr->second)
 			{
-				if(sc_itr->first == candidate)
+				if (sc_itr->first == candidate)
 				{
 					sc_itr = so_itr->second.erase(sc_itr);
 				}
@@ -337,7 +337,7 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 					++sc_itr;
 				}
 			}
-			if(so_itr->second.empty())
+			if (so_itr->second.empty())
 			{
 				so_itr = userokuri_itr->second.o.erase(so_itr);
 			}
@@ -346,7 +346,7 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 				++so_itr;
 			}
 		}
-		if(userokuri_itr->second.o.empty())
+		if (userokuri_itr->second.o.empty())
 		{
 			userokuri.erase(userokuri_itr);
 		}
@@ -368,26 +368,26 @@ BOOL LoadUserDic()
 	accompaniments.clear();
 
 	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
-	if(fp == nullptr)
+	if (fp == nullptr)
 	{
 		return FALSE;
 	}
 
-	while(true)
+	while (true)
 	{
 		int rl = ReadSKKDicLine(fp, BOM, okuri, key, sc, so);
-		if(rl == -1)
+		if (rl == -1)
 		{
 			//EOF
 			break;
 		}
-		else if(rl == 1)
+		else if (rl == 1)
 		{
 			//comment
 			continue;
 		}
 
-		if(sc.empty())
+		if (sc.empty())
 		{
 			continue;
 		}
@@ -399,7 +399,7 @@ BOOL LoadUserDic()
 		}
 
 		//見出し語順序
-		switch(okuri)
+		switch (okuri)
 		{
 		case 0:
 			complements.push_back(key);
@@ -411,18 +411,18 @@ BOOL LoadUserDic()
 			break;
 		}
 
-		if(okuri == 1)
+		if (okuri == 1)
 		{
 			//ユーザー辞書送りブロック
 			auto userokuri_itr = userokuri.find(key);
-			if(userokuri_itr == userokuri.end())
+			if (userokuri_itr == userokuri.end())
 			{
 				//送り仮名を1文字に限定する
 				FORWARD_ITERATION_I(so_itr, so)
 				{
-					if(so_itr->first.size() >= 2)
+					if (so_itr->first.size() >= 2)
 					{
-						if(IS_SURROGATE_PAIR(so_itr->first[0], so_itr->first[1]))
+						if (IS_SURROGATE_PAIR(so_itr->first[0], so_itr->first[1]))
 						{
 							so_itr->first.erase(2);
 						}
@@ -436,22 +436,22 @@ BOOL LoadUserDic()
 				//送り仮名が重複したら1つにまとめる
 				FORWARD_ITERATION_I(so_itr, so)
 				{
-					for(auto so_itr1 = so_itr + 1; so_itr1 != so.end(); )
+					for (auto so_itr1 = so_itr + 1; so_itr1 != so.end(); )
 					{
-						if(so_itr->first == so_itr1->first)
+						if (so_itr->first == so_itr1->first)
 						{
 							FORWARD_ITERATION_I(sc_itr1, so_itr1->second)
 							{
 								bool exist = false;
 								FORWARD_ITERATION_I(sc_itr, so_itr->second)
 								{
-									if(sc_itr->first == sc_itr1->first)
+									if (sc_itr->first == sc_itr1->first)
 									{
 										exist = true;
 										break;
 									}
 								}
-								if(!exist)
+								if (!exist)
 								{
 									so_itr->second.push_back(*sc_itr1);
 								}
@@ -473,13 +473,13 @@ BOOL LoadUserDic()
 						bool exist = false;
 						REVERSE_ITERATION_I(sc_ritr, sc)
 						{
-							if(sc_itr->first == sc_ritr->first)
+							if (sc_itr->first == sc_ritr->first)
 							{
 								exist = true;
 								break;
 							}
 						}
-						if(!exist)
+						if (!exist)
 						{
 							sc_itr = so_itr->second.erase(sc_itr);
 						}
@@ -488,7 +488,7 @@ BOOL LoadUserDic()
 							++sc_itr;
 						}
 					}
-					if(so_itr->second.empty())
+					if (so_itr->second.empty())
 					{
 						so_itr = so.erase(so_itr);
 					}
@@ -498,7 +498,7 @@ BOOL LoadUserDic()
 					}
 				}
 
-				if(!so.empty())
+				if (!so.empty())
 				{
 					userokurientry.first = key;
 					userokurientry.second.o = so;
@@ -525,7 +525,7 @@ void WriteUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES
 	REVERSE_ITERATION_I(sc_ritr, sc)
 	{
 		line += sc_ritr->first;
-		if(!sc_ritr->second.empty())
+		if (!sc_ritr->second.empty())
 		{
 			line += L";" + sc_ritr->second;
 		}
@@ -551,7 +551,7 @@ unsigned int __stdcall SaveUserDic(void *p)
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;
 
-	if(userdata == nullptr)
+	if (userdata == nullptr)
 	{
 		return 0;
 	}
@@ -559,7 +559,7 @@ unsigned int __stdcall SaveUserDic(void *p)
 	EnterCriticalSection(&csSaveUserDic);	// !
 
 	_wfopen_s(&fp, pathuserdic, WccsUTF16);
-	if(fp == nullptr)
+	if (fp == nullptr)
 	{
 		goto exit;
 	}
@@ -570,11 +570,11 @@ unsigned int __stdcall SaveUserDic(void *p)
 	REVERSE_ITERATION_I(keyorder_ritr, userdata->accompaniments)
 	{
 		auto userdic_itr = userdata->userdic.find(*keyorder_ritr);
-		if(userdic_itr != userdata->userdic.end())
+		if (userdic_itr != userdata->userdic.end())
 		{
 			so.clear();
 			auto userokuri_itr = userdata->userokuri.find(*keyorder_ritr);
-			if(userokuri_itr != userdata->userokuri.end())
+			if (userokuri_itr != userdata->userokuri.end())
 			{
 				so = userokuri_itr->second.o;
 			}
@@ -590,7 +590,7 @@ unsigned int __stdcall SaveUserDic(void *p)
 	REVERSE_ITERATION_I(keyorder_ritr, userdata->complements)
 	{
 		auto userdic_itr = userdata->userdic.find(*keyorder_ritr);
-		if(userdic_itr != userdata->userdic.end())
+		if (userdic_itr != userdata->userdic.end())
 		{
 			WriteUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
 		}
@@ -608,10 +608,10 @@ exit:
 
 void StartSaveUserDic(BOOL bThread)
 {
-	if(hThreadUserDic != INVALID_HANDLE_VALUE)
+	if (hThreadUserDic != INVALID_HANDLE_VALUE)
 	{
 		DWORD ws = WaitForSingleObject(hThreadUserDic, (bThread ? 0 : INFINITE));
-		switch(ws)
+		switch (ws)
 		{
 		case WAIT_OBJECT_0:
 			CloseHandle(hThreadUserDic);
@@ -625,7 +625,7 @@ void StartSaveUserDic(BOOL bThread)
 		}
 	}
 
-	if(bUserDicChg)
+	if (bUserDicChg)
 	{
 		USERDATA *userdata = nullptr;
 
@@ -637,21 +637,21 @@ void StartSaveUserDic(BOOL bThread)
 			userdata->complements = complements;
 			userdata->accompaniments = accompaniments;
 		}
-		catch(...)
+		catch (...)
 		{
-			if(userdata != nullptr)
+			if (userdata != nullptr)
 			{
 				delete userdata;
 			}
 			return;
 		}
 
-		if(bThread)
+		if (bThread)
 		{
-			if(hThreadUserDic == INVALID_HANDLE_VALUE)
+			if (hThreadUserDic == INVALID_HANDLE_VALUE)
 			{
 				hThreadUserDic = (HANDLE)_beginthreadex(nullptr, 0, SaveUserDic, userdata, 0, nullptr);
-				if(hThreadUserDic == nullptr)
+				if (hThreadUserDic == nullptr)
 				{
 					delete userdata;
 					hThreadUserDic = INVALID_HANDLE_VALUE;
@@ -677,7 +677,7 @@ void BackUpUserDic()
 
 	EnterCriticalSection(&csSaveUserDic);	// !
 
-	for(int i = BACKUP_GENS; i > 1; i--)
+	for (int i = BACKUP_GENS; i > 1; i--)
 	{
 		_snwprintf_s(oldpath, _TRUNCATE, L"%s%d", pathuserbak, i - 1);
 		_snwprintf_s(newpath, _TRUNCATE, L"%s%d", pathuserbak, i);

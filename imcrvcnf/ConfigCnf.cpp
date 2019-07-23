@@ -16,7 +16,7 @@ void CreateConfigPath()
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 
-	if(SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder)))
+	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &appdatafolder)))
 	{
 		WCHAR appdir[MAX_PATH];
 
@@ -39,7 +39,7 @@ void CreateIpcName()
 
 	LPWSTR pszUserUUID = nullptr;
 
-	if(GetUserUUID(&pszUserUUID))
+	if (GetUserUUID(&pszUserUUID))
 	{
 		_snwprintf_s(cnfmutexname, _TRUNCATE, L"%s%s", IMCRVCNFMUTEX, pszUserUUID);
 		_snwprintf_s(cnfcanceldiceventname, _TRUNCATE, L"%s%s", IMCRVKRNLOBJ L"cnf-cancel-dic-", pszUserUUID);
@@ -55,7 +55,7 @@ BOOL SetFileDacl(LPWSTR path)
 	PSECURITY_DESCRIPTOR psd = nullptr;
 	LPWSTR pszUserSid;
 
-	if(GetUserSid(&pszUserSid))
+	if (GetUserSid(&pszUserSid))
 	{
 		// SDDL_ALL_APP_PACKAGES / SDDL_RESTRICTED_CODE / SDDL_LOCAL_SYSTEM / SDDL_BUILTIN_ADMINISTRATORS / User SID
 		_snwprintf_s(sddl, _TRUNCATE, L"D:%s(A;;FR;;;RC)(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;%s)",
@@ -64,14 +64,14 @@ BOOL SetFileDacl(LPWSTR path)
 		LocalFree(pszUserSid);
 	}
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, nullptr))
+	if (ConvertStringSecurityDescriptorToSecurityDescriptorW(sddl, SDDL_REVISION_1, &psd, nullptr))
 	{
 		BOOL bDaclPresent = FALSE;
 		PACL pDacl = nullptr;
 		BOOL bDaclDefaulted = FALSE;
-		if(GetSecurityDescriptorDacl(psd, &bDaclPresent, &pDacl, &bDaclDefaulted))
+		if (GetSecurityDescriptorDacl(psd, &bDaclPresent, &pDacl, &bDaclDefaulted))
 		{
-			if(SetNamedSecurityInfoW(path, SE_FILE_OBJECT,
+			if (SetNamedSecurityInfoW(path, SE_FILE_OBJECT,
 				DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
 				nullptr, nullptr, pDacl, nullptr) == ERROR_SUCCESS)
 			{
@@ -92,19 +92,19 @@ int GetDpi(HWND hwnd)
 	ReleaseDC(hwnd, hdc);
 
 	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
-	if(IsWindowsVersion100RS2OrLater())
+	if (IsWindowsVersion100RS2OrLater())
 	{
 		// try delay load api-ms-win-shcore-scaling-l1-1-1.dll
 		__try
 		{
 			HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
 			UINT dpiX, dpiY;
-			if(SUCCEEDED(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY)))
+			if (SUCCEEDED(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY)))
 			{
 				dpi = (int)dpiX;
 			}
 		}
-		__except(EXCEPTION_EXECUTE_HANDLER)
+		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
 		}
 	}
@@ -160,7 +160,7 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 	CComPtr<IStream> pFileStream;
 
 	HRESULT hr = WriterInit(pathconfigxml, &pWriter, &pFileStream);
-	if(FAILED(hr))
+	if (FAILED(hr))
 	{
 		return FALSE;
 	}
@@ -309,7 +309,7 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 	WriterFinal(pWriter);
 
 	BOOL ret = SetFileDacl(pathconfigxml);
-	if(ret == FALSE)
+	if (ret == FALSE)
 	{
 		return FALSE;
 	}

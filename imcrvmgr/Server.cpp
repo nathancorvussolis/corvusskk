@@ -55,7 +55,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	result.clear();
 
-	switch(command)
+	switch (command)
 	{
 	case REQ_SEARCH:
 		re.assign(L"(.*)\t(.*)\t(.*)\n");
@@ -68,7 +68,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 		SearchDictionary(key, okuri, sc);
 
-		if(!sc.empty())
+		if (!sc.empty())
 		{
 			result = REP_OK;
 			result += L"\n";
@@ -94,13 +94,13 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$2");
 		keyorg = std::regex_replace(argument, re, fmt);
 
-		if(lua != nullptr)
+		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_complement");
 			lua_pushstring(lua, WCTOU8(key));
-			if(lua_pcall(lua, 1, 1, 0) == LUA_OK)
+			if (lua_pcall(lua, 1, 1, 0) == LUA_OK)
 			{
-				if(lua_isstring(lua, -1))
+				if (lua_isstring(lua, -1))
 				{
 					candidate = U8TOWC(lua_tostring(lua, -1));
 					ParseSKKDicCandiate(candidate, sc);
@@ -119,7 +119,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 		SearchComplementSearchCandidate(sc, _wtoi(keyorg.c_str()));
 
-		if(!sc.empty())
+		if (!sc.empty())
 		{
 			result = REP_OK;
 			result += L"\n";
@@ -145,7 +145,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$3");
 		okuri = std::regex_replace(argument, re, fmt);
 
-		switch(command)
+		switch (command)
 		{
 		case REQ_CONVERTKEY:
 			conv = ConvertKey(key, okuri);
@@ -157,7 +157,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 			break;
 		}
 
-		if(!conv.empty())
+		if (!conv.empty())
 		{
 			result = REP_OK;
 			result += L"\n";
@@ -182,7 +182,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$4");
 		okuri = std::regex_replace(argument, re, fmt);
 
-		if(lua != nullptr)
+		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_add");
 			lua_pushboolean(lua, (command == REQ_USER_ADD_0 ? 1 : 0));
@@ -209,7 +209,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		fmt.assign(L"$2");
 		candidate = std::regex_replace(argument, re, fmt);
 
-		if(lua != nullptr)
+		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_delete");
 			lua_pushboolean(lua, (command == REQ_USER_DEL_0 ? 1 : 0));
@@ -227,7 +227,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		break;
 
 	case REQ_USER_SAVE:
-		if(lua != nullptr)
+		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_save");
 			lua_pcall(lua, 0, 0, 0);
@@ -277,20 +277,20 @@ unsigned int __stdcall SrvThread(void *p)
 #endif
 
 	WCHAR *pipebuf = (PWCHAR)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WCHAR) * PIPEBUFSIZE);
-	if(pipebuf == nullptr)
+	if (pipebuf == nullptr)
 	{
 		return -1;
 	}
 
-	while(true)
+	while (true)
 	{
-		if(ConnectNamedPipe(hPipe, nullptr) == FALSE)
+		if (ConnectNamedPipe(hPipe, nullptr) == FALSE)
 		{
 			DisconnectNamedPipe(hPipe);
 			break;
 		}
 
-		if(bSrvThreadExit)
+		if (bSrvThreadExit)
 		{
 			DisconnectNamedPipe(hPipe);
 			break;
@@ -298,12 +298,12 @@ unsigned int __stdcall SrvThread(void *p)
 
 		UpdateConfigPath();
 
-		if(IsFileModified(pathconfigxml, &ftConfig))
+		if (IsFileModified(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
 		}
 
-		if(IsFileModified(pathskkdic, &ftSKKDic))
+		if (IsFileModified(pathskkdic, &ftSKKDic))
 		{
 			MakeSKKDicPos();
 		}
@@ -312,7 +312,7 @@ unsigned int __stdcall SrvThread(void *p)
 
 		bytesRead = 0;
 		bRet = ReadFile(hPipe, pipebuf, sizeof(WCHAR) * PIPEBUFSIZE, &bytesRead, nullptr);
-		if(bRet == FALSE || bytesRead == 0)
+		if (bRet == FALSE || bytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe);
 			continue;
@@ -349,7 +349,7 @@ unsigned int __stdcall SrvThread(void *p)
 		SetWindowTextW(hWndEdit, dedit.c_str());
 		SendMessageW(hWndEdit, WM_VSCROLL, SB_BOTTOM, 0);
 
-		switch(command)
+		switch (command)
 		{
 		case REQ_USER_SAVE:
 			dedit.clear();
@@ -361,7 +361,7 @@ unsigned int __stdcall SrvThread(void *p)
 
 		bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
 		bRet = WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr);
-		if(bRet)
+		if (bRet)
 		{
 			FlushFileBuffers(hPipe);
 		}
@@ -383,7 +383,7 @@ HANDLE SrvStart()
 	HANDLE hPipe = INVALID_HANDLE_VALUE;
 	HANDLE hThread = nullptr;
 
-	if(ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, nullptr))
+	if (ConvertStringSecurityDescriptorToSecurityDescriptorW(krnlobjsddl, SDDL_REVISION_1, &psd, nullptr))
 	{
 		sa.nLength = sizeof(sa);
 		sa.lpSecurityDescriptor = psd;
@@ -396,10 +396,10 @@ HANDLE SrvStart()
 		LocalFree(psd);
 	}
 
-	if(hPipe != INVALID_HANDLE_VALUE)
+	if (hPipe != INVALID_HANDLE_VALUE)
 	{
 		hThread = (HANDLE)_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr);
-		if(hThread == nullptr)
+		if (hThread == nullptr)
 		{
 			CloseHandle(hPipe);
 		}

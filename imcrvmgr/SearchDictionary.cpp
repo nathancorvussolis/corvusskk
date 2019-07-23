@@ -13,15 +13,15 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	std::wregex re;
 	std::wstring fmt;
 
-	if(lua != nullptr)
+	if (lua != nullptr)
 	{
 		lua_getglobal(lua, u8"lua_skk_search");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(okuri));
 
-		if(lua_pcall(lua, 2, 1, 0) == LUA_OK)
+		if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
-			if(lua_isstring(lua, -1))
+			if (lua_isstring(lua, -1))
 			{
 				candidate = U8TOWC(lua_tostring(lua, -1));
 			}
@@ -48,7 +48,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 		//JIS X 0218 区点番号
 		candidate += SearchJISX0208(searchkey);
 
-		if(searchkey.size() > 1 && searchkey[0] == L'?')
+		if (searchkey.size() > 1 && searchkey[0] == L'?')
 		{
 			//文字コード表記変換 (ASCII, JIS X 0201(8bit), JIS X 0213 / Unicode)
 			candidate += SearchCharacterCode(searchkey.substr(1));
@@ -66,13 +66,13 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	ParseSKKDicCandiate(candidate, sc);
 
 	//重複候補を削除
-	if(sc.size() > 1)
+	if (sc.size() > 1)
 	{
 		FORWARD_ITERATION_I(sc_itrf, sc)
 		{
-			for(auto sc_itrb = sc_itrf + 1; sc_itrb != sc.end(); )
+			for (auto sc_itrb = sc_itrf + 1; sc_itrb != sc.end(); )
 			{
-				if(sc_itrf->first == sc_itrb->first)
+				if (sc_itrf->first == sc_itrb->first)
 				{
 					sc_itrb = sc.erase(sc_itrb);
 				}
@@ -95,13 +95,13 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 	size_t is, ie;
 
 	_wfopen_s(&fp, pathskkdic, RB);
-	if(fp == nullptr)
+	if (fp == nullptr)
 	{
 		return candidate;
 	}
 
 	left = 0;
-	if(okuri.empty())
+	if (okuri.empty())
 	{
 		right = (long)skkdicpos_n.size() - 1;
 	}
@@ -110,10 +110,10 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 		right = (long)skkdicpos_a.size() - 1;
 	}
 
-	while(left <= right)
+	while (left <= right)
 	{
 		mid = left + (right - left) / 2;
-		if(okuri.empty())
+		if (okuri.empty())
 		{
 			pos = skkdicpos_n[mid];
 		}
@@ -127,34 +127,34 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 		kbuf.clear();
 		cbuf.clear();
 
-		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+		while ((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
 		{
 			wsbuf += wbuf;
 
-			if(!wsbuf.empty() && wsbuf.back() == L'\n')
+			if (!wsbuf.empty() && wsbuf.back() == L'\n')
 			{
 				break;
 			}
 		}
 
-		if(pwb == nullptr)
+		if (pwb == nullptr)
 		{
 			break;
 		}
 
 		// CR+LF -> LF
 		is = wsbuf.find_last_of(L'/');
-		if(is != std::wstring::npos)
+		if (is != std::wstring::npos)
 		{
 			wsbuf.erase(is + 1);
 			wsbuf.push_back(L'\n');
 		}
 
 		is = wsbuf.find(L"\x20/");
-		if(is != std::wstring::npos)
+		if (is != std::wstring::npos)
 		{
 			ie = wsbuf.find_last_not_of(L'\x20', is);
-			if(is != std::wstring::npos)
+			if (is != std::wstring::npos)
 			{
 				kbuf = wsbuf.substr(0, ie + 1);
 			}
@@ -162,12 +162,12 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 		}
 
 		int cmpkey = searchkey.compare(kbuf);
-		if(cmpkey == 0)
+		if (cmpkey == 0)
 		{
 			candidate = cbuf;
 			break;
 		}
-		else if(cmpkey > 0)
+		else if (cmpkey > 0)
 		{
 			left = mid + 1;
 		}
@@ -196,7 +196,7 @@ void MakeSKKDicPos()
 	skkdicpos_n.shrink_to_fit();
 
 	_wfopen_s(&fp, pathskkdic, RB);
-	if(fp == nullptr)
+	if (fp == nullptr)
 	{
 		return;
 	}
@@ -204,13 +204,13 @@ void MakeSKKDicPos()
 	fseek(fp, 2, SEEK_SET); //skip BOM
 	pos = ftell(fp);
 
-	while(true)
+	while (true)
 	{
-		while((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+		while ((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
 		{
-			if((pwn = wcschr(wbuf, L'\n')) != nullptr)
+			if ((pwn = wcschr(wbuf, L'\n')) != nullptr)
 			{
-				if((pwn != wbuf) && (*(pwn - 1) == L'\r'))
+				if ((pwn != wbuf) && (*(pwn - 1) == L'\r'))
 				{
 					*(pwn - 1) = L'\n';
 					*pwn = L'\0';
@@ -219,22 +219,22 @@ void MakeSKKDicPos()
 			}
 		}
 
-		if(pwb == nullptr)
+		if (pwb == nullptr)
 		{
 			break;
 		}
 
-		if(wcscmp(EntriesAri, wbuf) == 0)
+		if (wcscmp(EntriesAri, wbuf) == 0)
 		{
 			okuri = 1;
 		}
-		else if(wcscmp(EntriesNasi, wbuf) == 0)
+		else if (wcscmp(EntriesNasi, wbuf) == 0)
 		{
 			okuri = 0;
 		}
 		else
 		{
-			switch(okuri)
+			switch (okuri)
 			{
 			case 1:
 				skkdicpos_a.push_back(pos);
@@ -259,15 +259,15 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 {
 	std::wstring ret;
 
-	if(lua != nullptr)
+	if (lua != nullptr)
 	{
 		lua_getglobal(lua, u8"lua_skk_convert_key");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(okuri));
 
-		if(lua_pcall(lua, 2, 1, 0) == LUA_OK)
+		if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
-			if(lua_isstring(lua, -1))
+			if (lua_isstring(lua, -1))
 			{
 				ret = U8TOWC(lua_tostring(lua, -1));
 			}
@@ -277,7 +277,7 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 	else
 	{
 		//文字コード表記変換のとき見出し語変換しない
-		if(searchkey.size() > 1 && searchkey[0] == L'?')
+		if (searchkey.size() > 1 && searchkey[0] == L'?')
 		{
 			return std::wstring(L"");
 		}
@@ -295,16 +295,16 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 {
 	std::wstring ret;
 
-	if(lua != nullptr)
+	if (lua != nullptr)
 	{
 		lua_getglobal(lua, u8"lua_skk_convert_candidate");
 		lua_pushstring(lua, WCTOU8(searchkey));
 		lua_pushstring(lua, WCTOU8(candidate));
 		lua_pushstring(lua, WCTOU8(okuri));
 
-		if(lua_pcall(lua, 3, 1, 0) == LUA_OK)
+		if (lua_pcall(lua, 3, 1, 0) == LUA_OK)
 		{
-			if(lua_isstring(lua, -1))
+			if (lua_isstring(lua, -1))
 			{
 				ret = U8TOWC(lua_tostring(lua, -1));
 			}
@@ -326,7 +326,7 @@ int lua_search_skk_dictionary(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1) && lua_isstring(lua, 2))
+	if (lua_isstring(lua, 1) && lua_isstring(lua, 2))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 		std::wstring okurikey = U8TOWC(lua_tostring(lua, 2));
@@ -343,7 +343,7 @@ int lua_search_user_dictionary(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1) && lua_isstring(lua, 2))
+	if (lua_isstring(lua, 1) && lua_isstring(lua, 2))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 		std::wstring okurikey = U8TOWC(lua_tostring(lua, 2));
@@ -360,7 +360,7 @@ int lua_search_skk_server(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -387,7 +387,7 @@ int lua_search_unicode(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -403,7 +403,7 @@ int lua_search_jisx0213(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -419,7 +419,7 @@ int lua_search_jisx0208(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -435,7 +435,7 @@ int lua_search_character_code(lua_State *lua)
 {
 	std::wstring candidate;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -452,7 +452,7 @@ int lua_complement(lua_State *lua)
 	std::wstring candidate;
 	SKKDICCANDIDATES sc;
 
-	if(lua_isstring(lua, 1))
+	if (lua_isstring(lua, 1))
 	{
 		std::wstring searchkey = U8TOWC(lua_tostring(lua, 1));
 
@@ -462,7 +462,7 @@ int lua_complement(lua_State *lua)
 		{
 			candidate += L"/" + MakeConcat(sc_itr->first);
 		}
-		if(!candidate.empty())
+		if (!candidate.empty())
 		{
 			candidate += L"/\n";
 		}
@@ -475,7 +475,7 @@ int lua_complement(lua_State *lua)
 
 int lua_add(lua_State *lua)
 {
-	if(lua_isboolean(lua, 1) &&
+	if (lua_isboolean(lua, 1) &&
 		lua_isstring(lua, 2) && lua_isstring(lua, 3) &&
 		lua_isstring(lua, 4) && lua_isstring(lua, 5))
 	{
@@ -494,7 +494,7 @@ int lua_add(lua_State *lua)
 
 int lua_delete(lua_State *lua)
 {
-	if(lua_isboolean(lua, 1) &&
+	if (lua_isboolean(lua, 1) &&
 		lua_isstring(lua, 2) && lua_isstring(lua, 3))
 	{
 		int okuriari = lua_toboolean(lua, 1);

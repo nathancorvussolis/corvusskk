@@ -9,10 +9,10 @@ STDAPI CTextService::OnCompositionTerminated(TfEditCookie ecWrite, ITfCompositio
 	_EndCandidateList();
 	showcandlist = FALSE;
 
-	if(pComposition != nullptr)
+	if (pComposition != nullptr)
 	{
 		CComPtr<ITfRange> pRange;
-		if(SUCCEEDED(pComposition->GetRange(&pRange)) && (pRange != nullptr))
+		if (SUCCEEDED(pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
 			pRange->SetText(ecWrite, 0, L"", 0);
 		}
@@ -40,12 +40,12 @@ BOOL CTextService::_IsRangeCovered(TfEditCookie ec, ITfRange *pRangeTest, ITfRan
 {
 	LONG lResult;
 
-	if(FAILED(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult)) || lResult > 0)
+	if (FAILED(pRangeCover->CompareStart(ec, pRangeTest, TF_ANCHOR_START, &lResult)) || lResult > 0)
 	{
 		return FALSE;
 	}
 
-	if(FAILED(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult)) || lResult < 0)
+	if (FAILED(pRangeCover->CompareEnd(ec, pRangeTest, TF_ANCHOR_END, &lResult)) || lResult < 0)
 	{
 		return FALSE;
 	}
@@ -66,16 +66,16 @@ public:
 		HRESULT hr = E_FAIL;
 
 		CComPtr<ITfInsertAtSelection> pInsertAtSelection;
-		if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection))) && (pInsertAtSelection != nullptr))
+		if (SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pInsertAtSelection))) && (pInsertAtSelection != nullptr))
 		{
 			CComPtr<ITfRange> pRange;
-			if(SUCCEEDED(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, nullptr, 0, &pRange)) && (pRange != nullptr))
+			if (SUCCEEDED(pInsertAtSelection->InsertTextAtSelection(ec, TF_IAS_QUERYONLY, nullptr, 0, &pRange)) && (pRange != nullptr))
 			{
 				CComPtr<ITfContextComposition> pContextComposition;
-				if(SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition))) && (pContextComposition != nullptr))
+				if (SUCCEEDED(_pContext->QueryInterface(IID_PPV_ARGS(&pContextComposition))) && (pContextComposition != nullptr))
 				{
 					CComPtr<ITfComposition> pComposition;
-					if(SUCCEEDED(pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition)) && (pComposition != nullptr))
+					if (SUCCEEDED(pContextComposition->StartComposition(ec, pRange, _pTextService, &pComposition)) && (pComposition != nullptr))
 					{
 						_pTextService->_SetComposition(pComposition);
 
@@ -104,7 +104,7 @@ BOOL CTextService::_StartComposition(ITfContext *pContext)
 			new CStartCompositionEditSession(this, pContext));
 		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
 	}
-	catch(...)
+	catch (...)
 	{
 	}
 
@@ -128,12 +128,12 @@ public:
 
 void CTextService::_TerminateComposition(TfEditCookie ec, ITfContext *pContext)
 {
-	if(pContext == nullptr)	//辞書登録用
+	if (pContext == nullptr)	//辞書登録用
 	{
 		return;
 	}
 
-	if(_IsComposing())
+	if (_IsComposing())
 	{
 		_ClearCompositionDisplayAttributes(ec, pContext);
 		_pComposition->EndComposition(ec);
@@ -152,7 +152,7 @@ void CTextService::_EndComposition(ITfContext *pContext)
 			new CEndCompositionEditSession(this, pContext));
 		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 	}
-	catch(...)
+	catch (...)
 	{
 	}
 }
@@ -176,7 +176,7 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 {
 	TF_SELECTION tfSelection = {};
 	ULONG cFetched = 0;
-	if(FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
+	if (FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 	{
 		return;
 	}
@@ -184,17 +184,17 @@ void CTextService::_CancelComposition(TfEditCookie ec, ITfContext *pContext)
 	CComPtr<ITfRange> pRangeSelection;
 	pRangeSelection.Attach(tfSelection.range);
 
-	if(cFetched != 1)
+	if (cFetched != 1)
 	{
 		return;
 	}
 
-	if(_IsComposing())
+	if (_IsComposing())
 	{
 		CComPtr<ITfRange> pRange;
-		if(SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+		if (SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
 		{
-			if(_IsRangeCovered(ec, tfSelection.range, pRange))
+			if (_IsRangeCovered(ec, tfSelection.range, pRange))
 			{
 				pRange->SetText(ec, 0, L"", 0);
 
@@ -218,13 +218,13 @@ void CTextService::_ClearComposition()
 
 	_EndInputModeWindow();
 
-	if(_IsComposing())
+	if (_IsComposing())
 	{
 		CComPtr<ITfDocumentMgr> pDocumentMgr;
-		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
 			CComPtr<ITfContext> pContext;
-			if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
+			if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 			{
 				_ResetStatus();
 
@@ -235,7 +235,7 @@ void CTextService::_ClearComposition()
 						new CClearCompositionEditSession(this, pContext));
 					pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 				}
-				catch(...)
+				catch (...)
 				{
 				}
 			}

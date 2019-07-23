@@ -29,14 +29,14 @@ public:
 
 STDAPI CClassFactory::QueryInterface(REFIID riid, void **ppvObj)
 {
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if(IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory))
+	if (IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory))
 	{
 		*ppvObj = this;
 		DllAddRef();
@@ -64,14 +64,14 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 	HRESULT hr;
 	CComPtr<CTextService> pTextService;
 
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if(nullptr != pUnkOuter)
+	if (nullptr != pUnkOuter)
 	{
 		return CLASS_E_NOAGGREGATION;
 	}
@@ -80,7 +80,7 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 	{
 		pTextService.Attach(new CTextService());
 	}
-	catch(...)
+	catch (...)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -94,7 +94,7 @@ STDAPI CClassFactory::CreateInstance(IUnknown *pUnkOuter, REFIID riid, void **pp
 
 STDAPI CClassFactory::LockServer(BOOL fLock)
 {
-	if(fLock)
+	if (fLock)
 	{
 		DllAddRef();
 	}
@@ -115,14 +115,14 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppvObj)
 {
 	static CClassFactory factory;
 
-	if(ppvObj == nullptr)
+	if (ppvObj == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
 	*ppvObj = nullptr;
 
-	if((IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory)) &&
+	if ((IsEqualIID(riid, IID_IUnknown) || IsEqualIID(riid, IID_IClassFactory)) &&
 		IsEqualGUID(rclsid, c_clsidTextService))
 	{
 		*ppvObj = &factory;
@@ -135,13 +135,13 @@ STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppvObj)
 
 STDAPI DllRegisterServer(void)
 {
-	if(!RegisterServer() || !RegisterCategories() || !RegisterProfiles())
+	if (!RegisterServer() || !RegisterCategories() || !RegisterProfiles())
 	{
 		DllUnregisterServer();
 		return E_FAIL;
 	}
 
-	if(IsWindowsVersion62OrLater())
+	if (IsWindowsVersion62OrLater())
 	{
 		EnableTextService();
 	}
@@ -151,7 +151,7 @@ STDAPI DllRegisterServer(void)
 
 STDAPI DllUnregisterServer(void)
 {
-	if(IsWindowsVersion62OrLater())
+	if (IsWindowsVersion62OrLater())
 	{
 		DisableTextService();
 	}

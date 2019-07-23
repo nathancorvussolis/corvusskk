@@ -23,17 +23,17 @@ std::wstring SearchUnicode(const std::wstring &searchkey)
 	WCHAR utf16[3];
 
 	// U+XXXXXX (XXXXXX : 0000-FFFF,10000-10FFFF)
-	if(std::regex_match(searchkey, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
+	if (std::regex_match(searchkey, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
 	{
-		if(swscanf_s(searchkey.c_str(), L"U+%X", &ucp) != 1)
+		if (swscanf_s(searchkey.c_str(), L"U+%X", &ucp) != 1)
 		{
 			return candidate;
 		}
 	}
 	// uxxxxxx (xxxxxx : 0000-ffff,10000-10ffff)
-	else if(std::regex_match(searchkey, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
+	else if (std::regex_match(searchkey, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
 	{
-		if(swscanf_s(searchkey.c_str(), L"u%x", &ucp) != 1)
+		if (swscanf_s(searchkey.c_str(), L"u%x", &ucp) != 1)
 		{
 			return candidate;
 		}
@@ -44,7 +44,7 @@ std::wstring SearchUnicode(const std::wstring &searchkey)
 	}
 
 	ZeroMemory(utf16, sizeof(utf16));
-	if(UcpToWideChar(ucp, &utf16[0], &utf16[1]) != 0)
+	if (UcpToWideChar(ucp, &utf16[0], &utf16[1]) != 0)
 	{
 		candidate = L"/";
 		candidate += utf16;
@@ -67,17 +67,17 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 	UCSCHAR ucp[2];
 	WCHAR sucp[32];
 
-	if(!std::regex_match(searchkey, std::wregex(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
+	if (!std::regex_match(searchkey, std::wregex(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
 	{
 		return candidate;
 	}
 
-	if(swscanf_s(searchkey.c_str(), L"%d-%d-%d", &men, &ku, &ten) != 3)
+	if (swscanf_s(searchkey.c_str(), L"%d-%d-%d", &men, &ku, &ten) != 3)
 	{
 		return candidate;
 	}
 
-	switch(men)
+	switch (men)
 	{
 	case 1:
 		euc[0] = (ku + base) | ~mask;
@@ -95,9 +95,9 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 		break;
 	}
 
-	if(EucJis2004ToUcp(euc, _countof(euc), &ucp[0], &ucp[1]) != 0)
+	if (EucJis2004ToUcp(euc, _countof(euc), &ucp[0], &ucp[1]) != 0)
 	{
-		if(ucp[1] == 0)
+		if (ucp[1] == 0)
 		{
 			_snwprintf_s(sucp, _TRUNCATE, L"U+%04X", ucp[0]);
 		}
@@ -108,7 +108,7 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 	}
 
 	size = _countof(utf16);
-	if(EucJis2004ToWideChar(euc, nullptr, utf16, &size))
+	if (EucJis2004ToWideChar(euc, nullptr, utf16, &size))
 	{
 		candidate = L"/";
 		candidate += utf16;
@@ -126,17 +126,17 @@ std::wstring SearchJISX0208(const std::wstring &searchkey)
 	//JIS X 0208 区点番号
 	int ku, ten;
 
-	if(!std::regex_match(searchkey, std::wregex(L"(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
+	if (!std::regex_match(searchkey, std::wregex(L"(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
 	{
 		return candidate;
 	}
 
-	if(swscanf_s(searchkey.c_str(), L"%d-%d", &ku, &ten) != 2)
+	if (swscanf_s(searchkey.c_str(), L"%d-%d", &ku, &ten) != 2)
 	{
 		return candidate;
 	}
 
-	if((jisx0208b[ku - 1][(ten - (ten % 16)) / 16] & (0x0001 << (ten % 16))) != 0)
+	if ((jisx0208b[ku - 1][(ten - (ten % 16)) / 16] & (0x0001 << (ten % 16))) != 0)
 	{
 		candidate = SearchJISX0213(L"1-" + searchkey);
 	}
@@ -163,27 +163,27 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	UCSCHAR ucp;
 
 	//ASCII, JIS X 0201 (片仮名, 8bit), JIS X 0213 面区点番号
-	if(WideCharToEucJis2004(searchkey.c_str(), nullptr, nullptr, &len))
+	if (WideCharToEucJis2004(searchkey.c_str(), nullptr, nullptr, &len))
 	{
 		std::string euc = WCTOEUC(searchkey);
 
-		for(size_t i = 0; i < euc.size(); i++)
+		for (size_t i = 0; i < euc.size(); i++)
 		{
-			if(as <= euc[i] && euc[i] <= ae)
+			if (as <= euc[i] && euc[i] <= ae)
 			{
 				_snwprintf_s(b, _TRUNCATE, L"%02X", euc[i]);
 			}
 			else
 			{
-				switch(euc[i])
+				switch (euc[i])
 				{
 				case ss3:	// JIS X 0213 Plane 2
-					if(i + 2 < euc.size())
+					if (i + 2 < euc.size())
 					{
 						ej[0] = euc[i + 1] - ~mask;
 						ej[1] = euc[i + 2] - ~mask;
 
-						if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
+						if ((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 						{
 							_snwprintf_s(b, _TRUNCATE, L"2-%02d-%02d", ej[0] - base, ej[1] - base);
 							i += 2;
@@ -191,11 +191,11 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 					}
 					break;
 				case ss2:	//JIS X 0201 halfwidth katakana
-					if(i + 1 < euc.size())
+					if (i + 1 < euc.size())
 					{
 						ej[0] = euc[i + 1] - ~mask;
 
-						if(ej[0] >= ejs && ej[0] <= eje)
+						if (ej[0] >= ejs && ej[0] <= eje)
 						{
 							_snwprintf_s(b, _TRUNCATE, L"%02X", (UCHAR)euc[i + 1]);
 							i++;
@@ -203,12 +203,12 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 					}
 					break;
 				default:	// JIS X 0213 Plane 1
-					if(i + 1 < euc.size())
+					if (i + 1 < euc.size())
 					{
 						ej[0] = euc[i] - ~mask;
 						ej[1] = euc[i + 1] - ~mask;
 
-						if((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
+						if ((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 						{
 							_snwprintf_s(b, _TRUNCATE, L"1-%02d-%02d", ej[0] - base, ej[1] - base);
 							i++;
@@ -218,7 +218,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 				}
 			}
 
-			if(!e.empty())
+			if (!e.empty())
 			{
 				e += L",";
 			}
@@ -229,9 +229,9 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	}
 
 	//Unicodeコードポイント
-	for(size_t i = 0; i < searchkey.size(); i++)
+	for (size_t i = 0; i < searchkey.size(); i++)
 	{
-		if((i + 1 < searchkey.size()) && IS_SURROGATE_PAIR(searchkey[i], searchkey[i + 1]))
+		if ((i + 1 < searchkey.size()) && IS_SURROGATE_PAIR(searchkey[i], searchkey[i + 1]))
 		{
 			ucp = SURROGATEPAIR_UCPMIN +
 				((((UCSCHAR)searchkey[i] & SURROGATEPAIR_SEPMASK) << SURROGATEPAIR_SEPBIT) |
@@ -244,7 +244,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 		}
 		_snwprintf_s(b, _TRUNCATE, L"U+%04X", ucp);
 
-		if(!u.empty())
+		if (!u.empty())
 		{
 			u += L",";
 		}
@@ -259,7 +259,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 void SendKeyboardInput(WCHAR command)
 {
 	INPUT input = { INPUT_KEYBOARD };
-	switch(command)
+	switch (command)
 	{
 	case REQ_CAPS_LOCK:
 		input.ki.wVk = VK_CAPITAL;

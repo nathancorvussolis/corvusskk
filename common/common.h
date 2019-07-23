@@ -110,10 +110,10 @@ BOOL GetUserSid(LPWSTR *ppszUserSid);
 BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = nullptr);
 
 #define FORWARD_ITERATION_I(iterator, container) \
-	for(auto (iterator) = (container).begin(); (iterator) != (container).end(); ++(iterator))
+	for (auto (iterator) = (container).begin(); (iterator) != (container).end(); ++(iterator))
 #define FORWARD_ITERATION(iterator, container) \
-	for(auto (iterator) = (container).begin(); (iterator) != (container).end(); )
+	for (auto (iterator) = (container).begin(); (iterator) != (container).end(); )
 #define REVERSE_ITERATION_I(reverse_iterator, container) \
-	for(auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); ++(reverse_iterator))
+	for (auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); ++(reverse_iterator))
 #define REVERSE_ITERATION(reverse_iterator, container) \
-	for(auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); )
+	for (auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); )

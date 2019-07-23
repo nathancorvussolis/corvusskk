@@ -5,12 +5,12 @@
 
 INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	switch(message)
+	switch (message)
 	{
 	case WM_INITDIALOG:
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DEFAULTMODE, SectionBehavior, ValueDefaultMode);
 		LoadCheckButton(hDlg, IDC_RADIO_DEFMODEASCII, SectionBehavior, ValueDefModeAscii);
-		if(!IsDlgButtonChecked(hDlg, IDC_RADIO_DEFMODEASCII))
+		if (!IsDlgButtonChecked(hDlg, IDC_RADIO_DEFMODEASCII))
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_DEFMODEHIRA, BST_CHECKED);
 		}
@@ -28,7 +28,7 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		return TRUE;
 
 	case WM_COMMAND:
-		switch(LOWORD(wParam))
+		switch (LOWORD(wParam))
 		{
 		case IDC_CHECKBOX_DEFAULTMODE:
 		case IDC_RADIO_DEFMODEHIRA:

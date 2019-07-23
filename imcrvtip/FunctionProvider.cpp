@@ -6,7 +6,7 @@
 
 STDAPI CTextService::GetType(GUID *pguid)
 {
-	if(pguid == nullptr)
+	if (pguid == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -20,7 +20,7 @@ STDAPI CTextService::GetDescription(BSTR *pbstrDesc)
 {
 	BSTR bstrDesc = nullptr;
 
-	if(pbstrDesc == nullptr)
+	if (pbstrDesc == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -29,7 +29,7 @@ STDAPI CTextService::GetDescription(BSTR *pbstrDesc)
 
 	bstrDesc = SysAllocString(TextServiceDesc);
 
-	if(bstrDesc == nullptr)
+	if (bstrDesc == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -41,7 +41,7 @@ STDAPI CTextService::GetDescription(BSTR *pbstrDesc)
 
 STDAPI CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 {
-	if(ppunk == nullptr)
+	if (ppunk == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -49,29 +49,29 @@ STDAPI CTextService::GetFunction(REFGUID rguid, REFIID riid, IUnknown **ppunk)
 	*ppunk = nullptr;
 
 	//This value can be GUID_NULL.
-	if(!IsEqualGUID(rguid, GUID_NULL) && !IsEqualGUID(rguid, c_clsidTextService))
+	if (!IsEqualGUID(rguid, GUID_NULL) && !IsEqualGUID(rguid, c_clsidTextService))
 	{
 		return E_INVALIDARG;
 	}
 
-	if(IsEqualIID(riid, IID_ITfFnConfigure))
+	if (IsEqualIID(riid, IID_ITfFnConfigure))
 	{
 		*ppunk = static_cast<ITfFnConfigure *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnShowHelp))
+	else if (IsEqualIID(riid, IID_ITfFnShowHelp))
 	{
 		*ppunk = static_cast<ITfFnShowHelp *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnReconversion))
+	else if (IsEqualIID(riid, IID_ITfFnReconversion))
 	{
 		*ppunk = static_cast<ITfFnReconversion *>(this);
 	}
-	else if(IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
+	else if (IsEqualIID(riid, IID_ITfFnGetPreferredTouchKeyboardLayout))
 	{
 		*ppunk = static_cast<ITfFnGetPreferredTouchKeyboardLayout *>(this);
 	}
 
-	if(*ppunk)
+	if (*ppunk)
 	{
 		AddRef();
 		return S_OK;
@@ -84,7 +84,7 @@ STDAPI CTextService::GetDisplayName(BSTR *pbstrName)
 {
 	BSTR bstrName = nullptr;
 
-	if(pbstrName == nullptr)
+	if (pbstrName == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -93,7 +93,7 @@ STDAPI CTextService::GetDisplayName(BSTR *pbstrName)
 
 	bstrName = SysAllocString(TextServiceDesc);
 
-	if(bstrName == nullptr)
+	if (bstrName == nullptr)
 	{
 		return E_OUTOFMEMORY;
 	}
@@ -105,7 +105,7 @@ STDAPI CTextService::GetDisplayName(BSTR *pbstrName)
 
 STDAPI CTextService::Show(HWND hwndParent, LANGID langid, REFGUID rguidProfile)
 {
-	if(!IsEqualGUID(rguidProfile, c_guidProfile))
+	if (!IsEqualGUID(rguidProfile, c_guidProfile))
 	{
 		return E_INVALIDARG;
 	}
@@ -124,12 +124,12 @@ STDAPI CTextService::Show(HWND hwndParent)
 
 STDAPI CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *pfConvertable)
 {
-	if(pRange == nullptr || pfConvertable == nullptr)
+	if (pRange == nullptr || pfConvertable == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(ppNewRange == nullptr)
+	if (ppNewRange == nullptr)
 	{
 		*pfConvertable = TRUE;
 		return S_OK;
@@ -140,7 +140,7 @@ STDAPI CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *p
 
 	HRESULT hr = pRange->Clone(ppNewRange);
 
-	if(SUCCEEDED(hr))
+	if (SUCCEEDED(hr))
 	{
 		*pfConvertable = TRUE;
 	}
@@ -150,7 +150,7 @@ STDAPI CTextService::QueryRange(ITfRange *pRange, ITfRange **ppNewRange, BOOL *p
 
 STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCandList)
 {
-	if(pRange == nullptr || ppCandList == nullptr)
+	if (pRange == nullptr || ppCandList == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -160,7 +160,7 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if(SUCCEEDED((_GetRangeText(pRange, text))) && !text.empty())
+	if (SUCCEEDED((_GetRangeText(pRange, text))) && !text.empty())
 	{
 		std::wstring key;
 		_ConvKanaToKana(text, im_katakana, key, im_hiragana);
@@ -182,7 +182,7 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 
 			hr = S_OK;
 		}
-		catch(...)
+		catch (...)
 		{
 			return E_OUTOFMEMORY;
 		}
@@ -193,12 +193,12 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 
 STDAPI CTextService::Reconvert(ITfRange *pRange)
 {
-	if(pRange == nullptr)
+	if (pRange == nullptr)
 	{
 		return E_INVALIDARG;
 	}
 
-	if(_IsComposing())
+	if (_IsComposing())
 	{
 		return S_OK;
 	}
@@ -206,18 +206,18 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if(SUCCEEDED(_GetRangeText(pRange, text)) && !text.empty())
+	if (SUCCEEDED(_GetRangeText(pRange, text)) && !text.empty())
 	{
 		CComPtr<ITfDocumentMgr> pDocumentMgr;
-		if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 		{
 			CComPtr<ITfContext> pContext;
-			if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
+			if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 			{
 				reconversion = TRUE;
 				reconvsrc = text;
 
-				if(!_IsKeyboardOpen())
+				if (!_IsKeyboardOpen())
 				{
 					inputmode = im_disable;
 					_SetKeyboardOpen(TRUE);
@@ -237,7 +237,7 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 
 STDAPI CTextService::GetLayout(TKBLayoutType *pTKBLayoutType, WORD *pwPreferredLayoutId)
 {
-	if(pTKBLayoutType == nullptr || pwPreferredLayoutId == nullptr)
+	if (pTKBLayoutType == nullptr || pwPreferredLayoutId == nullptr)
 	{
 		return E_INVALIDARG;
 	}
@@ -271,12 +271,12 @@ public:
 
 		_Text.clear();
 
-		while(cch == _countof(buf) - 1)
+		while (cch == _countof(buf) - 1)
 		{
 			ZeroMemory(buf, sizeof(buf));
 			cch = _countof(buf) - 1;
 			hr = _pRange->GetText(ec, TF_TF_MOVESTART, buf, cch, &cch);
-			if(SUCCEEDED(hr))
+			if (SUCCEEDED(hr))
 			{
 				_Text.append(buf);
 			}
@@ -305,7 +305,7 @@ HRESULT CTextService::_GetRangeText(ITfRange *pRange, std::wstring &text)
 	HRESULT hr = E_FAIL;
 
 	CComPtr<ITfContext> pContext;
-	if(SUCCEEDED(pRange->GetContext(&pContext)) && (pContext != nullptr))
+	if (SUCCEEDED(pRange->GetContext(&pContext)) && (pContext != nullptr))
 	{
 		try
 		{
@@ -313,12 +313,12 @@ HRESULT CTextService::_GetRangeText(ITfRange *pRange, std::wstring &text)
 			pEditSession.Attach(
 				new CGetRangeTextEditSession(this, pContext, pRange));
 			pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
-			if(SUCCEEDED(hr))
+			if (SUCCEEDED(hr))
 			{
 				text = pEditSession->_GetText();
 			}
 		}
-		catch(...)
+		catch (...)
 		{
 			return E_OUTOFMEMORY;
 		}
@@ -349,16 +349,16 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 {
 	HRESULT hr = E_FAIL;
 
-	if(index >= (ULONG)fncandidates.size())
+	if (index >= (ULONG)fncandidates.size())
 	{
 		return E_FAIL;
 	}
 
 	CComPtr<ITfDocumentMgr> pDocumentMgr;
-	if(SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+	if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
 	{
 		CComPtr<ITfContext> pContext;
-		if(SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
+		if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 		{
 			inputkey = TRUE;
 			searchkey = fnsearchkey;
@@ -366,7 +366,7 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 			showentry = TRUE;
 			candidates = fncandidates;
 			candidx = (size_t)index;
-			if(candidx >= cx_untilcandlist - 1)
+			if (candidx >= cx_untilcandlist - 1)
 			{
 				showcandlist = TRUE;
 			}
@@ -378,7 +378,7 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 					new CSetResultEditSession(this, pContext));
 				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
 			}
-			catch(...)
+			catch (...)
 			{
 				hr = E_OUTOFMEMORY;
 			}
@@ -393,7 +393,7 @@ BOOL CTextService::_InitFunctionProvider()
 	HRESULT hr = E_FAIL;
 
 	CComPtr<ITfSourceSingle> pSourceSingle;
-	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		hr = pSourceSingle->AdviseSingleSink(_ClientId, IID_IUNK_ARGS(static_cast<ITfFunctionProvider *>(this)));
 	}
@@ -404,7 +404,7 @@ BOOL CTextService::_InitFunctionProvider()
 void CTextService::_UninitFunctionProvider()
 {
 	CComPtr<ITfSourceSingle> pSourceSingle;
-	if(SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pSourceSingle))) && (pSourceSingle != nullptr))
 	{
 		pSourceSingle->UnadviseSingleSink(_ClientId, IID_ITfFunctionProvider);
 	}
