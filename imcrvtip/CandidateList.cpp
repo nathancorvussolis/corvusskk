@@ -434,7 +434,7 @@ HRESULT CCandidateList::_AdviseTextLayoutSink()
 	HRESULT hr = E_FAIL;
 
 	CComPtr<ITfSource> pSource;
-	if (SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))))
+	if (SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 	{
 		hr = pSource->AdviseSink(IID_IUNK_ARGS(static_cast<ITfTextLayoutSink *>(this)), &_dwCookieTextLayoutSink);
 	}
@@ -449,7 +449,7 @@ HRESULT CCandidateList::_UnadviseTextLayoutSink()
 	if (_pContextDocument != nullptr)
 	{
 		CComPtr<ITfSource> pSource;
-		if (SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))))
+		if (SUCCEEDED(_pContextDocument->QueryInterface(IID_PPV_ARGS(&pSource))) && (pSource != nullptr))
 		{
 			hr = pSource->UnadviseSink(_dwCookieTextLayoutSink);
 		}

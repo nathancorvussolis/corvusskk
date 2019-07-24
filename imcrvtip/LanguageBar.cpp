@@ -390,6 +390,11 @@ STDAPI CLangBarItemButton::GetText(BSTR *pbstrText)
 
 STDAPI CLangBarItemButton::AdviseSink(REFIID riid, IUnknown *punk, DWORD *pdwCookie)
 {
+	if (punk == nullptr || pdwCookie == nullptr)
+	{
+		return E_INVALIDARG;
+	}
+
 	if (!IsEqualIID(IID_ITfLangBarItemSink, riid))
 	{
 		return CONNECT_E_CANNOTCONNECT;
@@ -400,13 +405,15 @@ STDAPI CLangBarItemButton::AdviseSink(REFIID riid, IUnknown *punk, DWORD *pdwCoo
 		return CONNECT_E_ADVISELIMIT;
 	}
 
-	if (FAILED(punk->QueryInterface(IID_PPV_ARGS(&_pLangBarItemSink))))
+	if (SUCCEEDED(punk->QueryInterface(IID_PPV_ARGS(&_pLangBarItemSink))) && (_pLangBarItemSink != nullptr))
+	{
+		*pdwCookie = TEXTSERVICE_LANGBARITEMSINK_COOKIE;
+	}
+	else
 	{
 		_pLangBarItemSink.Release();
 		return E_NOINTERFACE;
 	}
-
-	*pdwCookie = TEXTSERVICE_LANGBARITEMSINK_COOKIE;
 
 	return S_OK;
 }

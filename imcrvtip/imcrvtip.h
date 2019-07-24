@@ -167,8 +167,8 @@ extern const DISPLAYATTRIBUTE_INFO c_gdDisplayAttributeInfo[DISPLAYATTRIBUTE_INF
 LONG DllAddRef();
 LONG DllRelease();
 
-#define IID_IUNK_ARGS(pType) __uuidof(*(pType)), reinterpret_cast<IUnknown*>(pType)
-#define IID_PUNK_ARGS(ppType) __uuidof(**(ppType)), reinterpret_cast<IUnknown**>(ppType)
+#define IID_IUNK_ARGS(pType) __uuidof(*(pType)), reinterpret_cast<IUnknown *>(pType)
+#define IID_PUNK_ARGS(ppType) __uuidof(**(ppType)), reinterpret_cast<IUnknown **>(ppType)
 
 // added in Windows 8 SDK
 #ifndef _WIN32_WINNT_WIN8

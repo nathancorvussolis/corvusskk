@@ -876,12 +876,11 @@ void CCandidateWindow::_InitFont()
 			L"ja-JP",
 			&_pDWTF);
 
-		if (SUCCEEDED(hr))
+		if (SUCCEEDED(hr) && (_pDWTF != nullptr))
 		{
 			hr = _pDWTF->SetWordWrapping(DWRITE_WORD_WRAPPING_NO_WRAP);
 		}
-
-		if (FAILED(hr))
+		else
 		{
 			_UninitFont();
 

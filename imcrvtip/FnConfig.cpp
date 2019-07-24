@@ -983,6 +983,8 @@ void CTextService::_InitD2D()
 
 			HRESULT hr = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &_pD2DFactory);
 
+			if (_pD2DFactory == nullptr) hr = E_FAIL;
+
 			if (SUCCEEDED(hr))
 			{
 				D2D1_RENDER_TARGET_PROPERTIES d2dprops = D2D1::RenderTargetProperties(
@@ -991,6 +993,8 @@ void CTextService::_InitD2D()
 					0.0F, 0.0F, D2D1_RENDER_TARGET_USAGE_NONE, D2D1_FEATURE_LEVEL_DEFAULT);
 
 				hr = _pD2DFactory->CreateDCRenderTarget(&d2dprops, &_pD2DDCRT);
+
+				if (_pD2DDCRT == nullptr) hr = E_FAIL;
 			}
 
 			if (SUCCEEDED(hr))
@@ -998,6 +1002,9 @@ void CTextService::_InitD2D()
 				for (int i = 0; i < DISPLAY_LIST_COLOR_NUM; i++)
 				{
 					hr = _pD2DDCRT->CreateSolidColorBrush(D2D1::ColorF(SWAPRGB(cx_list_colors[i])), &_pD2DBrush[i]);
+
+					if (_pD2DBrush[i] == nullptr) hr = E_FAIL;
+
 					if (FAILED(hr))
 					{
 						break;
@@ -1008,6 +1015,8 @@ void CTextService::_InitD2D()
 			if (SUCCEEDED(hr))
 			{
 				hr = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, IID_PUNK_ARGS(&_pDWFactory));
+
+				if (_pDWFactory == nullptr) hr = E_FAIL;
 			}
 
 			if (FAILED(hr))
