@@ -610,21 +610,21 @@ static int pmain (lua_State *L) {
 #ifdef U8W_H
 void free_u8argv(int argc, char **argv) {
   int i;
-  for(i = 0; i < argc; i++) {
-    if(argv && argv[i]) free(argv[i]);
+  for (i = 0; i < argc; i++) {
+    if (argv && argv[i]) free(argv[i]);
   }
-  if(argv) free(argv);
+  if (argv) free(argv);
 }
 
 char **make_u8argv(int argc, wchar_t **wargv) {
   int i;
   char **argv = (char **)calloc(argc + 1, sizeof(void *));
-  if(argv == NULL) {
+  if (argv == NULL) {
     return NULL;
   } else {
-    for(i = 0; i < argc; i++) {
+    for (i = 0; i < argc; i++) {
       argv[i] = u8wstos(wargv[i]);
-      if(argv[i] == NULL) {
+      if (argv[i] == NULL) {
         free_u8argv(argc, argv);
         return NULL;
       }
@@ -641,7 +641,7 @@ int wmain(int argc, wchar_t **wargv) {
   setlocale(LC_ALL, "");
 
   argv = make_u8argv(argc, wargv);
-  if(argv == NULL) return EXIT_FAILURE;
+  if (argv == NULL) return EXIT_FAILURE;
 
   L = luaL_newstate();  /* create state */
   if (L == NULL) {
