@@ -697,7 +697,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "EnableCompatibilityKeyboard"=dword:00000001
 
-* Windows 10 (Ver.1709 から) の場合
+Windows 10 (Ver.1709 から) の場合
 
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "DisableNewKeyboardExperience"=dword:00000001
