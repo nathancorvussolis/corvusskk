@@ -698,7 +698,9 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
     "EnableCompatibilityKeyboard"=dword:00000001
 
 * Windows 10 (Ver.1709 から) の場合
-    +  ハードウェアキーボードに準拠したレイアウトはMS-IMEでのみ使用できるようです。
+
+    [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
+    "DisableNewKeyboardExperience"=dword:00000001
 
 
 ### 開発環境
