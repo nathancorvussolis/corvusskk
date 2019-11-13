@@ -229,6 +229,24 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				if (vs_itr != conv_point_s.end() && ch == vs_itr->ch[0])
 				{
 					ch = vs_itr->ch[1];
+
+					ROMAN_KANA_CONV rkc;
+					wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
+					hrc = _ConvRomanKana(&rkc);
+					switch (hrc)
+					{
+					case S_OK:	//一致
+					case E_PENDING:	//途中まで一致
+						if (rkc.roman[0] != L'\0')
+						{
+							// 先行するローマ字を仮名変換
+							_ConvRoman();
+						}
+						break;
+					default:
+						break;
+					}
+
 					if (!inputkey || !kana.empty())
 					{
 						chO = vs_itr->ch[2];

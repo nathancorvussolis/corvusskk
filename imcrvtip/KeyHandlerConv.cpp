@@ -734,7 +734,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 	{
 	case S_OK:	//一致
 	case E_PENDING:	//途中まで一致
-		if (rkc.roman[0] != L'\0' && rkc.wait)	//待機
+		if (rkc.roman[0] != L'\0')
 		{
 			if (okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
@@ -756,6 +756,8 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 
 				WCHAR chO = L'\0';
 
+				// ローマ字に格納されている仮名をキーに、変換位置指定の「代替」を検索する。
+				// ヒットしたエントリの「送り」を送りローマ字とする。
 				auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
 					chN, [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
 

@@ -147,6 +147,15 @@
     <Xml Include="config-sample\config - roman.xml">
       <Filter>config-sample</Filter>
     </Xml>
+    <Xml Include="config-sample\config - tsuki-2-263-jpkbd.xml">
+      <Filter>config-sample</Filter>
+    </Xml>
+    <Xml Include="config-sample\config - tsuki-2-263-uskbd.xml">
+      <Filter>config-sample</Filter>
+    </Xml>
+    <Xml Include="config-sample\config - wait-sample.xml">
+      <Filter>config-sample</Filter>
+    </Xml>
     <Xml Include="config-share\config.xml">
       <Filter>config-share</Filter>
     </Xml>

@@ -81,6 +81,9 @@
     <Xml Include="config-sample\config - gact10.xml" />
     <Xml Include="config-sample\config - kana.xml" />
     <Xml Include="config-sample\config - roman.xml" />
+    <Xml Include="config-sample\config - tsuki-2-263-jpkbd.xml" />
+    <Xml Include="config-sample\config - tsuki-2-263-uskbd.xml" />
+    <Xml Include="config-sample\config - wait-sample.xml" />
     <Xml Include="config-share\config.xml" />
     <Xml Include="theme-bundle\RtfSidebarTheme.xml" />
   </ItemGroup>

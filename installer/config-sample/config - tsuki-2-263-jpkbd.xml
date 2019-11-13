@@ -1,0 +1,902 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<skk>
+<!--
+
+ 月配列2-263式 日本語キーボード用サンプル
+
+   ・変換位置指定   -
+   ・かな／カナ     ] (US), [ (JP)
+   ・ｶﾅ全英変換     } (US), { (JP)
+   ・全英           |
+   ・ASCII          \
+   ・abbrev         = (US), ^ (JP)
+   その他のキー設定はローマ字入力と同じ
+
+   参考
+
+      中指前置シフト新JIS「月配列」
+      http://jisx6004.client.jp/tsuki.html
+
+      SKKで月配列を使う
+      http://www.asahi-net.or.jp/~wq6k-yn/skk-tsuki.html
+
+-->
+  <section name="dictionary">
+    <list>
+      <row path="https://skk-dev.github.io/dict/SKK-JISYO.L.gz" enabled="1" />
+    </list>
+  </section>
+  <section name="server">
+    <key name="serv" value="0" />
+    <key name="host" value="localhost" />
+    <key name="port" value="1178" />
+    <key name="encoding" value="0" />
+    <key name="timeout" value="1000" />
+  </section>
+  <section name="behavior">
+    <key name="defaultmode" value="0" />
+    <key name="defmodeascii" value="0" />
+    <key name="begincvokuri" value="1" />
+    <key name="precedeokuri" value="0" />
+    <key name="shiftnnokuri" value="1" />
+    <key name="srchallokuri" value="0" />
+    <key name="delcvposcncl" value="1" />
+    <key name="delokuricncl" value="0" />
+    <key name="backincenter" value="1" />
+    <key name="addcandktkn" value="0" />
+    <key name="entogglekana" value="1" />
+    <key name="setbydirect" value="0" />
+    <key name="compmultinum" value="3" />
+    <key name="stacompmulti" value="0" />
+    <key name="dynamiccomp" value="0" />
+    <key name="dyncompmulti" value="0" />
+    <key name="compuserdic" value="0" />
+    <key name="compincback" value="0" />
+  </section>
+  <section name="font">
+    <key name="name" value="メイリオ" />
+    <key name="size" value="12" />
+    <key name="weight" value="400" />
+    <key name="italic" value="0" />
+  </section>
+  <section name="display">
+    <key name="maxwidth" value="320" />
+    <key name="colorbg" value="0xFFFFFF" />
+    <key name="colorfr" value="0x000000" />
+    <key name="colorse" value="0xFF0000" />
+    <key name="colorco" value="0x808080" />
+    <key name="colorca" value="0x000000" />
+    <key name="colorsc" value="0x808080" />
+    <key name="coloran" value="0x808080" />
+    <key name="colorno" value="0x000000" />
+    <key name="drawapi" value="1" />
+    <key name="colorfont" value="1" />
+    <key name="untilcandlist" value="5" />
+    <key name="dispcandno" value="0" />
+    <key name="verticalcand" value="1" />
+    <key name="annotation" value="1" />
+    <key name="annotatlst" value="1" />
+    <key name="showmodemark" value="0" />
+    <key name="showroman" value="1" />
+    <key name="showromanjlat" value="1" />
+    <key name="showmodeinl" value="1" />
+    <key name="showmodesec" value="3" />
+    <key name="colormc" value="0xFFFFFF" />
+    <key name="colormf" value="0x000000" />
+    <key name="colorhr" value="0x0000C0" />
+    <key name="colorkt" value="0x00C000" />
+    <key name="colorka" value="0xC00080" />
+    <key name="colorjl" value="0xC00000" />
+    <key name="colorac" value="0xC08000" />
+    <key name="colordr" value="0x808080" />
+  </section>
+  <section name="displayattr">
+    <key name="inputmark" value="0,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
+    <key name="inputtext" value="1,0,0x000000,0,0xFFFFFF,2,0,0,0x000000,0" />
+    <key name="inputokuri" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,5" />
+    <key name="convmark" value="0,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,1" />
+    <key name="convtext" value="1,0,0x000000,0,0xFFFFFF,0,0,0,0x000000,1" />
+    <key name="convokuri" value="1,0,0x000000,0,0xFFFFFF,1,0,0,0x000000,5" />
+    <key name="convannot" value="0,0,0x000000,0,0xFFFFFF,3,0,0,0x000000,2" />
+  </section>
+  <section name="selkey">
+    <key name="1" value="ＡAa" />
+    <key name="2" value="ＳSs" />
+    <key name="3" value="ＤDd" />
+    <key name="4" value="ＦFf" />
+    <key name="5" value="ＪJj" />
+    <key name="6" value="ＫKk" />
+    <key name="7" value="ＬLl" />
+    <key name="8" value="ＧGg" />
+    <key name="9" value="ＨHh" />
+  </section>
+  <section name="preservedkeyon">
+    <list>
+      <row vkey="0xC0" mkey="1" />
+      <row vkey="0x19" mkey="0" />
+      <row vkey="0xF3" mkey="0" />
+      <row vkey="0xF4" mkey="0" />
+    </list>
+  </section>
+  <section name="preservedkeyoff">
+    <list>
+      <row vkey="0xC0" mkey="1" />
+      <row vkey="0x19" mkey="0" />
+      <row vkey="0xF3" mkey="0" />
+      <row vkey="0xF4" mkey="0" />
+    </list>
+  </section>
+  <section name="keymap">
+    <key name="kana" value="\[" />		<!-- JP Keyboard -->
+<!--    <key name="kana" value="\]" /> -->		<!-- US Keyboard -->
+    <key name="convchar" value="\{" />		<!-- JP Keyboard -->
+<!--    <key name="convchar" value="\}" /> -->		<!-- US Keyboard -->
+    <key name="jlatin" value="\|" />
+    <key name="ascii" value="\\" />
+    <key name="jmode" value="" />
+    <key name="abbrev" value="\^" />		<!-- JP Keyboard -->
+<!--    <key name="abbrev" value="=" /> -->		<!-- US Keyboard -->
+    <key name="affix" value="&lt;|>" />
+    <key name="nextcand" value="\x20|\cn" />
+    <key name="prevcand" value="x|\cp" />
+    <key name="purgedic" value="X|\cx" />
+    <key name="nextcomp" value="\ci" />
+    <key name="prevcomp" value="\cu" />
+    <key name="compcand" value="\cc" />
+    <key name="hint" value="" />
+    <key name="convpoint" value="-" />
+    <key name="direct" value="[0-9]" />
+    <key name="enter" value="\cm|\cj" />
+    <key name="cancel" value="\cg|\x1B" />
+    <key name="back" value="\ch" />
+    <key name="delete" value="\cd|\x7F" />
+    <key name="void" value="" />
+    <key name="left" value="\cb" />
+    <key name="up" value="\ca" />
+    <key name="right" value="\cf" />
+    <key name="down" value="\ce" />
+    <key name="paste" value="\cy|\cv" />
+  </section>
+  <section name="vkeymap">
+    <key name="kana" value="" />
+    <key name="convchar" value="" />
+    <key name="jlatin" value="" />
+    <key name="ascii" value="" />
+    <key name="jmode" value="C\x4A" />
+    <key name="abbrev" value="" />
+    <key name="affix" value="" />
+    <key name="nextcand" value="\x22" />
+    <key name="prevcand" value="\x21" />
+    <key name="purgedic" value="" />
+    <key name="nextcomp" value="" />
+    <key name="prevcomp" value="S\x09" />
+    <key name="compcand" value="" />
+    <key name="hint" value="" />
+    <key name="convpoint" value="" />
+    <key name="direct" value="" />
+    <key name="enter" value="" />
+    <key name="cancel" value="" />
+    <key name="back" value="" />
+    <key name="delete" value="\x2E" />
+    <key name="void" value="C\x4A" />
+    <key name="left" value="\x25" />
+    <key name="up" value="\x26" />
+    <key name="right" value="\x27" />
+    <key name="down" value="\x28" />
+    <key name="paste" value="" />
+  </section>
+  <section name="convpoint">
+    <list>
+      <row st="A" al="a" ok="a" />
+      <row st="B" al="b" ok="b" />
+      <row st="C" al="c" ok="c" />
+      <row st="D" al="d" ok="d" />
+      <row st="E" al="e" ok="e" />
+      <row st="F" al="f" ok="f" />
+      <row st="G" al="g" ok="g" />
+      <row st="H" al="h" ok="h" />
+      <row st="I" al="i" ok="i" />
+      <row st="J" al="j" ok="j" />
+      <row st="K" al="k" ok="k" />
+<!--      <row st="L" al="l" ok="l" /> -->		<!-- シフトキー押したまま濁点 -->
+      <row st="M" al="m" ok="m" />
+      <row st="N" al="n" ok="n" />
+      <row st="O" al="o" ok="o" />
+      <row st="P" al="p" ok="p" />
+      <row st="Q" al="q" ok="q" />
+      <row st="R" al="r" ok="r" />
+      <row st="S" al="s" ok="s" />
+      <row st="T" al="t" ok="t" />
+      <row st="U" al="u" ok="u" />
+      <row st="V" al="v" ok="v" />
+      <row st="W" al="w" ok="w" />
+      <row st="X" al="x" ok="x" />
+      <row st="Y" al="y" ok="y" />
+      <row st="Z" al="z" ok="z" />
+
+      <!-- ち/「 -->
+      <row st="`" al="@" ok="" />		<!-- JP Keyboard -->
+<!--      <row st="{" al="[" ok="" /> -->		<!-- US Keyboard -->
+
+      <!-- き/ゆ -->
+      <row st="+" al=";" ok="" />		<!-- JP Keyboard -->
+<!--      <row st=":" al=";" ok="" /> -->		<!-- US Keyboard -->
+
+      <!-- れ/」 -->
+      <row st="*" al=":" ok="" />		<!-- JP Keyboard -->
+<!--      <row st="&quot;" al="'" ok="" /> -->		<!-- US Keyboard -->
+
+      <!-- ね -->
+      <row st="&lt;" al="," ok="" />
+
+      <row st="" al="あ" ok="a" />
+      <row st="" al="い" ok="i" />
+      <row st="" al="う" ok="u" />
+      <row st="" al="え" ok="e" />
+      <row st="" al="お" ok="o" />
+      <row st="" al="か" ok="k" />
+      <row st="" al="き" ok="k" />
+      <row st="" al="く" ok="k" />
+      <row st="" al="け" ok="k" />
+      <row st="" al="こ" ok="k" />
+      <row st="" al="さ" ok="s" />
+      <row st="" al="し" ok="s" />
+      <row st="" al="す" ok="s" />
+      <row st="" al="せ" ok="s" />
+      <row st="" al="そ" ok="s" />
+      <row st="" al="た" ok="t" />
+      <row st="" al="ち" ok="t" />
+      <row st="" al="っ" ok="t" />
+      <row st="" al="つ" ok="t" />
+      <row st="" al="て" ok="t" />
+      <row st="" al="と" ok="t" />
+      <row st="" al="な" ok="n" />
+      <row st="" al="に" ok="n" />
+      <row st="" al="ぬ" ok="n" />
+      <row st="" al="ね" ok="n" />
+      <row st="" al="の" ok="n" />
+      <row st="" al="は" ok="h" />
+      <row st="" al="ひ" ok="h" />
+      <row st="" al="ふ" ok="h" />
+      <row st="" al="へ" ok="h" />
+      <row st="" al="ほ" ok="h" />
+      <row st="" al="ま" ok="m" />
+      <row st="" al="み" ok="m" />
+      <row st="" al="む" ok="m" />
+      <row st="" al="め" ok="m" />
+      <row st="" al="も" ok="m" />
+      <row st="" al="や" ok="y" />
+      <row st="" al="ゆ" ok="y" />
+      <row st="" al="よ" ok="y" />
+      <row st="" al="ら" ok="r" />
+      <row st="" al="り" ok="r" />
+      <row st="" al="る" ok="r" />
+      <row st="" al="れ" ok="r" />
+      <row st="" al="ろ" ok="r" />
+      <row st="" al="わ" ok="w" />
+      <row st="" al="を" ok="w" />
+      <row st="" al="ん" ok="n" />
+      <row st="" al="が" ok="g" />
+      <row st="" al="ぎ" ok="g" />
+      <row st="" al="ぐ" ok="g" />
+      <row st="" al="げ" ok="g" />
+      <row st="" al="ご" ok="g" />
+      <row st="" al="ざ" ok="z" />
+      <row st="" al="じ" ok="z" />
+      <row st="" al="ず" ok="z" />
+      <row st="" al="ぜ" ok="z" />
+      <row st="" al="ぞ" ok="z" />
+      <row st="" al="だ" ok="d" />
+      <row st="" al="ぢ" ok="d" />
+      <row st="" al="づ" ok="d" />
+      <row st="" al="で" ok="d" />
+      <row st="" al="ど" ok="d" />
+      <row st="" al="ば" ok="b" />
+      <row st="" al="び" ok="b" />
+      <row st="" al="ぶ" ok="b" />
+      <row st="" al="べ" ok="b" />
+      <row st="" al="ぼ" ok="b" />
+      <row st="" al="ぱ" ok="p" />
+      <row st="" al="ぴ" ok="p" />
+      <row st="" al="ぷ" ok="p" />
+      <row st="" al="ぺ" ok="p" />
+      <row st="" al="ぽ" ok="p" />
+      <row st="" al="ア" ok="a" />
+      <row st="" al="イ" ok="i" />
+      <row st="" al="ウ" ok="u" />
+      <row st="" al="エ" ok="e" />
+      <row st="" al="オ" ok="o" />
+      <row st="" al="カ" ok="k" />
+      <row st="" al="キ" ok="k" />
+      <row st="" al="ク" ok="k" />
+      <row st="" al="ケ" ok="k" />
+      <row st="" al="コ" ok="k" />
+      <row st="" al="サ" ok="s" />
+      <row st="" al="シ" ok="s" />
+      <row st="" al="ス" ok="s" />
+      <row st="" al="セ" ok="s" />
+      <row st="" al="ソ" ok="s" />
+      <row st="" al="タ" ok="t" />
+      <row st="" al="チ" ok="t" />
+      <row st="" al="ッ" ok="t" />
+      <row st="" al="ツ" ok="t" />
+      <row st="" al="テ" ok="t" />
+      <row st="" al="ト" ok="t" />
+      <row st="" al="ナ" ok="n" />
+      <row st="" al="ニ" ok="n" />
+      <row st="" al="ヌ" ok="n" />
+      <row st="" al="ネ" ok="n" />
+      <row st="" al="ノ" ok="n" />
+      <row st="" al="ハ" ok="h" />
+      <row st="" al="ヒ" ok="h" />
+      <row st="" al="フ" ok="h" />
+      <row st="" al="ヘ" ok="h" />
+      <row st="" al="ホ" ok="h" />
+      <row st="" al="マ" ok="m" />
+      <row st="" al="ミ" ok="m" />
+      <row st="" al="ム" ok="m" />
+      <row st="" al="メ" ok="m" />
+      <row st="" al="モ" ok="m" />
+      <row st="" al="ヤ" ok="y" />
+      <row st="" al="ユ" ok="y" />
+      <row st="" al="ヨ" ok="y" />
+      <row st="" al="ラ" ok="r" />
+      <row st="" al="リ" ok="r" />
+      <row st="" al="ル" ok="r" />
+      <row st="" al="レ" ok="r" />
+      <row st="" al="ロ" ok="r" />
+      <row st="" al="ワ" ok="w" />
+      <row st="" al="ヲ" ok="w" />
+      <row st="" al="ン" ok="n" />
+      <row st="" al="ガ" ok="g" />
+      <row st="" al="ギ" ok="g" />
+      <row st="" al="グ" ok="g" />
+      <row st="" al="ゲ" ok="g" />
+      <row st="" al="ゴ" ok="g" />
+      <row st="" al="ザ" ok="z" />
+      <row st="" al="ジ" ok="z" />
+      <row st="" al="ズ" ok="z" />
+      <row st="" al="ゼ" ok="z" />
+      <row st="" al="ゾ" ok="z" />
+      <row st="" al="ダ" ok="d" />
+      <row st="" al="ヂ" ok="d" />
+      <row st="" al="ヅ" ok="d" />
+      <row st="" al="デ" ok="d" />
+      <row st="" al="ド" ok="d" />
+      <row st="" al="バ" ok="b" />
+      <row st="" al="ビ" ok="b" />
+      <row st="" al="ブ" ok="b" />
+      <row st="" al="ベ" ok="b" />
+      <row st="" al="ボ" ok="b" />
+      <row st="" al="パ" ok="p" />
+      <row st="" al="ピ" ok="p" />
+      <row st="" al="プ" ok="p" />
+      <row st="" al="ペ" ok="p" />
+      <row st="" al="ポ" ok="p" />
+    </list>
+  </section>
+  <section name="kana">
+    <list>
+
+<!-- 月配列入力 -->
+
+      <row ro="q" hi="そ" ka="ソ" an="ｿ" so="2" />
+      <row ro="w" hi="こ" ka="コ" an="ｺ" so="2" />
+      <row ro="e" hi="し" ka="シ" an="ｼ" so="2" />
+      <row ro="r" hi="て" ka="テ" an="ﾃ" so="2" />
+      <row ro="t" hi="ょ" ka="ョ" an="ｮ" so="2" />
+      <row ro="y" hi="つ" ka="ツ" an="ﾂ" so="2" />
+      <row ro="u" hi="ん" ka="ン" an="ﾝ" so="2" />
+      <row ro="i" hi="い" ka="イ" an="ｲ" so="2" />
+      <row ro="o" hi="の" ka="ノ" an="ﾉ" so="2" />
+      <row ro="p" hi="り" ka="リ" an="ﾘ" so="2" />
+      <row ro="@" hi="ち" ka="チ" an="ﾁ" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="[" hi="ち" ka="チ" an="ﾁ" so="2" /> -->		<!-- US Keyboard -->
+
+      <row ro="a" hi="は" ka="ハ" an="ﾊ" so="2" />
+      <row ro="s" hi="か" ka="カ" an="ｶ" so="2" />
+      <!-- d SHIFT -->
+      <row ro="f" hi="と" ka="ト" an="ﾄ" so="2" />
+      <row ro="g" hi="た" ka="タ" an="ﾀ" so="2" />
+      <row ro="h" hi="く" ka="ク" an="ｸ" so="2" />
+      <row ro="j" hi="う" ka="ウ" an="ｳ" so="2" />
+      <!-- k SHIFT -->
+      <row ro="l" hi="゛" ka="゛" an="ﾞ" so="2" />
+      <row ro=";" hi="き" ka="キ" an="ｷ" so="2" />
+      <row ro=":" hi="れ" ka="レ" an="ﾚ" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="'" hi="れ" ka="レ" an="ﾚ" so="2" /> -->		<!-- US Keyboard -->
+
+      <row ro="L" hi="゛" ka="゛" an="ﾞ" so="2" />		<!-- シフトキー押したまま濁点 -->
+
+      <row ro="z" hi="す" ka="ス" an="ｽ" so="2" />
+      <row ro="x" hi="け" ka="ケ" an="ｹ" so="2" />
+      <row ro="c" hi="に" ka="ニ" an="ﾆ" so="2" />
+      <row ro="v" hi="な" ka="ナ" an="ﾅ" so="2" />
+      <row ro="b" hi="さ" ka="サ" an="ｻ" so="2" />
+      <row ro="n" hi="っ" ka="ッ" an="ｯ" so="2" />
+      <row ro="m" hi="る" ka="ル" an="ﾙ" so="2" />
+      <row ro="," hi="、" ka="、" an="､" so="2" />
+      <row ro="," hi="。" ka="。" an="｡" so="2" />
+      <row ro="/" hi="゜" ka="゜" an="ﾟ" so="2" />
+      <row ro="\" hi="・" ka="・" an="･" so="2" />
+
+      <row ro="?" hi="゜" ka="゜" an="ﾟ" so="2" />		<!-- シフトキー押したまま半濁点 -->
+
+      <row ro="kq" hi="ぁ" ka="ァ" an="ｧ" so="2" />
+      <row ro="kw" hi="ひ" ka="ヒ" an="ﾋ" so="2" />
+      <row ro="ke" hi="ほ" ka="ホ" an="ﾎ" so="2" />
+      <row ro="kr" hi="ふ" ka="フ" an="ﾌ" so="2" />
+      <row ro="kt" hi="め" ka="メ" an="ﾒ" so="2" />
+      <row ro="dy" hi="ぬ" ka="ヌ" an="ﾇ" so="2" />
+      <row ro="du" hi="え" ka="エ" an="ｴ" so="2" />
+      <row ro="di" hi="み" ka="ミ" an="ﾐ" so="2" />
+      <row ro="do" hi="や" ka="ヤ" an="ﾔ" so="2" />
+      <row ro="dp" hi="ぇ" ka="ェ" an="ｪ" so="2" />
+      <row ro="d@" hi="「" ka="「" an="｢" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="d[" hi="「" ka="「" an="｢" so="2" /> -->		<!-- US Keyboard -->
+
+      <row ro="ka" hi="ぃ" ka="ィ" an="ｨ" so="2" />
+      <row ro="ks" hi="を" ka="ヲ" an="ｦ" so="2" />
+      <row ro="kd" hi="ら" ka="ラ" an="ﾗ" so="2" />
+      <row ro="kf" hi="あ" ka="ア" an="ｱ" so="2" />
+      <row ro="kg" hi="よ" ka="ヨ" an="ﾖ" so="2" />
+      <row ro="dh" hi="ま" ka="マ" an="ﾏ" so="2" />
+      <row ro="dj" hi="お" ka="オ" an="ｵ" so="2" />
+      <row ro="dk" hi="も" ka="モ" an="ﾓ" so="2" />
+      <row ro="dl" hi="わ" ka="ワ" an="ﾜ" so="2" />
+      <row ro="d;" hi="ゆ" ka="ユ" an="ﾕ" so="2" />
+      <row ro="d:" hi="」" ka="」" an="｣" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="d'" hi="」" ka="」" an="｣" so="2" /> -->		<!-- US Keyboard -->
+
+      <row ro="kz" hi="ぅ" ka="ゥ" an="ｩ" so="2" />
+      <row ro="kx" hi="へ" ka="ヘ" an="ﾍ" so="2" />
+      <row ro="kc" hi="せ" ka="セ" an="ｾ" so="2" />
+      <row ro="kv" hi="ゅ" ka="ュ" an="ｭ" so="2" />
+      <row ro="kb" hi="ゃ" ka="ャ" an="ｬ" so="2" />
+      <row ro="dn" hi="む" ka="ム" an="ﾑ" so="2" />
+      <row ro="dm" hi="ろ" ka="ロ" an="ﾛ" so="2" />
+      <row ro="d," hi="ね" ka="ネ" an="ﾈ" so="2" />
+      <row ro="d." hi="ー" ka="ー" an="ｰ" so="2" />
+      <row ro="d/" hi="ぉ" ka="ォ" an="ｫ" so="2" />
+
+      <row ro="dddl" hi="ゎ" ka="ヮ" an="ﾜ" so="2" />
+      <row ro="ddi" hi="ゐ" ka="ヰ" an="ｲ" so="2" />
+      <row ro="ddu" hi="ゑ" ka="ヱ" an="ｴ" so="2" />
+      <row ro="kks" hi="ゕ" ka="ヵ" an="ｶ" so="2" />
+      <row ro="kkx" hi="ゖ" ka="ヶ" an="ｹ" so="2" />
+
+      <row ro="kkh" hi="ㇰ" ka="ㇰ" an="ｸ" so="0" />
+      <row ro="kke" hi="ㇱ" ka="ㇱ" an="ｼ" so="0" />
+      <row ro="kkz" hi="ㇲ" ka="ㇲ" an="ｽ" so="0" />
+      <row ro="kkf" hi="ㇳ" ka="ㇳ" an="ﾄ" so="0" />
+      <row ro="kkdu" hi="ㇴ" ka="ㇴ" an="ﾇ" so="0" />
+      <row ro="kka" hi="ㇵ" ka="ㇵ" an="ﾊ" so="0" />
+      <row ro="kkkw" hi="ㇶ" ka="ㇶ" an="ﾋ" so="0" />
+      <row ro="kkkr" hi="ㇷ" ka="ㇷ" an="ﾌ" so="0" />
+      <row ro="kkkx" hi="ㇸ" ka="ㇸ" an="ﾍ" so="0" />
+      <row ro="kkke" hi="ㇹ" ka="ㇹ" an="ﾎ" so="0" />
+      <row ro="kkdn" hi="ㇺ" ka="ㇺ" an="ﾑ" so="0" />
+      <row ro="kkkd" hi="ㇻ" ka="ㇻ" an="ﾗ" so="0" />
+      <row ro="kkp" hi="ㇼ" ka="ㇼ" an="ﾘ" so="0" />
+      <row ro="kkm" hi="ㇽ" ka="ㇽ" an="ﾙ" so="0" />
+      <row ro="kk'" hi="ㇾ" ka="ㇾ" an="ﾚ" so="0" />
+      <row ro="kkdm" hi="ㇿ" ka="ㇿ" an="ﾛ" so="0" />
+
+      <row ro="ddh" hi="←" ka="←" an="←" so="0" />
+      <row ro="ddj" hi="↓" ka="↓" an="↓" so="0" />
+      <row ro="ddk" hi="↑" ka="↑" an="↑" so="0" />
+      <row ro="ddl" hi="→" ka="→" an="→" so="0" />
+      <row ro="dd," hi="‥" ka="‥" an="‥" so="0" />
+      <row ro="dd-" hi="～" ka="～" an="～" so="0" />    <!-- チルダ -->
+      <row ro="dd~" hi="〜" ka="〜" an="〜" so="0" />     <!-- 波ダッシュ -->
+      <row ro="dd." hi="…" ka="…" an="…" so="0" />
+
+      <row ro="dd@" hi="『" ka="『" an="『" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="dd[" hi="『" ka="『" an="『" so="2" /> -->		<!-- US Keyboard -->
+      <row ro="dd:" hi="』" ka="』" an="』" so="2" />		<!-- JP Keyboard -->
+<!--      <row ro="dd'" hi="』" ka="』" an="』" so="2" /> -->		<!-- US Keyboard -->
+
+<!-- JIS X 0213 仮名 -->
+
+      <row ro="、" hi="、" ka="、" an="､" so="2" />
+      <row ro="。" hi="。" ka="。" an="｡" so="2" />
+      <row ro="・" hi="・" ka="・" an="･" so="2" />
+      <row ro="゛" hi="゛" ka="゛" an="ﾞ" so="2" />
+      <row ro="゜" hi="゜" ka="゜" an="ﾟ" so="2" />
+      <row ro="ー" hi="ー" ka="ー" an="ｰ" so="2" />
+
+      <row ro="ぁ" hi="ぁ" ka="ァ" an="ｧ" so="2" />
+      <row ro="あ" hi="あ" ka="ア" an="ｱ" so="2" />
+      <row ro="ぃ" hi="ぃ" ka="ィ" an="ｨ" so="2" />
+      <row ro="い" hi="い" ka="イ" an="ｲ" so="2" />
+      <row ro="ぅ" hi="ぅ" ka="ゥ" an="ｩ" so="2" />
+      <row ro="う" hi="う" ka="ウ" an="ｳ" so="2" />
+      <row ro="ぇ" hi="ぇ" ka="ェ" an="ｪ" so="2" />
+      <row ro="え" hi="え" ka="エ" an="ｴ" so="2" />
+      <row ro="ぉ" hi="ぉ" ka="ォ" an="ｫ" so="2" />
+      <row ro="お" hi="お" ka="オ" an="ｵ" so="2" />
+      <row ro="か" hi="か" ka="カ" an="ｶ" so="2" />
+      <row ro="が" hi="が" ka="ガ" an="ｶﾞ" so="2" />
+      <row ro="き" hi="き" ka="キ" an="ｷ" so="2" />
+      <row ro="ぎ" hi="ぎ" ka="ギ" an="ｷﾞ" so="2" />
+      <row ro="く" hi="く" ka="ク" an="ｸ" so="2" />
+      <row ro="ぐ" hi="ぐ" ka="グ" an="ｸﾞ" so="2" />
+      <row ro="け" hi="け" ka="ケ" an="ｹ" so="2" />
+      <row ro="げ" hi="げ" ka="ゲ" an="ｹﾞ" so="2" />
+      <row ro="こ" hi="こ" ka="コ" an="ｺ" so="2" />
+      <row ro="ご" hi="ご" ka="ゴ" an="ｺﾞ" so="2" />
+      <row ro="さ" hi="さ" ka="サ" an="ｻ" so="2" />
+      <row ro="ざ" hi="ざ" ka="ザ" an="ｻﾞ" so="2" />
+      <row ro="し" hi="し" ka="シ" an="ｼ" so="2" />
+      <row ro="じ" hi="じ" ka="ジ" an="ｼﾞ" so="2" />
+      <row ro="す" hi="す" ka="ス" an="ｽ" so="2" />
+      <row ro="ず" hi="ず" ka="ズ" an="ｽﾞ" so="2" />
+      <row ro="せ" hi="せ" ka="セ" an="ｾ" so="2" />
+      <row ro="ぜ" hi="ぜ" ka="ゼ" an="ｾﾞ" so="2" />
+      <row ro="そ" hi="そ" ka="ソ" an="ｿ" so="2" />
+      <row ro="ぞ" hi="ぞ" ka="ゾ" an="ｿﾞ" so="2" />
+      <row ro="た" hi="た" ka="タ" an="ﾀ" so="2" />
+      <row ro="だ" hi="だ" ka="ダ" an="ﾀﾞ" so="2" />
+      <row ro="ち" hi="ち" ka="チ" an="ﾁ" so="2" />
+      <row ro="ぢ" hi="ぢ" ka="ヂ" an="ﾁﾞ" so="2" />
+      <row ro="っ" hi="っ" ka="ッ" an="ｯ" so="2" />
+      <row ro="つ" hi="つ" ka="ツ" an="ﾂ" so="2" />
+      <row ro="づ" hi="づ" ka="ヅ" an="ﾂﾞ" so="2" />
+      <row ro="て" hi="て" ka="テ" an="ﾃ" so="2" />
+      <row ro="で" hi="で" ka="デ" an="ﾃﾞ" so="2" />
+      <row ro="と" hi="と" ka="ト" an="ﾄ" so="2" />
+      <row ro="ど" hi="ど" ka="ド" an="ﾄﾞ" so="2" />
+      <row ro="な" hi="な" ka="ナ" an="ﾅ" so="2" />
+      <row ro="に" hi="に" ka="ニ" an="ﾆ" so="2" />
+      <row ro="ぬ" hi="ぬ" ka="ヌ" an="ﾇ" so="2" />
+      <row ro="ね" hi="ね" ka="ネ" an="ﾈ" so="2" />
+      <row ro="の" hi="の" ka="ノ" an="ﾉ" so="2" />
+      <row ro="は" hi="は" ka="ハ" an="ﾊ" so="2" />
+      <row ro="ば" hi="ば" ka="バ" an="ﾊﾞ" so="2" />
+      <row ro="ぱ" hi="ぱ" ka="パ" an="ﾊﾟ" so="2" />
+      <row ro="ひ" hi="ひ" ka="ヒ" an="ﾋ" so="2" />
+      <row ro="び" hi="び" ka="ビ" an="ﾋﾞ" so="2" />
+      <row ro="ぴ" hi="ぴ" ka="ピ" an="ﾋﾟ" so="2" />
+      <row ro="ふ" hi="ふ" ka="フ" an="ﾌ" so="2" />
+      <row ro="ぶ" hi="ぶ" ka="ブ" an="ﾌﾞ" so="2" />
+      <row ro="ぷ" hi="ぷ" ka="プ" an="ﾌﾟ" so="2" />
+      <row ro="へ" hi="へ" ka="ヘ" an="ﾍ" so="2" />
+      <row ro="べ" hi="べ" ka="ベ" an="ﾍﾞ" so="2" />
+      <row ro="ぺ" hi="ぺ" ka="ペ" an="ﾍﾟ" so="2" />
+      <row ro="ほ" hi="ほ" ka="ホ" an="ﾎ" so="2" />
+      <row ro="ぼ" hi="ぼ" ka="ボ" an="ﾎﾞ" so="2" />
+      <row ro="ぽ" hi="ぽ" ka="ポ" an="ﾎﾟ" so="2" />
+      <row ro="ま" hi="ま" ka="マ" an="ﾏ" so="2" />
+      <row ro="み" hi="み" ka="ミ" an="ﾐ" so="2" />
+      <row ro="む" hi="む" ka="ム" an="ﾑ" so="2" />
+      <row ro="め" hi="め" ka="メ" an="ﾒ" so="2" />
+      <row ro="も" hi="も" ka="モ" an="ﾓ" so="2" />
+      <row ro="ゃ" hi="ゃ" ka="ャ" an="ｬ" so="2" />
+      <row ro="や" hi="や" ka="ヤ" an="ﾔ" so="2" />
+      <row ro="ゅ" hi="ゅ" ka="ュ" an="ｭ" so="2" />
+      <row ro="ゆ" hi="ゆ" ka="ユ" an="ﾕ" so="2" />
+      <row ro="ょ" hi="ょ" ka="ョ" an="ｮ" so="2" />
+      <row ro="よ" hi="よ" ka="ヨ" an="ﾖ" so="2" />
+      <row ro="ら" hi="ら" ka="ラ" an="ﾗ" so="2" />
+      <row ro="り" hi="り" ka="リ" an="ﾘ" so="2" />
+      <row ro="る" hi="る" ka="ル" an="ﾙ" so="2" />
+      <row ro="れ" hi="れ" ka="レ" an="ﾚ" so="2" />
+      <row ro="ろ" hi="ろ" ka="ロ" an="ﾛ" so="2" />
+      <row ro="ゎ" hi="ゎ" ka="ヮ" an="ﾜ" so="2" />
+      <row ro="わ" hi="わ" ka="ワ" an="ﾜ" so="2" />
+      <row ro="ゐ" hi="ゐ" ka="ヰ" an="ｲ" so="2" />
+      <row ro="ゑ" hi="ゑ" ka="ヱ" an="ｴ" so="2" />
+      <row ro="を" hi="を" ka="ヲ" an="ｦ" so="2" />
+      <row ro="ん" hi="ん" ka="ン" an="ﾝ" so="2" />
+      <row ro="ゔ" hi="ゔ" ka="ヴ" an="ｳﾞ" so="2" />
+      <row ro="ゕ" hi="ゕ" ka="ヵ" an="ｶ" so="2" />
+      <row ro="ゖ" hi="ゖ" ka="ヶ" an="ｹ" so="2" />
+      <row ro="か゚" hi="か゚" ka="カ゚" an="ｶﾟ" so="2" />
+      <row ro="き゚" hi="き゚" ka="キ゚" an="ｷﾟ" so="2" />
+      <row ro="く゚" hi="く゚" ka="ク゚" an="ｸﾟ" so="2" />
+      <row ro="け゚" hi="け゚" ka="ケ゚" an="ｹﾟ" so="2" />
+      <row ro="こ゚" hi="こ゚" ka="コ゚" an="ｺﾟ" so="2" />
+
+      <row ro="ァ" hi="ぁ" ka="ァ" an="ｧ" so="2" />
+      <row ro="ア" hi="あ" ka="ア" an="ｱ" so="2" />
+      <row ro="ィ" hi="ぃ" ka="ィ" an="ｨ" so="2" />
+      <row ro="イ" hi="い" ka="イ" an="ｲ" so="2" />
+      <row ro="ゥ" hi="ぅ" ka="ゥ" an="ｩ" so="2" />
+      <row ro="ウ" hi="う" ka="ウ" an="ｳ" so="2" />
+      <row ro="ェ" hi="ぇ" ka="ェ" an="ｪ" so="2" />
+      <row ro="エ" hi="え" ka="エ" an="ｴ" so="2" />
+      <row ro="ォ" hi="ぉ" ka="ォ" an="ｫ" so="2" />
+      <row ro="オ" hi="お" ka="オ" an="ｵ" so="2" />
+      <row ro="カ" hi="か" ka="カ" an="ｶ" so="2" />
+      <row ro="ガ" hi="が" ka="ガ" an="ｶﾞ" so="2" />
+      <row ro="キ" hi="き" ka="キ" an="ｷ" so="2" />
+      <row ro="ギ" hi="ぎ" ka="ギ" an="ｷﾞ" so="2" />
+      <row ro="ク" hi="く" ka="ク" an="ｸ" so="2" />
+      <row ro="グ" hi="ぐ" ka="グ" an="ｸﾞ" so="2" />
+      <row ro="ケ" hi="け" ka="ケ" an="ｹ" so="2" />
+      <row ro="ゲ" hi="げ" ka="ゲ" an="ｹﾞ" so="2" />
+      <row ro="コ" hi="こ" ka="コ" an="ｺ" so="2" />
+      <row ro="ゴ" hi="ご" ka="ゴ" an="ｺﾞ" so="2" />
+      <row ro="サ" hi="さ" ka="サ" an="ｻ" so="2" />
+      <row ro="ザ" hi="ざ" ka="ザ" an="ｻﾞ" so="2" />
+      <row ro="シ" hi="し" ka="シ" an="ｼ" so="2" />
+      <row ro="ジ" hi="じ" ka="ジ" an="ｼﾞ" so="2" />
+      <row ro="ス" hi="す" ka="ス" an="ｽ" so="2" />
+      <row ro="ズ" hi="ず" ka="ズ" an="ｽﾞ" so="2" />
+      <row ro="セ" hi="せ" ka="セ" an="ｾ" so="2" />
+      <row ro="ゼ" hi="ぜ" ka="ゼ" an="ｾﾞ" so="2" />
+      <row ro="ソ" hi="そ" ka="ソ" an="ｿ" so="2" />
+      <row ro="ゾ" hi="ぞ" ka="ゾ" an="ｿﾞ" so="2" />
+      <row ro="タ" hi="た" ka="タ" an="ﾀ" so="2" />
+      <row ro="ダ" hi="だ" ka="ダ" an="ﾀﾞ" so="2" />
+      <row ro="チ" hi="ち" ka="チ" an="ﾁ" so="2" />
+      <row ro="ヂ" hi="ぢ" ka="ヂ" an="ﾁﾞ" so="2" />
+      <row ro="ッ" hi="っ" ka="ッ" an="ｯ" so="2" />
+      <row ro="ツ" hi="つ" ka="ツ" an="ﾂ" so="2" />
+      <row ro="ヅ" hi="づ" ka="ヅ" an="ﾂﾞ" so="2" />
+      <row ro="テ" hi="て" ka="テ" an="ﾃ" so="2" />
+      <row ro="デ" hi="で" ka="デ" an="ﾃﾞ" so="2" />
+      <row ro="ト" hi="と" ka="ト" an="ﾄ" so="2" />
+      <row ro="ド" hi="ど" ka="ド" an="ﾄﾞ" so="2" />
+      <row ro="ナ" hi="な" ka="ナ" an="ﾅ" so="2" />
+      <row ro="ニ" hi="に" ka="ニ" an="ﾆ" so="2" />
+      <row ro="ヌ" hi="ぬ" ka="ヌ" an="ﾇ" so="2" />
+      <row ro="ネ" hi="ね" ka="ネ" an="ﾈ" so="2" />
+      <row ro="ノ" hi="の" ka="ノ" an="ﾉ" so="2" />
+      <row ro="ハ" hi="は" ka="ハ" an="ﾊ" so="2" />
+      <row ro="バ" hi="ば" ka="バ" an="ﾊﾞ" so="2" />
+      <row ro="パ" hi="ぱ" ka="パ" an="ﾊﾟ" so="2" />
+      <row ro="ヒ" hi="ひ" ka="ヒ" an="ﾋ" so="2" />
+      <row ro="ビ" hi="び" ka="ビ" an="ﾋﾞ" so="2" />
+      <row ro="ピ" hi="ぴ" ka="ピ" an="ﾋﾟ" so="2" />
+      <row ro="フ" hi="ふ" ka="フ" an="ﾌ" so="2" />
+      <row ro="ブ" hi="ぶ" ka="ブ" an="ﾌﾞ" so="2" />
+      <row ro="プ" hi="ぷ" ka="プ" an="ﾌﾟ" so="2" />
+      <row ro="ヘ" hi="へ" ka="ヘ" an="ﾍ" so="2" />
+      <row ro="ベ" hi="べ" ka="ベ" an="ﾍﾞ" so="2" />
+      <row ro="ペ" hi="ぺ" ka="ペ" an="ﾍﾟ" so="2" />
+      <row ro="ホ" hi="ほ" ka="ホ" an="ﾎ" so="2" />
+      <row ro="ボ" hi="ぼ" ka="ボ" an="ﾎﾞ" so="2" />
+      <row ro="ポ" hi="ぽ" ka="ポ" an="ﾎﾟ" so="2" />
+      <row ro="マ" hi="ま" ka="マ" an="ﾏ" so="2" />
+      <row ro="ミ" hi="み" ka="ミ" an="ﾐ" so="2" />
+      <row ro="ム" hi="む" ka="ム" an="ﾑ" so="2" />
+      <row ro="メ" hi="め" ka="メ" an="ﾒ" so="2" />
+      <row ro="モ" hi="も" ka="モ" an="ﾓ" so="2" />
+      <row ro="ャ" hi="ゃ" ka="ャ" an="ｬ" so="2" />
+      <row ro="ヤ" hi="や" ka="ヤ" an="ﾔ" so="2" />
+      <row ro="ュ" hi="ゅ" ka="ュ" an="ｭ" so="2" />
+      <row ro="ユ" hi="ゆ" ka="ユ" an="ﾕ" so="2" />
+      <row ro="ョ" hi="ょ" ka="ョ" an="ｮ" so="2" />
+      <row ro="ヨ" hi="よ" ka="ヨ" an="ﾖ" so="2" />
+      <row ro="ラ" hi="ら" ka="ラ" an="ﾗ" so="2" />
+      <row ro="リ" hi="り" ka="リ" an="ﾘ" so="2" />
+      <row ro="ル" hi="る" ka="ル" an="ﾙ" so="2" />
+      <row ro="レ" hi="れ" ka="レ" an="ﾚ" so="2" />
+      <row ro="ロ" hi="ろ" ka="ロ" an="ﾛ" so="2" />
+      <row ro="ヮ" hi="ゎ" ka="ヮ" an="ﾜ" so="2" />
+      <row ro="ワ" hi="わ" ka="ワ" an="ﾜ" so="2" />
+      <row ro="ヰ" hi="ゐ" ka="ヰ" an="ｲ" so="2" />
+      <row ro="ヱ" hi="ゑ" ka="ヱ" an="ｴ" so="2" />
+      <row ro="ヲ" hi="を" ka="ヲ" an="ｦ" so="2" />
+      <row ro="ン" hi="ん" ka="ン" an="ﾝ" so="2" />
+      <row ro="ヴ" hi="ゔ" ka="ヴ" an="ｳﾞ" so="2" />
+      <row ro="ヵ" hi="ゕ" ka="ヵ" an="ｶ" so="2" />
+      <row ro="ヶ" hi="ゖ" ka="ヶ" an="ｹ" so="2" />
+      <row ro="カ゚" hi="か゚" ka="カ゚" an="ｶﾟ" so="2" />
+      <row ro="キ゚" hi="き゚" ka="キ゚" an="ｷﾟ" so="2" />
+      <row ro="ク゚" hi="く゚" ka="ク゚" an="ｸﾟ" so="2" />
+      <row ro="ケ゚" hi="け゚" ka="ケ゚" an="ｹﾟ" so="2" />
+      <row ro="コ゚" hi="こ゚" ka="コ゚" an="ｺﾟ" so="2" />
+
+      <row ro="セ゚" hi="セ゚" ka="セ゚" an="ｾﾟ" so="2" />
+      <row ro="ツ゚" hi="ツ゚" ka="ツ゚" an="ﾂﾟ" so="2" />
+      <row ro="ト゚" hi="ト゚" ka="ト゚" an="ﾄﾟ" so="2" />
+      <row ro="ㇰ" hi="ㇰ" ka="ㇰ" an="ｸ" so="2" />
+      <row ro="ㇱ" hi="ㇱ" ka="ㇱ" an="ｼ" so="2" />
+      <row ro="ㇲ" hi="ㇲ" ka="ㇲ" an="ｽ" so="2" />
+      <row ro="ㇳ" hi="ㇳ" ka="ㇳ" an="ﾄ" so="2" />
+      <row ro="ㇴ" hi="ㇴ" ka="ㇴ" an="ﾇ" so="2" />
+      <row ro="ㇵ" hi="ㇵ" ka="ㇵ" an="ﾊ" so="2" />
+      <row ro="ㇶ" hi="ㇶ" ka="ㇶ" an="ﾋ" so="2" />
+      <row ro="ㇷ" hi="ㇷ" ka="ㇷ" an="ﾌ" so="2" />
+      <row ro="ㇸ" hi="ㇸ" ka="ㇸ" an="ﾍ" so="2" />
+      <row ro="ㇹ" hi="ㇹ" ka="ㇹ" an="ﾎ" so="2" />
+      <row ro="ㇷ゚" hi="ㇷ゚" ka="ㇷ゚" an="ﾌﾟ" so="2" />
+      <row ro="ㇺ" hi="ㇺ" ka="ㇺ" an="ﾑ" so="2" />
+      <row ro="ㇻ" hi="ㇻ" ka="ㇻ" an="ﾗ" so="2" />
+      <row ro="ㇼ" hi="ㇼ" ka="ㇼ" an="ﾘ" so="2" />
+      <row ro="ㇽ" hi="ㇽ" ka="ㇽ" an="ﾙ" so="2" />
+      <row ro="ㇾ" hi="ㇾ" ka="ㇾ" an="ﾚ" so="2" />
+      <row ro="ㇿ" hi="ㇿ" ka="ㇿ" an="ﾛ" so="2" />
+
+      <row ro="ヷ" hi="ヷ" ka="ヷ" an="ﾜﾞ" so="2" />
+      <row ro="ヸ" hi="ヸ" ka="ヸ" an="ｲﾞ" so="2" />
+      <row ro="ヹ" hi="ヹ" ka="ヹ" an="ｴﾞ" so="2" />
+      <row ro="ヺ" hi="ヺ" ka="ヺ" an="ｦﾞ" so="2" />
+
+      <!-- JIS X 0213 仮名変換組み合わせ -->
+
+      <row ro="か゛" hi="が" ka="ガ" an="ｶﾞ" so="2" />
+      <row ro="カ゛" hi="が" ka="ガ" an="ｶﾞ" so="2" />
+      <row ro="き゛" hi="ぎ" ka="ギ" an="ｷﾞ" so="2" />
+      <row ro="キ゛" hi="ぎ" ka="ギ" an="ｷﾞ" so="2" />
+      <row ro="く゛" hi="ぐ" ka="グ" an="ｸﾞ" so="2" />
+      <row ro="ク゛" hi="ぐ" ka="グ" an="ｸﾞ" so="2" />
+      <row ro="け゛" hi="げ" ka="ゲ" an="ｹﾞ" so="2" />
+      <row ro="ケ゛" hi="げ" ka="ゲ" an="ｹﾞ" so="2" />
+      <row ro="こ゛" hi="ご" ka="ゴ" an="ｺﾞ" so="2" />
+      <row ro="コ゛" hi="ご" ka="ゴ" an="ｺﾞ" so="2" />
+      <row ro="さ゛" hi="ざ" ka="ザ" an="ｻﾞ" so="2" />
+      <row ro="サ゛" hi="ざ" ka="ザ" an="ｻﾞ" so="2" />
+      <row ro="し゛" hi="じ" ka="ジ" an="ｼﾞ" so="2" />
+      <row ro="シ゛" hi="じ" ka="ジ" an="ｼﾞ" so="2" />
+      <row ro="す゛" hi="ず" ka="ズ" an="ｽﾞ" so="2" />
+      <row ro="ス゛" hi="ず" ka="ズ" an="ｽﾞ" so="2" />
+      <row ro="せ゛" hi="ぜ" ka="ゼ" an="ｾﾞ" so="2" />
+      <row ro="セ゛" hi="ぜ" ka="ゼ" an="ｾﾞ" so="2" />
+      <row ro="そ゛" hi="ぞ" ka="ゾ" an="ｿﾞ" so="2" />
+      <row ro="ソ゛" hi="ぞ" ka="ゾ" an="ｿﾞ" so="2" />
+      <row ro="た゛" hi="だ" ka="ダ" an="ﾀﾞ" so="2" />
+      <row ro="タ゛" hi="だ" ka="ダ" an="ﾀﾞ" so="2" />
+      <row ro="ち゛" hi="ぢ" ka="ヂ" an="ﾁﾞ" so="2" />
+      <row ro="チ゛" hi="ぢ" ka="ヂ" an="ﾁﾞ" so="2" />
+      <row ro="つ゛" hi="づ" ka="ヅ" an="ﾂﾞ" so="2" />
+      <row ro="ツ゛" hi="づ" ka="ヅ" an="ﾂﾞ" so="2" />
+      <row ro="て゛" hi="で" ka="デ" an="ﾃﾞ" so="2" />
+      <row ro="テ゛" hi="で" ka="デ" an="ﾃﾞ" so="2" />
+      <row ro="と゛" hi="ど" ka="ド" an="ﾄﾞ" so="2" />
+      <row ro="ト゛" hi="ど" ka="ド" an="ﾄﾞ" so="2" />
+      <row ro="は゛" hi="ば" ka="バ" an="ﾊﾞ" so="2" />
+      <row ro="ハ゛" hi="ば" ka="バ" an="ﾊﾞ" so="2" />
+      <row ro="ひ゛" hi="び" ka="ビ" an="ﾋﾞ" so="2" />
+      <row ro="ヒ゛" hi="び" ka="ビ" an="ﾋﾞ" so="2" />
+      <row ro="ふ゛" hi="ぶ" ka="ブ" an="ﾌﾞ" so="2" />
+      <row ro="フ゛" hi="ぶ" ka="ブ" an="ﾌﾞ" so="2" />
+      <row ro="へ゛" hi="べ" ka="ベ" an="ﾍﾞ" so="2" />
+      <row ro="ヘ゛" hi="べ" ka="ベ" an="ﾍﾞ" so="2" />
+      <row ro="ほ゛" hi="ぼ" ka="ボ" an="ﾎﾞ" so="2" />
+      <row ro="ホ゛" hi="ぼ" ka="ボ" an="ﾎﾞ" so="2" />
+      <row ro="は゜" hi="ぱ" ka="パ" an="ﾊﾟ" so="2" />
+      <row ro="ハ゜" hi="ぱ" ka="パ" an="ﾊﾟ" so="2" />
+      <row ro="ひ゜" hi="ぴ" ka="ピ" an="ﾋﾟ" so="2" />
+      <row ro="ヒ゜" hi="ぴ" ka="ピ" an="ﾋﾟ" so="2" />
+      <row ro="ふ゜" hi="ぷ" ka="プ" an="ﾌﾟ" so="2" />
+      <row ro="フ゜" hi="ぷ" ka="プ" an="ﾌﾟ" so="2" />
+      <row ro="へ゜" hi="ぺ" ka="ペ" an="ﾍﾟ" so="2" />
+      <row ro="ヘ゜" hi="ぺ" ka="ペ" an="ﾍﾟ" so="2" />
+      <row ro="ほ゜" hi="ぽ" ka="ポ" an="ﾎﾟ" so="2" />
+      <row ro="ホ゜" hi="ぽ" ka="ポ" an="ﾎﾟ" so="2" />
+
+      <row ro="か゜" hi="か゚" ka="カ゚" an="ｶﾟ" so="2" />
+      <row ro="カ゜" hi="か゚" ka="カ゚" an="ｶﾟ" so="2" />
+      <row ro="き゜" hi="き゚" ka="キ゚" an="ｷﾟ" so="2" />
+      <row ro="キ゜" hi="き゚" ka="キ゚" an="ｷﾟ" so="2" />
+      <row ro="く゜" hi="く゚" ka="ク゚" an="ｸﾟ" so="2" />
+      <row ro="ク゜" hi="く゚" ka="ク゚" an="ｸﾟ" so="2" />
+      <row ro="け゜" hi="け゚" ka="ケ゚" an="ｹﾟ" so="2" />
+      <row ro="ケ゜" hi="け゚" ka="ケ゚" an="ｹﾟ" so="2" />
+      <row ro="こ゜" hi="こ゚" ka="コ゚" an="ｺﾟ" so="2" />
+      <row ro="コ゜" hi="こ゚" ka="コ゚" an="ｺﾟ" so="2" />
+
+      <row ro="せ゜" hi="セ゚" ka="セ゚" an="ｾﾟ" so="2" />
+      <row ro="セ゜" hi="セ゚" ka="セ゚" an="ｾﾟ" so="2" />
+      <row ro="つ゜" hi="ツ゚" ka="ツ゚" an="ﾂﾟ" so="2" />
+      <row ro="ツ゜" hi="ツ゚" ka="ツ゚" an="ﾂﾟ" so="2" />
+      <row ro="と゜" hi="ト゚" ka="ト゚" an="ﾄﾟ" so="2" />
+      <row ro="ト゜" hi="ト゚" ka="ト゚" an="ﾄﾟ" so="2" />
+      <row ro="ㇷ゜" hi="ㇷ゚" ka="ㇷ゚" an="ﾌﾟ" so="2" />
+
+      <row ro="う゛" hi="ゔ" ka="ヴ" an="ｳﾞ" so="2" />
+      <row ro="ウ゛" hi="ゔ" ka="ヴ" an="ｳﾞ" so="2" />
+      <row ro="わ゛" hi="ヷ" ka="ヷ" an="ﾜﾞ" so="2" />
+      <row ro="ワ゛" hi="ヷ" ka="ヷ" an="ﾜﾞ" so="2" />
+      <row ro="い゛" hi="ヸ" ka="ヸ" an="ｲﾞ" so="2" />
+      <row ro="イ゛" hi="ヸ" ka="ヸ" an="ｲﾞ" so="2" />
+      <row ro="え゛" hi="ヹ" ka="ヹ" an="ｴﾞ" so="2" />
+      <row ro="エ゛" hi="ヹ" ka="ヹ" an="ｴﾞ" so="2" />
+      <row ro="を゛" hi="ヺ" ka="ヺ" an="ｦﾞ" so="2" />
+      <row ro="ヲ゛" hi="ヺ" ka="ヺ" an="ｦﾞ" so="2" />
+
+    </list>
+  </section>
+  <section name="jlatin">
+    <list>
+      <row la=" " jl="　" />
+      <row la="!" jl="！" />
+      <row la="&quot;" jl="”" />
+      <row la="#" jl="＃" />
+      <row la="$" jl="＄" />
+      <row la="%" jl="％" />
+      <row la="&amp;" jl="＆" />
+      <row la="'" jl="’" />
+      <row la="(" jl="（" />
+      <row la=")" jl="）" />
+      <row la="*" jl="＊" />
+      <row la="+" jl="＋" />
+      <row la="," jl="，" />
+      <row la="-" jl="－" />
+      <row la="." jl="．" />
+      <row la="/" jl="／" />
+      <row la="0" jl="０" />
+      <row la="1" jl="１" />
+      <row la="2" jl="２" />
+      <row la="3" jl="３" />
+      <row la="4" jl="４" />
+      <row la="5" jl="５" />
+      <row la="6" jl="６" />
+      <row la="7" jl="７" />
+      <row la="8" jl="８" />
+      <row la="9" jl="９" />
+      <row la=":" jl="：" />
+      <row la=";" jl="；" />
+      <row la="&lt;" jl="＜" />
+      <row la="=" jl="＝" />
+      <row la=">" jl="＞" />
+      <row la="?" jl="？" />
+      <row la="@" jl="＠" />
+      <row la="A" jl="Ａ" />
+      <row la="B" jl="Ｂ" />
+      <row la="C" jl="Ｃ" />
+      <row la="D" jl="Ｄ" />
+      <row la="E" jl="Ｅ" />
+      <row la="F" jl="Ｆ" />
+      <row la="G" jl="Ｇ" />
+      <row la="H" jl="Ｈ" />
+      <row la="I" jl="Ｉ" />
+      <row la="J" jl="Ｊ" />
+      <row la="K" jl="Ｋ" />
+      <row la="L" jl="Ｌ" />
+      <row la="M" jl="Ｍ" />
+      <row la="N" jl="Ｎ" />
+      <row la="O" jl="Ｏ" />
+      <row la="P" jl="Ｐ" />
+      <row la="Q" jl="Ｑ" />
+      <row la="R" jl="Ｒ" />
+      <row la="S" jl="Ｓ" />
+      <row la="T" jl="Ｔ" />
+      <row la="U" jl="Ｕ" />
+      <row la="V" jl="Ｖ" />
+      <row la="W" jl="Ｗ" />
+      <row la="X" jl="Ｘ" />
+      <row la="Y" jl="Ｙ" />
+      <row la="Z" jl="Ｚ" />
+      <row la="[" jl="［" />
+      <row la="\" jl="＼" />
+      <row la="]" jl="］" />
+      <row la="^" jl="＾" />
+      <row la="_" jl="＿" />
+      <row la="`" jl="‘" />
+      <row la="a" jl="ａ" />
+      <row la="b" jl="ｂ" />
+      <row la="c" jl="ｃ" />
+      <row la="d" jl="ｄ" />
+      <row la="e" jl="ｅ" />
+      <row la="f" jl="ｆ" />
+      <row la="g" jl="ｇ" />
+      <row la="h" jl="ｈ" />
+      <row la="i" jl="ｉ" />
+      <row la="j" jl="ｊ" />
+      <row la="k" jl="ｋ" />
+      <row la="l" jl="ｌ" />
+      <row la="m" jl="ｍ" />
+      <row la="n" jl="ｎ" />
+      <row la="o" jl="ｏ" />
+      <row la="p" jl="ｐ" />
+      <row la="q" jl="ｑ" />
+      <row la="r" jl="ｒ" />
+      <row la="s" jl="ｓ" />
+      <row la="t" jl="ｔ" />
+      <row la="u" jl="ｕ" />
+      <row la="v" jl="ｖ" />
+      <row la="w" jl="ｗ" />
+      <row la="x" jl="ｘ" />
+      <row la="y" jl="ｙ" />
+      <row la="z" jl="ｚ" />
+      <row la="{" jl="｛" />
+      <row la="|" jl="｜" />
+      <row la="}" jl="｝" />
+      <row la="~" jl="～" />
+    </list>
+  </section>
+</skk>

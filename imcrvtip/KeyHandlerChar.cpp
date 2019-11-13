@@ -43,34 +43,69 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 		else
 		{
 			//ローマ字仮名変換 待機処理
-			rkc.roman[0] = ch;
-			rkc.roman[1] = L'\0';
-			ret = _ConvRomanKana(&rkc);
-			switch (ret)
+			// 「ﾞ」(JIS X 0201 濁点) → 「゛」(JIS X 0208 濁点)
+			// 「か」(ka) + 「゛」(濁点) → 「か゛」(か+濁点)
+			if (!roman.empty())
 			{
-			case S_OK:	//一致
-			case E_PENDING:	//途中まで一致
-				if (rkc.roman[0] != L'\0' && rkc.wait)	//待機
+				rkc.roman[0] = ch;
+				rkc.roman[1] = L'\0';
+				ret = _ConvRomanKana(&rkc);
+				switch (ret)
 				{
-					ch = L'\0';
-					switch (inputmode)
+				case S_OK:	//一致
+				case E_PENDING:	//途中まで一致
+					if (rkc.roman[0] != L'\0' && rkc.wait)	//待機
 					{
-					case im_hiragana:
-						roman.append(rkc.hiragana);
-						break;
-					case im_katakana:
-						roman.append(rkc.katakana);
-						break;
-					case im_katakana_ank:
-						roman.append(rkc.katakana_ank);
-						break;
-					default:
-						break;
+						std::wstring roman_conv = roman;
+						switch (inputmode)
+						{
+						case im_hiragana:
+							roman_conv.append(rkc.hiragana);
+							break;
+						case im_katakana:
+							roman_conv.append(rkc.katakana);
+							break;
+						case im_katakana_ank:
+							roman_conv.append(rkc.katakana_ank);
+							break;
+						default:
+							break;
+						}
+
+						ROMAN_KANA_CONV rkcn;
+						wcsncpy_s(rkcn.roman, roman_conv.c_str(), _TRUNCATE);
+						ret = _ConvRomanKana(&rkcn);
+						switch (ret)
+						{
+						case S_OK:	//一致
+						case E_PENDING:	//途中まで一致
+							if (rkcn.roman[0] != L'\0' && rkcn.wait)	//待機
+							{
+								ch = L'\0';
+								switch (inputmode)
+								{
+								case im_hiragana:
+									roman.append(rkc.hiragana);
+									break;
+								case im_katakana:
+									roman.append(rkc.katakana);
+									break;
+								case im_katakana_ank:
+									roman.append(rkc.katakana_ank);
+									break;
+								default:
+									break;
+								}
+							}
+							break;
+						default:
+							break;
+						}
 					}
+					break;
+				default:
+					break;
 				}
-				break;
-			default:
-				break;
 			}
 
 			//ローマ字仮名変換
