@@ -42,7 +42,7 @@
 -->
   <section name="dictionary">
     <list>
-      <row path="http://openlab.ring.gr.jp/skk/skk/dic/SKK-JISYO.L" enabled="1" />
+      <row path="https://skk-dev.github.io/dict/SKK-JISYO.L.gz" enabled="1" />
     </list>
   </section>
   <section name="server">
