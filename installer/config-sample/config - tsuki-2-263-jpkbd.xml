@@ -465,22 +465,22 @@
       <row ro="kks" hi="ゕ" ka="ヵ" an="ｶ" so="2" />
       <row ro="kkx" hi="ゖ" ka="ヶ" an="ｹ" so="2" />
 
-      <row ro="kkh" hi="ㇰ" ka="ㇰ" an="ｸ" so="0" />
-      <row ro="kke" hi="ㇱ" ka="ㇱ" an="ｼ" so="0" />
-      <row ro="kkz" hi="ㇲ" ka="ㇲ" an="ｽ" so="0" />
-      <row ro="kkf" hi="ㇳ" ka="ㇳ" an="ﾄ" so="0" />
-      <row ro="kkdu" hi="ㇴ" ka="ㇴ" an="ﾇ" so="0" />
-      <row ro="kka" hi="ㇵ" ka="ㇵ" an="ﾊ" so="0" />
-      <row ro="kkkw" hi="ㇶ" ka="ㇶ" an="ﾋ" so="0" />
-      <row ro="kkkr" hi="ㇷ" ka="ㇷ" an="ﾌ" so="0" />
-      <row ro="kkkx" hi="ㇸ" ka="ㇸ" an="ﾍ" so="0" />
-      <row ro="kkke" hi="ㇹ" ka="ㇹ" an="ﾎ" so="0" />
-      <row ro="kkdn" hi="ㇺ" ka="ㇺ" an="ﾑ" so="0" />
-      <row ro="kkkd" hi="ㇻ" ka="ㇻ" an="ﾗ" so="0" />
-      <row ro="kkp" hi="ㇼ" ka="ㇼ" an="ﾘ" so="0" />
-      <row ro="kkm" hi="ㇽ" ka="ㇽ" an="ﾙ" so="0" />
-      <row ro="kk'" hi="ㇾ" ka="ㇾ" an="ﾚ" so="0" />
-      <row ro="kkdm" hi="ㇿ" ka="ㇿ" an="ﾛ" so="0" />
+      <row ro="kkh" hi="ㇰ" ka="ㇰ" an="ｸ" so="2" />
+      <row ro="kke" hi="ㇱ" ka="ㇱ" an="ｼ" so="2" />
+      <row ro="kkz" hi="ㇲ" ka="ㇲ" an="ｽ" so="2" />
+      <row ro="kkf" hi="ㇳ" ka="ㇳ" an="ﾄ" so="2" />
+      <row ro="kkdu" hi="ㇴ" ka="ㇴ" an="ﾇ" so="2" />
+      <row ro="kka" hi="ㇵ" ka="ㇵ" an="ﾊ" so="2" />
+      <row ro="kkkw" hi="ㇶ" ka="ㇶ" an="ﾋ" so="2" />
+      <row ro="kkkr" hi="ㇷ" ka="ㇷ" an="ﾌ" so="2" />
+      <row ro="kkkx" hi="ㇸ" ka="ㇸ" an="ﾍ" so="2" />
+      <row ro="kkke" hi="ㇹ" ka="ㇹ" an="ﾎ" so="2" />
+      <row ro="kkdn" hi="ㇺ" ka="ㇺ" an="ﾑ" so="2" />
+      <row ro="kkkd" hi="ㇻ" ka="ㇻ" an="ﾗ" so="2" />
+      <row ro="kkp" hi="ㇼ" ka="ㇼ" an="ﾘ" so="2" />
+      <row ro="kkm" hi="ㇽ" ka="ㇽ" an="ﾙ" so="2" />
+      <row ro="kk'" hi="ㇾ" ka="ㇾ" an="ﾚ" so="2" />
+      <row ro="kkdm" hi="ㇿ" ka="ㇿ" an="ﾛ" so="2" />
 
       <row ro="ddh" hi="←" ka="←" an="←" so="0" />
       <row ro="ddj" hi="↓" ka="↓" an="↓" so="0" />
