@@ -222,10 +222,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				{
 					break;
 				}
-				if (ch == L'l')
-				{
-					int x = 0;
-				}
+
 				auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
 					ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
 
