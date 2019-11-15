@@ -720,7 +720,7 @@ void CTextService::_ConvRoman()
 
 BOOL CTextService::_ConvShift(WCHAR ch)
 {
-	ROMAN_KANA_CONV rkc;
+	ROMAN_KANA_CONV rkc = {};
 	HRESULT ret;
 
 	if (roman.empty())
@@ -734,7 +734,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 	{
 	case S_OK:	//一致
 	case E_PENDING:	//途中まで一致
-		if (rkc.roman[0] != L'\0')
+		if (rkc.roman[0] != L'\0' && rkc.wait)
 		{
 			if (okuriidx != 0 && okuriidx + 1 == cursoridx)
 			{
@@ -768,6 +768,11 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 
 				if (chO == L'\0')
 				{
+					kana.erase(okuriidx, 1);
+					if (okuriidx < cursoridx)
+					{
+						cursoridx--;
+					}
 					okuriidx = 0;
 				}
 				else
@@ -876,7 +881,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 
 BOOL CTextService::_ConvN()
 {
-	ROMAN_KANA_CONV rkc;
+	ROMAN_KANA_CONV rkc = {};
 	HRESULT ret;
 
 	wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
@@ -987,7 +992,7 @@ void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::ws
 
 BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, const WCHAR *src, int srcmode, std::wstring &dst, int dstmode)
 {
-	ROMAN_KANA_CONV rkc;
+	ROMAN_KANA_CONV rkc = {};
 	BOOL exist = FALSE;
 
 	FORWARD_ITERATION_I(v_itr, tree.nodes)

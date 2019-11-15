@@ -72,7 +72,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		if (abbrevmode && !showentry)
 		{
 			//全英に変換
-			ASCII_JLATIN_CONV ajc;
+			ASCII_JLATIN_CONV ajc = {};
 			ajc.ascii[1] = L'\0';
 			roman = kana;
 			kana.clear();

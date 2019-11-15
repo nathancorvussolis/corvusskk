@@ -4,8 +4,8 @@
 
 HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, WCHAR ch, WCHAR chO)
 {
-	ROMAN_KANA_CONV rkc;
-	ASCII_JLATIN_CONV ajc;
+	ROMAN_KANA_CONV rkc = {};
+	ASCII_JLATIN_CONV ajc = {};
 	HRESULT ret = S_OK;
 
 	if (showentry)

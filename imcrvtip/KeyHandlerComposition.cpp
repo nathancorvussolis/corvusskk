@@ -125,7 +125,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 		std::wstring romandisp = roman;
 		if (cx_showromanjlat)
 		{
-			ASCII_JLATIN_CONV ajc;
+			ASCII_JLATIN_CONV ajc = {};
 			ajc.ascii[1] = L'\0';
 			for (size_t i = 0; i < romandisp.size(); i++)
 			{

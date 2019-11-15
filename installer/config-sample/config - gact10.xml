@@ -1211,20 +1211,11 @@
       <row ro="●y" hi="◎" ka="◎" an="◎" so="2" />
       <row ro="◎y" hi="○" ka="○" an="○" so="2" />
 
-      <row ro="○" hi="○" ka="○" an="○" so="0" />
-      <row ro="●" hi="●" ka="●" an="●" so="0" />
-      <row ro="◎" hi="◎" ka="◎" an="◎" so="0" />
-
       <row ro="qu" hi="△" ka="△" an="△" so="2" />
       <row ro="△u" hi="▲" ka="▲" an="▲" so="2" />
       <row ro="▲u" hi="▽" ka="▽" an="▽" so="2" />
       <row ro="▽u" hi="▼" ka="▼" an="▼" so="2" />
       <row ro="▼u" hi="△" ka="△" an="△" so="2" />
-
-      <row ro="△" hi="△" ka="△" an="△" so="0" />
-      <row ro="▲" hi="▲" ka="▲" an="▲" so="0" />
-      <row ro="▽" hi="▽" ka="▽" an="▽" so="0" />
-      <row ro="▼" hi="▼" ka="▼" an="▼" so="0" />
 
       <row ro="qi" hi="□" ka="□" an="□" so="2" />
       <row ro="□i" hi="■" ka="■" an="■" so="2" />
@@ -1232,70 +1223,39 @@
       <row ro="◇i" hi="◆" ka="◆" an="◆" so="2" />
       <row ro="◆i" hi="□" ka="□" an="□" so="2" />
 
-      <row ro="□" hi="□" ka="□" an="□" so="0" />
-      <row ro="■" hi="■" ka="■" an="■" so="0" />
-      <row ro="◇" hi="◇" ka="◇" an="◇" so="0" />
-      <row ro="◆" hi="◆" ka="◆" an="◆" so="0" />
-
       <row ro="qo" hi="☆" ka="☆" an="☆" so="2" />
       <row ro="☆o" hi="★" ka="★" an="★" so="2" />
       <row ro="★o" hi="☆" ka="☆" an="☆" so="2" />
-
-      <row ro="☆" hi="☆" ka="☆" an="☆" so="0" />
-      <row ro="★" hi="★" ka="★" an="★" so="0" />
 
       <row ro="qh" hi="（）" ka="（）" an="（）" so="2" />
       <row ro="（）h" hi="〔〕" ka="〔〕" an="〔〕" so="2" />
       <row ro="〔〕h" hi="（）" ka="（）" an="（）" so="2" />
 
-      <row ro="（）" hi="（）" ka="（）" an="（）" so="0" />
-      <row ro="〔〕" hi="〔〕" ka="〔〕" an="〔〕" so="0" />
-
       <row ro="qj" hi="［］" ka="［］" an="［］" so="2" />
       <row ro="［］j" hi="｛｝" ka="｛｝" an="｛｝" so="2" />
       <row ro="｛｝j" hi="［］" ka="［］" an="［］" so="2" />
 
-      <row ro="［］" hi="［］" ka="［］" an="［］" so="0" />
-      <row ro="｛｝" hi="｛｝" ka="｛｝" an="｛｝" so="0" />
-
       <row ro="qk" hi="〈〉" ka="〈〉" an="〈〉" so="2" />
       <row ro="〈〉k" hi="《》" ka="《》" an="《》" so="2" />
       <row ro="《》k" hi="〈〉" ka="〈〉" an="〈〉" so="2" />
-
-      <row ro="〈〉" hi="〈〉" ka="〈〉" an="〈〉" so="0" />
-      <row ro="《》" hi="《》" ka="《》" an="《》" so="0" />
 
       <row ro="ql" hi="「」" ka="「」" an="「」" so="2" />
       <row ro="「」l" hi="『』" ka="『』" an="『』" so="2" />
       <row ro="『』l" hi="【】" ka="【】" an="【】" so="2" />
       <row ro="【】l" hi="「」" ka="「」" an="「」" so="2" />
 
-      <row ro="「」" hi="「」" ka="「」" an="「」" so="0" />
-      <row ro="『』" hi="『』" ka="『』" an="『』" so="0" />
-      <row ro="【】" hi="【】" ka="【】" an="【】" so="0" />
-
       <row ro="q;" hi="〝〟" ka="〝〟" an="〝〟" so="2" />
       <row ro="〝〟;" hi="“”" ka="“”" an="“”" so="2" />
       <row ro="“”;" hi="‘’" ka="‘’" an="‘’" so="2" />
       <row ro="‘’;" hi="〝〟" ka="〝〟" an="〝〟" so="2" />
 
-      <row ro="〝〟" hi="〝〟" ka="〝〟" an="〝〟" so="0" />
-      <row ro="“”" hi="“”" ka="“”" an="“”" so="0" />
-      <row ro="‘’" hi="‘’" ka="‘’" an="‘’" so="0" />
-
       <row ro="qn" hi="・" ka="・" an="・" so="2" />
       <row ro="・n" hi="：" ka="：" an="：" so="2" />
       <row ro="：n" hi="・" ka="・" an="・" so="2" />
 
-      <row ro="・" hi="・" ka="・" an="・" so="0" />
-      <row ro="：" hi="：" ka="：" an="：" so="0" />
-
       <row ro="qm" hi="？" ka="？" an="？" so="2" />
       <row ro="？m" hi="！" ka="！" an="！" so="2" />
       <row ro="！m" hi="？" ka="？" an="？" so="2" />
-
-      <row ro="？" hi="？" ka="？" an="？" so="0" />
-      <row ro="！" hi="！" ka="！" an="！" so="0" />
 
       <row ro="q." hi="ヽ" ka="ヽ" an="ヽ" so="2" />
       <row ro="ヽ." hi="ヾ" ka="ヾ" an="ヾ" so="2" />
@@ -1305,19 +1265,9 @@
       <row ro="仝." hi="々" ka="々" an="々" so="2" />
       <row ro="々." hi="ヽ" ka="ヽ" an="ヽ" so="2" />
 
-      <row ro="ヽ" hi="ヽ" ka="ヽ" an="ヽ" so="0" />
-      <row ro="ヾ" hi="ヾ" ka="ヾ" an="ヾ" so="0" />
-      <row ro="ゝ" hi="ゝ" ka="ゝ" an="ゝ" so="0" />
-      <row ro="〃" hi="〃" ka="〃" an="〃" so="0" />
-      <row ro="仝" hi="仝" ka="仝" an="仝" so="0" />
-      <row ro="々" hi="々" ka="々" an="々" so="0" />
-
       <row ro="qp" hi="※" ka="※" an="※" so="2" />
       <row ro="※p" hi="〒" ka="〒" an="〒" so="2" />
       <row ro="〒p" hi="※" ka="※" an="※" so="2" />
-
-      <row ro="※" hi="※" ka="※" an="※" so="0" />
-      <row ro="〒" hi="〒" ka="〒" an="〒" so="0" />
 
       <row ro="0" hi="0" ka="0" an="0" so="0" />
       <row ro="1" hi="1" ka="1" an="1" so="0" />

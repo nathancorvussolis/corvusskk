@@ -812,6 +812,22 @@ void CTextService::_LoadKana()
 
 			_AddKanaTree(roman_kana_tree, rkc, 0);
 
+			// 待機
+			if (rkc.wait)
+			{
+				// 確定用ひらがな
+				wcsncpy_s(rkc.roman, rkc.hiragana, _TRUNCATE);
+				_AddKanaTree(roman_kana_tree, rkc, 0);
+
+				// 確定用カタカナ
+				wcsncpy_s(rkc.roman, rkc.katakana, _TRUNCATE);
+				_AddKanaTree(roman_kana_tree, rkc, 0);
+
+				// 確定用半角ｶﾀｶﾅ
+				wcsncpy_s(rkc.roman, rkc.katakana_ank, _TRUNCATE);
+				_AddKanaTree(roman_kana_tree, rkc, 0);
+			}
+
 			i++;
 		}
 	}

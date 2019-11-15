@@ -154,7 +154,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 	case im_katakana_ank:
 		if (!abbrevmode && !roman.empty() && ch != L'\0')
 		{
-			ROMAN_KANA_CONV rkc;
+			ROMAN_KANA_CONV rkc = {};
 			std::wstring roman_conv = roman;
 			roman_conv.push_back(ch);
 			wcsncpy_s(rkc.roman, roman_conv.c_str(), _TRUNCATE);
@@ -222,7 +222,10 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				{
 					break;
 				}
-
+				if (ch == L'l')
+				{
+					int x = 0;
+				}
 				auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
 					ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
 
@@ -230,14 +233,14 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				{
 					ch = vs_itr->ch[1];
 
-					ROMAN_KANA_CONV rkc;
+					ROMAN_KANA_CONV rkc = {};
 					wcsncpy_s(rkc.roman, roman.c_str(), _TRUNCATE);
 					hrc = _ConvRomanKana(&rkc);
 					switch (hrc)
 					{
 					case S_OK:	//一致
 					case E_PENDING:	//途中まで一致
-						if (rkc.roman[0] != L'\0')
+						if (rkc.roman[0] != L'\0' && rkc.wait)
 						{
 							// 先行するローマ字を仮名変換
 							_ConvRoman();
