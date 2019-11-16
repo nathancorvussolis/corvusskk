@@ -169,12 +169,12 @@
   <section name="convpoint">
     <list>
 
-      <row st="D" al="d" ok="d" />
-      <row st="H" al="h" ok="h" />
-      <row st="K" al="k" ok="k" />
-      <row st="M" al="m" ok="m" />
-      <row st="N" al="n" ok="n" />
-      <row st="R" al="r" ok="r" />
+      <row st="D" al="d" ok="" />
+      <row st="H" al="h" ok="" />
+      <row st="K" al="k" ok="" />
+      <row st="M" al="m" ok="" />
+      <row st="N" al="n" ok="" />
+      <row st="R" al="r" ok="" />
 
       <!-- 待機ありで入力された仮名は、仮名をキーに「代替」を検索して「送り」を送りローマ字とする -->
 

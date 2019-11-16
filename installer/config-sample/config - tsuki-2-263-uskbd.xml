@@ -127,15 +127,15 @@
     </list>
   </section>
   <section name="keymap">
-<!--    <key name="kana" value="\[" /> -->		<!-- JP Keyboard -->
-    <key name="kana" value="\]" />		<!-- US Keyboard -->
-<!--    <key name="convchar" value="\{" /> -->		<!-- JP Keyboard -->
-    <key name="convchar" value="\}" />		<!-- US Keyboard -->
+<!--    <key name="kana" value="\[" /> -->    <!-- JP Keyboard -->
+    <key name="kana" value="\]" />    <!-- US Keyboard -->
+<!--    <key name="convchar" value="\{" /> -->    <!-- JP Keyboard -->
+    <key name="convchar" value="\}" />    <!-- US Keyboard -->
     <key name="jlatin" value="\|" />
     <key name="ascii" value="\\" />
     <key name="jmode" value="" />
-<!--    <key name="abbrev" value="\^" /> -->		<!-- JP Keyboard -->
-    <key name="abbrev" value="=" />		<!-- US Keyboard -->
+<!--    <key name="abbrev" value="\^" /> -->    <!-- JP Keyboard -->
+    <key name="abbrev" value="=" />    <!-- US Keyboard -->
     <key name="affix" value="&lt;|>" />
     <key name="nextcand" value="\x20|\cn" />
     <key name="prevcand" value="x|\cp" />
@@ -187,44 +187,44 @@
   </section>
   <section name="convpoint">
     <list>
-      <row st="A" al="a" ok="a" />
-      <row st="B" al="b" ok="b" />
-      <row st="C" al="c" ok="c" />
-      <row st="D" al="d" ok="d" />
-      <row st="E" al="e" ok="e" />
-      <row st="F" al="f" ok="f" />
-      <row st="G" al="g" ok="g" />
-      <row st="H" al="h" ok="h" />
-      <row st="I" al="i" ok="i" />
-      <row st="J" al="j" ok="j" />
-      <row st="K" al="k" ok="k" />
-<!--      <row st="L" al="l" ok="l" /> -->		<!-- シフトキー押したまま濁点 -->
-      <row st="M" al="m" ok="m" />
-      <row st="N" al="n" ok="n" />
-      <row st="O" al="o" ok="o" />
-      <row st="P" al="p" ok="p" />
-      <row st="Q" al="q" ok="q" />
-      <row st="R" al="r" ok="r" />
-      <row st="S" al="s" ok="s" />
-      <row st="T" al="t" ok="t" />
-      <row st="U" al="u" ok="u" />
-      <row st="V" al="v" ok="v" />
-      <row st="W" al="w" ok="w" />
-      <row st="X" al="x" ok="x" />
-      <row st="Y" al="y" ok="y" />
-      <row st="Z" al="z" ok="z" />
+      <row st="A" al="a" ok="" />
+      <row st="B" al="b" ok="" />
+      <row st="C" al="c" ok="" />
+      <row st="D" al="d" ok="" />
+      <row st="E" al="e" ok="" />
+      <row st="F" al="f" ok="" />
+      <row st="G" al="g" ok="" />
+      <row st="H" al="h" ok="" />
+      <row st="I" al="i" ok="" />
+      <row st="J" al="j" ok="" />
+      <row st="K" al="k" ok="" />
+<!--      <row st="L" al="l" ok="" /> -->    <!-- シフトキー押したまま濁点 -->
+      <row st="M" al="m" ok="" />
+      <row st="N" al="n" ok="" />
+      <row st="O" al="o" ok="" />
+      <row st="P" al="p" ok="" />
+      <row st="Q" al="q" ok="" />
+      <row st="R" al="r" ok="" />
+      <row st="S" al="s" ok="" />
+      <row st="T" al="t" ok="" />
+      <row st="U" al="u" ok="" />
+      <row st="V" al="v" ok="" />
+      <row st="W" al="w" ok="" />
+      <row st="X" al="x" ok="" />
+      <row st="Y" al="y" ok="" />
+      <row st="Z" al="z" ok="" />
 
       <!-- ち/「 -->
-<!--      <row st="`" al="@" ok="" /> -->		<!-- JP Keyboard -->
-      <row st="{" al="[" ok="" />		<!-- US Keyboard -->
+<!--      <row st="`" al="@" ok="" /> -->    <!-- JP Keyboard -->
+      <row st="{" al="[" ok="" />    <!-- US Keyboard -->
 
       <!-- き/ゆ -->
-<!--      <row st="+" al=";" ok="" /> -->		<!-- JP Keyboard -->
-      <row st=":" al=";" ok="" />		<!-- US Keyboard -->
+<!--      <row st="+" al=";" ok="" /> -->    <!-- JP Keyboard -->
+      <row st=":" al=";" ok="" />    <!-- US Keyboard -->
 
       <!-- れ/」 -->
-<!--      <row st="*" al=":" ok="" /> -->		<!-- JP Keyboard -->
-      <row st="&quot;" al="'" ok="" />		<!-- US Keyboard -->
+<!--      <row st="*" al=":" ok="" /> -->    <!-- JP Keyboard -->
+      <row st="&quot;" al="'" ok="" />    <!-- US Keyboard -->
 
       <!-- ね -->
       <row st="&lt;" al="," ok="" />
@@ -390,8 +390,8 @@
       <row ro="i" hi="い" ka="イ" an="ｲ" so="2" />
       <row ro="o" hi="の" ka="ノ" an="ﾉ" so="2" />
       <row ro="p" hi="り" ka="リ" an="ﾘ" so="2" />
-<!--      <row ro="@" hi="ち" ka="チ" an="ﾁ" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="[" hi="ち" ka="チ" an="ﾁ" so="2" />		<!-- US Keyboard -->
+<!--      <row ro="@" hi="ち" ka="チ" an="ﾁ" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="[" hi="ち" ka="チ" an="ﾁ" so="2" />    <!-- US Keyboard -->
 
       <row ro="a" hi="は" ka="ハ" an="ﾊ" so="2" />
       <row ro="s" hi="か" ka="カ" an="ｶ" so="2" />
@@ -403,10 +403,10 @@
       <!-- k SHIFT -->
       <row ro="l" hi="゛" ka="゛" an="ﾞ" so="2" />
       <row ro=";" hi="き" ka="キ" an="ｷ" so="2" />
-<!--      <row ro=":" hi="れ" ka="レ" an="ﾚ" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="'" hi="れ" ka="レ" an="ﾚ" so="2" />		<!-- US Keyboard -->
+<!--      <row ro=":" hi="れ" ka="レ" an="ﾚ" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="'" hi="れ" ka="レ" an="ﾚ" so="2" />    <!-- US Keyboard -->
 
-      <row ro="L" hi="゛" ka="゛" an="ﾞ" so="2" />		<!-- シフトキー押したまま濁点 -->
+      <row ro="L" hi="゛" ka="゛" an="ﾞ" so="2" />    <!-- シフトキー押したまま濁点 -->
 
       <row ro="z" hi="す" ka="ス" an="ｽ" so="2" />
       <row ro="x" hi="け" ka="ケ" an="ｹ" so="2" />
@@ -416,11 +416,11 @@
       <row ro="n" hi="っ" ka="ッ" an="ｯ" so="2" />
       <row ro="m" hi="る" ka="ル" an="ﾙ" so="2" />
       <row ro="," hi="、" ka="、" an="､" so="2" />
-      <row ro="," hi="。" ka="。" an="｡" so="2" />
+      <row ro="." hi="。" ka="。" an="｡" so="2" />
       <row ro="/" hi="゜" ka="゜" an="ﾟ" so="2" />
       <row ro="\" hi="・" ka="・" an="･" so="2" />
 
-      <row ro="?" hi="゜" ka="゜" an="ﾟ" so="2" />		<!-- シフトキー押したまま半濁点 -->
+      <row ro="?" hi="゜" ka="゜" an="ﾟ" so="2" />    <!-- シフトキー押したまま半濁点 -->
 
       <row ro="kq" hi="ぁ" ka="ァ" an="ｧ" so="2" />
       <row ro="kw" hi="ひ" ka="ヒ" an="ﾋ" so="2" />
@@ -432,8 +432,8 @@
       <row ro="di" hi="み" ka="ミ" an="ﾐ" so="2" />
       <row ro="do" hi="や" ka="ヤ" an="ﾔ" so="2" />
       <row ro="dp" hi="ぇ" ka="ェ" an="ｪ" so="2" />
-<!--      <row ro="d@" hi="「" ka="「" an="｢" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="d[" hi="「" ka="「" an="｢" so="2" />		<!-- US Keyboard -->
+<!--      <row ro="d@" hi="「" ka="「" an="｢" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="d[" hi="「" ka="「" an="｢" so="2" />    <!-- US Keyboard -->
 
       <row ro="ka" hi="ぃ" ka="ィ" an="ｨ" so="2" />
       <row ro="ks" hi="を" ka="ヲ" an="ｦ" so="2" />
@@ -445,8 +445,8 @@
       <row ro="dk" hi="も" ka="モ" an="ﾓ" so="2" />
       <row ro="dl" hi="わ" ka="ワ" an="ﾜ" so="2" />
       <row ro="d;" hi="ゆ" ka="ユ" an="ﾕ" so="2" />
-<!--      <row ro="d:" hi="」" ka="」" an="｣" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="d'" hi="」" ka="」" an="｣" so="2" />		<!-- US Keyboard -->
+<!--      <row ro="d:" hi="」" ka="」" an="｣" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="d'" hi="」" ka="」" an="｣" so="2" />    <!-- US Keyboard -->
 
       <row ro="kz" hi="ぅ" ka="ゥ" an="ｩ" so="2" />
       <row ro="kx" hi="へ" ka="ヘ" an="ﾍ" so="2" />
@@ -488,13 +488,13 @@
       <row ro="ddl" hi="→" ka="→" an="→" so="0" />
       <row ro="dd," hi="‥" ka="‥" an="‥" so="0" />
       <row ro="dd-" hi="～" ka="～" an="～" so="0" />    <!-- チルダ -->
-      <row ro="dd~" hi="〜" ka="〜" an="〜" so="0" />     <!-- 波ダッシュ -->
+      <row ro="dd~" hi="〜" ka="〜" an="〜" so="0" />    <!-- 波ダッシュ -->
       <row ro="dd." hi="…" ka="…" an="…" so="0" />
 
-<!--      <row ro="dd@" hi="『" ka="『" an="『" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="dd[" hi="『" ka="『" an="『" so="2" />		<!-- US Keyboard -->
-<!--      <row ro="dd:" hi="』" ka="』" an="』" so="2" /> -->		<!-- JP Keyboard -->
-      <row ro="dd'" hi="』" ka="』" an="』" so="2" />		<!-- US Keyboard -->
+<!--      <row ro="dd@" hi="『" ka="『" an="『" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="dd[" hi="『" ka="『" an="『" so="2" />    <!-- US Keyboard -->
+<!--      <row ro="dd:" hi="』" ka="』" an="』" so="2" /> -->    <!-- JP Keyboard -->
+      <row ro="dd'" hi="』" ka="』" an="』" so="2" />    <!-- US Keyboard -->
 
 <!-- 濁点・半濁点 合成 -->
 
