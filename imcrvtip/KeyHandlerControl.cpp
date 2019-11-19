@@ -286,18 +286,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			_ConvRoman();
 
-			if (okuriidx != 0 && okuriidx < kana.size())
-			{
-				if (kana[okuriidx] == CHAR_SKK_OKURI)
-				{
-					kana.erase(okuriidx, 1);
-					if (okuriidx < cursoridx)
-					{
-						cursoridx--;
-					}
-					okuriidx = 0;
-				}
-			}
+			_ConvOkuriRoman();
 
 			if (!kana.empty())
 			{

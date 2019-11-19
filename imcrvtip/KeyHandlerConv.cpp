@@ -1048,3 +1048,40 @@ BOOL CTextService::_SearchKanaByKana(const ROMAN_KANA_NODE &tree, const WCHAR *s
 
 	return exist;
 }
+
+void CTextService::_ConvOkuriRoman()
+{
+	WCHAR chO = L'\0';
+
+	if (okuriidx != 0 && okuriidx + 1 < kana.size())
+	{
+		if (kana[okuriidx] == CHAR_SKK_OKURI)
+		{
+			WCHAR chN = kana[okuriidx + 1];
+
+			// 送り仮名の先頭をキーに、変換位置指定の「代替」を検索する。
+			// ヒットしたエントリの「送り」を送りローマ字とする。
+			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
+				chN, [](CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+
+			if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
+			{
+				chO = va_itr->ch[2];
+			}
+
+			if (chO == L'\0')
+			{
+				kana.erase(okuriidx, 1);
+				if (okuriidx < cursoridx)
+				{
+					cursoridx--;
+				}
+				okuriidx = 0;
+			}
+			else
+			{
+				kana.replace(okuriidx, 1, 1, chO);	//送りローマ字
+			}
+		}
+	}
+}

@@ -79,7 +79,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 						{
 						case S_OK:	//一致
 						case E_PENDING:	//途中まで一致
-							if (rkcn.roman[0] != L'\0')
+							if (rkcn.roman[0] != L'\0')	//待機あり/なし
 							{
 								ch = L'\0';
 								switch (inputmode)
@@ -181,36 +181,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 
 					roman.clear();
 
-					if (okuriidx != 0 && okuriidx + 1 < kana.size())
-					{
-						if (kana[okuriidx] == CHAR_SKK_OKURI)
-						{
-							WCHAR chN = kana[okuriidx + 1];
-							// 送り仮名の先頭をキーに、変換位置指定の「代替」を検索する。
-							// ヒットしたエントリの「送り」を送りローマ字とする。
-							auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-								chN, [](CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
-
-							if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
-							{
-								chO = va_itr->ch[2];
-							}
-
-							if (chO == L'\0')
-							{
-								kana.erase(okuriidx, 1);
-								if (okuriidx < cursoridx)
-								{
-									cursoridx--;
-								}
-								okuriidx = 0;
-							}
-							else
-							{
-								kana.replace(okuriidx, 1, 1, chO);	//送りローマ字
-							}
-						}
-					}
+					_ConvOkuriRoman();
 
 					if (inputkey)
 					{

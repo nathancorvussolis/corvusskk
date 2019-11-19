@@ -179,6 +179,7 @@ public:
 	BOOL _ConvN();
 	void _ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode);
 	BOOL _SearchKanaByKana(const ROMAN_KANA_NODE &tree, const WCHAR *src, int srcmode, std::wstring &dst, int dstmode);
+	void _ConvOkuriRoman();
 
 	// KeyHandlerDictionary
 	void _ConnectDic();
