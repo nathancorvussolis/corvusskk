@@ -61,6 +61,10 @@
         <File Id="F_vcruntime140_x64" Name="vcruntime140.dll"
           Source="$(env.VCToolsRedistDir)x64\Microsoft.VC142.CRT\vcruntime140.dll" />
       </Component>
+      <Component Id="VCRUNTIME140_1_X64" Guid="360E0C73-7555-413C-AE3D-2E943CF1A382" Win64="yes">
+        <File Id="F_vcruntime140_1_x64" Name="vcruntime140_1.dll"
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC142.CRT\vcruntime140_1.dll" />
+      </Component>
     </DirectoryRef>
 
     <Component Id="REG_X64" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Directory="TARGETDIR" Win64="yes">
@@ -79,6 +83,7 @@
       <ComponentRef Id="ZLIBDLL_X64" />
       <ComponentRef Id="MSVCP140_X64" />
       <ComponentRef Id="VCRUNTIME140_X64" />
+      <ComponentRef Id="VCRUNTIME140_1_X64" />
       <ComponentRef Id="REG_X64" />
     </Feature>
 
