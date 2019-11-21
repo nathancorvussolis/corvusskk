@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.7.9
+# CorvusSKK ver. 2.7.10
 
 Windowsで動作するSKK風のIMEです。
 
@@ -485,6 +485,13 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
         | ng | ん | ン | ﾝ | **ON** | OFF |
         | go | ご | ゴ | ｺﾞ | OFF | OFF |
 
+    * 例３） 以下のように設定したとき「w」の連続入力により草を生やすことができます。
+
+        | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
+        |---|---|---|---|---|---|---|
+        | ww | ｗ | ｗ | ｗ | **ON** | OFF | Latin Small Letter W → Fullwidth Latin Small Letter W |
+        | w | ｗ | ｗ | ｗ | OFF | OFF | Latin Small Letter W → Fullwidth Latin Small Letter W |
+
 * 「待機」
     * 「待機」がONのとき、入力した文字をローマ字仮名変換した結果 (変換出来ないときは入力した文字そのまま) がローマ字として扱われ、辞書検索開始、確定、補完開始、ローマ字に設定されていない組み合わせ、のいずれかになるまで仮名の最終的な決定が遅延されます。
     * 「待機」機能サンプルを参照してください。[https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config - wait-sample.xml](https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config%20-%20wait-sample.xml)
@@ -494,7 +501,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
         |---|---|---|---|---|---|---|
         | ｶ | か | カ | ｶ | OFF | **ON** | JIS X 0201 仮名 → JIS X 0208 仮名 |
         | ﾞ | ゛ | ゛ | ﾞ | OFF | **ON** | JIS X 0201 濁点 → JIS X 0208 濁点 |
-        | か゛ | が | ガ | ｶﾞ | OFF | **ON** | 仮名と濁点の合成 |
+        | か゛ | が | ガ | ｶﾞ | OFF | ON または OFF | 仮名と濁点の合成<br>待機OFFのとき直ちに確定または辞書検索開始します |
 
     * 例２） 以下のように設定したとき「zsssss …」と入力することで「☆」と「★」が繰り返され任意のタイミングで確定することができます。
 
@@ -735,7 +742,7 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.3.9
+Visual Studio Community 2019 16.3.10
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.23)

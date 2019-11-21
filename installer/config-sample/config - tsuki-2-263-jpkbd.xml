@@ -415,10 +415,10 @@
       <row ro="b" hi="さ" ka="サ" an="ｻ" so="2" />
       <row ro="n" hi="っ" ka="ッ" an="ｯ" so="2" />
       <row ro="m" hi="る" ka="ル" an="ﾙ" so="2" />
-      <row ro="," hi="、" ka="、" an="､" so="2" />
-      <row ro="." hi="。" ka="。" an="｡" so="2" />
+      <row ro="," hi="、" ka="、" an="､" so="0" />
+      <row ro="." hi="。" ka="。" an="｡" so="0" />
       <row ro="/" hi="゜" ka="゜" an="ﾟ" so="2" />
-      <row ro="\" hi="・" ka="・" an="･" so="2" />
+      <row ro="\" hi="・" ka="・" an="･" so="0" />
 
       <row ro="?" hi="゜" ka="゜" an="ﾟ" so="2" />    <!-- シフトキー押したまま半濁点 -->
 
@@ -432,8 +432,8 @@
       <row ro="di" hi="み" ka="ミ" an="ﾐ" so="2" />
       <row ro="do" hi="や" ka="ヤ" an="ﾔ" so="2" />
       <row ro="dp" hi="ぇ" ka="ェ" an="ｪ" so="2" />
-      <row ro="d@" hi="「" ka="「" an="｢" so="2" />    <!-- JP Keyboard -->
-<!--      <row ro="d[" hi="「" ka="「" an="｢" so="2" /> -->    <!-- US Keyboard -->
+      <row ro="d@" hi="「" ka="「" an="｢" so="0" />    <!-- JP Keyboard -->
+<!--      <row ro="d[" hi="「" ka="「" an="｢" so="0" /> -->    <!-- US Keyboard -->
 
       <row ro="ka" hi="ぃ" ka="ィ" an="ｨ" so="2" />
       <row ro="ks" hi="を" ka="ヲ" an="ｦ" so="2" />
@@ -445,8 +445,8 @@
       <row ro="dk" hi="も" ka="モ" an="ﾓ" so="2" />
       <row ro="dl" hi="わ" ka="ワ" an="ﾜ" so="2" />
       <row ro="d;" hi="ゆ" ka="ユ" an="ﾕ" so="2" />
-      <row ro="d:" hi="」" ka="」" an="｣" so="2" />    <!-- JP Keyboard -->
-<!--      <row ro="d'" hi="」" ka="」" an="｣" so="2" /> -->    <!-- US Keyboard -->
+      <row ro="d:" hi="」" ka="」" an="｣" so="0" />    <!-- JP Keyboard -->
+<!--      <row ro="d'" hi="」" ka="」" an="｣" so="0" /> -->    <!-- US Keyboard -->
 
       <row ro="kz" hi="ぅ" ka="ゥ" an="ｩ" so="2" />
       <row ro="kx" hi="へ" ka="ヘ" an="ﾍ" so="2" />
@@ -491,10 +491,10 @@
       <row ro="dd~" hi="〜" ka="〜" an="〜" so="0" />    <!-- 波ダッシュ -->
       <row ro="dd." hi="…" ka="…" an="…" so="0" />
 
-      <row ro="dd@" hi="『" ka="『" an="『" so="2" />    <!-- JP Keyboard -->
-<!--      <row ro="dd[" hi="『" ka="『" an="『" so="2" /> -->    <!-- US Keyboard -->
-      <row ro="dd:" hi="』" ka="』" an="』" so="2" />    <!-- JP Keyboard -->
-<!--      <row ro="dd'" hi="』" ka="』" an="』" so="2" /> -->    <!-- US Keyboard -->
+      <row ro="dd@" hi="『" ka="『" an="『" so="0" />    <!-- JP Keyboard -->
+<!--      <row ro="dd[" hi="『" ka="『" an="『" so="0" /> -->    <!-- US Keyboard -->
+      <row ro="dd:" hi="』" ka="』" an="』" so="0" />    <!-- JP Keyboard -->
+<!--      <row ro="dd'" hi="』" ka="』" an="』" so="0" /> -->    <!-- US Keyboard -->
 
 <!-- 濁点・半濁点 合成 -->
 
