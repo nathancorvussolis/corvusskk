@@ -26,10 +26,10 @@
 #define REQ_COMPLEMENT		L'4'	//補完
 #define REQ_CONVERTKEY		L'5'	//見出し語変換
 #define REQ_CONVERTCND		L'6'	//候補変換
-#define REQ_USER_ADD_0		L'A'	//ユーザー辞書追加(送りあり、補完なし)
-#define REQ_USER_ADD_1		L'B'	//ユーザー辞書追加(送りなし、補完あり)
-#define REQ_USER_DEL_0		L'C'	//ユーザー辞書削除(送りあり、補完なし)
-#define REQ_USER_DEL_1		L'D'	//ユーザー辞書削除(送りなし、補完あり)
+#define REQ_USER_ADD_A		L'A'	//ユーザー辞書追加(送りあり、補完なし)
+#define REQ_USER_ADD_N		L'B'	//ユーザー辞書追加(送りなし、補完あり)
+#define REQ_USER_DEL_A		L'C'	//ユーザー辞書削除(送りあり、補完なし)
+#define REQ_USER_DEL_N		L'D'	//ユーザー辞書削除(送りなし、補完あり)
 #define REQ_USER_SAVE		L'S'	//ユーザー辞書保存
 #define REQ_EXEC_CNF		L'P'	//設定ダイアログ起動
 #define REQ_CAPS_LOCK		L'I'	//Caps Lock

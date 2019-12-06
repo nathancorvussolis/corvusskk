@@ -7,10 +7,10 @@
 //ユーザー辞書
 SKKDIC userdic;
 USEROKURI userokuri;
-//補完あり
-KEYORDER complements;
-//補完なし
-KEYORDER accompaniments;
+//送りなし、補完あり
+KEYORDER keyorder_n;
+//送りあり、補完なし
+KEYORDER keyorder_a;
 
 HANDLE hThreadUserDic = INVALID_HANDLE_VALUE;
 
@@ -76,9 +76,9 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 {
 	size_t count = 0;
 
-	if (!complements.empty())
+	if (!keyorder_n.empty())
 	{
-		REVERSE_ITERATION_I(keyorder_ritr, complements)
+		REVERSE_ITERATION_I(keyorder_ritr, keyorder_n)
 		{
 			if (count >= MAX_COMPLEMENT_RESULT)
 			{
@@ -219,11 +219,11 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	//見出し語順序
 	switch (command)
 	{
-	case REQ_USER_ADD_0:
-		AddKeyOrder(searchkey, accompaniments);
+	case REQ_USER_ADD_A:
+		AddKeyOrder(searchkey, keyorder_a);
 		break;
-	case REQ_USER_ADD_1:
-		AddKeyOrder(searchkey, complements);
+	case REQ_USER_ADD_N:
+		AddKeyOrder(searchkey, keyorder_n);
 		break;
 	default:
 		break;
@@ -231,7 +231,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	//ユーザー辞書送りブロック
 	re.assign(L"[\\[\\]]"); //角括弧を含む候補を除外
-	if (command == REQ_USER_ADD_0 && !okuri.empty() && !std::regex_search(candidate_esc, re))
+	if (command == REQ_USER_ADD_A && !okuri.empty() && !std::regex_search(candidate_esc, re))
 	{
 		auto userokuri_itr = userokuri.find(searchkey);
 		if (userokuri_itr == userokuri.end())
@@ -306,11 +306,11 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 			//見出し語順序
 			switch (command)
 			{
-			case REQ_USER_DEL_0:
-				DelKeyOrder(searchkey, accompaniments);
+			case REQ_USER_DEL_A:
+				DelKeyOrder(searchkey, keyorder_a);
 				break;
-			case REQ_USER_DEL_1:
-				DelKeyOrder(searchkey, complements);
+			case REQ_USER_DEL_N:
+				DelKeyOrder(searchkey, keyorder_n);
 				break;
 			default:
 				break;
@@ -364,8 +364,8 @@ BOOL LoadUserDic()
 
 	userdic.clear();
 	userokuri.clear();
-	complements.clear();
-	accompaniments.clear();
+	keyorder_n.clear();
+	keyorder_a.clear();
 
 	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
 	if (fp == nullptr)
@@ -402,10 +402,10 @@ BOOL LoadUserDic()
 		switch (okuri)
 		{
 		case 0:
-			complements.push_back(key);
+			keyorder_n.push_back(key);
 			break;
 		case 1:
-			accompaniments.push_back(key);
+			keyorder_a.push_back(key);
 			break;
 		default:
 			break;
@@ -511,8 +511,8 @@ BOOL LoadUserDic()
 	fclose(fp);
 
 	//見出し語順序 末尾を最新とする
-	std::reverse(complements.begin(), complements.end());
-	std::reverse(accompaniments.begin(), accompaniments.end());
+	std::reverse(keyorder_n.begin(), keyorder_n.end());
+	std::reverse(keyorder_a.begin(), keyorder_a.end());
 
 	return TRUE;
 }
@@ -567,7 +567,7 @@ unsigned int __stdcall SaveUserDic(void *p)
 	//送りありエントリ
 	fwprintf(fp, L"%s", EntriesAri);
 
-	REVERSE_ITERATION_I(keyorder_ritr, userdata->accompaniments)
+	REVERSE_ITERATION_I(keyorder_ritr, userdata->keyorder_a)
 	{
 		auto userdic_itr = userdata->userdic.find(*keyorder_ritr);
 		if (userdic_itr != userdata->userdic.end())
@@ -587,7 +587,7 @@ unsigned int __stdcall SaveUserDic(void *p)
 	//送りなしエントリ
 	fwprintf(fp, L"%s", EntriesNasi);
 
-	REVERSE_ITERATION_I(keyorder_ritr, userdata->complements)
+	REVERSE_ITERATION_I(keyorder_ritr, userdata->keyorder_n)
 	{
 		auto userdic_itr = userdata->userdic.find(*keyorder_ritr);
 		if (userdic_itr != userdata->userdic.end())
@@ -634,8 +634,8 @@ void StartSaveUserDic(BOOL bThread)
 			userdata = new USERDATA();
 			userdata->userdic = userdic;
 			userdata->userokuri = userokuri;
-			userdata->complements = complements;
-			userdata->accompaniments = accompaniments;
+			userdata->keyorder_n = keyorder_n;
+			userdata->keyorder_a = keyorder_a;
 		}
 		catch (...)
 		{

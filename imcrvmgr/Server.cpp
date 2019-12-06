@@ -170,8 +170,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		}
 		break;
 
-	case REQ_USER_ADD_0:
-	case REQ_USER_ADD_1:
+	case REQ_USER_ADD_A:
+	case REQ_USER_ADD_N:
 		re.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
@@ -185,7 +185,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_add");
-			lua_pushboolean(lua, (command == REQ_USER_ADD_0 ? 1 : 0));
+			lua_pushboolean(lua, (command == REQ_USER_ADD_A ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key));
 			lua_pushstring(lua, WCTOU8(candidate));
 			lua_pushstring(lua, WCTOU8(annotation));
@@ -201,8 +201,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		result += L"\n";
 		break;
 
-	case REQ_USER_DEL_0:
-	case REQ_USER_DEL_1:
+	case REQ_USER_DEL_A:
+	case REQ_USER_DEL_N:
 		re.assign(L"(.*)\t(.*)\n");
 		fmt.assign(L"$1");
 		key = std::regex_replace(argument, re, fmt);
@@ -212,7 +212,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		if (lua != nullptr)
 		{
 			lua_getglobal(lua, u8"lua_skk_delete");
-			lua_pushboolean(lua, (command == REQ_USER_DEL_0 ? 1 : 0));
+			lua_pushboolean(lua, (command == REQ_USER_DEL_A ? 1 : 0));
 			lua_pushstring(lua, WCTOU8(key));
 			lua_pushstring(lua, WCTOU8(candidate));
 			lua_pcall(lua, 3, 0, 0);

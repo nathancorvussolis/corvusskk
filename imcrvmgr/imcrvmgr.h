@@ -7,8 +7,8 @@
 typedef struct {
 	SKKDIC userdic;
 	USEROKURI userokuri;
-	KEYORDER complements;
-	KEYORDER accompaniments;
+	KEYORDER keyorder_n;
+	KEYORDER keyorder_a;
 } USERDATA;
 
 // ConfigMgr
@@ -91,8 +91,8 @@ extern lua_State *lua;
 
 extern SKKDIC userdic;
 extern USEROKURI userokuri;
-extern KEYORDER complements;
-extern KEYORDER accompaniments;
+extern KEYORDER keyorder_n;
+extern KEYORDER keyorder_a;
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR DictionaryManagerClass;

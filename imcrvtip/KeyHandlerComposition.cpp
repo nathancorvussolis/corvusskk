@@ -7,7 +7,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 {
 	std::wstring comptext;
 	WCHAR candidatecount[16];
-	WCHAR useraddmode = REQ_USER_ADD_1;
+	WCHAR useraddmode = REQ_USER_ADD_N;
 	LONG cchCursor = 0;
 	LONG cchOkuri = 0;
 	BOOL showmodemark = cx_showmodemark;
@@ -36,7 +36,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			{
 				cchOkuri = (LONG)comptext.size();
 				comptext.append(kana.substr(okuriidx + 1));
-				useraddmode = REQ_USER_ADD_0;
+				useraddmode = REQ_USER_ADD_A;
 			}
 
 			cchCursor = (LONG)comptext.size();

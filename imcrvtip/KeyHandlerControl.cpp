@@ -332,7 +332,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			if (purgedicmode)
 			{
 				purgedicmode = FALSE;
-				_DelUserDic((okuriidx == 0 ? REQ_USER_DEL_1 : REQ_USER_DEL_0),
+				_DelUserDic((okuriidx == 0 ? REQ_USER_DEL_N : REQ_USER_DEL_A),
 					((candorgcnt <= candidx) ? searchkey : searchkeyorg),
 					candidates[candidx].second.first);
 				showentry = FALSE;
