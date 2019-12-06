@@ -392,23 +392,27 @@ BOOL LoadUserDic()
 			continue;
 		}
 
+		//見出し語順序
+		auto userdic_itr = userdic.find(key);
+		if (userdic_itr == userdic.end())
+		{
+			switch (okuri)
+			{
+			case 0:
+				keyorder_n.push_back(key);
+				break;
+			case 1:
+				keyorder_a.push_back(key);
+				break;
+			default:
+				break;
+			}
+		}
+
 		//ユーザー辞書
 		REVERSE_ITERATION_I(sc_ritr, sc)
 		{
 			AddUserDic(WCHAR_MAX, key, sc_ritr->first, sc_ritr->second, empty);
-		}
-
-		//見出し語順序
-		switch (okuri)
-		{
-		case 0:
-			keyorder_n.push_back(key);
-			break;
-		case 1:
-			keyorder_a.push_back(key);
-			break;
-		default:
-			break;
 		}
 
 		if (okuri == 1)
