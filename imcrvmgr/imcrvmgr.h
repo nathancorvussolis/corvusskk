@@ -58,7 +58,7 @@ void BackUpUserDic();
 
 // SearchSKKServer
 std::wstring SearchSKKServer(const std::wstring &searchkey);
-void ConnectSKKServer();
+void StartConnectSKKServer();
 void DisconnectSKKServer();
 std::wstring GetSKKServerInfo(CHAR req);
 
