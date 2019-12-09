@@ -149,17 +149,29 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_POWERBROADCAST:
 		if (wParam == PBT_APMSUSPEND)
 		{
-			StartSaveUserDic(FALSE);
+			EXECUTION_STATE state = SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
+			if (state != NULL)
+			{
+				StartSaveUserDic(FALSE);
 
-			BackUpUserDic();
+				BackUpUserDic();
+
+				SetThreadExecutionState(ES_CONTINUOUS);
+			}
+		}
+		break;
+
+	case WM_QUERYENDSESSION:
+		{
+			WCHAR reason[MAX_STR_BLOCKREASON];
+			_snwprintf_s(reason, _TRUNCATE, L"A SKK User Dictionary is being saved.");
+			ShutdownBlockReasonCreate(hWnd, reason);
+			return TRUE;
 		}
 		break;
 
 	case WM_DESTROY:
 	case WM_ENDSESSION:
-#ifdef _DEBUG
-		DeleteObject(hFont);
-#endif
 		bSrvThreadExit = TRUE;
 		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
 			nullptr, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, nullptr);
@@ -183,6 +195,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		UninitLua();
 
 		WSACleanup();
+
+#ifdef _DEBUG
+		DeleteObject(hFont);
+#endif
+
+		if (message == WM_ENDSESSION)
+		{
+			ShutdownBlockReasonDestroy(hWnd);
+		}
 
 		if (message == WM_DESTROY)
 		{
