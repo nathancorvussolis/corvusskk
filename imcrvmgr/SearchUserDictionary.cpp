@@ -12,8 +12,6 @@ KEYORDER keyorder_n;
 //送りあり、補完なし
 KEYORDER keyorder_a;
 
-HANDLE hThreadUserDic = INVALID_HANDLE_VALUE;
-
 std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &okuri)
 {
 	std::wstring candidate;
@@ -549,18 +547,17 @@ void WriteUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES
 	fwprintf(fp, L"%s\n", line.c_str());
 }
 
-unsigned int __stdcall SaveUserDic(void *p)
+void SaveUserDic(USERDATA *userdata)
 {
-	USERDATA *userdata = (USERDATA *)p;
 	FILE *fp;
 	SKKDICOKURIBLOCKS so;
 
 	if (userdata == nullptr)
 	{
-		return 0;
+		return;
 	}
 
-	EnterCriticalSection(&csSaveUserDic);	// !
+	EnterCriticalSection(&csUserDict);	// !
 
 	_wfopen_s(&fp, pathuserdic, WccsUTF16);
 	if (fp == nullptr)
@@ -603,32 +600,30 @@ unsigned int __stdcall SaveUserDic(void *p)
 	fclose(fp);
 
 exit:
-	LeaveCriticalSection(&csSaveUserDic);	// !
+	LeaveCriticalSection(&csUserDict);	// !
+}
 
-	delete userdata;
+unsigned __stdcall SaveUserDicThread(void *p)
+{
+	USERDATA *userdata = (USERDATA *)p;
+
+	if (userdata != nullptr)
+	{
+		if (TryEnterCriticalSection(&csSaveUserDic))	// !
+		{
+			SaveUserDic(userdata);
+
+			LeaveCriticalSection(&csSaveUserDic);	// !
+		}
+
+		delete userdata;
+	}
 
 	return 0;
 }
 
 void StartSaveUserDic(BOOL bThread)
 {
-	if (hThreadUserDic != INVALID_HANDLE_VALUE)
-	{
-		DWORD ws = WaitForSingleObject(hThreadUserDic, (bThread ? 0 : INFINITE));
-		switch (ws)
-		{
-		case WAIT_OBJECT_0:
-			CloseHandle(hThreadUserDic);
-			hThreadUserDic = INVALID_HANDLE_VALUE;
-			break;
-		case WAIT_TIMEOUT:
-			return;
-			break;
-		default:
-			break;
-		}
-	}
-
 	if (bUserDicChg)
 	{
 		USERDATA *userdata = nullptr;
@@ -652,24 +647,27 @@ void StartSaveUserDic(BOOL bThread)
 
 		if (bThread)
 		{
-			if (hThreadUserDic == INVALID_HANDLE_VALUE)
+			HANDLE h = reinterpret_cast<HANDLE>(
+				_beginthreadex(nullptr, 0, SaveUserDicThread, userdata, 0, nullptr));
+
+			if (h != nullptr)
 			{
-				hThreadUserDic = (HANDLE)_beginthreadex(nullptr, 0, SaveUserDic, userdata, 0, nullptr);
-				if (hThreadUserDic == nullptr)
-				{
-					delete userdata;
-					hThreadUserDic = INVALID_HANDLE_VALUE;
-				}
-				else
-				{
-					bUserDicChg = FALSE;
-				}
+				CloseHandle(h);
+
+				bUserDicChg = FALSE;
+			}
+			else
+			{
+				delete userdata;
 			}
 		}
 		else
 		{
 			SaveUserDic(userdata);
+
 			bUserDicChg = FALSE;
+
+			delete userdata;
 		}
 	}
 }
@@ -679,7 +677,7 @@ void BackUpUserDic()
 	WCHAR oldpath[MAX_PATH];
 	WCHAR newpath[MAX_PATH];
 
-	EnterCriticalSection(&csSaveUserDic);	// !
+	EnterCriticalSection(&csUserDict);	// !
 
 	for (int i = BACKUP_GENS; i > 1; i--)
 	{
@@ -693,5 +691,5 @@ void BackUpUserDic()
 
 	CopyFileW(pathuserdic, newpath, FALSE);
 
-	LeaveCriticalSection(&csSaveUserDic);	// !
+	LeaveCriticalSection(&csUserDict);	// !
 }

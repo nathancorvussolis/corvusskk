@@ -398,7 +398,7 @@ HANDLE SrvStart()
 
 	if (hPipe != INVALID_HANDLE_VALUE)
 	{
-		hThread = (HANDLE)_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr);
+		hThread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr));
 		if (hThread == nullptr)
 		{
 			CloseHandle(hPipe);

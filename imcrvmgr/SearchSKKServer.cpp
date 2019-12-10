@@ -4,7 +4,6 @@
 #include "imcrvmgr.h"
 
 SOCKET skksocket = INVALID_SOCKET;
-HANDLE hConnectThread = INVALID_HANDLE_VALUE;
 
 std::wstring SearchSKKServer(const std::wstring &searchkey)
 {
@@ -61,7 +60,6 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 
 	if (send(skksocket, key.c_str(), (int)key.size(), 0) == SOCKET_ERROR)
 	{
-		DisconnectSKKServer();
 		StartConnectSKKServer();
 		goto end;
 	}
@@ -74,7 +72,6 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 		n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
 		if (n == SOCKET_ERROR || n <= 0)
 		{
-			DisconnectSKKServer();
 			StartConnectSKKServer();
 			goto end;
 		}
@@ -192,43 +189,34 @@ void ConnectSKKServer()
 
 		shutdown(sock, SD_BOTH);
 		closesocket(sock);
-
-		DisconnectSKKServer();
 	}
 
 	FreeAddrInfoW(paiwResult);
 }
 
-unsigned int __stdcall ConnectSKKServerThread(void *p)
+unsigned __stdcall ConnectSKKServerThread(void *p)
 {
-	ConnectSKKServer();
+	if (TryEnterCriticalSection(&csSKKSocket))	// !
+	{
+		DisconnectSKKServer();
+
+		ConnectSKKServer();
+
+		LeaveCriticalSection(&csSKKSocket);	// !
+	}
 
 	return 0;
 }
 
-void StartConnectSKKServerThread(void *p)
-{
-	//suppress duplicate thread
-	if (hConnectThread != INVALID_HANDLE_VALUE)
-	{
-		DWORD ret = WaitForSingleObject(hConnectThread, 0);
-		if (ret != WAIT_OBJECT_0)
-		{
-			return;
-		}
-	}
-
-	hConnectThread = (HANDLE)_beginthreadex(nullptr, 0, ConnectSKKServerThread, nullptr, 0, nullptr);
-
-	WaitForSingleObject(hConnectThread, INFINITE);
-
-	CloseHandle(hConnectThread);
-	hConnectThread = INVALID_HANDLE_VALUE;
-}
-
 void StartConnectSKKServer()
 {
-	_beginthread(StartConnectSKKServerThread, 0, nullptr);
+	HANDLE h = reinterpret_cast<HANDLE>(
+		_beginthreadex(nullptr, 0, ConnectSKKServerThread, nullptr, 0, nullptr));
+
+	if (h != nullptr)
+	{
+		CloseHandle(h);
+	}
 }
 
 void DisconnectSKKServer()
@@ -265,7 +253,6 @@ std::wstring GetSKKServerInfo(CHAR req)
 
 	if (send(skksocket, &req, 1, 0) == SOCKET_ERROR)
 	{
-		DisconnectSKKServer();
 		StartConnectSKKServer();
 	}
 	else
@@ -276,7 +263,6 @@ std::wstring GetSKKServerInfo(CHAR req)
 			n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
 			if (n == SOCKET_ERROR || n <= 0)
 			{
-				DisconnectSKKServer();
 				StartConnectSKKServer();
 				break;
 			}

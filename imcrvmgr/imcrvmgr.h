@@ -76,7 +76,9 @@ HANDLE SrvStart();
 
 #define BACKUP_GENS		3
 
+extern CRITICAL_SECTION csUserDict;
 extern CRITICAL_SECTION csSaveUserDic;
+extern CRITICAL_SECTION csSKKSocket;
 extern BOOL bUserDicChg;
 extern FILETIME ftConfig, ftSKKDic;
 #ifdef _DEBUG

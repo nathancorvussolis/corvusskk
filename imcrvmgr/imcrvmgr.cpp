@@ -3,7 +3,9 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+CRITICAL_SECTION csUserDict;
 CRITICAL_SECTION csSaveUserDic;
+CRITICAL_SECTION csSKKSocket;
 BOOL bUserDicChg;
 FILETIME ftConfig = {}, ftSKKDic = {};
 #ifdef _DEBUG
@@ -114,6 +116,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		CreateConfigPath();
 		UpdateConfigPath();
 
+		InitializeCriticalSection(&csUserDict);	// !
+		InitializeCriticalSection(&csSaveUserDic);	// !
+		InitializeCriticalSection(&csSKKSocket);	// !
+
 		if (IsFileModified(pathconfigxml, &ftConfig))
 		{
 			LoadConfig();
@@ -128,8 +134,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		LoadUserDic();
 
 		InitLua();
-
-		InitializeCriticalSection(&csSaveUserDic);	// !
 
 		bSrvThreadExit = FALSE;
 		hThreadSrv = SrvStart();
@@ -164,7 +168,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_QUERYENDSESSION:
 		{
 			WCHAR reason[MAX_STR_BLOCKREASON];
-			_snwprintf_s(reason, _TRUNCATE, L"A SKK User Dictionary is being saved.");
+			_snwprintf_s(reason, _TRUNCATE, L"A SKK user dictionary is being saved.");
 			ShutdownBlockReasonCreate(hWnd, reason);
 			return TRUE;
 		}
@@ -183,6 +187,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		CloseHandle(hThreadSrv);
 
+		DisconnectSKKServer();
+
 		StartSaveUserDic(FALSE);
 
 		if (message == WM_ENDSESSION)
@@ -190,9 +196,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BackUpUserDic();
 		}
 
-		DeleteCriticalSection(&csSaveUserDic);	// !
-
 		UninitLua();
+
+		DeleteCriticalSection(&csSKKSocket);	// !
+		DeleteCriticalSection(&csSaveUserDic);	// !
+		DeleteCriticalSection(&csUserDict);	// !
 
 		WSACleanup();
 
