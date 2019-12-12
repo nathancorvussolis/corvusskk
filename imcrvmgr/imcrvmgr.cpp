@@ -7,7 +7,8 @@ CRITICAL_SECTION csUserDict;
 CRITICAL_SECTION csSaveUserDic;
 CRITICAL_SECTION csSKKSocket;
 BOOL bUserDicChg;
-FILETIME ftConfig = {}, ftSKKDic = {};
+FILETIME ftConfig = {};
+FILETIME ftSKKDic = {};
 #ifdef _DEBUG
 HWND hWndEdit;
 HFONT hFont;
@@ -153,6 +154,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_POWERBROADCAST:
 		if (wParam == PBT_APMSUSPEND)
 		{
+			// block sleep
 			EXECUTION_STATE state = SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
 			if (state != NULL)
 			{
@@ -160,6 +162,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				BackUpUserDic();
 
+				// unblock sleep
 				SetThreadExecutionState(ES_CONTINUOUS);
 			}
 		}
@@ -167,6 +170,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_QUERYENDSESSION:
 		{
+			// block shutdown
 			WCHAR reason[MAX_STR_BLOCKREASON];
 			_snwprintf_s(reason, _TRUNCATE, L"A SKK user dictionary is being saved.");
 			ShutdownBlockReasonCreate(hWnd, reason);
@@ -187,7 +191,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		CloseHandle(hThreadSrv);
 
-		DisconnectSKKServer();
+		CleanUpSKKServer();
+
+		UninitLua();
 
 		StartSaveUserDic(FALSE);
 
@@ -195,8 +201,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			BackUpUserDic();
 		}
-
-		UninitLua();
 
 		DeleteCriticalSection(&csSKKSocket);	// !
 		DeleteCriticalSection(&csSaveUserDic);	// !
@@ -210,6 +214,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (message == WM_ENDSESSION)
 		{
+			// unblock shutdown
 			ShutdownBlockReasonDestroy(hWnd);
 		}
 

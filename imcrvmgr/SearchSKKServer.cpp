@@ -194,11 +194,21 @@ void ConnectSKKServer()
 	FreeAddrInfoW(paiwResult);
 }
 
+void CloseSKKServSocket()
+{
+	if (skksocket != INVALID_SOCKET)
+	{
+		shutdown(skksocket, SD_BOTH);
+		closesocket(skksocket);
+		skksocket = INVALID_SOCKET;
+	}
+}
+
 unsigned __stdcall ConnectSKKServerThread(void *p)
 {
 	if (TryEnterCriticalSection(&csSKKSocket))	// !
 	{
-		DisconnectSKKServer();
+		CloseSKKServSocket();
 
 		ConnectSKKServer();
 
@@ -221,12 +231,21 @@ void StartConnectSKKServer()
 
 void DisconnectSKKServer()
 {
-	if (skksocket != INVALID_SOCKET)
+	if (TryEnterCriticalSection(&csSKKSocket))	// !
 	{
-		shutdown(skksocket, SD_BOTH);
-		closesocket(skksocket);
-		skksocket = INVALID_SOCKET;
+		CloseSKKServSocket();
+
+		LeaveCriticalSection(&csSKKSocket);	// !
 	}
+}
+
+void CleanUpSKKServer()
+{
+	EnterCriticalSection(&csSKKSocket);	// !
+
+	CloseSKKServSocket();
+
+	LeaveCriticalSection(&csSKKSocket);	// !
 }
 
 std::wstring GetSKKServerInfo(CHAR req)

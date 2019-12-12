@@ -353,12 +353,15 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 BOOL LoadUserDic()
 {
+	BOOL ret = FALSE;
 	FILE *fp;
 	std::wstring key, empty;
 	int okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
 	USEROKURIENTRY userokurientry;
+
+	EnterCriticalSection(&csUserDict);	// !
 
 	userdic.clear();
 	userokuri.clear();
@@ -368,7 +371,7 @@ BOOL LoadUserDic()
 	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
 	if (fp == nullptr)
 	{
-		return FALSE;
+		goto exit;
 	}
 
 	while (true)
@@ -516,7 +519,12 @@ BOOL LoadUserDic()
 	std::reverse(keyorder_n.begin(), keyorder_n.end());
 	std::reverse(keyorder_a.begin(), keyorder_a.end());
 
-	return TRUE;
+	ret = TRUE;
+
+exit:
+	LeaveCriticalSection(&csUserDict);	// !
+
+	return ret;
 }
 
 void WriteUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES &sc, const SKKDICOKURIBLOCKS &so)

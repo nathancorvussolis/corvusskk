@@ -60,6 +60,7 @@ void BackUpUserDic();
 std::wstring SearchSKKServer(const std::wstring &searchkey);
 void StartConnectSKKServer();
 void DisconnectSKKServer();
+void CleanUpSKKServer();
 std::wstring GetSKKServerInfo(CHAR req);
 
 // Server
@@ -80,7 +81,8 @@ extern CRITICAL_SECTION csUserDict;
 extern CRITICAL_SECTION csSaveUserDic;
 extern CRITICAL_SECTION csSKKSocket;
 extern BOOL bUserDicChg;
-extern FILETIME ftConfig, ftSKKDic;
+extern FILETIME ftConfig;
+extern FILETIME ftSKKDic;
 #ifdef _DEBUG
 extern HWND hWndEdit;
 extern HFONT hFont;
