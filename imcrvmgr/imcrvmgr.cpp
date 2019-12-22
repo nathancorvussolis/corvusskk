@@ -152,19 +152,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif
 
 	case WM_POWERBROADCAST:
-		if (wParam == PBT_APMSUSPEND)
+		if (wParam == PBT_APMRESUMESUSPEND)
 		{
-			// block sleep
-			EXECUTION_STATE state = SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED);
-			if (state != NULL)
-			{
-				StartSaveUserDic(FALSE);
+			StartSaveUserDic(FALSE);
 
-				BackUpUserDic();
-
-				// unblock sleep
-				SetThreadExecutionState(ES_CONTINUOUS);
-			}
+			BackUpUserDic();
 		}
 		break;
 
