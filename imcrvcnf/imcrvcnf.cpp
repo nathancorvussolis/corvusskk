@@ -2,6 +2,8 @@
 #include "imcrvcnf.h"
 #include "resource.h"
 
+#define CONFIG_RECOVERY_OPTION L"/rc"
+
 HINSTANCE hInst;
 HANDLE hMutex;
 
@@ -30,7 +32,10 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
 
-	bool tempMode = false;
+	// "<config path>"
+	//  or
+	// /rc "<config path>"
+	bool rcMode = false;
 	LPWSTR fileArg = nullptr;
 	int numArgs = 0;
 	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
@@ -38,9 +43,9 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	{
 		for (int i = 0; i < numArgs; i++)
 		{
-			if (wcscmp(pArgs[i], L"/t") == 0)
+			if (wcscmp(pArgs[i], CONFIG_RECOVERY_OPTION) == 0)
 			{
-				tempMode = true;
+				rcMode = true;
 			}
 			else if (PathFileExistsW(pArgs[i]) && !PathIsDirectoryW(pArgs[i]))
 			{
@@ -52,9 +57,14 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 
 	CreateProperty();
 
-	if (tempMode && fileArg != nullptr)
+	if (rcMode && fileArg != nullptr)
 	{
 		DeleteFileW(fileArg);
+	}
+
+	if (pArgs != nullptr)
+	{
+		LocalFree(pArgs);
 	}
 
 	if (hMutex != nullptr)
@@ -160,7 +170,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam)
 					if (SaveConfigXml(hwndDlg) == TRUE)
 					{
 						WCHAR args[MAX_PATH] = {};
-						_snwprintf_s(args, _TRUNCATE, L"/t \"%s\"", tempfilepath);
+						_snwprintf_s(args, _TRUNCATE, L"%s \"%s\"", CONFIG_RECOVERY_OPTION, tempfilepath);
 
 						StartProcess(hInst, IMCRVCNFEXE, args);
 					}
