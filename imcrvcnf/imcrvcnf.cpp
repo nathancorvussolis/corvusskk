@@ -41,7 +41,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	LPWSTR *pArgs = CommandLineToArgvW(GetCommandLineW(), &numArgs);
 	if (pArgs != nullptr && numArgs >= 2)
 	{
-		for (int i = 0; i < numArgs; i++)
+		for (int i = 1; i < numArgs; i++)
 		{
 			if (wcscmp(pArgs[i], CONFIG_RECOVERY_OPTION) == 0)
 			{
@@ -51,6 +51,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 			{
 				fileArg = pArgs[i];
 				wcsncpy_s(pathconfigxml, fileArg, _TRUNCATE);
+				break;
 			}
 		}
 	}
