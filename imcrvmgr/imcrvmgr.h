@@ -75,7 +75,7 @@ HANDLE SrvStart();
 //server
 #define SKK_HIT		'1'
 
-#define BACKUP_GENS		7
+#define BACKUP_GENS		3
 
 extern CRITICAL_SECTION csUserDict;
 extern CRITICAL_SECTION csSaveUserDic;
