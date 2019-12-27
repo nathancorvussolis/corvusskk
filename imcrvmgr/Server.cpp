@@ -263,7 +263,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	}
 }
 
-unsigned int __stdcall SrvThread(void *p)
+unsigned __stdcall SrvThread(void *p)
 {
 	HANDLE hPipe = (HANDLE)p;
 	DWORD bytesRead, bytesWrite;
@@ -398,7 +398,8 @@ HANDLE SrvStart()
 
 	if (hPipe != INVALID_HANDLE_VALUE)
 	{
-		hThread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr));
+		hThread = reinterpret_cast<HANDLE>(
+			_beginthreadex(nullptr, 0, SrvThread, hPipe, 0, nullptr));
 		if (hThread == nullptr)
 		{
 			CloseHandle(hPipe);

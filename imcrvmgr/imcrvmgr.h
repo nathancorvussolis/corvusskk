@@ -64,8 +64,6 @@ void CleanUpSKKServer();
 std::wstring GetSKKServerInfo(CHAR req);
 
 // Server
-void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result);
-unsigned int __stdcall SrvThread(void *p);
 HANDLE SrvStart();
 
 //client
@@ -78,6 +76,7 @@ HANDLE SrvStart();
 #define BACKUP_GENS		3
 
 extern CRITICAL_SECTION csUserDict;
+extern CRITICAL_SECTION csUserData;
 extern CRITICAL_SECTION csSaveUserDic;
 extern CRITICAL_SECTION csSKKSocket;
 extern BOOL bUserDicChg;
@@ -92,11 +91,6 @@ extern HANDLE hMutex;
 extern HANDLE hThreadSrv;
 extern BOOL bSrvThreadExit;
 extern lua_State *lua;
-
-extern SKKDIC userdic;
-extern USEROKURI userokuri;
-extern KEYORDER keyorder_n;
-extern KEYORDER keyorder_a;
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR DictionaryManagerClass;

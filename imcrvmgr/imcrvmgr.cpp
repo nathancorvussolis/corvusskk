@@ -4,6 +4,7 @@
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 CRITICAL_SECTION csUserDict;
+CRITICAL_SECTION csUserData;
 CRITICAL_SECTION csSaveUserDic;
 CRITICAL_SECTION csSKKSocket;
 BOOL bUserDicChg;
@@ -118,6 +119,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		UpdateConfigPath();
 
 		InitializeCriticalSection(&csUserDict);	// !
+		InitializeCriticalSection(&csUserData);	// !
 		InitializeCriticalSection(&csSaveUserDic);	// !
 		InitializeCriticalSection(&csSKKSocket);	// !
 
@@ -196,6 +198,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		DeleteCriticalSection(&csSKKSocket);	// !
 		DeleteCriticalSection(&csSaveUserDic);	// !
+		DeleteCriticalSection(&csUserData);	// !
 		DeleteCriticalSection(&csUserDict);	// !
 
 		WSACleanup();

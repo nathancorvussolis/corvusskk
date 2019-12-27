@@ -18,6 +18,8 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 	SKKDICCANDIDATES sc;
 	SKKDICCANDIDATE okuric;
 
+	EnterCriticalSection(&csUserData);	// !
+
 	auto userdic_itr = userdic.find(searchkey);
 	if (userdic_itr != userdic.end())
 	{
@@ -54,6 +56,8 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 		}
 	}
 
+	LeaveCriticalSection(&csUserData);	// !
+
 	FORWARD_ITERATION_I(sc_itr, sc)
 	{
 		candidate.append(L"/" + sc_itr->first);
@@ -73,6 +77,8 @@ std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &o
 void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 {
 	size_t count = 0;
+
+	EnterCriticalSection(&csUserData);	// !
 
 	if (!keyorder_n.empty())
 	{
@@ -102,6 +108,8 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 			}
 		}
 	}
+
+	LeaveCriticalSection(&csUserData);	// !
 }
 
 void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
@@ -156,6 +164,8 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 
 void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 {
+	EnterCriticalSection(&csUserData);	// !
+
 	if (!keyorder.empty())
 	{
 		FORWARD_ITERATION_I(keyorder_itr, keyorder)
@@ -167,13 +177,19 @@ void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 			}
 		}
 	}
+
+	LeaveCriticalSection(&csUserData);	// !
 }
 
 void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 {
+	EnterCriticalSection(&csUserData);	// !
+
 	DelKeyOrder(searchkey, keyorder);
 
 	keyorder.push_back(searchkey);
+
+	LeaveCriticalSection(&csUserData);	// !
 }
 
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri)
@@ -192,6 +208,8 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 
 	candidate_esc = MakeConcat(candidate);
 	annotation_esc = MakeConcat(annotation);
+
+	EnterCriticalSection(&csUserData);	// !
 
 	//ユーザー辞書
 	auto userdic_itr = userdic.find(searchkey);
@@ -279,11 +297,15 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 		}
 	}
 
+	LeaveCriticalSection(&csUserData);	// !
+
 	bUserDicChg = TRUE;
 }
 
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate)
 {
+	EnterCriticalSection(&csUserData);	// !
+
 	//ユーザー辞書
 	auto userdic_itr = userdic.find(searchkey);
 	if (userdic_itr != userdic.end())
@@ -349,6 +371,8 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 			userokuri.erase(userokuri_itr);
 		}
 	}
+
+	LeaveCriticalSection(&csUserData);	// !
 }
 
 BOOL LoadUserDic()
@@ -361,12 +385,14 @@ BOOL LoadUserDic()
 	SKKDICOKURIBLOCKS so;
 	USEROKURIENTRY userokurientry;
 
-	EnterCriticalSection(&csUserDict);	// !
+	EnterCriticalSection(&csUserData);	// !
 
 	userdic.clear();
 	userokuri.clear();
 	keyorder_n.clear();
 	keyorder_a.clear();
+
+	EnterCriticalSection(&csUserDict);	// !
 
 	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
 	if (fp == nullptr)
@@ -524,6 +550,8 @@ BOOL LoadUserDic()
 exit:
 	LeaveCriticalSection(&csUserDict);	// !
 
+	LeaveCriticalSection(&csUserData);	// !
+
 	return ret;
 }
 
@@ -636,6 +664,8 @@ void StartSaveUserDic(BOOL bThread)
 	{
 		USERDATA *userdata = nullptr;
 
+		EnterCriticalSection(&csUserData);	// !
+
 		try
 		{
 			userdata = new USERDATA();
@@ -649,7 +679,14 @@ void StartSaveUserDic(BOOL bThread)
 			if (userdata != nullptr)
 			{
 				delete userdata;
+				userdata = nullptr;
 			}
+		}
+
+		LeaveCriticalSection(&csUserData);	// !
+
+		if (userdata == nullptr)
+		{
 			return;
 		}
 
