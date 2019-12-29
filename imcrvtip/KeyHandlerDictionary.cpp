@@ -19,7 +19,11 @@ void CTextService::_ConnectDic()
 	}
 
 	dwMode = PIPE_READMODE_MESSAGE | PIPE_WAIT;
-	SetNamedPipeHandleState(hPipe, &dwMode, nullptr, nullptr);
+	if (SetNamedPipeHandleState(hPipe, &dwMode, nullptr, nullptr) == FALSE)
+	{
+		_DisconnectDic();
+		return;
+	}
 }
 
 void CTextService::_DisconnectDic()
