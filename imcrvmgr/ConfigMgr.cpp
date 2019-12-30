@@ -274,58 +274,64 @@ BOOL IsFileModified(LPCWSTR path, FILETIME *ft)
 
 void InitLua()
 {
-	CHAR version[64];
-
-	lua = luaL_newstate();
-	if (lua == nullptr)
+	__try
 	{
-		return;
-	}
+		CHAR version[64];
 
-	luaL_openlibs(lua);
+		lua = luaL_newstate();
+		if (lua == nullptr)
+		{
+			return;
+		}
 
-	luaL_newlib(lua, luaFuncs);
-	lua_setglobal(lua, u8"crvmgr");
+		luaL_openlibs(lua);
 
-	//skk-version
-	_snprintf_s(version, _TRUNCATE, "%s", WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER));
-	lua_pushstring(lua, version);
-	lua_setglobal(lua, u8"SKK_VERSION");
+		luaL_newlib(lua, luaFuncs);
+		lua_setglobal(lua, u8"crvmgr");
 
-	//%AppData%\\CorvusSKK\\init.lua
-	if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
-	{
-		return;
-	}
+		//skk-version
+		_snprintf_s(version, _TRUNCATE, "%s", WCTOU8(TEXTSERVICE_NAME L" " TEXTSERVICE_VER));
+		lua_pushstring(lua, version);
+		lua_setglobal(lua, u8"SKK_VERSION");
 
-	ZeroMemory(pathinitlua, sizeof(pathinitlua));
+		//%AppData%\\CorvusSKK\\init.lua
+		if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+		{
+			return;
+		}
+
+		ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
 #ifdef _DEBUG
-	//<module directory>\\init.lua
-	if (GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
-	{
-		WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
-		if (pdir != nullptr)
+		//<module directory>\\init.lua
+		if (GetModuleFileNameW(nullptr, pathinitlua, _countof(pathinitlua)) != 0)
 		{
-			*(pdir + 1) = L'\0';
-			wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
+			WCHAR *pdir = wcsrchr(pathinitlua, L'\\');
+			if (pdir != nullptr)
+			{
+				*(pdir + 1) = L'\0';
+				wcsncat_s(pathinitlua, fninitlua, _TRUNCATE);
+			}
 		}
-	}
 #else
-	PWSTR knownfolderpath = nullptr;
+		PWSTR knownfolderpath = nullptr;
 
-	//%SystemRoot%\\IME\\IMCRVSKK\\init.lua
-	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
-	{
-		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fninitlua);
+		//%SystemRoot%\\IME\\IMCRVSKK\\init.lua
+		if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+		{
+			_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fninitlua);
 
-		CoTaskMemFree(knownfolderpath);
-	}
+			CoTaskMemFree(knownfolderpath);
+		}
 #endif
 
-	if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+		if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
+		{
+			return;
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		return;
 	}
 
 	UninitLua();
@@ -333,9 +339,16 @@ void InitLua()
 
 void UninitLua()
 {
-	if (lua != nullptr)
+	__try
 	{
-		lua_close(lua);
+		if (lua != nullptr)
+		{
+			lua_close(lua);
+			lua = nullptr;
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
 		lua = nullptr;
 	}
 }
