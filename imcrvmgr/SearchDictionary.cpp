@@ -15,23 +15,17 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 	if (lua != nullptr)
 	{
-		__try
-		{
-			lua_getglobal(lua, u8"lua_skk_search");
-			lua_pushstring(lua, WCTOU8(searchkey));
-			lua_pushstring(lua, WCTOU8(okuri));
+		lua_getglobal(lua, u8"lua_skk_search");
+		lua_pushstring(lua, WCTOU8(searchkey));
+		lua_pushstring(lua, WCTOU8(okuri));
 
-			if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
-			{
-				if (lua_isstring(lua, -1))
-				{
-					candidate = U8TOWC(lua_tostring(lua, -1));
-				}
-				lua_pop(lua, 1);
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
+		if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
+			if (lua_isstring(lua, -1))
+			{
+				candidate = U8TOWC(lua_tostring(lua, -1));
+			}
+			lua_pop(lua, 1);
 		}
 	}
 	else
@@ -267,23 +261,17 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 
 	if (lua != nullptr)
 	{
-		__try
-		{
-			lua_getglobal(lua, u8"lua_skk_convert_key");
-			lua_pushstring(lua, WCTOU8(searchkey));
-			lua_pushstring(lua, WCTOU8(okuri));
+		lua_getglobal(lua, u8"lua_skk_convert_key");
+		lua_pushstring(lua, WCTOU8(searchkey));
+		lua_pushstring(lua, WCTOU8(okuri));
 
-			if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
-			{
-				if (lua_isstring(lua, -1))
-				{
-					ret = U8TOWC(lua_tostring(lua, -1));
-				}
-				lua_pop(lua, 1);
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
+		if (lua_pcall(lua, 2, 1, 0) == LUA_OK)
 		{
+			if (lua_isstring(lua, -1))
+			{
+				ret = U8TOWC(lua_tostring(lua, -1));
+			}
+			lua_pop(lua, 1);
 		}
 	}
 	else
@@ -309,24 +297,18 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 
 	if (lua != nullptr)
 	{
-		__try
-		{
-			lua_getglobal(lua, u8"lua_skk_convert_candidate");
-			lua_pushstring(lua, WCTOU8(searchkey));
-			lua_pushstring(lua, WCTOU8(candidate));
-			lua_pushstring(lua, WCTOU8(okuri));
+		lua_getglobal(lua, u8"lua_skk_convert_candidate");
+		lua_pushstring(lua, WCTOU8(searchkey));
+		lua_pushstring(lua, WCTOU8(candidate));
+		lua_pushstring(lua, WCTOU8(okuri));
 
-			if (lua_pcall(lua, 3, 1, 0) == LUA_OK)
-			{
-				if (lua_isstring(lua, -1))
-				{
-					ret = U8TOWC(lua_tostring(lua, -1));
-				}
-				lua_pop(lua, 1);
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
+		if (lua_pcall(lua, 3, 1, 0) == LUA_OK)
 		{
+			if (lua_isstring(lua, -1))
+			{
+				ret = U8TOWC(lua_tostring(lua, -1));
+			}
+			lua_pop(lua, 1);
 		}
 	}
 	else
