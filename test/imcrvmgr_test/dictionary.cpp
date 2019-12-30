@@ -128,6 +128,7 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 
 	if (pipebuf[0] != REP_OK)
 	{
+		ret = TRUE;
 		goto exit;
 	}
 
