@@ -9,8 +9,8 @@ int wmain(int argc, wchar_t *argv[])
 
 	if (argc < 2)
 	{
-		wprintf(L"imcrvmgr stress test\n");
-		wprintf(L"   usage : imcrvmgr_test <skk dictionary file>\n");
+		fwprintf(stderr, L"imcrvmgr stress test\n\n");
+		fwprintf(stderr, L"   usage : imcrvmgr_test <skk dictionary file>\n");
 		return -1;
 	}
 
@@ -24,7 +24,7 @@ int wmain(int argc, wchar_t *argv[])
 	_wfopen_s(&fp, filename, RB);
 	if (fp == nullptr)
 	{
-		wprintf(L"\nERROR: File I/O.\n");
+		fwprintf(stderr, L"\nERROR: File I/O.\n");
 		return -1;
 	}
 
@@ -45,7 +45,7 @@ int wmain(int argc, wchar_t *argv[])
 		case S_OK:
 			break;
 		case E_MAKESKKDIC_FILEIO:
-			wprintf(L"\nERROR: File I/O.\n");
+			fwprintf(stderr, L"\nERROR: File I/O.\n");
 			return -1;
 			break;
 		default:
@@ -65,7 +65,7 @@ int wmain(int argc, wchar_t *argv[])
 			encoding = 8;
 			break;
 		case E_MAKESKKDIC_FILEIO:
-			wprintf(L"\nERROR: File I/O.\n");
+			fwprintf(stderr, L"\nERROR: File I/O.\n");
 			return -1;
 			break;
 		default:
@@ -83,7 +83,7 @@ int wmain(int argc, wchar_t *argv[])
 			encoding = 1;
 			break;
 		case E_MAKESKKDIC_FILEIO:
-			wprintf(L"\nERROR: File I/O.\n");
+			fwprintf(stderr, L"\nERROR: File I/O.\n");
 			return -1;
 			break;
 		default:
@@ -108,19 +108,19 @@ int wmain(int argc, wchar_t *argv[])
 		_wfopen_s(&fp, filename, RccsUTF16);
 		break;
 	default:
-		wprintf(L"\nERROR: invalid encoding.\n");
+		fwprintf(stderr, L"\nERROR: invalid encoding.\n");
 		return -1;
 		break;
 	}
 	if (fp == nullptr)
 	{
-		wprintf(L"\nERROR: cannot open \"%s\".\n", filename);
+		fwprintf(stderr, L"\nERROR: cannot open \"%s\".\n", filename);
 		return -1;
 	}
 
 	SYSTEMTIME st0;
-	GetSystemTime(&st0);
-	wprintf(L"start at %04d-%02d-%02dT%02d:%02d:%02dZ.",
+	GetLocalTime(&st0);
+	fwprintf(stderr, L"START : %04d-%02d-%02dT%02d:%02d:%02d\n",
 		st0.wYear, st0.wMonth, st0.wDay, st0.wHour, st0.wMinute, st0.wSecond);
 
 	std::wstring key, exkey;
@@ -134,7 +134,7 @@ int wmain(int argc, wchar_t *argv[])
 		if (rl == -1)
 		{
 			//EOF
-			wprintf(L"\nEOF.\n");
+			fwprintf(stderr, L"\nEOF.\n");
 			break;
 		}
 		else if (rl == 1)
@@ -167,7 +167,7 @@ int wmain(int argc, wchar_t *argv[])
 							BOOL ret = _AddUserDic(command, key, sc_ritr->first, sc_ritr->second, L"");
 							if (ret == FALSE)
 							{
-								wprintf(L"\nERROR: connection.\n");
+								fwprintf(stderr, L"\nERROR: connection.\n");
 								goto exit;
 							}
 						}
@@ -183,7 +183,7 @@ int wmain(int argc, wchar_t *argv[])
 							BOOL ret = _SearchDic(command, candidates, key, key, L"");
 							if (ret == FALSE)
 							{
-								wprintf(L"\nERROR: connection.\n");
+								fwprintf(stderr, L"\nERROR: connection.\n");
 								goto exit;
 							}
 
@@ -221,7 +221,7 @@ int wmain(int argc, wchar_t *argv[])
 							BOOL ret = _AddUserDic(command, key, sc_ritr->first, sc_ritr->second, L"");
 							if (ret == FALSE)
 							{
-								wprintf(L"\nERROR: connection.\n");
+								fwprintf(stderr, L"\nERROR: connection.\n");
 								goto exit;
 							}
 						}
@@ -240,7 +240,7 @@ int wmain(int argc, wchar_t *argv[])
 							BOOL ret = _SearchDic(command, candidates, ckey, L"8", L"");
 							if (ret == FALSE)
 							{
-								wprintf(L"\nERROR: connection.\n");
+								fwprintf(stderr, L"\nERROR: connection.\n");
 								goto exit;
 							}
 
@@ -290,7 +290,7 @@ int wmain(int argc, wchar_t *argv[])
 										BOOL ret = _AddUserDic(command, key, sc_ritr->first, sc_ritr->second, okuri_key);
 										if (ret == FALSE)
 										{
-											wprintf(L"\nERROR: connection.\n");
+											fwprintf(stderr, L"\nERROR: connection.\n");
 											goto exit;
 										}
 									}
@@ -306,7 +306,7 @@ int wmain(int argc, wchar_t *argv[])
 										BOOL ret = _SearchDic(command, candidates, key, key, okuri_key);
 										if (ret == FALSE)
 										{
-											wprintf(L"\nERROR: connection.\n");
+											fwprintf(stderr, L"\nERROR: connection.\n");
 											goto exit;
 										}
 
@@ -344,7 +344,7 @@ int wmain(int argc, wchar_t *argv[])
 										BOOL ret = _AddUserDic(command, key, sc_ritr->first, sc_ritr->second, okuri_key);
 										if (ret == FALSE)
 										{
-											wprintf(L"\nERROR: connection.\n");
+											fwprintf(stderr, L"\nERROR: connection.\n");
 											goto exit;
 										}
 									}
@@ -356,7 +356,7 @@ int wmain(int argc, wchar_t *argv[])
 				}
 				break;
 			default:
-				wprintf(L"\nERROR: reading dictionary.\n");
+				fwprintf(stderr, L"\nERROR: reading dictionary.\n");
 				goto exit;
 				break;
 			}
@@ -372,7 +372,7 @@ int wmain(int argc, wchar_t *argv[])
 					BOOL ret = _SaveUserDic();
 					if (ret == FALSE)
 					{
-						wprintf(L"\nERROR: connection.\n");
+						fwprintf(stderr, L"\nERROR: connection.\n");
 						goto exit;
 					}
 				}
@@ -390,7 +390,7 @@ int wmain(int argc, wchar_t *argv[])
 			BOOL ret = _SaveUserDic();
 			if (ret == FALSE)
 			{
-				wprintf(L"\nERROR: connection.\n");
+				fwprintf(stderr, L"\nERROR: connection.\n");
 				goto exit;
 			}
 		}
@@ -401,14 +401,14 @@ exit:
 	fclose(fp);
 
 	SYSTEMTIME st1;
-	GetSystemTime(&st1);
+	GetLocalTime(&st1);
 
-	wprintf(L"\n");
+	fwprintf(stderr, L"\n");
 
-	wprintf(L"START : %04d-%02d-%02dT%02d:%02d:%02dZ\n",
+	fwprintf(stderr, L"START : %04d-%02d-%02dT%02d:%02d:%02d\n",
 		st0.wYear, st0.wMonth, st0.wDay, st0.wHour, st0.wMinute, st0.wSecond);
 
-	wprintf(L"END   : %04d-%02d-%02dT%02d:%02d:%02dZ\n",
+	fwprintf(stderr, L"END   : %04d-%02d-%02dT%02d:%02d:%02d\n",
 		st1.wYear, st1.wMonth, st1.wDay, st1.wHour, st1.wMinute, st1.wSecond);
 
 	return 0;
