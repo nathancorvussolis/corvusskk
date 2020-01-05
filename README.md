@@ -783,7 +783,7 @@ pandoc 2.9.1
 
 ---
 
-Copyright (C) 2011-2019 SASAKI Nobuyuki
+Copyright (C) 2011-2020 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
