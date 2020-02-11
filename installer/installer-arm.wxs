@@ -5,7 +5,7 @@
 
   <Product
     Id="*"
-    Name="CorvusSKK (arm)"
+    Name="CorvusSKK (ARM64/ARM32/x86)"
     Version="$(var.version)"
     Manufacturer="nathancorvussolis"
     Language="1033"
@@ -16,7 +16,7 @@
     <Package
       Id="*"
       Compressed="yes"
-      Description="CorvusSKK (arm)"
+      Description="CorvusSKK (ARM64/ARM32/x86)"
       Comments="ver. $(var.version)"
       Platform="x64"
       InstallerVersion="500"
@@ -191,6 +191,9 @@
 
     <UIRef Id="WixUI_Minimal" />
     <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="theme-bundle\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="theme-bundle\dialog.bmp" />
+
     <Property Id="ARPPRODUCTICON" Value="IMCRVSKK_ICO" />
     <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\imcrvskk.ico" />
 

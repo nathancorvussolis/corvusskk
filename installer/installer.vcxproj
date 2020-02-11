@@ -42,10 +42,10 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
-    <None Include="installer-arm-bundle.wxs" />
     <None Include="installer-arm.wxs" />
+    <None Include="installer-bundle-arm.wxs" />
     <None Include="installer-bundle.wxs" />
-    <None Include="installer-ucrt.wxi" />
+    <None Include="installer-bundle-ucrt.wxi" />
     <None Include="installer-version.wxi" />
     <None Include="installer-x64.wxs" />
     <None Include="installer-x86.wxs" />
@@ -85,7 +85,6 @@
     <Xml Include="config-sample\config - tsuki-2-263-uskbd.xml" />
     <Xml Include="config-sample\config - wait-sample.xml" />
     <Xml Include="config-share\config.xml" />
-    <Xml Include="theme-bundle\RtfSidebarTheme.xml" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resource-md\01_dictionary.png" />
@@ -109,7 +108,9 @@
     <Image Include="resource-md\24_convert_unicode_jisx0213.png" />
     <Image Include="resource-md\25_convert_character_display.png" />
     <Image Include="resource-md\26_register_annotation.png" />
-    <Image Include="theme-bundle\logoside.png" />
+    <Image Include="theme-bundle\banner.bmp" />
+    <Image Include="theme-bundle\dialog.bmp" />
+    <Image Include="theme-bundle\logo.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C65505E2-5456-473C-91B1-C6D91B294DC3}</ProjectGuid>
@@ -191,9 +192,9 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+    <NMakeCleanCommandLine>if exist "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
@@ -210,9 +211,9 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+    <NMakeCleanCommandLine>if exist "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
@@ -230,9 +231,9 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+    <NMakeCleanCommandLine>if exist "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
@@ -248,9 +249,9 @@ copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" 
 icacls "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" /grant *S-1-15-2-1:R &gt; nul
 copy /y "config-share\skkdict.txt" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 </NMakeBuildCommandLine>
-    <NMakeCleanCommandLine>del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
-del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
+    <NMakeCleanCommandLine>if exist "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" del /f "$(SolutionDir)$(Platform)\$(Configuration)\init.lua" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" del /f "$(SolutionDir)$(Platform)\$(Configuration)\config.xml" &gt; nul
+if exist "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" del /f "$(SolutionDir)$(Platform)\$(Configuration)\skkdict.txt" &gt; nul
 </NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>copy /y "config-lua\init.lua" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul
 copy /y "config-share\config.xml" "$(SolutionDir)$(Platform)\$(Configuration)\" &gt; nul

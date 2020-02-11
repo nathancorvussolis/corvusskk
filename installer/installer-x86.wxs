@@ -127,6 +127,9 @@
 
     <UIRef Id="WixUI_Minimal" />
     <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="theme-bundle\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="theme-bundle\dialog.bmp" />
+
     <Property Id="ARPPRODUCTICON" Value="IMCRVSKK_ICO" />
     <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\imcrvskk.ico" />
 

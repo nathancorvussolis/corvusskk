@@ -6,7 +6,7 @@
   <?include installer-version.wxi ?>
 
   <Bundle
-    Name="CorvusSKK"
+    Name="CorvusSKK $(var.version) (ARM)"
     Version="$(var.version)"
     UpgradeCode="F2664253-EAE9-4ED5-AD92-03229BD8F64F"
     Manufacturer="nathancorvussolis"
@@ -18,13 +18,9 @@
     <BootstrapperApplicationRef
       Id="WixStandardBootstrapperApplication.RtfLargeLicense">
       <bal:WixStandardBootstrapperApplication
-        ThemeFile="theme-bundle\RtfSidebarTheme.xml"
         LicenseFile="theme-bundle\license.rtf"
-        ShowVersion="yes"
+        LogoFile="theme-bundle\logo.png"
         SuppressOptionsUI="yes" />
-      <Payload
-        Name="logoside.png"
-        SourceFile="theme-bundle\logoside.png" />
     </BootstrapperApplicationRef>
 
     <Chain>

@@ -90,13 +90,13 @@
     <None Include="installer-arm.wxs">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="installer-arm-bundle.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="installer-bundle.wxs">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="installer-ucrt.wxi">
+    <None Include="installer-bundle-arm.wxs">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-bundle-ucrt.wxi">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="installer-version.wxi">
@@ -158,9 +158,6 @@
     </Xml>
     <Xml Include="config-share\config.xml">
       <Filter>config-share</Filter>
-    </Xml>
-    <Xml Include="theme-bundle\RtfSidebarTheme.xml">
-      <Filter>theme-bundle</Filter>
     </Xml>
   </ItemGroup>
   <ItemGroup>
@@ -227,7 +224,13 @@
     <Image Include="resource-md\26_register_annotation.png">
       <Filter>resource-md</Filter>
     </Image>
-    <Image Include="theme-bundle\logoside.png">
+    <Image Include="theme-bundle\logo.png">
+      <Filter>theme-bundle</Filter>
+    </Image>
+    <Image Include="theme-bundle\banner.bmp">
+      <Filter>theme-bundle</Filter>
+    </Image>
+    <Image Include="theme-bundle\dialog.bmp">
       <Filter>theme-bundle</Filter>
     </Image>
   </ItemGroup>
