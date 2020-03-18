@@ -81,19 +81,27 @@
 
       <!-- x86 modules -->
       <MsiPackage
+        Id="X86_MSI"
         SourceFile="build\x86.msi"
         DisplayName="x86 modules"
         ForcePerMachine="yes"
         Compressed="yes"
-        InstallCondition="VersionNT" />
+        InstallCondition="VersionNT">
+        <MsiProperty
+          Name="PLATFORMVERSION"
+          Value="[VersionNT64]" />
+      </MsiPackage>
 
       <!-- x64 modules -->
       <MsiPackage
+        Id="X64_MSI"
         SourceFile="build\x64.msi"
         DisplayName="x64 modules"
         ForcePerMachine="yes"
         Compressed="yes"
-        InstallCondition="VersionNT64" />
+        InstallCondition="VersionNT64"
+        After="X86_MSI" />
+
 
     </Chain>
 

@@ -10,21 +10,16 @@ call _version.cmd
 
 
 set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
-)
+set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
+
 set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
-)
+set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
+
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
-set ARMBEFILE=
-set ARMBSFILE=
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
-  set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
-)
+
+set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
+set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
 
 
 

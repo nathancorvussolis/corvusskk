@@ -95,6 +95,7 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 * 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
 * 言語バーのヘルプボタンを左クリックし、メニューから「CorvusSKK」を選択する。
 * Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
+* スタートメニューから CorvusSKK\CONFIG を実行する。
 * %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する
   * コマンドライン引数またはドラッグアンドドロップで後述の設定ファイルを渡すことが可能です。
 
@@ -744,19 +745,19 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.4.2
+Visual Studio Community 2019 16.5.0
 
 * Desktop development with C++
-* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.24)
-* MSVC v142 - VS 2019 C++ ARM build tools (v14.24)
-* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.24)
+* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.25)
+* MSVC v142 - VS 2019 C++ ARM build tools (v14.25)
+* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.25)
 * C++ ATL for latest v142 build tools (x86 & x64)
 * C++ ATL for latest v142 build tools (ARM)
 * C++ ATL for latest v142 build tools (ARM64)
 
 WiX Toolset v3.11.2
 
-pandoc 2.9.1
+pandoc 2.9.2
 
 
 ### ビルド手順

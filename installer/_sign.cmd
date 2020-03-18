@@ -22,21 +22,16 @@ set SHA1HASH=%1
 set TIMESTAMPSERVER=%2
 
 set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
-)
+set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
+
 set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
-)
+set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
+
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
-set ARMBEFILE=
-set ARMBSFILE=
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
-  set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
-)
+
+set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
+set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
 
 set SIGNCOMMAND=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH% /fd sha256 /tr %TIMESTAMPSERVER% /td sha256
 
@@ -53,15 +48,15 @@ call _build_msi.cmd
 call _build_bundle.cmd
 
 "%WIX%\bin\insignia.exe" -nologo -ib %BSFILE% -o %BEFILE%
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  "%WIX%\bin\insignia.exe" -nologo -ib %ARMBSFILE% -o %ARMBEFILE%
-)
+
+"%WIX%\bin\insignia.exe" -nologo -ib %ARMBSFILE% -o %ARMBEFILE%
+
 %SIGNCOMMAND% %BEFILE% %ARMBEFILE%
 
 "%WIX%\bin\insignia.exe" -nologo -ab %BEFILE% %BSFILE% -o %BSFILE%
-if "%ENABLE_PLATFORM_ARM%" neq "0" (
-  "%WIX%\bin\insignia.exe" -nologo -ab %ARMBEFILE% %ARMBSFILE% -o %ARMBSFILE%
-)
+
+"%WIX%\bin\insignia.exe" -nologo -ab %ARMBEFILE% %ARMBSFILE% -o %ARMBSFILE%
+
 %SIGNCOMMAND% %BSFILE% %ARMBSFILE%
 
 

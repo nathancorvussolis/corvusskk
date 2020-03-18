@@ -5,7 +5,7 @@
 
   <Product
     Id="*"
-    Name="CorvusSKK (ARM64/ARM32/x86)"
+    Name="CorvusSKK (ARM64/ARM32)"
     Version="$(var.version)"
     Manufacturer="nathancorvussolis"
     Language="1033"
@@ -16,7 +16,7 @@
     <Package
       Id="*"
       Compressed="yes"
-      Description="CorvusSKK (ARM64/ARM32/x86)"
+      Description="CorvusSKK (ARM64/ARM32)"
       Comments="ver. $(var.version)"
       Platform="x64"
       InstallerVersion="500"
@@ -44,14 +44,6 @@
             <Directory Id="IMCRVSKK_ARM32" Name="IMCRVSKK" />
           </Directory>
         </Directory>
-        <Directory Id="SYSTEMWOW64" Name="SysWOW64">
-          <Directory Id="IME_X86" Name="IME">
-            <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
-          </Directory>
-        </Directory>
-        <Directory Id="IME_WIN" Name="IME">
-          <Directory Id="IMCRVSKK_WIN" Name="IMCRVSKK" />
-        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="IMCRVSKK_MENU" Name="CorvusSKK" />
@@ -60,33 +52,37 @@
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843" Win64="yes">
-        <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" />
+        <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
+          <Shortcut Id="S_imcrvcnf_arm64" Name="CONFIG" Directory="IMCRVSKK_MENU"
+            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
+        </File>
+        <RemoveFolder Id="RF_imcrvcnf_arm64" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
       <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779" Win64="yes">
-        <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" />
+        <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
-        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" SelfRegCost="1" />
+        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
-        <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" />
+        <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86" Win64="yes">
-        <File Id="F_luadll_arm64" Name="lua53.dll" Source="..\ARM64\Release\lua53.dll" />
+        <File Id="F_luadll_arm64" Name="lua53.dll" Source="..\ARM64\Release\lua53.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508" Win64="yes">
-        <File Id="F_zlibdll_ARM64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" />
+        <File Id="F_zlibdll_ARM64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="MSVCP140_ARM64" Guid="5D44F83D-5E1F-47AD-BB50-465ECCDA6807" Win64="yes">
         <File Id="F_msvcp140_arm64" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\msvcp140.dll" />
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\msvcp140.dll" KeyPath="yes" />
       </Component>
       <Component Id="VCRUNTIME140_ARM64" Guid="3637D9F3-4617-42D4-9711-FC6E5D89F503" Win64="yes">
         <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140.dll" />
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -94,73 +90,14 @@
     <DirectoryRef Id="IMCRVSKK_ARM32">
       <Component Id="TIP_ARM32" Guid="26DEC436-067C-4629-AB3C-E15EEBF4349B">
         <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
-        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll" Source="..\ARM\Release\imcrvtip.dll" />
-      </Component>
-    </DirectoryRef>
-
-    <DirectoryRef Id="IMCRVSKK_X86">
-      <Component Id="CNF_X86" Guid="B3338B63-FB00-4206-8678-6352340F6685">
-        <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe" Source="..\Win32\Release\imcrvcnf.exe" />
-      </Component>
-      <Component Id="MGR_X86" Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7">
-        <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe" Source="..\Win32\Release\imcrvmgr.exe" />
-      </Component>
-      <Component Id="TIP_X86" Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B">
-        <File Id="F_imcrvtip_x86" Name="imcrvtip.dll" Source="..\Win32\Release\imcrvtip.dll" SelfRegCost="1" />
-      </Component>
-      <Component Id="LUAEXE_X86" Guid="288FF289-0EAA-405B-87ED-4F367D40546F">
-        <File Id="F_luaexe_x86" Name="lua.exe" Source="..\Win32\Release\lua.exe" />
-      </Component>
-      <Component Id="LUADLL_X86" Guid="84898511-4C96-4114-A7EE-8F32E260D28A">
-        <File Id="F_luadll_x86" Name="lua53.dll" Source="..\Win32\Release\lua53.dll" />
-      </Component>
-      <Component Id="ZLIBDLL_X86" Guid="ED3222D1-7EF1-4EAD-9C57-FF0DE4C13478">
-        <File Id="F_zlibdll_X86" Name="zlib1.dll" Source="..\Win32\Release\zlib1.dll" />
-      </Component>
-    </DirectoryRef>
-
-    <DirectoryRef Id="IMCRVSKK_X86">
-      <Component Id="MSVCP140_X86" Guid="4484CE80-10EA-42B9-96DA-9922CAB7EC32">
-        <File Id="F_msvcp140_x86" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC142.CRT\msvcp140.dll" />
-      </Component>
-      <Component Id="VCRUNTIME140_X86" Guid="A6C80254-BC21-41A9-9C36-A90A7EB33655">
-        <File Id="F_vcruntime140_x86" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)x86\Microsoft.VC142.CRT\vcruntime140.dll" />
-      </Component>
-    </DirectoryRef>
-
-    <DirectoryRef Id="IMCRVSKK_WIN">
-      <Component Id="CONFIG_XML" Guid="12FF814A-8F58-44C4-B653-23258B7F1705">
-        <File Id="F_config_xml" Name="config.xml" Source="build\config.xml" />
-      </Component>
-      <Component Id="INIT_LUA" Guid="6EE61E3E-BB06-4A30-9C67-8CD769B2AE09">
-        <File Id="F_init_lua" Name="init.lua" Source="build\init.lua" />
-      </Component>
-      <Component Id="SKKDICT_TXT" Guid="E2626079-9F1C-4B10-9A68-034B12D6DB73">
-        <File Id="F_skkdict_txt" Name="skkdict.txt" Source="build\skkdict.txt" />
-      </Component>
-      <Component Id="README_HTML" Guid="C4067E27-5681-4FE1-89BE-38080A9C40E5">
-        <File Id="F_readme_html" Name="README.html" Source="build\README.html" KeyPath="yes">
-          <Shortcut Id="S_readme_html" Name="README.html" Directory="IMCRVSKK_MENU"
-            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
-        </File>
-        <RemoveFolder Id="RF_readme_html" Directory="IMCRVSKK_MENU" On="uninstall" />
-      </Component>
-      <Component Id="LICENSE_TXT" Guid="9C25E720-D44D-46E7-9FBF-041A00A825A8">
-        <File Id="F_license_txt" Name="LICENSE.txt" Source="build\LICENSE.txt" KeyPath="yes">
-          <Shortcut Id="S_license_txt" Name="LICENSE.txt" Directory="IMCRVSKK_MENU"
-            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
-        </File>
-        <RemoveFolder Id="RF_license_txt" Directory="IMCRVSKK_MENU" On="uninstall" />
+        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll" Source="..\ARM\Release\imcrvtip.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
     <Component Id="REG_ARM64" Guid="5C935156-F6EC-4744-A5D5-3C2D1784C0D7" Directory="TARGETDIR" Win64="yes">
-      <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run">
-        <RegistryValue Action="write" Type="string" Name="imcrvmgr"
-          Value="&quot;[%SystemRoot]\System32\IME\IMCRVSKK\imcrvmgr.exe&quot;" />
-      </RegistryKey>
+      <RegistryValue Id="RV_run_arm64" Action="write"
+        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+        Type="string" Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_arm64]&quot;" KeyPath="yes" />
     </Component>
 
     <Feature Id="Default" Title="Main" Level="1">
@@ -173,19 +110,6 @@
       <ComponentRef Id="MSVCP140_ARM64" />
       <ComponentRef Id="VCRUNTIME140_ARM64" />
       <ComponentRef Id="TIP_ARM32" />
-      <ComponentRef Id="CNF_X86" />
-      <ComponentRef Id="MGR_X86" />
-      <ComponentRef Id="TIP_X86" />
-      <ComponentRef Id="LUAEXE_X86" />
-      <ComponentRef Id="LUADLL_X86" />
-      <ComponentRef Id="ZLIBDLL_X86" />
-      <ComponentRef Id="MSVCP140_X86" />
-      <ComponentRef Id="VCRUNTIME140_X86" />
-      <ComponentRef Id="CONFIG_XML" />
-      <ComponentRef Id="INIT_LUA" />
-      <ComponentRef Id="SKKDICT_TXT" />
-      <ComponentRef Id="LICENSE_TXT" />
-      <ComponentRef Id="README_HTML" />
       <ComponentRef Id="REG_ARM64" />
     </Feature>
 

@@ -25,12 +25,28 @@
 
     <Chain>
 
+      <!-- x86 modules -->
+      <MsiPackage
+        Id="X86_MSI"
+        SourceFile="build\x86.msi"
+        DisplayName="x86 modules"
+        ForcePerMachine="yes"
+        Compressed="yes"
+        InstallCondition="VersionNT">
+        <MsiProperty
+          Name="PLATFORMVERSION"
+          Value="[VersionNT]" />
+      </MsiPackage>
+
       <!-- arm modules -->
       <MsiPackage
+        Id="ARM_MSI"
         SourceFile="build\arm.msi"
-        DisplayName="arm modules"
+        DisplayName="ARM modules"
         ForcePerMachine="yes"
-        Compressed="yes" />
+        Compressed="yes"
+        InstallCondition="VersionNT"
+        After="X86_MSI" />
 
     </Chain>
 
