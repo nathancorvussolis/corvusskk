@@ -33,14 +33,24 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	{
 	case WM_INITDIALOG:
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHOWMODEINL, SectionDisplay, ValueShowModeInl, L"1");
-		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
-		count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-		if (count > 60 || count <= 0)
+		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeInlTm, strxmlval);
+		if (!strxmlval.empty())
 		{
-			count = SHOWMODESEC_DEF;
+			count = _wtoi(strxmlval.c_str());
+		}
+		else
+		{
+			//for compatibility
+			ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
+			count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str()) * 1000;
+		}
+
+		if (count > 60000 || count <= 0)
+		{
+			count = SHOWMODEINLTM_DEF;
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", count);
-		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
+		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODEINLTM, num);
 
 		for (int i = 0; i < _countof(customColor); i++)
 		{
@@ -65,7 +75,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case IDC_EDIT_SHOWMODESEC:
+		case IDC_EDIT_SHOWMODEINLTM:
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
@@ -153,15 +163,15 @@ void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 	int count;
 
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);
-	GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num, _countof(num));
+	GetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODEINLTM, num, _countof(num));
 	count = _wtoi(num);
-	if (count <= 0 || count > 60)
+	if (count <= 0 || count > 60000)
 	{
-		count = SHOWMODESEC_DEF;
+		count = SHOWMODEINLTM_DEF;
 	}
 	_snwprintf_s(num, _TRUNCATE, L"%d", count);
-	SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODESEC, num);
-	WriterKey(pWriter, ValueShowModeSec, num);
+	SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODEINLTM, num);
+	WriterKey(pWriter, ValueShowModeInlTm, num);
 
 	for (int i = 0; i < _countof(displayModeColor); i++)
 	{

@@ -116,7 +116,8 @@ LPCWSTR ValueShowRoman = L"showroman";
 LPCWSTR ValueShowRomanJLat = L"showromanjlat";
 
 LPCWSTR ValueShowModeInl = L"showmodeinl";
-LPCWSTR ValueShowModeSec = L"showmodesec";
+LPCWSTR ValueShowModeSec = L"showmodesec";	//for compatibility
+LPCWSTR ValueShowModeInlTm = L"showmodeinltm";
 LPCWSTR ValueColorMC = L"colormc";
 LPCWSTR ValueColorMF = L"colormf";
 LPCWSTR ValueColorHR = L"colorhr";

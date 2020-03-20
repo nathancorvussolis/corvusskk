@@ -64,7 +64,7 @@
     <key name="showroman" value="1" />
     <key name="showromanjlat" value="1" />
     <key name="showmodeinl" value="1" />
-    <key name="showmodesec" value="3" />
+    <key name="showmodeinltm" value="3000" />
     <key name="colormc" value="0xFFFFFF" />
     <key name="colormf" value="0x000000" />
     <key name="colorhr" value="0x0000C0" />

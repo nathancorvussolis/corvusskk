@@ -348,7 +348,7 @@ public:
 	BOOL cx_showromanjlat;		//ローマ字を表示する(FALSE:ASCII/TRUE:全英)
 
 	BOOL cx_showmodeinl;		//入力モードを表示する
-	UINT cx_showmodesec;		//入力モードの表示秒数
+	UINT cx_showmodeinltm;		//入力モードの表示ミリ秒数
 	COLORREF cx_mode_colors[DISPLAY_MODE_COLOR_NUM];		//入力モードの色
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する

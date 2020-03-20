@@ -367,7 +367,7 @@ LRESULT CALLBACK CInputModeWindow::_WindowProc(HWND hWnd, UINT uMsg, WPARAM wPar
 	case WM_CREATE:
 		if (!_bCandidateWindow)
 		{
-			SetTimer(hWnd, INPUTMODE_TIMER_ID, _pTextService->cx_showmodesec * 1000, nullptr);
+			SetTimer(hWnd, INPUTMODE_TIMER_ID, _pTextService->cx_showmodeinltm, nullptr);
 		}
 		break;
 	case WM_TIMER:

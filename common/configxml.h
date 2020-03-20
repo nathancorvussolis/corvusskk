@@ -111,7 +111,8 @@ extern LPCWSTR ValueShowRoman;
 extern LPCWSTR ValueShowRomanJLat;
 
 extern LPCWSTR ValueShowModeInl;
-extern LPCWSTR ValueShowModeSec;
+extern LPCWSTR ValueShowModeSec;	//for compatibility
+extern LPCWSTR ValueShowModeInlTm;
 extern LPCWSTR ValueColorMC;
 extern LPCWSTR ValueColorMF;
 extern LPCWSTR ValueColorHR;

@@ -87,7 +87,7 @@
 #define IDC_RADIO_SHOWROMANJLATIN               2040
 
 #define IDC_CHECKBOX_SHOWMODEINL                2101
-#define IDC_EDIT_SHOWMODESEC                    2102
+#define IDC_EDIT_SHOWMODEINLTM                  2102
 #define IDC_COL_MODE_MC                         2103
 #define IDC_COL_MODE_MF                         2104
 #define IDC_COL_MODE_HR                         2105

@@ -250,11 +250,21 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionDisplay, ValueShowRomanJLat, cx_showromanjlat, TRUE);
 
 	_ReadBoolValue(SectionDisplay, ValueShowModeInl, cx_showmodeinl, TRUE);
-	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
-	cx_showmodesec = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-	if (cx_showmodesec > 60 || cx_showmodesec <= 0)
+	ReadValue(pathconfigxml, SectionDisplay, ValueShowModeInlTm, strxmlval);
+	if (!strxmlval.empty())
 	{
-		cx_showmodesec = SHOWMODESEC_DEF;
+		cx_showmodeinltm = _wtoi(strxmlval.c_str());
+	}
+	else
+	{
+		//for compatibility
+		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
+		cx_showmodeinltm = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str()) * 1000;
+	}
+
+	if (cx_showmodeinltm > 60000 || cx_showmodeinltm <= 0)
+	{
+		cx_showmodeinltm = SHOWMODEINLTM_DEF;
 	}
 
 	for (int i = 0; i < _countof(cx_mode_colors); i++)
