@@ -4,6 +4,7 @@
 Windowsで動作するSKK風のIMEです。
 
 
+
 ## インストール
 
 
@@ -86,6 +87,7 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 
 
 ## 設定
+
 
 ### 設定ダイアログ
 
@@ -745,7 +747,7 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.5.0
+Visual Studio Community 2019 16.5.2
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.25)
@@ -757,7 +759,7 @@ Visual Studio Community 2019 16.5.0
 
 WiX Toolset v3.11.2
 
-pandoc 2.9.2
+pandoc 2.9.2.1
 
 
 ### ビルド手順

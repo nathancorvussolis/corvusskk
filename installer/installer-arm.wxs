@@ -71,7 +71,7 @@
         <File Id="F_luadll_arm64" Name="lua53.dll" Source="..\ARM64\Release\lua53.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508" Win64="yes">
-        <File Id="F_zlibdll_ARM64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
+        <File Id="F_zlibdll_arm64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
