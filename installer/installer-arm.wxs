@@ -5,7 +5,7 @@
 
   <Product
     Id="*"
-    Name="CorvusSKK (ARM64/ARM32)"
+    Name="CorvusSKK (ARM)"
     Version="$(var.version)"
     Manufacturer="nathancorvussolis"
     Language="1033"
@@ -16,7 +16,7 @@
     <Package
       Id="*"
       Compressed="yes"
-      Description="CorvusSKK (ARM64/ARM32)"
+      Description="CorvusSKK (ARM)"
       Comments="ver. $(var.version)"
       Platform="x64"
       InstallerVersion="500"
@@ -53,6 +53,7 @@
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843" Win64="yes">
         <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
+          <!-- overwrite x86 shortcut -->
           <Shortcut Id="S_imcrvcnf_arm64" Name="CONFIG" Directory="IMCRVSKK_MENU"
             WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
         </File>

@@ -9,27 +9,36 @@ call _version.cmd
 
 
 
-rem > _sign.cmd  <SHA-1 has> <URL>
+rem > _sign.cmd  <SHA-1 hash> <URL>
 rem     * <SHA-1 hash> : SHA-1 hash of certificate for SHA-256 file digest algorithm
 rem     * <URL> : SHA-256 RFC-3161 timestamp server
 
-
-
 set DESCRIPTION="CorvusSKK"
 
-rem option "/fd sha256 /tr <SHA-2 RFC-3161 timestamp server> /td sha256"
 set SHA1HASH=%1
 set TIMESTAMPSERVER=%2
 
-set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe" "..\x64\Release\*.dll" "..\x64\Release\*.exe"
-set BINFILES=%BINFILES% "..\ARM\Release\*.dll" "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
+rem x86
+set BINFILES="..\Win32\Release\*.dll" "..\Win32\Release\*.exe"
+rem x64
+set BINFILES=%BINFILES% "..\x64\Release\*.dll" "..\x64\Release\*.exe"
+rem ARM32   TIP only
+set BINFILES=%BINFILES% "..\ARM\Release\*.dll"
+rem ARM64
+set BINFILES=%BINFILES% "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
 
-set MSIFILES="%TARGETDIR%\x86.msi" "%TARGETDIR%\x64.msi"
+rem x86
+set MSIFILES="%TARGETDIR%\x86.msi"
+rem x64
+set MSIFILES=%MSIFILES% "%TARGETDIR%\x64.msi"
+rem ARM
 set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
 
+rem x86/x64
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
 
+rem ARM
 set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
 set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
 
@@ -47,14 +56,18 @@ call _build_msi.cmd
 
 call _build_bundle.cmd
 
+rem x86/x64
 "%WIX%\bin\insignia.exe" -nologo -ib %BSFILE% -o %BEFILE%
 
+rem ARM
 "%WIX%\bin\insignia.exe" -nologo -ib %ARMBSFILE% -o %ARMBEFILE%
 
 %SIGNCOMMAND% %BEFILE% %ARMBEFILE%
 
+rem x86/x64
 "%WIX%\bin\insignia.exe" -nologo -ab %BEFILE% %BSFILE% -o %BSFILE%
 
+rem ARM
 "%WIX%\bin\insignia.exe" -nologo -ab %ARMBEFILE% %ARMBSFILE% -o %ARMBSFILE%
 
 %SIGNCOMMAND% %BSFILE% %ARMBSFILE%

@@ -40,6 +40,7 @@
     <DirectoryRef Id="IMCRVSKK_X64">
       <Component Id="CNF_X64" Guid="2DFD9121-84B7-48E3-9D4D-5A51103906CC" Win64="yes">
         <File Id="F_imcrvcnf_x64" Name="imcrvcnf.exe" Source="..\x64\Release\imcrvcnf.exe" KeyPath="yes">
+          <!-- overwrite x86 shortcut -->
           <Shortcut Id="S_imcrvcnf_x64" Name="CONFIG" Directory="IMCRVSKK_MENU"
             WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
         </File>

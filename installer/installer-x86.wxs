@@ -108,6 +108,7 @@
       <RegistryValue Id="RV_run_x86" Action="write"
         Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
         Type="string" Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
+      <!-- enabled autorun on 32-bit Windows only. -->
       <Condition><![CDATA[NOT PLATFORMVERSION]]></Condition>
     </Component>
 

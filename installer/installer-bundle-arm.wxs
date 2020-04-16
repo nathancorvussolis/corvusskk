@@ -33,6 +33,7 @@
         ForcePerMachine="yes"
         Compressed="yes"
         InstallCondition="VersionNT">
+        <!-- enabled autorun x86 imcrvmgr.exe only on 32-bit Windows. -->
         <MsiProperty
           Name="PLATFORMVERSION"
           Value="[VersionNT]" />
