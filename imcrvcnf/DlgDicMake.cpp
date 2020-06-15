@@ -503,6 +503,8 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 		return E_MAKESKKDIC_UNGZIP;
 	}
 
+	gzbuffer(gzf, GZBUFSIZE);
+
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", tempdir, fname);
 
 	FILE *fpo;
