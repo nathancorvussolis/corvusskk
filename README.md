@@ -99,7 +99,7 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 * Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
 * スタートメニューから CorvusSKK\CONFIG を実行する。
 * %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する
-  * コマンドライン引数またはドラッグアンドドロップで後述の設定ファイルを渡すことが可能です。
+  * コマンドライン引数、または実行ファイルやショートカットへのドラッグアンドドロップで、後述の設定ファイルを渡すことが可能です。
 
 設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
 
