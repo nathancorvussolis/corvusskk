@@ -2,8 +2,8 @@
 #include <winver.h>
 
 VS_VERSION_INFO    VERSIONINFO
-FILEVERSION        5,3,5,0
-PRODUCTVERSION     5,3,5,0
+FILEVERSION        5,4,0,0
+PRODUCTVERSION     5,4,0,0
 FILEFLAGSMASK      VS_FFI_FILEFLAGSMASK
 #ifndef _DEBUG
 FILEFLAGS          0x00000000L
@@ -20,12 +20,12 @@ FILESUBTYPE        VFT2_UNKNOWN
 		{
 			VALUE "CompanyName", "Lua.org, PUC-Rio"
 			VALUE "FileDescription", "Lua Language Library with Wide Character Patch"
-			VALUE "FileVersion", "5.3.5"
-			VALUE "InternalName", "lua53"
-			VALUE "LegalCopyright", "Copyright (C) 1994-2018 Lua.org, PUC-Rio."
-			VALUE "OriginalFilename", "lua53.dll"
+			VALUE "FileVersion", "5.4.0"
+			VALUE "InternalName", "lua54"
+			VALUE "LegalCopyright", "Copyright (C) 1994-2020 Lua.org, PUC-Rio."
+			VALUE "OriginalFilename", "lua54.dll"
 			VALUE "ProductName", "Lua Language"
-			VALUE "ProductVersion", "5.3.5"
+			VALUE "ProductVersion", "5.4.0"
 		}
 	}
 	BLOCK "VarFileInfo"

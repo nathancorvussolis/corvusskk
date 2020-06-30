@@ -1,5 +1,8 @@
 /*
-  UTF-8 Wrapper for Windows
+  Lua with UTF-8 Wrapper for Windows
+
+  Released under the MIT license
+  Copyright (C) 2014-2020 SASAKI Nobuyuki
 */
 
 #ifndef U8W_H

@@ -42,6 +42,9 @@
     <ClInclude Include="lgc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ljumptab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="llex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -55,6 +58,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lopcodes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lopnames.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lparser.h">
