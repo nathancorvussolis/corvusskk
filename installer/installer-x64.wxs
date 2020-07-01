@@ -56,7 +56,7 @@
         <File Id="F_luaexe_x64" Name="lua.exe" Source="..\x64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_X64" Guid="39B37C2E-8821-47E8-98FE-00503A54894C" Win64="yes">
-        <File Id="F_luadll_x64" Name="lua53.dll" Source="..\x64\Release\lua53.dll" KeyPath="yes" />
+        <File Id="F_luadll_x64" Name="lua54.dll" Source="..\x64\Release\lua54.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_X64" Guid="796681FD-4DAE-4658-A7C1-B87E6F2CCE6C" Win64="yes">
         <File Id="F_zlibdll_x64" Name="zlib1.dll" Source="..\x64\Release\zlib1.dll" KeyPath="yes" />
