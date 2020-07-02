@@ -9,7 +9,7 @@ if not exist "%TARGETDIR%" mkdir "%TARGETDIR%"
 
 pushd ..
 
-set PATH=%PATH%;%LocalAppData%\Pandoc;%ProgramFiles%\Pandoc;%ProgramFiles(x86)%\Pandoc
+set PATH=%PATH%;%LocalAppData%\Pandoc;%ProgramFiles%\Pandoc
 
 set DESCRIPTION=CorvusSKK
 
