@@ -101,8 +101,10 @@ el_test_time_table = {
 {"さらいねん",	"(skk-relative-date (lambda (date-information format gengo and-time) (skk-default-current-date date-information \"%s年\" 0 nil 0 0 0)) nil nil :yy 2)"},
 
 {"あした！",	"(skk-relative-date nil nil nil :dd 1)"},
+{"きのう！",	"(skk-relative-date nil nil nil :dd -1)"},
 
 {"あした",		"(skk-strftime \"%Y年%#m月%#d日(%a)\" \"day\" 1)"},
+{"きのう",		"(skk-strftime \"%Y年%#m月%#d日(%a)\" \"day\" -1)"},
 {"にちじ",		"(skk-strftime \"%x %X\")"},
 {"にちじ",		"(skk-strftime \"%#c\")"},
 {"こんげつ",		"(skk-strftime \"%B\")"},
