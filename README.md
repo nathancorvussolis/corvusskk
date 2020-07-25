@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.7.12
+# CorvusSKK ver. 2.8.0
 
 Windowsで動作するSKK風のIMEです。
 
@@ -114,6 +114,9 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 |---|---|
 | config.xml  | 各種設定 |
 | skkdict.txt | 取込済SKK辞書 |
+
+* 設定サンプル https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample
+* デフォルト https://github.com/nathancorvussolis/corvusskk/tree/master/installer/config-share
 
 各種設定の config.xml ファイルは、UTF-8 の XML フォーマットのテキストファイルとなっています。
 
@@ -747,7 +750,7 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.6.3
+Visual Studio Community 2019 16.6.5
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.26)
@@ -759,7 +762,7 @@ Visual Studio Community 2019 16.6.3
 
 WiX Toolset v3.11.2
 
-pandoc 2.10
+pandoc 2.10.1
 
 
 ### ビルド手順
