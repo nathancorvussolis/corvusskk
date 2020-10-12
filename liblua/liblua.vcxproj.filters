@@ -119,9 +119,6 @@
     <ClCompile Include="lbaselib.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lbitlib.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lcode.c">
       <Filter>Source Files</Filter>
     </ClCompile>
