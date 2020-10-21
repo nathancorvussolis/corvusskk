@@ -502,7 +502,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 
 * 「待機」
     * 「待機」がONのとき、入力した文字をローマ字仮名変換した結果 (変換出来ないときは入力した文字そのまま) がローマ字として扱われ、辞書検索開始、確定、補完開始、ローマ字に設定されていない組み合わせ、のいずれかになるまで仮名の最終的な決定が遅延されます。
-    * 「待機」機能サンプルを参照してください。[https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config - wait-sample.xml](https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config%20-%20wait-sample.xml)
+    * 「待機」機能サンプルを参照してください。[https\://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config - wait-sample.xml](https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/config%20-%20wait-sample.xml)
     * 例１） カナキーロックした状態で「か」と濁点を入力することで「が」と入力することができます。濁点、半濁点のローマ字部分は、現状1文字のみ対応しています。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
