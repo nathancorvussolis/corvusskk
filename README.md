@@ -326,7 +326,7 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 「仮想ｷｰ表示」エディットボックスにフォーカスがある状態でキー入力すると仮想キーコードを表示します。
 
-仮想キーコードの詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/windows/desktop/inputdev/virtual-key-codes
+仮想キーコードの詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 
 最大で ON/OFF それぞれ8行ずつです。
 

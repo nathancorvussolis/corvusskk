@@ -104,6 +104,8 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 //#define IsWindowsVersion10019H2OrLater() IsWindowsVersionOrLater(10, 0, 18363)
 //// Windows 10 ver.2004 20H1 May 2020 Update
 //#define IsWindowsVersion10020H1OrLater() IsWindowsVersionOrLater(10, 0, 19041)
+//// Windows 10 ver.20H2 October 2020 Update
+//#define IsWindowsVersion10020H2OrLater() IsWindowsVersionOrLater(10, 0, 19042)
 
 #define C_USER_DEFAULT_SCREEN_DPI	96
 #define C_FONT_LOGICAL_HEIGHT_PPI	72
