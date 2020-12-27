@@ -35,7 +35,7 @@
         InstallCondition="VersionNT">
         <!-- enabled autorun x86 imcrvmgr.exe only on 32-bit Windows. -->
         <MsiProperty
-          Name="PLATFORMVERSION"
+          Name="DISABLE_AUTORUN"
           Value="[VersionNT]" />
       </MsiPackage>
 
