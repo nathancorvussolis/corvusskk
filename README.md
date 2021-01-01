@@ -341,7 +341,7 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=vs-2019
+正規表現の詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-160
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -631,7 +631,7 @@ Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
 | skk-omikuji | 独自実装。おみくじを引くことができます。『(skk-omikuji)』 |
-| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=vs-2019<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
+| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |
