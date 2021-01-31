@@ -455,14 +455,14 @@ ver &gt; nul</Command>
     <ClCompile Include="FunctionProvider.cpp" />
     <ClCompile Include="Globals.cpp" />
     <CustomBuild Include="input.cpp">
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;$(OutDir)input.exp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
@@ -471,22 +471,38 @@ ver &gt; nul</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">cl /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(VC_ExecutablePath_x86_x86)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">"$(VC_ExecutablePath_x86_ARM)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(VC_ExecutablePath_x86_x86)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">"$(VC_ExecutablePath_x86_ARM)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">false</LinkObjects>
