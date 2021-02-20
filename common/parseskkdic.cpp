@@ -199,7 +199,7 @@ std::wstring ParseConcat(const std::wstring &s)
 	std::wregex re;
 	std::wsmatch res;
 	wchar_t u;
-	LPCWSTR bsrep = L"\uf05c";
+	LPCWSTR bsrep = L"\uF05C";
 
 	ret = s;
 
@@ -271,25 +271,84 @@ std::wstring MakeConcat(const std::wstring &s)
 
 	ret = s;
 
-	// "/" -> \057, ";" -> \073
+	// '/' or ';'
 	static const std::wregex respcch(L"[/;]");
 
 	if (std::regex_search(ret, respcch))
 	{
-		// "\"" -> "\\\"", "\\" -> "\\\\"
-		re.assign(L"([\\\"\\\\])");
+		// '"' -> "\"", '\' -> "\\"
+		re.assign(L"([\"\\\\])");
 		fmt.assign(L"\\$1");
 		ret = std::regex_replace(ret, re, fmt);
 
+		// '/' -> "\057"
 		re.assign(L"/");
 		fmt.assign(L"\\057");
 		ret = std::regex_replace(ret, re, fmt);
 
+		// ';' -> "\073"
 		re.assign(L";");
 		fmt.assign(L"\\073");
 		ret = std::regex_replace(ret, re, fmt);
 
 		ret = L"(concat \"" + ret + L"\")";
+	}
+
+	return ret;
+}
+
+std::wstring EscapeGadgetString(const std::wstring &s)
+{
+	std::wstring ret, fmt;
+	std::wregex re;
+	LPCWSTR bsrep = L"\uF05C";
+
+	ret = s;
+
+	//実行変換もどきの文字列パラメータをエスケープ
+	static const std::wregex regadget(L"^\\(.+\\)$");
+
+	if (std::regex_match(s, regadget))
+	{
+		std::wstring esc, str;
+		std::wstring tmp = s;
+		std::wsmatch m;
+
+		// "\\" -> '\uF05C'
+		re.assign(L"\\\\\\\\");
+		fmt.assign(bsrep);
+		tmp = std::regex_replace(tmp, re, fmt);
+
+		// <SPC>"..."   ignoring escaped quotation
+		static const std::wregex restring(L" (\"\"|\".*?[^\\\\]\")");
+
+		while (std::regex_search(tmp, m, restring))
+		{
+			esc += m.prefix().str();
+			str = m.str();
+			tmp = m.suffix().str();
+
+			// '/' -> "\057"
+			re.assign(L"/");
+			fmt.assign(L"\\057");
+			str = std::regex_replace(str, re, fmt);
+
+			// ';' -> "\073"
+			re.assign(L";");
+			fmt.assign(L"\\073");
+			str = std::regex_replace(str, re, fmt);
+
+			esc += str;
+		}
+
+		esc += tmp;
+
+		// '\uF05C' -> "\\"
+		re.assign(bsrep);
+		fmt.assign(L"\\\\");
+		esc = std::regex_replace(esc, re, fmt);
+
+		ret = esc;
 	}
 
 	return ret;

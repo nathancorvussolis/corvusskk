@@ -34,3 +34,4 @@ void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c);
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o);
 std::wstring ParseConcat(const std::wstring &s);
 std::wstring MakeConcat(const std::wstring &s);
+std::wstring EscapeGadgetString(const std::wstring &s);
