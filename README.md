@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.8.0
+# CorvusSKK ver. 2.8.1
 
 Windowsで動作するSKK風のIMEです。
 
@@ -562,7 +562,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.4.0です。
+現在使用しているLuaのバージョンは5.4.2です。
 
 詳細はこちらを参照ください。https://www.lua.org/manual/5.4/manual.html
 
@@ -631,7 +631,7 @@ Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
 | skk-omikuji | 独自実装。おみくじを引くことができます。『(skk-omikuji)』 |
-| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit, diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
+| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |
@@ -750,19 +750,19 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.6.5
+Visual Studio Community 2019 16.8.6
 
 * Desktop development with C++
-* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.26)
-* MSVC v142 - VS 2019 C++ ARM build tools (v14.26)
-* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.26)
+* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.28)
+* MSVC v142 - VS 2019 C++ ARM build tools (v14.28)
+* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.28)
 * C++ ATL for latest v142 build tools (x86 & x64)
 * C++ ATL for latest v142 build tools (ARM)
 * C++ ATL for latest v142 build tools (ARM64)
 
 WiX Toolset v3.11.2
 
-pandoc 2.10.1
+pandoc 2.11.4
 
 
 ### ビルド手順
@@ -789,7 +789,7 @@ pandoc 2.10.1
 
 ---
 
-Copyright (C) 2011-2020 SASAKI Nobuyuki
+Copyright (C) 2011-2021 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
