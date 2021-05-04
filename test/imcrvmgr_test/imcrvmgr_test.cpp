@@ -18,26 +18,26 @@ int wmain(int argc, wchar_t *argv[])
 
 	_CreateIpcName();
 
-	FILE *fp;
+	FILE *fp = nullptr;
 
-	//check BOM
-	_wfopen_s(&fp, filename, RB);
+	_wfopen_s(&fp, filename, modeRB);
 	if (fp == nullptr)
 	{
 		fwprintf(stderr, L"\nERROR: File I/O.\n");
 		return -1;
 	}
 
-	int encoding = 0;
-
+	//check BOM
 	WCHAR bom = L'\0';
 	fread(&bom, 2, 1, fp);
 	fclose(fp);
 
+	SKKDICENCODING encoding = enc_none;
+
 	if (bom == BOM)
 	{
 		//UTF-16LE
-		encoding = 16;
+		encoding = enc_utf_16;
 
 		HRESULT hr = CheckWideCharFile(filename);
 		switch (hr)
@@ -50,19 +50,19 @@ int wmain(int argc, wchar_t *argv[])
 			break;
 		default:
 			//Error
-			encoding = -1;
+			encoding = enc_error;
 			break;
 		}
 	}
 
 	//UTF-8 ?
-	if (encoding == 0)
+	if (encoding == enc_none)
 	{
-		HRESULT hr = CheckMultiByteFile(filename, 8);
+		HRESULT hr = CheckMultiByteFile(filename, enc_utf_8);
 		switch (hr)
 		{
 		case S_OK:
-			encoding = 8;
+			encoding = enc_utf_8;
 			break;
 		case E_MAKESKKDIC_FILEIO:
 			fwprintf(stderr, L"\nERROR: File I/O.\n");
@@ -74,13 +74,31 @@ int wmain(int argc, wchar_t *argv[])
 	}
 
 	//EUC-JIS-2004 ?
-	if (encoding == 0)
+	if (encoding == enc_none)
 	{
-		HRESULT hr = CheckMultiByteFile(filename, 1);
+		HRESULT hr = CheckMultiByteFile(filename, enc_euc_jis_2004);
 		switch (hr)
 		{
 		case S_OK:
-			encoding = 1;
+			encoding = enc_euc_jis_2004;
+			break;
+		case E_MAKESKKDIC_FILEIO:
+			fwprintf(stderr, L"\nERROR: File I/O.\n");
+			return -1;
+			break;
+		default:
+			break;
+		}
+	}
+
+	//EUC-JP ?
+	if (encoding == enc_none)
+	{
+		HRESULT hr = CheckMultiByteFile(filename, enc_euc_jp);
+		switch (hr)
+		{
+		case S_OK:
+			encoding = enc_euc_jp;
 			break;
 		case E_MAKESKKDIC_FILEIO:
 			fwprintf(stderr, L"\nERROR: File I/O.\n");
@@ -93,19 +111,19 @@ int wmain(int argc, wchar_t *argv[])
 
 	switch (encoding)
 	{
-	case 1:
+	case enc_euc_jis_2004:
 		//EUC-JIS-2004
-		bom = L'\0';
-		_wfopen_s(&fp, filename, RB);
+	case enc_euc_jp:
+		//EUC-JP
+		_wfopen_s(&fp, filename, modeRT);
 		break;
-	case 8:
+	case enc_utf_8:
 		//UTF-8
-		bom = BOM;
-		_wfopen_s(&fp, filename, RccsUTF8);
+		_wfopen_s(&fp, filename, modeRccsUTF8);
 		break;
-	case 16:
+	case enc_utf_16:
 		//UTF-16LE
-		_wfopen_s(&fp, filename, RccsUTF16);
+		_wfopen_s(&fp, filename, modeRccsUTF16);
 		break;
 	default:
 		fwprintf(stderr, L"\nERROR: invalid encoding.\n");
@@ -130,7 +148,7 @@ int wmain(int argc, wchar_t *argv[])
 
 	while (true)
 	{
-		int rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
+		int rl = ReadSKKDicLine(fp, encoding, okuri, key, sc, so);
 		if (rl == -1)
 		{
 			//EOF

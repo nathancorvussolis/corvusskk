@@ -2,9 +2,10 @@
 
 #include "version.h"
 
-#define MAX_KRNLOBJNAME		256
+#define MAX_SECURITYDESC	256		//string security descriptor
+#define MAX_PIPENAME		256		//named pipe name
 #define PIPEBUFSIZE			0x2000	//named pipe, 16KB with wchar_t
-#define READBUFSIZE			0x800	//read skk dictionary, 4KB with wchar_t/char
+#define READBUFSIZE			0x200	//read skk dictionary, 512B with wchar_t/char
 #define RECVBUFSIZE			0x800	//receive from skk server, 2KB with char
 
 #define MAX_SKKSERVER_HOST	(255 + 1)	//SKKサーバー ホスト 読み込みバッファ
@@ -51,12 +52,13 @@
 
 #define BOM L'\uFEFF'
 
-extern LPCWSTR RccsUTF16;
-extern LPCWSTR WccsUTF16;
-extern LPCWSTR RccsUTF8;
-extern LPCWSTR WccsUTF8;
-extern LPCWSTR RB;
-extern LPCWSTR WB;
+extern LPCWSTR modeRccsUTF16;
+extern LPCWSTR modeWccsUTF16;
+extern LPCWSTR modeRccsUTF8;
+extern LPCWSTR modeWccsUTF8;
+extern LPCWSTR modeRT;
+extern LPCWSTR modeRB;
+extern LPCWSTR modeWB;
 
 extern LPCWSTR fnconfigxml;	//設定
 extern LPCWSTR fnuserdic;	//ユーザー辞書

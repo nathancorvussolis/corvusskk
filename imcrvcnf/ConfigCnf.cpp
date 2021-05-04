@@ -4,8 +4,8 @@
 #include "resource.h"
 
 LPCWSTR TextServiceDesc = TEXTSERVICE_DESC;
-WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
-WCHAR cnfcanceldiceventname[MAX_KRNLOBJNAME];	//辞書取込キャンセルイベント
+WCHAR cnfmutexname[MAX_PATH];	//ミューテックス
+WCHAR cnfcanceldiceventname[MAX_PATH];	//辞書取込キャンセルイベント
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 
@@ -51,7 +51,7 @@ void CreateIpcName()
 BOOL SetFileDacl(LPWSTR path)
 {
 	BOOL bRet = FALSE;
-	WCHAR sddl[MAX_KRNLOBJNAME] = {};
+	WCHAR sddl[MAX_SECURITYDESC] = {};
 	PSECURITY_DESCRIPTOR psd = nullptr;
 	LPWSTR pszUserSid;
 

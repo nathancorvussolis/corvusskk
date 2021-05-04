@@ -307,6 +307,8 @@
     <ClInclude Include="convtype.h" />
     <ClInclude Include="eucjis2004.h" />
     <ClInclude Include="eucjis2004table.h" />
+    <ClInclude Include="eucjp.h" />
+    <ClInclude Include="eucjptable.h" />
     <ClInclude Include="parseskkdic.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="utf8.h" />
@@ -317,6 +319,8 @@
     <ClCompile Include="configxml.cpp" />
     <ClCompile Include="eucjis2004.cpp" />
     <ClCompile Include="eucjis2004table.cpp" />
+    <ClCompile Include="eucjp.cpp" />
+    <ClCompile Include="eucjptable.cpp" />
     <ClCompile Include="parseskkdic.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

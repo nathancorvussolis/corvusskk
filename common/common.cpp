@@ -3,14 +3,15 @@
 
 #pragma comment(lib, "bcrypt.lib")
 
-#define CCSUTF16 L", ccs=UTF-16LE"
-#define CCSUTF8 L", ccs=UTF-8"
-LPCWSTR RccsUTF16 = L"r" CCSUTF16;
-LPCWSTR WccsUTF16 = L"w" CCSUTF16;
-LPCWSTR RccsUTF8 = L"r" CCSUTF8;
-LPCWSTR WccsUTF8 = L"w" CCSUTF8;
-LPCWSTR RB = L"rb";
-LPCWSTR WB = L"wb";
+#define CCSUTF16 L",ccs=UTF-16LE"
+#define CCSUTF8 L",ccs=UTF-8"
+LPCWSTR modeRccsUTF16 = L"rt" CCSUTF16;
+LPCWSTR modeWccsUTF16 = L"wt" CCSUTF16;
+LPCWSTR modeRccsUTF8 = L"rt" CCSUTF8;
+LPCWSTR modeWccsUTF8 = L"wt" CCSUTF8;
+LPCWSTR modeRT = L"rt";
+LPCWSTR modeRB = L"rb";
+LPCWSTR modeWB = L"wb";
 
 LPCWSTR fnconfigxml = L"config.xml";	//設定
 LPCWSTR fnuserdic = L"userdict.txt";	//ユーザー辞書

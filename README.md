@@ -197,7 +197,9 @@ SKK辞書の詳細はこちらを参照ください。
 
 * http://openlab.ring.gr.jp/skk/skk/dic/
 
-SKK辞書ファイルの文字コードは、EUC-JIS-2004、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
+SKK辞書ファイルの文字コードは、EUC-JIS-2004、EUC-JP、UTF-8 (BOMなし/あり)、UTF-16 (LE, BOMあり) に対応しています。
+
+EUC-JP は、ASCII、JIS X 0208、JIS X 0201 片仮名、JIS X 0212 を実装する、いわゆる IANA の EUC-JP となっています。
 
 アーカイブファイルフォーマットは tar、gzip に対応しています。
 
@@ -226,7 +228,11 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 同時に１つのみ使用可能です。IPv4、IPv6 に対応しています。
 
-通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応していますが、通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用してください。
+通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応しています。
+
+通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用してください。
+
+設定を EUC-JIS-2004 にしたとき、Unicode に変換できない場合は候補毎に EUC-JP にフォールバックします。
 
 サーバーコンプリーション機能は未実装です。
 
@@ -562,7 +568,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.4.2です。
+現在使用しているLuaのバージョンは5.4.3です。
 
 詳細はこちらを参照ください。https://www.lua.org/manual/5.4/manual.html
 
@@ -631,7 +637,7 @@ Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://
 | skk-relative-date |  |
 | skk-ignore-dic-word | デフォルト無効 |
 | skk-omikuji | 独自実装。おみくじを引くことができます。『(skk-omikuji)』 |
-| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit diff])』<br>format : https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
+| skk-strftime | 独自実装。日時書式出力『(skk-strftime format [unit diff])』<br>format : 以下のstrftime関数のリンク先を参照<br>unit : 単位 "year", "month", "day", "hour", "min", "sec"<br>diff : 現在とunitとの差分 |
 | fill-column | 70で固定 |
 | comment-start | "/\*" |
 | comment-end | "\*/" |
@@ -641,6 +647,8 @@ Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://
 skk-omikuji 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-omikuji.txt
 
 skk-strftime 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-strftime.txt
+
+strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160
 
 
 ### 数値変換
@@ -750,19 +758,19 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.8.6
+Visual Studio Community 2019 16.9.4
 
 * Desktop development with C++
-* MSVC v142 - VS 2019 C++ x64/x86 build tools (v14.28)
-* MSVC v142 - VS 2019 C++ ARM build tools (v14.28)
-* MSVC v142 - VS 2019 C++ ARM64 build tools (v14.28)
+* MSVC v142 - VS 2019 C++ x64/x86 build tools (Latest)
+* MSVC v142 - VS 2019 C++ ARM build tools (Latest)
+* MSVC v142 - VS 2019 C++ ARM64 build tools (Latest)
 * C++ ATL for latest v142 build tools (x86 & x64)
 * C++ ATL for latest v142 build tools (ARM)
 * C++ ATL for latest v142 build tools (ARM64)
 
 WiX Toolset v3.11.2
 
-pandoc 2.11.4
+pandoc 2.13
 
 
 ### ビルド手順

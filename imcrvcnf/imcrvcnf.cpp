@@ -28,6 +28,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		return 0;
 	}
 
+	CoInitialize(nullptr);
+
 	icex.dwSize = sizeof(icex);
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;
 	InitCommonControlsEx(&icex);
@@ -67,6 +69,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 	{
 		LocalFree(pArgs);
 	}
+
+	CoUninitialize();
 
 	if (hMutex != nullptr)
 	{

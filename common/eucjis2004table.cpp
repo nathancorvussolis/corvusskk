@@ -1,21 +1,21 @@
 ﻿
 #include "eucjis2004table.h"
 
-// EUC-JIS-2004 Unicode 変換表
 //
-//		http://x0213.org/codetable/euc-jis-2004-std.txt を元に生成
+// EUC-JIS-2004 / Unicode 変換表
 //
-//		以下の２つの符号は、cygwin の iconv 1.14 を参考にして、
-//		Windows (CP932) mapping とした。
-//			0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
-//			0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5
+//  http://x0213.org/codetable/euc-jis-2004-std.txt を元に生成
+//
+//  以下の２つの符号は、iconv 1.16 を参考にして Windows (CP932) mapping とした。
+//
+//    0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
+//    0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5
+//
 
-#pragma region euc table
-
-#pragma region combining characters
+#pragma region Unicode結合文字
 const EUCCMB euccmb[CMBCHARNUM] =
 {
-	//EUC	UCP 1st	UCP 2nd
+	// EUC    UCP 1st UCP 2nd
 	{0xA4F7, {0x304B, 0x309A}},	//0xA4F7	U+304B+309A	# 	[2000]
 	{0xA4F8, {0x304D, 0x309A}},	//0xA4F8	U+304D+309A	# 	[2000]
 	{0xA4F9, {0x304F, 0x309A}},	//0xA4F9	U+304F+309A	# 	[2000]
@@ -44,9 +44,10 @@ const EUCCMB euccmb[CMBCHARNUM] =
 };
 #pragma endregion
 
-#pragma region EUC 1
+#pragma region JIS_X_0213 第一面
 const UCSCHAR euc1[ROWNUM][CELLNUM] =
 {
+	//1区
 	{
 		0x3000,	//0xA1A1	U+3000	# IDEOGRAPHIC SPACE
 		0x3001,	//0xA1A2	U+3001	# IDEOGRAPHIC COMMA
@@ -64,8 +65,8 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0xFF40,	//0xA1AE	U+FF40	# FULLWIDTH GRAVE ACCENT
 		0x00A8,	//0xA1AF	U+00A8	# DIAERESIS
 		0xFF3E,	//0xA1B0	U+FF3E	# FULLWIDTH CIRCUMFLEX ACCENT
-//		0x203E,	//0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3			//// same as iconv on cygwin ////
-		0xFFE3,	//0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
+//		0x203E,	//0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
+		0xFFE3,	//0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3			//// same as iconv ////
 		0xFF3F,	//0xA1B2	U+FF3F	# FULLWIDTH LOW LINE
 		0x30FD,	//0xA1B3	U+30FD	# KATAKANA ITERATION MARK
 		0x30FE,	//0xA1B4	U+30FE	# KATAKANA VOICED ITERATION MARK
@@ -127,8 +128,8 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x2032,	//0xA1EC	U+2032	# PRIME
 		0x2033,	//0xA1ED	U+2033	# DOUBLE PRIME
 		0x2103,	//0xA1EE	U+2103	# DEGREE CELSIUS
-//		0x00A5,	//0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5			//// same as iconv on cygwin ////
-		0xFFE5,	//0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5
+//		0x00A5,	//0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5
+		0xFFE5,	//0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5			//// same as iconv ////
 		0xFF04,	//0xA1F0	U+FF04	# FULLWIDTH DOLLAR SIGN
 		0x00A2,	//0xA1F1	U+00A2	# CENT SIGN	Windows: U+FFE0
 		0x00A3,	//0xA1F2	U+00A3	# POUND SIGN	Windows: U+FFE1
@@ -145,6 +146,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x25CE,	//0xA1FD	U+25CE	# BULLSEYE
 		0x25C7 	//0xA1FE	U+25C7	# WHITE DIAMOND
 	},
+	//2区
 	{
 		0x25C6,	//0xA2A1	U+25C6	# BLACK DIAMOND
 		0x25A1,	//0xA2A2	U+25A1	# WHITE SQUARE
@@ -241,6 +243,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x2669,	//0xA2FD	U+2669	# QUARTER NOTE	[2000]
 		0x25EF 	//0xA2FE	U+25EF	# LARGE CIRCLE	[1983]
 	},
+	//3区
 	{
 		0x25B7,	//0xA3A1	U+25B7	# WHITE RIGHT-POINTING TRIANGLE	[2000]
 		0x25B6,	//0xA3A2	U+25B6	# BLACK RIGHT-POINTING TRIANGLE	[2000]
@@ -337,6 +340,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x29FA,	//0xA3FD	U+29FA	# DOUBLE PLUS	[2000]	[Unicode3.2]
 		0x29FB 	//0xA3FE	U+29FB	# TRIPLE PLUS	[2000]	[Unicode3.2]
 	},
+	//4区
 	{
 		0x3041,	//0xA4A1	U+3041	# HIRAGANA LETTER SMALL A
 		0x3042,	//0xA4A2	U+3042	# HIRAGANA LETTER A
@@ -429,10 +433,11 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x0000,	//0xA4F9	U+304F+309A	# 	[2000]	## JIS X 0213 COMBINING CHARACTER
 		0x0000,	//0xA4FA	U+3051+309A	# 	[2000]	## JIS X 0213 COMBINING CHARACTER
 		0x0000,	//0xA4FB	U+3053+309A	# 	[2000]	## JIS X 0213 COMBINING CHARACTER
-		0x0000,	//
-		0x0000,	//
-		0x0000 	//
+		0x0000,	//0xA4FC		# <reserved>
+		0x0000,	//0xA4FD		# <reserved>
+		0x0000 	//0xA4FE		# <reserved>
 	},
+	//5区
 	{
 		0x30A1,	//0xA5A1	U+30A1	# KATAKANA LETTER SMALL A
 		0x30A2,	//0xA5A2	U+30A2	# KATAKANA LETTER A
@@ -529,6 +534,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x0000,	//0xA5FD	U+30C4+309A	# 	[2000]	## JIS X 0213 COMBINING CHARACTER
 		0x0000 	//0xA5FE	U+30C8+309A	# 	[2000]	## JIS X 0213 COMBINING CHARACTER
 	},
+	//6区
 	{
 		0x0391,	//0xA6A1	U+0391	# GREEK CAPITAL LETTER ALPHA
 		0x0392,	//0xA6A2	U+0392	# GREEK CAPITAL LETTER BETA
@@ -625,6 +631,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x31FE,	//0xA6FD	U+31FE	# KATAKANA LETTER SMALL RE	[2000]	[Unicode3.2]
 		0x31FF 	//0xA6FE	U+31FF	# KATAKANA LETTER SMALL RO	[2000]	[Unicode3.2]
 	},
+	//7区
 	{
 		0x0410,	//0xA7A1	U+0410	# CYRILLIC CAPITAL LETTER A
 		0x0411,	//0xA7A2	U+0411	# CYRILLIC CAPITAL LETTER BE
@@ -721,6 +728,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x2423,	//0xA7FD	U+2423	# OPEN BOX	[2000]
 		0x23CE 	//0xA7FE	U+23CE	# RETURN SYMBOL	[2000]	[Unicode3.2]
 	},
+	//8区
 	{
 		0x2500,	//0xA8A1	U+2500	# BOX DRAWINGS LIGHT HORIZONTAL	[1983]
 		0x2502,	//0xA8A2	U+2502	# BOX DRAWINGS LIGHT VERTICAL	[1983]
@@ -784,14 +792,14 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x32BD,	//0xA8DC	U+32BD	# CIRCLED NUMBER FORTY EIGHT	[2000]	[Unicode3.2]
 		0x32BE,	//0xA8DD	U+32BE	# CIRCLED NUMBER FORTY NINE	[2000]	[Unicode3.2]
 		0x32BF,	//0xA8DE	U+32BF	# CIRCLED NUMBER FIFTY	[2000]	[Unicode3.2]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xA8DF		# <reserved>
+		0x0000,	//0xA8E0		# <reserved>
+		0x0000,	//0xA8E1		# <reserved>
+		0x0000,	//0xA8E2		# <reserved>
+		0x0000,	//0xA8E3		# <reserved>
+		0x0000,	//0xA8E4		# <reserved>
+		0x0000,	//0xA8E5		# <reserved>
+		0x0000,	//0xA8E6		# <reserved>
 		0x25D0,	//0xA8E7	U+25D0	# CIRCLE WITH LEFT HALF BLACK	[2000]
 		0x25D1,	//0xA8E8	U+25D1	# CIRCLE WITH RIGHT HALF BLACK	[2000]
 		0x25D2,	//0xA8E9	U+25D2	# CIRCLE WITH LOWER HALF BLACK	[2000]
@@ -814,9 +822,10 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x01D8,	//0xA8FA	U+01D8	# LATIN SMALL LETTER U WITH DIAERESIS AND ACUTE	[2000]
 		0x01DA,	//0xA8FB	U+01DA	# LATIN SMALL LETTER U WITH DIAERESIS AND CARON	[2000]
 		0x01DC,	//0xA8FC	U+01DC	# LATIN SMALL LETTER U WITH DIAERESIS AND GRAVE	[2000]
-		0x0000,	//
-		0x0000 	//
+		0x0000,	//0xA8FD		# <reserved>
+		0x0000 	//0xA8FE		# <reserved>
 	},
+	//9区
 	{
 		0x20AC,	//0xA9A1	U+20AC	# EURO SIGN	[2000]
 		0x00A0,	//0xA9A2	U+00A0	# NO-BREAK SPACE	[2000]
@@ -913,6 +922,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x0113,	//0xA9FD	U+0113	# LATIN SMALL LETTER E WITH MACRON	[2000]
 		0x014D 	//0xA9FE	U+014D	# LATIN SMALL LETTER O WITH MACRON	[2000]
 	},
+	//10区
 	{
 		0x0104,	//0xAAA1	U+0104	# LATIN CAPITAL LETTER A WITH OGONEK	[2000]
 		0x02D8,	//0xAAA2	U+02D8	# BREVE	[2000]
@@ -1009,6 +1019,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x0127,	//0xAAFD	U+0127	# LATIN SMALL LETTER H WITH STROKE	[2000]
 		0x0295 	//0xAAFE	U+0295	# LATIN LETTER PHARYNGEAL VOICED FRICATIVE	[2000]
 	},
+	//11区
 	{
 		0x0294,	//0xABA1	U+0294	# LATIN LETTER GLOTTAL STOP	[2000]
 		0x0266,	//0xABA2	U+0266	# LATIN SMALL LETTER H WITH HOOK	[2000]
@@ -1105,6 +1116,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x0303,	//0xABFD	U+0303	# COMBINING TILDE	[2000]
 		0x031A 	//0xABFE	U+031A	# COMBINING LEFT ANGLE ABOVE	[2000]
 	},
+	//12区
 	{
 		0x2776,	//0xACA1	U+2776	# DINGBAT NEGATIVE CIRCLED DIGIT ONE	[2000]
 		0x2777,	//0xACA2	U+2777	# DINGBAT NEGATIVE CIRCLED DIGIT TWO	[2000]
@@ -1189,18 +1201,19 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x32E5,	//0xACF1	U+32E5	# CIRCLED KATAKANA NI	[2000]
 		0x32ED,	//0xACF2	U+32ED	# CIRCLED KATAKANA HO	[2000]
 		0x32EC,	//0xACF3	U+32EC	# CIRCLED KATAKANA HE	[2000]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xACF4		# <reserved>
+		0x0000,	//0xACF5		# <reserved>
+		0x0000,	//0xACF6		# <reserved>
+		0x0000,	//0xACF7		# <reserved>
+		0x0000,	//0xACF8		# <reserved>
+		0x0000,	//0xACF9		# <reserved>
+		0x0000,	//0xACFA		# <reserved>
+		0x0000,	//0xACFB		# <reserved>
+		0x0000,	//0xACFC		# <reserved>
 		0x2051,	//0xACFD	U+2051	# TWO ASTERISKS ALIGNED VERTICALLY	[2000]	[Unicode3.2]
 		0x2042 	//0xACFE	U+2042	# ASTERISM	[2000]
 	},
+	//13区
 	{
 		0x2460,	//0xADA1	U+2460	# CIRCLED DIGIT ONE	[2000]
 		0x2461,	//0xADA2	U+2461	# CIRCLED DIGIT TWO	[2000]
@@ -1257,13 +1270,13 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x33C4,	//0xADD5	U+33C4	# SQUARE CC	[2000]
 		0x33A1,	//0xADD6	U+33A1	# SQUARE M SQUARED	[2000]
 		0x216B,	//0xADD7	U+216B	# ROMAN NUMERAL TWELVE	[2000]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xADD8		# <reserved>
+		0x0000,	//0xADD9		# <reserved>
+		0x0000,	//0xADDA		# <reserved>
+		0x0000,	//0xADDB		# <reserved>
+		0x0000,	//0xADDC		# <reserved>
+		0x0000,	//0xADDD		# <reserved>
+		0x0000,	//0xADDE		# <reserved>
 		0x337B,	//0xADDF	U+337B	# SQUARE ERA NAME HEISEI	[2000]
 		0x301D,	//0xADE0	U+301D	# REVERSED DOUBLE PRIME QUOTATION MARK	[2000]
 		0x301F,	//0xADE1	U+301F	# LOW DOUBLE PRIME QUOTATION MARK	[2000]
@@ -1281,22 +1294,23 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x337E,	//0xADED	U+337E	# SQUARE ERA NAME MEIZI	[2000]
 		0x337D,	//0xADEE	U+337D	# SQUARE ERA NAME TAISYOU	[2000]
 		0x337C,	//0xADEF	U+337C	# SQUARE ERA NAME SYOUWA	[2000]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xADF0		# <reserved>	Windows: U+2252
+		0x0000,	//0xADF1		# <reserved>	Windows: U+2261
+		0x0000,	//0xADF2		# <reserved>	Windows: U+222B
 		0x222E,	//0xADF3	U+222E	# CONTOUR INTEGRAL	[2000]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xADF4		# <reserved>	Windows: U+2211
+		0x0000,	//0xADF5		# <reserved>	Windows: U+221A
+		0x0000,	//0xADF6		# <reserved>	Windows: U+22A5
+		0x0000,	//0xADF7		# <reserved>	Windows: U+2220
 		0x221F,	//0xADF8	U+221F	# RIGHT ANGLE	[2000]
 		0x22BF,	//0xADF9	U+22BF	# RIGHT TRIANGLE	[2000]
-		0x0000,	//
-		0x0000,	//
-		0x0000,	//
+		0x0000,	//0xADFA		# <reserved>	Windows: U+2235
+		0x0000,	//0xADFB		# <reserved>	Windows: U+2229
+		0x0000,	//0xADFC		# <reserved>	Windows: U+222A
 		0x2756,	//0xADFD	U+2756	# BLACK DIAMOND MINUS WHITE X	[2000]
 		0x261E 	//0xADFE	U+261E	# WHITE RIGHT POINTING INDEX	[2000]
 	},
+	//14区
 	{
 		0x4FF1,	//0xAEA1	U+4FF1	# <cjk>	[2004]
 		0x2000B,	//0xAEA2	U+2000B	# <cjk>	[2000]	[Unicode3.1]
@@ -1393,6 +1407,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5496,	//0xAEFD	U+5496	# <cjk>	[2000]
 		0x54A1 	//0xAEFE	U+54A1	# <cjk>	[2000]
 	},
+	//15区
 	{
 		0x54A9,	//0xAFA1	U+54A9	# <cjk>	[2000]
 		0x54C6,	//0xAFA2	U+54C6	# <cjk>	[2000]
@@ -1489,6 +1504,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5B25,	//0xAFFD	U+5B25	# <cjk>	[2000]
 		0x525D 	//0xAFFE	U+525D	# <cjk>	[2004]
 	},
+	//16区
 	{
 		0x4E9C,	//0xB0A1	U+4E9C	# <cjk>
 		0x5516,	//0xB0A2	U+5516	# <cjk>
@@ -1585,6 +1601,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x80E4,	//0xB0FD	U+80E4	# <cjk>
 		0x852D 	//0xB0FE	U+852D	# <cjk>
 	},
+	//17区
 	{
 		0x9662,	//0xB1A1	U+9662	# <cjk>
 		0x9670,	//0xB1A2	U+9670	# <cjk>
@@ -1681,6 +1698,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5F80,	//0xB1FD	U+5F80	# <cjk>
 		0x5FDC 	//0xB1FE	U+5FDC	# <cjk>
 	},
+	//18区
 	{
 		0x62BC,	//0xB2A1	U+62BC	# <cjk>
 		0x65FA,	//0xB2A2	U+65FA	# <cjk>
@@ -1777,6 +1795,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x62D0,	//0xB2FD	U+62D0	# <cjk>
 		0x6539 	//0xB2FE	U+6539	# <cjk>
 	},
+	//19区
 	{
 		0x9B41,	//0xB3A1	U+9B41	# <cjk>
 		0x6666,	//0xB3A2	U+6666	# <cjk>
@@ -1873,6 +1892,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8305,	//0xB3FD	U+8305	# <cjk>
 		0x8431 	//0xB3FE	U+8431	# <cjk>
 	},
+	//20区
 	{
 		0x7CA5,	//0xB4A1	U+7CA5	# <cjk>
 		0x5208,	//0xB4A2	U+5208	# <cjk>
@@ -1969,6 +1989,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x68CB,	//0xB4FD	U+68CB	# <cjk>
 		0x68C4 	//0xB4FE	U+68C4	# <cjk>
 	},
+	//21区
 	{
 		0x6A5F,	//0xB5A1	U+6A5F	# <cjk>
 		0x5E30,	//0xB5A2	U+5E30	# <cjk>
@@ -2065,6 +2086,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x4EAB,	//0xB5FD	U+4EAB	# <cjk>
 		0x4EAC 	//0xB5FE	U+4EAC	# <cjk>
 	},
+	//22区
 	{
 		0x4F9B,	//0xB6A1	U+4F9B	# <cjk>
 		0x4FA0,	//0xB6A2	U+4FA0	# <cjk>
@@ -2161,6 +2183,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5C51,	//0xB6FD	U+5C51	# <cjk>
 		0x5C48 	//0xB6FE	U+5C48	# <cjk>
 	},
+	//23区
 	{
 		0x6398,	//0xB7A1	U+6398	# <cjk>
 		0x7A9F,	//0xB7A2	U+7A9F	# <cjk>
@@ -2257,6 +2280,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x62F3,	//0xB7FD	U+62F3	# <cjk>
 		0x6372 	//0xB7FE	U+6372	# <cjk>
 	},
+	//24区
 	{
 		0x691C,	//0xB8A1	U+691C	# <cjk>
 		0x6A29,	//0xB8A2	U+6A29	# <cjk>
@@ -2353,6 +2377,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x53E3,	//0xB8FD	U+53E3	# <cjk>
 		0x5411 	//0xB8FE	U+5411	# <cjk>
 	},
+	//25区
 	{
 		0x540E,	//0xB9A1	U+540E	# <cjk>
 		0x5589,	//0xB9A2	U+5589	# <cjk>
@@ -2449,6 +2474,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x72DB,	//0xB9FD	U+72DB	# <cjk>
 		0x8FBC 	//0xB9FE	U+8FBC	# <cjk>
 	},
+	//26区
 	{
 		0x6B64,	//0xBAA1	U+6B64	# <cjk>
 		0x9803,	//0xBAA2	U+9803	# <cjk>
@@ -2545,6 +2571,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x518A,	//0xBAFD	U+518A	# <cjk>
 		0x5237 	//0xBAFE	U+5237	# <cjk>
 	},
+	//27区
 	{
 		0x5BDF,	//0xBBA1	U+5BDF	# <cjk>
 		0x62F6,	//0xBBA2	U+62F6	# <cjk>
@@ -2641,6 +2668,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6301,	//0xBBFD	U+6301	# <cjk>
 		0x6642 	//0xBBFE	U+6642	# <cjk>
 	},
+	//28区
 	{
 		0x6B21,	//0xBCA1	U+6B21	# <cjk>
 		0x6ECB,	//0xBCA2	U+6ECB	# <cjk>
@@ -2737,6 +2765,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x53CE,	//0xBCFD	U+53CE	# <cjk>
 		0x5468 	//0xBCFE	U+5468	# <cjk>
 	},
+	//29区
 	{
 		0x5B97,	//0xBDA1	U+5B97	# <cjk>
 		0x5C31,	//0xBDA2	U+5C31	# <cjk>
@@ -2833,6 +2862,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x50B7,	//0xBDFD	U+50B7	# <cjk>
 		0x511F 	//0xBDFE	U+511F	# <cjk>
 	},
+	//30区
 	{
 		0x52DD,	//0xBEA1	U+52DD	# <cjk>
 		0x5320,	//0xBEA2	U+5320	# <cjk>
@@ -2929,6 +2959,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x57F4,	//0xBEFD	U+57F4	# <cjk>
 		0x98FE 	//0xBEFE	U+98FE	# <cjk>
 	},
+	//31区
 	{
 		0x62ED,	//0xBFA1	U+62ED	# <cjk>
 		0x690D,	//0xBFA2	U+690D	# <cjk>
@@ -3025,6 +3056,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x96C0,	//0xBFFD	U+96C0	# <cjk>
 		0x88FE 	//0xBFFE	U+88FE	# <cjk>
 	},
+	//32区
 	{
 		0x6F84,	//0xC0A1	U+6F84	# <cjk>
 		0x647A,	//0xC0A2	U+647A	# <cjk>
@@ -3121,6 +3153,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7BAD,	//0xC0FD	U+7BAD	# <cjk>
 		0x7DDA 	//0xC0FE	U+7DDA	# <cjk>
 	},
+	//33区
 	{
 		0x7E4A,	//0xC1A1	U+7E4A	# <cjk>
 		0x7FA8,	//0xC1A2	U+7FA8	# <cjk>
@@ -3217,6 +3250,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5897,	//0xC1FD	U+5897	# <cjk>
 		0x618E 	//0xC1FE	U+618E	# <cjk>
 	},
+	//34区
 	{
 		0x81D3,	//0xC2A1	U+81D3	# <cjk>
 		0x8535,	//0xC2A2	U+8535	# <cjk>
@@ -3313,6 +3347,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x86F8,	//0xC2FD	U+86F8	# <cjk>
 		0x53EA 	//0xC2FE	U+53EA	# <cjk>
 	},
+	//35区
 	{
 		0x53E9,	//0xC3A1	U+53E9	# <cjk>
 		0x4F46,	//0xC3A2	U+4F46	# <cjk>
@@ -3409,6 +3444,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x558B,	//0xC3FD	U+558B	# <cjk>
 		0x5BF5 	//0xC3FE	U+5BF5	# <cjk>
 	},
+	//36区
 	{
 		0x5E16,	//0xC4A1	U+5E16	# <cjk>
 		0x5E33,	//0xC4A2	U+5E33	# <cjk>
@@ -3505,6 +3541,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8E44,	//0xC4FD	U+8E44	# <cjk>
 		0x9013 	//0xC4FE	U+9013	# <cjk>
 	},
+	//37区
 	{
 		0x90B8,	//0xC5A1	U+90B8	# <cjk>
 		0x912D,	//0xC5A2	U+912D	# <cjk>
@@ -3601,6 +3638,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7D71,	//0xC5FD	U+7D71	# <cjk>
 		0x5230 	//0xC5FE	U+5230	# <cjk>
 	},
+	//38区
 	{
 		0x8463,	//0xC6A1	U+8463	# <cjk>
 		0x8569,	//0xC6A2	U+8569	# <cjk>
@@ -3697,6 +3735,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x4E73,	//0xC6FD	U+4E73	# <cjk>
 		0x5165 	//0xC6FE	U+5165	# <cjk>
 	},
+	//39区
 	{
 		0x5982,	//0xC7A1	U+5982	# <cjk>
 		0x5C3F,	//0xC7A2	U+5C3F	# <cjk>
@@ -3793,6 +3832,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x99C1,	//0xC7FD	U+99C1	# <cjk>
 		0x9EA6 	//0xC7FE	U+9EA6	# <cjk>
 	},
+	//40区
 	{
 		0x51FD,	//0xC8A1	U+51FD	# <cjk>
 		0x7BB1,	//0xC8A2	U+7BB1	# <cjk>
@@ -3889,6 +3929,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7709,	//0xC8FD	U+7709	# <cjk>
 		0x7F8E 	//0xC8FE	U+7F8E	# <cjk>
 	},
+	//41区
 	{
 		0x9F3B,	//0xC9A1	U+9F3B	# <cjk>
 		0x67CA,	//0xC9A2	U+67CA	# <cjk>
@@ -3985,6 +4026,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5E45,	//0xC9FD	U+5E45	# <cjk>
 		0x670D 	//0xC9FE	U+670D	# <cjk>
 	},
+	//42区
 	{
 		0x798F,	//0xCAA1	U+798F	# <cjk>
 		0x8179,	//0xCAA2	U+8179	# <cjk>
@@ -4081,6 +4123,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x65B9,	//0xCAFD	U+65B9	# <cjk>
 		0x670B 	//0xCAFE	U+670B	# <cjk>
 	},
+	//43区
 	{
 		0x6CD5,	//0xCBA1	U+6CD5	# <cjk>
 		0x6CE1,	//0xCBA2	U+6CE1	# <cjk>
@@ -4177,6 +4220,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6162,	//0xCBFD	U+6162	# <cjk>
 		0x6E80 	//0xCBFE	U+6E80	# <cjk>
 	},
+	//44区
 	{
 		0x6F2B,	//0xCCA1	U+6F2B	# <cjk>
 		0x8513,	//0xCCA2	U+8513	# <cjk>
@@ -4273,6 +4317,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6CB9,	//0xCCFD	U+6CB9	# <cjk>
 		0x7652 	//0xCCFE	U+7652	# <cjk>
 	},
+	//45区
 	{
 		0x8AED,	//0xCDA1	U+8AED	# <cjk>
 		0x8F38,	//0xCDA2	U+8F38	# <cjk>
@@ -4369,6 +4414,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7406,	//0xCDFD	U+7406	# <cjk>
 		0x7483 	//0xCDFE	U+7483	# <cjk>
 	},
+	//46区
 	{
 		0x75E2,	//0xCEA1	U+75E2	# <cjk>
 		0x88CF,	//0xCEA2	U+88CF	# <cjk>
@@ -4465,6 +4511,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7DF4,	//0xCEFD	U+7DF4	# <cjk>
 		0x806F 	//0xCEFE	U+806F	# <cjk>
 	},
+	//47区
 	{
 		0x84EE,	//0xCFA1	U+84EE	# <cjk>
 		0x9023,	//0xCFA2	U+9023	# <cjk>
@@ -4561,6 +4608,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5DCB,	//0xCFFD	U+5DCB	# <cjk>	[2000]
 		0x541E 	//0xCFFE	U+541E	# <cjk>	[2004]
 	},
+	//48区
 	{
 		0x5F0C,	//0xD0A1	U+5F0C	# <cjk>
 		0x4E10,	//0xD0A2	U+4E10	# <cjk>
@@ -4657,6 +4705,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x50B4,	//0xD0FD	U+50B4	# <cjk>
 		0x50B2 	//0xD0FE	U+50B2	# <cjk>
 	},
+	//49区
 	{
 		0x50C9,	//0xD1A1	U+50C9	# <cjk>
 		0x50CA,	//0xD1A2	U+50CA	# <cjk>
@@ -4753,6 +4802,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5291,	//0xD1FD	U+5291	# <cjk>
 		0x8FA8 	//0xD1FE	U+8FA8	# <cjk>
 	},
+	//50区
 	{
 		0x8FA7,	//0xD2A1	U+8FA7	# <cjk>
 		0x52AC,	//0xD2A2	U+52AC	# <cjk>
@@ -4849,6 +4899,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x54C8,	//0xD2FD	U+54C8	# <cjk>
 		0x54A8 	//0xD2FE	U+54A8	# <cjk>
 	},
+	//51区
 	{
 		0x54AB,	//0xD3A1	U+54AB	# <cjk>
 		0x54C2,	//0xD3A2	U+54C2	# <cjk>
@@ -4945,6 +4996,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5704,	//0xD3FD	U+5704	# <cjk>
 		0x5709 	//0xD3FE	U+5709	# <cjk>
 	},
+	//52区
 	{
 		0x5708,	//0xD4A1	U+5708	# <cjk>
 		0x570B,	//0xD4A2	U+570B	# <cjk>
@@ -5041,6 +5093,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x596C,	//0xD4FD	U+596C	# <cjk>
 		0x5969 	//0xD4FE	U+5969	# <cjk>
 	},
+	//53区
 	{
 		0x5978,	//0xD5A1	U+5978	# <cjk>
 		0x5981,	//0xD5A2	U+5981	# <cjk>
@@ -5137,6 +5190,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5C4E,	//0xD5FD	U+5C4E	# <cjk>
 		0x5C53 	//0xD5FE	U+5C53	# <cjk>
 	},
+	//54区
 	{
 		0x5C50,	//0xD6A1	U+5C50	# <cjk>
 		0x5C4F,	//0xD6A2	U+5C4F	# <cjk>
@@ -5233,6 +5287,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x5ED0,	//0xD6FD	U+5ED0	# <cjk>
 		0x5ECF 	//0xD6FE	U+5ECF	# <cjk>
 	},
+	//55区
 	{
 		0x5ED6,	//0xD7A1	U+5ED6	# <cjk>
 		0x5EE3,	//0xD7A2	U+5EE3	# <cjk>
@@ -5329,6 +5384,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6083,	//0xD7FD	U+6083	# <cjk>
 		0x609A 	//0xD7FE	U+609A	# <cjk>
 	},
+	//56区
 	{
 		0x6084,	//0xD8A1	U+6084	# <cjk>
 		0x609B,	//0xD8A2	U+609B	# <cjk>
@@ -5425,6 +5481,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6214,	//0xD8FD	U+6214	# <cjk>
 		0x621B 	//0xD8FE	U+621B	# <cjk>
 	},
+	//57区
 	{
 		0x621E,	//0xD9A1	U+621E	# <cjk>
 		0x6221,	//0xD9A2	U+6221	# <cjk>
@@ -5521,6 +5578,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6488,	//0xD9FD	U+6488	# <cjk>
 		0x64BC 	//0xD9FE	U+64BC	# <cjk>
 	},
+	//58区
 	{
 		0x64DA,	//0xDAA1	U+64DA	# <cjk>
 		0x64D2,	//0xDAA2	U+64D2	# <cjk>
@@ -5617,6 +5675,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x66BE,	//0xDAFD	U+66BE	# <cjk>
 		0x66BC 	//0xDAFE	U+66BC	# <cjk>
 	},
+	//59区
 	{
 		0x66C4,	//0xDBA1	U+66C4	# <cjk>
 		0x66B8,	//0xDBA2	U+66B8	# <cjk>
@@ -5713,6 +5772,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x690C,	//0xDBFD	U+690C	# <cjk>
 		0x68CD 	//0xDBFE	U+68CD	# <cjk>
 	},
+	//60区
 	{
 		0x68D4,	//0xDCA1	U+68D4	# <cjk>
 		0x68E7,	//0xDCA2	U+68E7	# <cjk>
@@ -5809,6 +5869,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6AA2,	//0xDCFD	U+6AA2	# <cjk>
 		0x6AA3 	//0xDCFE	U+6AA3	# <cjk>
 	},
+	//61区
 	{
 		0x6A97,	//0xDDA1	U+6A97	# <cjk>
 		0x8617,	//0xDDA2	U+8617	# <cjk>
@@ -5905,6 +5966,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6CB1,	//0xDDFD	U+6CB1	# <cjk>
 		0x6CBE 	//0xDDFE	U+6CBE	# <cjk>
 	},
+	//62区
 	{
 		0x6CBA,	//0xDEA1	U+6CBA	# <cjk>
 		0x6CDB,	//0xDEA2	U+6CDB	# <cjk>
@@ -6001,6 +6063,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6F32,	//0xDEFD	U+6F32	# <cjk>
 		0x6ECC 	//0xDEFE	U+6ECC	# <cjk>
 	},
+	//63区
 	{
 		0x6F3E,	//0xDFA1	U+6F3E	# <cjk>
 		0x6F13,	//0xDFA2	U+6F13	# <cjk>
@@ -6097,6 +6160,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x71F5,	//0xDFFD	U+71F5	# <cjk>
 		0x71FC 	//0xDFFE	U+71FC	# <cjk>
 	},
+	//64区
 	{
 		0x71F9,	//0xE0A1	U+71F9	# <cjk>
 		0x71FF,	//0xE0A2	U+71FF	# <cjk>
@@ -6193,6 +6257,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x74D4,	//0xE0FD	U+74D4	# <cjk>
 		0x73F1 	//0xE0FE	U+73F1	# <cjk>
 	},
+	//65区
 	{
 		0x74E0,	//0xE1A1	U+74E0	# <cjk>
 		0x74E3,	//0xE1A2	U+74E3	# <cjk>
@@ -6289,6 +6354,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x766C,	//0xE1FD	U+766C	# <cjk>
 		0x7670 	//0xE1FE	U+7670	# <cjk>
 	},
+	//66区
 	{
 		0x7672,	//0xE2A1	U+7672	# <cjk>
 		0x7676,	//0xE2A2	U+7676	# <cjk>
@@ -6385,6 +6451,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x78CA,	//0xE2FD	U+78CA	# <cjk>
 		0x78EC 	//0xE2FE	U+78EC	# <cjk>
 	},
+	//67区
 	{
 		0x78E7,	//0xE3A1	U+78E7	# <cjk>
 		0x78DA,	//0xE3A2	U+78DA	# <cjk>
@@ -6481,6 +6548,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7B36,	//0xE3FD	U+7B36	# <cjk>
 		0x7B50 	//0xE3FE	U+7B50	# <cjk>
 	},
+	//68区
 	{
 		0x7B7A,	//0xE4A1	U+7B7A	# <cjk>
 		0x7B04,	//0xE4A2	U+7B04	# <cjk>
@@ -6577,6 +6645,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7CFA,	//0xE4FD	U+7CFA	# <cjk>
 		0x7D06 	//0xE4FE	U+7D06	# <cjk>
 	},
+	//69区
 	{
 		0x7D02,	//0xE5A1	U+7D02	# <cjk>
 		0x7D1C,	//0xE5A2	U+7D1C	# <cjk>
@@ -6673,6 +6742,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7F38,	//0xE5FD	U+7F38	# <cjk>
 		0x7F3A 	//0xE5FE	U+7F3A	# <cjk>
 	},
+	//70区
 	{
 		0x7F45,	//0xE6A1	U+7F45	# <cjk>
 		0x7F4C,	//0xE6A2	U+7F4C	# <cjk>
@@ -6769,6 +6839,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x812F,	//0xE6FD	U+812F	# <cjk>
 		0x814B 	//0xE6FE	U+814B	# <cjk>
 	},
+	//71区
 	{
 		0x968B,	//0xE7A1	U+968B	# <cjk>
 		0x8146,	//0xE7A2	U+8146	# <cjk>
@@ -6865,6 +6936,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8309,	//0xE7FD	U+8309	# <cjk>
 		0x82D9 	//0xE7FE	U+82D9	# <cjk>
 	},
+	//72区
 	{
 		0x8335,	//0xE8A1	U+8335	# <cjk>
 		0x8334,	//0xE8A2	U+8334	# <cjk>
@@ -6961,6 +7033,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8558,	//0xE8FD	U+8558	# <cjk>
 		0x8548 	//0xE8FE	U+8548	# <cjk>
 	},
+	//73区
 	{
 		0x8541,	//0xE9A1	U+8541	# <cjk>
 		0x8602,	//0xE9A2	U+8602	# <cjk>
@@ -7057,6 +7130,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x876E,	//0xE9FD	U+876E	# <cjk>
 		0x8759 	//0xE9FE	U+8759	# <cjk>
 	},
+	//74区
 	{
 		0x8753,	//0xEAA1	U+8753	# <cjk>
 		0x8763,	//0xEAA2	U+8763	# <cjk>
@@ -7153,6 +7227,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8960,	//0xEAFD	U+8960	# <cjk>
 		0x895E 	//0xEAFE	U+895E	# <cjk>
 	},
+	//75区
 	{
 		0x8966,	//0xEBA1	U+8966	# <cjk>
 		0x8964,	//0xEBA2	U+8964	# <cjk>
@@ -7249,6 +7324,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8B5A,	//0xEBFD	U+8B5A	# <cjk>
 		0x8B6B 	//0xEBFE	U+8B6B	# <cjk>
 	},
+	//76区
 	{
 		0x8B5F,	//0xECA1	U+8B5F	# <cjk>
 		0x8B6C,	//0xECA2	U+8B6C	# <cjk>
@@ -7345,6 +7421,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8E34,	//0xECFD	U+8E34	# <cjk>
 		0x8E4A 	//0xECFE	U+8E4A	# <cjk>
 	},
+	//77区
 	{
 		0x8E47,	//0xEDA1	U+8E47	# <cjk>
 		0x8E49,	//0xEDA2	U+8E49	# <cjk>
@@ -7441,6 +7518,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9039,	//0xEDFD	U+9039	# <cjk>
 		0x8FF8 	//0xEDFE	U+8FF8	# <cjk>
 	},
+	//78区
 	{
 		0x904F,	//0xEEA1	U+904F	# <cjk>
 		0x9050,	//0xEEA2	U+9050	# <cjk>
@@ -7537,6 +7615,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9344,	//0xEEFD	U+9344	# <cjk>
 		0x932E 	//0xEEFE	U+932E	# <cjk>
 	},
+	//79区
 	{
 		0x9319,	//0xEFA1	U+9319	# <cjk>
 		0x9322,	//0xEFA2	U+9322	# <cjk>
@@ -7633,6 +7712,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x965C,	//0xEFFD	U+965C	# <cjk>
 		0x965E 	//0xEFFE	U+965E	# <cjk>
 	},
+	//80区
 	{
 		0x965D,	//0xF0A1	U+965D	# <cjk>
 		0x965F,	//0xF0A2	U+965F	# <cjk>
@@ -7729,6 +7809,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x986F,	//0xF0FD	U+986F	# <cjk>
 		0x9870 	//0xF0FE	U+9870	# <cjk>
 	},
+	//81区
 	{
 		0x9871,	//0xF1A1	U+9871	# <cjk>
 		0x9874,	//0xF1A2	U+9874	# <cjk>
@@ -7825,6 +7906,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9AF1,	//0xF1FD	U+9AF1	# <cjk>
 		0x9AF7 	//0xF1FE	U+9AF7	# <cjk>
 	},
+	//82区
 	{
 		0x9AFB,	//0xF2A1	U+9AFB	# <cjk>
 		0x9B06,	//0xF2A2	U+9B06	# <cjk>
@@ -7921,6 +8003,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9D46,	//0xF2FD	U+9D46	# <cjk>
 		0x9D48 	//0xF2FE	U+9D48	# <cjk>
 	},
+	//83区
 	{
 		0x9D5D,	//0xF3A1	U+9D5D	# <cjk>
 		0x9D5E,	//0xF3A2	U+9D5E	# <cjk>
@@ -8017,6 +8100,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9F9C,	//0xF3FD	U+9F9C	# <cjk>
 		0x9FA0 	//0xF3FE	U+9FA0	# <cjk>
 	},
+	//84区
 	{
 		0x582F,	//0xF4A1	U+582F	# <cjk>	[1983]
 		0x69C7,	//0xF4A2	U+69C7	# <cjk>	[1983]
@@ -8113,6 +8197,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x64BE,	//0xF4FD	U+64BE	# <cjk>	[2000]
 		0x64BF 	//0xF4FE	U+64BF	# <cjk>	[2000]
 	},
+	//85区
 	{
 		0x64C4,	//0xF5A1	U+64C4	# <cjk>	[2000]
 		0x64CA,	//0xF5A2	U+64CA	# <cjk>	[2000]
@@ -8209,6 +8294,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x69CF,	//0xF5FD	U+69CF	# <cjk>	[2000]
 		0x3BB6 	//0xF5FE	U+3BB6	# <cjk>	[2000]
 	},
+	//86区
 	{
 		0x3BC3,	//0xF6A1	U+3BC3	# <cjk>	[2000]
 		0x69E2,	//0xF6A2	U+69E2	# <cjk>	[2000]
@@ -8305,6 +8391,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x6EB1,	//0xF6FD	U+6EB1	# <cjk>	[2000]
 		0x6EC1 	//0xF6FE	U+6EC1	# <cjk>	[2000]
 	},
+	//87区
 	{
 		0x6EC7,	//0xF7A1	U+6EC7	# <cjk>	[2000]
 		0x6ECE,	//0xF7A2	U+6ECE	# <cjk>	[2000]
@@ -8401,6 +8488,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x73E3,	//0xF7FD	U+73E3	# <cjk>	[2000]
 		0x73E9 	//0xF7FE	U+73E9	# <cjk>	[2000]
 	},
+	//88区
 	{
 		0x7407,	//0xF8A1	U+7407	# <cjk>	[2000]
 		0x740A,	//0xF8A2	U+740A	# <cjk>	[2000]
@@ -8497,6 +8585,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x782D,	//0xF8FD	U+782D	# <cjk>	[2000]
 		0x2548E 	//0xF8FE	U+2548E	# <cjk>	[2000]	[Unicode3.1]
 	},
+	//89区
 	{
 		0x7843,	//0xF9A1	U+7843	# <cjk>	[2000]
 		0x784E,	//0xF9A2	U+784E	# <cjk>	[2000]
@@ -8593,6 +8682,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x7D23,	//0xF9FD	U+7D23	# <cjk>	[2000]
 		0x7D31 	//0xF9FE	U+7D31	# <cjk>	[2000]
 	},
+	//90区
 	{
 		0x7D41,	//0xFAA1	U+7D41	# <cjk>	[2000]
 		0x7D48,	//0xFAA2	U+7D48	# <cjk>	[2000]
@@ -8689,6 +8779,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x83C7,	//0xFAFD	U+83C7	# <cjk>	[2000]
 		0x83CF 	//0xFAFE	U+83CF	# <cjk>	[2000]
 	},
+	//91区
 	{
 		0x83D1,	//0xFBA1	U+83D1	# <cjk>	[2000]
 		0x83E1,	//0xFBA2	U+83E1	# <cjk>	[2000]
@@ -8785,6 +8876,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x8A12,	//0xFBFD	U+8A12	# <cjk>	[2000]
 		0x8A15 	//0xFBFE	U+8A15	# <cjk>	[2000]
 	},
+	//92区
 	{
 		0x8A22,	//0xFCA1	U+8A22	# <cjk>	[2000]
 		0x8A37,	//0xFCA2	U+8A37	# <cjk>	[2000]
@@ -8881,6 +8973,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x91FB,	//0xFCFD	U+91FB	# <cjk>	[2000]
 		0x91E4 	//0xFCFE	U+91E4	# <cjk>	[2000]
 	},
+	//93区
 	{
 		0x91E5,	//0xFDA1	U+91E5	# <cjk>	[2000]
 		0x91ED,	//0xFDA2	U+91ED	# <cjk>	[2000]
@@ -8977,6 +9070,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 		0x9853,	//0xFDFD	U+9853	# <cjk>	[2000]
 		0x9856 	//0xFDFE	U+9856	# <cjk>	[2000]
 	},
+	//94区
 	{
 		0x9857,	//0xFEA1	U+9857	# <cjk>	[2000]
 		0x9859,	//0xFEA2	U+9859	# <cjk>	[2000]
@@ -9076,7 +9170,7 @@ const UCSCHAR euc1[ROWNUM][CELLNUM] =
 };
 #pragma endregion
 
-#pragma region EUC half width katakana
+#pragma region JIS_X_0201 片仮名
 const UCSCHAR eucK[ANKNUM] =
 {
 	0xFF61,	//0x8EA1	U+FF61	# HALFWIDTH IDEOGRAPHIC FULL STOP
@@ -9142,54 +9236,56 @@ const UCSCHAR eucK[ANKNUM] =
 	0xFF9D,	//0x8EDD	U+FF9D	# HALFWIDTH KATAKANA LETTER N
 	0xFF9E,	//0x8EDE	U+FF9E	# HALFWIDTH KATAKANA VOICED SOUND MARK
 	0xFF9F,	//0x8EDF	U+FF9F	# HALFWIDTH KATAKANA SEMI-VOICED SOUND MARK
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000,	//
-	0x0000 	//
+	0x0000,	//0x8EE0		# <reserved>
+	0x0000,	//0x8EE1		# <reserved>
+	0x0000,	//0x8EE2		# <reserved>
+	0x0000,	//0x8EE3		# <reserved>
+	0x0000,	//0x8EE4		# <reserved>
+	0x0000,	//0x8EE5		# <reserved>
+	0x0000,	//0x8EE6		# <reserved>
+	0x0000,	//0x8EE7		# <reserved>
+	0x0000,	//0x8EE8		# <reserved>
+	0x0000,	//0x8EE9		# <reserved>
+	0x0000,	//0x8EEA		# <reserved>
+	0x0000,	//0x8EEB		# <reserved>
+	0x0000,	//0x8EEC		# <reserved>
+	0x0000,	//0x8EED		# <reserved>
+	0x0000,	//0x8EEE		# <reserved>
+	0x0000,	//0x8EEF		# <reserved>
+	0x0000,	//0x8EF0		# <reserved>
+	0x0000,	//0x8EF1		# <reserved>
+	0x0000,	//0x8EF2		# <reserved>
+	0x0000,	//0x8EF3		# <reserved>
+	0x0000,	//0x8EF4		# <reserved>
+	0x0000,	//0x8EF5		# <reserved>
+	0x0000,	//0x8EF6		# <reserved>
+	0x0000,	//0x8EF7		# <reserved>
+	0x0000,	//0x8EF8		# <reserved>
+	0x0000,	//0x8EF9		# <reserved>
+	0x0000,	//0x8EFA		# <reserved>
+	0x0000,	//0x8EFB		# <reserved>
+	0x0000,	//0x8EFC		# <reserved>
+	0x0000,	//0x8EFD		# <reserved>
+	0x0000 	//0x8EFE		# <reserved>
 };
 #pragma endregion
 
-#pragma region EUC 2 INDEX
-const BYTE euc2i[ROWNUM] = {
-	    1, 0, 2, 3, 4, 0, 0, 5, 0, 0, 0, 6, 7, 8, 9,
-	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10,11,
-	12,13,14,15,16,17,18,19,20,21,22,23,24,25,26
+#pragma region JIS_X_0213 第二面インデックス
+const BYTE euc2i[ROWNUM] =
+{
+	    1, 0, 2, 3, 4, 0, 0, 5, 0, 0, 0, 6, 7, 8, 9,	//1-15区
+	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//16-31区
+	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//32-47区
+	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,	//48-63区
+	 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10,11,	//64-79区
+	12,13,14,15,16,17,18,19,20,21,22,23,24,25,26    	//80-94区
 };
 #pragma endregion
 
-#pragma region EUC 2
+#pragma region JIS_X_0213 第二面
 const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 {
+	//1区
 	{
 		0x20089,	//0x8FA1A1	U+20089	# <cjk>	[2000]	[Unicode3.1]
 		0x4E02,	//0x8FA1A2	U+4E02	# <cjk>	[2000]
@@ -9286,6 +9382,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x50E9,	//0x8FA1FD	U+50E9	# <cjk>	[2000]
 		0x3492 	//0x8FA1FE	U+3492	# <cjk>	[2000]
 	},
+	//3区
 	{
 		0x5108,	//0x8FA3A1	U+5108	# <cjk>	[2000]
 		0x203F9,	//0x8FA3A2	U+203F9	# <cjk>	[2000]	[Unicode3.1]
@@ -9382,6 +9479,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x5501,	//0x8FA3FD	U+5501	# <cjk>	[2000]
 		0x5509 	//0x8FA3FE	U+5509	# <cjk>	[2000]
 	},
+	//4区
 	{
 		0x553C,	//0x8FA4A1	U+553C	# <cjk>	[2000]
 		0x5541,	//0x8FA4A2	U+5541	# <cjk>	[2000]
@@ -9478,6 +9576,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x5804,	//0x8FA4FD	U+5804	# <cjk>	[2000]
 		0x581E 	//0x8FA4FE	U+581E	# <cjk>	[2000]
 	},
+	//5区
 	{
 		0x5820,	//0x8FA5A1	U+5820	# <cjk>	[2000]
 		0x5827,	//0x8FA5A2	U+5827	# <cjk>	[2000]
@@ -9574,6 +9673,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x5B84,	//0x8FA5FD	U+5B84	# <cjk>	[2000]
 		0x219C3 	//0x8FA5FE	U+219C3	# <cjk>	[2000]	[Unicode3.1]
 	},
+	//8区
 	{
 		0x5B96,	//0x8FA8A1	U+5B96	# <cjk>	[2000]
 		0x5BAC,	//0x8FA8A2	U+5BAC	# <cjk>	[2000]
@@ -9670,6 +9770,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x5E6C,	//0x8FA8FD	U+5E6C	# <cjk>	[2000]
 		0x5E6D 	//0x8FA8FE	U+5E6D	# <cjk>	[2000]
 	},
+	//12区
 	{
 		0x5E6E,	//0x8FACA1	U+5E6E	# <cjk>	[2000]
 		0x2217B,	//0x8FACA2	U+2217B	# <cjk>	[2000]	[Unicode3.1]
@@ -9766,6 +9867,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x626D,	//0x8FACFD	U+626D	# <cjk>	[2000]
 		0x6273 	//0x8FACFE	U+6273	# <cjk>	[2000]
 	},
+	//13区
 	{
 		0x6299,	//0x8FADA1	U+6299	# <cjk>	[2000]
 		0x62A6,	//0x8FADA2	U+62A6	# <cjk>	[2000]
@@ -9862,6 +9964,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x231C3,	//0x8FADFD	U+231C3	# <cjk>	[2000]	[Unicode3.1]
 		0x6657 	//0x8FADFE	U+6657	# <cjk>	[2000]
 	},
+	//14区
 	{
 		0x665B,	//0x8FAEA1	U+665B	# <cjk>	[2000]
 		0x6663,	//0x8FAEA2	U+6663	# <cjk>	[2000]
@@ -9958,6 +10061,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x68CF,	//0x8FAEFD	U+68CF	# <cjk>	[2000]
 		0x68D6 	//0x8FAEFE	U+68D6	# <cjk>	[2000]
 	},
+	//15区
 	{
 		0x68D9,	//0x8FAFA1	U+68D9	# <cjk>	[2000]
 		0x68E4,	//0x8FAFA2	U+68E4	# <cjk>	[2000]
@@ -10054,6 +10158,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x6B7A,	//0x8FAFFD	U+6B7A	# <cjk>	[2000]
 		0x6B81 	//0x8FAFFE	U+6B81	# <cjk>	[2000]
 	},
+	//78区
 	{
 		0x6B9B,	//0x8FEEA1	U+6B9B	# <cjk>	[2000]
 		0x6BAE,	//0x8FEEA2	U+6BAE	# <cjk>	[2000]
@@ -10150,6 +10255,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x6E63,	//0x8FEEFD	U+6E63	# <cjk>	[2000]
 		0x3D1E 	//0x8FEEFE	U+3D1E	# <cjk>	[2000]
 	},
+	//79区
 	{
 		0x6E93,	//0x8FEFA1	U+6E93	# <cjk>	[2000]
 		0x6EA7,	//0x8FEFA2	U+6EA7	# <cjk>	[2000]
@@ -10246,6 +10352,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x71AE,	//0x8FEFFD	U+71AE	# <cjk>	[2000]
 		0x71AF 	//0x8FEFFE	U+71AF	# <cjk>	[2000]
 	},
+	//80区
 	{
 		0x71B3,	//0x8FF0A1	U+71B3	# <cjk>	[2000]
 		0x243BC,	//0x8FF0A2	U+243BC	# <cjk>	[2000]	[Unicode3.1]
@@ -10342,6 +10449,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x7497,	//0x8FF0FD	U+7497	# <cjk>	[2000]
 		0x7499 	//0x8FF0FE	U+7499	# <cjk>	[2000]
 	},
+	//81区
 	{
 		0x74A0,	//0x8FF1A1	U+74A0	# <cjk>	[2000]
 		0x74A1,	//0x8FF1A2	U+74A1	# <cjk>	[2000]
@@ -10438,6 +10546,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x772D,	//0x8FF1FD	U+772D	# <cjk>	[2000]
 		0x7735 	//0x8FF1FE	U+7735	# <cjk>	[2000]
 	},
+	//82区
 	{
 		0x251A9,	//0x8FF2A1	U+251A9	# <cjk>	[2000]	[Unicode3.1]
 		0x4039,	//0x8FF2A2	U+4039	# <cjk>	[2000]
@@ -10534,6 +10643,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x4163,	//0x8FF2FD	U+4163	# <cjk>	[2000]
 		0x7A2D 	//0x8FF2FE	U+7A2D	# <cjk>	[2000]
 	},
+	//83区
 	{
 		0x7A38,	//0x8FF3A1	U+7A38	# <cjk>	[2000]
 		0x7A47,	//0x8FF3A2	U+7A47	# <cjk>	[2000]
@@ -10630,6 +10740,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x25EC2,	//0x8FF3FD	U+25EC2	# <cjk>	[2000]	[Unicode3.1]
 		0x7CC8 	//0x8FF3FE	U+7CC8	# <cjk>	[2000]
 	},
+	//84区
 	{
 		0x7CCD,	//0x8FF4A1	U+7CCD	# <cjk>	[2000]
 		0x25EE8,	//0x8FF4A2	U+25EE8	# <cjk>	[2000]	[Unicode3.1]
@@ -10726,6 +10837,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x7FE5,	//0x8FF4FD	U+7FE5	# <cjk>	[2000]
 		0x7FEF 	//0x8FF4FE	U+7FEF	# <cjk>	[2000]
 	},
+	//85区
 	{
 		0x7FF2,	//0x8FF5A1	U+7FF2	# <cjk>	[2000]
 		0x8002,	//0x8FF5A2	U+8002	# <cjk>	[2000]
@@ -10822,6 +10934,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x82A7,	//0x8FF5FD	U+82A7	# <cjk>	[2000]
 		0x82A8 	//0x8FF5FE	U+82A8	# <cjk>	[2000]
 	},
+	//86区
 	{
 		0x82B2,	//0x8FF6A1	U+82B2	# <cjk>	[2000]
 		0x82B4,	//0x8FF6A2	U+82B4	# <cjk>	[2000]
@@ -10918,6 +11031,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x859F,	//0x8FF6FD	U+859F	# <cjk>	[2000]
 		0x26FF8 	//0x8FF6FE	U+26FF8	# <cjk>	[2000]	[Unicode3.1]
 	},
+	//87区
 	{
 		0x26FF6,	//0x8FF7A1	U+26FF6	# <cjk>	[2000]	[Unicode3.1]
 		0x26FF7,	//0x8FF7A2	U+26FF7	# <cjk>	[2000]	[Unicode3.1]
@@ -11014,6 +11128,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x8813,	//0x8FF7FD	U+8813	# <cjk>	[2000]
 		0x8828 	//0x8FF7FE	U+8828	# <cjk>	[2000]
 	},
+	//88区
 	{
 		0x882E,	//0x8FF8A1	U+882E	# <cjk>	[2000]
 		0x8832,	//0x8FF8A2	U+8832	# <cjk>	[2000]
@@ -11110,6 +11225,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x8C4F,	//0x8FF8FD	U+8C4F	# <cjk>	[2000]
 		0x8C54 	//0x8FF8FE	U+8C54	# <cjk>	[2000]
 	},
+	//89区
 	{
 		0x8C57,	//0x8FF9A1	U+8C57	# <cjk>	[2000]
 		0x8C69,	//0x8FF9A2	U+8C69	# <cjk>	[2000]
@@ -11206,6 +11322,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x905D,	//0x8FF9FD	U+905D	# <cjk>	[2000]
 		0x285C8 	//0x8FF9FE	U+285C8	# <cjk>	[2000]	[Unicode3.1]
 	},
+	//90区
 	{
 		0x285C9,	//0x8FFAA1	U+285C9	# <cjk>	[2000]	[Unicode3.1]
 		0x9085,	//0x8FFAA2	U+9085	# <cjk>	[2000]
@@ -11302,6 +11419,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x9311,	//0x8FFAFD	U+9311	# <cjk>	[2000]
 		0x28A1E 	//0x8FFAFE	U+28A1E	# <cjk>	[2000]	[Unicode3.1]
 	},
+	//91区
 	{
 		0x28A29,	//0x8FFBA1	U+28A29	# <cjk>	[2000]	[Unicode3.1]
 		0x92F7,	//0x8FFBA2	U+92F7	# <cjk>	[2000]
@@ -11398,6 +11516,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x9757,	//0x8FFBFD	U+9757	# <cjk>	[2000]
 		0x975B 	//0x8FFBFE	U+975B	# <cjk>	[2000]
 	},
+	//92区
 	{
 		0x976A,	//0x8FFCA1	U+976A	# <cjk>	[2000]
 		0x292A0,	//0x8FFCA2	U+292A0	# <cjk>	[2000]	[Unicode3.1]
@@ -11494,6 +11613,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x9A1A,	//0x8FFCFD	U+9A1A	# <cjk>	[2000]
 		0x9A20 	//0x8FFCFE	U+9A20	# <cjk>	[2000]
 	},
+	//93区
 	{
 		0x9A31,	//0x8FFDA1	U+9A31	# <cjk>	[2000]
 		0x9A36,	//0x8FFDA2	U+9A36	# <cjk>	[2000]
@@ -11590,6 +11710,7 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 		0x9C75,	//0x8FFDFD	U+9C75	# <cjk>	[2000]
 		0x9C7A 	//0x8FFDFE	U+9C7A	# <cjk>	[2000]
 	},
+	//94区
 	{
 		0x9CE6,	//0x8FFEA1	U+9CE6	# <cjk>	[2000]
 		0x9CF2,	//0x8FFEA2	U+9CF2	# <cjk>	[2000]
@@ -11689,4 +11810,15 @@ const UCSCHAR euc2[ROW2NUM][CELLNUM] =
 };
 #pragma endregion
 
+#pragma region Unicode -> EUC-JIS-2004 互換性
+const EUCCMP euccmp[CMPEUCNUM] =
+{
+	// nkf 2.1.5
+	// 0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
+	{0xA1B1, 0x203E},
+
+	// nkf 2.1.5
+	// 0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5
+	{0xA1EF, 0x00A5}
+};
 #pragma endregion

@@ -1,5 +1,6 @@
-﻿
-#pragma once
+﻿#pragma once
+
+#include "parseskkdic.h"
 
 // okuri block
 typedef struct _OKURI_BLOCK {
@@ -10,7 +11,7 @@ typedef struct _OKURI_BLOCK {
 #define OKURI_BLOCK_NUM 32
 extern OKURI_BLOCK okuri_block[OKURI_BLOCK_NUM];
 
-extern WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
+extern WCHAR mgrpipename[MAX_PIPENAME];		//名前付きパイプ
 
 void _CreateIpcName();
 BOOL _ConnectDic();
@@ -28,5 +29,5 @@ BOOL _CommandDic(WCHAR command);
 //#define E_MAKESKKDIC_UNGZIP		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 4)
 //#define E_MAKESKKDIC_UNTAR		MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 5)
 
-HRESULT CheckMultiByteFile(LPCWSTR path, int encoding);
+HRESULT CheckMultiByteFile(LPCWSTR path, SKKDICENCODING encoding);
 HRESULT CheckWideCharFile(LPCWSTR path);

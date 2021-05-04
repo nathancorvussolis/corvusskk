@@ -1,5 +1,6 @@
 ﻿
 #include "eucjis2004.h"
+#include "eucjp.h"
 #include "parseskkdic.h"
 #include "configxml.h"
 #include "utf8.h"
@@ -104,9 +105,9 @@ HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len
 	CHAR rbuf[RECVBUFSIZE];
 	BOOL retRead;
 	DWORD bytesRead = 0;
-	FILE *fp;
+	FILE *fp = nullptr;
 
-	_wfopen_s(&fp, path, WB);
+	_wfopen_s(&fp, path, modeWB);
 	if (fp == nullptr)
 	{
 		InternetCloseHandle(hUrl);
@@ -159,58 +160,80 @@ HRESULT DownloadSKKDic(HANDLE hCancelEvent, LPCWSTR url, LPWSTR path, size_t len
 	return S_OK;
 }
 
-HRESULT CheckMultiByteFile(HANDLE hCancelEvent, LPCWSTR path, int encoding)
+HRESULT CheckMultiByteFile(HANDLE hCancelEvent, LPCWSTR path, SKKDICENCODING encoding)
 {
 	HRESULT hr = S_OK;
-	FILE *fp;
-	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
+	FILE *fp = nullptr;
+	CHAR buf[READBUFSIZE];
 	std::string strbuf;
 	size_t len;
 
-	_wfopen_s(&fp, path, RB);
+	_wfopen_s(&fp, path, modeRB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
 	}
 
-	while (fgets(buf, _countof(buf), fp) != nullptr)
+	while (true)
 	{
-		if (IsMakeSKKDicCanceled(hCancelEvent))
+		strbuf.clear();
+
+		while (fgets(buf, _countof(buf), fp) != nullptr)
 		{
-			fclose(fp);
-			return E_ABORT;
+			if (IsMakeSKKDicCanceled(hCancelEvent))
+			{
+				fclose(fp);
+				return E_ABORT;
+			}
+
+			strbuf += buf;
+
+			if (!strbuf.empty() && strbuf.back() == '\n')
+			{
+				break;
+			}
 		}
 
-		strbuf += buf;
-
-		if (!strbuf.empty() && strbuf.back() == '\n')
+		if (ferror(fp) != 0)
 		{
-			switch (encoding)
+			hr = E_MAKESKKDIC_FILEIO;
+			break;
+		}
+
+		if (strbuf.empty())
+		{
+			break;
+		}
+
+		switch (encoding)
+		{
+		case enc_euc_jis_2004: //EUC-JIS-2004
+			if (EucJis2004ToWideChar(strbuf.c_str(), nullptr, nullptr, &len) == FALSE)
 			{
-			case 1: //EUC-JIS-2004
-				if (!EucJis2004ToWideChar(strbuf.c_str(), nullptr, nullptr, &len))
-				{
-					hr = S_FALSE;
-				}
-				break;
-			case 8: //UTF-8
-				if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
-					strbuf.c_str(), -1, nullptr, 0) == 0)
-				{
-					hr = S_FALSE;
-				}
-				break;
-			default:
 				hr = S_FALSE;
-				break;
 			}
-
-			if (hr == S_FALSE)
+			break;
+		case enc_euc_jp: //EUC-JP
+			if (EucJPToWideChar(strbuf.c_str(), nullptr, nullptr, &len) == FALSE)
 			{
-				break;
+				hr = S_FALSE;
 			}
+			break;
+		case enc_utf_8: //UTF-8
+			if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
+				strbuf.c_str(), -1, nullptr, 0) == 0)
+			{
+				hr = S_FALSE;
+			}
+			break;
+		default:
+			hr = S_FALSE;
+			break;
+		}
 
-			strbuf.clear();
+		if (hr == S_FALSE)
+		{
+			break;
 		}
 	}
 
@@ -222,36 +245,52 @@ HRESULT CheckMultiByteFile(HANDLE hCancelEvent, LPCWSTR path, int encoding)
 HRESULT CheckWideCharFile(HANDLE hCancelEvent, LPCWSTR path)
 {
 	HRESULT hr = S_OK;
-	FILE *fp;
-	WCHAR wbuf[READBUFSIZE];
+	FILE *fp = nullptr;
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
 	std::wstring wstrbuf;
 
-	_wfopen_s(&fp, path, RB);
+	_wfopen_s(&fp, path, modeRB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
 	}
 
-	while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
+	while (true)
 	{
-		if (IsMakeSKKDicCanceled(hCancelEvent))
-		{
-			fclose(fp);
-			return E_ABORT;
-		}
+		wstrbuf.clear();
 
-		wstrbuf += wbuf;
-
-		if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
+		while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 		{
-			if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
-				wstrbuf.c_str(), -1, nullptr, 0, nullptr, nullptr) == 0)
+			if (IsMakeSKKDicCanceled(hCancelEvent))
 			{
-				hr = S_FALSE;
-				break;
+				fclose(fp);
+				return E_ABORT;
 			}
 
-			wstrbuf.clear();
+			wstrbuf += wbuf;
+
+			if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
+			{
+				break;
+			}
+		}
+
+		if (ferror(fp) != 0)
+		{
+			hr = E_MAKESKKDIC_FILEIO;
+			break;
+		}
+
+		if (wstrbuf.empty())
+		{
+			break;
+		}
+
+		if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+			wstrbuf.c_str(), -1, nullptr, 0, nullptr, nullptr) == 0)
+		{
+			hr = S_FALSE;
+			break;
 		}
 	}
 
@@ -312,20 +351,20 @@ void LoadSKKDicAdd(SKKDIC &skkdic, const std::wstring &key, const std::wstring &
 
 HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, size_t &count_cand, SKKDIC &entries_a, SKKDIC &entries_n)
 {
-	FILE *fp;
+	FILE *fp = nullptr;
 	std::wstring key;
 	SKKDICCANDIDATES sc;
 	SKKDICOKURIBLOCKS so;
 
-	int encoding = 0;
+	SKKDICENCODING encoding = enc_none;
 
-	//check BOM
-	_wfopen_s(&fp, path, RB);
+	_wfopen_s(&fp, path, modeRB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
 	}
 
+	//check BOM
 	WCHAR bom = L'\0';
 	fread(&bom, 2, 1, fp);
 	fclose(fp);
@@ -333,7 +372,7 @@ HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, siz
 	if (bom == BOM)
 	{
 		//UTF-16LE
-		encoding = 16;
+		encoding = enc_utf_16;
 
 		HRESULT hr = CheckWideCharFile(hCancelEvent, path);
 		switch (hr)
@@ -346,19 +385,19 @@ HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, siz
 			break;
 		default:
 			//Error
-			encoding = -1;
+			encoding = enc_error;
 			break;
 		}
 	}
 
 	//UTF-8 ?
-	if (encoding == 0)
+	if (encoding == enc_none)
 	{
-		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 8);
+		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, enc_utf_8);
 		switch (hr)
 		{
 		case S_OK:
-			encoding = 8;
+			encoding = enc_utf_8;
 			break;
 		case E_ABORT:
 		case E_MAKESKKDIC_FILEIO:
@@ -370,13 +409,31 @@ HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, siz
 	}
 
 	//EUC-JIS-2004 ?
-	if (encoding == 0)
+	if (encoding == enc_none)
 	{
-		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, 1);
+		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, enc_euc_jis_2004);
 		switch (hr)
 		{
 		case S_OK:
-			encoding = 1;
+			encoding = enc_euc_jis_2004;
+			break;
+		case E_ABORT:
+		case E_MAKESKKDIC_FILEIO:
+			return hr;
+			break;
+		default:
+			break;
+		}
+	}
+
+	//EUC-JP ?
+	if (encoding == enc_none)
+	{
+		HRESULT hr = CheckMultiByteFile(hCancelEvent, path, enc_euc_jp);
+		switch (hr)
+		{
+		case S_OK:
+			encoding = enc_euc_jp;
 			break;
 		case E_ABORT:
 		case E_MAKESKKDIC_FILEIO:
@@ -389,19 +446,19 @@ HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, siz
 
 	switch (encoding)
 	{
-	case 1:
+	case enc_euc_jis_2004:
 		//EUC-JIS-2004
-		bom = L'\0';
-		_wfopen_s(&fp, path, RB);
+	case enc_euc_jp:
+		//EUC-JP
+		_wfopen_s(&fp, path, modeRT);
 		break;
-	case 8:
+	case enc_utf_8:
 		//UTF-8
-		bom = BOM;
-		_wfopen_s(&fp, path, RccsUTF8);
+		_wfopen_s(&fp, path, modeRccsUTF8);
 		break;
-	case 16:
+	case enc_utf_16:
 		//UTF-16LE
-		_wfopen_s(&fp, path, RccsUTF16);
+		_wfopen_s(&fp, path, modeRccsUTF16);
 		break;
 	default:
 		return E_MAKESKKDIC_ENCODING;
@@ -423,7 +480,7 @@ HRESULT LoadSKKDicFile(HANDLE hCancelEvent, LPCWSTR path, size_t &count_key, siz
 			return E_ABORT;
 		}
 
-		int rl = ReadSKKDicLine(fp, bom, okuri, key, sc, so);
+		int rl = ReadSKKDicLine(fp, encoding, okuri, key, sc, so);
 		if (rl == -1)
 		{
 			//EOF
@@ -507,7 +564,7 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 
 	_snwprintf_s(path, len, _TRUNCATE, L"%s\\%s", tempdir, fname);
 
-	FILE *fpo;
+	FILE *fpo = nullptr;
 	_wfopen_s(&fpo, path, L"wb");
 	if (fpo == nullptr)
 	{
@@ -629,7 +686,7 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 	}
 
 	FILE *fpi = nullptr;
-	_wfopen_s(&fpi, tarpath, RB);
+	_wfopen_s(&fpi, tarpath, modeRB);
 	if (fpi == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
@@ -734,7 +791,7 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 				if (wcslen(ttfname) == 0) break;
 			}
 
-			_wfopen_s(&fpo, path, WB);
+			_wfopen_s(&fpo, path, modeWB);
 
 			if (fpo == nullptr)
 			{
@@ -929,11 +986,11 @@ void WriteSKKDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES 
 
 HRESULT WriteSKKDic(HANDLE hCancelEvent, const SKKDIC &entries_a, const SKKDIC &entries_n)
 {
-	FILE *fp;
+	FILE *fp = nullptr;
 	WCHAR bom = BOM;
 	LPCWSTR crlf = L"\r\n";
 
-	_wfopen_s(&fp, pathskkdic, WB);
+	_wfopen_s(&fp, pathskkdic, modeWB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
@@ -981,6 +1038,16 @@ HRESULT WriteSKKDic(HANDLE hCancelEvent, const SKKDIC &entries_a, const SKKDIC &
 	return S_OK;
 }
 
+void SetTaskbarListMarquee(HWND hwnd, TBPFLAG flag)
+{
+	CComPtr<ITaskbarList3> pTaskbarList3;
+	HRESULT hr = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pTaskbarList3));
+	if (SUCCEEDED(hr) && (pTaskbarList3 != nullptr))
+	{
+		pTaskbarList3->SetProgressState(hwnd, flag);
+	}
+}
+
 void MakeSKKDicThread(void *p)
 {
 	WCHAR msg[1024];
@@ -988,8 +1055,13 @@ void MakeSKKDicThread(void *p)
 
 	HWND child = (HWND)p;
 	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY);
+	HWND pdlg = GetParent(child);
 
 	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, cnfcanceldiceventname);
+
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+
+	SetTaskbarListMarquee(pdlg, TBPF_INDETERMINATE);
 
 	LONGLONG t = 0;
 
@@ -1036,15 +1108,19 @@ void MakeSKKDicThread(void *p)
 
 	if (SUCCEEDED(hr))
 	{
+		SetTaskbarListMarquee(pdlg, TBPF_NOPROGRESS);
+
 		_snwprintf_s(msg, _TRUNCATE, L"完了しました。\r\n\r\n%lld msec", t);
 
-		MessageBoxW(parent, msg, TextServiceDesc, MB_OK | MB_ICONINFORMATION);
+		MessageBoxW(pdlg, msg, TextServiceDesc, MB_OK | MB_ICONINFORMATION);
 	}
 	else if (hr == E_ABORT)
 	{
 		_wremove(pathskkdic);
 
-		MessageBoxW(parent, L"中断しました。", TextServiceDesc, MB_OK | MB_ICONWARNING);
+		SetTaskbarListMarquee(pdlg, TBPF_PAUSED);
+
+		MessageBoxW(pdlg, L"中断しました。", TextServiceDesc, MB_OK | MB_ICONWARNING);
 	}
 	else
 	{
@@ -1089,10 +1165,17 @@ void MakeSKKDicThread(void *p)
 			}
 		}
 
+		SetTaskbarListMarquee(pdlg, TBPF_ERROR);
+
 		_snwprintf_s(msg, _TRUNCATE, L"失敗しました。(%s)\n\n%s", errmsg, path);
 
-		MessageBoxW(parent, msg, TextServiceDesc, MB_OK | MB_ICONERROR);
+		MessageBoxW(pdlg, msg, TextServiceDesc, MB_OK | MB_ICONERROR);
 	}
+
+	SetTaskbarListMarquee(pdlg, TBPF_NOPROGRESS);
+
+	CoUninitialize();
+
 	return;
 }
 

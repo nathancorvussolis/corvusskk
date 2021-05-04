@@ -87,14 +87,12 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
-	FILE *fp;
-	std::wstring candidate, wsbuf, kbuf, cbuf;
-	WCHAR wbuf[READBUFSIZE];
-	PWCHAR pwb;
+	FILE *fp = nullptr;
+	std::wstring candidate, wstrbuf, kbuf, cbuf;
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
 	long pos, left, mid, right;
-	size_t is, ie;
 
-	_wfopen_s(&fp, pathskkdic, RB);
+	_wfopen_s(&fp, pathskkdic, modeRB);
 	if (fp == nullptr)
 	{
 		return candidate;
@@ -123,42 +121,45 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 		}
 		fseek(fp, pos, SEEK_SET);
 
-		wsbuf.clear();
+		wstrbuf.clear();
 		kbuf.clear();
 		cbuf.clear();
 
-		while ((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+		while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 		{
-			wsbuf += wbuf;
+			wstrbuf += wbuf;
 
-			if (!wsbuf.empty() && wsbuf.back() == L'\n')
+			if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
 			{
+				// CR+LF -> LF
+				if (wstrbuf.size() >= 2 && wstrbuf[wstrbuf.size() - 2] == L'\r')
+				{
+					wstrbuf.erase(wstrbuf.size() - 2);
+					wstrbuf.push_back(L'\n');
+				}
 				break;
 			}
 		}
 
-		if (pwb == nullptr)
+		if (ferror(fp) != 0)
 		{
 			break;
 		}
 
-		// CR+LF -> LF
-		is = wsbuf.find_last_of(L'/');
-		if (is != std::wstring::npos)
+		if (wstrbuf.empty())
 		{
-			wsbuf.erase(is + 1);
-			wsbuf.push_back(L'\n');
+			break;
 		}
 
-		is = wsbuf.find(L"\x20/");
+		size_t is = wstrbuf.find(L"\x20/");
 		if (is != std::wstring::npos)
 		{
-			ie = wsbuf.find_last_not_of(L'\x20', is);
-			if (is != std::wstring::npos)
+			size_t ie = wstrbuf.find_last_not_of(L'\x20', is);
+			if (ie != std::wstring::npos)
 			{
-				kbuf = wsbuf.substr(0, ie + 1);
+				kbuf = wstrbuf.substr(0, ie + 1);
 			}
-			cbuf = wsbuf.substr(is + 1);
+			cbuf = wstrbuf.substr(is + 1);
 		}
 
 		int cmpkey = searchkey.compare(kbuf);
@@ -184,9 +185,9 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 
 void MakeSKKDicPos()
 {
-	FILE *fp;
-	WCHAR wbuf[READBUFSIZE];
-	PWCHAR pwb, pwn;
+	FILE *fp = nullptr;
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
+	std::wstring wstrbuf;
 	long pos;
 	int okuri = -1;
 
@@ -195,40 +196,58 @@ void MakeSKKDicPos()
 	skkdicpos_n.clear();
 	skkdicpos_n.shrink_to_fit();
 
-	_wfopen_s(&fp, pathskkdic, RB);
+	_wfopen_s(&fp, pathskkdic, modeRB);
 	if (fp == nullptr)
 	{
 		return;
 	}
 
-	fseek(fp, 2, SEEK_SET); //skip BOM
+	//check BOM
+	WCHAR bom = L'\0';
+	fread(&bom, 2, 1, fp);
+	if (bom != BOM)
+	{
+		fclose(fp);
+		return;
+	}
+
 	pos = ftell(fp);
 
 	while (true)
 	{
-		while ((pwb = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+		wstrbuf.clear();
+
+		while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 		{
-			if ((pwn = wcschr(wbuf, L'\n')) != nullptr)
+			wstrbuf += wbuf;
+
+			if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
 			{
-				if ((pwn != wbuf) && (*(pwn - 1) == L'\r'))
+				// CR+LF -> LF
+				if (wstrbuf.size() >= 2 && wstrbuf[wstrbuf.size() - 2] == L'\r')
 				{
-					*(pwn - 1) = L'\n';
-					*pwn = L'\0';
+					wstrbuf.erase(wstrbuf.size() - 2);
+					wstrbuf.push_back(L'\n');
 				}
 				break;
 			}
 		}
 
-		if (pwb == nullptr)
+		if (ferror(fp) != 0)
 		{
 			break;
 		}
 
-		if (wcscmp(EntriesAri, wbuf) == 0)
+		if (wstrbuf.empty())
+		{
+			break;
+		}
+
+		if (wstrbuf.compare(EntriesAri) == 0)
 		{
 			okuri = 1;
 		}
-		else if (wcscmp(EntriesNasi, wbuf) == 0)
+		else if (wstrbuf.compare(EntriesNasi) == 0)
 		{
 			okuri = 0;
 		}

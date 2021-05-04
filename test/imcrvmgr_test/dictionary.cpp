@@ -2,10 +2,11 @@
 #include "common.h"
 #include "parseskkdic.h"
 #include "eucjis2004.h"
+#include "eucjp.h"
 #include "dictionary.h"
 
-WCHAR krnlobjsddl[MAX_KRNLOBJNAME];	//SDDL
-WCHAR mgrpipename[MAX_KRNLOBJNAME];	//名前付きパイプ
+WCHAR krnlobjsddl[MAX_SECURITYDESC];	//SDDL
+WCHAR mgrpipename[MAX_PIPENAME];	//名前付きパイプ
 
 HANDLE hPipe = INVALID_HANDLE_VALUE;
 
@@ -285,52 +286,74 @@ exit:
 	return ret;
 }
 
-HRESULT CheckMultiByteFile(LPCWSTR path, int encoding)
+HRESULT CheckMultiByteFile(LPCWSTR path, SKKDICENCODING encoding)
 {
 	HRESULT hr = S_OK;
-	FILE *fp;
-	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
+	FILE *fp = nullptr;
+	CHAR buf[READBUFSIZE];
 	std::string strbuf;
 	size_t len;
 
-	_wfopen_s(&fp, path, RB);
+	_wfopen_s(&fp, path, modeRB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
 	}
 
-	while (fgets(buf, _countof(buf), fp) != nullptr)
+	while (true)
 	{
-		strbuf += buf;
+		strbuf.clear();
 
-		if (!strbuf.empty() && strbuf.back() == '\n')
+		while (fgets(buf, _countof(buf), fp) != nullptr)
 		{
-			switch (encoding)
+			strbuf += buf;
+
+			if (!strbuf.empty() && strbuf.back() == '\n')
 			{
-			case 1: //EUC-JIS-2004
-				if (!EucJis2004ToWideChar(strbuf.c_str(), nullptr, nullptr, &len))
-				{
-					hr = S_FALSE;
-				}
 				break;
-			case 8: //UTF-8
-				if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
-					strbuf.c_str(), -1, nullptr, 0) == 0)
-				{
-					hr = S_FALSE;
-				}
-				break;
-			default:
+			}
+		}
+
+		if (ferror(fp) != 0)
+		{
+			hr = E_MAKESKKDIC_FILEIO;
+			break;
+		}
+
+		if (strbuf.empty())
+		{
+			break;
+		}
+
+		switch (encoding)
+		{
+		case enc_euc_jis_2004: //EUC-JIS-2004
+			if (EucJis2004ToWideChar(strbuf.c_str(), nullptr, nullptr, &len) == FALSE)
+			{
 				hr = S_FALSE;
-				break;
 			}
-
-			if (hr == S_FALSE)
+			break;
+		case enc_euc_jp: //EUC-JP
+			if (EucJPToWideChar(strbuf.c_str(), nullptr, nullptr, &len) == FALSE)
 			{
-				break;
+				hr = S_FALSE;
 			}
+			break;
+		case enc_utf_8: //UTF-8
+			if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
+				strbuf.c_str(), -1, nullptr, 0) == 0)
+			{
+				hr = S_FALSE;
+			}
+			break;
+		default:
+			hr = S_FALSE;
+			break;
+		}
 
-			strbuf.clear();
+		if (hr == S_FALSE)
+		{
+			break;
 		}
 	}
 
@@ -342,30 +365,46 @@ HRESULT CheckMultiByteFile(LPCWSTR path, int encoding)
 HRESULT CheckWideCharFile(LPCWSTR path)
 {
 	HRESULT hr = S_OK;
-	FILE *fp;
-	WCHAR wbuf[READBUFSIZE];
+	FILE *fp = nullptr;
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
 	std::wstring wstrbuf;
 
-	_wfopen_s(&fp, path, RB);
+	_wfopen_s(&fp, path, modeRB);
 	if (fp == nullptr)
 	{
 		return E_MAKESKKDIC_FILEIO;
 	}
 
-	while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
+	while (true)
 	{
-		wstrbuf += wbuf;
+		wstrbuf.clear();
 
-		if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
+		while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 		{
-			if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
-				wstrbuf.c_str(), -1, nullptr, 0, nullptr, nullptr) == 0)
+			wstrbuf += wbuf;
+
+			if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
 			{
-				hr = S_FALSE;
 				break;
 			}
+		}
 
-			wstrbuf.clear();
+		if (ferror(fp) != 0)
+		{
+			hr = E_MAKESKKDIC_FILEIO;
+			break;
+		}
+
+		if (wstrbuf.empty())
+		{
+			break;
+		}
+
+		if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+			wstrbuf.c_str(), -1, nullptr, 0, nullptr, nullptr) == 0)
+		{
+			hr = S_FALSE;
+			break;
 		}
 	}
 

@@ -28,7 +28,17 @@ typedef std::map< std::wstring, SKKDICCANDIDATES > SKKDIC;
 extern LPCWSTR EntriesAri;
 extern LPCWSTR EntriesNasi;
 
-int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
+enum SKKDICENCODING
+{
+	enc_error = -1,
+	enc_none = 0,
+	enc_euc_jis_2004 = 1,
+	enc_euc_jp = 2,
+	enc_utf_8 = 8,
+	enc_utf_16 = 16
+};
+
+int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &key,
 	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o);
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c);
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o);

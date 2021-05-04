@@ -379,7 +379,7 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 BOOL LoadUserDic()
 {
 	BOOL ret = FALSE;
-	FILE *fp;
+	FILE *fp = nullptr;
 	std::wstring key, empty;
 	int okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
 	SKKDICCANDIDATES sc;
@@ -395,7 +395,7 @@ BOOL LoadUserDic()
 
 	EnterCriticalSection(&csUserDict);	// !
 
-	_wfopen_s(&fp, pathuserdic, RccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
+	_wfopen_s(&fp, pathuserdic, modeRccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
 	if (fp == nullptr)
 	{
 		goto exit;
@@ -403,7 +403,7 @@ BOOL LoadUserDic()
 
 	while (true)
 	{
-		int rl = ReadSKKDicLine(fp, BOM, okuri, key, sc, so);
+		int rl = ReadSKKDicLine(fp, enc_utf_8, okuri, key, sc, so);
 		if (rl == -1)
 		{
 			//EOF
@@ -586,7 +586,7 @@ void WriteUserDicEntry(FILE *fp, const std::wstring &key, const SKKDICCANDIDATES
 
 void SaveUserDic(USERDATA *userdata)
 {
-	FILE *fp;
+	FILE *fp = nullptr;
 	SKKDICOKURIBLOCKS so;
 
 	if (userdata == nullptr)
@@ -596,7 +596,7 @@ void SaveUserDic(USERDATA *userdata)
 
 	EnterCriticalSection(&csUserDict);	// !
 
-	_wfopen_s(&fp, pathuserdic, WccsUTF16);
+	_wfopen_s(&fp, pathuserdic, modeWccsUTF16);
 	if (fp == nullptr)
 	{
 		goto exit;

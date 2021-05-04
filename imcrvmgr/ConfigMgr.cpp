@@ -13,9 +13,9 @@ WCHAR pathuserbak[MAX_PATH];	//ユーザー辞書バックアッププレフィ�
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 WCHAR pathinitlua[MAX_PATH];	//init.lua
 
-WCHAR krnlobjsddl[MAX_KRNLOBJNAME];		//SDDL
-WCHAR mgrpipename[MAX_KRNLOBJNAME];		//名前付きパイプ
-WCHAR mgrmutexname[MAX_KRNLOBJNAME];	//ミューテックス
+WCHAR krnlobjsddl[MAX_SECURITYDESC];	//SDDL
+WCHAR mgrpipename[MAX_PIPENAME];	//名前付きパイプ
+WCHAR mgrmutexname[MAX_PATH];		//ミューテックス
 
 // 辞書サーバー設定
 BOOL serv = FALSE;		//SKK辞書サーバーを使用する

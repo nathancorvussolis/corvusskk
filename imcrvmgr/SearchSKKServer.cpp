@@ -1,5 +1,6 @@
 ﻿
 #include "eucjis2004.h"
+#include "eucjp.h"
 #include "utf8.h"
 #include "imcrvmgr.h"
 
@@ -7,11 +8,10 @@ SOCKET skksocket = INVALID_SOCKET;
 
 std::wstring SearchSKKServer(const std::wstring &searchkey)
 {
-	std::wstring candidate;
 	std::string key;
-	std::string buf;
+	std::wstring candidate;
 	CHAR rbuf[RECVBUFSIZE];
-	int n;
+	std::string buf;
 
 	if (serv)
 	{
@@ -28,24 +28,33 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 	}
 
 	key.push_back(SKK_REQ);
+	std::string skey;
 	switch (encoding)
 	{
 	case 0:
-		buf = wstring_to_eucjis2004_string(searchkey);
-		if (!buf.empty())
+		skey = wstring_to_eucjis2004_string(searchkey);
+		if (!skey.empty())
 		{
-			key += buf;
+			key += skey;
 		}
 		else
 		{
-			return candidate;
+			skey = wstring_to_eucjp_string(searchkey);
+			if (!skey.empty())
+			{
+				key += skey;
+			}
+			else
+			{
+				return candidate;
+			}
 		}
 		break;
 	case 1:
-		buf = wstring_to_utf8_string(searchkey);
-		if (!buf.empty())
+		skey = wstring_to_utf8_string(searchkey);
+		if (!skey.empty())
 		{
-			key += buf;
+			key += skey;
 		}
 		else
 		{
@@ -64,12 +73,10 @@ std::wstring SearchSKKServer(const std::wstring &searchkey)
 		goto end;
 	}
 
-	buf.clear();
-
 	while (true)
 	{
 		ZeroMemory(rbuf, sizeof(rbuf));
-		n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
+		int n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
 		if (n == SOCKET_ERROR || n <= 0)
 		{
 			StartConnectSKKServer();
@@ -89,16 +96,21 @@ end:
 	{
 		std::string s;
 		std::smatch m;
-		std::regex r;
+		static const std::regex r("/[^/]+");
+		std::wstring c;
 
 		s = buf.substr(1);
-		r.assign("/[^/]+");
 		while (std::regex_search(s, m, r))
 		{
 			switch (encoding)
 			{
 			case 0:
-				candidate += eucjis2004_string_to_wstring(m.str());
+				c = eucjis2004_string_to_wstring(m.str());
+				if (c.empty())
+				{
+					c = eucjp_string_to_wstring(m.str());
+				}
+				candidate += c;
 				break;
 			case 1:
 				candidate += utf8_string_to_wstring(m.str());
@@ -251,10 +263,6 @@ void CleanUpSKKServer()
 std::wstring GetSKKServerInfo(CHAR req)
 {
 	std::wstring ret;
-	std::string sbuf;
-	std::string buf;
-	CHAR rbuf[RECVBUFSIZE];
-	int n;
 
 	if (serv)
 	{
@@ -276,17 +284,20 @@ std::wstring GetSKKServerInfo(CHAR req)
 	}
 	else
 	{
+		CHAR rbuf[RECVBUFSIZE];
+		std::string buf;
+
 		while (true)
 		{
 			ZeroMemory(rbuf, sizeof(rbuf));
-			n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
+			int n = recv(skksocket, rbuf, sizeof(rbuf) - 1, 0);
 			if (n == SOCKET_ERROR || n <= 0)
 			{
 				StartConnectSKKServer();
 				break;
 			}
 
-			sbuf += rbuf;
+			buf += rbuf;
 
 			if (rbuf[n - 1] == '\x20'/*SP*/)
 			{
@@ -297,10 +308,14 @@ std::wstring GetSKKServerInfo(CHAR req)
 		switch (encoding)
 		{
 		case 0:
-			ret = eucjis2004_string_to_wstring(sbuf);
+			ret = eucjis2004_string_to_wstring(buf);
+			if (ret.empty())
+			{
+				ret = eucjp_string_to_wstring(buf);
+			}
 			break;
 		case 1:
-			ret = utf8_string_to_wstring(sbuf);
+			ret = utf8_string_to_wstring(buf);
 			break;
 		default:
 			break;

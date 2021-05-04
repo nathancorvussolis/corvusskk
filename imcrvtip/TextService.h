@@ -282,12 +282,12 @@ private:
 	FILETIME ftconfigxml;			//更新時刻
 
 	//imcrvmgr.exe との名前付きパイプ
-	WCHAR mgrpipename[MAX_KRNLOBJNAME];
+	WCHAR mgrpipename[MAX_PIPENAME];
 	HANDLE hPipe;
 	WCHAR pipebuf[PIPEBUFSIZE];
 	//ミューテックス
-	WCHAR mgrmutexname[MAX_KRNLOBJNAME];
-	WCHAR cnfmutexname[MAX_KRNLOBJNAME];
+	WCHAR mgrmutexname[MAX_PATH];
+	WCHAR cnfmutexname[MAX_PATH];
 
 	//キーマップ
 	CKEYMAP ckeymap;		//文字

@@ -65,11 +65,11 @@ void SaveJLatin(IXmlWriter *pWriter, HWND hDlg);
 
 extern LPCWSTR TextServiceDesc;
 extern HINSTANCE hInst;
-extern WCHAR cnfmutexname[MAX_KRNLOBJNAME];	//ミューテックス
-extern WCHAR cnfcanceldiceventname[MAX_KRNLOBJNAME];	//辞書取込キャンセルイベント
-extern WCHAR pathconfigxml[MAX_PATH];		//設定
-extern WCHAR pathskkdic[MAX_PATH];			//取込SKK辞書
-extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];
+extern WCHAR cnfmutexname[MAX_PATH];	//ミューテックス
+extern WCHAR cnfcanceldiceventname[MAX_PATH];	//辞書取込キャンセルイベント
+extern WCHAR pathconfigxml[MAX_PATH];	//設定
+extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
+extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];	//URL
 
 #define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
 

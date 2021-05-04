@@ -1,79 +1,84 @@
 ﻿
 #include "common.h"
 #include "eucjis2004.h"
+#include "eucjp.h"
 #include "parseskkdic.h"
 
 LPCWSTR EntriesAri = L";; okuri-ari entries.\n";
 LPCWSTR EntriesNasi = L";; okuri-nasi entries.\n";
 
-int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
+int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &key,
 	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o)
 {
-	CHAR buf[READBUFSIZE * sizeof(WCHAR)];
-	std::string sbuf;
-	WCHAR wbuf[READBUFSIZE];
-	std::wstring wsbuf, s, fmt;
-	size_t is, ie;
-	void *rp;
+	CHAR buf[READBUFSIZE];
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
+	std::string strbuf;
+	std::wstring wstrbuf;
 
 	c.clear();
 	o.clear();
 
-	switch (bom)
+	switch (encoding)
 	{
-	case BOM:
-		while ((rp = fgetws(wbuf, _countof(wbuf), fp)) != nullptr)
+	case enc_utf_8:		//UTF-8
+	case enc_utf_16:	//UTF-16LE
+		while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
 		{
-			wsbuf += wbuf;
+			wstrbuf += wbuf;
 
-			if (!wsbuf.empty() && wsbuf.back() == L'\n')
+			if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
+			{
+				break;
+			}
+		}
+		break;
+	case enc_euc_jis_2004:		//EUC-JIS-2004
+	case enc_euc_jp:		//EUC-JP
+		while (fgets(buf, _countof(buf), fp) != nullptr)
+		{
+			strbuf += buf;
+
+			if (!strbuf.empty() && strbuf.back() == '\n')
 			{
 				break;
 			}
 		}
 		break;
 	default:
-		while ((rp = fgets(buf, _countof(buf), fp)) != nullptr)
-		{
-			sbuf += buf;
-
-			if (!sbuf.empty() && sbuf.back() == '\n')
-			{
-				break;
-			}
-		}
-		break;
+		return -1;
 	}
 
-	if (rp == nullptr)
+	if (ferror(fp) != 0)
 	{
 		return -1;
 	}
 
-	switch (bom)
+	switch (encoding)
 	{
-	case BOM:
+	case enc_utf_8:		//UTF-8
+	case enc_utf_16:	//UTF-16LE
+		break;
+	case enc_euc_jis_2004:		//EUC-JIS-2004
+		wstrbuf = eucjis2004_string_to_wstring(strbuf);
+		break;
+	case enc_euc_jp:		//EUC-JP
+		wstrbuf = eucjp_string_to_wstring(strbuf);
 		break;
 	default:
-		wsbuf = eucjis2004_string_to_wstring(sbuf);
-		if (wsbuf.empty())
-		{
-			return 1;
-		}
 		break;
 	}
 
-	if (wsbuf.empty())
+	if (wstrbuf.empty())
 	{
-		return 1;
+		return -1;
 	}
 
-	if (wsbuf.compare(EntriesAri) == 0)
+	if (wstrbuf.compare(EntriesAri) == 0)
 	{
 		okuri = 1;
 		return 1;
 	}
-	else if (wsbuf.compare(EntriesNasi) == 0)
+	else if (wstrbuf.compare(EntriesNasi) == 0)
 	{
 		okuri = 0;
 		return 1;
@@ -84,10 +89,11 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 		return 1;
 	}
 
-	s = wsbuf;
+	std::wstring s = wstrbuf;
+
+	static const std::wstring fmt(L"");
 
 	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	fmt.assign(L"");
 	s = std::regex_replace(s, rectrl, fmt);
 
 	if (okuri == 1)
@@ -97,23 +103,17 @@ int ReadSKKDicLine(FILE *fp, WCHAR bom, int &okuri, std::wstring &key,
 
 		//送りありエントリのブロックを除去
 		static const std::wregex reblock(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
-		fmt.assign(L"");
 		s = std::regex_replace(s, reblock, fmt);
 	}
 
-	is = s.find(L"\x20/");
+	size_t is = s.find(L"\x20/");
 	if (is == std::wstring::npos)
 	{
 		return 1;
 	}
 
-	ie = s.find_last_not_of(L'\x20', is);
+	size_t ie = s.find_last_not_of(L'\x20', is);
 	if (ie == std::wstring::npos)
-	{
-		return 1;
-	}
-
-	if (s.find_last_of(L'\x20', ie) != std::wstring::npos)
 	{
 		return 1;
 	}

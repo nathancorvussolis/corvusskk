@@ -326,7 +326,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 
 void LoadConfigKanaTxt(LPCWSTR path)
 {
-	FILE *fp;
+	FILE *fp = nullptr;
 	wchar_t b[CONFKANALEN];
 	const wchar_t seps[] = L"\t\n\0";
 	size_t sidx, eidx;
@@ -335,7 +335,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
 
-	_wfopen_s(&fp, path, RccsUTF8);
+	_wfopen_s(&fp, path, modeRccsUTF8);
 	if (fp == nullptr)
 	{
 		return;
@@ -453,7 +453,7 @@ void SaveKanaTxt(HWND hDlg, LPCWSTR path)
 {
 	ROMAN_KANA_CONV rkc;
 	WCHAR soku[2];
-	FILE *fp;
+	FILE *fp = nullptr;
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
@@ -474,7 +474,7 @@ void SaveKanaTxt(HWND hDlg, LPCWSTR path)
 		roman_kana_conv.push_back(rkc);
 	}
 
-	_wfopen_s(&fp, path, WccsUTF8);
+	_wfopen_s(&fp, path, modeWccsUTF8);
 	if (fp != nullptr)
 	{
 		count = (int)roman_kana_conv.size();

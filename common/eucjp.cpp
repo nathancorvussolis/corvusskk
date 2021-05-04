@@ -1,62 +1,18 @@
 ﻿
-#include "eucjis2004table.h"
+#include "eucjptable.h"
+#include "eucjis2004.h"
 
-/* EUC-JIS-2004
+/* EUC-JP
     0x00..    0x7F ASCII
-  0xA1**..  0xFE** JIS X 0213 Plane 1
+  0xA1**..  0xFE** JIS X 0208
   0x8E**..  0x8E** JIS X 0201 HALFWIDTH KATAKANA
-0x8FA1**..0x8FFE** JIS X 0213 Plane 2
+0x8FA1**..0x8FFE** JIS X 0212
   (** : 0xA1..0xFE)
 */
 
-/* UTF-16 surrogate pair
-U  = WWWWWyyyyyyxxxxxxxxxx Unicode Code Point (U+10000..U+10FFFF)
-U' =  wwwwyyyyyyxxxxxxxxxx Unicode Code Point - 0x10000 (ex. U+10FFFF -> 0xFFFFF(20bit))
-W1 =      110110wwwwyyyyyy 1st : D800..DBFF (use upper 10bit)
-W2 =      110111xxxxxxxxxx 2nd : DC00..DFFF (use lower 10bit)
-*/
-
-#define SURROGATEPAIR_UCPMAX	0x10FFFF
-#define SURROGATEPAIR_UCPMIN	0x10000
-#define SURROGATEPAIR_MASK		0xFC00
-#define SURROGATEPAIR_HIGH_MASK	0xD800
-#define SURROGATEPAIR_LOW_MASK	0xDC00
-#define SURROGATEPAIR_SEPBIT	10
-#define SURROGATEPAIR_SEPMASK	0x3FF
-
-// Unicode Code PointをUTF-16へ変換
-
-size_t UcpToWideChar(UCSCHAR ucp, PWCHAR first, PWCHAR second)
-{
-	size_t ret = 0;
-
-	if (first == nullptr || second == nullptr)
-	{
-		return 0;
-	}
-
-	*first = L'\0';
-	*second = L'\0';
-
-	if (ucp < SURROGATEPAIR_UCPMIN)
-	{
-		*first = (WCHAR)ucp;
-		*second = L'\0';
-		ret = 1;
-	}
-	else if (ucp <= SURROGATEPAIR_UCPMAX)  	// surrogate pair
-	{
-		*first = (WCHAR)(SURROGATEPAIR_HIGH_MASK | ((ucp - SURROGATEPAIR_UCPMIN) >> SURROGATEPAIR_SEPBIT));
-		*second = (WCHAR)(SURROGATEPAIR_LOW_MASK | ((ucp - SURROGATEPAIR_UCPMIN) & SURROGATEPAIR_SEPMASK));
-		ret = 2;
-	}
-
-	return ret;
-}
-
 // EUC 1文字分をUnicode Code Pointへ変換
 
-size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
+size_t EucJPToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 {
 	CONST CHAR as = 0x00;
 	CONST CHAR ae = 0x7F;
@@ -86,7 +42,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	{
 		switch (src[0])
 		{
-		case ss3:	// JIS X 0213 第二面
+		case ss3:	// JIS X 0212
 			if (srcsize < 3)
 			{
 				break;
@@ -108,9 +64,9 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 			if ((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
 				*ucp1 = 0;
-				if (euc2i[ej[0] - ejs] != 0 && euc2i[ej[0] - ejs] <= ROW2NUM)
+				if (euc0212i[ej[0] - ejs] != 0 && euc0212i[ej[0] - ejs] <= ROW0212NUM)
 				{
-					*ucp1 = euc2[euc2i[ej[0] - ejs] - 1][ej[1] - ejs];
+					*ucp1 = euc0212[euc0212i[ej[0] - ejs] - 1][ej[1] - ejs];
 				}
 				*ucp2 = 0;
 				srcused = 3;
@@ -138,7 +94,7 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 			}
 			break;
 
-		default:	// JIS X 0213 第一面
+		default:	// JIS X 0208
 			if (srcsize < 2)
 			{
 				break;
@@ -159,26 +115,13 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 
 			if ((ej[0] >= ejs && ej[0] <= eje) && (ej[1] >= ejs && ej[1] <= eje))
 			{
-				USHORT euc = ((USHORT)ej[0] << 8) | (USHORT)ej[1] | 0x8080;
-
-				// 結合文字
-				for (int i = 0; i < CMBCHARNUM; i++)
+				*ucp1 = 0;
+				CHAR ku = ej[0] - ejs + 1;
+				CHAR ten = ej[1] - ejs + 1;
+				if ((jisx0208e[ku - 1][(ten - (ten % 16)) / 16] & (0x0001 << (ten % 16))) != 0)
 				{
-					if (euccmb[i].euc == euc)
-					{
-						*ucp1 = euccmb[i].ucp[0];
-						*ucp2 = euccmb[i].ucp[1];
-						srcused = 2;
-						break;
-					}
+					*ucp1 = euc1[ej[0] - ejs][ej[1] - ejs];
 				}
-
-				if (srcused != 0)
-				{
-					break;
-				}
-
-				*ucp1 = euc1[ej[0] - ejs][ej[1] - ejs];
 				*ucp2 = 0;
 				srcused = 2;
 			}
@@ -189,24 +132,9 @@ size_t EucJis2004ToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	return srcused;
 }
 
-// 終端NULLを付加
+// EUC-JPをUTF-16へ変換
 
-void AddNullWideChar(size_t *srcsize, size_t si, LPWSTR dst, size_t *dstsize, size_t di)
-{
-	if (srcsize != nullptr)
-	{
-		*srcsize = si;
-	}
-	*dstsize = di + 1;
-	if (dst != nullptr)
-	{
-		*(dst + di) = L'\0';
-	}
-}
-
-// EUC-JIS-2004をUTF-16へ変換
-
-BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
+BOOL EucJPToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
 {
 	size_t si = 0, di = 0, ss = -1;
 	UCSCHAR ucp[2];
@@ -241,8 +169,8 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 			break;
 		}
 
-		// EUC-JIS-2004からUnicode Code Pointへ変換
-		size_t used = EucJis2004ToUcp(src + si, ss - si, &ucp[0], &ucp[1]);
+		// EUC-JPからUnicode Code Pointへ変換
+		size_t used = EucJPToUcp(src + si, ss - si, &ucp[0], &ucp[1]);
 		if ((ucp[0] == 0) || (used == 0))
 		{
 			AddNullWideChar(srcsize, si, dst, dstsize, di);
@@ -283,31 +211,15 @@ BOOL EucJis2004ToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsi
 	return TRUE;
 }
 
-// 終端NULLを付加
+// UTF-16をEUC-JPへ変換
 
-void AddNullMultiByte(size_t *srcsize, size_t si, LPSTR dst, size_t *dstsize, size_t di)
-{
-	if (srcsize != nullptr)
-	{
-		*srcsize = si;
-	}
-	*dstsize = di + 1;
-	if (dst != nullptr)
-	{
-		*(dst + di) = '\0';
-	}
-}
-
-// UTF-16をEUC-JIS-2004へ変換
-
-BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsize)
+BOOL WideCharToEucJP(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsize)
 {
 	CONST CHAR ss2 = (CHAR)0x8E;
 	CONST CHAR ss3 = (CHAR)0x8F;
 	CONST CHAR ejd = (CHAR)0x80;
 	CONST CHAR ejs = 0x21;
 	size_t si = 0, di = 0, ss = -1;
-	WCHAR first, second;
 	UCSCHAR ucp;
 	BOOL exist;
 
@@ -348,7 +260,7 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 			}
 			if (dst != nullptr)
 			{
-				*(dst + di) = (CHAR)*(src + si);
+				*(dst + di) = (CHAR) * (src + si);
 			}
 			++di;
 		}
@@ -356,34 +268,15 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 		{
 			exist = FALSE;
 
-			first = *(src + si);
-			if (si + 1 < ss)
-			{
-				second = *(src + si + 1);
-			}
-			else
-			{
-				second = 0;
-			}
-
-			if ((first >= SURROGATEPAIR_HIGH_MASK && first <= (SURROGATEPAIR_HIGH_MASK | SURROGATEPAIR_SEPMASK)) &&
-				(second >= SURROGATEPAIR_LOW_MASK && second <= (SURROGATEPAIR_LOW_MASK | SURROGATEPAIR_SEPMASK)))
-			{
-				ucp = SURROGATEPAIR_UCPMIN +
-					((((UCSCHAR)first & SURROGATEPAIR_SEPMASK) << SURROGATEPAIR_SEPBIT) |
-					((UCSCHAR)second & SURROGATEPAIR_SEPMASK));
-			}
-			else
-			{
-				ucp = first;
-			}
+			// surrogate pair なし
+			ucp = *(src + si);
 
 			// 互換性
 			if (!exist)
 			{
-				for (int i = 0; i < CMPEUCNUM; i++)
+				for (int i = 0; i < CMPEUCJPNUM; i++)
 				{
-					if (ucp == euccmp[i].ucp)
+					if (ucp == eucjpcmp[i].ucp) 
 					{
 						if (*dstsize <= di + 2)	// limit
 						{
@@ -392,57 +285,27 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 						}
 						if (dst != nullptr)
 						{
-							*(dst + di) = (CHAR)(euccmp[i].euc >> 8);
-							*(dst + di + 1) = (CHAR)(euccmp[i].euc & 0xFF);
+							*(dst + di) = (CHAR)(eucjpcmp[i].euc >> 8);
+							*(dst + di + 1) = (CHAR)(eucjpcmp[i].euc & 0xFF);
 						}
 						di += 2;
-						if (ucp != first)	// surrogate pair
-						{
-							si++;
-						}
 						exist = TRUE;
 						break;
 					}
 				}
 			}
 
-			// 結合文字
-			if (!exist)
-			{
-				for (int i = 0; i < CMBCHARNUM; i++)
-				{
-					if (first == euccmb[i].ucp[0] && second == euccmb[i].ucp[1])
-					{
-						if (*dstsize <= di + 2)	// limit
-						{
-							AddNullMultiByte(srcsize, si, dst, dstsize, di);
-							return FALSE;
-						}
-						if (dst != nullptr)
-						{
-							*(dst + di) = euccmb[i].euc >> 8;
-							*(dst + di + 1) = euccmb[i].euc & 0xFF;
-						}
-						di += 2;
-						if (ucp != first)	// surrogate pair, unused actually
-						{
-							si++;
-						}
-						si++;
-						exist = TRUE;
-						break;
-					}
-				}
-			}
-
-			// JIS X 0213 第一面
+			// JIS X 0218
 			if (!exist)
 			{
 				for (int i = 0; i < ROWNUM; i++)
 				{
 					for (int j = 0; j < CELLNUM; j++)
 					{
-						if (ucp == euc1[i][j])
+						CHAR ku = i + 1;
+						CHAR ten = j + 1;
+						if ((jisx0208e[ku - 1][(ten - (ten % 16)) / 16] & (0x0001 << (ten % 16))) != 0 &&
+							ucp == euc1[i][j])
 						{
 							if (*dstsize <= di + 2)	// limit
 							{
@@ -455,10 +318,6 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								*(dst + di + 1) = (CHAR)((UCHAR)(ejs + j) + (UCHAR)ejd);
 							}
 							di += 2;
-							if (ucp != first)	// surrogate pair
-							{
-								si++;
-							}
 							exist = TRUE;
 							break;
 						}
@@ -471,15 +330,15 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 				}
 			}
 
-			// JIS X 0213 第二面
+			// JIS X 0212
 			if (!exist)
 			{
 				for (int i = 0; i < ROWNUM; i++)
 				{
 					for (int j = 0; j < CELLNUM; j++)
 					{
-						if (euc2i[i] != 0 && euc2i[i] <= ROW2NUM &&
-							ucp == euc2[euc2i[i] - 1][j])
+						if (euc0212i[i] != 0 && euc0212i[i] <= ROW0212NUM &&
+							ucp == euc0212[euc0212i[i] - 1][j])
 						{
 							if (*dstsize <= di + 3)	// limit
 							{
@@ -493,10 +352,6 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 								*(dst + di + 2) = (CHAR)((UCHAR)(ejs + j) + (UCHAR)ejd);
 							}
 							di += 3;
-							if (ucp != first)	// surrogate pair
-							{
-								si++;
-							}
 							exist = TRUE;
 							break;
 						}
@@ -545,18 +400,18 @@ BOOL WideCharToEucJis2004(LPCWSTR src, size_t *srcsize, LPSTR dst, size_t *dstsi
 	return TRUE;
 }
 
-std::wstring eucjis2004_string_to_wstring(const std::string &s)
+std::wstring eucjp_string_to_wstring(const std::string &s)
 {
 	std::wstring ret;
 	size_t len;
 
-	BOOL b = EucJis2004ToWideChar(s.c_str(), nullptr, nullptr, &len);
+	BOOL b = EucJPToWideChar(s.c_str(), nullptr, nullptr, &len);
 	if (b && len > 0)
 	{
 		try
 		{
 			LPWSTR wcs = new WCHAR[len];
-			if (EucJis2004ToWideChar(s.c_str(), nullptr, wcs, &len))
+			if (EucJPToWideChar(s.c_str(), nullptr, wcs, &len))
 			{
 				ret = wcs;
 			}
@@ -570,18 +425,18 @@ std::wstring eucjis2004_string_to_wstring(const std::string &s)
 	return ret;
 }
 
-std::string wstring_to_eucjis2004_string(const std::wstring &s)
+std::string wstring_to_eucjp_string(const std::wstring &s)
 {
 	std::string ret;
 	size_t len;
 
-	BOOL b = WideCharToEucJis2004(s.c_str(), nullptr, nullptr, &len);
+	BOOL b = WideCharToEucJP(s.c_str(), nullptr, nullptr, &len);
 	if (b && len > 0)
 	{
 		try
 		{
 			LPSTR euc = new CHAR[len];
-			if (WideCharToEucJis2004(s.c_str(), nullptr, euc, &len))
+			if (WideCharToEucJP(s.c_str(), nullptr, euc, &len))
 			{
 				ret = euc;
 			}

@@ -5,7 +5,7 @@
 #endif
 
 #define IDD_DIALOG_DICTIONARY                   110
-#define IDD_DIALOG_SKK_DIC_ADD_URL				111
+#define IDD_DIALOG_SKK_DIC_ADD_URL              111
 #define IDD_DIALOG_BEHAVIOR1                    112
 #define IDD_DIALOG_BEHAVIOR2                    113
 #define IDD_DIALOG_DISPLAY1                     120
@@ -37,7 +37,7 @@
 #define IDC_EDIT_SKKSRV_PORT                    1055
 #define IDC_EDIT_SKKSRV_TIMEOUT                 1056
 
-#define IDC_EDIT_SKK_DIC_URL					1101
+#define IDC_EDIT_SKK_DIC_URL                    1101
 
 #define IDC_CHECKBOX_DEFAULTMODE                1201
 #define IDC_RADIO_DEFMODEHIRA                   1202
@@ -50,8 +50,8 @@
 #define IDC_CHECKBOX_DELOKURICNCL               1209
 #define IDC_CHECKBOX_BACKINCENTER               1210
 #define IDC_CHECKBOX_ADDCANDKTKN                1211
-#define IDC_CHECKBOX_ENTOGGLEKANA				1212
-#define IDC_CHECKBOX_SETBYDIRECT				1213
+#define IDC_CHECKBOX_ENTOGGLEKANA               1212
+#define IDC_CHECKBOX_SETBYDIRECT                1213
 
 #define IDC_COMBO_COMPMULTINUM                  1301
 #define IDC_CHECKBOX_STACOMPMULTI               1302
