@@ -116,6 +116,7 @@
       <row vkey="0x19" mkey="0" />
       <row vkey="0xF3" mkey="0" />
       <row vkey="0xF4" mkey="0" />
+      <row vkey="0x16" mkey="0" />
     </list>
   </section>
   <section name="preservedkeyoff">
@@ -124,6 +125,7 @@
       <row vkey="0x19" mkey="0" />
       <row vkey="0xF3" mkey="0" />
       <row vkey="0xF4" mkey="0" />
+      <row vkey="0x1A" mkey="0" />
     </list>
   </section>
   <section name="keymap">

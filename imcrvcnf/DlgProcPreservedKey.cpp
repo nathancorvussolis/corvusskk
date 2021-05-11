@@ -353,14 +353,28 @@ void SetConfigPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 	}
 	else
 	{
-		preservedkey[onoff][0].uVKey = VK_OEM_3/*0xC0*/;
+		preservedkey[onoff][0].uVKey = VK_OEM_3;	// 0xC0   Alt + `
 		preservedkey[onoff][0].uModifiers = TF_MOD_ALT;
-		preservedkey[onoff][1].uVKey = VK_KANJI/*0x19*/;
+		preservedkey[onoff][1].uVKey = VK_KANJI;	// 0x19   漢字 / Alt + 半角/全角 / Alt + `
 		preservedkey[onoff][1].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
-		preservedkey[onoff][2].uVKey = VK_OEM_AUTO/*0xF3*/;
+		preservedkey[onoff][2].uVKey = VK_OEM_AUTO;	// 0xF3   半角/全角 / Ctrl + `
 		preservedkey[onoff][2].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
-		preservedkey[onoff][3].uVKey = VK_OEM_ENLW/*0xF4*/;
+		preservedkey[onoff][3].uVKey = VK_OEM_ENLW;	// 0xF4   半角/全角 / Ctrl + `
 		preservedkey[onoff][3].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+
+		switch (onoff)
+		{
+		case 0:
+			preservedkey[onoff][4].uVKey = VK_IME_ON;	//0x16
+			preservedkey[onoff][4].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+			break;
+		case 1:
+			preservedkey[onoff][4].uVKey = VK_IME_OFF;	//0x1A
+			preservedkey[onoff][4].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+			break;
+		default:
+			break;
+		}
 	}
 }
 
