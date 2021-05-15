@@ -9,6 +9,10 @@
       <Configuration>Debug</Configuration>
       <Platform>ARM64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64EC">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64EC</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
@@ -24,6 +28,10 @@
     <ProjectConfiguration Include="Release|ARM64">
       <Configuration>Release</Configuration>
       <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64EC">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64EC</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -59,6 +67,12 @@
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -86,6 +100,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -105,6 +126,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -115,6 +139,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="PropertySheets">
@@ -136,6 +163,12 @@
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <BuildAsX>true</BuildAsX>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
@@ -155,6 +188,12 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <BuildAsX>true</BuildAsX>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
@@ -256,6 +295,73 @@ ver &gt; nul</Command>
       <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul
 ver &gt; nul</Command>
     </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>input.lib;d2d1.lib;dwrite.lib;delayimp.lib;input_x64.lib;libucrtd_x64.lib;delayimp_x64.lib;kernel32_x64.lib;user32_x64.lib;gdi32_x64.lib;advapi32_x64.lib;shell32_x64.lib;ole32_x64.lib;oleaut32_x64.lib;uuid_x64.lib;shlwapi_x64.lib;xmllite_x64.lib;bcrypt_x64.lib;d2d1_x64.lib;dwrite_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <PostBuildEvent>
+      <Command>icacls "$(SolutionDir)$(Platform)\$(Configuration)\$(TargetFileName)" /grant *S-1-15-2-1:RX &gt; nul
+ver &gt; nul
+
+if exist "$(OutDir)delayimp_x64.lib" del "$(OutDir)delayimp_x64.lib"
+if exist "$(OutDir)libucrtd_x64.lib" del "$(OutDir)libucrtd_x64.lib"
+if exist "$(OutDir)kernel32_x64.lib" del "$(OutDir)kernel32_x64.lib"
+if exist "$(OutDir)user32_x64.lib" del "$(OutDir)user32_x64.lib"
+if exist "$(OutDir)gdi32_x64.lib" del "$(OutDir)gdi32_x64.lib"
+if exist "$(OutDir)advapi32_x64.lib" del "$(OutDir)advapi32_x64.lib"
+if exist "$(OutDir)shell32_x64.lib" del "$(OutDir)shell32_x64.lib"
+if exist "$(OutDir)ole32_x64.lib" del "$(OutDir)ole32_x64.lib"
+if exist "$(OutDir)oleaut32_x64.lib" del "$(OutDir)oleaut32_x64.lib"
+if exist "$(OutDir)uuid_x64.lib" del "$(OutDir)uuid_x64.lib"
+if exist "$(OutDir)shlwapi_x64.lib" del "$(OutDir)shlwapi_x64.lib"
+if exist "$(OutDir)xmllite_x64.lib" del "$(OutDir)xmllite_x64.lib"
+if exist "$(OutDir)bcrypt_x64.lib" del "$(OutDir)bcrypt_x64.lib"
+if exist "$(OutDir)d2d1_x64.lib" del "$(OutDir)d2d1_x64.lib"
+if exist "$(OutDir)dwrite_x64.lib" del "$(OutDir)dwrite_x64.lib"
+</Command>
+    </PostBuildEvent>
+    <PreLinkEvent>
+      <Command>copy /b /y "$(VC_LibraryPath_VC_x64_Desktop)\delayimp.lib" "$(OutDir)delayimp_x64.lib"
+copy /b /y "$(UCRTContentRoot)lib\$(TargetUniversalCRTVersion)\ucrt\x64\libucrtd.lib" "$(OutDir)libucrtd_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\kernel32.lib" "$(OutDir)kernel32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\user32.lib" "$(OutDir)user32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\gdi32.lib" "$(OutDir)gdi32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\advapi32.lib" "$(OutDir)advapi32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\shell32.lib" "$(OutDir)shell32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\ole32.lib" "$(OutDir)ole32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\oleaut32.lib" "$(OutDir)oleaut32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\uuid.lib" "$(OutDir)uuid_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\shlwapi.lib" "$(OutDir)shlwapi_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\xmllite.lib" "$(OutDir)xmllite_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\bcrypt.lib" "$(OutDir)bcrypt_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\d2d1.lib" "$(OutDir)d2d1_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\dwrite.lib" "$(OutDir)dwrite_x64.lib"
+</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <ClCompile>
@@ -388,6 +494,75 @@ ver &gt; nul</Command>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <ConformanceMode>true</ConformanceMode>
+      <ControlFlowGuard>Guard</ControlFlowGuard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>input.lib;d2d1.lib;dwrite.lib;delayimp.lib;input_x64.lib;libucrt_x64.lib;delayimp_x64.lib;kernel32_x64.lib;user32_x64.lib;gdi32_x64.lib;advapi32_x64.lib;shell32_x64.lib;ole32_x64.lib;oleaut32_x64.lib;uuid_x64.lib;shlwapi_x64.lib;xmllite_x64.lib;bcrypt_x64.lib;d2d1_x64.lib;dwrite_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Culture>0x0411</Culture>
+      <AdditionalOptions>/c 65001</AdditionalOptions>
+    </ResourceCompile>
+    <PreLinkEvent>
+      <Command>copy /b /y "$(VC_LibraryPath_VC_x64_Desktop)\delayimp.lib" "$(OutDir)delayimp_x64.lib"
+copy /b /y "$(UCRTContentRoot)lib\$(TargetUniversalCRTVersion)\ucrt\x64\libucrt.lib" "$(OutDir)libucrt_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\kernel32.lib" "$(OutDir)kernel32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\user32.lib" "$(OutDir)user32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\gdi32.lib" "$(OutDir)gdi32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\advapi32.lib" "$(OutDir)advapi32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\shell32.lib" "$(OutDir)shell32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\ole32.lib" "$(OutDir)ole32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\oleaut32.lib" "$(OutDir)oleaut32_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\uuid.lib" "$(OutDir)uuid_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\shlwapi.lib" "$(OutDir)shlwapi_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\xmllite.lib" "$(OutDir)xmllite_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\bcrypt.lib" "$(OutDir)bcrypt_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\d2d1.lib" "$(OutDir)d2d1_x64.lib"
+copy /b /y "$(WindowsSDK_LibraryPath)\x64\dwrite.lib" "$(OutDir)dwrite_x64.lib"
+</Command>
+    </PreLinkEvent>
+    <PostBuildEvent>
+      <Command>if exist "$(OutDir)delayimp_x64.lib" del "$(OutDir)delayimp_x64.lib"
+if exist "$(OutDir)libucrt_x64.lib" del "$(OutDir)libucrt_x64.lib"
+if exist "$(OutDir)kernel32_x64.lib" del "$(OutDir)kernel32_x64.lib"
+if exist "$(OutDir)user32_x64.lib" del "$(OutDir)user32_x64.lib"
+if exist "$(OutDir)gdi32_x64.lib" del "$(OutDir)gdi32_x64.lib"
+if exist "$(OutDir)advapi32_x64.lib" del "$(OutDir)advapi32_x64.lib"
+if exist "$(OutDir)shell32_x64.lib" del "$(OutDir)shell32_x64.lib"
+if exist "$(OutDir)ole32_x64.lib" del "$(OutDir)ole32_x64.lib"
+if exist "$(OutDir)oleaut32_x64.lib" del "$(OutDir)oleaut32_x64.lib"
+if exist "$(OutDir)uuid_x64.lib" del "$(OutDir)uuid_x64.lib"
+if exist "$(OutDir)shlwapi_x64.lib" del "$(OutDir)shlwapi_x64.lib"
+if exist "$(OutDir)xmllite_x64.lib" del "$(OutDir)xmllite_x64.lib"
+if exist "$(OutDir)bcrypt_x64.lib" del "$(OutDir)bcrypt_x64.lib"
+if exist "$(OutDir)d2d1_x64.lib" del "$(OutDir)d2d1_x64.lib"
+if exist "$(OutDir)dwrite_x64.lib" del "$(OutDir)dwrite_x64.lib"
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -458,18 +633,22 @@ ver &gt; nul</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">$(ProjectDir)$(IntDir)input_x64.obj;$(ProjectDir)$(IntDir)input.obj;$(OutDir)input_x64.lib;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">$(ProjectDir)$(IntDir)input_x64.obj;$(ProjectDir)$(IntDir)input.obj;$(OutDir)input_x64.lib;$(OutDir)input.lib;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(VC_ExecutablePath_x86_x86)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
 if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
@@ -480,6 +659,21 @@ if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
 if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
 </Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">"$(VC_ExecutablePath_x86_ARM)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">if exist "$(OutDir)input.lib" del "$(OutDir)input.lib"
+"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input_x64.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+
+if exist "$(OutDir)input_x64.lib" del "$(OutDir)input_x64.lib"
+if exist "$(OutDir)input.lib" ren "$(OutDir)input.lib" "input_x64.lib"
+
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+
+if exist "$(OutDir)input.lib" del "$(OutDir)input.lib"
+"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+
 if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
 if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
 </Command>
@@ -499,6 +693,21 @@ if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
 if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
 if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
 </Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">if exist "$(OutDir)input.lib" del "$(OutDir)input.lib"
+"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input_x64.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+
+if exist "$(OutDir)input_x64.lib" del "$(OutDir)input_x64.lib"
+if exist "$(OutDir)input.lib" ren "$(OutDir)input.lib" "input_x64.lib"
+
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+
+if exist "$(OutDir)input.lib" del "$(OutDir)input.lib"
+"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
+
+if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
+if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
+</Command>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
 if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
 if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
@@ -506,10 +715,12 @@ if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">false</LinkObjects>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">false</LinkObjects>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">false</LinkObjects>
     </CustomBuild>
     <ClCompile Include="InputModeWindow.cpp" />
@@ -527,10 +738,12 @@ if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TextEditSink.cpp" />
@@ -543,7 +756,10 @@ if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
     <None Include="input.def" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="imcrvtip.rc" />
+    <ResourceCompile Include="imcrvtip.rc">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</ExcludedFromBuild>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icon\imcrvskk.ico" />

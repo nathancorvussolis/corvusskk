@@ -63,7 +63,7 @@
         <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
-        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
+        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64EC\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
         <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" KeyPath="yes" />
