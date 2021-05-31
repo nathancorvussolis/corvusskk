@@ -38,12 +38,22 @@ static const struct {
 	{SKK_NULL,		L""}
 };
 
-static const TF_PRESERVEDKEY configpreservedkey[] =
+static const TF_PRESERVEDKEY configpreservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY] =
 {
-	{VK_OEM_3		/*0xC0*/, TF_MOD_ALT},
-	{VK_KANJI		/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
-	{VK_OEM_AUTO	/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
-	{VK_OEM_ENLW	/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER}
+	{
+		{VK_OEM_3		/*0xC0*/, TF_MOD_ALT},
+		{VK_KANJI		/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_OEM_AUTO	/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_OEM_ENLW	/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_IME_ON		/*0x16*/, TF_MOD_IGNORE_ALL_MODIFIER}
+	},
+	{
+		{VK_OEM_3		/*0xC0*/, TF_MOD_ALT},
+		{VK_KANJI		/*0x19*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_OEM_AUTO	/*0xF3*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_OEM_ENLW	/*0xF4*/, TF_MOD_IGNORE_ALL_MODIFIER},
+		{VK_IME_OFF		/*0x1A*/, TF_MOD_IGNORE_ALL_MODIFIER}
+	}
 };
 
 static const struct {
@@ -364,9 +374,9 @@ void CTextService::_SetPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 	}
 	else
 	{
-		for (int i = 0; i < _countof(configpreservedkey); i++)
+		for (int i = 0; i < MAX_PRESERVEDKEY; i++)
 		{
-			preservedkey[onoff][i] = configpreservedkey[i];
+			preservedkey[onoff][i] = configpreservedkey[onoff][i];
 		}
 	}
 }
