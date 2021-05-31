@@ -85,6 +85,10 @@
         <File Id="F_vcruntime140_arm64" Name="vcruntime140.dll"
           Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140.dll" KeyPath="yes" />
       </Component>
+      <Component Id="VCRUNTIME140_1_ARM64" Guid="607AA8F2-0D79-4E95-892E-4A1C22588A0F" Win64="yes">
+        <File Id="F_vcruntime140_1_arm64" Name="vcruntime140_1.dll"
+          Source="$(env.VCToolsRedistDir)arm64\Microsoft.VC142.CRT\vcruntime140_1.dll" KeyPath="yes" />
+      </Component>
     </DirectoryRef>
 
     <!-- TIP only for ARM32 -->
@@ -110,6 +114,7 @@
       <ComponentRef Id="ZLIBDLL_ARM64" />
       <ComponentRef Id="MSVCP140_ARM64" />
       <ComponentRef Id="VCRUNTIME140_ARM64" />
+      <ComponentRef Id="VCRUNTIME140_1_ARM64" />
       <ComponentRef Id="TIP_ARM32" />
       <ComponentRef Id="REG_ARM64" />
     </Feature>
