@@ -26,6 +26,8 @@ rem ARM32   TIP only
 set BINFILES=%BINFILES% "..\ARM\Release\*.dll"
 rem ARM64
 set BINFILES=%BINFILES% "..\ARM64\Release\*.dll" "..\ARM64\Release\*.exe"
+rem ARM64EC   TIP only
+set BINFILES=%BINFILES% "..\ARM64EC\Release\*.dll"
 
 rem x86
 set MSIFILES="%TARGETDIR%\x86.msi"

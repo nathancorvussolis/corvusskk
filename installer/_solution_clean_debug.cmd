@@ -31,6 +31,12 @@ msbuild "..\imcrvskk.sln" ^
 /nologo /maxcpucount /verbosity:normal /target:Clean ^
 /property:Configuration=Debug,Platform=ARM64
 
+rem ARM64EC
+
+msbuild "..\imcrvskk.sln" ^
+/nologo /maxcpucount /verbosity:normal /target:Clean ^
+/property:Configuration=Debug,Platform=ARM64EC
+
 popd
 
 endlocal
