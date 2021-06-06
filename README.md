@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 2.8.2
+# CorvusSKK ver. 3.0.0
 
 Windowsで動作するSKK風のIMEです。
 
@@ -775,7 +775,7 @@ Windows 10 SDK version 2104 (10.0.20348.0)
 
 WiX Toolset v3.11.2
 
-pandoc 2.13
+pandoc 2.14.0.1
 
 
 ### ビルド手順
