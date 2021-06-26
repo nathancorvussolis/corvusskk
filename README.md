@@ -759,7 +759,7 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.10.0
+Visual Studio Community 2019 16.10.2
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (Latest)
@@ -771,11 +771,11 @@ Visual Studio Community 2019 16.10.0
 * C++ ATL for latest v142 build tools (ARM64)
 * C++ ATL for latest v142 build tools (ARM64EC - experimental)
 
-Windows 10 SDK version 2104 (10.0.20348.0)
+Windows 11 SDK (22000.1)
 
 WiX Toolset v3.11.2
 
-pandoc 2.14.0.1
+pandoc 2.14.0.3
 
 
 ### ビルド手順

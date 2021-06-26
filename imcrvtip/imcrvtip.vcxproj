@@ -312,7 +312,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>delayimp.lib;ucrtd.lib;input.lib;d2d1.lib;dwrite.lib;delayimp_x64.lib;ucrtd_x64.lib;input_x64.lib;kernel32_x64.lib;user32_x64.lib;gdi32_x64.lib;advapi32_x64.lib;shell32_x64.lib;ole32_x64.lib;oleaut32_x64.lib;uuid_x64.lib;shlwapi_x64.lib;xmllite_x64.lib;bcrypt_x64.lib;d2d1_x64.lib;dwrite_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>delayimp.lib;ucrtd.lib;input.lib;input_x64.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)ARM64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -324,43 +324,9 @@
       <AdditionalOptions>/c 65001</AdditionalOptions>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
-    <PreLinkEvent>
-      <Command>copy /b /y "$(VC_LibraryPath_VC_x64_Desktop)\delayimp.lib" "$(OutDir)delayimp_x64.lib" &gt; nul
-copy /b /y "$(UniversalCRTSdkDir)lib\$(TargetUniversalCRTVersion)\ucrt\x64\ucrtd.lib" "$(OutDir)ucrtd_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\kernel32.lib" "$(OutDir)kernel32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\user32.lib" "$(OutDir)user32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\gdi32.lib" "$(OutDir)gdi32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\advapi32.lib" "$(OutDir)advapi32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\shell32.lib" "$(OutDir)shell32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\ole32.lib" "$(OutDir)ole32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\oleaut32.lib" "$(OutDir)oleaut32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\uuid.lib" "$(OutDir)uuid_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\shlwapi.lib" "$(OutDir)shlwapi_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\xmllite.lib" "$(OutDir)xmllite_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\bcrypt.lib" "$(OutDir)bcrypt_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\d2d1.lib" "$(OutDir)d2d1_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\dwrite.lib" "$(OutDir)dwrite_x64.lib" &gt; nul
-</Command>
-    </PreLinkEvent>
+    <PreLinkEvent />
     <PostBuildEvent>
-      <Command>icacls "$(TargetPath)" /grant *S-1-15-2-1:RX &gt; nul
-
-if exist "$(OutDir)delayimp_x64.lib" del "$(OutDir)delayimp_x64.lib"
-if exist "$(OutDir)ucrtd_x64.lib" del "$(OutDir)ucrtd_x64.lib"
-if exist "$(OutDir)kernel32_x64.lib" del "$(OutDir)kernel32_x64.lib"
-if exist "$(OutDir)user32_x64.lib" del "$(OutDir)user32_x64.lib"
-if exist "$(OutDir)gdi32_x64.lib" del "$(OutDir)gdi32_x64.lib"
-if exist "$(OutDir)advapi32_x64.lib" del "$(OutDir)advapi32_x64.lib"
-if exist "$(OutDir)shell32_x64.lib" del "$(OutDir)shell32_x64.lib"
-if exist "$(OutDir)ole32_x64.lib" del "$(OutDir)ole32_x64.lib"
-if exist "$(OutDir)oleaut32_x64.lib" del "$(OutDir)oleaut32_x64.lib"
-if exist "$(OutDir)uuid_x64.lib" del "$(OutDir)uuid_x64.lib"
-if exist "$(OutDir)shlwapi_x64.lib" del "$(OutDir)shlwapi_x64.lib"
-if exist "$(OutDir)xmllite_x64.lib" del "$(OutDir)xmllite_x64.lib"
-if exist "$(OutDir)bcrypt_x64.lib" del "$(OutDir)bcrypt_x64.lib"
-if exist "$(OutDir)d2d1_x64.lib" del "$(OutDir)d2d1_x64.lib"
-if exist "$(OutDir)dwrite_x64.lib" del "$(OutDir)dwrite_x64.lib"
-</Command>
+      <Command>icacls "$(TargetPath)" /grant *S-1-15-2-1:RX &gt; nul</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -521,7 +487,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>delayimp.lib;ucrt.lib;input.lib;d2d1.lib;dwrite.lib;delayimp_x64.lib;ucrt_x64.lib;input_x64.lib;kernel32_x64.lib;user32_x64.lib;gdi32_x64.lib;advapi32_x64.lib;shell32_x64.lib;ole32_x64.lib;oleaut32_x64.lib;uuid_x64.lib;shlwapi_x64.lib;xmllite_x64.lib;bcrypt_x64.lib;d2d1_x64.lib;dwrite_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>delayimp.lib;ucrt.lib;input.lib;input_x64.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
       <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)ARM64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -534,42 +500,8 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <Culture>0x0411</Culture>
       <AdditionalOptions>/c 65001</AdditionalOptions>
     </ResourceCompile>
-    <PreLinkEvent>
-      <Command>copy /b /y "$(VC_LibraryPath_VC_x64_Desktop)\delayimp.lib" "$(OutDir)delayimp_x64.lib" &gt; nul
-copy /b /y "$(UniversalCRTSdkDir)lib\$(TargetUniversalCRTVersion)\ucrt\x64\ucrt.lib" "$(OutDir)ucrt_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\kernel32.lib" "$(OutDir)kernel32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\user32.lib" "$(OutDir)user32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\gdi32.lib" "$(OutDir)gdi32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\advapi32.lib" "$(OutDir)advapi32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\shell32.lib" "$(OutDir)shell32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\ole32.lib" "$(OutDir)ole32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\oleaut32.lib" "$(OutDir)oleaut32_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\uuid.lib" "$(OutDir)uuid_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\shlwapi.lib" "$(OutDir)shlwapi_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\xmllite.lib" "$(OutDir)xmllite_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\bcrypt.lib" "$(OutDir)bcrypt_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\d2d1.lib" "$(OutDir)d2d1_x64.lib" &gt; nul
-copy /b /y "$(WindowsSDK_LibraryPath)\x64\dwrite.lib" "$(OutDir)dwrite_x64.lib" &gt; nul
-</Command>
-    </PreLinkEvent>
-    <PostBuildEvent>
-      <Command>if exist "$(OutDir)delayimp_x64.lib" del "$(OutDir)delayimp_x64.lib"
-if exist "$(OutDir)ucrt_x64.lib" del "$(OutDir)ucrt_x64.lib"
-if exist "$(OutDir)kernel32_x64.lib" del "$(OutDir)kernel32_x64.lib"
-if exist "$(OutDir)user32_x64.lib" del "$(OutDir)user32_x64.lib"
-if exist "$(OutDir)gdi32_x64.lib" del "$(OutDir)gdi32_x64.lib"
-if exist "$(OutDir)advapi32_x64.lib" del "$(OutDir)advapi32_x64.lib"
-if exist "$(OutDir)shell32_x64.lib" del "$(OutDir)shell32_x64.lib"
-if exist "$(OutDir)ole32_x64.lib" del "$(OutDir)ole32_x64.lib"
-if exist "$(OutDir)oleaut32_x64.lib" del "$(OutDir)oleaut32_x64.lib"
-if exist "$(OutDir)uuid_x64.lib" del "$(OutDir)uuid_x64.lib"
-if exist "$(OutDir)shlwapi_x64.lib" del "$(OutDir)shlwapi_x64.lib"
-if exist "$(OutDir)xmllite_x64.lib" del "$(OutDir)xmllite_x64.lib"
-if exist "$(OutDir)bcrypt_x64.lib" del "$(OutDir)bcrypt_x64.lib"
-if exist "$(OutDir)d2d1_x64.lib" del "$(OutDir)d2d1_x64.lib"
-if exist "$(OutDir)dwrite_x64.lib" del "$(OutDir)dwrite_x64.lib"
-</Command>
-    </PostBuildEvent>
+    <PreLinkEvent />
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <ClCompile>
