@@ -10,6 +10,7 @@ UINT WINAPI EnumEnabledLayoutOrTip(
 	_Out_    LAYOUTORTIPPROFILE *pLayoutOrTipProfile,
 	_In_     UINT               uBufLength
 ) {
+	pLayoutOrTipProfile = nullptr;
 	return 0;
 }
 
@@ -19,6 +20,7 @@ UINT WINAPI EnumLayoutOrTipForSetup(
 	_In_  UINT        uBufLength,
 	_In_  DWORD       dwFlags
 ) {
+	pLayoutOrTip = nullptr;
 	return 0;
 }
 

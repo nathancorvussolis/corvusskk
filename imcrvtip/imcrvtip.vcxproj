@@ -208,7 +208,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -241,7 +241,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -274,7 +274,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -307,7 +307,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -316,9 +316,9 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>delayimp.lib;ucrtd.lib;input.lib;input_x64.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>delayimp.lib;ucrtd.lib;input.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)ARM64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <IgnoreSpecificDefaultLibraries>libucrtd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
@@ -341,7 +341,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -380,7 +380,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -415,7 +415,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -450,7 +450,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ConformanceMode>true</ConformanceMode>
@@ -485,7 +485,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ConformanceMode>true</ConformanceMode>
@@ -496,9 +496,9 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>delayimp.lib;ucrt.lib;input.lib;input_x64.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>delayimp.lib;ucrt.lib;input.lib;d2d1.lib;dwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ModuleDefinitionFile>imcrvtip.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(OutDir);$(SolutionDir)ARM64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <DelayLoadDLLs>input.dll;d2d1.dll;dwrite.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>No</GenerateDebugInformation>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
@@ -522,7 +522,7 @@ if exist "$(OutDir)$(TargetName).pdb" del "$(OutDir)$(TargetName).pdb"
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)common;$(SolutionDir)input;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -563,7 +563,6 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
     <ClInclude Include="FnCandidateString.h" />
     <ClInclude Include="FnEnumCandidates.h" />
     <ClInclude Include="imcrvtip.h" />
-    <ClInclude Include="input.h" />
     <ClInclude Include="InputModeWindow.h" />
     <ClInclude Include="LanguageBar.h" />
     <ClInclude Include="resource.h" />
@@ -586,78 +585,6 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
     <ClCompile Include="FnConfig.cpp" />
     <ClCompile Include="FunctionProvider.cpp" />
     <ClCompile Include="Globals.cpp" />
-    <CustomBuild Include="input.cpp">
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">$(ProjectDir)$(IntDir)input_x64.obj;$(OutDir)input_x64.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">$(ProjectDir)$(IntDir)input_x64.obj;$(OutDir)input_x64.lib;%(Outputs)</Outputs>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">$(ProjectDir)$(IntDir)input.obj;$(OutDir)input.lib;%(Outputs)</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">input.h;input.def;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(VC_ExecutablePath_x86_x86)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">"$(VC_ExecutablePath_x86_ARM)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input_x64.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input_x64.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input_x64.exp" del "$(OutDir)input_x64.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(VC_ExecutablePath_x86_x86)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">"$(VC_ExecutablePath_x86_ARM)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">"$(VC_ExecutablePath_x86_x64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input_x64.obj" /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input_x64.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input_x64.exp" del "$(OutDir)input_x64.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">"$(VC_ExecutablePath_x86_ARM64)\cl.exe" /nologo /LD input.cpp /Fo"$(ProjectDir)$(IntDir)input.obj" /D_ARM_WINAPI_PARTITION_DESKTOP_SDK_AVAILABLE /link /NODEFAULTLIB /NOENTRY /DEF:input.def /IMPLIB:"$(OutDir)input.lib" /OUT:"$(OutDir)input.dll"
-if exist "$(OutDir)input.exp" del "$(OutDir)input.exp"
-if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
-</Command>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64EC'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM64EC'">false</LinkObjects>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">false</LinkObjects>
-    </CustomBuild>
     <ClCompile Include="InputModeWindow.cpp" />
     <ClCompile Include="KeyEventSink.cpp" />
     <ClCompile Include="KeyHandler.cpp" />
@@ -688,7 +615,6 @@ if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"
   </ItemGroup>
   <ItemGroup>
     <None Include="imcrvtip.def" />
-    <None Include="input.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvtip.rc" />

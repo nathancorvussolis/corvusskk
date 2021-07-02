@@ -2,8 +2,9 @@
 
 #include <Windows.h>
 
-EXTERN_C
-{
+// input.dll dummy functions
+
+EXTERN_C_START
 
 typedef struct tagLAYOUTORTIPPROFILE {
 	DWORD  dwProfileType;       // InputProcessor or HKL
@@ -106,4 +107,4 @@ BOOL WINAPI SetDefaultLayoutOrTipUserReg(
 	_In_     DWORD   dwFlags
 );
 
-}
+EXTERN_C_END

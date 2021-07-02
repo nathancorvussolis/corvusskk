@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Dummy DLL Files">
-      <UniqueIdentifier>{075a55c1-9aa9-42c2-8435-89de2d13eef7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -59,9 +56,6 @@
     </ClInclude>
     <ClInclude Include="TextService.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>Dummy DLL Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,9 +157,6 @@
     <None Include="imcrvtip.def">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="input.def">
-      <Filter>Dummy DLL Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvtip.rc">
@@ -215,10 +206,5 @@
     <Image Include="Icon\imdebug.ico">
       <Filter>Resource Files</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="input.cpp">
-      <Filter>Dummy DLL Files</Filter>
-    </CustomBuild>
   </ItemGroup>
 </Project>
