@@ -50,7 +50,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "imcrvmgr_test", "test\imcrv
 		{EB999F4D-AD29-4049-BCCB-FABFD01DFC97} = {EB999F4D-AD29-4049-BCCB-FABFD01DFC97}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "input", "input\input.vcxproj", "{1E93D511-25BF-4CCF-93E5-DA44F66016AB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libinput", "libinput\libinput.vcxproj", "{1E93D511-25BF-4CCF-93E5-DA44F66016AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

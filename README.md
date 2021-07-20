@@ -775,7 +775,7 @@ Windows 11 SDK (22000.1)
 
 WiX Toolset v3.11.2
 
-pandoc 2.14.0.3
+pandoc 2.14.1
 
 
 ### ビルド手順
