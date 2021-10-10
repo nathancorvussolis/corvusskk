@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.0.0
+# CorvusSKK ver. 3.0.1
 
 Windowsで動作するSKK風のIMEです。
 
@@ -27,12 +27,14 @@ Windowsで動作するSKK風のIMEです。
 
 * Windows 10    (32-bit / 64-bit / ARM)
 
+* Windows 11    (32-bit / 64-bit / ARM)
+
 
 ### インストール
 
 corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン番号)
 
-Windows 10 on ARM では corvusskk-X.Y.Z-arm.exe を実行してください。
+ARM 版 Windows では corvusskk-X.Y.Z-arm.exe を実行してください。
 
 アップデートの後はOSを再起動しておくと安全です。
 
