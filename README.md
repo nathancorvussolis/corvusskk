@@ -27,7 +27,7 @@ Windowsで動作するSKK風のIMEです。
 
 * Windows 10    (32-bit / 64-bit / ARM)
 
-* Windows 11    (32-bit / 64-bit / ARM)
+* Windows 11    (64-bit / ARM)
 
 
 ### インストール
