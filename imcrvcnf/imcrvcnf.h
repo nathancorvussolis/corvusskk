@@ -72,12 +72,3 @@ extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];	//URL
 
 #define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
-
-// Per-Monitor DPI Awareness V2
-#ifndef NTDDI_WIN10_RS2
-#if (WINVER < 0x0605)
-#define WM_DPICHANGED_BEFOREPARENT      0x02E2
-#define WM_DPICHANGED_AFTERPARENT       0x02E3
-#define WM_GETDPISCALEDSIZE             0x02E4
-#endif //(WINVER < 0x0605)
-#endif //NTDDI_WIN10_RS2
