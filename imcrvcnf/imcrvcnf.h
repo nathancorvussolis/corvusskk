@@ -19,10 +19,12 @@ BOOL SaveConfigXml(HWND hDlg);
 void MakeSKKDic(HWND hDlg);
 // DlgDicAddUrl
 INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-// DlgProcDictionary
-INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-void SaveDictionary(IXmlWriter *pWriter, HWND hDlg);
-void SaveServer(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcDictionary1
+INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDictionary1(IXmlWriter *pWriter, HWND hDlg);
+void SaveDictionary1Server(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcDictionary2
+INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 // DlgProcBehavior1
 INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 void SaveFont(IXmlWriter *pWriter, HWND hDlg);
@@ -67,6 +69,7 @@ extern LPCWSTR TextServiceDesc;
 extern HINSTANCE hInst;
 extern WCHAR cnfmutexname[MAX_PATH];	//ミューテックス
 extern WCHAR cnfcanceldiceventname[MAX_PATH];	//辞書取込キャンセルイベント
+extern WCHAR mgrpipename[MAX_PIPENAME];	//名前付きパイプ
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];	//URL

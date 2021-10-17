@@ -45,8 +45,14 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	    request "I\n"
 	    reply   "T\n"
 	  kana lock
-	    request "J\n"
-	    reply   "T\n"
+		request "J\n"
+		reply   "T\n"
+	  watchdog
+		request "W\n"
+		reply   "T\n"
+	  exit
+		request "X\n"
+		reply   "T\n"
 	*/
 
 	SKKDICCANDIDATES sc;
@@ -267,6 +273,18 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	case REQ_CAPS_LOCK:
 	case REQ_KANA_LOCK:
 		SendKeyboardInput(command);
+
+		result = REP_OK;
+		result += L"\n";
+		break;
+
+	case REQ_WATCHDOG:
+		result = REP_OK;
+		result += L"\n";
+		break;
+
+	case REQ_EXIT:
+		SendMessageW(hWndMgr, WM_CLOSE, 0, 0);
 
 		result = REP_OK;
 		result += L"\n";

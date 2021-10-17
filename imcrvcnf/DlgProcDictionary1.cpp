@@ -11,7 +11,7 @@ static LPCWSTR defaultTimeOut = L"1000";
 
 void LoadDictionary(HWND hDlg);
 
-INT_PTR CALLBACK DlgProcDictionary(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
 	LV_COLUMNW lvc;
@@ -337,7 +337,7 @@ void LoadDictionary(HWND hDlg)
 	}
 }
 
-void SaveDictionary(IXmlWriter *pWriter, HWND hDlg)
+void SaveDictionary1(IXmlWriter *pWriter, HWND hDlg)
 {
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
@@ -368,7 +368,7 @@ void SaveDictionary(IXmlWriter *pWriter, HWND hDlg)
 	WriterList(pWriter, list);
 }
 
-void SaveServer(IXmlWriter *pWriter, HWND hDlg)
+void SaveDictionary1Server(IXmlWriter *pWriter, HWND hDlg)
 {
 	WCHAR num[16];
 	WCHAR host[MAX_SKKSERVER_HOST];

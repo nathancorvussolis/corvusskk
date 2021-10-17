@@ -87,7 +87,8 @@ void CreateProperty()
 		int id;
 		DLGPROC DlgProc;
 	} DlgPages[] = {
-		{IDD_DIALOG_DICTIONARY,		DlgProcDictionary},
+		{IDD_DIALOG_DICTIONARY1,	DlgProcDictionary1},
+		{IDD_DIALOG_DICTIONARY2,	DlgProcDictionary2},
 		{IDD_DIALOG_BEHAVIOR1,		DlgProcBehavior1},
 		{IDD_DIALOG_BEHAVIOR2,		DlgProcBehavior2},
 		{IDD_DIALOG_DISPLAY1,		DlgProcDisplay1},

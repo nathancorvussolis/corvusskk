@@ -1054,7 +1054,7 @@ void MakeSKKDicThread(void *p)
 	HRESULT hr = S_OK;
 
 	HWND child = (HWND)p;
-	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY);
+	HWND parent = PROPSHEET_IDTOHWND(GetWindow(child, GW_OWNER), IDD_DIALOG_DICTIONARY1);
 	HWND pdlg = GetParent(child);
 
 	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, cnfcanceldiceventname);

@@ -82,6 +82,7 @@ extern CRITICAL_SECTION csSKKSocket;
 extern BOOL bUserDicChg;
 extern FILETIME ftConfig;
 extern FILETIME ftSKKDic;
+extern HWND hWndMgr;
 #ifdef _DEBUG
 extern HWND hWndEdit;
 extern HFONT hFont;

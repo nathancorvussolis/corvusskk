@@ -10,6 +10,7 @@ CRITICAL_SECTION csSKKSocket;
 BOOL bUserDicChg;
 FILETIME ftConfig = {};
 FILETIME ftSKKDic = {};
+HWND hWndMgr;
 #ifdef _DEBUG
 HWND hWndEdit;
 HFONT hFont;
@@ -65,6 +66,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		CloseHandle(hMutex);
 		return 0;
 	}
+
+	hWndMgr = hWnd;
 
 #ifdef _DEBUG
 	ShowWindow(hWnd, SW_MINIMIZE);

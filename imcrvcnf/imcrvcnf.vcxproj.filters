@@ -56,7 +56,16 @@
     <ClCompile Include="DlgProcConvPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DlgProcDictionary.cpp">
+    <ClCompile Include="DlgProcDictionary1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDictionary2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplay1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DlgProcDisplay2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcDisplayAttr.cpp">
@@ -75,12 +84,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DlgProcSelKey.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgProcDisplay1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="DlgProcDisplay2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
