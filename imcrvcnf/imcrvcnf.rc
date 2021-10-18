@@ -1,8 +1,13 @@
 ﻿
-#include <windows.h>
-#include <commctrl.h>
 #include "version.h"
 #include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
+#include <commctrl.h>
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#undef APSTUDIO_READONLY_SYMBOLS
 
 VS_VERSION_INFO    VERSIONINFO
 FILEVERSION        RC_VERSION_D
