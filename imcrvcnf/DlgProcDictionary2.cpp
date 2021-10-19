@@ -43,7 +43,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			CommandDic(REQ_EXIT);
 			return TRUE;
 
-		case IDC_BUTTON_OPENDIR:
+		case IDC_BUTTON_OPEN_USERDIR:
 		{
 			PWSTR knownfolderpath = nullptr;
 
@@ -52,13 +52,35 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				WCHAR appdir[MAX_PATH];
 
 				_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s", knownfolderpath, TextServiceDesc);
+
 				CoTaskMemFree(knownfolderpath);
 
-				ShellExecuteW(nullptr, L"open", appdir, nullptr, nullptr, SW_NORMAL);
+				ShellExecuteW(nullptr, L"open", appdir, nullptr, nullptr, SW_SHOWNORMAL);
 
 				return TRUE;
 			}
 		}
+		break;
+
+		case IDC_BUTTON_OPEN_SYSTEMDIR:
+		{
+			PWSTR knownfolderpath = nullptr;
+
+			if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
+			{
+				WCHAR appdir[MAX_PATH];
+
+				_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR);
+
+				CoTaskMemFree(knownfolderpath);
+
+				ShellExecuteW(nullptr, L"open", appdir, nullptr, nullptr, SW_SHOWNORMAL);
+
+				return TRUE;
+			}
+		}
+		break;
+
 		default:
 			break;
 		}

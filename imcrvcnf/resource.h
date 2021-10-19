@@ -49,7 +49,8 @@
 #define IDC_MGR_STATUS_TEXT                     1201
 #define IDC_BUTTON_MGR_RUN                      1202
 #define IDC_BUTTON_MGR_KILL                     1203
-#define IDC_BUTTON_OPENDIR                      1204
+#define IDC_BUTTON_OPEN_USERDIR                 1204
+#define IDC_BUTTON_OPEN_SYSTEMDIR               1205
 
 #define IDC_CHECKBOX_DEFAULTMODE                2001
 #define IDC_RADIO_DEFMODEHIRA                   2002
