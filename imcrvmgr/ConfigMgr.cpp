@@ -114,7 +114,7 @@ void UpdateConfigPath()
 		//%SystemRoot%\\IME\\IMCRVSKK\\config.xml
 		if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 		{
-			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnconfigxml);
+			_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, SYSTEMROOT_IME_DIR, TEXTSERVICE_DIR, fnconfigxml);
 
 			CoTaskMemFree(knownfolderpath);
 		}
@@ -138,7 +138,7 @@ void UpdateConfigPath()
 		//%SystemRoot%\\IME\\IMCRVSKK\\skkdict.txt
 		if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 		{
-			_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fnskkdic);
+			_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, SYSTEMROOT_IME_DIR, TEXTSERVICE_DIR, fnskkdic);
 
 			CoTaskMemFree(knownfolderpath);
 		}
@@ -317,7 +317,7 @@ void InitLua()
 	//%SystemRoot%\\IME\\IMCRVSKK\\init.lua
 	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_Windows, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
-		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR, fninitlua);
+		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s\\%s\\%s", knownfolderpath, SYSTEMROOT_IME_DIR, TEXTSERVICE_DIR, fninitlua);
 
 		CoTaskMemFree(knownfolderpath);
 	}

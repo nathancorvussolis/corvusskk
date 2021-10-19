@@ -41,6 +41,8 @@
 #define REP_OK				L'T'	//hit
 #define REP_FALSE			L'F'	//nothing
 
+#define SYSTEMROOT_IME_DIR	L"IME"
+
 #define IMCRVMGREXE			L"imcrvmgr.exe"
 #define IMCRVCNFEXE			L"imcrvcnf.exe"
 #ifndef _DEBUG

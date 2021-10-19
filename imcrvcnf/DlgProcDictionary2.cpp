@@ -70,7 +70,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			{
 				WCHAR appdir[MAX_PATH];
 
-				_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, L"IME", TEXTSERVICE_DIR);
+				_snwprintf_s(appdir, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, SYSTEMROOT_IME_DIR, TEXTSERVICE_DIR);
 
 				CoTaskMemFree(knownfolderpath);
 
