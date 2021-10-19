@@ -46,7 +46,7 @@ HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPA
 		CComPtr<ITfEditSession> pEditSession;
 		pEditSession.Attach(
 			new CKeyHandlerEditSession(this, pContext, wParam, bSf));
-		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 	}
 	catch (...)
 	{

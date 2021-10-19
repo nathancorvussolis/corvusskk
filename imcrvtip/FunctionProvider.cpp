@@ -376,7 +376,7 @@ HRESULT CTextService::_SetResult(const std::wstring &fnsearchkey, const CANDIDAT
 				CComPtr<ITfEditSession> pEditSession;
 				pEditSession.Attach(
 					new CSetResultEditSession(this, pContext));
-				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 			}
 			catch (...)
 			{
