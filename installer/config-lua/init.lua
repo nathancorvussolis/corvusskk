@@ -1140,10 +1140,14 @@ end
 function lua_skk_search(key, okuri)
 
 	-- skk-search-sagyo-henkaku (t:true/anything:false)
-	if (enable_skk_search_sagyo_only) then
-		if (okuri ~= "" and string.find("さしすせサシスセ", okuri) == nil and
-			string.match(string.sub(key, -1), "[a-z]") == nil) then
-			return ""
+	-- 「送りあり変換で送りなし候補も検索する」 → 送り仮名あり、送りローマ字なし
+	if (okuri ~= "" and string.match(string.sub(key, -1), "[a-z]") == nil) then
+		if (enable_skk_search_sagyo_only) then
+			if (string.find("さしすせ", okuri) ~= nil) then
+				okuri = ""
+			end
+		else
+			okuri = ""
 		end
 	end
 
