@@ -30,11 +30,22 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 	}
 	else
 	{
+		std::wstring okurik = okuri;
+
+		//skk-search-sagyo-henkaku (anything)
+		//「送りあり変換で送りなし候補も検索する」 → 送り仮名あり、送りローマ字なし
+		static const std::wregex reroman(L"^.+[a-z]$");
+		if (!okurik.empty() && !std::regex_match(searchkey, reroman))
+		{
+			//送り仮名クリア
+			okurik.clear();
+		}
+
 		//ユーザー辞書
-		candidate += SearchUserDic(searchkey, okuri);
+		candidate += SearchUserDic(searchkey, okurik);
 
 		//SKK辞書
-		candidate += SearchSKKDic(searchkey, okuri);
+		candidate += SearchSKKDic(searchkey, okurik);
 
 		//SKK辞書サーバー
 		candidate += SearchSKKServer(searchkey);
