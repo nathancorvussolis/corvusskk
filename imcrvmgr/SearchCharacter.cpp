@@ -19,15 +19,19 @@ std::wstring SearchUnicode(const std::wstring &searchkey)
 	WCHAR utf16[3];
 
 	// U+XXXXXX (XXXXXX : 0000-FFFF,10000-10FFFF)
-	if (std::regex_match(searchkey, std::wregex(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}")))
+	static const std::wregex reU(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}");
+
+	// uxxxxxx (xxxxxx : 0000-ffff,10000-10ffff)
+	static const std::wregex reL(L"u([1-9a-f]|10)?[0-9a-f]{4}");
+
+	if (std::regex_match(searchkey, reU))
 	{
 		if (swscanf_s(searchkey.c_str(), L"U+%X", &ucp) != 1)
 		{
 			return candidate;
 		}
 	}
-	// uxxxxxx (xxxxxx : 0000-ffff,10000-10ffff)
-	else if (std::regex_match(searchkey, std::wregex(L"u([1-9a-f]|10)?[0-9a-f]{4}")))
+	else if (std::regex_match(searchkey, reL))
 	{
 		if (swscanf_s(searchkey.c_str(), L"u%x", &ucp) != 1)
 		{
@@ -63,7 +67,9 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 	UCSCHAR ucp[2];
 	WCHAR sucp[32];
 
-	if (!std::regex_match(searchkey, std::wregex(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
+	static const std::wregex re(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])");
+
+	if (!std::regex_match(searchkey, re))
 	{
 		return candidate;
 	}
@@ -122,7 +128,9 @@ std::wstring SearchJISX0208(const std::wstring &searchkey)
 	//JIS X 0208 区点番号
 	int ku, ten;
 
-	if (!std::regex_match(searchkey, std::wregex(L"(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])")))
+	static const std::wregex re(L"(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])");
+
+	if (!std::regex_match(searchkey, re))
 	{
 		return candidate;
 	}

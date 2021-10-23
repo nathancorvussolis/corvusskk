@@ -100,8 +100,7 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 	BOOL ret = FALSE;
 
 	DWORD bytesWrite, bytesRead;
-	std::wstring s, se, fmt, scd, scr, sad, sar;
-	std::wregex r;
+	std::wstring s, se, scd, scr, sad, sar;
 	std::wsmatch m;
 
 	candidates.clear();
@@ -134,21 +133,18 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 	}
 
 	s.assign(pipebuf);
-	r.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 
-	while (std::regex_search(s, m, r))
+	static const std::wregex re(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+
+	while (std::regex_search(s, m, re))
 	{
 		se = m.str();
 		s = m.suffix().str();
 
-		fmt.assign(L"$1");
-		scd = std::regex_replace(se, r, fmt);
-		fmt.assign(L"$2");
-		scr = std::regex_replace(se, r, fmt);
-		fmt.assign(L"$3");
-		sad = std::regex_replace(se, r, fmt);
-		fmt.assign(L"$4");
-		sar = std::regex_replace(se, r, fmt);
+		scd = std::regex_replace(se, re, L"$1");
+		scr = std::regex_replace(se, re, L"$2");
+		sad = std::regex_replace(se, re, L"$3");
+		sar = std::regex_replace(se, re, L"$4");
 
 		if (scd.empty())
 		{

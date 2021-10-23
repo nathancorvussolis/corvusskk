@@ -4,73 +4,24 @@
 
 void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 {
-	/*
-	  request and reply commands
-
-	  search candidate
-	    request "1\n<key>\t<key(original)>\t<okuri>\n"
-	    reply   "T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
-	            "F\n":nothing
-	  search key for complement
-	    request "4\n<key prefix>\t<candidate max>\t\n"
-	    reply   "T\n<key>\t\t<candidates>\t\n...\n":hit
-	            "F\n":nothing
-	  convert key
-	    request "5\n<key>\t\t<okuri>\n"
-	    reply   "T\n<key converted>\n...\n":hit
-	            "F\n":nothing
-	  convert candidate
-	    request "6\n<key>\t<candidate>\t<okuri>\n"
-	    reply   "T\n<candidate converted>\n":hit
-	            "F\n":nothing
-	  add candidate (complement off)
-	    request "A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
-	    reply   "T\n"
-	  add candidate (complement on)
-	    request "B\n<key>\t<candidate>\t<annotation>\t\n"
-	    reply   "T\n"
-	  delete candidate (complement off)
-	    request "C\n<key>\t<candidate>\n"
-	    reply   "T\n"
-	  delete candidate (complement on)
-	    request "D\n<key>\t<candidate>\n"
-	    reply   "T\n"
-	  save user dictionary
-	    request "S\n"
-	    reply   "T\n"
-	  create configuration dialog process
-	    request "P\n"
-	    reply   "T\n"
-	  caps lock
-	    request "I\n"
-	    reply   "T\n"
-	  kana lock
-		request "J\n"
-		reply   "T\n"
-	  watchdog
-		request "W\n"
-		reply   "T\n"
-	  exit
-		request "X\n"
-		reply   "T\n"
-	*/
-
 	SKKDICCANDIDATES sc;
-	std::wstring fmt, key, keyorg, okuri, candidate, annotation, conv;
-	std::wregex re;
+	std::wstring key, keyorg, okuri, candidate, annotation, conv;
+
+	// search, complement, convert key, convert candidate
+	static const std::wregex research(L"(.*)\t(.*)\t(.*)\n");
+	// add candidate
+	static const std::wregex resadd(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+	// delete candidate
+	static const std::wregex resdel(L"(.*)\t(.*)\n");
 
 	result.clear();
 
 	switch (command)
 	{
 	case REQ_SEARCH:
-		re.assign(L"(.*)\t(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$2");
-		keyorg = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$3");
-		okuri = std::regex_replace(argument, re, fmt);
+		key = std::regex_replace(argument, research, L"$1");
+		keyorg = std::regex_replace(argument, research, L"$2");
+		okuri = std::regex_replace(argument, research, L"$3");
 
 		SearchDictionary(key, okuri, sc);
 
@@ -94,11 +45,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		break;
 
 	case REQ_COMPLEMENT:
-		re.assign(L"(.*)\t(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$2");
-		keyorg = std::regex_replace(argument, re, fmt);
+		key = std::regex_replace(argument, research, L"$1");
+		keyorg = std::regex_replace(argument, research, L"$2");
 
 		if (lua != nullptr)
 		{
@@ -144,13 +92,9 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_CONVERTKEY:
 	case REQ_CONVERTCND:
-		re.assign(L"(.*)\t(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$2");
-		candidate = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$3");
-		okuri = std::regex_replace(argument, re, fmt);
+		key = std::regex_replace(argument, research, L"$1");
+		candidate = std::regex_replace(argument, research, L"$2");
+		okuri = std::regex_replace(argument, research, L"$3");
 
 		switch (command)
 		{
@@ -179,15 +123,10 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_USER_ADD_A:
 	case REQ_USER_ADD_N:
-		re.assign(L"(.*)\t(.*)\t(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$2");
-		candidate = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$3");
-		annotation = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$4");
-		okuri = std::regex_replace(argument, re, fmt);
+		key = std::regex_replace(argument, resadd, L"$1");
+		candidate = std::regex_replace(argument, resadd, L"$2");
+		annotation = std::regex_replace(argument, resadd, L"$3");
+		okuri = std::regex_replace(argument, resadd, L"$4");
 
 		result = REP_OK;
 
@@ -215,11 +154,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_USER_DEL_A:
 	case REQ_USER_DEL_N:
-		re.assign(L"(.*)\t(.*)\n");
-		fmt.assign(L"$1");
-		key = std::regex_replace(argument, re, fmt);
-		fmt.assign(L"$2");
-		candidate = std::regex_replace(argument, re, fmt);
+		key = std::regex_replace(argument, resdel, L"$1");
+		candidate = std::regex_replace(argument, resdel, L"$2");
 
 		result = REP_OK;
 
@@ -447,3 +383,95 @@ HANDLE SrvStart()
 
 	return hThread;
 }
+
+/*
+	request and reply commands
+
+	search candidate
+		request
+			"1\n<key>\t<key(original)>\t<okuri>\n"
+		reply
+			"T\n<candidate(display)>\t<candidate(register)>\t<annotation(display)>\t<annotation(register)>\n...\n":hit
+			"F\n":nothing
+
+	search key for complement
+		request
+			"4\n<key prefix>\t<candidate max>\t\n"
+		reply
+			"T\n<key>\t\t<candidates>\t\n...\n":hit
+			"F\n":nothing
+
+	convert key
+		request
+			"5\n<key>\t\t<okuri>\n"
+		reply
+			"T\n<key converted>\n...\n":hit
+			"F\n":nothing
+
+	convert candidate
+		request
+			"6\n<key>\t<candidate>\t<okuri>\n"
+		reply
+			"T\n<candidate converted>\n":hit
+			"F\n":nothing
+
+	add candidate (complement off)
+		request
+			"A\n<key>\t<candidate>\t<annotation>\t<okuri>\n"
+		reply
+			"T\n"
+
+	add candidate (complement on)
+		request
+			"B\n<key>\t<candidate>\t<annotation>\t\n"
+		reply
+			"T\n"
+
+	delete candidate (complement off)
+		request
+			"C\n<key>\t<candidate>\n"
+		reply
+			"T\n"
+
+	delete candidate (complement on)
+		request
+			"D\n<key>\t<candidate>\n"
+		reply
+			"T\n"
+
+	save user dictionary
+		request
+			"S\n"
+		reply
+			"T\n"
+
+	create configuration dialog process
+		request
+			"P\n"
+		reply
+			"T\n"
+
+	caps lock
+		request
+			"I\n"
+		reply
+			"T\n"
+
+	kana lock
+		request
+			"J\n"
+		reply
+			"T\n"
+
+	watchdog
+		request
+			"W\n"
+		reply
+			"T\n"
+
+	exit
+		request
+			"X\n"
+		reply
+			"T\n"
+*/

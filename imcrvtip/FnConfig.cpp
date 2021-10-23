@@ -774,9 +774,6 @@ void CTextService::_LoadKana()
 {
 	APPDATAXMLLIST list;
 
-	std::wregex re(L"[\\x00-\\x19]");
-	std::wstring fmt(L"");
-
 	roman_kana_tree = ROMAN_KANA_NODE{};
 
 	HRESULT hr = ReadList(pathconfigxml, SectionKana, list);
@@ -826,7 +823,8 @@ void CTextService::_LoadKana()
 
 				if (pszb != nullptr)
 				{
-					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, re, fmt).c_str(), _TRUNCATE);
+					static const std::wregex rectrl(L"[\\x00-\\x19]");
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, rectrl, L"").c_str(), _TRUNCATE);
 				}
 			}
 
@@ -940,9 +938,6 @@ void CTextService::_LoadJLatin()
 {
 	APPDATAXMLLIST list;
 
-	std::wregex re(L"[\\x00-\\x19]");
-	std::wstring fmt(L"");
-
 	ascii_jlatin_conv.clear();
 	ascii_jlatin_conv.shrink_to_fit();
 
@@ -978,7 +973,8 @@ void CTextService::_LoadJLatin()
 
 				if (pszb != nullptr)
 				{
-					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, re, fmt).c_str(), _TRUNCATE);
+					static const std::wregex rectrl(L"[\\x00-\\x19]");
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, rectrl, L"").c_str(), _TRUNCATE);
 				}
 			}
 

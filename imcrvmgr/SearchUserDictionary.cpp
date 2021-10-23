@@ -12,7 +12,7 @@ KEYORDER keyorder_n;
 //送りあり、補完なし
 KEYORDER keyorder_a;
 
-std::wstring SearchUserDic(const std::wstring &searchkey,  const std::wstring &okuri)
+std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	std::wstring candidate;
 	SKKDICCANDIDATES sc;
@@ -115,8 +115,6 @@ void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc)
 void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 {
 	std::wstring candidate, conv;
-	std::wregex re(L"[\\x00-\\x19]");
-	std::wstring fmt(L"");
 	SKKDICCANDIDATES scc;
 
 	if (max >= 9 || max <= 0)
@@ -128,7 +126,8 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 	{
 		candidate = SearchUserDic(sc_itr->first, L"");
 
-		candidate = std::regex_replace(candidate, re, fmt);
+		static const std::wregex rectrl(L"[\\x00-\\x19]");
+		candidate = std::regex_replace(candidate, rectrl, L"");
 
 		scc.clear();
 
@@ -195,7 +194,6 @@ void AddKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri)
 {
 	SKKDICENTRY userdicentry;
-	std::wregex re;
 	std::wstring candidate_esc;
 	std::wstring annotation_esc;
 	USEROKURIENTRY userokurientry;
@@ -247,8 +245,8 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	}
 
 	//ユーザー辞書送りブロック
-	re.assign(L"[\\[\\]]"); //角括弧を含む候補を除外
-	if (command == REQ_USER_ADD_A && !okuri.empty() && !std::regex_search(candidate_esc, re))
+	static const std::wregex reblock(L"[\\[\\]]"); //角括弧を含む候補を除外
+	if (command == REQ_USER_ADD_A && !okuri.empty() && !std::regex_search(candidate_esc, reblock))
 	{
 		auto userokuri_itr = userokuri.find(searchkey);
 		if (userokuri_itr == userokuri.end())

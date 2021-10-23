@@ -10,8 +10,6 @@ POS skkdicpos_n; //送りなしエントリ
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
 	std::wstring candidate;
-	std::wregex re;
-	std::wstring fmt;
 
 	if (lua != nullptr)
 	{
@@ -65,14 +63,12 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 			candidate += SearchCharacterCode(searchkey.substr(1));
 		}
 
-		re.assign(L"/\n/");
-		fmt.assign(L"/");
-		candidate = std::regex_replace(candidate, re, fmt);
+		static const std::wregex resepdic(L"/\n/");
+		candidate = std::regex_replace(candidate, resepdic, L"/");
 	}
 
-	re.assign(L"[\\x00-\\x19]");
-	fmt.assign(L"");
-	candidate = std::regex_replace(candidate, re, fmt);
+	static const std::wregex rectrl(L"[\\x00-\\x19]");
+	candidate = std::regex_replace(candidate, rectrl, L"");
 
 	ParseSKKDicCandiate(candidate, sc);
 
@@ -313,10 +309,12 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 		}
 
 		//数値変換
-		ret = std::regex_replace(searchkey, std::wregex(L"[0-9]+"), std::wstring(L"#"));
+		static const std::wregex renum(L"[0-9]+");
+		ret = std::regex_replace(searchkey, renum, L"#");
 	}
 
-	ret = std::regex_replace(ret, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
+	static const std::wregex rectrl(L"[\\x00-\\x19]");
+	ret = std::regex_replace(ret, rectrl, L"");
 
 	return ret;
 }
@@ -347,7 +345,8 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 		ret = ParseConcat(candidate);
 	}
 
-	ret = std::regex_replace(ret, std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
+	static const std::wregex rectrl(L"[\\x00-\\x19]");
+	ret = std::regex_replace(ret, rectrl, L"");
 
 	return ret;
 }

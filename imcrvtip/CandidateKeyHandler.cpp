@@ -252,9 +252,12 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		_regmode = FALSE;
 
 		//スペースのみのとき空として扱う
-		if (std::regex_match(_regtext, std::wregex(L"^\\s+$")))
 		{
-			_regtext.clear();
+			static const std::wregex resp(L"^\\s+$");
+			if (std::regex_match(_regtext, resp))
+			{
+				_regtext.clear();
+			}
 		}
 
 		if (_regtext.empty())	//空のときはキャンセル扱い
@@ -311,7 +314,8 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			std::wstring okurikey;
 
 			//候補と注釈を、行頭以外の最後のセミコロンで分割
-			if (std::regex_search(_regtext, result, std::wregex(L".+;")))
+			static const std::wregex resepsc(L".+;");
+			if (std::regex_search(_regtext, result, resepsc))
 			{
 				candidate = result.str().substr(0, result.str().size() - 1);
 				annotation = result.suffix();
@@ -525,8 +529,8 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 					LPWSTR pwCB = (LPWSTR)GlobalLock(hCB);
 					if (pwCB != nullptr)
 					{
-						std::wstring scb = std::regex_replace(std::wstring(pwCB),
-							std::wregex(L"[\\x00-\\x19]"), std::wstring(L""));
+						static const std::wregex rectrl(L"[\\x00-\\x19]");
+						std::wstring scb = std::regex_replace(std::wstring(pwCB), rectrl, L"");
 						_regtext.insert(_regtextpos, scb);
 						_regtextpos += scb.size();
 						_Update();
