@@ -73,8 +73,6 @@ HANDLE SrvStart();
 //server
 #define SKK_HIT		'1'
 
-#define BACKUP_GENS		3
-
 extern CRITICAL_SECTION csUserDict;
 extern CRITICAL_SECTION csUserData;
 extern CRITICAL_SECTION csSaveUserDic;
@@ -99,7 +97,6 @@ extern LPCWSTR DictionaryManagerClass;
 // ファイルパス
 extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathuserdic[MAX_PATH];		//ユーザー辞書
-extern WCHAR pathuserbak[MAX_PATH];		//ユーザー辞書バックアッププレフィックス
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR pathinitlua[MAX_PATH];		//init.lua
 
@@ -113,6 +110,8 @@ extern WCHAR host[MAX_SKKSERVER_HOST];	//ホスト
 extern WCHAR port[MAX_SKKSERVER_PORT];	//ポート
 extern DWORD encoding;	//エンコーディング
 extern DWORD timeout;	//タイムアウト
+
+extern INT generation;		//ユーザー辞書バックアップ世代数
 
 extern BOOL precedeokuri;	//送り仮名が一致した候補を優先する
 extern BOOL compincback;	//前方一致と後方一致で補完する

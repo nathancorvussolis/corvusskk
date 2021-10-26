@@ -25,6 +25,7 @@ void SaveDictionary1(IXmlWriter *pWriter, HWND hDlg);
 void SaveDictionary1Server(IXmlWriter *pWriter, HWND hDlg);
 // DlgProcDictionary2
 INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg);
 // DlgProcBehavior1
 INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 void SaveFont(IXmlWriter *pWriter, HWND hDlg);

@@ -40,6 +40,10 @@ LPCWSTR AttributeJLatin = L"jl";
 
 LPCWSTR SectionDictionary = L"dictionary";
 
+//server keys
+
+LPCWSTR ValueDictionaryGeneration = L"generation";
+
 //server section
 
 LPCWSTR SectionServer = L"server";

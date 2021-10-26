@@ -15,7 +15,6 @@ LPCWSTR modeWB = L"wb";
 
 LPCWSTR fnconfigxml = L"config.xml";	//設定
 LPCWSTR fnuserdic = L"userdict.txt";	//ユーザー辞書
-LPCWSTR fnuserbak = L"userdict.bk";		//ユーザー辞書バックアッププレフィックス
 LPCWSTR fnskkdic = L"skkdict.txt";		//取込SKK辞書
 LPCWSTR fninitlua = L"init.lua";		//init.lua
 

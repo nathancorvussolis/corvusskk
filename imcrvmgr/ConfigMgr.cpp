@@ -9,7 +9,6 @@ LPCWSTR DictionaryManagerClass = TEXTSERVICE_NAME L"DictionaryManager";
 // ファイルパス
 WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathuserdic[MAX_PATH];	//ユーザー辞書
-WCHAR pathuserbak[MAX_PATH];	//ユーザー辞書バックアッププレフィックス
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 WCHAR pathinitlua[MAX_PATH];	//init.lua
 
@@ -23,6 +22,8 @@ WCHAR host[MAX_SKKSERVER_HOST] = {};	//ホスト
 WCHAR port[MAX_SKKSERVER_PORT] = {};	//ポート
 DWORD encoding = 0;		//エンコーディング
 DWORD timeout = 1000;	//タイムアウト
+
+INT generation = 0;		//ユーザー辞書バックアップ世代数
 
 BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
 BOOL compincback = FALSE;	//前方一致と後方一致で補完する
@@ -50,7 +51,6 @@ void CreateConfigPath()
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 	ZeroMemory(pathuserdic, sizeof(pathuserdic));
-	ZeroMemory(pathuserbak, sizeof(pathuserbak));
 	ZeroMemory(pathskkdic, sizeof(pathskkdic));
 	ZeroMemory(pathinitlua, sizeof(pathinitlua));
 
@@ -67,7 +67,6 @@ void CreateConfigPath()
 
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s", appdir, fnconfigxml);
 		_snwprintf_s(pathuserdic, _TRUNCATE, L"%s\\%s", appdir, fnuserdic);
-		_snwprintf_s(pathuserbak, _TRUNCATE, L"%s\\%s", appdir, fnuserbak);
 		_snwprintf_s(pathskkdic, _TRUNCATE, L"%s\\%s", appdir, fnskkdic);
 		_snwprintf_s(pathinitlua, _TRUNCATE, L"%s\\%s", appdir, fninitlua);
 
@@ -230,6 +229,18 @@ void LoadConfig()
 			StartConnectSKKServer();
 		}
 	}
+
+	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryGeneration, strxmlval);
+	INT g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+	if (g < 0)
+	{
+		g = DEFAULT_BACKUPGENS;
+	}
+	else if (g > MAX_BACKUPGENS)
+	{
+		g = MAX_BACKUPGENS;
+	}
+	generation = g;
 
 	ReadValue(pathconfigxml, SectionBehavior, ValuePrecedeOkuri, strxmlval);
 	precedeokuri = _wtoi(strxmlval.c_str());

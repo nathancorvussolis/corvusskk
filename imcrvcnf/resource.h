@@ -51,6 +51,7 @@
 #define IDC_BUTTON_MGR_KILL                     1203
 #define IDC_BUTTON_OPEN_USERDIR                 1204
 #define IDC_BUTTON_OPEN_SYSTEMDIR               1205
+#define IDC_EDIT_USERDICBACKUPGEN               1206
 
 #define IDC_CHECKBOX_DEFAULTMODE                2001
 #define IDC_RADIO_DEFMODEHIRA                   2002

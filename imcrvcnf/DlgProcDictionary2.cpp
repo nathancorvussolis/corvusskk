@@ -14,10 +14,27 @@ BOOL CommandDic(WCHAR command);
 
 INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	std::wstring strxmlval;
+	WCHAR num[16];
+	INT g;
+
 	switch (message)
 	{
 	case WM_INITDIALOG:
 		SetTimer(hDlg, MGR_TIMER_ID, 1000, nullptr);
+
+		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryGeneration, strxmlval);
+		g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+		if (g < 0)
+		{
+			g = DEFAULT_BACKUPGENS;
+		}
+		else if (g > MAX_BACKUPGENS)
+		{
+			g = MAX_BACKUPGENS;
+		}
+		_snwprintf_s(num, _TRUNCATE, L"%d", g);
+		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
 		return TRUE;
 
 	case WM_DPICHANGED_AFTERPARENT:
@@ -81,6 +98,17 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		break;
 
+		case IDC_EDIT_USERDICBACKUPGEN:
+			switch (HIWORD(wParam))
+			{
+			case EN_CHANGE:
+				PropSheet_Changed(GetParent(hDlg), hDlg);
+				return TRUE;
+			default:
+				break;
+			}
+			break;
+
 		default:
 			break;
 		}
@@ -96,6 +124,26 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	}
 
 	return FALSE;
+}
+
+void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
+{
+	WCHAR num[16];
+	INT g;
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num, _countof(num));
+	g = _wtoi(num);
+	if (g < 0)
+	{
+		g = DEFAULT_BACKUPGENS;
+	}
+	else if (g > MAX_BACKUPGENS)
+	{
+		g = MAX_BACKUPGENS;
+	}
+	_snwprintf_s(num, _TRUNCATE, L"%d", g);
+	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
+	WriterKey(pWriter, ValueDictionaryGeneration, num);
 }
 
 BOOL ConnectDic()

@@ -718,22 +718,53 @@ void StartSaveUserDic(BOOL bThread)
 
 void BackUpUserDic()
 {
-	WCHAR oldpath[MAX_PATH];
-	WCHAR newpath[MAX_PATH];
+	WCHAR path[MAX_PATH];
+	LPCWSTR ext = L"bak";
 
 	EnterCriticalSection(&csUserDict);	// !
 
-	for (int i = BACKUP_GENS; i > 1; i--)
-	{
-		_snwprintf_s(oldpath, _TRUNCATE, L"%s%d", pathuserbak, i - 1);
-		_snwprintf_s(newpath, _TRUNCATE, L"%s%d", pathuserbak, i);
+	// バックアップ
 
-		MoveFileExW(oldpath, newpath, MOVEFILE_REPLACE_EXISTING);
+	SYSTEMTIME st = {};
+	GetSystemTime(&st);
+
+	_snwprintf_s(path, _TRUNCATE, L"%s.%04d%02d%02dT%02d%02d%02dZ.%s",
+		pathuserdic,
+		st.wYear, st.wMonth, st.wDay,
+		st.wHour, st.wMinute, st.wSecond,
+		ext);
+
+	CopyFileW(pathuserdic, path, FALSE);
+
+	// バックアップファイル検索
+
+	std::vector<std::wstring> filenames;
+	WIN32_FIND_DATAW fd;
+
+	_snwprintf_s(path, _TRUNCATE, L"%s.*.%s", pathuserdic, ext);
+
+	HANDLE hFind = FindFirstFileW(path, &fd);
+	if (hFind != INVALID_HANDLE_VALUE)
+	{
+		filenames.push_back(fd.cFileName);
+
+		while (FindNextFileW(hFind, &fd))
+		{
+			filenames.push_back(fd.cFileName);
+		}
+
+		FindClose(hFind);
 	}
 
-	_snwprintf_s(newpath, _TRUNCATE, L"%s%d", pathuserbak, 1);
+	// 昇順ソート
+	std::sort(filenames.begin(), filenames.end());
 
-	CopyFileW(pathuserdic, newpath, FALSE);
+	// 古いバックアップファイルを削除
+	int len = (int)filenames.size() - generation;
+	for (int i = 0; i < len; i++)
+	{
+		DeleteFileW(filenames[i].c_str());
+	}
 
 	LeaveCriticalSection(&csUserDict);	// !
 }

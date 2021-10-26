@@ -21,6 +21,8 @@
 #define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
 #define MAX_KEYRE			256		//キー１/２ 読み込みバッファ
 #define MAX_CONV_POINT		256		//変換位置指定最大数
+#define DEFAULT_BACKUPGENS	3		//ユーザー辞書バックアップ世代
+#define MAX_BACKUPGENS		999		//ユーザー辞書バックアップ世代
 
 //request
 #define REQ_SEARCH			L'1'	//辞書検索
@@ -66,7 +68,6 @@ extern LPCWSTR modeWB;
 
 extern LPCWSTR fnconfigxml;	//設定
 extern LPCWSTR fnuserdic;	//ユーザー辞書
-extern LPCWSTR fnuserbak;	//ユーザー辞書バックアッププレフィックス
 extern LPCWSTR fnskkdic;	//取込SKK辞書
 extern LPCWSTR fninitlua;	//init.lua
 

@@ -196,6 +196,8 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 
 			SaveDictionary1(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY1));
 
+			SaveDictionary2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY2));
+
 			WriterEndSection(pWriter);
 		}
 

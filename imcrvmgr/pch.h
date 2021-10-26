@@ -12,6 +12,7 @@
 #include <vector>
 #include <map>
 #include <regex>
+#include <algorithm>
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>
