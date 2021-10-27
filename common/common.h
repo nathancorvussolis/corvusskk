@@ -21,8 +21,8 @@
 #define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
 #define MAX_KEYRE			256		//キー１/２ 読み込みバッファ
 #define MAX_CONV_POINT		256		//変換位置指定最大数
-#define DEFAULT_BACKUPGENS	3		//ユーザー辞書バックアップ世代
-#define MAX_BACKUPGENS		999		//ユーザー辞書バックアップ世代
+#define DEF_BACKUPGENS		3		//ユーザー辞書バックアップ世代
+#define MAX_BACKUPGENS		256		//ユーザー辞書バックアップ世代
 
 //request
 #define REQ_SEARCH			L'1'	//辞書検索

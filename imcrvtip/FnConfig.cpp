@@ -94,7 +94,7 @@ void CTextService::_CreateConfigPath()
 
 	ZeroMemory(pathconfigxml, sizeof(pathconfigxml));
 
-	//%AppData%\\CorvusSKK\\config.xml
+	//%APPDATA%\\CorvusSKK\\config.xml
 	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);

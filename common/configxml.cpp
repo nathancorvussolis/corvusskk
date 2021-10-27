@@ -40,9 +40,10 @@ LPCWSTR AttributeJLatin = L"jl";
 
 LPCWSTR SectionDictionary = L"dictionary";
 
-//server keys
+//dictionary keys
 
-LPCWSTR ValueDictionaryGeneration = L"generation";
+LPCWSTR ValueDictionaryBackupDir = L"backupdir";
+LPCWSTR ValueDictionaryBackupGen = L"backupgen";
 
 //server section
 

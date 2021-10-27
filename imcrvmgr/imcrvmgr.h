@@ -99,6 +99,7 @@ extern WCHAR pathconfigxml[MAX_PATH];	//設定
 extern WCHAR pathuserdic[MAX_PATH];		//ユーザー辞書
 extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR pathinitlua[MAX_PATH];		//init.lua
+extern WCHAR pathbackup[MAX_PATH];		//ユーザー辞書バックアップレフィックス
 
 extern WCHAR krnlobjsddl[MAX_SECURITYDESC];	//SDDL
 extern WCHAR mgrpipename[MAX_PIPENAME];		//名前付きパイプ

@@ -11,6 +11,7 @@ WCHAR pathconfigxml[MAX_PATH];	//設定
 WCHAR pathuserdic[MAX_PATH];	//ユーザー辞書
 WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 WCHAR pathinitlua[MAX_PATH];	//init.lua
+WCHAR pathbackup[MAX_PATH];		//ユーザー辞書バックアップレフィックス
 
 WCHAR krnlobjsddl[MAX_SECURITYDESC];	//SDDL
 WCHAR mgrpipename[MAX_PIPENAME];	//名前付きパイプ
@@ -86,8 +87,8 @@ void UpdateConfigPath()
 {
 	PWSTR knownfolderpath = nullptr;
 
-	//%AppData%\\CorvusSKK\\config.xml
-	//%AppData%\\CorvusSKK\\skkdict.txt
+	//%APPDATA%\\CorvusSKK\\config.xml
+	//%APPDATA%\\CorvusSKK\\skkdict.txt
 	if (SUCCEEDED(SHGetKnownFolderPath(FOLDERID_RoamingAppData, KF_FLAG_DONT_VERIFY, nullptr, &knownfolderpath)))
 	{
 		_snwprintf_s(pathconfigxml, _TRUNCATE, L"%s\\%s\\%s", knownfolderpath, TextServiceDesc, fnconfigxml);
@@ -178,6 +179,7 @@ void CreateIpcName()
 
 void LoadConfig()
 {
+	WCHAR path[MAX_PATH];
 	BOOL servtmp;
 	WCHAR hosttmp[MAX_SKKSERVER_HOST];	//ホスト
 	WCHAR porttmp[MAX_SKKSERVER_PORT];	//ポート
@@ -230,11 +232,19 @@ void LoadConfig()
 		}
 	}
 
-	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryGeneration, strxmlval);
+	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupDir, strxmlval);
+	if (strxmlval.empty())
+	{
+		strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
+	}
+	ExpandEnvironmentStringsW(strxmlval.c_str(), path, _countof(path));
+	_snwprintf_s(pathbackup, _TRUNCATE, L"%s\\%s", path, fnskkdic);
+
+	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupGen, strxmlval);
 	INT g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
 	if (g < 0)
 	{
-		g = DEFAULT_BACKUPGENS;
+		g = DEF_BACKUPGENS;
 	}
 	else if (g > MAX_BACKUPGENS)
 	{
@@ -303,7 +313,7 @@ void InitLua()
 	lua_pushstring(lua, version);
 	lua_setglobal(lua, u8"SKK_VERSION");
 
-	//%AppData%\\CorvusSKK\\init.lua
+	//%APPDATA%\\CorvusSKK\\init.lua
 	if (luaL_dofile(lua, WCTOU8(pathinitlua)) == LUA_OK)
 	{
 		return;

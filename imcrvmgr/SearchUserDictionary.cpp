@@ -723,13 +723,21 @@ void BackUpUserDic()
 
 	EnterCriticalSection(&csUserDict);	// !
 
+	// バックアップディレクトリ作成
+
+	WCHAR drive[_MAX_DRIVE];
+	WCHAR dir[_MAX_DIR];
+	_wsplitpath_s(pathbackup, drive, _countof(drive), dir, _countof(dir), nullptr, 0, nullptr, 0);
+	_wmakepath_s(path, drive, dir, nullptr, nullptr);
+	CreateDirectoryW(path, nullptr);
+
 	// バックアップ
 
 	SYSTEMTIME st = {};
 	GetSystemTime(&st);
 
 	_snwprintf_s(path, _TRUNCATE, L"%s.%04d%02d%02dT%02d%02d%02dZ.%s",
-		pathuserdic,
+		pathbackup,
 		st.wYear, st.wMonth, st.wDay,
 		st.wHour, st.wMinute, st.wSecond,
 		ext);
@@ -741,7 +749,7 @@ void BackUpUserDic()
 	std::vector<std::wstring> filenames;
 	WIN32_FIND_DATAW fd;
 
-	_snwprintf_s(path, _TRUNCATE, L"%s.*.%s", pathuserdic, ext);
+	_snwprintf_s(path, _TRUNCATE, L"%s.*.%s", pathbackup, ext);
 
 	HANDLE hFind = FindFirstFileW(path, &fd);
 	if (hFind != INVALID_HANDLE_VALUE)
@@ -763,7 +771,9 @@ void BackUpUserDic()
 	int len = (int)filenames.size() - generation;
 	for (int i = 0; i < len; i++)
 	{
-		DeleteFileW(filenames[i].c_str());
+		_wmakepath_s(path, drive, dir, filenames[i].c_str(), nullptr);
+
+		DeleteFileW(path);
 	}
 
 	LeaveCriticalSection(&csUserDict);	// !

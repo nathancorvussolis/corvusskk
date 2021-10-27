@@ -23,11 +23,11 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	case WM_INITDIALOG:
 		SetTimer(hDlg, MGR_TIMER_ID, 1000, nullptr);
 
-		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryGeneration, strxmlval);
+		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupGen, strxmlval);
 		g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
 		if (g < 0)
 		{
-			g = DEFAULT_BACKUPGENS;
+			g = DEF_BACKUPGENS;
 		}
 		else if (g > MAX_BACKUPGENS)
 		{
@@ -35,6 +35,14 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		_snwprintf_s(num, _TRUNCATE, L"%d", g);
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
+
+		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupDir, strxmlval);
+		if (strxmlval.empty())
+		{
+			strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
+		}
+		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, strxmlval.c_str());
+
 		return TRUE;
 
 	case WM_DPICHANGED_AFTERPARENT:
@@ -52,12 +60,12 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
-		case IDC_BUTTON_MGR_RUN:
-			StartProcess(hInst, IMCRVMGREXE);
-			return TRUE;
-
 		case IDC_BUTTON_MGR_KILL:
 			CommandDic(REQ_EXIT);
+			return TRUE;
+
+		case IDC_BUTTON_MGR_RUN:
+			StartProcess(hInst, IMCRVMGREXE);
 			return TRUE;
 
 		case IDC_BUTTON_OPEN_USERDIR:
@@ -99,6 +107,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		break;
 
 		case IDC_EDIT_USERDICBACKUPGEN:
+		case IDC_EDIT_USERDICBACKUPDIR:
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
@@ -108,6 +117,19 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				break;
 			}
 			break;
+
+		case IDC_BUTTON_OPEN_BACKUPDIR:
+		{
+			WCHAR prepath[MAX_PATH];
+			WCHAR exppath[MAX_PATH];
+
+			GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, prepath, _countof(prepath));
+
+			ExpandEnvironmentStringsW(prepath, exppath, _countof(exppath));
+
+			ShellExecuteW(nullptr, L"open", exppath, nullptr, nullptr, SW_SHOWNORMAL);
+		}
+		break;
 
 		default:
 			break;
@@ -128,14 +150,18 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 {
+	WCHAR path[MAX_PATH];
 	WCHAR num[16];
 	INT g;
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, path, _countof(path));
+	WriterKey(pWriter, ValueDictionaryBackupDir, path);
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num, _countof(num));
 	g = _wtoi(num);
 	if (g < 0)
 	{
-		g = DEFAULT_BACKUPGENS;
+		g = DEF_BACKUPGENS;
 	}
 	else if (g > MAX_BACKUPGENS)
 	{
@@ -143,7 +169,7 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	}
 	_snwprintf_s(num, _TRUNCATE, L"%d", g);
 	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
-	WriterKey(pWriter, ValueDictionaryGeneration, num);
+	WriterKey(pWriter, ValueDictionaryBackupGen, num);
 }
 
 BOOL ConnectDic()

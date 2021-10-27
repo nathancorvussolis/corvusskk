@@ -35,9 +35,10 @@ extern LPCWSTR AttributeJLatin;
 
 extern LPCWSTR SectionDictionary;
 
-//server keys
+//dictionary keys
 
-extern LPCWSTR ValueDictionaryGeneration;
+extern LPCWSTR ValueDictionaryBackupDir;
+extern LPCWSTR ValueDictionaryBackupGen;
 
 //server section
 
