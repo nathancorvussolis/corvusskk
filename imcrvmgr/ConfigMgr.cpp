@@ -177,7 +177,7 @@ void CreateIpcName()
 	}
 }
 
-void LoadConfig()
+void LoadConfig(BOOL sysexit)
 {
 	WCHAR path[MAX_PATH];
 	BOOL servtmp;
@@ -215,20 +215,23 @@ void LoadConfig()
 	}
 
 	//変更があったら接続し直す
-	if (servtmp != serv || wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
-		encodingtmp != encoding || timeouttmp != timeout)
+	if (sysexit == FALSE)
 	{
-		serv = servtmp;
-		wcsncpy_s(host, hosttmp, _TRUNCATE);
-		wcsncpy_s(port, porttmp, _TRUNCATE);
-		encoding = encodingtmp;
-		timeout = timeouttmp;
-
-		DisconnectSKKServer();
-
-		if (serv)
+		if (servtmp != serv || wcscmp(hosttmp, host) != 0 || wcscmp(porttmp, port) != 0 ||
+			encodingtmp != encoding || timeouttmp != timeout)
 		{
-			StartConnectSKKServer();
+			serv = servtmp;
+			wcsncpy_s(host, hosttmp, _TRUNCATE);
+			wcsncpy_s(port, porttmp, _TRUNCATE);
+			encoding = encodingtmp;
+			timeout = timeouttmp;
+
+			DisconnectSKKServer();
+
+			if (serv)
+			{
+				StartConnectSKKServer();
+			}
 		}
 	}
 

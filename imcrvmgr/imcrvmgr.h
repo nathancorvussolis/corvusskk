@@ -15,7 +15,7 @@ typedef struct {
 void CreateConfigPath();
 void UpdateConfigPath();
 void CreateIpcName();
-void LoadConfig();
+void LoadConfig(BOOL sysexit = FALSE);
 BOOL IsFileModified(LPCWSTR path, FILETIME *ft);
 void InitLua();
 void UninitLua();

@@ -161,6 +161,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			StartSaveUserDic(FALSE);
 
+			if (IsFileModified(pathconfigxml, &ftConfig))
+			{
+				LoadConfig(TRUE);
+			}
+
 			BackUpUserDic();
 		}
 		break;
@@ -196,6 +201,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		if (message == WM_ENDSESSION)
 		{
+			if (IsFileModified(pathconfigxml, &ftConfig))
+			{
+				LoadConfig(TRUE);
+			}
+
 			BackUpUserDic();
 		}
 
