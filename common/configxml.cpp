@@ -40,11 +40,6 @@ LPCWSTR AttributeJLatin = L"jl";
 
 LPCWSTR SectionDictionary = L"dictionary";
 
-//dictionary keys
-
-LPCWSTR ValueDictionaryBackupDir = L"backupdir";
-LPCWSTR ValueDictionaryBackupGen = L"backupgen";
-
 //server section
 
 LPCWSTR SectionServer = L"server";
@@ -56,6 +51,18 @@ LPCWSTR ValueServerHost = L"host";
 LPCWSTR ValueServerPort = L"port";
 LPCWSTR ValueServerEncoding = L"encoding";
 LPCWSTR ValueServerTimeOut = L"timeout";
+
+//userdict section
+
+LPCWSTR SectionUserDict = L"userdict";
+
+//userdict keys
+
+LPCWSTR ValueBackupDir = L"backupdir";
+LPCWSTR ValueBackupGen = L"backupgen";
+LPCWSTR ValuePrivateMode = L"privatemode";
+LPCWSTR ValuePrivateModeVKey = L"privatemodevkey";
+LPCWSTR ValuePrivateModeMKey = L"privatemodemkey";
 
 //behavior section
 

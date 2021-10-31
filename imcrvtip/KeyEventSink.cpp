@@ -6,6 +6,8 @@
 static LPCWSTR c_PreservedKeyDesc[PRESERVEDKEY_NUM] = {L"ON", L"OFF"};
 static const GUID c_guidPreservedKeyOnOff[PRESERVEDKEY_NUM] = {c_guidPreservedKeyOn, c_guidPreservedKeyOff};
 
+static LPCWSTR c_PrivateModeKeyDesc = L"Private";
+
 BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 {
 	if (_IsKeyboardDisabled())
@@ -231,6 +233,11 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 
 		*pfEaten = TRUE;
 	}
+	else if (IsEqualGUID(rguid, c_guidPrivateModeKey))
+	{
+		_TogglePrivateMode();
+		_UpdateLanguageBar();
+	}
 	else
 	{
 		*pfEaten = FALSE;
@@ -319,5 +326,30 @@ void CTextService::_UninitPreservedKey(int onoff)
 
 			hr = pKeystrokeMgr->UnpreserveKey(c_guidPreservedKeyOnOff[onoff], &preservedkey[onoff][i]);
 		}
+	}
+}
+
+BOOL CTextService::_InitPrivateModeKey()
+{
+	HRESULT hr = E_FAIL;
+
+	CComPtr<ITfKeystrokeMgr> pKeystrokeMgr;
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
+	{
+		hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPrivateModeKey,
+			&privatemodekey, c_PrivateModeKeyDesc, (ULONG)wcslen(c_PrivateModeKeyDesc));
+	}
+
+	return SUCCEEDED(hr);
+}
+
+void CTextService::_UninitPrivateModeKey()
+{
+	HRESULT hr = E_FAIL;
+
+	CComPtr<ITfKeystrokeMgr> pKeystrokeMgr;
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
+	{
+		hr = pKeystrokeMgr->UnpreserveKey(c_guidPrivateModeKey, &privatemodekey);
 	}
 }

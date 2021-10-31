@@ -132,6 +132,13 @@ public:
 	void _ClearCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext);
 	BOOL _SetCompositionDisplayAttributes(TfEditCookie ec, ITfContext *pContext, ITfRange *pRange, TfGuidAtom gaDisplayAttribute);
 
+	// Property
+	BOOL _IsVertical(TfEditCookie ec, ITfContext *pContext);
+	BOOL _IsAppPrivateScope(TfEditCookie ec, ITfContext *pContext);
+	BOOL _IsAppPrivateMode();
+	BOOL _IsPrivateMode();
+	void _TogglePrivateMode();
+
 	// KeyHandler
 	HRESULT _InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf);
 	HRESULT _HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf);
@@ -155,7 +162,6 @@ public:
 	HRESULT _ShowCandidateList(TfEditCookie ec, ITfContext *pContext, int mode);
 	void _EndCandidateList();
 	void _EndCompletionList(TfEditCookie ec, ITfContext *pContext);
-	BOOL _GetVertical(TfEditCookie ec, ITfContext *pContext);
 
 	// KeyHandlerControl
 	HRESULT _HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch);
@@ -197,7 +203,9 @@ public:
 	void _CreateConfigPath();
 	void _CreateIpcName();
 	void _ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval);
+	void _LoadUserDict();
 	void _LoadBehavior();
+	void _LoadDisplay();
 	void _LoadDisplayAttr();
 	void _LoadSelKey();
 	void _SetPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list);
@@ -237,6 +245,9 @@ private:
 
 	BOOL _InitPreservedKey(int onoff);
 	void _UninitPreservedKey(int onoff);
+
+	BOOL _InitPrivateModeKey();
+	void _UninitPrivateModeKey();
 
 	BOOL _InitLanguageBar();
 	void _UninitLanguageBar();
@@ -316,6 +327,9 @@ public:
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
 	BOOL _ShowInputMode;	//InputModeWindow
+	BOOL _AppPrivateMode;	//Private Mode by application
+	//Private Mode by user, E_FAIL:undefined / S_OK:enabled / S_FALSE:desabled
+	HRESULT _UserPrivateMode;
 
 	//状態
 	INT inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
@@ -350,6 +364,8 @@ public:
 	BOOL cx_showmodeinl;		//入力モードを表示する
 	UINT cx_showmodeinltm;		//入力モードの表示ミリ秒数
 	COLORREF cx_mode_colors[DISPLAY_MODE_COLOR_NUM];		//入力モードの色
+
+	BOOL cx_privatemode;		//プライベートモード
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す
@@ -389,6 +405,9 @@ public:
 
 	//preserved key
 	TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
+
+	//private mode key
+	TF_PRESERVEDKEY privatemodekey;
 
 	//表示属性   別のインスタンスからGetDisplayAttributeInfo()が呼ばれるのでstaticで
 	static BOOL display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM];

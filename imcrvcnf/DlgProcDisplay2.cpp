@@ -24,7 +24,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HDC hdc;
 	PAINTSTRUCT ps;
 	WCHAR num[16];
-	int count;
+	int n;
 	std::wstring strxmlval;
 	CHOOSECOLORW cc = {};
 	static COLORREF customColor[16];
@@ -36,20 +36,20 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		ReadValue(pathconfigxml, SectionDisplay, ValueShowModeInlTm, strxmlval);
 		if (!strxmlval.empty())
 		{
-			count = _wtoi(strxmlval.c_str());
+			n = _wtoi(strxmlval.c_str());
 		}
 		else
 		{
 			//for compatibility
 			ReadValue(pathconfigxml, SectionDisplay, ValueShowModeSec, strxmlval);
-			count = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str()) * 1000;
+			n = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str()) * 1000;
 		}
 
-		if (count > 60000 || count <= 0)
+		if (n > 60000 || n <= 0)
 		{
-			count = SHOWMODEINLTM_DEF;
+			n = SHOWMODEINLTM_DEF;
 		}
-		_snwprintf_s(num, _TRUNCATE, L"%d", count);
+		_snwprintf_s(num, _TRUNCATE, L"%d", n);
 		SetDlgItemTextW(hDlg, IDC_EDIT_SHOWMODEINLTM, num);
 
 		for (int i = 0; i < _countof(customColor); i++)

@@ -16,32 +16,48 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 {
 	std::wstring strxmlval;
 	WCHAR num[16];
-	INT g;
+	INT n;
+	UINT u;
 
 	switch (message)
 	{
 	case WM_INITDIALOG:
 		SetTimer(hDlg, MGR_TIMER_ID, 1000, nullptr);
 
-		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupGen, strxmlval);
-		g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-		if (g < 0)
+		ReadValue(pathconfigxml, SectionUserDict, ValueBackupGen, strxmlval);
+		n = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+		if (n < 0)
 		{
-			g = DEF_BACKUPGENS;
+			n = DEF_BACKUPGENS;
 		}
-		else if (g > MAX_BACKUPGENS)
+		else if (n > MAX_BACKUPGENS)
 		{
-			g = MAX_BACKUPGENS;
+			n = MAX_BACKUPGENS;
 		}
-		_snwprintf_s(num, _TRUNCATE, L"%d", g);
+		_snwprintf_s(num, _TRUNCATE, L"%d", n);
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
 
-		ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupDir, strxmlval);
+		ReadValue(pathconfigxml, SectionUserDict, ValueBackupDir, strxmlval);
 		if (strxmlval.empty())
 		{
 			strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
 		}
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, strxmlval.c_str());
+
+		LoadCheckButton(hDlg, IDC_CHECKBOX_PRIVATEMODE, SectionUserDict, ValuePrivateMode, L"1");
+
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
+		u = (strxmlval.empty() ?
+			VK_F10 : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
+		_snwprintf_s(num, _TRUNCATE, L"0x%02X", u);
+		SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num);
+
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeMKey, strxmlval);
+		u = (strxmlval.empty() ?
+			(TF_MOD_CONTROL | TF_MOD_SHIFT) : wcstoul(strxmlval.c_str(), nullptr, 0));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT, ((u & TF_MOD_ALT) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL, ((u & TF_MOD_CONTROL) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT, ((u & TF_MOD_SHIFT) ? BST_CHECKED : BST_UNCHECKED));
 
 		return TRUE;
 
@@ -131,6 +147,58 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		break;
 
+		case IDC_EDIT_PRIVATEMODE_VKEY:
+			switch (HIWORD(wParam))
+			{
+			case EN_CHANGE:
+				PropSheet_Changed(GetParent(hDlg), hDlg);
+				return TRUE;
+			default:
+				break;
+			}
+			break;
+
+		case IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT:
+		case IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL:
+		case IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT:
+			PropSheet_Changed(GetParent(hDlg), hDlg);
+			break;
+
+		default:
+			break;
+		}
+		break;
+
+	case WM_NOTIFY:
+		if (lParam == NULL) break;
+		switch (((LPNMHDR)lParam)->code)
+		{
+		case PSN_TRANSLATEACCELERATOR:
+		{
+			WCHAR vkeytext[8];
+			LPMSG lpMsg = (LPMSG)((LPPSHNOTIFY)lParam)->lParam;
+			if (lpMsg == NULL) break;
+			switch (lpMsg->message)
+			{
+			case WM_KEYDOWN:
+			case WM_SYSKEYDOWN:
+				switch (GetDlgCtrlID(lpMsg->hwnd))
+				{
+				case IDC_EDIT_DICTIONARY2_TEST_VKEY:
+					_snwprintf_s(vkeytext, _TRUNCATE, L"0x%02X", (BYTE)lpMsg->wParam);
+					SetDlgItemTextW(hDlg, IDC_EDIT_DICTIONARY2_TEST_VKEY, vkeytext);
+					SendDlgItemMessageW(hDlg, IDC_EDIT_DICTIONARY2_TEST_VKEY, EM_SETSEL, 4, 4);
+					SetWindowLongPtrW(hDlg, DWLP_MSGRESULT, PSNRET_MESSAGEHANDLED);
+					return TRUE;
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		break;
 		default:
 			break;
 		}
@@ -152,24 +220,39 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 {
 	WCHAR path[MAX_PATH];
 	WCHAR num[16];
-	INT g;
+	INT n;
+	UINT u;
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, path, _countof(path));
-	WriterKey(pWriter, ValueDictionaryBackupDir, path);
+	WriterKey(pWriter, ValueBackupDir, path);
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num, _countof(num));
-	g = _wtoi(num);
-	if (g < 0)
+	n = _wtoi(num);
+	if (n < 0)
 	{
-		g = DEF_BACKUPGENS;
+		n = DEF_BACKUPGENS;
 	}
-	else if (g > MAX_BACKUPGENS)
+	else if (n > MAX_BACKUPGENS)
 	{
-		g = MAX_BACKUPGENS;
+		n = MAX_BACKUPGENS;
 	}
-	_snwprintf_s(num, _TRUNCATE, L"%d", g);
+	_snwprintf_s(num, _TRUNCATE, L"%d", n);
 	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
-	WriterKey(pWriter, ValueDictionaryBackupGen, num);
+	WriterKey(pWriter, ValueBackupGen, num);
+
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRIVATEMODE, ValuePrivateMode);
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num, _countof(num));
+	_snwprintf_s(num, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(num, nullptr, 0));
+	SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num);
+	WriterKey(pWriter, ValuePrivateModeVKey, num);
+
+	u = 0;
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT)) { u |= TF_MOD_ALT; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL)) { u |= TF_MOD_CONTROL; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT)) { u |= TF_MOD_SHIFT; }
+	_snwprintf_s(num, _TRUNCATE, L"%X", u);
+	WriterKey(pWriter, ValuePrivateModeMKey, num);
 }
 
 BOOL ConnectDic()

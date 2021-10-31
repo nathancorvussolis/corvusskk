@@ -278,6 +278,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		break;
 
 	case WM_NOTIFY:
+		if (lParam == NULL) break;
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:

@@ -136,6 +136,41 @@ INT_PTR CALLBACK DlgProcKeyMap(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		}
 		break;
 
+	case WM_NOTIFY:
+		if (lParam == NULL) break;
+		switch (((LPNMHDR)lParam)->code)
+		{
+		case PSN_TRANSLATEACCELERATOR:
+		{
+			WCHAR vkeytext[8];
+			LPMSG lpMsg = (LPMSG)((LPPSHNOTIFY)lParam)->lParam;
+			if (lpMsg == NULL) break;
+			switch (lpMsg->message)
+			{
+			case WM_KEYDOWN:
+			case WM_SYSKEYDOWN:
+				switch (GetDlgCtrlID(lpMsg->hwnd))
+				{
+				case IDC_EDIT_KEYMAP_TEST_VKEY:
+					_snwprintf_s(vkeytext, _TRUNCATE, L"\\x%02X", (BYTE)lpMsg->wParam);
+					SetDlgItemTextW(hDlg, IDC_EDIT_KEYMAP_TEST_VKEY, vkeytext);
+					SendDlgItemMessageW(hDlg, IDC_EDIT_KEYMAP_TEST_VKEY, EM_SETSEL, 4, 4);
+					SetWindowLongPtrW(hDlg, DWLP_MSGRESULT, PSNRET_MESSAGEHANDLED);
+					return TRUE;
+				default:
+					break;
+				}
+				break;
+			default:
+				break;
+			}
+		}
+		break;
+		default:
+			break;
+		}
+		break;
+
 	default:
 		break;
 	}

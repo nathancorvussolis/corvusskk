@@ -354,8 +354,13 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_CreateConfigPath();
 
-		_LoadDisplayAttr();
+		_UninitPrivateModeKey();	//OFF
+		_LoadUserDict();
+		_InitPrivateModeKey();		//ON
+
 		_LoadBehavior();
+		_LoadDisplay();
+		_LoadDisplayAttr();
 		_LoadSelKey();
 
 		_UninitPreservedKey(0);	//ON

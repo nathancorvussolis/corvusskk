@@ -54,6 +54,12 @@
 #define IDC_EDIT_USERDICBACKUPDIR               1206
 #define IDC_EDIT_USERDICBACKUPGEN               1207
 #define IDC_BUTTON_OPEN_BACKUPDIR               1208
+#define IDC_CHECKBOX_PRIVATEMODE                1209
+#define IDC_EDIT_PRIVATEMODE_VKEY               1210
+#define IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT       1211
+#define IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL      1212
+#define IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT     1213
+#define IDC_EDIT_DICTIONARY2_TEST_VKEY          1299
 
 #define IDC_CHECKBOX_DEFAULTMODE                2001
 #define IDC_RADIO_DEFMODEHIRA                   2002
@@ -184,7 +190,7 @@
 #define IDC_BUTTON_PRSRVKEY_DOWN                4110
 #define IDC_BUTTON_PRSRVKEY_W                   4111
 #define IDC_BUTTON_PRSRVKEY_D                   4112
-#define IDC_EDIT_DISPVKEY                       4121
+#define IDC_EDIT_PRSRVKEY_TEST_VKEY             4199
 
 #define IDC_EDIT_KANA                           4201
 #define IDC_EDIT_CONV_CHAR                      4202
@@ -212,6 +218,7 @@
 #define IDC_EDIT_RIGHT                          4230
 #define IDC_EDIT_DOWN                           4231
 #define IDC_EDIT_PASTE                          4232
+#define IDC_EDIT_KEYMAP_TEST_VKEY               4299
 
 #define IDC_LIST_CONVPOINT                      5001
 #define IDC_EDIT_CONVPOINT_ST                   5002

@@ -47,10 +47,15 @@ CTextService::CTextService()
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
 	_ShowInputMode = FALSE;
+	_AppPrivateMode = FALSE;
+	_UserPrivateMode = E_FAIL;
 
 	hPipe = INVALID_HANDLE_VALUE;
 
 	inputmode = im_direct;
+
+	ZeroMemory(preservedkey, sizeof(preservedkey));
+	ZeroMemory(&privatemodekey, sizeof(privatemodekey));
 
 	_ResetStatus();
 
@@ -247,6 +252,7 @@ STDAPI CTextService::Deactivate()
 
 	_UninitPreservedKey(0);
 	_UninitPreservedKey(1);
+	_UninitPrivateModeKey();
 
 	_UninitKeyEventSink();
 

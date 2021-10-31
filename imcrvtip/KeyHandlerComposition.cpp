@@ -606,33 +606,3 @@ void CTextService::_EndCompletionList(TfEditCookie ec, ITfContext *pContext)
 		_EndCandidateList();
 	}
 }
-
-BOOL CTextService::_GetVertical(TfEditCookie ec, ITfContext *pContext)
-{
-	BOOL ret = FALSE;
-
-	if (pContext != nullptr)
-	{
-		if (_IsComposing())
-		{
-			CComPtr<ITfRange> pRange;
-			if (SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
-			{
-				CComPtr<ITfReadOnlyProperty> pReadOnlyProperty;
-				if (SUCCEEDED(pContext->GetAppProperty(TSATTRID_Text_VerticalWriting, &pReadOnlyProperty)) && (pReadOnlyProperty != nullptr))
-				{
-					CComVariant var;
-					if (SUCCEEDED(pReadOnlyProperty->GetValue(ec, pRange, &var)))
-					{
-						if (V_VT(&var) == VT_BOOL)
-						{
-							ret = V_BOOL(&var);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return ret;
-}

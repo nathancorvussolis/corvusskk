@@ -128,6 +128,9 @@
     <ClCompile Include="LanguageBar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Property.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Register.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -204,6 +207,36 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Icon\imdebug.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pxAscii.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pxHiragana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pxJLatin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pxKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pxKatakana1.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pzAscii.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pzHiragana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pzJLatin.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pzKatakana.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Icon\pzKatakana1.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

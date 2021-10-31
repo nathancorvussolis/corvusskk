@@ -235,7 +235,7 @@ void LoadConfig(BOOL sysexit)
 		}
 	}
 
-	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupDir, strxmlval);
+	ReadValue(pathconfigxml, SectionUserDict, ValueBackupDir, strxmlval);
 	if (strxmlval.empty())
 	{
 		strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
@@ -243,17 +243,17 @@ void LoadConfig(BOOL sysexit)
 	ExpandEnvironmentStringsW(strxmlval.c_str(), path, _countof(path));
 	_snwprintf_s(pathbackup, _TRUNCATE, L"%s\\%s", path, fnskkdic);
 
-	ReadValue(pathconfigxml, SectionDictionary, ValueDictionaryBackupGen, strxmlval);
-	INT g = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
-	if (g < 0)
+	ReadValue(pathconfigxml, SectionUserDict, ValueBackupGen, strxmlval);
+	INT n = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+	if (n < 0)
 	{
-		g = DEF_BACKUPGENS;
+		n = DEF_BACKUPGENS;
 	}
-	else if (g > MAX_BACKUPGENS)
+	else if (n > MAX_BACKUPGENS)
 	{
-		g = MAX_BACKUPGENS;
+		n = MAX_BACKUPGENS;
 	}
-	generation = g;
+	generation = n;
 
 	ReadValue(pathconfigxml, SectionBehavior, ValuePrecedeOkuri, strxmlval);
 	precedeokuri = _wtoi(strxmlval.c_str());

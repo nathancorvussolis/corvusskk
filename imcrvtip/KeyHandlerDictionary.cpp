@@ -160,6 +160,9 @@ exit:
 
 void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation)
 {
+	//Private Mode
+	if (_IsPrivateMode()) return;
+
 	DWORD bytesWrite, bytesRead;
 	std::wstring okurikey;
 
@@ -206,6 +209,9 @@ exit:
 
 void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate)
 {
+	//Private Mode
+	if (_IsPrivateMode()) return;
+
 	DWORD bytesWrite, bytesRead;
 
 	_ConnectDic();

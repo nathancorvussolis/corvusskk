@@ -261,6 +261,7 @@ INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		break;
 
 	case WM_NOTIFY:
+		if (lParam == NULL) break;
 		if (wParam == IDC_LIST_SKK_DIC)
 		{
 			hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);

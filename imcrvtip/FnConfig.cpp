@@ -56,6 +56,8 @@ static const TF_PRESERVEDKEY configpreservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDK
 	}
 };
 
+static const TF_PRESERVEDKEY configprivatemodekey = {VK_F10, TF_MOD_CONTROL | TF_MOD_SHIFT};
+
 static const struct {
 	LPCWSTR value;
 	COLORREF color;
@@ -157,6 +159,28 @@ void CTextService::_ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOO
 	}
 }
 
+void CTextService::_LoadUserDict()
+{
+	std::wstring strxmlval;
+
+	//UserDict
+
+	_ReadBoolValue(SectionUserDict, ValuePrivateMode, cx_privatemode, TRUE);
+
+	ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
+	privatemodekey.uVKey =
+		(strxmlval.empty() ? configprivatemodekey.uVKey : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
+
+	ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeMKey, strxmlval);
+	privatemodekey.uModifiers =
+		(strxmlval.empty() ? configprivatemodekey.uModifiers :
+			(wcstoul(strxmlval.c_str(), nullptr, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)));
+	if ((privatemodekey.uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
+	{
+		privatemodekey.uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+	}
+}
+
 void CTextService::_LoadBehavior()
 {
 	std::wstring strxmlval;
@@ -184,6 +208,11 @@ void CTextService::_LoadBehavior()
 	_ReadBoolValue(SectionBehavior, ValueDynamicComp, cx_dynamiccomp, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueDynCompMulti, cx_dyncompmulti, FALSE);
 	_ReadBoolValue(SectionBehavior, ValueCompUserDic, cx_compuserdic, FALSE);
+}
+
+void CTextService::_LoadDisplay()
+{
+	std::wstring strxmlval;
 
 	//Font
 
@@ -294,6 +323,8 @@ void CTextService::_LoadDisplayAttr()
 	BOOL se;
 	TF_DISPLAYATTRIBUTE da;
 
+	//DisplayAttr
+
 	for (int i = 0; i < DISPLAYATTRIBUTE_INFO_NUM; i++)
 	{
 		display_attribute_series[i] = c_gdDisplayAttributeInfo[i].se;
@@ -356,12 +387,12 @@ void CTextService::_SetPreservedKeyONOFF(int onoff, const APPDATAXMLLIST &list)
 			{
 				if (r_itr->first == AttributeVKey)
 				{
-					preservedkey[onoff][i].uVKey = wcstoul(r_itr->second.c_str(), nullptr, 0);
+					preservedkey[onoff][i].uVKey = (BYTE)wcstoul(r_itr->second.c_str(), nullptr, 0);
 				}
 				else if (r_itr->first == AttributeMKey)
 				{
 					preservedkey[onoff][i].uModifiers =
-						wcstoul(r_itr->second.c_str(), nullptr, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT);
+						(wcstoul(r_itr->second.c_str(), nullptr, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT));
 					if ((preservedkey[onoff][i].uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
 					{
 						preservedkey[onoff][i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;

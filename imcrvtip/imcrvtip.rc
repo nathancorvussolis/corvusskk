@@ -41,12 +41,14 @@ IDI_0_IME          ICON  "Icon\\imcrvskk.ico"
 #else
 IDI_0_IME          ICON  "Icon\\imdebug.ico"
 #endif
+
 IDI_X_DEFAULT      ICON  "Icon\\xDefault.ico"
 IDI_X_HIRAGANA     ICON  "Icon\\xHiragana.ico"
 IDI_X_KATAKANA     ICON  "Icon\\xKatakana.ico"
 IDI_X_KATAKANA1    ICON  "Icon\\xKatakana1.ico"
 IDI_X_JLATIN       ICON  "Icon\\xJLatin.ico"
 IDI_X_ASCII        ICON  "Icon\\xAscii.ico"
+
 IDI_Z_DEFAULT      ICON  "Icon\\zDefault.ico"
 IDI_Z_HIRAGANA     ICON  "Icon\\zHiragana.ico"
 IDI_Z_KATAKANA     ICON  "Icon\\zKatakana.ico"
@@ -54,12 +56,26 @@ IDI_Z_KATAKANA1    ICON  "Icon\\zKatakana1.ico"
 IDI_Z_JLATIN       ICON  "Icon\\zJLatin.ico"
 IDI_Z_ASCII        ICON  "Icon\\zAscii.ico"
 
+IDI_PX_HIRAGANA     ICON  "Icon\\pxHiragana.ico"
+IDI_PX_KATAKANA     ICON  "Icon\\pxKatakana.ico"
+IDI_PX_KATAKANA1    ICON  "Icon\\pxKatakana1.ico"
+IDI_PX_JLATIN       ICON  "Icon\\pxJLatin.ico"
+IDI_PX_ASCII        ICON  "Icon\\pxAscii.ico"
+
+IDI_PZ_HIRAGANA     ICON  "Icon\\pzHiragana.ico"
+IDI_PZ_KATAKANA     ICON  "Icon\\pzKatakana.ico"
+IDI_PZ_KATAKANA1    ICON  "Icon\\pzKatakana1.ico"
+IDI_PZ_JLATIN       ICON  "Icon\\pzJLatin.ico"
+IDI_PZ_ASCII        ICON  "Icon\\pzAscii.ico"
+
 IDR_SYSTRAY_MENU MENU
 {
 	POPUP ""
 	{
 		MENUITEM "CAPS", IDM_CAPSLOCK
 		MENUITEM "KANA", IDM_KANALOCK
+		MENUITEM SEPARATOR
+		MENUITEM "Private", IDM_PRIVATE
 		MENUITEM SEPARATOR
 		MENUITEM "［かな］", IDM_HIRAGANA
 		MENUITEM "［カナ］", IDM_KATAKANA

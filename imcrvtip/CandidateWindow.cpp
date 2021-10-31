@@ -208,7 +208,7 @@ void CCandidateWindow::_Move(LPCRECT lpr, TfEditCookie ec, ITfContext *pContext)
 
 		if (ec != TF_INVALID_EDIT_COOKIE && pContext != nullptr)
 		{
-			_vertical = _pTextService->_GetVertical(ec, pContext);
+			_vertical = _pTextService->_IsVertical(ec, pContext);
 		}
 
 		if (_vertical)

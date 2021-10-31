@@ -92,7 +92,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key, _countof(key));
-				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
+				_snwprintf_s(key, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
 				ListView_SetItemText(hWndListView, index, 0, key);
 				wcsncpy_s(text, IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRSRVKEY_MKEY_ALT) == BST_CHECKED ? L"1" : L"0", _TRUNCATE);
@@ -109,7 +109,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 				item.mask = LVIF_TEXT;
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key, _countof(key));
-				_snwprintf_s(key, _TRUNCATE, L"0x%02X", wcstoul(key, nullptr, 0));
+				_snwprintf_s(key, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(key, nullptr, 0));
 				SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_VKEY, key);
 				item.pszText = key;
 				item.iItem = count;
@@ -215,23 +215,25 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		break;
 
 	case WM_NOTIFY:
+		if (lParam == NULL) break;
 		hWndListView = ((LPNMHDR)lParam)->hwndFrom;
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case PSN_TRANSLATEACCELERATOR:
 			{
+				WCHAR vkeytext[8];
 				LPMSG lpMsg = (LPMSG)((LPPSHNOTIFY)lParam)->lParam;
+				if (lpMsg == NULL) break;
 				switch (lpMsg->message)
 				{
 				case WM_KEYDOWN:
 				case WM_SYSKEYDOWN:
 					switch (GetDlgCtrlID(lpMsg->hwnd))
 					{
-					case IDC_EDIT_DISPVKEY:
-						WCHAR vkeytext[8];
+					case IDC_EDIT_PRSRVKEY_TEST_VKEY:
 						_snwprintf_s(vkeytext, _TRUNCATE, L"0x%02X", (BYTE)lpMsg->wParam);
-						SetDlgItemTextW(hDlg, IDC_EDIT_DISPVKEY, vkeytext);
-						SendDlgItemMessageW(hDlg, IDC_EDIT_DISPVKEY, EM_SETSEL, 4, 4);
+						SetDlgItemTextW(hDlg, IDC_EDIT_PRSRVKEY_TEST_VKEY, vkeytext);
+						SendDlgItemMessageW(hDlg, IDC_EDIT_PRSRVKEY_TEST_VKEY, EM_SETSEL, 4, 4);
 						SetWindowLongPtrW(hDlg, DWLP_MSGRESULT, PSNRET_MESSAGEHANDLED);
 						return TRUE;
 					default:

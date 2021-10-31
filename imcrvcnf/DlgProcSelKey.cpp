@@ -125,6 +125,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		break;
 
 	case WM_NOTIFY:
+		if (lParam == NULL) break;
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:

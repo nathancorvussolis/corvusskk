@@ -35,11 +35,6 @@ extern LPCWSTR AttributeJLatin;
 
 extern LPCWSTR SectionDictionary;
 
-//dictionary keys
-
-extern LPCWSTR ValueDictionaryBackupDir;
-extern LPCWSTR ValueDictionaryBackupGen;
-
 //server section
 
 extern LPCWSTR SectionServer;
@@ -51,6 +46,18 @@ extern LPCWSTR ValueServerHost;
 extern LPCWSTR ValueServerPort;
 extern LPCWSTR ValueServerEncoding;
 extern LPCWSTR ValueServerTimeOut;
+
+//userdict section
+
+extern LPCWSTR SectionUserDict;
+
+//userdict keys
+
+extern LPCWSTR ValueBackupDir;
+extern LPCWSTR ValueBackupGen;
+extern LPCWSTR ValuePrivateMode;
+extern LPCWSTR ValuePrivateModeVKey;
+extern LPCWSTR ValuePrivateModeMKey;
 
 //behavior section
 

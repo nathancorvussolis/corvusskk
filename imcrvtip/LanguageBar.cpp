@@ -20,6 +20,8 @@ static const struct {
 	{im_disable,		IDM_CAPSLOCK,		0, L"CAPS"},
 	{im_disable,		IDM_KANALOCK,		0, L"KANA"},
 	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
+	{im_disable,		IDM_PRIVATE,		0, L"Private"},
+	{im_disable,		IDM_NONE,			TF_LBMENUF_SEPARATOR, L""},
 	{im_hiragana,		IDM_HIRAGANA,		0, L"［かな］"},
 	{im_katakana,		IDM_KATAKANA,		0, L"［カナ］"},
 	{im_katakana_ank,	IDM_KATAKANA_ANK,	0, L"［－ｶﾅ］"},
@@ -41,6 +43,17 @@ static const WORD iconIDX[] =
 static const WORD iconIDZ[] =
 {
 	IDI_Z_DEFAULT, IDI_Z_HIRAGANA, IDI_Z_KATAKANA, IDI_Z_KATAKANA1, IDI_Z_JLATIN, IDI_Z_ASCII
+};
+
+// 16 colors (black only) icons (Private)
+static const WORD iconIDPX[] =
+{
+	IDI_X_DEFAULT, IDI_PX_HIRAGANA, IDI_PX_KATAKANA, IDI_PX_KATAKANA1, IDI_PX_JLATIN, IDI_PX_ASCII
+};
+// png icons (Private)
+static const WORD iconIDPZ[] =
+{
+	IDI_Z_DEFAULT, IDI_PZ_HIRAGANA, IDI_PZ_KATAKANA, IDI_PZ_KATAKANA1, IDI_PZ_JLATIN, IDI_PZ_ASCII
 };
 
 CLangBarItemButton::CLangBarItemButton(CTextService *pTextService, REFGUID guid)
@@ -200,11 +213,18 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 							break;
 						}
 					}
+
 					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DIRECT, check, MF_BYCOMMAND);
+
 					CheckMenuItem(hMenu, IDM_CAPSLOCK,
 						MF_BYCOMMAND | ((GetKeyState(VK_CAPITAL) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
 					CheckMenuItem(hMenu, IDM_KANALOCK,
 						MF_BYCOMMAND | ((GetKeyState(VK_KANA) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
+
+					CheckMenuItem(hMenu, IDM_PRIVATE,
+						MF_BYCOMMAND |
+						(_pTextService->_IsPrivateMode() ? MF_CHECKED : MF_UNCHECKED));
+
 					HMENU hSubMenu = GetSubMenu(hMenu, 0);
 					if (hSubMenu)
 					{
@@ -270,6 +290,11 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 				((GetKeyState(VK_KANA) & 1) == 1 ? TF_LBMENUF_CHECKED : 0),
 				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
 			break;
+		case IDM_PRIVATE:
+			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
+				(_pTextService->_IsPrivateMode() ? TF_LBMENUF_CHECKED : 0),
+				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			break;
 		case IDM_HIRAGANA:
 		case IDM_KATAKANA:
 		case IDM_KATAKANA_ANK:
@@ -304,6 +329,10 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 		default:
 			break;
 		}
+		break;
+	case IDM_PRIVATE:
+		_pTextService->_TogglePrivateMode();
+		_pTextService->_UpdateLanguageBar();
 		break;
 	case IDM_CONFIG:
 		_pTextService->_StartConfigure();
@@ -513,18 +542,38 @@ HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, INT size, BOOL bNT62)
 		}
 	}
 
-	if (bNT62)
+	if (_pTextService->_IsPrivateMode())
 	{
-		if (iconindex < _countof(iconIDZ))
+		if (bNT62)
 		{
-			iconid = iconIDZ[iconindex];
+			if (iconindex < _countof(iconIDPZ))
+			{
+				iconid = iconIDPZ[iconindex];
+			}
+		}
+		else
+		{
+			if (iconindex < _countof(iconIDPX))
+			{
+				iconid = iconIDPX[iconindex];
+			}
 		}
 	}
 	else
 	{
-		if (iconindex < _countof(iconIDX))
+		if (bNT62)
 		{
-			iconid = iconIDX[iconindex];
+			if (iconindex < _countof(iconIDZ))
+			{
+				iconid = iconIDZ[iconindex];
+			}
+		}
+		else
+		{
+			if (iconindex < _countof(iconIDX))
+			{
+				iconid = iconIDX[iconindex];
+			}
 		}
 	}
 

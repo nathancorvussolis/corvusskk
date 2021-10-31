@@ -196,8 +196,6 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 
 			SaveDictionary1(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY1));
 
-			SaveDictionary2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY2));
-
 			WriterEndSection(pWriter);
 		}
 
@@ -206,6 +204,15 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 			WriterStartSection(pWriter, SectionServer);
 
 			SaveDictionary1Server(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY1));
+
+			WriterEndSection(pWriter);
+		}
+
+		//userdict
+		{
+			WriterStartSection(pWriter, SectionUserDict);
+
+			SaveDictionary2(pWriter, PROPSHEET_IDTOHWND(hPropSheetDlg, IDD_DIALOG_DICTIONARY2));
 
 			WriterEndSection(pWriter);
 		}

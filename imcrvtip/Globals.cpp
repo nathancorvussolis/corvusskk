@@ -1,6 +1,4 @@
 ﻿
-#include <initguid.h>
-
 #include "configxml.h"
 #include "imcrvtip.h"
 
@@ -28,6 +26,10 @@ const GUID c_guidPreservedKeyOn =
 // {BA178F26-486B-4824-8DA9-5060A11DC35B}
 const GUID c_guidPreservedKeyOff =
 {0xba178f26, 0x486b, 0x4824, {0x8d, 0xa9, 0x50, 0x60, 0xa1, 0x1d, 0xc3, 0x5b}};
+
+// {88231634-A6BE-483E-8028-5E6CC8592B8F}
+const GUID c_guidPrivateModeKey =
+{0x88231634, 0xa6be, 0x483e, {0x80, 0x28, 0x5e, 0x6c, 0xc8, 0x59, 0x2b, 0x8f}};
 
 // {3E45E83F-C786-485f-8B66-B7EAD509F960}
 const GUID c_guidLangBarItemButton =
@@ -82,6 +84,10 @@ const GUID c_guidPreservedKeyOn =
 // {6B6743B3-2D6F-4BB9-9D74-7007928C1E94}
 const GUID c_guidPreservedKeyOff =
 {0x6b6743b3, 0x2d6f, 0x4bb9, {0x9d, 0x74, 0x70, 0x07, 0x92, 0x8c, 0x1e, 0x94}};
+
+// {DC9E1E45-6818-4108-AC41-3A72EB7068F4}
+static const GUID c_guidPrivateModeKey =
+{0xdc9e1e45, 0x6818, 0x4108, {0xac, 0x41, 0x3a, 0x72, 0xeb, 0x70, 0x68, 0xf4}};
 
 // {F4BF0D3C-D4CE-456f-837E-FE6712C6A8C3}
 const GUID c_guidLangBarItemButton =
