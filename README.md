@@ -1,7 +1,7 @@
 
 # CorvusSKK ver. 3.0.1
 
-Windowsで動作するSKK風のIMEです。
+![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
 
 
@@ -88,43 +88,51 @@ Adobe Reader X 以降で使用するには、設定ファイル (config.xml) に
 
 
 
-## 設定
+## ファイル
 
+### 設定ファイル
 
-### 設定ダイアログ
-
-設定ダイアログは、以下のいずれかの操作で開くことができます。
-
-* 言語バーを右クリックし、メニューから「設定」を選択する。「テキストサービスと入力言語」ダイアログの「インストールされているサービス」からCorvusSKKを選択し、プロパティボタンを押す。
-* 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
-* 言語バーのヘルプボタンを左クリックし、メニューから「CorvusSKK」を選択する。
-* Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
-* スタートメニューから CorvusSKK\CONFIG を実行する。
-* %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する
-  * コマンドライン引数、または実行ファイルやショートカットへのドラッグアンドドロップで、後述の設定ファイルを渡すことが可能です。
-
-設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
-
-IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
-
-
-### 設定ファイル、SKK辞書
-
-各種設定及び取込済SKK辞書は、ディレクトリ %APPDATA%\CorvusSKK の各ファイルに保存されます。
+設定ファイルは、ディレクトリ %APPDATA%\CorvusSKK に保存されます。
 
 | ファイル名 | 説明 |
-|---|---|
+| --- | --- |
 | config.xml  | 各種設定 |
-| skkdict.txt | 取込済SKK辞書 |
 
 * 設定サンプル https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample
 * デフォルト https://github.com/nathancorvussolis/corvusskk/tree/master/installer/config-share
 
-各種設定の config.xml ファイルは、UTF-8 の XML フォーマットのテキストファイルとなっています。
+UTF-8 の XML フォーマットのテキストファイルとなっています。
 
-設定ダイアログで OK ボタンまたは適用ボタンを押すと config.xml ファイルが保存されます。テキストエディタなどでも編集可能です。変更した後は、IME OFF → ON で新しい設定が反映されます。
+設定ダイアログで OK ボタンまたは適用ボタンを押すと config.xml ファイルが保存されます。
 
-取込済SKK辞書の skkdict.txt ファイルは、UTF-16 (LE, BOMあり) のSKK辞書フォーマットとなっています。
+テキストエディタなどでも編集可能です。変更した後は、IME OFF → ON で新しい設定が反映されます。
+
+下記のディレクトリの優先順位で各ファイルが読み込まれます。
+
+1. %APPDATA%\CorvusSKK
+2. %SystemRoot%\IME\IMCRVSKK (インストーラーによりインストール済み)
+
+> **開発者向け**
+>
+> デバッグビルドでは、ディレクトリ %APPDATA%\CorvusSKK_DEBUG に保存されます。
+>
+> デバッグビルドでは、下記のディレクトリの優先順位で各ファイルが読み込まれます。
+>
+> 1. %APPDATA%\CorvusSKK_DEBUG
+> 2. 実行ファイルと同じディレクトリ (ビルドするとディレクトリ installer\config-share から上書きコピーされます)
+
+
+### SKK辞書ファイル
+
+後述の[SKK辞書](#skk辞書)の項も合わせて参照してください。
+
+取込済SKK辞書は、ディレクトリ %APPDATA%\CorvusSKK に保存されます。
+
+| ファイル名 | 説明 |
+| --- | --- |
+| skkdict.txt | 取込済SKK辞書 |
+
+UTF-16 (LE, BOMあり) のSKK辞書フォーマットとなっています。
 
 設定ダイアログのリストにSKK辞書を追加して取込ボタンを押すと取込済SKK辞書に変換されます。後述の[SKK辞書](#skk辞書)の項を参照してください。
 
@@ -147,26 +155,40 @@ SKK辞書サーバーを使用するなどでローカルのSKK辞書を使用�
 > 2. 実行ファイルと同じディレクトリ (ビルドするとディレクトリ installer\config-share から上書きコピーされます)
 
 
-### ユーザー辞書
+### ユーザー辞書ファイル
+
+後述の[ユーザー辞書](#ユーザー辞書)の項も合わせて参照してください。
 
 ユーザー辞書は、ディレクトリ %APPDATA%\CorvusSKK の各ファイルに保存されます。
 
 | ファイル名 | 説明 |
-|---|---|
+| --- | --- |
 | userdict.txt | ユーザー辞書 |
-| userdict.bk1<br>userdict.bk2<br>userdict.bk3 | ユーザー辞書バックアップ (3世代まで) |
+
+ユーザー辞書バックアップは、任意のディレクトリの各ファイルに保存されます。
+
+デフォルトは %APPDATA%\CorvusSKK で、設定ダイアログの「辞書２」タブのユーザー辞書バックアップディレクトリで設定可能です。
+
+| ファイル名 | 説明 |
+| --- | --- |
+| userdict.txt.<u>*YYYYMMDDThhmmssZ*</u>.bak | ユーザー辞書バックアップ (最大256世代まで)<br><u>*YYYYMMDDThhmmssZ*</u> : バックアップされた日時 ISO8601 (UTC) |
 
 UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込まれます。
 
-ユーザー辞書を直接編集する際は、ログオンユーザー権限で動作している辞書管理プロセス (imcrvmgr.exe) をタスクマネージャなどで終了させた状態でおこなってください。
+ユーザー辞書を直接編集する際は、ログオンユーザー権限で動作している辞書管理プロセス (imcrvmgr.exe) を終了させた状態でおこなってください。
+
+* 設定ダイアログの「辞書２」タブの「辞書管理プロセス」で「終了」ボタンを押す。
+* タスクマネージャで 「CorvusSKK Dictionary Manager」 (imcrvmgr.exe) を終了する。
+* コマンドプロンプトなどで「taskkill /im imcrvmgr.exe」などと実行する。
 
 編集後、以下のいずれかの操作をおこなうと辞書管理プロセスが自動的に起動します。
 
+* 設定ダイアログの「辞書２」タブの「辞書管理プロセス」で「実行」ボタンを押す。
 * IME OFF → ON
 * 仮名漢字変換開始
 * 補完開始
 
-辞書管理プロセスを直接実行することも可能です。
+辞書管理プロセス (imcrvmgr.exe) を直接実行することも可能です。
 
 ユーザー辞書は、辞書管理プロセスの起動時にメモリ上に読み込まれ、候補の確定、登録、削除があったとき、かつ、以下のいずれかのときに上書きされます。
 
@@ -179,13 +201,95 @@ UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込ま
 
 ユーザー辞書バックアップは辞書管理プロセスによって以下のいずれかのときに作成されます。
 
-* シャットダウン、再起動するとき
-* ログオフ、スリープ、休止状態から復帰するとき
+* ログオフ、シャットダウン、再起動するとき
+* スリープ、休止状態から復帰するとき
+
+
+
+## 入力モード
+
+
+### 入力モードアイコン
+
+| ノーマルモード | プライベートモード | 説明 |
+| :---: | :---: | --- |
+| ![](installer/resource-md/00_input_mode_default.png)   | ![](installer/resource-md/00_input_mode_default.png)     | IME OFF |
+| ![](installer/resource-md/00_input_mode_hiragana.png)  | ![](installer/resource-md/00_input_mode_p_hiragana.png)  | ひらがなモード |
+| ![](installer/resource-md/00_input_mode_katakana.png)  | ![](installer/resource-md/00_input_mode_p_katakana.png)  | カタカナモード |
+| ![](installer/resource-md/00_input_mode_katakana1.png) | ![](installer/resource-md/00_input_mode_p_katakana1.png) | 半角カタカナモード |
+| ![](installer/resource-md/00_input_mode_jlatin.png)    | ![](installer/resource-md/00_input_mode_p_jlatin.png)    | 全角英数字モード |
+| ![](installer/resource-md/00_input_mode_ascii.png)     | ![](installer/resource-md/00_input_mode_p_ascii.png)     | ASCIIモード |
+
+通知領域の入力モードアイコンを左クリックすると、IME ON/OFF を切り替えます。
+
+
+### メニュー
+
+有効な項目にはチェックが入ります。
+
+| 言語バーから表示 | 通知領域から表示 |
+| :---: | :---: |
+| ![](installer/resource-md/01_input_menu_0.png) | ![](installer/resource-md/01_input_menu_1.png) |
+| 言語バーの入力モードアイコンを左クリック | 通知領域の入力モードアイコンを右クリック |
+
+| メニュー項目 | 説明 |
+| --- | --- |
+| CAPS | Caps Lock をトグルします。 |
+| KANA | カナキーロックをトグルします。 |
+| Private | プライベートモードをトグルします。 |
+| [かな] | ひらがなモードに遷移します。 |
+| [カナ] | カタカナモードに遷移します。 |
+| [－ｶﾅ] | 半角カタカナモードに遷移します。 |
+| [全英] | 全角英数字モードに遷移します。 |
+| [SKK] | ASCIIモードに遷移します。 |
+| [－－] | IME OFF |
+| 設定 | 設定ダイアログを表示します。 |
+| キャンセル | メニューを閉じます。 |
+
+
+### デフォルトキー設定と入力モード遷移図
+
+![](installer/resource-md/02_key_and_mode.png)
+
+
+### 半角カタカナモード
+
+半角カタカナモードでは、ローマ字仮名変換のみ可能です。
+
+ひらがな/カタカナへの変換、仮名漢字変換は出来ません。
+
+
+### プライベートモード
+
+プライベートモードでは、通常の仮名漢字変換は可能ですが、ユーザー辞書の更新と削除をおこないません。
+
+後述の[ユーザー辞書](#ユーザー辞書)の項を参照してください。
+
+
+
+## 設定
+
+
+### 設定ダイアログ
+
+設定ダイアログは、以下のいずれかの操作で開くことができます。
+
+* 言語バーを右クリックし、メニューから「設定」を選択する。「テキストサービスと入力言語」ダイアログの「インストールされているサービス」からCorvusSKKを選択し、プロパティボタンを押す。
+* 言語バーの入力モードアイコンを左クリックし、メニューから「設定」を選択する。
+* 言語バーのヘルプボタンを左クリックし、メニューから「CorvusSKK」を選択する。
+* Windows 8 以降の通知領域の入力モードアイコンを右クリックし、メニューから「設定」を選択する。
+* スタートメニューから CorvusSKK\CONFIG を実行する。
+* %SystemRoot%\System32\IME\IMCRVSKK\imcrvcnf.exe または %SystemRoot%\SysWOW64\IME\IMCRVSKK\imcrvcnf.exe を直接実行する
+  * コマンドライン引数、または実行ファイルやショートカットへのドラッグアンドドロップで、前述の設定ファイルを渡すことが可能です。
+
+設定ダイアログで保存した後は、IME OFF → ON で新しい設定が反映されます。
+
+IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 
 
 ### SKK辞書
 
-![](installer/resource-md/01_dictionary.png)
+![](installer/resource-md/101_dictionary_1.png)
 
 SKK辞書の詳細はこちらを参照ください。
 
@@ -239,12 +343,33 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 サーバーコンプリーション機能は未実装です。
 
 
-### 動作
+### ユーザー辞書
 
-![](installer/resource-md/02_behavior_1.png)
+![](installer/resource-md/102_dictionary_2.png)
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
+| 辞書管理プロセス                     | 辞書管理プロセスを終了または開始します。 |
+| ユーザーディレクトリ                 | ディレクトリ %APPDATA%\CorvusSKK をシェルで開きます。 |
+| システムディレクトリ                 | ディレクトリ %SystemRoot%\IME\IMCRVSKK をシェルで開きます。 |
+| ユーザー辞書バックアップ             | ユーザー辞書バックアップの世代数とディレクトリを指定します。<br>また、そのディレクトリをシェルで開きます。 |
+| プライベートモード                   | プライベートモードの自動切替とキーを指定します。 |
+
+プライベートモード
+
+* 任意切替のデフォルトのキーは、Ctrl + Shift + F10 です。
+
+* 自動切替をONに設定すると、Edge の InPrivate ウィンドウ, Chrome のシークレットウィンドウ, Firefox のプライベートウィンドウなどで自動的にプライベートモードに切り替えられます。InputScope が IS_PRIVATE に設定されている入力が対象です。
+
+* 自動切替をOFFに設定すると、InputScope が IS_PRIVATE に設定されている入力でも自動的にプライベートモードになりません。
+
+
+### 動作
+
+![](installer/resource-md/103_behavior_1.png)
+
+| 機能 | 説明 |
+| --- | --- |
 | 初期入力モード                       | プログラム起動時の入力モードを指定します。 |
 | 送り仮名が決定したとき変換を開始する | 送り仮名を入力したとき自動的に変換を開始します。接頭辞も同様です。 |
 | 送り仮名が一致した候補を優先する     | 送り仮名ブロックの送り仮名が一致する候補を優先して出力します。 |
@@ -257,10 +382,10 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 | かな／カナ入力モードをトグルする | キー設定「かな／カナ」「ｶﾅ全英変換」のキーでひらがなモードに遷移します。<br>無効のときは、キー設定「ひらがな」のキーでひらがなモードに遷移してください。 |
 | キー設定「直接入力」を確定入力で使用する | 確定入力のとき、キー設定の「直接入力」で設定された文字で始まるローマ字を仮名変換しません。<br>(ひらがな/カタカナ/半角カタカナモードのとき) |
 
-![](installer/resource-md/03_behavior_2.png)
+![](installer/resource-md/104_behavior_2.png)
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
 | 複数補完/複数動的補完の表示数        | 複数補完、複数動的補完での1ページあたりの候補数を指定します。 |
 | 複数補完を使用する                   | 通常の補完のとき、ユーザー辞書から補完された見出し語を一覧で表示します。<br>補完対象は「候補一覧の色」の「選択」、補完部分は「候補」の色が使用されます。 |
 | 動的補完を使用する                   | 見出し語が入力されたとき、ユーザー辞書から補完された見出し語を表示します。 |
@@ -271,10 +396,10 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 表示
 
-![](installer/resource-md/04_display1.png)
+![](installer/resource-md/105_display_1.png)
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
 | 候補一覧のフォント                        | 候補一覧に表示するフォントの種類、スタイル、サイズを指定します。 |
 | 候補一覧の最大幅                          | 候補一覧の最大幅のサイズを指定します。 |
 | 候補一覧の色                              | 候補一覧の色を指定します。 |
@@ -286,19 +411,19 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 | ▽▼\*マークを表示する                    | 大切なものは目に見えないようです。 |
 | ローマ字を表示する                        | 仮名文字のローマ字プレフィックスを表示します。<br>「全英」の指定でいわゆる全角文字で表示されます。 |
 
-![](installer/resource-md/05_display2.png)
+![](installer/resource-md/106_display_2.png)
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
 | 入力モードを表示する                      | キャレットまたは辞書登録ウィンドウ付近に入力モードを表示します。<br>タイミングは、IME ON/OFF 変更、入力モード変更、IME ON/OFF キー押下、「\*無効\*」キー押下のときです。<br>表示する秒数として1〜60000ミリ秒を設定してください。デフォルト値は3000ミリ秒です。 |
 | 入力モードの色                            | 入力モード表示の色を指定します。 |
 
 
 ### 表示属性
 
-![](installer/resource-md/06_display_attribute_1.png)
+![](installer/resource-md/107_display_attribute_1.png)
 
-![](installer/resource-md/07_display_attribute_2.png)
+![](installer/resource-md/108_display_attribute_2.png)
 
 入力中文字列の表示属性を設定します。
 
@@ -309,7 +434,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### 候補一覧選択キー
 
-![](installer/resource-md/08_select_key.png)
+![](installer/resource-md/109_select_key.png)
 
 候補一覧での確定は、デフォルトで 1〜7 と ASDFJKL と asdfjkl を使用します。
 
@@ -318,7 +443,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 候補一覧が表示されているとき、KANAキーロックは無視されます。
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
 | 数字 | 選択キー (1〜9で固定) |
 | 表示 | 選択キー (必須、候補一覧の表示にも使用) |
 | 予備1,2 | 選択キー (空でもOK) |
@@ -326,7 +451,7 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 ### キー設定（ON/OFF）
 
-![](installer/resource-md/09_on_off_key.png)
+![](installer/resource-md/110_on_off_key.png)
 
 IME ON/OFF のキーをそれぞれ指定します。
 
@@ -341,9 +466,9 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 ### キー設定（文字）、キー設定（仮想キー）
 
-![](installer/resource-md/10_key1_character.png)
+![](installer/resource-md/111_key1_character.png)
 
-![](installer/resource-md/11_key2_virtual_key.png)
+![](installer/resource-md/112_key2_virtual_key.png)
 
 各機能に対してキーを正規表現で設定してください。
 
@@ -367,7 +492,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 キー設定 ON/OFF
 
 | ON | OFF | キー | 仮想キーコード |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | &check; | &check; | Alt + \`                            | 0xC0 + Alt |
 | &check; | &check; | 漢字<br>Alt + 半角/全角<br>Alt + \` | 0x19 |
 | &check; | &check; | 半角/全角<br>Ctrl + \`              | 0xF3, 0xF4 |
@@ -377,7 +502,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 キー設定（文字）
 
 | 機能 | キー | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | かな／カナ | q                             | ひらがな／カタカナモード、かなカナ変換 |
 | ｶﾅ全英変換 | Ctrl + q                      | ひらがな／半角カタカナモード<br>ひらがなカタカナ→半角カタカナ変換<br>abbrev→全角英数字変換 |
 | 全英       | L                             | 全英モード |
@@ -408,7 +533,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
   キー設定（仮想キー）
 
 | 機能 | キー | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | かな／カナ |                               | ひらがな／カタカナモード、かなカナ変換 |
 | ｶﾅ全英変換 |                               | ひらがな／半角カタカナモード<br>ひらがなカタカナ→半角カタカナ変換<br>abbrev→全角英数字変換 |
 | 全英       |                               | 全英モード |
@@ -437,26 +562,14 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 | 貼付       |                               | クリップボードの文字列を貼り付け |
 
 
-### キー設定と入力モード遷移図
-
-![](installer/resource-md/20_key_and_mode.png)
-
-
-### 半角カタカナモード
-
-半角カタカナモードでは、ローマ字仮名変換のみ可能です。
-
-ひらがな/カタカナへの変換、仮名漢字変換は出来ません。
-
-
 ### 変換位置指定
 
-![](installer/resource-md/12_conversion_point.png)
+![](installer/resource-md/113_conversion_point.png)
 
 変換位置での挙動を指定します。最大で256行です。
 
 | 機能 | 説明 |
-|---|---|
+| --- | --- |
 | 開始 | 変換位置開始キー |
 | 代替 | 変換位置開始キーに代わってローマ字仮名変換に使用する |
 | 送り | 辞書検索に使用する送りローマ字 |
@@ -464,23 +577,23 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 * 例１）AZIK風に以下のように設定したとき「KaQ」と入力すると、表示「▽か\*ん」、辞書検索キー「かn」と入力できます。
 
     | 開始 | 代替 | 送り |
-    |---|---|---|
+    | --- | --- | --- |
     | Q | q | n |
 
     | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 |
-    |---|---|---|---|---|---|
+    | --- | --- | --- | --- | --- | --- |
     | q | ん | ン | ﾝ | OFF | OFF |
 
 * 例２）以下のように設定したとき、かな入力で送り仮名の最初を「あ」の状態で辞書検索を開始すると、送りローマ字が「a」となります。
 
     | 開始 | 代替 | 送り |
-    |---|---|---|
+    | --- | --- | --- |
     |  | あ | a |
 
 
 ### ローマ字・仮名変換表
 
-![](installer/resource-md/13_kana.png)
+![](installer/resource-md/114_kana.png)
 
 ローマ字、平仮名、片仮名、所謂半角片仮名、促音/撥音(ん)、待機の組み合せを指定します。
 
@@ -489,7 +602,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例１） 以下のように設定したとき「motto」と入力することで「もっと」と入力することができます。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 |
-        |---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- |
         | mo | も | モ | ﾓ | OFF | OFF |
         | tt | っ | ッ | ｯ | **ON** | OFF |
         | to | と | ト | ﾄ | OFF | OFF |
@@ -497,7 +610,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例２） 以下のように設定したとき「dango」と入力することで「だんご」と入力することができます。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 |
-        |---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- |
         | da | だ | ダ | ﾀﾞ | OFF | OFF |
         | ng | ん | ン | ﾝ | **ON** | OFF |
         | go | ご | ゴ | ｺﾞ | OFF | OFF |
@@ -505,7 +618,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例３） 以下のように設定したとき「w」の連続入力により草を生やすことができます。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
-        |---|---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- | --- |
         | ww | ｗ | ｗ | ｗ | **ON** | OFF | Latin Small Letter W → Fullwidth Latin Small Letter W |
         | w | ｗ | ｗ | ｗ | OFF | OFF | Latin Small Letter W → Fullwidth Latin Small Letter W |
 
@@ -515,7 +628,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例１） カナキーロックした状態で「か」と濁点を入力することで「が」と入力することができます。濁点、半濁点のローマ字部分は、現状1文字のみ対応しています。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
-        |---|---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- | --- |
         | ｶ | か | カ | ｶ | OFF | **ON** | JIS X 0201 仮名 → JIS X 0208 仮名 |
         | ﾞ | ゛ | ゛ | ﾞ | OFF | **ON** | JIS X 0201 濁点 → JIS X 0208 濁点 |
         | か゛ | が | ガ | ｶﾞ | OFF | ON または OFF | 仮名と濁点の合成<br>待機OFFのとき直ちに確定または辞書検索開始します |
@@ -523,7 +636,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例２） 以下のように設定したとき「zsssss …」と入力することで「☆」と「★」が繰り返され任意のタイミングで確定することができます。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
-        |---|---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- | --- |
         | zs | ☆ | ☆ | ☆ | OFF | **ON** |  |
         | ☆s | ★ | ★ | ★ | OFF | **ON** |  |
         | ★s | ☆ | ☆ | ☆ | OFF | **ON** |  |
@@ -531,7 +644,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
     * 例３） 以下のように設定したとき「w」の連続入力により草を生やすことができます。
 
         | ローマ字 | かな | カナ | ｶﾅ | 促／ん | 待機 | 説明 |
-        |---|---|---|---|---|---|---|
+        | --- | --- | --- | --- | --- | --- | --- |
         | w | ｗ | ｗ | ｗ | OFF | **ON** | Latin Small Letter W → Fullwidth Latin Small Letter W |
 
 平仮名／片仮名変換では基本的に１文字ずつ変換されます。
@@ -558,7 +671,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 
 ### ASCII・全英変換表
 
-![](installer/resource-md/14_full_width_latin.png)
+![](installer/resource-md/115_full_width_latin.png)
 
 ASCII、全英文字の組み合せを指定します。最大で128行です。
 
@@ -600,7 +713,7 @@ Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsA
 
 ### プログラム実行変換もどき
 
-![](installer/resource-md/21_convert_program.png)
+![](installer/resource-md/201_convert_program.png)
 
 Emacs Lispのプログラム実行変換に対応していますが、あくまで「もどき」なのでご了承ください。
 
@@ -609,7 +722,7 @@ Emacs Lisp 辞書ファイル (SKK-JISYO.lisp) などが必要です。 https://
 以下のシンボルに大体対応しています。
 
 | 名称 | 説明 |
-|---|---|
+| --- | --- |
 | nil |  |
 | t |  |
 | lambda |  |
@@ -656,7 +769,7 @@ strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference
 
 ### 数値変換
 
-![](installer/resource-md/22_convert_number.png)
+![](installer/resource-md/202_convert_number.png)
 
 タイプ0〜3,5,8,9に対応しています。
 
@@ -667,7 +780,7 @@ strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference
 見出し語として # (ナンバーサイン)を含み、候補として # と数字を含むエントリが辞書に存在する必要があります。(例:「めいじ#ねん /明治#3年/」)
 
 | 候補 | 説明 | 例 |
-|---|---|---|
+| --- | --- | --- |
 | #0 | タイプ０ 無変換            |「1234567890」→「1234567890」 |
 | #1 | タイプ１ 全角              |「1234567890」→「１２３４５６７８９０」 |
 | #2 | タイプ２ 漢数字 位取りあり |「1234567890」→「一二三四五六七八九〇」 |
@@ -680,7 +793,7 @@ strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference
 
 ### Unicodeコードポイント変換
 
-![](installer/resource-md/23_convert_unicode_codepoint.png)
+![](installer/resource-md/203_convert_unicode_codepoint.png)
 
 「U+XXXXXX」( コードポイント XXXXXX : 0000-FFFF または 10000-10FFFF ) または「uxxxxxx」( コードポイント xxxxxx : 0000-ffff または 10000-10ffff ) のフォーマットで変換してください。
 
@@ -690,7 +803,7 @@ strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference
 
 ### JIS X 0213面区点番号、JIS X 0208区点番号変換
 
-![](installer/resource-md/24_convert_unicode_jisx0213.png)
+![](installer/resource-md/204_convert_unicode_jisx0213.png)
 
 JIS X 0213では「X-YY-ZZ」( 面 X : 1-2、 区 YY : 01-94、点 ZZ: 01-94 )、JIS X 0208では「YY-ZZ」( 区 YY : 01-94、点 ZZ: 01-94 ) のフォーマットで変換してください。Unicodeコードポイントが注釈として付加されます。
 
@@ -700,7 +813,7 @@ JIS X 0213では「X-YY-ZZ」( 面 X : 1-2、 区 YY : 01-94、点 ZZ: 01-94 )�
 
 ### 文字コード表記変換
 
-![](installer/resource-md/25_convert_character_display.png)
+![](installer/resource-md/205_convert_character_display.png)
 
 「?X」( X : 任意の1文字以上の文字列 ) のフォーマットで変換してください。
 
@@ -715,7 +828,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 注釈の登録
 
-![](installer/resource-md/26_register_annotation.png)
+![](installer/resource-md/206_register_annotation.png)
 
 辞書登録のとき、登録する候補の入力と同時におこないます。
 
@@ -753,7 +866,7 @@ Windows 10 (Ver.1703 まで) の場合
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "EnableCompatibilityKeyboard"=dword:00000001
 
-Windows 10 (Ver.1709 から) の場合
+Windows 10 (Ver.1709 から)、Windows 11 の場合
 
     [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
     "DisableNewKeyboardExperience"=dword:00000001
@@ -761,7 +874,7 @@ Windows 10 (Ver.1709 から) の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.11.4
+Visual Studio Community 2019 16.11.5
 
 * Desktop development with C++
 * MSVC v142 - VS 2019 C++ x64/x86 build tools (Latest)
@@ -776,7 +889,7 @@ Visual Studio Community 2019 16.11.4
 
 WiX Toolset v3.11.2
 
-pandoc 2.14.2
+pandoc 2.15
 
 
 ### ビルド手順
