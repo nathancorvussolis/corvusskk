@@ -121,7 +121,7 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -191,7 +191,7 @@ BOOL _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &can
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -228,7 +228,7 @@ BOOL _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &can
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -267,7 +267,7 @@ BOOL _CommandDic(WCHAR command)
 	}
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}

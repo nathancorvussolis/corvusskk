@@ -10,15 +10,17 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	// search, complement, convert key, convert candidate
 	static const std::wregex research(L"(.*)\t(.*)\t(.*)\n");
 	// add candidate
-	static const std::wregex resadd(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+	static const std::wregex readd(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 	// delete candidate
-	static const std::wregex resdel(L"(.*)\t(.*)\n");
+	static const std::wregex redel(L"(.*)\t(.*)\n");
 
 	result.clear();
 
 	switch (command)
 	{
 	case REQ_SEARCH:
+		if (!std::regex_match(argument, research)) break;
+
 		key = std::regex_replace(argument, research, L"$1");
 		keyorg = std::regex_replace(argument, research, L"$2");
 		okuri = std::regex_replace(argument, research, L"$3");
@@ -45,6 +47,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		break;
 
 	case REQ_COMPLEMENT:
+		if (!std::regex_match(argument, research)) break;
+
 		key = std::regex_replace(argument, research, L"$1");
 		keyorg = std::regex_replace(argument, research, L"$2");
 
@@ -92,6 +96,8 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_CONVERTKEY:
 	case REQ_CONVERTCND:
+		if (!std::regex_match(argument, research)) break;
+
 		key = std::regex_replace(argument, research, L"$1");
 		candidate = std::regex_replace(argument, research, L"$2");
 		okuri = std::regex_replace(argument, research, L"$3");
@@ -123,10 +129,12 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_USER_ADD_A:
 	case REQ_USER_ADD_N:
-		key = std::regex_replace(argument, resadd, L"$1");
-		candidate = std::regex_replace(argument, resadd, L"$2");
-		annotation = std::regex_replace(argument, resadd, L"$3");
-		okuri = std::regex_replace(argument, resadd, L"$4");
+		if (!std::regex_match(argument, readd)) break;
+
+		key = std::regex_replace(argument, readd, L"$1");
+		candidate = std::regex_replace(argument, readd, L"$2");
+		annotation = std::regex_replace(argument, readd, L"$3");
+		okuri = std::regex_replace(argument, readd, L"$4");
 
 		result = REP_OK;
 
@@ -154,8 +162,10 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 
 	case REQ_USER_DEL_A:
 	case REQ_USER_DEL_N:
-		key = std::regex_replace(argument, resdel, L"$1");
-		candidate = std::regex_replace(argument, resdel, L"$2");
+		if (!std::regex_match(argument, redel)) break;
+
+		key = std::regex_replace(argument, redel, L"$1");
+		candidate = std::regex_replace(argument, redel, L"$2");
 
 		result = REP_OK;
 
@@ -278,7 +288,7 @@ unsigned __stdcall SrvThread(void *p)
 		ZeroMemory(pipebuf, sizeof(WCHAR) * PIPEBUFSIZE);
 
 		bytesRead = 0;
-		bRet = ReadFile(hPipe, pipebuf, sizeof(WCHAR) * PIPEBUFSIZE, &bytesRead, nullptr);
+		bRet = ReadFile(hPipe, pipebuf, sizeof(WCHAR) * (PIPEBUFSIZE - 1), &bytesRead, nullptr);
 		if (bRet == FALSE || bytesRead == 0)
 		{
 			DisconnectNamedPipe(hPipe);
@@ -299,7 +309,9 @@ unsigned __stdcall SrvThread(void *p)
 #endif
 
 		command = pipebuf[0];
+		if (pipebuf[1] != L'\n') command = L'\0';
 		argument.assign(&pipebuf[2]);
+
 		wspipebuf.clear();
 
 		SrvProc(command, argument, wspipebuf);

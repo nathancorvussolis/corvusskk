@@ -73,7 +73,7 @@ void CTextService::_SearchDic(WCHAR command)
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -138,7 +138,7 @@ void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const st
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -149,7 +149,9 @@ void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const st
 		goto exit;
 	}
 
+	//remove newline
 	pipebuf[wcslen(pipebuf) - 1] = L'\0';
+
 	conv.assign(&pipebuf[2]);
 
 exit:
@@ -196,7 +198,7 @@ void CTextService::_AddUserDic(WCHAR command, const std::wstring &key, const std
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -230,7 +232,7 @@ void CTextService::_DelUserDic(WCHAR command, const std::wstring &key, const std
 	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -263,7 +265,7 @@ void CTextService::_CommandDic(WCHAR command)
 	}
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}

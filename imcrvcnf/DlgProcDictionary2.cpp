@@ -6,7 +6,6 @@
 #define MGR_TIMER_ID		IDD_DIALOG_DICTIONARY2
 
 HANDLE hPipe = INVALID_HANDLE_VALUE;
-WCHAR pipebuf[PIPEBUFSIZE];
 
 BOOL ConnectDic();
 void DisconnectDic();
@@ -295,6 +294,7 @@ BOOL CommandDic(WCHAR command)
 {
 	BOOL ret = FALSE;
 
+	WCHAR pipebuf[4];
 	DWORD bytesWrite, bytesRead;
 
 	ConnectDic();
@@ -302,6 +302,7 @@ BOOL CommandDic(WCHAR command)
 	pipebuf[0] = command;
 	pipebuf[1] = L'\n';
 	pipebuf[2] = L'\0';
+	pipebuf[3] = L'\0';
 
 	bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
 	if (WriteFile(hPipe, pipebuf, bytesWrite, &bytesWrite, nullptr) == FALSE)
@@ -310,7 +311,7 @@ BOOL CommandDic(WCHAR command)
 	}
 
 	bytesRead = 0;
-	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf), &bytesRead, nullptr) == FALSE)
+	if (ReadFile(hPipe, pipebuf, sizeof(pipebuf) - sizeof(WCHAR), &bytesRead, nullptr) == FALSE)
 	{
 		goto exit;
 	}
@@ -318,7 +319,6 @@ BOOL CommandDic(WCHAR command)
 	ret = TRUE;
 
 exit:
-	ZeroMemory(pipebuf, sizeof(pipebuf));
 
 	DisconnectDic();
 
