@@ -37,7 +37,6 @@
 #define REQ_EXEC_CNF		L'P'	//設定ダイアログ起動
 #define REQ_CAPS_LOCK		L'I'	//Caps Lock
 #define REQ_KANA_LOCK		L'J'	//Kana Lock
-#define REQ_WATCHDOG		L'W'	//Watchdog
 #define REQ_EXIT			L'X'	//Exit
 //reply
 #define REP_OK				L'T'	//hit

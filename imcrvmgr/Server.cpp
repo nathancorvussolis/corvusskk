@@ -214,11 +214,6 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		result += L"\n";
 		break;
 
-	case REQ_WATCHDOG:
-		result = REP_OK;
-		result += L"\n";
-		break;
-
 	case REQ_EXIT:
 		SendMessageW(hWndMgr, WM_CLOSE, 0, 0);
 
@@ -460,12 +455,6 @@ HANDLE SrvStart()
 	kana lock
 		request
 			"J\n"
-		reply
-			"T\n"
-
-	watchdog
-		request
-			"W\n"
 		reply
 			"T\n"
 

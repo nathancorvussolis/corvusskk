@@ -67,8 +67,9 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	case WM_TIMER:
 		if (wParam == MGR_TIMER_ID)
 		{
-			BOOL r = CommandDic(REQ_WATCHDOG);
-			SetDlgItemTextW(hDlg, IDC_MGR_STATUS_TEXT, (r ? L"実行中" : L"終了状態"));
+			SetDlgItemTextW(hDlg, IDC_MGR_STATUS_TEXT,
+				(PathFileExistsW(mgrpipename) ? L"実行中" : L"終了状態"));
+
 			return TRUE;
 		}
 		break;
