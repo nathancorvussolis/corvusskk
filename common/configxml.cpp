@@ -60,9 +60,9 @@ LPCWSTR SectionUserDict = L"userdict";
 
 LPCWSTR ValueBackupDir = L"backupdir";
 LPCWSTR ValueBackupGen = L"backupgen";
-LPCWSTR ValuePrivateMode = L"privatemode";
 LPCWSTR ValuePrivateModeVKey = L"privatemodevkey";
 LPCWSTR ValuePrivateModeMKey = L"privatemodemkey";
+LPCWSTR ValuePrivateModeAuto = L"privatemodeauto";
 
 //behavior section
 

@@ -165,8 +165,6 @@ void CTextService::_LoadUserDict()
 
 	//UserDict
 
-	_ReadBoolValue(SectionUserDict, ValuePrivateMode, cx_privatemode, TRUE);
-
 	ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
 	privatemodekey.uVKey =
 		(strxmlval.empty() ? configprivatemodekey.uVKey : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
@@ -179,6 +177,8 @@ void CTextService::_LoadUserDict()
 	{
 		privatemodekey.uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
 	}
+
+	_ReadBoolValue(SectionUserDict, ValuePrivateModeAuto, cx_privatemodeauto, TRUE);
 }
 
 void CTextService::_LoadBehavior()

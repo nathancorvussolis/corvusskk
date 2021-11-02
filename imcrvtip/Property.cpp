@@ -122,9 +122,9 @@ private:
 	BOOL *_pIsPrivate;
 };
 
-BOOL CTextService::_IsAppPrivateMode()
+void CTextService::_GetAppPrivateMode()
 {
-	BOOL ret = FALSE;
+	BOOL isPrivate = FALSE;
 
 	CComPtr<ITfDocumentMgr> pDocumentMgr;
 	if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
@@ -138,7 +138,7 @@ BOOL CTextService::_IsAppPrivateMode()
 
 				CComPtr<ITfEditSession> pEditSession;
 				pEditSession.Attach(
-					new CGetAppPrivateModeEditSession(this, pContext, &ret));
+					new CGetAppPrivateModeEditSession(this, pContext, &isPrivate));
 				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
 			}
 			catch (...)
@@ -147,12 +147,12 @@ BOOL CTextService::_IsAppPrivateMode()
 		}
 	}
 
-	return ret;
+	_AppPrivateMode = isPrivate;
 }
 
 BOOL CTextService::_IsPrivateMode()
 {
-	if ((_AppPrivateMode && (_UserPrivateMode == E_FAIL)) || (_UserPrivateMode == S_OK))
+	if ((cx_privatemodeauto && _AppPrivateMode && (_UserPrivateMode == E_FAIL)) || (_UserPrivateMode == S_OK))
 	{
 		return TRUE;
 	}

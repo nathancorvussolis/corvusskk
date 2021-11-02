@@ -6,6 +6,8 @@
 #define MGR_TIMER_ID		IDD_DIALOG_DICTIONARY2
 
 HANDLE hPipe = INVALID_HANDLE_VALUE;
+BOOL bkcnfSaved = FALSE;
+BOOL mgrprocRun = FALSE;
 
 BOOL ConnectDic();
 void DisconnectDic();
@@ -43,8 +45,6 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, strxmlval.c_str());
 
-		LoadCheckButton(hDlg, IDC_CHECKBOX_PRIVATEMODE, SectionUserDict, ValuePrivateMode, L"1");
-
 		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
 		u = (strxmlval.empty() ?
 			VK_F10 : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
@@ -58,6 +58,11 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL, ((u & TF_MOD_CONTROL) ? BST_CHECKED : BST_UNCHECKED));
 		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT, ((u & TF_MOD_SHIFT) ? BST_CHECKED : BST_UNCHECKED));
 
+		LoadCheckButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, SectionUserDict, ValuePrivateModeAuto, L"1");
+
+		bkcnfSaved = TRUE;
+		EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+
 		return TRUE;
 
 	case WM_DPICHANGED_AFTERPARENT:
@@ -66,8 +71,12 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	case WM_TIMER:
 		if (wParam == MGR_TIMER_ID)
 		{
-			SetDlgItemTextW(hDlg, IDC_MGR_STATUS_TEXT,
-				(PathFileExistsW(mgrpipename) ? L"実行中" : L"終了状態"));
+			BOOL running = PathFileExistsW(mgrpipename);
+
+			SetDlgItemTextW(hDlg, IDC_MGR_STATUS_TEXT, (running ? L"実行中" : L"終了状態"));
+
+			mgrprocRun = running;
+			EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
 
 			return TRUE;
 		}
@@ -124,10 +133,21 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 		case IDC_EDIT_USERDICBACKUPGEN:
 		case IDC_EDIT_USERDICBACKUPDIR:
+		case IDC_EDIT_PRIVATEMODE_VKEY:
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
 				PropSheet_Changed(GetParent(hDlg), hDlg);
+				switch (LOWORD(wParam))
+				{
+				case IDC_EDIT_USERDICBACKUPGEN:
+				case IDC_EDIT_USERDICBACKUPDIR:
+					bkcnfSaved = FALSE;
+					EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+					break;
+				default:
+					break;
+				}
 				return TRUE;
 			default:
 				break;
@@ -144,25 +164,21 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			ExpandEnvironmentStringsW(prepath, exppath, _countof(exppath));
 
 			ShellExecuteW(nullptr, L"open", exppath, nullptr, nullptr, SW_SHOWNORMAL);
+
+			return TRUE;
 		}
 		break;
 
-		case IDC_EDIT_PRIVATEMODE_VKEY:
-			switch (HIWORD(wParam))
-			{
-			case EN_CHANGE:
-				PropSheet_Changed(GetParent(hDlg), hDlg);
-				return TRUE;
-			default:
-				break;
-			}
-			break;
+		case IDC_BUTTON_RUN_BACKUP:
+			CommandDic(REQ_BACKUP);
+			return TRUE;
 
 		case IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT:
 		case IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL:
 		case IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT:
+		case IDC_CHECKBOX_PRIVATEMODE_AUTO:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
-			break;
+			return TRUE;
 
 		default:
 			break;
@@ -240,8 +256,6 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
 	WriterKey(pWriter, ValueBackupGen, num);
 
-	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRIVATEMODE, ValuePrivateMode);
-
 	GetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num, _countof(num));
 	_snwprintf_s(num, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(num, nullptr, 0));
 	SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num);
@@ -253,6 +267,11 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT)) { u |= TF_MOD_SHIFT; }
 	_snwprintf_s(num, _TRUNCATE, L"%X", u);
 	WriterKey(pWriter, ValuePrivateModeMKey, num);
+
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, ValuePrivateModeAuto);
+
+	bkcnfSaved = TRUE;
+	EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
 }
 
 BOOL ConnectDic()

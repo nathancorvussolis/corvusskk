@@ -135,7 +135,7 @@ public:
 	// Property
 	BOOL _IsVertical(TfEditCookie ec, ITfContext *pContext);
 	BOOL _IsAppPrivateScope(TfEditCookie ec, ITfContext *pContext);
-	BOOL _IsAppPrivateMode();
+	void _GetAppPrivateMode();
 	BOOL _IsPrivateMode();
 	void _TogglePrivateMode();
 
@@ -365,7 +365,7 @@ public:
 	UINT cx_showmodeinltm;		//入力モードの表示ミリ秒数
 	COLORREF cx_mode_colors[DISPLAY_MODE_COLOR_NUM];		//入力モードの色
 
-	BOOL cx_privatemode;		//プライベートモード
+	BOOL cx_privatemodeauto;	//プライベートモード自動切替
 
 	BOOL cx_begincvokuri;		//送り仮名が決定したとき変換を開始する
 	BOOL cx_shiftnnokuri;		//送り仮名で撥音を送り出す

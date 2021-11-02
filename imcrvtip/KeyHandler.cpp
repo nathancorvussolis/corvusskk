@@ -377,6 +377,8 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_GetActiveFlags();
 
+		_GetAppPrivateMode();
+
 		_InitD2D();
 
 		//OnPreservedKey(), CLangBarItemButton::OnClick(),

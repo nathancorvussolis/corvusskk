@@ -16,10 +16,7 @@ STDAPI CTextService::OnSetFocus(ITfDocumentMgr *pdim, ITfDocumentMgr *pdimPrevFo
 {
 	_InitTextEditSink(pdim);
 
-	if (cx_privatemode)
-	{
-		_AppPrivateMode = _IsAppPrivateMode();
-	}
+	_GetAppPrivateMode();
 
 	_UpdateLanguageBar(FALSE);
 

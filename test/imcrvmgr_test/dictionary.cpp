@@ -248,6 +248,11 @@ BOOL _SaveUserDic()
 	return _CommandDic(REQ_USER_SAVE);
 }
 
+BOOL _BackupUserDic()
+{
+	return _CommandDic(REQ_BACKUP);
+}
+
 BOOL _CommandDic(WCHAR command)
 {
 	BOOL ret = FALSE;

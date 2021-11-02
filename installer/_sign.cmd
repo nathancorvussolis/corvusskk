@@ -9,9 +9,9 @@ call _version.cmd
 
 
 
-rem > _sign.cmd  <SHA-1 hash> <URL>
-rem     * <SHA-1 hash> : SHA-1 hash of certificate for SHA-256 file digest algorithm
-rem     * <URL> : SHA-256 RFC-3161 timestamp server
+rem > _sign.cmd  <SHA-1> <URL>
+rem     * <SHA-1> : SHA-1 thumbprint of certificate
+rem     * <URL> : RFC-3161 timestamp server
 
 set DESCRIPTION="CorvusSKK"
 

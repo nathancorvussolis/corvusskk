@@ -171,7 +171,7 @@ SKK辞書サーバーを使用するなどでローカルのSKK辞書を使用�
 
 | ファイル名 | 説明 |
 | --- | --- |
-| userdict.txt.<u>*YYYYMMDDThhmmssZ*</u>.bak | ユーザー辞書バックアップ (最大256世代まで)<br><u>*YYYYMMDDThhmmssZ*</u> : バックアップされた日時 ISO8601 (UTC) |
+| userdict.txt.<u>*YYYYMMDDThhmmssZ*</u>.bak | ユーザー辞書バックアップ (最大255世代まで)<br><u>*YYYYMMDDThhmmssZ*</u> : バックアップされた日時 ISO8601 (UTC) |
 
 UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込まれます。
 
@@ -197,12 +197,14 @@ UTF-16 (LE, BOMあり) のSKKユーザー辞書フォーマットで書き込ま
 * IME ON 状態で別の IME に切り替えるとき
 * アプリケーションがフォーカスを失うとき
 * 辞書管理プロセスが終了するとき
-* スリープ、休止状態から復帰するとき
+* スリープ、休止状態から復帰したとき
+* 設定ダイアログの「辞書２」タブの「ユーザー辞書バックアップ」で手動バックアップを実行したとき
 
 ユーザー辞書バックアップは辞書管理プロセスによって以下のいずれかのときに作成されます。
 
 * ログオフ、シャットダウン、再起動するとき
-* スリープ、休止状態から復帰するとき
+* スリープ、休止状態から復帰したとき
+* 設定ダイアログの「辞書２」タブの「ユーザー辞書バックアップ」で手動バックアップを実行したとき
 
 
 
@@ -291,7 +293,7 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 
 ![](installer/resource-md/101_dictionary_1.png)
 
-SKK辞書の詳細はこちらを参照ください。
+SKK辞書の詳細はこちらを参照してください。
 
 * https://skk-dev.github.io/dict/
 
@@ -352,15 +354,22 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 | 辞書管理プロセス                     | 辞書管理プロセスを終了または開始します。 |
 | ユーザーディレクトリ                 | ディレクトリ %APPDATA%\CorvusSKK をシェルで開きます。 |
 | システムディレクトリ                 | ディレクトリ %SystemRoot%\IME\IMCRVSKK をシェルで開きます。 |
-| ユーザー辞書バックアップ             | ユーザー辞書バックアップの世代数とディレクトリを指定します。<br>また、そのディレクトリをシェルで開きます。 |
-| プライベートモード                   | プライベートモードの自動切替とキーを指定します。 |
+| ユーザー辞書バックアップ             | ユーザー辞書バックアップのディレクトリと世代数を指定します。<br>また、そのディレクトリをシェルで開きます。<br>手動でバックアップを実行します。 |
+| プライベートモード                   | プライベートモードの任意切替のキーと自動切替を指定します。 |
+
+ユーザー辞書バックアップ
+
+* ディレクトリをWindowsネットワークの共有フォルダーにした場合、ログオフ/シャットダウン/再起動するときや、スリープ/休止状態から復帰したときに正常に保存されない可能性があります。
+
+* 手動バックアップを実行できる条件
+
+    * 辞書管理プロセスが実行中。
+    * ユーザー辞書バックアップのディレクトリと世代数が未編集、または編集した後に適用して保存済み。
 
 プライベートモード
 
 * 任意切替のデフォルトのキーは、Ctrl + Shift + F10 です。
-
 * 自動切替をONに設定すると、Edge の InPrivate ウィンドウ, Chrome のシークレットウィンドウ, Firefox のプライベートウィンドウなどで自動的にプライベートモードに切り替えられます。InputScope が IS_PRIVATE に設定されている入力が対象です。
-
 * 自動切替をOFFに設定すると、InputScope が IS_PRIVATE に設定されている入力でも自動的にプライベートモードになりません。
 
 
@@ -459,7 +468,7 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 「仮想ｷｰ表示」エディットボックスにフォーカスがある状態でキー入力すると仮想キーコードを表示します。
 
-仮想キーコードの詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+仮想キーコードの詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 
 最大で ON/OFF それぞれ8行ずつです。
 
@@ -474,7 +483,7 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照ください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-160
+正規表現の詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-160
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -686,7 +695,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 現在使用しているLuaのバージョンは5.4.3です。
 
-詳細はこちらを参照ください。https://www.lua.org/manual/5.4/manual.html
+詳細はこちらを参照してください。https://www.lua.org/manual/5.4/manual.html
 
 Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsAPIとCランタイム関数を呼ぶようにパッチを当てています。
 
@@ -889,7 +898,7 @@ Visual Studio Community 2019 16.11.5
 
 WiX Toolset v3.11.2
 
-pandoc 2.15
+pandoc 2.16
 
 
 ### ビルド手順
@@ -902,10 +911,10 @@ pandoc 2.15
 ビルド ＆ 署名 ＆ 検証
 
     > installer\_solution_build.cmd
-    > installer\_sign.cmd <SHA-1 hash> <URL>
+    > installer\_sign.cmd <SHA-1> <URL>
 
-        * <SHA-1 hash> : SHA-1 hash of certificate for SHA-256 file digest algorithm
-        * <URL> : SHA-256 RFC-3161 timestamp server
+        * <SHA-1> : SHA-1 thumbprint of certificate
+        * <URL> : RFC-3161 timestamp server
 
     > installer\_verify.cmd
 

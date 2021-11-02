@@ -394,6 +394,18 @@ int wmain(int argc, wchar_t *argv[])
 						goto exit;
 					}
 				}
+
+				// backup user dictionary
+				{
+					wprintf(L"%c\n", REQ_BACKUP);
+
+					BOOL ret = _BackupUserDic();
+					if (ret == FALSE)
+					{
+						fwprintf(stderr, L"\nERROR: connection.\n");
+						goto exit;
+					}
+				}
 			}
 
 			exkey = key;
@@ -406,6 +418,18 @@ int wmain(int argc, wchar_t *argv[])
 			wprintf(L"%c\n", REQ_USER_SAVE);
 
 			BOOL ret = _SaveUserDic();
+			if (ret == FALSE)
+			{
+				fwprintf(stderr, L"\nERROR: connection.\n");
+				goto exit;
+			}
+		}
+
+		// backup user dictionary
+		{
+			wprintf(L"%c\n", REQ_BACKUP);
+
+			BOOL ret = _BackupUserDic();
 			if (ret == FALSE)
 			{
 				fwprintf(stderr, L"\nERROR: connection.\n");

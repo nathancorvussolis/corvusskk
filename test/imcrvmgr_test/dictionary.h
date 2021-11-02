@@ -20,6 +20,7 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 BOOL _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okurikey);
 BOOL _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 BOOL _SaveUserDic();
+BOOL _BackupUserDic();
 BOOL _CommandDic(WCHAR command);
 
 #define E_MAKESKKDIC_OK			MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0)

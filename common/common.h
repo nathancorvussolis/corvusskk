@@ -21,8 +21,8 @@
 #define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
 #define MAX_KEYRE			256		//キー１/２ 読み込みバッファ
 #define MAX_CONV_POINT		256		//変換位置指定最大数
-#define DEF_BACKUPGENS		3		//ユーザー辞書バックアップ世代
-#define MAX_BACKUPGENS		256		//ユーザー辞書バックアップ世代
+#define DEF_BACKUPGENS		7		//ユーザー辞書バックアップ世代デフォルト
+#define MAX_BACKUPGENS		255		//ユーザー辞書バックアップ世代最大
 
 //request
 #define REQ_SEARCH			L'1'	//辞書検索
@@ -37,7 +37,8 @@
 #define REQ_EXEC_CNF		L'P'	//設定ダイアログ起動
 #define REQ_CAPS_LOCK		L'I'	//Caps Lock
 #define REQ_KANA_LOCK		L'J'	//Kana Lock
-#define REQ_EXIT			L'X'	//Exit
+#define REQ_BACKUP			L'R'	//バックアップ
+#define REQ_EXIT			L'X'	//終了
 //reply
 #define REP_OK				L'T'	//hit
 #define REP_FALSE			L'F'	//nothing
