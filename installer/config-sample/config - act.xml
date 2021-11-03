@@ -7,7 +7,7 @@
 -->
   <section name="dictionary">
     <list>
-      <row path="https://skk-dev.github.io/dict/SKK-JISYO.L.gz" enabled="1" />
+      <row path="https://github.com/skk-dev/dict/raw/master/SKK-JISYO.L" enabled="1" />
     </list>
   </section>
   <section name="server">
@@ -16,6 +16,13 @@
     <key name="port" value="1178" />
     <key name="encoding" value="0" />
     <key name="timeout" value="1000" />
+  </section>
+  <section name="userdict">
+    <key name="backupdir" value="%APPDATA%\CorvusSKK" />
+    <key name="backupgen" value="7" />
+    <key name="privatemodevkey" value="0x79" />
+    <key name="privatemodemkey" value="6" />
+    <key name="privatemodeauto" value="1" />
   </section>
   <section name="behavior">
     <key name="defaultmode" value="0" />
