@@ -241,6 +241,14 @@ void LoadConfig(BOOL sysexit)
 		strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
 	}
 	ExpandEnvironmentStringsW(strxmlval.c_str(), path, _countof(path));
+	FORWARD_ITERATION_I(s_itr, strxmlval)
+	{
+		UINT type = PathGetCharTypeW(*s_itr);
+		if ((type & (GCT_LFNCHAR | GCT_SHORTCHAR | GCT_SEPARATOR)) == 0)
+		{
+			*s_itr = L'_';
+		}
+	}
 	_snwprintf_s(pathbackup, _TRUNCATE, L"%s\\%s", path, fnskkdic);
 
 	ReadValue(pathconfigxml, SectionUserDict, ValueBackupGen, strxmlval);

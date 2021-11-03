@@ -729,7 +729,7 @@ void BackUpUserDic()
 	WCHAR dir[_MAX_DIR];
 	_wsplitpath_s(pathbackup, drive, _countof(drive), dir, _countof(dir), nullptr, 0, nullptr, 0);
 	_wmakepath_s(path, drive, dir, nullptr, nullptr);
-	CreateDirectoryW(path, nullptr);
+	SHCreateDirectoryExW(nullptr, path, nullptr);
 
 	// バックアップ
 

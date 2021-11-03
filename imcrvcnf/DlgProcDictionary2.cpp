@@ -43,6 +43,14 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		{
 			strxmlval = L"%APPDATA%\\" TEXTSERVICE_DESC;
 		}
+		FORWARD_ITERATION_I(s_itr, strxmlval)
+		{
+			UINT type = PathGetCharTypeW(*s_itr);
+			if ((type & (GCT_LFNCHAR | GCT_SHORTCHAR | GCT_SEPARATOR)) == 0)
+			{
+				*s_itr = L'_';
+			}
+		}
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, strxmlval.c_str());
 
 		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
@@ -240,6 +248,15 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	UINT u;
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, path, _countof(path));
+	for (int i = 0; i < _countof(path) && path[i] != L'\0'; i++)
+	{
+		UINT type = PathGetCharTypeW(path[i]);
+		if ((type & (GCT_LFNCHAR | GCT_SHORTCHAR | GCT_SEPARATOR)) == 0)
+		{
+			path[i] = L'_';
+		}
+	}
+	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, path);
 	WriterKey(pWriter, ValueBackupDir, path);
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num, _countof(num));
