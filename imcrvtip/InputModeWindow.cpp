@@ -617,11 +617,9 @@ void CTextService::_StartInputModeWindow()
 							CComPtr<ITfEditSession> pEditSession;
 							pEditSession.Attach(
 								new CInputModeWindowEditSession(this, pContext, _pInputModeWindow));
-							// Asynchronous, read-only
-							hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
+							hr = pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READ, &hrSession);
 
-							// It is possible that asynchronous requests are treated as synchronous requests.
-							if (FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
+							if (FAILED(hr) || FAILED(hrSession))
 							{
 								_EndInputModeWindow();
 							}

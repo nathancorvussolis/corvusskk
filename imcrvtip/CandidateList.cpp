@@ -235,14 +235,20 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
+		HRESULT hr;
+
 		CComPtr<ITfContextView> pContextView;
 		if (SUCCEEDED(_pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
-			RECT rc = {};
-			BOOL fClipped;
-			if (SUCCEEDED(pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped)))
+			try
 			{
-				_pCandidateWindow->_Move(&rc, ec, _pContext);
+				CComPtr<ITfEditSession> pEditSession;
+				pEditSession.Attach(
+					new CCandidateListGetTextExtEditSession(_pTextService, _pContext, pContextView, _pRangeComposition, _pCandidateWindow));
+				_pContext->RequestEditSession(_pTextService->_GetClientId(), pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
+			}
+			catch (...)
+			{
 			}
 		}
 
@@ -325,11 +331,9 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		CComPtr<ITfEditSession> pEditSession;
 		pEditSession.Attach(
 			new CCandidateWindowEditSession(_pTextService, _pContextDocument, _pRangeComposition, _pCandidateWindow));
-		// Asynchronous, read-only
-		hr = pContext->RequestEditSession(ec, pEditSession, TF_ES_ASYNC | TF_ES_READ, &hrSession);
+		hr = pContext->RequestEditSession(tfClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READ, &hrSession);
 
-		// It is possible that asynchronous requests are treated as synchronous requests.
-		if (FAILED(hr) || (hrSession != TF_S_ASYNC && FAILED(hrSession)))
+		if (FAILED(hr) || FAILED(hrSession))
 		{
 			goto exit;
 		}

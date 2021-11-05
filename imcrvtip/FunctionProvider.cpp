@@ -334,10 +334,6 @@ public:
 	{
 	}
 
-	~CSetResultEditSession()
-	{
-	}
-
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
