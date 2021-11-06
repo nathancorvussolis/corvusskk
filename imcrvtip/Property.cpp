@@ -162,15 +162,17 @@ BOOL CTextService::_IsPrivateMode()
 
 void CTextService::_TogglePrivateMode()
 {
-	if (_AppPrivateMode)
+	if (cx_privatemodeauto && _AppPrivateMode)
 	{
 		switch (_UserPrivateMode)
 		{
 		case S_OK:
 		case E_FAIL:
+			//OFF
 			_UserPrivateMode = S_FALSE;
 			break;
 		case S_FALSE:
+			//未定義 自動切替とIS_PRIVATEに従ってON
 			_UserPrivateMode = E_FAIL;
 			break;
 		default:
@@ -182,10 +184,12 @@ void CTextService::_TogglePrivateMode()
 		switch (_UserPrivateMode)
 		{
 		case S_OK:
+			//未定義 自動切替とIS_PRIVATEに従ってOFF
 			_UserPrivateMode = E_FAIL;
 			break;
 		case E_FAIL:
 		case S_FALSE:
+			//ON
 			_UserPrivateMode = S_OK;
 			break;
 		default:
