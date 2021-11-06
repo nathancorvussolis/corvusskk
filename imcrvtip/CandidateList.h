@@ -34,6 +34,7 @@ public:
 	void _InvokeKeyHandler(WPARAM key);
 	void _InvokeSfHandler(BYTE sf);
 	void _Show(BOOL bShow);
+	void _Redraw();
 	void _SetText(const std::wstring &text, BOOL fixed, int mode);
 	void _Move(LPRECT lpr, TfEditCookie ec = TF_INVALID_EDIT_COOKIE, ITfContext *pContext = nullptr);
 	void _UpdateComp();

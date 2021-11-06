@@ -470,6 +470,14 @@ void CCandidateList::_Show(BOOL bShow)
 	}
 }
 
+void CCandidateList::_Redraw()
+{
+	if (_pCandidateWindow != nullptr)
+	{
+		_pCandidateWindow->_Redraw();
+	}
+}
+
 void CCandidateList::_SetText(const std::wstring &text, BOOL fixed, int mode)
 {
 	if (_pCandidateWindow != nullptr)

@@ -362,8 +362,9 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 			_GetAppPrivateMode();
 
-			_InitPrivateModeKey(_IsPrivateMode() ? 1 : 0);		//OFF or ON
-			_InitPrivateModeKey(_IsPrivateMode() ? 0 : 1);		//ON or OFF 未使用だがキーは拾う 重複するキーは上書きされない
+			BOOL p = _IsPrivateMode();
+			_InitPrivateModeKey(p ? 1 : 0);		//OFF or ON
+			_InitPrivateModeKey(p ? 0 : 1);		//ON or OFF 未使用だがキーは拾う 重複するキーは上書きされない
 		}
 
 		_LoadBehavior();

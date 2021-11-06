@@ -249,6 +249,11 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 			_InitPrivateModeKey(0);		//ON 未使用だがキーは拾う 重複するキーは上書きされない
 		}
 
+		if (_pCandidateList != nullptr)
+		{
+			_pCandidateList->_Redraw();
+		}
+
 		_UpdateLanguageBar();
 
 		*pfEaten = TRUE;
@@ -266,6 +271,11 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 
 			_InitPrivateModeKey(0);		//ON
 			_InitPrivateModeKey(1);		//OFF 未使用だがキーは拾う 重複するキーは上書きされない
+		}
+
+		if (_pCandidateList != nullptr)
+		{
+			_pCandidateList->_Redraw();
 		}
 
 		_UpdateLanguageBar();
