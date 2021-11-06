@@ -354,20 +354,32 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_CreateConfigPath();
 
-		_UninitPrivateModeKey();	//OFF
-		_LoadUserDict();
-		_InitPrivateModeKey();		//ON
+		{
+			_UninitPrivateModeKey(0);	//ON
+			_UninitPrivateModeKey(1);	//OFF
+
+			_LoadUserDict();
+
+			_GetAppPrivateMode();
+
+			_InitPrivateModeKey(_IsPrivateMode() ? 1 : 0);		//OFF or ON
+			_InitPrivateModeKey(_IsPrivateMode() ? 0 : 1);		//ON or OFF 未使用だがキーは拾う 重複するキーは上書きされない
+		}
 
 		_LoadBehavior();
 		_LoadDisplay();
 		_LoadDisplayAttr();
 		_LoadSelKey();
 
-		_UninitPreservedKey(0);	//ON
-		_UninitPreservedKey(1);	//OFF
-		_LoadPreservedKey();
-		_InitPreservedKey(1);	//OFF
-		_InitPreservedKey(0);	//ON 未使用だがキーは拾う 重複するキーは上書きされない
+		{
+			_UninitPreservedKey(0);	//ON
+			_UninitPreservedKey(1);	//OFF
+
+			_LoadPreservedKey();
+
+			_InitPreservedKey(1);	//OFF
+			_InitPreservedKey(0);	//ON 未使用だがキーは拾う 重複するキーは上書きされない
+		}
 
 		_LoadCKeyMap();
 		_LoadVKeyMap();
@@ -376,8 +388,6 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		_LoadJLatin();
 
 		_GetActiveFlags();
-
-		_GetAppPrivateMode();
 
 		_InitD2D();
 
@@ -408,11 +418,15 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 
 		_CreateConfigPath();
 
-		_UninitPreservedKey(1);	//OFF
-		_UninitPreservedKey(0);	//ON
-		_LoadPreservedKey();
-		_InitPreservedKey(0);	//ON
-		_InitPreservedKey(1);	//OFF 未使用だがキーは拾う 重複するキーは上書きされない
+		{
+			_UninitPreservedKey(1);	//OFF
+			_UninitPreservedKey(0);	//ON
+
+			_LoadPreservedKey();
+
+			_InitPreservedKey(0);	//ON
+			_InitPreservedKey(1);	//OFF 未使用だがキーは拾う 重複するキーは上書きされない
+		}
 	}
 
 	_UpdateLanguageBar(showinputmode);

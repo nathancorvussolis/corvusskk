@@ -243,7 +243,8 @@ STDAPI CTextService::Deactivate()
 
 	_UninitPreservedKey(0);
 	_UninitPreservedKey(1);
-	_UninitPrivateModeKey();
+	_UninitPrivateModeKey(0);
+	_UninitPrivateModeKey(1);
 
 	_UninitKeyEventSink();
 

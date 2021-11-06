@@ -128,7 +128,8 @@ extern const CLSID c_clsidTextService;
 extern const GUID c_guidProfile;
 extern const GUID c_guidPreservedKeyOn;
 extern const GUID c_guidPreservedKeyOff;
-extern const GUID c_guidPrivateModeKey;
+extern const GUID c_guidPrivateModeKeyOn;
+extern const GUID c_guidPrivateModeKeyOff;
 extern const GUID c_guidLangBarItemButton;
 extern const GUID c_guidCandidateListUIElement;
 

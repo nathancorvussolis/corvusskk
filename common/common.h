@@ -19,6 +19,7 @@
 #define MAX_SELKEY			7		//候補一覧選択キー数
 #define PRESERVEDKEY_NUM	2		//キー設定ON/OFF
 #define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
+#define PRIVATEMODEKEY_NUM	2		//プライベートモードON/OFF
 #define MAX_KEYRE			256		//キー１/２ 読み込みバッファ
 #define MAX_CONV_POINT		256		//変換位置指定最大数
 #define DEF_BACKUPGENS		7		//ユーザー辞書バックアップ世代デフォルト

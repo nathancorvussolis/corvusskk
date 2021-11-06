@@ -53,18 +53,31 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		}
 		SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPDIR, strxmlval.c_str());
 
-		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateOnVKey, strxmlval);
 		u = (strxmlval.empty() ?
 			VK_F10 : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
 		_snwprintf_s(num, _TRUNCATE, L"0x%02X", u);
-		SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num);
+		SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_ON_VKEY, num);
 
-		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeMKey, strxmlval);
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateOnMKey, strxmlval);
 		u = (strxmlval.empty() ?
 			(TF_MOD_CONTROL | TF_MOD_SHIFT) : wcstoul(strxmlval.c_str(), nullptr, 0));
-		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT, ((u & TF_MOD_ALT) ? BST_CHECKED : BST_UNCHECKED));
-		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL, ((u & TF_MOD_CONTROL) ? BST_CHECKED : BST_UNCHECKED));
-		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT, ((u & TF_MOD_SHIFT) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_ALT, ((u& TF_MOD_ALT) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_CTRL, ((u& TF_MOD_CONTROL) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_SHIFT, ((u& TF_MOD_SHIFT) ? BST_CHECKED : BST_UNCHECKED));
+
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateOffVKey, strxmlval);
+		u = (strxmlval.empty() ?
+			VK_F10 : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
+		_snwprintf_s(num, _TRUNCATE, L"0x%02X", u);
+		SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_OFF_VKEY, num);
+
+		ReadValue(pathconfigxml, SectionUserDict, ValuePrivateOffMKey, strxmlval);
+		u = (strxmlval.empty() ?
+			(TF_MOD_CONTROL | TF_MOD_SHIFT) : wcstoul(strxmlval.c_str(), nullptr, 0));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_ALT, ((u& TF_MOD_ALT) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_CTRL, ((u& TF_MOD_CONTROL) ? BST_CHECKED : BST_UNCHECKED));
+		CheckDlgButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_SHIFT, ((u& TF_MOD_SHIFT) ? BST_CHECKED : BST_UNCHECKED));
 
 		LoadCheckButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, SectionUserDict, ValuePrivateModeAuto, L"1");
 
@@ -141,7 +154,8 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 		case IDC_EDIT_USERDICBACKUPGEN:
 		case IDC_EDIT_USERDICBACKUPDIR:
-		case IDC_EDIT_PRIVATEMODE_VKEY:
+		case IDC_EDIT_PRIVATEMODE_ON_VKEY:
+		case IDC_EDIT_PRIVATEMODE_OFF_VKEY:
 			switch (HIWORD(wParam))
 			{
 			case EN_CHANGE:
@@ -181,9 +195,12 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			CommandDic(REQ_BACKUP);
 			return TRUE;
 
-		case IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT:
-		case IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL:
-		case IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT:
+		case IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_ALT:
+		case IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_CTRL:
+		case IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_SHIFT:
+		case IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_ALT:
+		case IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_CTRL:
+		case IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_SHIFT:
 		case IDC_CHECKBOX_PRIVATEMODE_AUTO:
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 			return TRUE;
@@ -273,17 +290,29 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	SetDlgItemTextW(hDlg, IDC_EDIT_USERDICBACKUPGEN, num);
 	WriterKey(pWriter, ValueBackupGen, num);
 
-	GetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num, _countof(num));
+	GetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_ON_VKEY, num, _countof(num));
 	_snwprintf_s(num, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(num, nullptr, 0));
-	SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_VKEY, num);
-	WriterKey(pWriter, ValuePrivateModeVKey, num);
+	SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_ON_VKEY, num);
+	WriterKey(pWriter, ValuePrivateOnVKey, num);
 
 	u = 0;
-	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_ALT)) { u |= TF_MOD_ALT; }
-	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_CTRL)) { u |= TF_MOD_CONTROL; }
-	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_MKEY_SHIFT)) { u |= TF_MOD_SHIFT; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_ALT)) { u |= TF_MOD_ALT; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_CTRL)) { u |= TF_MOD_CONTROL; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_ON_MKEY_SHIFT)) { u |= TF_MOD_SHIFT; }
 	_snwprintf_s(num, _TRUNCATE, L"%X", u);
-	WriterKey(pWriter, ValuePrivateModeMKey, num);
+	WriterKey(pWriter, ValuePrivateOnMKey, num);
+
+	GetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_OFF_VKEY, num, _countof(num));
+	_snwprintf_s(num, _TRUNCATE, L"0x%02X", (BYTE)wcstoul(num, nullptr, 0));
+	SetDlgItemTextW(hDlg, IDC_EDIT_PRIVATEMODE_OFF_VKEY, num);
+	WriterKey(pWriter, ValuePrivateOffVKey, num);
+
+	u = 0;
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_ALT)) { u |= TF_MOD_ALT; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_CTRL)) { u |= TF_MOD_CONTROL; }
+	if (IsDlgButtonChecked(hDlg, IDC_CHECKBOX_PRIVATEMODE_OFF_MKEY_SHIFT)) { u |= TF_MOD_SHIFT; }
+	_snwprintf_s(num, _TRUNCATE, L"%X", u);
+	WriterKey(pWriter, ValuePrivateOffMKey, num);
 
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, ValuePrivateModeAuto);
 

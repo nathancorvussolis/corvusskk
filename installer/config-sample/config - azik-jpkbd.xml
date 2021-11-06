@@ -20,8 +20,10 @@
   <section name="userdict">
     <key name="backupdir" value="%APPDATA%\CorvusSKK" />
     <key name="backupgen" value="7" />
-    <key name="privatemodevkey" value="0x79" />
-    <key name="privatemodemkey" value="6" />
+    <key name="privateonvkey" value="0x79" />
+    <key name="privateonmkey" value="6" />
+    <key name="privateoffvkey" value="0x79" />
+    <key name="privateoffmkey" value="6" />
     <key name="privatemodeauto" value="1" />
   </section>
   <section name="behavior">

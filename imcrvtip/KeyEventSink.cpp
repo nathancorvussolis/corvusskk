@@ -6,7 +6,8 @@
 static LPCWSTR c_PreservedKeyDesc[PRESERVEDKEY_NUM] = {L"ON", L"OFF"};
 static const GUID c_guidPreservedKeyOnOff[PRESERVEDKEY_NUM] = {c_guidPreservedKeyOn, c_guidPreservedKeyOff};
 
-static LPCWSTR c_PrivateModeKeyDesc = L"Private";
+static LPCWSTR c_PrivateModeKeyDesc[PRIVATEMODEKEY_NUM] = {L"Private ON", L"Private OFF"};
+static const GUID c_guidPrivateModeKeyOnOff[PRIVATEMODEKEY_NUM] = {c_guidPrivateModeKeyOn, c_guidPrivateModeKeyOff};
 
 BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 {
@@ -233,10 +234,43 @@ STDAPI CTextService::OnPreservedKey(ITfContext *pic, REFGUID rguid, BOOL *pfEate
 
 		*pfEaten = TRUE;
 	}
-	else if (IsEqualGUID(rguid, c_guidPrivateModeKey))
+	else if (IsEqualGUID(rguid, c_guidPrivateModeKeyOn))
 	{
-		_TogglePrivateMode();
+		if (!_IsPrivateMode())
+		{
+			_TogglePrivateMode();
+		}
+
+		{
+			_UninitPrivateModeKey(0);	//ON
+			_UninitPrivateModeKey(1);	//OFF
+
+			_InitPrivateModeKey(1);		//OFF
+			_InitPrivateModeKey(0);		//ON 未使用だがキーは拾う 重複するキーは上書きされない
+		}
+
 		_UpdateLanguageBar();
+
+		*pfEaten = TRUE;
+	}
+	else if (IsEqualGUID(rguid, c_guidPrivateModeKeyOff))
+	{
+		if (_IsPrivateMode())
+		{
+			_TogglePrivateMode();
+		}
+
+		{
+			_UninitPrivateModeKey(0);	//ON
+			_UninitPrivateModeKey(1);	//OFF
+
+			_InitPrivateModeKey(0);		//ON
+			_InitPrivateModeKey(1);		//OFF 未使用だがキーは拾う 重複するキーは上書きされない
+		}
+
+		_UpdateLanguageBar();
+
+		*pfEaten = TRUE;
 	}
 	else
 	{
@@ -329,27 +363,37 @@ void CTextService::_UninitPreservedKey(int onoff)
 	}
 }
 
-BOOL CTextService::_InitPrivateModeKey()
+BOOL CTextService::_InitPrivateModeKey(int onoff)
 {
 	HRESULT hr = E_FAIL;
+
+	if (onoff != 0 && onoff != 1)
+	{
+		return FALSE;
+	}
 
 	CComPtr<ITfKeystrokeMgr> pKeystrokeMgr;
 	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
-		hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPrivateModeKey,
-			&privatemodekey, c_PrivateModeKeyDesc, (ULONG)wcslen(c_PrivateModeKeyDesc));
+		hr = pKeystrokeMgr->PreserveKey(_ClientId, c_guidPrivateModeKeyOnOff[onoff],
+			&privatemodekey[onoff], c_PrivateModeKeyDesc[onoff], (ULONG)wcslen(c_PrivateModeKeyDesc[onoff]));
 	}
 
 	return SUCCEEDED(hr);
 }
 
-void CTextService::_UninitPrivateModeKey()
+void CTextService::_UninitPrivateModeKey(int onoff)
 {
 	HRESULT hr = E_FAIL;
+
+	if (onoff != 0 && onoff != 1)
+	{
+		return;
+	}
 
 	CComPtr<ITfKeystrokeMgr> pKeystrokeMgr;
 	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pKeystrokeMgr))) && (pKeystrokeMgr != nullptr))
 	{
-		hr = pKeystrokeMgr->UnpreserveKey(c_guidPrivateModeKey, &privatemodekey);
+		hr = pKeystrokeMgr->UnpreserveKey(c_guidPrivateModeKeyOnOff[onoff], &privatemodekey[onoff]);
 	}
 }

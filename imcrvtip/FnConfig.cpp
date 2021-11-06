@@ -90,6 +90,12 @@ static const struct {
 
 LPCWSTR sectionpreservedkeyonoff[PRESERVEDKEY_NUM] = {SectionPreservedKeyON, SectionPreservedKeyOFF};
 
+LPCWSTR keyprivatemodekeyonoff[PRIVATEMODEKEY_NUM][2] =
+{
+	{ValuePrivateOnVKey, ValuePrivateOnMKey},
+	{ValuePrivateOffVKey, ValuePrivateOffMKey}
+};
+
 void CTextService::_CreateConfigPath()
 {
 	PWSTR knownfolderpath = nullptr;
@@ -165,17 +171,20 @@ void CTextService::_LoadUserDict()
 
 	//UserDict
 
-	ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeVKey, strxmlval);
-	privatemodekey.uVKey =
-		(strxmlval.empty() ? configprivatemodekey.uVKey : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
-
-	ReadValue(pathconfigxml, SectionUserDict, ValuePrivateModeMKey, strxmlval);
-	privatemodekey.uModifiers =
-		(strxmlval.empty() ? configprivatemodekey.uModifiers :
-			(wcstoul(strxmlval.c_str(), nullptr, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)));
-	if ((privatemodekey.uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
+	for (int i = 0; i < PRIVATEMODEKEY_NUM; i++)
 	{
-		privatemodekey.uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+		ReadValue(pathconfigxml, SectionUserDict, keyprivatemodekeyonoff[i][0], strxmlval);
+		privatemodekey[i].uVKey =
+			(strxmlval.empty() ? configprivatemodekey.uVKey : (BYTE)wcstoul(strxmlval.c_str(), nullptr, 0));
+
+		ReadValue(pathconfigxml, SectionUserDict, keyprivatemodekeyonoff[i][1], strxmlval);
+		privatemodekey[i].uModifiers =
+			(strxmlval.empty() ? configprivatemodekey.uModifiers :
+				(wcstoul(strxmlval.c_str(), nullptr, 0) & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)));
+		if ((privatemodekey[i].uModifiers & (TF_MOD_ALT | TF_MOD_CONTROL | TF_MOD_SHIFT)) == 0)
+		{
+			privatemodekey[i].uModifiers = TF_MOD_IGNORE_ALL_MODIFIER;
+		}
 	}
 
 	_ReadBoolValue(SectionUserDict, ValuePrivateModeAuto, cx_privatemodeauto, TRUE);

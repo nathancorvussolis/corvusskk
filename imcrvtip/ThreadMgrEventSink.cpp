@@ -16,7 +16,15 @@ STDAPI CTextService::OnSetFocus(ITfDocumentMgr *pdim, ITfDocumentMgr *pdimPrevFo
 {
 	_InitTextEditSink(pdim);
 
-	_GetAppPrivateMode();
+	{
+		_UninitPrivateModeKey(0);	//ON
+		_UninitPrivateModeKey(1);	//OFF
+
+		_GetAppPrivateMode();
+
+		_InitPrivateModeKey(_IsPrivateMode() ? 1 : 0);		//OFF or ON
+		_InitPrivateModeKey(_IsPrivateMode() ? 0 : 1);		//ON or OFF 未使用だがキーは拾う 重複するキーは上書きされない
+	}
 
 	_UpdateLanguageBar(FALSE);
 

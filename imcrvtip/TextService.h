@@ -246,8 +246,8 @@ private:
 	BOOL _InitPreservedKey(int onoff);
 	void _UninitPreservedKey(int onoff);
 
-	BOOL _InitPrivateModeKey();
-	void _UninitPrivateModeKey();
+	BOOL _InitPrivateModeKey(int onoff);
+	void _UninitPrivateModeKey(int onoff);
 
 	BOOL _InitLanguageBar();
 	void _UninitLanguageBar();
@@ -407,7 +407,7 @@ public:
 	TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];
 
 	//private mode key
-	TF_PRESERVEDKEY privatemodekey;
+	TF_PRESERVEDKEY privatemodekey[PRIVATEMODEKEY_NUM];
 
 	//表示属性   別のインスタンスからGetDisplayAttributeInfo()が呼ばれるのでstaticで
 	static BOOL display_attribute_series[DISPLAYATTRIBUTE_INFO_NUM];

@@ -55,8 +55,10 @@ extern LPCWSTR SectionUserDict;
 
 extern LPCWSTR ValueBackupDir;
 extern LPCWSTR ValueBackupGen;
-extern LPCWSTR ValuePrivateModeVKey;
-extern LPCWSTR ValuePrivateModeMKey;
+extern LPCWSTR ValuePrivateOnVKey;
+extern LPCWSTR ValuePrivateOnMKey;
+extern LPCWSTR ValuePrivateOffVKey;
+extern LPCWSTR ValuePrivateOffMKey;
 extern LPCWSTR ValuePrivateModeAuto;
 
 //behavior section
