@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.1.0
+# CorvusSKK ver. 3.1.1
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 

@@ -249,7 +249,7 @@ void LoadConfig(BOOL sysexit)
 			path[i] = L'_';
 		}
 	}
-	_snwprintf_s(pathbackup, _TRUNCATE, L"%s\\%s", path, fnskkdic);
+	_snwprintf_s(pathbackup, _TRUNCATE, L"%s\\%s", path, fnuserdic);
 
 	ReadValue(pathconfigxml, SectionUserDict, ValueBackupGen, strxmlval);
 	INT n = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
