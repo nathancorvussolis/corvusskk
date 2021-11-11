@@ -121,6 +121,7 @@ LPCWSTR ValueColorNO = L"colorno";
 LPCWSTR ValueDrawAPI = L"drawapi";
 LPCWSTR ValueColorFont = L"colorfont";
 LPCWSTR ValueUntilCandList = L"untilcandlist";
+LPCWSTR ValuePageCandNum = L"pagecandnum";
 LPCWSTR ValueDispCandNo = L"dispcandno";
 LPCWSTR ValueVerticalCand = L"verticalcand";
 LPCWSTR ValueAnnotation = L"annotation";

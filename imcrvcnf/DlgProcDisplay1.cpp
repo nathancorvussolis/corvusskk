@@ -124,6 +124,21 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 		}
 		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)count, 0);
 
+		hwnd = GetDlgItem(hDlg, IDC_COMBO_PAGECANDNUM);
+		num[1] = L'\0';
+		for (int i = 1; i <= MAX_SELKEY_C; i++)
+		{
+			num[0] = L'0' + (WCHAR)i;
+			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);
+		}
+		ReadValue(pathconfigxml, SectionDisplay, ValuePageCandNum, strxmlval);
+		count = strxmlval.empty() ? MAX_SELKEY : _wtoi(strxmlval.c_str());
+		if (count > MAX_SELKEY_C || count < 1)
+		{
+			count = MAX_SELKEY;
+		}
+		SendMessageW(hwnd, CB_SETCURSEL, (WPARAM)(count - 1), 0);
+
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DISPCANDNO, SectionDisplay, ValueDispCandNo);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_VERTICALCAND, SectionDisplay, ValueVerticalCand, L"1");
 
@@ -233,6 +248,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 			break;
 
 		case IDC_COMBO_UNTILCANDLIST:
+		case IDC_COMBO_PAGECANDNUM:
 			switch (HIWORD(wParam))
 			{
 			case CBN_SELCHANGE:
@@ -352,6 +368,16 @@ void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg)
 	num[0] = L'0' + count;
 	num[1] = L'\0';
 	WriterKey(pWriter, ValueUntilCandList, num);
+
+	hwnd = GetDlgItem(hDlg, IDC_COMBO_PAGECANDNUM);
+	count = 1 + (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);
+	if (count > MAX_SELKEY_C || count < 1)
+	{
+		count = MAX_SELKEY;
+	}
+	num[0] = L'0' + count;
+	num[1] = L'\0';
+	WriterKey(pWriter, ValuePageCandNum, num);
 
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DISPCANDNO, ValueDispCandNo);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_VERTICALCAND, ValueVerticalCand);

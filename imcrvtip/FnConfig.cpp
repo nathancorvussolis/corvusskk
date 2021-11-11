@@ -288,6 +288,13 @@ void CTextService::_LoadDisplay()
 		cx_untilcandlist = UNTILCANDLIST_DEF;
 	}
 
+	ReadValue(pathconfigxml, SectionDisplay, ValuePageCandNum, strxmlval);
+	cx_pagecandnum = strxmlval.empty() ? -1 : _wtoi(strxmlval.c_str());
+	if (cx_pagecandnum > MAX_SELKEY_C || cx_pagecandnum < 1)
+	{
+		cx_pagecandnum = MAX_SELKEY;
+	}
+
 	_ReadBoolValue(SectionDisplay, ValueDispCandNo, cx_dispcandnum, FALSE);
 	_ReadBoolValue(SectionDisplay, ValueVerticalCand, cx_verticalcand, TRUE);
 	_ReadBoolValue(SectionDisplay, ValueAnnotation, cx_annotation, TRUE);

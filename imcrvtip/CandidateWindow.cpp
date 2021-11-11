@@ -444,14 +444,18 @@ void CCandidateWindow::_InitList()
 
 	if (_mode == wm_candidate)
 	{
-		_uPageCandNum = MAX_SELKEY;
+		_uPageCandNum = _pTextService->cx_pagecandnum;
+		if (_uPageCandNum > MAX_SELKEY_C || _uPageCandNum < 1)
+		{
+			_uPageCandNum = MAX_SELKEY;
+		}
 	}
 	else
 	{
 		_uPageCandNum = _pTextService->cx_compmultinum;
 		if (_uPageCandNum > MAX_SELKEY_C || _uPageCandNum < 1)
 		{
-			_uPageCandNum = MAX_SELKEY;
+			_uPageCandNum = COMPMULTIDISP_DEF;
 		}
 	}
 

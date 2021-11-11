@@ -116,6 +116,7 @@ extern LPCWSTR ValueColorNO;
 extern LPCWSTR ValueDrawAPI;
 extern LPCWSTR ValueColorFont;
 extern LPCWSTR ValueUntilCandList;
+extern LPCWSTR ValuePageCandNum;
 extern LPCWSTR ValueDispCandNo;
 extern LPCWSTR ValueVerticalCand;
 extern LPCWSTR ValueAnnotation;

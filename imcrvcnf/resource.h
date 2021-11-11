@@ -103,15 +103,16 @@
 #define IDC_RADIO_API_D2D                       3022
 #define IDC_CHECKBOX_COLOR_FONT                 3023
 #define IDC_COMBO_UNTILCANDLIST                 3031
-#define IDC_CHECKBOX_DISPCANDNO                 3032
-#define IDC_CHECKBOX_VERTICALCAND               3033
-#define IDC_CHECKBOX_ANNOTATION                 3034
-#define IDC_RADIO_ANNOTATALL                    3035
-#define IDC_RADIO_ANNOTATLST                    3036
-#define IDC_CHECKBOX_SHOWMODEMARK               3037
-#define IDC_CHECKBOX_SHOWROMAN                  3038
-#define IDC_RADIO_SHOWROMANASCII                3039
-#define IDC_RADIO_SHOWROMANJLATIN               3040
+#define IDC_COMBO_PAGECANDNUM                   3032
+#define IDC_CHECKBOX_DISPCANDNO                 3033
+#define IDC_CHECKBOX_VERTICALCAND               3034
+#define IDC_CHECKBOX_ANNOTATION                 3035
+#define IDC_RADIO_ANNOTATALL                    3036
+#define IDC_RADIO_ANNOTATLST                    3037
+#define IDC_CHECKBOX_SHOWMODEMARK               3038
+#define IDC_CHECKBOX_SHOWROMAN                  3039
+#define IDC_RADIO_SHOWROMANASCII                3040
+#define IDC_RADIO_SHOWROMANJLATIN               3041
 
 #define IDC_CHECKBOX_SHOWMODEINL                3101
 #define IDC_EDIT_SHOWMODEINLTM                  3102

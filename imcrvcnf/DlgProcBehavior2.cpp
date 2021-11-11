@@ -15,7 +15,7 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	case WM_INITDIALOG:
 		hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
 		num[1] = L'\0';
-		for (int i = 1; i <= 9; i++)
+		for (int i = 1; i <= MAX_SELKEY_C; i++)
 		{
 			num[0] = L'0' + (WCHAR)i;
 			SendMessageW(hwnd, CB_ADDSTRING, 0, (LPARAM)num);

@@ -353,6 +353,7 @@ public:
 	UINT cx_drawapi;			//候補一覧の描画API(0:GDI/1:Direct2D)
 	BOOL cx_colorfont;			//候補一覧の描画API 彩色(Direct2Dのときカラーフォントにする)
 	UINT cx_untilcandlist;		//候補一覧表示に要する変換回数(0:表示なし/1:1回目...)
+	UINT cx_pagecandnum;		//候補一覧表示に表示する候補数
 	BOOL cx_verticalcand;		//候補一覧を縦に表示する
 	BOOL cx_dispcandnum;		//候補一覧表示なしのとき候補数を表示する
 	BOOL cx_annotation;			//注釈を表示する

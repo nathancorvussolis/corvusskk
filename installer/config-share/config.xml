@@ -58,6 +58,7 @@
     <key name="drawapi" value="1" />
     <key name="colorfont" value="1" />
     <key name="untilcandlist" value="5" />
+    <key name="pagecandnum" value="7" />
     <key name="dispcandno" value="0" />
     <key name="verticalcand" value="1" />
     <key name="annotation" value="1" />
