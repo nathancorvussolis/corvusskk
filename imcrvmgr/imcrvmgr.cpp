@@ -154,6 +154,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		GetClientRect(hWnd, &r);
 		MoveWindow(hWndEdit, 0, 0, r.right, r.bottom, TRUE);
 		break;
+
+	case WM_USER_SETTEXT:
+		SetWindowTextW((HWND)wParam, (LPCWSTR)lParam);
+		SendMessageW((HWND)wParam, WM_VSCROLL, SB_BOTTOM, 0);
+		break;
 #endif
 
 	case WM_POWERBROADCAST:

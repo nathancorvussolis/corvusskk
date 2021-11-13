@@ -82,6 +82,7 @@ extern FILETIME ftConfig;
 extern FILETIME ftSKKDic;
 extern HWND hWndMgr;
 #ifdef _DEBUG
+#define WM_USER_SETTEXT (WM_USER + 1)
 extern HWND hWndEdit;
 extern HFONT hFont;
 #endif

@@ -303,7 +303,22 @@ unsigned __stdcall SrvThread(void *p)
 			continue;
 		}
 
+		command = pipebuf[0];
+		if (pipebuf[1] != L'\n') command = L'\0';
+		argument.assign(&pipebuf[2]);
+
+		wspipebuf.clear();
+
 #ifdef _DEBUG
+		switch (command)
+		{
+		case REQ_USER_SAVE:
+			dedit.clear();
+			break;
+		default:
+			break;
+		}
+
 		tedit.assign(pipebuf);
 		re.assign(L"\n");
 		fmt.assign(L"↲\r\n");
@@ -313,14 +328,8 @@ unsigned __stdcall SrvThread(void *p)
 		tedit = std::regex_replace(tedit, re, fmt);
 
 		dedit.append(tedit);
-		SetWindowTextW(hWndEdit, dedit.c_str());
+		PostMessageW(hWndMgr, WM_USER_SETTEXT, (WPARAM)hWndEdit, (LPARAM)dedit.c_str());
 #endif
-
-		command = pipebuf[0];
-		if (pipebuf[1] != L'\n') command = L'\0';
-		argument.assign(&pipebuf[2]);
-
-		wspipebuf.clear();
 
 		SrvProc(command, argument, wspipebuf);
 
@@ -336,17 +345,7 @@ unsigned __stdcall SrvThread(void *p)
 		tedit = std::regex_replace(tedit, re, fmt);
 
 		dedit.append(tedit);
-		SetWindowTextW(hWndEdit, dedit.c_str());
-		SendMessageW(hWndEdit, WM_VSCROLL, SB_BOTTOM, 0);
-
-		switch (command)
-		{
-		case REQ_USER_SAVE:
-			dedit.clear();
-			break;
-		default:
-			break;
-		}
+		PostMessageW(hWndMgr, WM_USER_SETTEXT, (WPARAM)hWndEdit, (LPARAM)dedit.c_str());
 #endif
 
 		bytesWrite = (DWORD)((wcslen(pipebuf) + 1) * sizeof(WCHAR));
