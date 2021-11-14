@@ -504,6 +504,22 @@ int lua_complement(lua_State *lua)
 	return 1;
 }
 
+int lua_reverse(lua_State *lua)
+{
+	std::wstring key;
+
+	if (lua_isstring(lua, 1))
+	{
+		std::wstring candidate = U8TOWC(lua_tostring(lua, 1));
+
+		SearchReverse(candidate, key);
+	}
+
+	lua_pushstring(lua, WCTOU8(key));
+
+	return 1;
+}
+
 int lua_add(lua_State *lua)
 {
 	if (lua_isboolean(lua, 1) &&

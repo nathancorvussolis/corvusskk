@@ -49,6 +49,10 @@ function _M.complement(key)
 	return "/きあい/きけん/きき/きかい/\n"
 end
 
+function _M.reverse(candidate)
+	return ""
+end
+
 function _M.add(okuriari, key, candidate, annotation, okuri)
 	return
 end

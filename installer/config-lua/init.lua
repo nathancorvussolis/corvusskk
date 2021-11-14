@@ -24,6 +24,10 @@
 				candidate : 候補 string
 				okuri : 送り仮名 string
 				戻り値 : 変換済み文字列 string
+		逆検索
+			lua_skk_reverse(candidate)
+				candidate : 候補 string
+				戻り値 : 見出し語 string
 		辞書追加
 			lua_skk_add(okuriari, key, candidate, annotation, okuri)
 				okuriari : boolean (送りあり:true/送りなし:false)
@@ -83,6 +87,10 @@
 			crvmgr.complement(key)
 				key : 見出し語 string
 				戻り値 : "/<K1>/<K2>/.../<Kn>/\n" or "" string
+		逆検索
+			crvmgr.reverse(candidate)
+				candidate : 候補 string
+				戻り値 : 見出し語 string
 		辞書追加
 			crvmgr.add(okuriari, key, candidate, annotation, okuri)
 				okuriari : boolean (送りあり:true/送りなし:false)
@@ -1174,6 +1182,11 @@ end
 -- 候補変換
 function lua_skk_convert_candidate(key, candidate, okuri)
 	return skk_convert_candidate(key, candidate, okuri)
+end
+
+-- 逆検索
+function lua_skk_reverse(candidate)
+	return crvmgr.reverse(candidate)
 end
 
 -- 辞書追加

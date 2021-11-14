@@ -6,6 +6,7 @@
 
 //ユーザー辞書
 SKKDIC userdic;
+//ユーザー辞書送りブロック
 USEROKURI userokuri;
 //送りなし、補完あり
 KEYORDER keyorder_n;
@@ -159,6 +160,36 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 			}
 		}
 	}
+}
+
+void SearchReverse(const std::wstring &candidate, std::wstring &key)
+{
+	EnterCriticalSection(&csUserData);	// !
+
+	key.clear();
+
+	if (!keyorder_n.empty())
+	{
+		REVERSE_ITERATION_I(keyorder_ritr, keyorder_n)
+		{
+			auto userdic_itr = userdic.find(*keyorder_ritr);
+			if (userdic_itr != userdic.end())
+			{
+				REVERSE_ITERATION_I(candidate_ritr, userdic_itr->second)
+				{
+					if (candidate == candidate_ritr->first)
+					{
+						key = *keyorder_ritr;
+						break;
+					}
+				}
+			}
+
+			if (!key.empty()) break;
+		}
+	}
+
+	LeaveCriticalSection(&csUserData);	// !
 }
 
 void DelKeyOrder(const std::wstring &searchkey, KEYORDER &keyorder)

@@ -42,6 +42,7 @@ int lua_search_jisx0213(lua_State *lua);
 int lua_search_jisx0208(lua_State *lua);
 int lua_search_character_code(lua_State *lua);
 int lua_complement(lua_State *lua);
+int lua_reverse(lua_State *lua);
 int lua_add(lua_State *lua);
 int lua_delete(lua_State *lua);
 int lua_save(lua_State *lua);
@@ -50,6 +51,7 @@ int lua_save(lua_State *lua);
 std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri);
 void SearchComplement(const std::wstring &searchkey, SKKDICCANDIDATES &sc);
 void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max);
+void SearchReverse(const std::wstring &candidate, std::wstring &key);
 void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &annotation, const std::wstring &okuri);
 void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring &candidate);
 BOOL LoadUserDic();
@@ -83,6 +85,7 @@ extern FILETIME ftSKKDic;
 extern HWND hWndMgr;
 #ifdef _DEBUG
 #define WM_USER_SETTEXT (WM_USER + 1)
+extern CRITICAL_SECTION csEdit;
 extern HWND hWndEdit;
 extern HFONT hFont;
 #endif

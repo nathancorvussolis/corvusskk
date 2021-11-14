@@ -173,8 +173,17 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 
 			pTextService->_ResetStatus();
 			pTextService->_CreateConfigPath();
+
 			pTextService->inputmode = im_hiragana;
 			pTextService->kana = key;
+
+			pTextService->_StartSubConv(REQ_REVERSE);
+
+			if (!pTextService->candidates.empty())
+			{
+				pTextService->kana = pTextService->candidates.front().first.first;
+				pTextService->candidates.clear();
+			}
 
 			pTextService->_StartSubConv(REQ_SEARCH);
 
@@ -226,6 +235,14 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 				inputmode = im_hiragana;
 				inputkey = TRUE;
 				_ConvKanaToKana(text, im_katakana, kana, im_hiragana);
+
+				_StartSubConv(REQ_REVERSE);
+
+				if (!candidates.empty())
+				{
+					kana = candidates.front().first.first;
+					candidates.clear();
+				}
 
 				hr = _InvokeKeyHandler(pContext, 0, 0, SKK_NEXT_CAND);
 			}

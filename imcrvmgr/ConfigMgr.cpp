@@ -40,6 +40,7 @@ const luaL_Reg luaFuncs[] =
 	{u8"search_jisx0208", lua_search_jisx0208},
 	{u8"search_character_code", lua_search_character_code},
 	{u8"complement", lua_complement},
+	{u8"reverse", lua_reverse},
 	{u8"add", lua_add},
 	{u8"delete", lua_delete},
 	{u8"save", lua_save},

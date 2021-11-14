@@ -30,6 +30,7 @@
 #define REQ_COMPLEMENT		L'4'	//補完
 #define REQ_CONVERTKEY		L'5'	//見出し語変換
 #define REQ_CONVERTCND		L'6'	//候補変換
+#define REQ_REVERSE			L'7'	//辞書逆検索
 #define REQ_USER_ADD_A		L'A'	//ユーザー辞書追加(送りあり、補完なし)
 #define REQ_USER_ADD_N		L'B'	//ユーザー辞書追加(送りなし、補完あり)
 #define REQ_USER_DEL_A		L'C'	//ユーザー辞書削除(送りあり、補完なし)

@@ -127,6 +127,45 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		}
 		break;
 
+	case REQ_REVERSE:
+		if (!std::regex_match(argument, research)) break;
+
+		candidate = std::regex_replace(argument, research, L"$1");
+
+		result = REP_OK;
+
+		if (lua != nullptr)
+		{
+			lua_getglobal(lua, u8"lua_skk_reverse");
+			lua_pushstring(lua, WCTOU8(candidate));
+
+			if (lua_pcall(lua, 1, 1, 0) == LUA_OK)
+			{
+				if (lua_isstring(lua, -1))
+				{
+					key = U8TOWC(lua_tostring(lua, -1));
+				}
+				lua_pop(lua, 1);
+			}
+		}
+		else
+		{
+			SearchReverse(candidate, key);
+		}
+
+		if (!key.empty())
+		{
+			result = REP_OK;
+			result += L"\n";
+			result += key + L"\t" + key + L"\t\t\n";
+		}
+		else
+		{
+			result = REP_FALSE;
+			result += L"\n";
+		}
+		break;
+
 	case REQ_USER_ADD_A:
 	case REQ_USER_ADD_N:
 		if (!std::regex_match(argument, readd)) break;
@@ -310,6 +349,18 @@ unsigned __stdcall SrvThread(void *p)
 		wspipebuf.clear();
 
 #ifdef _DEBUG
+		tedit.assign(pipebuf);
+		re.assign(L"\n");
+		fmt.assign(L"↲\r\n");
+		tedit = std::regex_replace(tedit, re, fmt);
+		re.assign(L"\t");
+		fmt.assign(L"»\u00A0");
+		tedit = std::regex_replace(tedit, re, fmt);
+
+		EnterCriticalSection(&csEdit);	// !
+
+		if (dedit.size() > SHRT_MAX) dedit.clear();
+
 		switch (command)
 		{
 		case REQ_USER_SAVE:
@@ -319,15 +370,10 @@ unsigned __stdcall SrvThread(void *p)
 			break;
 		}
 
-		tedit.assign(pipebuf);
-		re.assign(L"\n");
-		fmt.assign(L"↲\r\n");
-		tedit = std::regex_replace(tedit, re, fmt);
-		re.assign(L"\t");
-		fmt.assign(L"»\u00A0");
-		tedit = std::regex_replace(tedit, re, fmt);
-
 		dedit.append(tedit);
+
+		LeaveCriticalSection(&csEdit);	// !
+
 		PostMessageW(hWndMgr, WM_USER_SETTEXT, (WPARAM)hWndEdit, (LPARAM)dedit.c_str());
 #endif
 
@@ -344,7 +390,12 @@ unsigned __stdcall SrvThread(void *p)
 		fmt.assign(L"»\u00A0");
 		tedit = std::regex_replace(tedit, re, fmt);
 
+		EnterCriticalSection(&csEdit);	// !
+
 		dedit.append(tedit);
+
+		LeaveCriticalSection(&csEdit);	// !
+
 		PostMessageW(hWndMgr, WM_USER_SETTEXT, (WPARAM)hWndEdit, (LPARAM)dedit.c_str());
 #endif
 
