@@ -18,8 +18,8 @@ INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	LVITEMW item;
 	int	index, count;
 	OPENFILENAMEW ofn = {};
-	WCHAR path[MAX_PATH];
-	WCHAR pathBak[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
+	WCHAR pathBak[MAX_PATH] = {};
 	BOOL check;
 	BOOL checkBak;
 	WCHAR text[16] = {};
@@ -343,7 +343,7 @@ void SaveDictionary1(IXmlWriter *pWriter, HWND hDlg)
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
 	APPDATAXMLATTR attr;
-	WCHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);
 	int count = ListView_GetItemCount(hWndListView);
@@ -371,9 +371,9 @@ void SaveDictionary1(IXmlWriter *pWriter, HWND hDlg)
 
 void SaveDictionary1Server(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR num[16];
-	WCHAR host[MAX_SKKSERVER_HOST];
-	WCHAR port[MAX_SKKSERVER_PORT];
+	WCHAR num[16] = {};
+	WCHAR host[MAX_SKKSERVER_HOST] = {};
+	WCHAR port[MAX_SKKSERVER_PORT] = {};
 
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SKKSRV, ValueServerServ);
 

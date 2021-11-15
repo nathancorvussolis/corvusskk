@@ -25,8 +25,8 @@ BOOL IsMakeSKKDicCanceled(HANDLE hCancelEvent)
 
 HRESULT DownloadMakePath(LPCWSTR url, LPWSTR path, size_t len)
 {
-	WCHAR dir[MAX_PATH];
-	WCHAR fname[MAX_PATH];
+	WCHAR dir[MAX_PATH] = {};
+	WCHAR fname[MAX_PATH] = {};
 
 	DWORD temppathlen = GetTempPathW(_countof(dir), dir);
 	if (temppathlen == 0 || temppathlen > _countof(dir))
@@ -852,7 +852,7 @@ HRESULT UnTar(HANDLE hCancelEvent, LPCWSTR tarpath, size_t &count_key, size_t &c
 
 HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &entries_n)
 {
-	WCHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
 	WCHAR text[16] = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_SKK_DIC);

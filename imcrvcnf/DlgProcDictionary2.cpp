@@ -16,7 +16,7 @@ BOOL CommandDic(WCHAR command);
 INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	std::wstring strxmlval;
-	WCHAR num[16];
+	WCHAR num[16] = {};
 	INT n;
 	UINT u;
 
@@ -259,8 +259,8 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR path[MAX_PATH];
-	WCHAR num[16];
+	WCHAR path[MAX_PATH] = {};
+	WCHAR num[16] = {};
 	INT n;
 	UINT u;
 

@@ -23,7 +23,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
-	WCHAR num[16];
+	WCHAR num[16] = {};
 	int n;
 	std::wstring strxmlval;
 	CHOOSECOLORW cc = {};
@@ -159,7 +159,7 @@ INT_PTR CALLBACK DlgProcDisplay2(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 void SaveDisplay2(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR num[16];
+	WCHAR num[16] = {};
 	int count;
 
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHOWMODEINL, ValueShowModeInl);

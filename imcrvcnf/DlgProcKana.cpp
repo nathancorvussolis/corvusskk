@@ -24,7 +24,7 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	WCHAR soku[2];
 	NMLISTVIEW *pListView;
 	OPENFILENAMEW ofn = {};
-	WCHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
 	WCHAR text[16] = {};
 
 	switch (message)

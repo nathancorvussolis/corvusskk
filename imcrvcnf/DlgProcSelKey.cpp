@@ -13,10 +13,10 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	LVITEMW item;
 	NMLISTVIEW *pListView;
 	int index;
-	WCHAR num[2];
-	WCHAR key[4];
+	WCHAR num[2] = {};
+	WCHAR key[4] = {};
 	std::wstring strxmlval;
-	WCHAR text[16];
+	WCHAR text[16] = {};
 
 	switch (message)
 	{
@@ -168,8 +168,8 @@ void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
 {
 	HWND hWndListView;
 	int index;
-	WCHAR num[2];
-	WCHAR key[4];
+	WCHAR num[2] = {};
+	WCHAR key[4] = {};
 
 	hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 	for (index = 0; index < MAX_SELKEY_C; index++)

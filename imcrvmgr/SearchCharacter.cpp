@@ -16,7 +16,7 @@ std::wstring SearchUnicode(const std::wstring &searchkey)
 	std::wstring candidate;
 	//Unicode Code Point
 	UCSCHAR ucp = 0;
-	WCHAR utf16[3];
+	WCHAR utf16[3] = {};
 
 	// U+XXXXXX (XXXXXX : 0000-FFFF,10000-10FFFF)
 	static const std::wregex reU(L"U\\+([1-9A-F]|10)?[0-9A-F]{4}");
@@ -43,7 +43,6 @@ std::wstring SearchUnicode(const std::wstring &searchkey)
 		return candidate;
 	}
 
-	ZeroMemory(utf16, sizeof(utf16));
 	if (UcpToWideChar(ucp, &utf16[0], &utf16[1]) != 0)
 	{
 		candidate = L"/";
@@ -62,10 +61,10 @@ std::wstring SearchJISX0213(const std::wstring &searchkey)
 	CONST CHAR base = 0x20;
 	int men, ku, ten;
 	size_t size;
-	WCHAR utf16[8];
-	CHAR euc[4];
-	UCSCHAR ucp[2];
-	WCHAR sucp[32];
+	WCHAR utf16[8] = {};
+	CHAR euc[4] = {};
+	UCSCHAR ucp[2] = {};
+	WCHAR sucp[32] = {};
 
 	static const std::wregex re(L"[12]-(0[1-9]|[1-8][0-9]|9[0-4])-(0[1-9]|[0-8][0-9]|9[0-4])");
 

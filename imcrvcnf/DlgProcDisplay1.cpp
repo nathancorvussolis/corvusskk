@@ -26,7 +26,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HWND hwnd;
 	HDC hdc;
 	PAINTSTRUCT ps;
-	WCHAR num[16];
+	WCHAR num[16] = {};
 	WCHAR fontname[LF_FACESIZE];
 	INT fontpoint, fontweight, count;
 	BOOL fontitalic;
@@ -318,7 +318,7 @@ void SaveFont(IXmlWriter *pWriter, HWND hDlg)
 	WCHAR fontname[LF_FACESIZE];
 	HFONT hFont;
 	LOGFONTW lf = {};
-	WCHAR num[16];
+	WCHAR num[16] = {};
 
 	GetDlgItemTextW(hDlg, IDC_EDIT_FONTNAME, fontname, _countof(fontname));
 	WriterKey(pWriter, ValueFontName, fontname);
@@ -335,7 +335,7 @@ void SaveFont(IXmlWriter *pWriter, HWND hDlg)
 
 void SaveDisplay1(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR num[16];
+	WCHAR num[16] = {};
 	LONG w;
 	HWND hwnd;
 	int count;

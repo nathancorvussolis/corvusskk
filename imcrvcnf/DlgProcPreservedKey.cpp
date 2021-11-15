@@ -22,8 +22,8 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	LV_COLUMNW lvc;
 	LVITEMW item;
 	int index, count;
-	WCHAR key[8];
-	WCHAR keyBak[8];
+	WCHAR key[8] = {};
+	WCHAR keyBak[8] = {};
 	NMLISTVIEW *pListView;
 	WCHAR text[16] = {};
 
@@ -454,7 +454,7 @@ void SavePreservedKey(IXmlWriter *pWriter, HWND hDlg, int no)
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
 	APPDATAXMLATTR attr;
-	WCHAR key[8];
+	WCHAR key[8] = {};
 
 	list.clear();
 

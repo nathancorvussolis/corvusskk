@@ -5,7 +5,7 @@
 
 WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 {
-	BYTE keystate[256];
+	BYTE keystate[256] = {};
 	WCHAR ubuff;
 	WCHAR u = L'\0';
 

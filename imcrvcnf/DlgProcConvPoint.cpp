@@ -13,8 +13,8 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	LV_COLUMNW lvc;
 	LVITEMW item;
 	int index, count;
-	WCHAR key[2];
-	WCHAR keyBak[2];
+	WCHAR key[2] = {};
+	WCHAR keyBak[2] = {};
 	NMLISTVIEW *pListView;
 	WCHAR text[16] = {};
 
@@ -297,7 +297,7 @@ void SaveConvPoint(IXmlWriter *pWriter, HWND hDlg)
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
 	APPDATAXMLATTR attr;
-	WCHAR key[2];
+	WCHAR key[2] = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
 	int count = ListView_GetItemCount(hWndListView);

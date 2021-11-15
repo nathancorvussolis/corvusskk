@@ -749,15 +749,15 @@ void StartSaveUserDic(BOOL bThread)
 
 void BackUpUserDic()
 {
-	WCHAR path[MAX_PATH];
+	WCHAR path[MAX_PATH] = {};
 	LPCWSTR ext = L"bak";
 
 	EnterCriticalSection(&csUserDict);	// !
 
 	// バックアップディレクトリ作成
 
-	WCHAR drive[_MAX_DRIVE];
-	WCHAR dir[_MAX_DIR];
+	WCHAR drive[_MAX_DRIVE] = {};
+	WCHAR dir[_MAX_DIR] = {};
 	_wsplitpath_s(pathbackup, drive, _countof(drive), dir, _countof(dir), nullptr, 0, nullptr, 0);
 	_wmakepath_s(path, drive, dir, nullptr, nullptr);
 	SHCreateDirectoryExW(nullptr, path, nullptr);
