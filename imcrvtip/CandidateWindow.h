@@ -157,4 +157,6 @@ private:
 	CANDIDATES candidates_bak;
 	size_t candidx_bak;
 	size_t candorgcnt_bak;
+	BOOL reconversion_bak;
+	std::wstring reconvsrc_bak;
 };
