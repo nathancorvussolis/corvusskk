@@ -499,7 +499,7 @@ void CCandidateWindow::_InitList()
 		}
 	}
 
-	_uPageCnt = ((_uCount - (_uCount % _uPageCandNum)) / _uPageCandNum) + ((_uCount % _uPageCandNum) == 0 ? 0 : 1);
+	_uPageCnt = ((_uCount - (_uCount % _uPageCandNum)) / _uPageCandNum) + (((_uCount % _uPageCandNum) == 0) ? 0 : 1);
 
 	_PageIndex.clear();
 	_CandCount.clear();
@@ -528,7 +528,7 @@ void CCandidateWindow::_UpdateUIElement()
 	}
 }
 
-void CCandidateWindow::_NextPage()
+void CCandidateWindow::_NextConvPage()
 {
 	UINT uOldPage, uNewPage;
 
@@ -575,7 +575,7 @@ void CCandidateWindow::_NextPage()
 	_UpdateUIElement();
 }
 
-void CCandidateWindow::_PrevPage()
+void CCandidateWindow::_PrevConvPage()
 {
 	UINT uOldPage, uNewPage;
 
@@ -658,7 +658,7 @@ void CCandidateWindow::_PrevPage()
 	_UpdateUIElement();
 }
 
-void CCandidateWindow::_NextComp()
+void CCandidateWindow::_NextCompPage()
 {
 	UINT uOldPage, uNewPage;
 
@@ -686,7 +686,7 @@ void CCandidateWindow::_NextComp()
 	_UpdateUIElement();
 }
 
-void CCandidateWindow::_PrevComp()
+void CCandidateWindow::_PrevCompPage()
 {
 	UINT uOldPage, uNewPage;
 
@@ -770,7 +770,7 @@ void CCandidateWindow::_BackUpStatus()
 	candidx_bak = _pTextService->candidx;
 	candorgcnt_bak = _pTextService->candorgcnt;
 	reconversion_bak = _pTextService->reconversion;
-	reconvsrc_bak = _pTextService->reconvsrc;
+	reconvtext_bak = _pTextService->reconvtext;
 }
 
 void CCandidateWindow::_ClearStatus()
@@ -786,7 +786,7 @@ void CCandidateWindow::_ClearStatus()
 	_pTextService->candidx = 0;
 	_pTextService->candorgcnt = 0;
 	_pTextService->reconversion = FALSE;
-	_pTextService->reconvsrc.clear();
+	_pTextService->reconvtext.clear();
 
 	_pTextService->showcandlist = FALSE;
 	_pTextService->showentry = FALSE;
@@ -807,7 +807,7 @@ void CCandidateWindow::_RestoreStatusReg()
 	_pTextService->candidx = candidx_bak;
 	_pTextService->candorgcnt = candorgcnt_bak;
 	_pTextService->reconversion = reconversion_bak;
-	_pTextService->reconvsrc = reconvsrc_bak;
+	_pTextService->reconvtext = reconvtext_bak;
 
 	_pTextService->showcandlist = TRUE;
 	_pTextService->showentry = TRUE;
@@ -827,7 +827,7 @@ void CCandidateWindow::_ClearStatusReg()
 	candidx_bak = 0;
 	candorgcnt_bak = 0;
 	reconversion_bak = FALSE;
-	reconvsrc_bak.clear();
+	reconvtext_bak.clear();
 }
 
 void CCandidateWindow::_PreEndReq()

@@ -7,7 +7,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 	SKKDICCANDIDATES sc;
 	std::wstring key, keyorg, okuri, candidate, annotation, conv;
 
-	// search, complement, convert key, convert candidate
+	// search, complement, convert key, convert candidate, reverse
 	static const std::wregex research(L"(.*)\t(.*)\t(.*)\n");
 	// add candidate
 	static const std::wregex readd(L"(.*)\t(.*)\t(.*)\t(.*)\n");
@@ -157,7 +157,7 @@ void SrvProc(WCHAR command, const std::wstring &argument, std::wstring &result)
 		{
 			result = REP_OK;
 			result += L"\n";
-			result += key + L"\t" + key + L"\t\t\n";
+			result += L"\t" + key + L"\t\t\n";
 		}
 		else
 		{
@@ -290,7 +290,7 @@ unsigned __stdcall SrvThread(void *p)
 	HANDLE hPipe = (HANDLE)p;
 	DWORD bytesRead, bytesWrite;
 	BOOL bRet;
-	WCHAR command;
+	WCHAR command = L'\0';
 	std::wstring argument;
 	std::wstring wspipebuf;
 
@@ -342,6 +342,23 @@ unsigned __stdcall SrvThread(void *p)
 			continue;
 		}
 
+#ifdef _DEBUG
+		EnterCriticalSection(&csEdit);	// !
+
+		if (dedit.size() > SHRT_MAX) dedit.clear();
+
+		switch (command)
+		{
+		case REQ_USER_SAVE:
+			dedit.clear();
+			break;
+		default:
+			break;
+		}
+
+		LeaveCriticalSection(&csEdit);	// !
+#endif
+
 		command = pipebuf[0];
 		if (pipebuf[1] != L'\n') command = L'\0';
 		argument.assign(&pipebuf[2]);
@@ -358,17 +375,6 @@ unsigned __stdcall SrvThread(void *p)
 		tedit = std::regex_replace(tedit, re, fmt);
 
 		EnterCriticalSection(&csEdit);	// !
-
-		if (dedit.size() > SHRT_MAX) dedit.clear();
-
-		switch (command)
-		{
-		case REQ_USER_SAVE:
-			dedit.clear();
-			break;
-		default:
-			break;
-		}
 
 		dedit.append(tedit);
 
@@ -463,22 +469,29 @@ HANDLE SrvStart()
 		request
 			"4\n<key prefix>\t<candidate max>\t\n"
 		reply
-			"T\n<key>\t\t<candidates>\t\n...\n":hit
-			"F\n":nothing
+			"T\n<key>\t\t<candidates>\t\n...\n" : hit
+			"F\n" : nothing
 
 	convert key
 		request
 			"5\n<key>\t\t<okuri>\n"
 		reply
-			"T\n<key converted>\n...\n":hit
-			"F\n":nothing
+			"T\n<key converted>\n...\n" : hit
+			"F\n" : nothing
 
 	convert candidate
 		request
 			"6\n<key>\t<candidate>\t<okuri>\n"
 		reply
-			"T\n<candidate converted>\n":hit
-			"F\n":nothing
+			"T\n<candidate converted>\n" : hit
+			"F\n" : nothing
+
+	reverse
+		request
+			"7\n<candidate>\t\t\n"
+		reply
+			"T\n\t<key>\t\t\n" : hit
+			"F\n" : nothing
 
 	add candidate (complement off)
 		request

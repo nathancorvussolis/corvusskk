@@ -41,6 +41,9 @@ void CTextService::_SearchDic(WCHAR command)
 	std::wstring s, se, scd, scr, sad, sar, okurikey;
 	std::wsmatch m;
 
+	candidates.clear();
+	candidates.shrink_to_fit();
+
 	_StartManager();
 
 	_ConnectDic();
@@ -78,12 +81,12 @@ void CTextService::_SearchDic(WCHAR command)
 		goto exit;
 	}
 
-	if (pipebuf[0] != REP_OK)
+	if ((pipebuf[0] != REP_OK) || (pipebuf[1] != L'\n'))
 	{
 		goto exit;
 	}
 
-	s.assign(pipebuf);
+	s.assign(&pipebuf[2]);
 
 	static const std::wregex re(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 
@@ -116,9 +119,12 @@ exit:
 	_DisconnectDic();
 }
 
-void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &okuri, std::wstring &conv)
+void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &okuri)
 {
 	DWORD bytesWrite, bytesRead;
+	PWCHAR pn;
+
+	convword.clear();
 
 	_StartManager();
 
@@ -143,16 +149,17 @@ void CTextService::_ConvertWord(WCHAR command, const std::wstring &key, const st
 		goto exit;
 	}
 
-	if (pipebuf[0] != REP_OK)
+	if ((pipebuf[0] != REP_OK) || (pipebuf[1] != L'\n'))
 	{
-		conv.clear();
 		goto exit;
 	}
 
-	//remove newline
-	pipebuf[wcslen(pipebuf) - 1] = L'\0';
-
-	conv.assign(&pipebuf[2]);
+	pn = &pipebuf[wcslen(pipebuf) - 1];
+	if (*pn == L'\n')
+	{
+		*pn = L'\0';
+		convword.assign(&pipebuf[2]);
+	}
 
 exit:
 	ZeroMemory(pipebuf, sizeof(pipebuf));

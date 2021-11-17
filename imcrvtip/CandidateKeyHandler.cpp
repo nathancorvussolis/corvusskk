@@ -95,13 +95,13 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 			}
 			else
 			{
-				_NextComp();
+				_NextCompPage();
 			}
 			break;
 		case SKK_PREV_COMP:
 			if (candidx != (size_t)-1)
 			{
-				_PrevComp();
+				_PrevCompPage();
 			}
 			break;
 		default:
@@ -145,11 +145,11 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 	case SKK_BACK:
 	case SKK_PREV_CAND:
-		_PrevPage();
+		_PrevConvPage();
 		break;
 
 	case SKK_NEXT_CAND:
-		_NextPage();
+		_NextConvPage();
 		break;
 
 	default:
@@ -307,7 +307,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		}
 		else
 		{
-			std::wstring conv;
+			std::wstring convcand;
 			std::wstring candidate;
 			std::wstring annotation;
 			std::wsmatch result;
@@ -341,22 +341,24 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 			}
 
 			//候補変換
-			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, candidate, okurikey, conv);
+			_pTextService->_ConvertWord(REQ_CONVERTCND, _pTextService->searchkeyorg, candidate, okurikey);
 
-			if (_pTextService->searchkey.empty() || conv.empty())
+			convcand = _pTextService->convword;
+
+			if (_pTextService->searchkey.empty() || convcand.empty())
 			{
 				//変換見出し語が空文字列または
 				//変換済み候補が空文字列であれば未変換見出し語を見出し語とする
 				_pTextService->searchkey = _pTextService->searchkeyorg;
 			}
 
-			if (conv.empty())
+			if (convcand.empty())
 			{
-				conv = candidate;
+				convcand = candidate;
 			}
 
 			_pTextService->candidates.push_back(std::make_pair(
-				std::make_pair(conv, annotation),
+				std::make_pair(convcand, annotation),
 				std::make_pair(candidate, annotation)));
 			_pTextService->candidx = _pTextService->candidates.size() - 1;
 			_pTextService->candorgcnt = 0;

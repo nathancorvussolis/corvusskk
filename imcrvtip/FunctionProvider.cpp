@@ -160,41 +160,43 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if (SUCCEEDED((_GetRangeText(pRange, text))) && !text.empty())
+	hr = _GetRangeText(pRange, text);
+
+	static const std::wregex rectrl(L"[\\x00-\\x19]");
+	text = std::regex_replace(text, rectrl, L"");
+
+	if (FAILED(hr) || text.empty())
 	{
-		std::wstring key;
-		_ConvKanaToKana(text, im_katakana, key, im_hiragana);
+		return E_FAIL;
+	}
 
+	try
+	{
 		CComPtr<CTextService> pTextService;
+		pTextService.Attach(new CTextService());
 
-		try
+		_ConvKanaToKana(text, im_katakana, pTextService->kana, im_hiragana);
+
+		pTextService->searchkey = pTextService->kana;
+		pTextService->_SearchDic(REQ_REVERSE);
+
+		if (!pTextService->candidates.empty())
 		{
-			pTextService.Attach(new CTextService());
-
-			pTextService->_ResetStatus();
-			pTextService->_CreateConfigPath();
-
-			pTextService->inputmode = im_hiragana;
-			pTextService->kana = key;
-
-			pTextService->_StartSubConv(REQ_REVERSE);
-
-			if (!pTextService->candidates.empty())
-			{
-				pTextService->kana = pTextService->candidates.front().first.first;
-				pTextService->candidates.clear();
-			}
-
-			pTextService->_StartSubConv(REQ_SEARCH);
-
-			*ppCandList = new CFnCandidateList(this, key, pTextService->candidates);
-
-			hr = S_OK;
+			pTextService->kana = pTextService->candidates.front().second.first;
+			pTextService->candidates.clear();
 		}
-		catch (...)
-		{
-			return E_OUTOFMEMORY;
-		}
+
+		pTextService->inputmode = im_hiragana;
+
+		pTextService->_StartSubConv(REQ_SEARCH);
+
+		*ppCandList = new CFnCandidateList(this, pTextService->kana, pTextService->candidates);
+
+		hr = S_OK;
+	}
+	catch (...)
+	{
+		return E_OUTOFMEMORY;
 	}
 
 	return hr;
@@ -215,37 +217,50 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 	HRESULT hr = E_FAIL;
 
 	std::wstring text;
-	if (SUCCEEDED(_GetRangeText(pRange, text)) && !text.empty())
+	hr = _GetRangeText(pRange, text);
+
+	static const std::wregex rectrl(L"[\\x00-\\x19]");
+	text = std::regex_replace(text, rectrl, L"");
+
+	if (FAILED(hr) || text.empty())
 	{
-		CComPtr<ITfDocumentMgr> pDocumentMgr;
-		if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+		return E_FAIL;
+	}
+
+	CComPtr<ITfDocumentMgr> pDocumentMgr;
+	if (SUCCEEDED(_pThreadMgr->GetFocus(&pDocumentMgr)) && (pDocumentMgr != nullptr))
+	{
+		CComPtr<ITfContext> pContext;
+		if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
 		{
-			CComPtr<ITfContext> pContext;
-			if (SUCCEEDED(pDocumentMgr->GetTop(&pContext)) && (pContext != nullptr))
+			if (!_IsKeyboardOpen())
 			{
-				reconversion = TRUE;
-				reconvsrc = text;
-
-				if (!_IsKeyboardOpen())
-				{
-					inputmode = im_disable;
-					_SetKeyboardOpen(TRUE);
-				}
-
-				inputmode = im_hiragana;
-				inputkey = TRUE;
-				_ConvKanaToKana(text, im_katakana, kana, im_hiragana);
-
-				_StartSubConv(REQ_REVERSE);
-
-				if (!candidates.empty())
-				{
-					kana = candidates.front().first.first;
-					candidates.clear();
-				}
-
-				hr = _InvokeKeyHandler(pContext, 0, 0, SKK_NEXT_CAND);
+				inputmode = im_disable;
+				_SetKeyboardOpen(TRUE);
 			}
+
+			_ResetStatus();
+
+			_ConvKanaToKana(text, im_katakana, kana, im_hiragana);
+
+			searchkey = kana;
+			_SearchDic(REQ_REVERSE);
+
+			if (!candidates.empty())
+			{
+				kana = candidates.front().second.first;
+				candidates.clear();
+			}
+
+			reconversion = TRUE;
+			reconvtext = text;
+
+			inputkey = TRUE;
+			inputmode = im_hiragana;
+
+			_UpdateLanguageBar(FALSE);
+
+			hr = _InvokeKeyHandler(pContext, 0, 0, SKK_NEXT_CAND);
 		}
 	}
 

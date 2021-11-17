@@ -217,9 +217,9 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 					CheckMenuRadioItem(hMenu, IDM_HIRAGANA, IDM_DIRECT, check, MF_BYCOMMAND);
 
 					CheckMenuItem(hMenu, IDM_CAPSLOCK,
-						MF_BYCOMMAND | ((GetKeyState(VK_CAPITAL) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
+						MF_BYCOMMAND | (((GetKeyState(VK_CAPITAL) & 1) == 1) ? MF_CHECKED : MF_UNCHECKED));
 					CheckMenuItem(hMenu, IDM_KANALOCK,
-						MF_BYCOMMAND | ((GetKeyState(VK_KANA) & 1) == 1 ? MF_CHECKED : MF_UNCHECKED));
+						MF_BYCOMMAND | (((GetKeyState(VK_KANA) & 1) == 1) ? MF_CHECKED : MF_UNCHECKED));
 
 					CheckMenuItem(hMenu, IDM_PRIVATE,
 						MF_BYCOMMAND |
@@ -282,12 +282,12 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		{
 		case IDM_CAPSLOCK:
 			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				((GetKeyState(VK_CAPITAL) & 1) == 1 ? TF_LBMENUF_CHECKED : 0),
+				(((GetKeyState(VK_CAPITAL) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
 				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
 			break;
 		case IDM_KANALOCK:
 			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				((GetKeyState(VK_KANA) & 1) == 1 ? TF_LBMENUF_CHECKED : 0),
+				(((GetKeyState(VK_KANA) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
 				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
 			break;
 		case IDM_PRIVATE:
@@ -303,7 +303,7 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		case IDM_DIRECT:
 		default:
 			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				(_pTextService->inputmode == menuItems[i].inputmode ? TF_LBMENUF_RADIOCHECKED : 0),
+				((_pTextService->inputmode == menuItems[i].inputmode) ? TF_LBMENUF_RADIOCHECKED : 0),
 				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
 			break;
 		}

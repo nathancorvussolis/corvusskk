@@ -571,7 +571,7 @@ void CTextService::_ResetStatus()
 	roman.clear();
 	kana.clear();
 	okuriidx = 0;
-	reconvsrc.clear();
+	reconvtext.clear();
 
 	searchkey.clear();
 	searchkeyorg.clear();
@@ -580,6 +580,7 @@ void CTextService::_ResetStatus()
 	candidates.shrink_to_fit();
 	candidx = 0;
 	candorgcnt = 0;
+	convword.clear();
 
 	cursoridx = 0;
 }

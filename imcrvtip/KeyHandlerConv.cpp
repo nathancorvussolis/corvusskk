@@ -9,7 +9,10 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 	WCHAR ubuff;
 	WCHAR u = L'\0';
 
-	GetKeyboardState(keystate);
+	if (GetKeyboardState(keystate) == FALSE)
+	{
+		return u;
+	}
 
 	switch (inputmode)
 	{
@@ -323,8 +326,6 @@ void CTextService::_StartSubConv(WCHAR command)
 		_ConvKanaToKana(kana, inputmode, searchkey, im_hiragana);
 	}
 
-	candidates.clear();
-	candidates.shrink_to_fit();
 	candorgcnt = 0;
 
 	searchkeyorg = searchkey;
@@ -335,8 +336,6 @@ void CTextService::_StartSubConv(WCHAR command)
 	if (cx_srchallokuri && okuriidx != 0)
 	{
 		candidates_bak = candidates;
-		candidates.clear();
-		candidates.shrink_to_fit();
 
 		searchkey.pop_back();
 
@@ -410,8 +409,6 @@ void CTextService::_StartSubConv(WCHAR command)
 	candorgcnt = candidates.size();
 
 	candidates_bak = candidates;
-	candidates.clear();
-	candidates.shrink_to_fit();
 
 	searchkeyorg = searchkey;	//オリジナルバックアップ
 
@@ -430,15 +427,18 @@ void CTextService::_StartSubConv(WCHAR command)
 	}
 
 	//見出し語変換
-	_ConvertWord(REQ_CONVERTKEY, searchkeyorg, std::wstring(L""), okurikey, searchkey);
+	_ConvertWord(REQ_CONVERTKEY, searchkeyorg, L"", okurikey);
+
+	searchkey = convword;
 
 	if (!searchkey.empty() && searchkey != searchkeyorg)
 	{
 		//変換済み見出し語検索
 		_SearchDic(command);
+
+		candidates_num = candidates;
 	}
 
-	candidates_num = candidates;
 	candidates.clear();
 	candidates.shrink_to_fit();
 
@@ -446,6 +446,7 @@ void CTextService::_StartSubConv(WCHAR command)
 	{
 		candidates.insert(candidates.end(), candidates_bak.begin(), candidates_bak.end());
 	}
+
 	if (!candidates_num.empty())
 	{
 		candidates.insert(candidates.end(), candidates_num.begin(), candidates_num.end());
@@ -514,9 +515,6 @@ void CTextService::_NextComp()
 		{
 			_ConvKanaToKana(kana, inputmode, searchkey, im_hiragana);
 		}
-
-		candidates.clear();
-		candidates.shrink_to_fit();
 
 		//候補の表示数は「候補一覧表示に要する変換回数」-1 個まで
 		WCHAR c = L'0';

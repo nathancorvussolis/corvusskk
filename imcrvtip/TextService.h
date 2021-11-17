@@ -191,7 +191,7 @@ public:
 	void _ConnectDic();
 	void _DisconnectDic();
 	void _SearchDic(WCHAR command);
-	void _ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &okuri, std::wstring &conv);
+	void _ConvertWord(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &okuri);
 	void _AddUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate, const std::wstring &annotation);
 	void _DelUserDic(WCHAR command, const std::wstring &key, const std::wstring &candidate);
 	void _SaveUserDic();
@@ -388,7 +388,7 @@ public:
 	std::wstring roman;		//ローマ字
 	std::wstring kana;		//仮名
 	size_t okuriidx;		//送り仮名インデックス
-	std::wstring reconvsrc;	//再変換元
+	std::wstring reconvtext;	//再変換元
 
 	//検索用見出し語
 	std::wstring searchkey;		//数値変換で数値→#
@@ -398,6 +398,7 @@ public:
 	CANDIDATES candidates;	//候補
 	size_t candidx;			//候補インデックス
 	size_t candorgcnt;		//オリジナル見出し語の候補数
+	std::wstring convword;	//見出し語/候補変換
 
 	size_t cursoridx;		//カーソルインデックス
 

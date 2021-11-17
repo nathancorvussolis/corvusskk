@@ -73,7 +73,7 @@ BOOL CTextService::_IsKeyboardDisabled()
 						{
 							if (V_VT(&var) == VT_I4)
 							{
-								fDisabled = (V_I4(&var) == 0 ? FALSE : TRUE);
+								fDisabled = ((V_I4(&var) == 0) ? FALSE : TRUE);
 							}
 						}
 					}
@@ -87,7 +87,7 @@ BOOL CTextService::_IsKeyboardDisabled()
 						{
 							if (V_VT(&var) == VT_I4)
 							{
-								fDisabled = (V_I4(&var) == 0 ? FALSE : TRUE);
+								fDisabled = ((V_I4(&var) == 0) ? FALSE : TRUE);
 							}
 						}
 					}
@@ -122,7 +122,7 @@ BOOL CTextService::_IsKeyboardOpen()
 			{
 				if (V_VT(&var) == VT_I4)
 				{
-					fOpen = (V_I4(&var) == 0 ? FALSE : TRUE);
+					fOpen = ((V_I4(&var) == 0) ? FALSE : TRUE);
 				}
 			}
 		}
