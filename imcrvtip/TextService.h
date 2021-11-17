@@ -151,7 +151,7 @@ public:
 	void _InitD2D();
 	void _UninitD2D();
 
-	// KeyHandlerChar
+	// KeyHandlerCharacter
 	HRESULT _HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, WCHAR ch, WCHAR chO);
 	HRESULT _HandleCharReturn(TfEditCookie ec, ITfContext *pContext, BOOL back = FALSE);
 	HRESULT _HandleCharShift(TfEditCookie ec, ITfContext *pContext);
@@ -166,7 +166,7 @@ public:
 	// KeyHandlerControl
 	HRESULT _HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE sf, WCHAR ch);
 
-	// KeyHandlerConv
+	// KeyHandlerConversion
 	WCHAR _GetCh(BYTE vk, BYTE vkoff = 0);
 	BYTE _GetSf(BYTE vk, WCHAR ch);
 	HRESULT _ConvRomanKana(ROMAN_KANA_CONV *pconv);

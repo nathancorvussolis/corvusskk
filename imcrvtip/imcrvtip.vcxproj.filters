@@ -110,7 +110,7 @@
     <ClCompile Include="KeyHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KeyHandlerChar.cpp">
+    <ClCompile Include="KeyHandlerCharacter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyHandlerComposition.cpp">
@@ -119,7 +119,7 @@
     <ClCompile Include="KeyHandlerControl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KeyHandlerConv.cpp">
+    <ClCompile Include="KeyHandlerConversion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyHandlerDictionary.cpp">

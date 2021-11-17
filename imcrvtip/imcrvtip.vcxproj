@@ -588,10 +588,10 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
     <ClCompile Include="InputModeWindow.cpp" />
     <ClCompile Include="KeyEventSink.cpp" />
     <ClCompile Include="KeyHandler.cpp" />
-    <ClCompile Include="KeyHandlerChar.cpp" />
+    <ClCompile Include="KeyHandlerCharacter.cpp" />
     <ClCompile Include="KeyHandlerComposition.cpp" />
     <ClCompile Include="KeyHandlerControl.cpp" />
-    <ClCompile Include="KeyHandlerConv.cpp" />
+    <ClCompile Include="KeyHandlerConversion.cpp" />
     <ClCompile Include="KeyHandlerDictionary.cpp" />
     <ClCompile Include="LanguageBar.cpp" />
     <ClCompile Include="Property.cpp" />
