@@ -784,30 +784,30 @@ void CTextService::_LoadConvPoint()
 			{
 				if (r_itr->first == AttributeCPStart)
 				{
-					cp.ch[0] = r_itr->second.c_str()[0];
+					cp.st = r_itr->second.c_str()[0];
 				}
 				else if (r_itr->first == AttributeCPAlter)
 				{
-					cp.ch[1] = r_itr->second.c_str()[0];
+					cp.al = r_itr->second.c_str()[0];
 				}
 				else if (r_itr->first == AttributeCPOkuri)
 				{
-					cp.ch[2] = r_itr->second.c_str()[0];
+					cp.ok = r_itr->second.c_str()[0];
 				}
 			}
 
 			auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
-				cp.ch[0], [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[0] < v); });
+				cp.st, [] (const CONV_POINT &m, const WCHAR &v) { return (m.st < v); });
 
-			if (vs_itr == conv_point_s.end() || cp.ch[0] != vs_itr->ch[0])
+			if (vs_itr == conv_point_s.end() || cp.st != vs_itr->st)
 			{
 				conv_point_s.insert(vs_itr, cp);
 			}
 
 			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-				cp.ch[1], [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
+				cp.al, [] (const CONV_POINT &m, const WCHAR &v) { return (m.al < v); });
 
-			if (va_itr == conv_point_a.end() || cp.ch[1] != va_itr->ch[1])
+			if (va_itr == conv_point_a.end() || cp.al != va_itr->al)
 			{
 				conv_point_a.insert(va_itr, cp);
 			}

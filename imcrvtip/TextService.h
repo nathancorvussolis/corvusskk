@@ -306,7 +306,7 @@ private:
 	VKEYMAP vkeymap_shift;	//仮想キー(+Shift)
 	VKEYMAP vkeymap_ctrl;	//仮想キー(+Ctrl)
 
-	//変換位置指定(0:開始,1:代替,2:送り)
+	//変換位置指定
 	std::vector<CONV_POINT> conv_point_s;	//開始で昇順ソート
 	std::vector<CONV_POINT> conv_point_a;	//代替で昇順ソート
 

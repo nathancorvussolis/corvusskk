@@ -757,11 +757,11 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 				// ローマ字に格納されている仮名をキーに、変換位置指定の「代替」を検索する。
 				// ヒットしたエントリの「送り」を送りローマ字とする。
 				auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-					chN, [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
+					chN, [] (const CONV_POINT &m, const WCHAR &v) { return (m.al < v); });
 
-				if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
+				if (va_itr != conv_point_a.end() && chN == va_itr->al)
 				{
-					chO = va_itr->ch[2];
+					chO = va_itr->ok;
 				}
 
 				if (chO == L'\0')
@@ -1060,11 +1060,11 @@ void CTextService::_ConvOkuriRoman()
 			// 送り仮名の先頭をキーに、変換位置指定の「代替」を検索する。
 			// ヒットしたエントリの「送り」を送りローマ字とする。
 			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-				chN, [](const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
+				chN, [](const CONV_POINT &m, const WCHAR &v) { return (m.al < v); });
 
-			if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
+			if (va_itr != conv_point_a.end() && chN == va_itr->al)
 			{
-				chO = va_itr->ch[2];
+				chO = va_itr->ok;
 			}
 
 			if (chO == L'\0')

@@ -61,8 +61,10 @@ typedef struct {	//キー設定(仮想キー)
 	BYTE keyvoid[VKEYMAPNUM];	//無効
 } VKEYMAP;
 
-typedef struct {	//変換位置指定(0:開始,1:代替,2:送り)
-	WCHAR ch[3];
+typedef struct {	//変換位置指定
+	WCHAR st;	//開始
+	WCHAR al;	//代替
+	WCHAR ok;	//送り
 } CONV_POINT;
 
 //ローマ字仮名ノード
