@@ -797,7 +797,7 @@ void CTextService::_LoadConvPoint()
 			}
 
 			auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
-				cp.ch[0], [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
+				cp.ch[0], [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[0] < v); });
 
 			if (vs_itr == conv_point_s.end() || cp.ch[0] != vs_itr->ch[0])
 			{
@@ -805,7 +805,7 @@ void CTextService::_LoadConvPoint()
 			}
 
 			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-				cp.ch[1], [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+				cp.ch[1], [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
 
 			if (va_itr == conv_point_a.end() || cp.ch[1] != va_itr->ch[1])
 			{
@@ -922,7 +922,7 @@ BOOL CTextService::_AddKanaTree(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, int 
 	}
 
 	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
-		rkc.roman[depth], [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+		rkc.roman[depth], [] (const ROMAN_KANA_NODE &m, const WCHAR &v) { return (m.ch < v); });
 
 	if (v_itr != tree.nodes.end() && v_itr->ch == rkc.roman[depth])
 	{
@@ -964,7 +964,7 @@ void CTextService::_AddKanaTreeItem(ROMAN_KANA_NODE &tree, ROMAN_KANA_CONV rkc, 
 	rkn.ch = rkc.roman[depth];
 
 	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
-		rkn.ch, [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+		rkn.ch, [] (const ROMAN_KANA_NODE &m, const WCHAR &v) { return (m.ch < v); });
 
 	if (rkc.roman[depth + 1] == L'\0')
 	{
@@ -1026,7 +1026,7 @@ void CTextService::_LoadJLatin()
 			}
 
 			auto v_itr = std::lower_bound(ascii_jlatin_conv.begin(), ascii_jlatin_conv.end(),
-				ajc.ascii[0], [] (ASCII_JLATIN_CONV m, WCHAR v) { return (m.ascii[0] < v); });
+				ajc.ascii[0], [] (const ASCII_JLATIN_CONV &m, const WCHAR &v) { return (m.ascii[0] < v); });
 
 			if (v_itr == ascii_jlatin_conv.end() || ajc.ascii[0] != v_itr->ascii[0])
 			{

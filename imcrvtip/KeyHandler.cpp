@@ -224,7 +224,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				}
 
 				auto vs_itr = std::lower_bound(conv_point_s.begin(), conv_point_s.end(),
-					ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[0] < v); });
+					ch, [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[0] < v); });
 
 				if (vs_itr != conv_point_s.end() && ch == vs_itr->ch[0])
 				{
@@ -259,7 +259,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 				else
 				{
 					auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-						ch, [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+						ch, [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
 
 					if (va_itr != conv_point_a.end() && ch == va_itr->ch[1])
 					{
@@ -282,7 +282,7 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		if (!roman.empty() && chO != L'\0')
 		{
 			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-				roman[0], [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+				roman[0], [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
 
 			if (va_itr != conv_point_a.end() && roman[0] == va_itr->ch[1])
 			{

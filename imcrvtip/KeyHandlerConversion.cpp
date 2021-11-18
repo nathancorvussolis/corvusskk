@@ -170,7 +170,7 @@ HRESULT CTextService::_SearchRomanKanaNode(const ROMAN_KANA_NODE &tree, ROMAN_KA
 	}
 
 	auto v_itr = std::lower_bound(tree.nodes.begin(), tree.nodes.end(),
-		pconv->roman[depth], [] (ROMAN_KANA_NODE m, WCHAR v) { return (m.ch < v); });
+		pconv->roman[depth], [] (const ROMAN_KANA_NODE &m, const WCHAR &v) { return (m.ch < v); });
 
 	if (v_itr != tree.nodes.end() && v_itr->ch == pconv->roman[depth])
 	{
@@ -211,7 +211,7 @@ HRESULT CTextService::_ConvAsciiJLatin(ASCII_JLATIN_CONV *pconv)
 	}
 
 	auto v_itr = std::lower_bound(ascii_jlatin_conv.begin(), ascii_jlatin_conv.end(),
-		pconv->ascii[0], [] (ASCII_JLATIN_CONV m, WCHAR v) { return (m.ascii[0] < v); });
+		pconv->ascii[0], [] (const ASCII_JLATIN_CONV &m, const WCHAR &v) { return (m.ascii[0] < v); });
 
 	if (v_itr != ascii_jlatin_conv.end() && v_itr->ascii[0] == pconv->ascii[0])
 	{
@@ -757,7 +757,7 @@ BOOL CTextService::_ConvShift(WCHAR ch)
 				// ローマ字に格納されている仮名をキーに、変換位置指定の「代替」を検索する。
 				// ヒットしたエントリの「送り」を送りローマ字とする。
 				auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-					chN, [] (CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+					chN, [] (const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
 
 				if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
 				{
@@ -1060,7 +1060,7 @@ void CTextService::_ConvOkuriRoman()
 			// 送り仮名の先頭をキーに、変換位置指定の「代替」を検索する。
 			// ヒットしたエントリの「送り」を送りローマ字とする。
 			auto va_itr = std::lower_bound(conv_point_a.begin(), conv_point_a.end(),
-				chN, [](CONV_POINT m, WCHAR v) { return (m.ch[1] < v); });
+				chN, [](const CONV_POINT &m, const WCHAR &v) { return (m.ch[1] < v); });
 
 			if (va_itr != conv_point_a.end() && chN == va_itr->ch[1])
 			{
