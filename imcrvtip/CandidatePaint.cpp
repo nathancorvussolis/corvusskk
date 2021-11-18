@@ -391,7 +391,7 @@ std::wstring CCandidateWindow::_MakeCandidateString(UINT page, UINT count, UINT 
 	case CL_COLOR_SE:
 		if (_mode == wm_candidate)
 		{
-			s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)][0]);
+			s.append(_pTextService->selkey[(idx % MAX_SELKEY_C)].disp);
 		}
 		else
 		{

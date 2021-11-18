@@ -373,10 +373,11 @@ void CTextService::_LoadSelKey()
 		num[0] = L'0' + i + 1;
 		num[1] = L'\0';
 		ReadValue(pathconfigxml, SectionSelKey, num, strxmlval);
+		ZeroMemory(key, sizeof(key));
 		wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
-		selkey[i][0][0] = key[0];
-		selkey[i][1][0] = key[1];
-		selkey[i][2][0] = key[2];
+		selkey[i].disp[0] = key[0];
+		selkey[i].spare1 = key[1];
+		selkey[i].spare2 = key[2];
 	}
 }
 

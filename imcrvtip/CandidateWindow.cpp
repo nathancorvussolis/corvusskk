@@ -474,7 +474,7 @@ void CCandidateWindow::_InitList()
 	{
 		if (_mode == wm_candidate)
 		{
-			_CandStr.push_back(_pTextService->selkey[(i % _uPageCandNum)][0]);
+			_CandStr.push_back(_pTextService->selkey[(i % _uPageCandNum)].disp);
 			_CandStr[i].append(markNo);
 		}
 		else

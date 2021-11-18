@@ -67,6 +67,12 @@ typedef struct {	//変換位置指定
 	WCHAR ok;	//送り
 } CONV_POINT;
 
+typedef struct {	//選択キー
+	WCHAR disp[2];	//表示
+	WCHAR spare1;	//予備1
+	WCHAR spare2;	//予備2
+} SELKEY;
+
 //ローマ字仮名ノード
 typedef struct ROMAN_KANA_NODE {
 	//探索対象、ローマ字1文字分、ルートノードはL'\0'

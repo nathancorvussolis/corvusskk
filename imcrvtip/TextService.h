@@ -403,7 +403,7 @@ public:
 	size_t cursoridx;		//カーソルインデックス
 
 	//候補一覧選択キー
-	WCHAR selkey[MAX_SELKEY_C][3][2];
+	SELKEY selkey[MAX_SELKEY_C];
 
 	//preserved key
 	TF_PRESERVEDKEY preservedkey[PRESERVEDKEY_NUM][MAX_PRESERVEDKEY];

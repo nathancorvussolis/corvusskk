@@ -453,7 +453,7 @@ STDAPI CCandidateWindow::SetPageIndex(UINT *pIndex, UINT uPageCnt)
 
 				if (_mode == wm_candidate)
 				{
-					_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)][0]);
+					_CandStr.push_back(_pTextService->selkey[(i % MAX_SELKEY_C)].disp);
 					_CandStr[k].append(markNo);
 				}
 				else
