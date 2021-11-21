@@ -308,6 +308,28 @@ local function skk_num_type_3(num, len)
 	return ret
 end
 
+-- 数値変換タイプ4 (数値再変換)
+local function skk_num_type_4(num, len)
+	local ret = ""
+
+	-- ユーザー辞書検索
+	ret = ret .. crvmgr.search_user_dictionary(num, "")
+
+	-- SKK辞書検索
+	ret = ret .. crvmgr.search_skk_dictionary(num, "")
+
+	-- SKK辞書サーバー検索
+	ret = ret .. crvmgr.search_skk_server(num)
+
+	-- 余計な"/\n"を削除
+	ret = string.gsub(ret, "/\n/", "/")
+
+	-- 先頭の候補のみ
+	ret = string.match(ret, "^/([^;/]+)")
+
+	return ret
+end
+
 -- 数値変換タイプ5 (漢数字、大字)
 local function skk_num_type_5(num, len)
 	local ret = ""
@@ -371,7 +393,7 @@ local skk_num_type_func_table = {
 	skk_num_type_1,
 	skk_num_type_2,
 	skk_num_type_3,
-	skk_num_type_n,
+	skk_num_type_4,
 	skk_num_type_5,
 	skk_num_type_6,
 	skk_num_type_n,

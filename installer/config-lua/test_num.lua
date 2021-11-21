@@ -231,6 +231,7 @@ el_test_num_table = {
 {"1888", "#6", "MDCCCLXXXVIII"},
 {"2444", "#6", "MMCDXLIV"},
 {"3999", "#6", "MMMCMXCIX"},
+{"p125", "#4", "東京都葛飾区"},
 
 }
 
