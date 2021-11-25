@@ -580,9 +580,9 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
     <ClCompile Include="Compartment.cpp" />
     <ClCompile Include="CompartmentEventSink.cpp" />
     <ClCompile Include="Composition.cpp" />
+    <ClCompile Include="ConfigTip.cpp" />
     <ClCompile Include="DisplayAttributeProvider.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="FnConfig.cpp" />
     <ClCompile Include="FunctionProvider.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="InputModeWindow.cpp" />

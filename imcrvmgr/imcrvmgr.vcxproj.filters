@@ -29,6 +29,9 @@
     <ClCompile Include="imcrvmgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lcrvmgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="ConfigMgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

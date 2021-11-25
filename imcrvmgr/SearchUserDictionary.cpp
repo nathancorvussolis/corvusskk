@@ -13,6 +13,14 @@ KEYORDER keyorder_n;
 //送りあり、補完なし
 KEYORDER keyorder_a;
 
+//ユーザー辞書保存データ
+typedef struct {
+	SKKDIC userdic;
+	USEROKURI userokuri;
+	KEYORDER keyorder_n;
+	KEYORDER keyorder_a;
+} USERDATA;
+
 std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri)
 {
 	std::wstring candidate;

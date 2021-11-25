@@ -86,13 +86,13 @@
     <ClCompile Include="Composition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ConfigTip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="DisplayAttributeProvider.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DllMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FnConfig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FunctionProvider.cpp">

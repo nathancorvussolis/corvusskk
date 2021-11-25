@@ -316,11 +316,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConfigMgr.cpp" />
+    <ClCompile Include="imcrvmgr.cpp" />
+    <ClCompile Include="lcrvmgr.cpp" />
     <ClCompile Include="SearchCharacter.cpp" />
     <ClCompile Include="SearchDictionary.cpp" />
     <ClCompile Include="SearchSKKServer.cpp" />
     <ClCompile Include="SearchUserDictionary.cpp" />
-    <ClCompile Include="imcrvmgr.cpp" />
     <ClCompile Include="Server.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

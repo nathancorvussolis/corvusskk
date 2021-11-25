@@ -199,7 +199,7 @@ public:
 	void _StartManager();
 	void _StartConfigure();
 
-	// FnConfig
+	// ConfigTip
 	void _CreateConfigPath();
 	void _CreateIpcName();
 	void _ReadBoolValue(LPCWSTR section, LPCWSTR key, BOOL &value, BOOL defval);

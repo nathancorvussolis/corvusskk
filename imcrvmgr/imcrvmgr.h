@@ -4,13 +4,6 @@
 #include "parseskkdic.h"
 #include "lua.hpp"
 
-typedef struct {
-	SKKDIC userdic;
-	USEROKURI userokuri;
-	KEYORDER keyorder_n;
-	KEYORDER keyorder_a;
-} USERDATA;
-
 // ConfigMgr
 void CreateConfigPath();
 void UpdateConfigPath();
@@ -19,6 +12,21 @@ void LoadConfig(BOOL sysexit = FALSE);
 BOOL IsFileModified(LPCWSTR path, FILETIME *ft);
 void InitLua();
 void UninitLua();
+
+// lcrvmgr
+int lua_search_skk_dictionary(lua_State *lua);
+int lua_search_user_dictionary(lua_State *lua);
+int lua_search_skk_server(lua_State *lua);
+int lua_search_skk_server_info(lua_State *lua);
+int lua_search_unicode(lua_State *lua);
+int lua_search_jisx0213(lua_State *lua);
+int lua_search_jisx0208(lua_State *lua);
+int lua_search_character_code(lua_State *lua);
+int lua_complement(lua_State *lua);
+int lua_reverse(lua_State *lua);
+int lua_add(lua_State *lua);
+int lua_delete(lua_State *lua);
+int lua_save(lua_State *lua);
 
 // SearchCharacter
 std::wstring SearchUnicode(const std::wstring &searchkey);
@@ -33,19 +41,6 @@ std::wstring SearchSKKDic(const std::wstring &searchkey, const std::wstring &oku
 void MakeSKKDicPos();
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri);
 std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring &candidate, const std::wstring &okuri);
-int lua_search_skk_dictionary(lua_State *lua);
-int lua_search_user_dictionary(lua_State *lua);
-int lua_search_skk_server(lua_State *lua);
-int lua_search_skk_server_info(lua_State *lua);
-int lua_search_unicode(lua_State *lua);
-int lua_search_jisx0213(lua_State *lua);
-int lua_search_jisx0208(lua_State *lua);
-int lua_search_character_code(lua_State *lua);
-int lua_complement(lua_State *lua);
-int lua_reverse(lua_State *lua);
-int lua_add(lua_State *lua);
-int lua_delete(lua_State *lua);
-int lua_save(lua_State *lua);
 
 // SearchUserDictionary
 std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &okuri);
