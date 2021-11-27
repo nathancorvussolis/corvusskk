@@ -362,8 +362,8 @@ void CTextService::_LoadDisplayAttr()
 
 void CTextService::_LoadSelKey()
 {
-	WCHAR num[2];
-	WCHAR key[4];
+	WCHAR num[2 + 1];
+	WCHAR key[4 + 1];
 	std::wstring strxmlval;
 
 	ZeroMemory(selkey, sizeof(selkey));
@@ -375,9 +375,13 @@ void CTextService::_LoadSelKey()
 		ReadValue(pathconfigxml, SectionSelKey, num, strxmlval);
 		ZeroMemory(key, sizeof(key));
 		wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
+
+		int sp = IS_SURROGATE_PAIR(key[0], key[1]) ? 1 : 0;
+
 		selkey[i].disp[0] = key[0];
-		selkey[i].spare1 = key[1];
-		selkey[i].spare2 = key[2];
+		selkey[i].disp[0 + sp] = key[0 + sp];
+		selkey[i].spare1 = key[1 + sp];
+		selkey[i].spare2 = key[2 + sp];
 	}
 }
 

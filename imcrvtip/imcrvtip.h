@@ -68,7 +68,7 @@ typedef struct {	//変換位置指定
 } CONV_POINT;
 
 typedef struct {	//選択キー
-	WCHAR disp[2];	//表示
+	WCHAR disp[2 + 1];	//表示
 	WCHAR spare1;	//予備1
 	WCHAR spare2;	//予備2
 } SELKEY;

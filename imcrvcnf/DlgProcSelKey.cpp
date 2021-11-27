@@ -13,8 +13,8 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	LVITEMW item;
 	NMLISTVIEW *pListView;
 	int index;
-	WCHAR num[2] = {};
-	WCHAR key[4] = {};
+	WCHAR num[2 + 1] = {};
+	WCHAR key[4 + 1] = {};
 	std::wstring strxmlval;
 	WCHAR text[16] = {};
 
@@ -64,17 +64,23 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			if (strxmlval.empty()) strxmlval = listSelKey[index];
 			wcsncpy_s(key, strxmlval.c_str(), _TRUNCATE);
 
+			int sp = IS_SURROGATE_PAIR(key[0], key[1]) ? 1 : 0;
+
 			num[0] = key[0];
+			num[0 + sp] = key[sp];
+			num[1 + sp] = L'\0';
 			item.pszText = num;
 			item.iItem = index;
 			item.iSubItem = 1;
 			ListView_SetItem(hWndListView, &item);
-			num[0] = key[1];
+			num[0] = key[1 + sp];
+			num[1] = L'\0';
 			item.pszText = num;
 			item.iItem = index;
 			item.iSubItem = 2;
 			ListView_SetItem(hWndListView, &item);
-			num[0] = key[2];
+			num[0] = key[2 + sp];
+			num[1] = L'\0';
 			item.pszText = num;
 			item.iItem = index;
 			item.iSubItem = 3;
@@ -107,12 +113,16 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				{
 					break;
 				}
+				int sp = IS_SURROGATE_PAIR(num[0], num[1]) ? 1 : 0;
+				num[1 + sp] = L'\0';
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 				ListView_SetItemText(hWndListView, index, 1, num);
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num, _countof(num));
+				num[1] = L'\0';
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num);
 				ListView_SetItemText(hWndListView, index, 2, num);
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num, _countof(num));
+				num[1] = L'\0';
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num);
 				ListView_SetItemText(hWndListView, index, 3, num);
 
@@ -168,19 +178,22 @@ void SaveSelKey(IXmlWriter *pWriter, HWND hDlg)
 {
 	HWND hWndListView;
 	int index;
-	WCHAR num[2] = {};
-	WCHAR key[4] = {};
+	WCHAR num[2 + 1] = {};
+	WCHAR key[4 + 1] = {};
 
 	hWndListView = GetDlgItem(hDlg, IDC_LIST_SELKEY);
 	for (index = 0; index < MAX_SELKEY_C; index++)
 	{
 		ListView_GetItemText(hWndListView, index, 1, num, _countof(num));
+		int sp = IS_SURROGATE_PAIR(num[0], num[1]) ? 1 : 0;
 		key[0] = num[0];
+		key[0 + sp] = num[0 + sp];
 		ListView_GetItemText(hWndListView, index, 2, num, _countof(num));
-		key[1] = num[0];
+		key[1 + sp] = num[0];
 		ListView_GetItemText(hWndListView, index, 3, num, _countof(num));
-		key[2] = num[0];
-		key[3] = L'\0';
+		key[2 + sp] = num[0];
+		key[3 + sp] = L'\0';
+
 		_snwprintf_s(num, _TRUNCATE, L"%d", index + 1);
 		WriterKey(pWriter, num, key);
 	}

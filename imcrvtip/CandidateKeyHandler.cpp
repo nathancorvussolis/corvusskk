@@ -157,12 +157,13 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 		for (i = 0; i < MAX_SELKEY_C; i++)
 		{
-			WCHAR dsp = _pTextService->selkey[i].disp[0];
+			WCHAR dsph = _pTextService->selkey[i].disp[0];
+			WCHAR dspl = _pTextService->selkey[i].disp[1];
 			WCHAR sp1 = _pTextService->selkey[i].spare1;
 			WCHAR sp2 = _pTextService->selkey[i].spare2;
 
 			if (ch == (L'1' + i) ||
-				(ch != L'\0' && (ch == dsp || ch == sp1 || ch == sp2)))
+				(ch != L'\0' && ((ch == dsph && dspl == L'\0') || ch == sp1 || ch == sp2)))
 			{
 				GetCurrentPage(&page);
 				if (i < _CandCount[page])
