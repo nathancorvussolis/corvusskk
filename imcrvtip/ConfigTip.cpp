@@ -35,6 +35,7 @@ static const struct {
 	{SKK_RIGHT,		ValueKeyMapRight},
 	{SKK_DOWN,		ValueKeyMapDown},
 	{SKK_PASTE,		ValueKeyMapPaste},
+	{SKK_RECONVERT,	ValueKeyMapReconvert},
 	{SKK_NULL,		L""}
 };
 
@@ -496,6 +497,7 @@ void CTextService::_LoadCKeyMap()
 		case SKK_RIGHT:
 		case SKK_DOWN:
 		case SKK_PASTE:
+		case SKK_RECONVERT:
 			for (WCHAR ch = 0x01; ch < CKEYMAPNUM; ch++)
 			{
 				key[0] = ch;
@@ -619,6 +621,7 @@ void CTextService::_LoadVKeyMap()
 		case SKK_RIGHT:
 		case SKK_DOWN:
 		case SKK_PASTE:
+		case SKK_RECONVERT:
 			for (int j = 0; j < _countof(pkeymaps); j++)
 			{
 				for (WCHAR ch = 0x01; ch < VKEYMAPNUM; ch++)

@@ -48,6 +48,7 @@ enum InputMode
 #define SKK_RIGHT		0x06	// 右移動		c-f	VK_RIGHT
 #define SKK_DOWN		0x05	// 末尾移動		c-e	VK_DOWN
 #define SKK_PASTE		0x19	// 貼付			c-y	(c-v)
+#define SKK_RECONVERT	0x1C	// 再変換		VK_CONVERT
 
 typedef struct {	//キー設定(文字)
 	BYTE keylatin[CKEYMAPNUM];	//全英/アスキー

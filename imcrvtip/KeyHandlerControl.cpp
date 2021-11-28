@@ -1029,6 +1029,15 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				CloseClipboard();
 			}
 		}
+		return S_OK;
+		break;
+
+	case SKK_RECONVERT:
+		if (!inputkey && !showentry)
+		{
+			_Reconv(ec, pContext);
+			return S_OK;
+		}
 		break;
 
 	default:

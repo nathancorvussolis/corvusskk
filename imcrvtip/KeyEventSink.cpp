@@ -48,6 +48,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		switch (sf)
 		{
 		case SKK_JMODE:
+		case SKK_RECONVERT:
 			return TRUE;
 			break;
 		default:
@@ -64,6 +65,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		case SKK_JLATIN:
 		case SKK_ASCII:
 		case SKK_ABBREV:
+		case SKK_RECONVERT:
 			return TRUE;
 			break;
 		case SKK_DIRECT:
@@ -83,6 +85,7 @@ BOOL CTextService::_IsKeyEaten(ITfContext *pContext, WPARAM wParam)
 		case SKK_CONV_CHAR:
 		case SKK_JLATIN:
 		case SKK_ASCII:
+		case SKK_RECONVERT:
 			return TRUE;
 			break;
 		case SKK_DIRECT:

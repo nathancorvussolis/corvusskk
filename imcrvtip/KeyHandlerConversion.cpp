@@ -1083,3 +1083,105 @@ void CTextService::_ConvOkuriRoman()
 		}
 	}
 }
+
+void CTextService::_Reconv(TfEditCookie ec, ITfContext *pContext)
+{
+	if (pContext == nullptr)
+	{
+		return;
+	}
+
+	TF_SELECTION tfSelection = {};
+	ULONG cFetched = 0;
+	if (FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
+	{
+		return;
+	}
+
+	CComPtr<ITfRange> pRangeSelection;
+	pRangeSelection.Attach(tfSelection.range);
+
+	if (cFetched != 1)
+	{
+		return;
+	}
+
+	CComPtr<ITfRange> pRange;
+	BOOL fConvertable = FALSE;
+	if (FAILED(QueryRange(pRangeSelection, &pRange, &fConvertable)) || !fConvertable)
+	{
+		return;
+	}
+
+	HWND hwnd = nullptr;
+	BOOL fEmpty = FALSE;
+	if (SUCCEEDED(pRange->IsEmpty(ec, &fEmpty)) && fEmpty)
+	{
+		CComPtr<ITfContextView> pContextView;
+		if (SUCCEEDED(pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
+		{
+			pContextView->GetWnd(&hwnd);
+		}
+	}
+
+	if (hwnd != nullptr)
+	{
+		DWORD size = (DWORD)SendMessageW(hwnd, WM_IME_REQUEST, IMR_RECONVERTSTRING, 0);
+
+		if (size > sizeof(RECONVERTSTRING))
+		{
+			CComHeapPtr<BYTE> rsbuf;
+			rsbuf.Allocate(size);
+
+			PRECONVERTSTRING rs = reinterpret_cast<PRECONVERTSTRING>((PBYTE)rsbuf);
+			rs->dwSize = size;
+			rs->dwVersion = 0;
+
+			size = (DWORD)SendMessageW(hwnd, WM_IME_REQUEST, IMR_RECONVERTSTRING, reinterpret_cast<LPARAM>(rs));
+
+			if (size > sizeof(RECONVERTSTRING))
+			{
+				DWORD ofs = rs->dwStrOffset + rs->dwCompStrOffset;
+				DWORD len = rs->dwCompStrLen;
+
+				if ((ofs + len) <= size)
+				{
+					CComBSTR text;
+
+					if (IsWindowUnicode(hwnd))
+					{
+						text = CComBSTR(len, reinterpret_cast<PWCHAR>(&rsbuf[ofs]));
+					}
+					else
+					{
+						int wlen = MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS,
+							reinterpret_cast<LPCCH>(&rsbuf[ofs]), len, nullptr, 0);
+
+						if (wlen > 0)
+						{
+							CComHeapPtr<WCHAR> wbuf;
+							wbuf.Allocate(wlen);
+
+							if (MultiByteToWideChar(CP_ACP, MB_ERR_INVALID_CHARS,
+								reinterpret_cast<LPCCH>(&rsbuf[ofs]), len, wbuf, wlen) > 0)
+							{
+								text = CComBSTR(wlen, wbuf);
+							}
+						}
+					}
+
+					if (text.Length() > 0)
+					{
+						pRange->SetText(ec, 0, text, text.Length());
+					}
+				}
+			}
+		}
+	}
+
+	fEmpty = TRUE;
+	if (SUCCEEDED(pRange->IsEmpty(ec, &fEmpty)) && !fEmpty)
+	{
+		Reconvert(pRange);
+	}
+}

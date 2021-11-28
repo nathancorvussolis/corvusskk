@@ -513,9 +513,9 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 各機能に対してキーを正規表現で設定してください。
 
-Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用しています。
+Visual C++ 2022 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-160
+正規表現の詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-170
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -572,6 +572,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 | 右移動     | Ctrl + f                      |  |
 | 末尾移動   | Ctrl + e                      |  |
 | 貼付       | Ctrl + y  Ctrl + v            | クリップボードの文字列を貼り付け |
+| 再変換     |                               | 選択された文字列でユーザー辞書の送りなしエントリを<br>逆引きしてから通常の辞書検索 |
 
   キー設定（仮想キー）
 
@@ -603,6 +604,7 @@ Visual C++ 2019 の 正規表現で、文法は ECMAScript を使用していま
 | 右移動     | 0x27 (カーソル右)             |  |
 | 末尾移動   | 0x28 (カーソル下)             |  |
 | 貼付       |                               | クリップボードの文字列を貼り付け |
+| 再変換     |                               | 選択された文字列でユーザー辞書の送りなしエントリを<br>逆引きしてから通常の辞書検索 |
 
 
 ### 変換位置指定
@@ -807,7 +809,7 @@ skk-omikuji 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/in
 
 skk-strftime 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-strftime.txt
 
-strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-160
+strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-170
 
 
 ### 数値変換
