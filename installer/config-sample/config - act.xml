@@ -151,6 +151,7 @@
     <key name="right" value="\cf" />
     <key name="down" value="\ce" />
     <key name="paste" value="\cy|\cv" />
+    <key name="reconvert" value="" />
   </section>
   <section name="vkeymap">
     <key name="kana" value="" />
@@ -179,6 +180,7 @@
     <key name="right" value="\x27" />
     <key name="down" value="\x28" />
     <key name="paste" value="" />
+    <key name="reconvert" value="" />
   </section>
   <section name="convpoint">
     <list>
