@@ -88,35 +88,14 @@ extern const BOOL c_daDisplayAttributeSeries[DISPLAYATTRIBUTE_INFO_NUM];
 
 BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD dwBuildNumber);
 // Windows 8
+//  supports new guidelines
 #define IsWindowsVersion62OrLater() IsWindowsVersionOrLater(6, 2, 0)
 // Windows 8.1
+//  supports Direct2D color fonts
 #define IsWindowsVersion63OrLater() IsWindowsVersionOrLater(6, 3, 0)
-//// Windows 10
-//#define IsWindowsVersion100OrLater() IsWindowsVersionOrLater(10, 0, 0)
-//// Windows 10 ver.1507 Threshold 1 Released in July 2015
-//#define IsWindowsVersion100TH1OrLater() IsWindowsVersionOrLater(10, 0, 10240)
-//// Windows 10 ver.1511 Threshold 2 November Update
-//#define IsWindowsVersion100TH2OrLater() IsWindowsVersionOrLater(10, 0, 10586)
-//// Windows 10 ver.1607 Redstone 1 Anniversary Update
-//#define IsWindowsVersion100RS1OrLater() IsWindowsVersionOrLater(10, 0, 14393)
 // Windows 10 ver.1703 Redstone 2 Creators Update
+//  supports Per-Monitor DPI Awareness V2
 #define IsWindowsVersion100RS2OrLater() IsWindowsVersionOrLater(10, 0, 15063)
-//// Windows 10 ver.1709 Redstone 3 Fall Creators Update
-//#define IsWindowsVersion100RS3OrLater() IsWindowsVersionOrLater(10, 0, 16299)
-//// Windows 10 ver.1803 Redstone 4 April 2018 Update
-//#define IsWindowsVersion100RS4OrLater() IsWindowsVersionOrLater(10, 0, 17134)
-//// Windows 10 ver.1809 Redstone 5 October 2018 Update
-//#define IsWindowsVersion100RS5OrLater() IsWindowsVersionOrLater(10, 0, 17763)
-//// Windows 10 ver.1903 19H1 May 2019 Update
-//#define IsWindowsVersion10019H1OrLater() IsWindowsVersionOrLater(10, 0, 18362)
-//// Windows 10 ver.1909 19H2 November 2019 Update
-//#define IsWindowsVersion10019H2OrLater() IsWindowsVersionOrLater(10, 0, 18363)
-//// Windows 10 ver.2004 20H1 May 2020 Update
-//#define IsWindowsVersion10020H1OrLater() IsWindowsVersionOrLater(10, 0, 19041)
-//// Windows 10 ver.20H2 October 2020 Update
-//#define IsWindowsVersion10020H2OrLater() IsWindowsVersionOrLater(10, 0, 19042)
-//// Windows 10 ver.21H1 May 2021 Update
-//#define IsWindowsVersion10021H1OrLater() IsWindowsVersionOrLater(10, 0, 19043)
 
 #define C_USER_DEFAULT_SCREEN_DPI	96
 #define C_FONT_LOGICAL_HEIGHT_PPI	72
