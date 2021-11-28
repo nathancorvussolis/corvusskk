@@ -66,15 +66,15 @@
     <DirectoryRef Id="IMCRVSKK_X64">
       <Component Id="MSVCP140_X64" Guid="DA3EBA0A-0AEB-4760-96D8-5CA03DFD6FE2" Win64="yes">
         <File Id="F_msvcp140_x64" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC142.CRT\msvcp140.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\msvcp140.dll" KeyPath="yes" />
       </Component>
       <Component Id="VCRUNTIME140_X64" Guid="1C447C62-3036-4A44-BD66-649EAA2A31C8" Win64="yes">
         <File Id="F_vcruntime140_x64" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC142.CRT\vcruntime140.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140.dll" KeyPath="yes" />
       </Component>
       <Component Id="VCRUNTIME140_1_X64" Guid="360E0C73-7555-413C-AE3D-2E943CF1A382" Win64="yes">
         <File Id="F_vcruntime140_1_x64" Name="vcruntime140_1.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC142.CRT\vcruntime140_1.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140_1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 

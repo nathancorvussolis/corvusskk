@@ -932,21 +932,21 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2019 16.11.7
+Visual Studio Community 2022 17.0.1
 
 * Desktop development with C++
 
 * Indivisual components
     * Compilers, build tools, and runtimes
-        * MSVC v142 - VS 2019 C++ x64/x86 build tools (Latest)
-        * MSVC v142 - VS 2019 C++ ARM build tools (Latest)
-        * MSVC v142 - VS 2019 C++ ARM64 build tools (Latest)
-        * MSVC v142 - VS 2019 C++ ARM64EC build tools (Latest - experimental)
+        * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
+        * MSVC v143 - VS 2022 C++ ARM build tools (Latest)
+        * MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)
+        * MSVC v143 - VS 2022 C++ ARM64EC build tools (Latest - experimental)
     * SDKs, libraries, and frameworks
-        * C++ ATL for latest v142 build tools (x86 & x64)
-        * C++ ATL for latest v142 build tools (ARM)
-        * C++ ATL for latest v142 build tools (ARM64)
-        * C++ ATL for latest v142 build tools (ARM64EC - experimental)
+        * C++ ATL for latest v143 build tools (x86 & x64)
+        * C++ ATL for latest v143 build tools (ARM)
+        * C++ ATL for latest v143 build tools (ARM64)
+        * C++ ATL for latest v143 build tools (ARM64EC - experimental)
         * Windows 11 SDK (10.0.22000.0)
 
 WiX Toolset v3.11.2
