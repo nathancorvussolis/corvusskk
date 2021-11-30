@@ -27,20 +27,16 @@ set MSIFILES=%MSIFILES% "%TARGETDIR%\x64.msi"
 rem ARM
 set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
 
-rem x86/x64
+rem bundle
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
 
-rem ARM
-set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
-set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
 
 
-
-signtool verify /all /v /d /pa /tw %BINFILES% %MSIFILES% %BEFILE% %BSFILE% %ARMBEFILE% %ARMBSFILE%
+signtool verify /all /v /d /pa /tw %BINFILES% %MSIFILES% %BEFILE% %BSFILE%
 
 set SIGNCOUNT=0
-for %%i in (%BINFILES% %MSIFILES% %BEFILE% %BSFILE% %ARMBEFILE% %ARMBSFILE%) do set /a "SIGNCOUNT = SIGNCOUNT + 1"
+for %%i in (%BINFILES% %MSIFILES% %BEFILE% %BSFILE%) do set /a "SIGNCOUNT = SIGNCOUNT + 1"
 
 echo;
 echo     %SIGNCOUNT% signatures in all.

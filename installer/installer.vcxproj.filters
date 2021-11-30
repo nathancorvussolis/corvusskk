@@ -93,9 +93,6 @@
     <None Include="installer-bundle.wxs">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="installer-bundle-arm.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="installer-bundle-ucrt.wxi">
       <Filter>Installer Files</Filter>
     </None>

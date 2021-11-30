@@ -36,13 +36,9 @@ set MSIFILES=%MSIFILES% "%TARGETDIR%\x64.msi"
 rem ARM
 set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
 
-rem x86/x64
+rem bundle
 set BEFILE="%TARGETDIR%\engine.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
-
-rem ARM
-set ARMBEFILE="%TARGETDIR%\engine-arm.exe"
-set ARMBSFILE="%TARGETDIR%\corvusskk-%VERSION%-arm.exe"
 
 set SIGNCOMMAND=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH% /fd sha256 /tr %TIMESTAMPSERVER% /td sha256
 
@@ -58,21 +54,15 @@ call _build_msi.cmd
 
 call _build_bundle.cmd
 
-rem x86/x64
+rem extract engine
 "%WIX%\bin\insignia.exe" -nologo -ib %BSFILE% -o %BEFILE%
 
-rem ARM
-"%WIX%\bin\insignia.exe" -nologo -ib %ARMBSFILE% -o %ARMBEFILE%
+%SIGNCOMMAND% %BEFILE%
 
-%SIGNCOMMAND% %BEFILE% %ARMBEFILE%
-
-rem x86/x64
+rem reattach engine
 "%WIX%\bin\insignia.exe" -nologo -ab %BEFILE% %BSFILE% -o %BSFILE%
 
-rem ARM
-"%WIX%\bin\insignia.exe" -nologo -ab %ARMBEFILE% %ARMBSFILE% -o %ARMBSFILE%
-
-%SIGNCOMMAND% %BSFILE% %ARMBSFILE%
+%SIGNCOMMAND% %BSFILE%
 
 
 

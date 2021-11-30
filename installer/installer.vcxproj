@@ -51,7 +51,6 @@
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
     <None Include="installer-arm.wxs" />
-    <None Include="installer-bundle-arm.wxs" />
     <None Include="installer-bundle.wxs" />
     <None Include="installer-bundle-ucrt.wxi" />
     <None Include="installer-version.wxi" />

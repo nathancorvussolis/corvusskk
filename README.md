@@ -13,7 +13,7 @@
 * Windows Vista (32-bit / 64-bit)
 
     * Service Pack 2
-    * プラットフォーム更新プログラム ( [KB971644](https://support.microsoft.com/en-us/kb/971644) または [KB971512](https://support.microsoft.com/en-us/kb/971512) )
+    * プラットフォーム更新プログラム ( KB971644 または KB971512 )
 
 * Windows 7     (32-bit / 64-bit)
 
@@ -23,7 +23,7 @@
 
 * Windows 8.1   (32-bit / 64-bit)
 
-    * S14 Update ( [KB2919355](https://support.microsoft.com/en-us/kb/2919355) )
+    * S14 Update ( KB2919355 )
 
 * Windows 10    (32-bit / 64-bit / ARM)
 
@@ -33,8 +33,6 @@
 ### インストール
 
 corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン番号)
-
-ARM 版 Windows では corvusskk-X.Y.Z-arm.exe を実行してください。
 
 アップデートの後はOSを再起動しておくと安全です。
 
