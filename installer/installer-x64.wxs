@@ -27,7 +27,7 @@
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="System64Folder" Name="System64">
+      <Directory Id="System64Folder" Name="System32">
         <Directory Id="IME_X64" Name="IME">
           <Directory Id="IMCRVSKK_X64" Name="IMCRVSKK" />
         </Directory>
