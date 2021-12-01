@@ -33,12 +33,12 @@
     <!-- ARM32 : %windir%\SysArm32 -->
     <!-- x86   : %windir%\SysWOW64 -->
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="WindowsFolder" Name="Windows">
-        <Directory Id="SYSTEM64BIT" Name="System32">
-          <Directory Id="IME_ARM64" Name="IME">
-            <Directory Id="IMCRVSKK_ARM64" Name="IMCRVSKK" />
-          </Directory>
+      <Directory Id="System64Folder" Name="System64">
+        <Directory Id="IME_ARM64" Name="IME">
+          <Directory Id="IMCRVSKK_ARM64" Name="IMCRVSKK" />
         </Directory>
+      </Directory>
+      <Directory Id="WindowsFolder" Name="Windows">
         <Directory Id="SYSTEM32BIT" Name="SysArm32">
           <Directory Id="IME_ARM32" Name="IME">
             <Directory Id="IMCRVSKK_ARM32" Name="IMCRVSKK" />

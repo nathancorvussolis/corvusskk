@@ -27,7 +27,7 @@
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="SystemFolder" Name="System32">
+      <Directory Id="SystemFolder" Name="System">
         <Directory Id="IME_X86" Name="IME">
           <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
         </Directory>

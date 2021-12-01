@@ -932,7 +932,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.0.1
+Visual Studio Community 2022 17.0.2
 
 * Desktop development with C++
 
