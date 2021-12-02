@@ -39,7 +39,7 @@
         </Directory>
       </Directory>
       <Directory Id="WindowsFolder" Name="Windows">
-        <Directory Id="SYSTEM32BIT" Name="SysArm32">
+        <Directory Id="SYSTEMFOLDER_ARM32" Name="SysArm32">
           <Directory Id="IME_ARM32" Name="IME">
             <Directory Id="IMCRVSKK_ARM32" Name="IMCRVSKK" />
           </Directory>

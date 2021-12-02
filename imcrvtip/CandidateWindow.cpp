@@ -119,15 +119,19 @@ void CCandidateWindow::_UninitClass()
 LRESULT CALLBACK CCandidateWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CCandidateWindow *pCandidateWindow = nullptr;
+	LPCREATESTRUCTW pCreate;
+	LONG_PTR ptr;
 
 	switch (uMsg)
 	{
 	case WM_NCCREATE:
-		pCandidateWindow = (CCandidateWindow *)((LPCREATESTRUCTW)lParam)->lpCreateParams;
+		pCreate = reinterpret_cast<LPCREATESTRUCTW>(lParam);
+		pCandidateWindow = reinterpret_cast<CCandidateWindow *>(pCreate->lpCreateParams);
 		SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)pCandidateWindow);
 		break;
 	default:
-		pCandidateWindow = (CCandidateWindow *)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		ptr = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		pCandidateWindow = reinterpret_cast<CCandidateWindow *>(ptr);
 		break;
 	}
 

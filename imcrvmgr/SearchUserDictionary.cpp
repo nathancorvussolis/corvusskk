@@ -679,7 +679,7 @@ exit:
 
 unsigned __stdcall SaveUserDicThread(void *p)
 {
-	USERDATA *userdata = (USERDATA *)p;
+	USERDATA *userdata = reinterpret_cast<USERDATA *>(p);
 
 	if (userdata != nullptr)
 	{

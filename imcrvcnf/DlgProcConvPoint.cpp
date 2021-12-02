@@ -15,7 +15,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	int index, count;
 	WCHAR key[2] = {};
 	WCHAR keyBak[2] = {};
-	NMLISTVIEW *pListView;
+	LPNMLISTVIEW pListView;
 	WCHAR text[16] = {};
 
 	switch (message)
@@ -175,7 +175,7 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
-			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
+			pListView = (LPNMLISTVIEW)((LPNMHDR)lParam);
 			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;

@@ -330,15 +330,19 @@ void CInputModeWindow::_UninitClass()
 LRESULT CALLBACK CInputModeWindow::_WindowPreProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CInputModeWindow *pInputModeWindow = nullptr;
+	LPCREATESTRUCTW pCreate;
+	LONG_PTR ptr;
 
 	switch (uMsg)
 	{
 	case WM_NCCREATE:
-		pInputModeWindow = (CInputModeWindow *)((LPCREATESTRUCTW)lParam)->lpCreateParams;
+		pCreate = reinterpret_cast<LPCREATESTRUCTW>(lParam);
+		pInputModeWindow = reinterpret_cast<CInputModeWindow *>(pCreate->lpCreateParams);
 		SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)pInputModeWindow);
 		break;
 	default:
-		pInputModeWindow = (CInputModeWindow *)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		ptr = GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+		pInputModeWindow = reinterpret_cast<CInputModeWindow *>(ptr);
 		break;
 	}
 

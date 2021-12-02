@@ -11,7 +11,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	HWND hWndListView;
 	LV_COLUMNW lvc;
 	LVITEMW item;
-	NMLISTVIEW *pListView;
+	LPNMLISTVIEW pListView;
 	int index;
 	WCHAR num[2 + 1] = {};
 	WCHAR key[4 + 1] = {};
@@ -139,7 +139,7 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
-			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
+			pListView = (LPNMLISTVIEW)((LPNMHDR)lParam);
 			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;

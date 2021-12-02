@@ -283,18 +283,19 @@ BOOL IsFileModified(LPCWSTR path, FILETIME *ft)
 {
 	BOOL ret = FALSE;
 	HANDLE hFile;
-	FILETIME ftn;
+	FILETIME ftN;
 
 	if (path != nullptr && ft != nullptr)
 	{
 		hFile = CreateFileW(path, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 		if (hFile != INVALID_HANDLE_VALUE)
 		{
-			if (GetFileTime(hFile, nullptr, nullptr, &ftn))
+			if (GetFileTime(hFile, nullptr, nullptr, &ftN))
 			{
-				if (((ULARGE_INTEGER *)ft)->QuadPart != ((ULARGE_INTEGER *)&ftn)->QuadPart)
+				if ((ft->dwLowDateTime != ftN.dwLowDateTime) ||
+					(ft->dwHighDateTime != ftN.dwHighDateTime))
 				{
-					*ft = ftn;
+					*ft = ftN;
 					ret = TRUE;
 				}
 			}

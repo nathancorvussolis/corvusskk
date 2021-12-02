@@ -144,7 +144,7 @@ BOOL RegisterServer()
 		return FALSE;
 	}
 
-	if (RegSetValueExW(hKey, nullptr, 0, REG_SZ, (BYTE *)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hKey, nullptr, 0, REG_SZ, (CONST LPBYTE)TextServiceDesc, (DWORD)(wcslen(TextServiceDesc) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit;
 	}
@@ -157,12 +157,12 @@ BOOL RegisterServer()
 	ZeroMemory(fileName, sizeof(fileName));
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
-	if (RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (BYTE *)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (CONST LPBYTE)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit_sub;
 	}
 
-	if (RegSetValueExW(hSubKey, c_szModelName, 0, REG_SZ, (BYTE *)TEXTSERVICE_MODEL, (DWORD)(wcslen(TEXTSERVICE_MODEL) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
+	if (RegSetValueExW(hSubKey, c_szModelName, 0, REG_SZ, (CONST LPBYTE)TEXTSERVICE_MODEL, (DWORD)(wcslen(TEXTSERVICE_MODEL) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
 	{
 		goto exit_sub;
 	}

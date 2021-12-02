@@ -24,7 +24,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 	int index, count;
 	WCHAR key[8] = {};
 	WCHAR keyBak[8] = {};
-	NMLISTVIEW *pListView;
+	LPNMLISTVIEW pListView;
 	WCHAR text[16] = {};
 
 	switch (message)
@@ -277,7 +277,7 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			break;
 
 		case LVN_ITEMCHANGED:
-			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
+			pListView = (LPNMLISTVIEW)((LPNMHDR)lParam);
 			if (pListView->uChanged & LVIF_STATE)
 			{
 				index = ListView_GetNextItem(hWndListView, -1, LVNI_SELECTED);

@@ -16,7 +16,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	int index, count;
 	ASCII_JLATIN_CONV ajc;
 	ASCII_JLATIN_CONV ajcBak;
-	NMLISTVIEW *pListView;
+	LPNMLISTVIEW pListView;
 	WCHAR text[16] = {};
 
 	switch (message)
@@ -147,7 +147,7 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		switch (((LPNMHDR)lParam)->code)
 		{
 		case LVN_ITEMCHANGED:
-			pListView = (NMLISTVIEW*)((LPNMHDR)lParam);
+			pListView = (LPNMLISTVIEW)((LPNMHDR)lParam);
 			if (pListView->uChanged & LVIF_STATE)
 			{
 				hWndListView = ((LPNMHDR)lParam)->hwndFrom;

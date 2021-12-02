@@ -216,10 +216,14 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
 
 		BYTE digest[dwDigestLen];
-		if (GetDigest(pszAlgId,
-			pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
+		if (GetDigest(pszAlgId, pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
 		{
-			GUID dguid = *(GUID *)digest;
+			GUID dguid = GUID_NULL;
+			dguid.Data1 = *(LONG *)&digest[0];
+			dguid.Data2 = *(USHORT *)&digest[4];
+			dguid.Data3 = *(USHORT *)&digest[6];
+			*(ULONGLONG *)dguid.Data4 = *(ULONGLONG *)&digest[8];
+
 			//local byte order
 			dguid.Data1 = ntohlc(dguid.Data1);
 			dguid.Data2 = ntohsc(dguid.Data2);
