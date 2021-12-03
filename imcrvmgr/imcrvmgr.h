@@ -100,6 +100,13 @@ extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR pathinitlua[MAX_PATH];		//init.lua
 extern WCHAR pathbackup[MAX_PATH];		//ユーザー辞書バックアップレフィックス
 
+extern WCHAR radconfigxml[MAX_PATH];	//設定 FOLDERID_RoamingAppData
+extern WCHAR sysconfigxml[MAX_PATH];	//設定 FOLDERID_Windows\IME
+extern INT csidlconfigxml;				//設定 CSIDL_APPDATA/CSIDL_WINDOWS
+extern WCHAR radskkdic[MAX_PATH];		//取込SKK辞書 FOLDERID_RoamingAppData
+extern WCHAR sysskkdic[MAX_PATH];		//取込SKK辞書 FOLDERID_Windows\IME
+extern INT csidlskkdic;					//取込SKK辞書 CSIDL_APPDATA/CSIDL_WINDOWS
+
 extern WCHAR krnlobjsddl[MAX_SECURITYDESC];	//SDDL
 extern WCHAR mgrpipename[MAX_PIPENAME];		//名前付きパイプ
 extern WCHAR mgrmutexname[MAX_PATH];		//ミューテックス
