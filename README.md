@@ -978,7 +978,7 @@ pandoc 2.16.2
 
 ---
 
-Copyright (C) 2011-2021 SASAKI Nobuyuki
+Copyright (C) 2011-2022 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 

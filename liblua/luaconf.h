@@ -782,7 +782,7 @@
 #include "lu8w.h"
 
 
-/* strftime function options for Visual Studio 2019 */
+/* strftime function options for Visual Studio 2022 */
 #define LUA_STRFTIMEOPTIONS \
     "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%" \
     "||" "#a#A#b#B#g#G#h#n#p#t#u#w#X#z#Z#%" \
