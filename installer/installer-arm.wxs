@@ -130,13 +130,14 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 
+    <!-- Some processors do not support AArch32. The return code will not be checked. -->
     <CustomAction Id="REGARM32DLL"
       Directory="IMCRVSKK_ARM32"
-      Execute="deferred" Impersonate="no"
+      Execute="deferred" Impersonate="no" Return="ignore"
       ExeCommand="regsvr32 /s [#F_imcrvtip_arm32]" />
     <CustomAction Id="UNREGARM32DLL"
       Directory="IMCRVSKK_ARM32"
-      Execute="deferred" Impersonate="no"
+      Execute="deferred" Impersonate="no" Return="ignore"
       ExeCommand="regsvr32 /s /u [#F_imcrvtip_arm32]" />
 
     <InstallExecuteSequence>
