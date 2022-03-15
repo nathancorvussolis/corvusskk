@@ -3,6 +3,7 @@
 ;;
 ;; okuri-ari entries.
 ;; okuri-nasi entries.
+datetime /(skk-strftime "!%Y%m%dT%H%M%SZ")/(skk-strftime "%Y%m%dT%H%M%S%z")/
 いま /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒")/
 #びょうご /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "sec" #0)/
 #びょうまえ /(skk-strftime "%Y年%#m月%#d日(%a) %#H時%#M分%#S秒" "sec" -#0)/
