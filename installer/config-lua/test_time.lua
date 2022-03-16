@@ -112,6 +112,13 @@ el_test_time_table = {
 
 {"いま",		"(format-time-string \"%H時%M分\" (current-time))"},
 {"いま",		"(format-time-string \"%p%I時%M分\" (current-time))"},
+
+{"Basic UTC",		"(skk-strftime \"!%Y%m%dT%H%M%SZ\")"},
+{"Basic Loc",		"(skk-strftime \"%Y%m%dT%H%M%S%z\")"},
+
+{"Extended UTC",	"(skk-strftime \"!%FT%TZ\")"},
+{"Extended Loc",	"(concat (skk-strftime \"%FT%T\") (substring (skk-strftime \"%z\") 0 3) \":\" (substring (skk-strftime \"%z\") 3 5))"},
+
 }
 
 
