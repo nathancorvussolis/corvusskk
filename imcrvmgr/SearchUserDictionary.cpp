@@ -142,13 +142,15 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 
 		ParseSKKDicCandiate(candidate, scc);
 
-		int i = 0;
+		int cnt = 0;
 		FORWARD_ITERATION_I(scc_itr, scc)
 		{
-			if (max <= i++)
+			if (max <= cnt)
 			{
 				break;
 			}
+
+			++cnt;
 
 			conv = ConvertCandidate(sc_itr->first, scc_itr->first, L"");
 			if (conv.empty())
@@ -162,7 +164,7 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 		{
 			sc_itr->second += L"/";
 
-			if (i < (int)scc.size())
+			if (cnt < (int)scc.size())
 			{
 				sc_itr->second += L"…";
 			}
