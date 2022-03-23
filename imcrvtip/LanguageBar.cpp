@@ -633,7 +633,7 @@ BOOL CTextService::_InitLanguageBar()
 		}
 	}
 
-	return (fRet && fRetI);
+	return ((fRet && fRetI) ? TRUE : FALSE);
 }
 
 void CTextService::_UninitLanguageBar()

@@ -82,7 +82,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		LoadCheckButton(hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, SectionUserDict, ValuePrivateModeAuto, L"1");
 
 		bkcnfSaved = TRUE;
-		EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+		EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), ((bkcnfSaved && mgrprocRun) ? TRUE : FALSE));
 
 		return TRUE;
 
@@ -97,7 +97,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			SetDlgItemTextW(hDlg, IDC_MGR_STATUS_TEXT, (running ? L"実行中" : L"終了状態"));
 
 			mgrprocRun = running;
-			EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+			EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), ((bkcnfSaved && mgrprocRun) ? TRUE : FALSE));
 
 			return TRUE;
 		}
@@ -165,7 +165,7 @@ INT_PTR CALLBACK DlgProcDictionary2(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				case IDC_EDIT_USERDICBACKUPGEN:
 				case IDC_EDIT_USERDICBACKUPDIR:
 					bkcnfSaved = FALSE;
-					EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+					EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), ((bkcnfSaved && mgrprocRun) ? TRUE : FALSE));
 					break;
 				default:
 					break;
@@ -317,7 +317,7 @@ void SaveDictionary2(IXmlWriter *pWriter, HWND hDlg)
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRIVATEMODE_AUTO, ValuePrivateModeAuto);
 
 	bkcnfSaved = TRUE;
-	EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), (bkcnfSaved && mgrprocRun));
+	EnableWindow(GetDlgItem(hDlg, IDC_BUTTON_RUN_BACKUP), ((bkcnfSaved && mgrprocRun) ? TRUE : FALSE));
 }
 
 BOOL ConnectDic()

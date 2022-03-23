@@ -608,5 +608,8 @@ void CTextService::_GetActiveFlags()
 		_UILessMode = TRUE;
 	}
 
-	_ShowInputMode = cx_showmodeinl && !_UILessMode;
+	if (cx_showmodeinl && !_UILessMode)
+	{
+		_ShowInputMode = TRUE;
+	}
 }
