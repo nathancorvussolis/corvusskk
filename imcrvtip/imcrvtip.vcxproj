@@ -615,6 +615,7 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
     <ClCompile Include="ThreadMgrEventSink.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="imcrvtip.def" />
   </ItemGroup>
   <ItemGroup>

@@ -157,9 +157,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imcrvtip.def">
-      <Filter>Resource Files</Filter>
-    </None>
+    <None Include="cpp.hint" />
+    <None Include="imcrvtip.def" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvtip.rc">

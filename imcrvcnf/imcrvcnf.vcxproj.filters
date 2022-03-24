@@ -102,4 +102,7 @@
       <Filter>Resource Files</Filter>
     </Manifest>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
 </Project>
