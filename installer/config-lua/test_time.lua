@@ -103,15 +103,17 @@ el_test_time_table = {
 {"あした！",	"(skk-relative-date nil nil nil :dd 1)"},
 {"きのう！",	"(skk-relative-date nil nil nil :dd -1)"},
 
+{"きょう",		"(format-time-string \"%Y年%#m月%#d日(%a)\")"},
+{"きょう",		"(format-time-string \"%Y年%#m月%#d日(%a)\" (current-time))"},
+{"あした",		"(format-time-string \"%Y年%#m月%#d日(%a)\" (+ (current-time) 86400))"},
+{"きのう",		"(format-time-string \"%Y年%#m月%#d日(%a)\" (- (current-time) 86400))"},
+
 {"あした",		"(skk-strftime \"%Y年%#m月%#d日(%a)\" \"day\" 1)"},
 {"きのう",		"(skk-strftime \"%Y年%#m月%#d日(%a)\" \"day\" -1)"},
 {"にちじ",		"(skk-strftime \"%x %X\")"},
+{"にちじ",		"(skk-strftime \"%#x %#X\")"},
+{"にちじ",		"(skk-strftime \"%c\")"},
 {"にちじ",		"(skk-strftime \"%#c\")"},
-{"こんげつ",		"(skk-strftime \"%B\")"},
-{"ようび",		"(skk-strftime \"%A\")"},
-
-{"いま",		"(format-time-string \"%H時%M分\" (current-time))"},
-{"いま",		"(format-time-string \"%p%I時%M分\" (current-time))"},
 
 {"Basic UTC",		"(skk-strftime \"!%Y%m%dT%H%M%SZ\")"},
 {"Basic Loc",		"(skk-strftime \"%Y%m%dT%H%M%S%z\")"},
