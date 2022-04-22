@@ -14,19 +14,19 @@ void InitLua();
 void UninitLua();
 
 // lcrvmgr
-int lua_search_skk_dictionary(lua_State *lua);
-int lua_search_user_dictionary(lua_State *lua);
-int lua_search_skk_server(lua_State *lua);
-int lua_search_skk_server_info(lua_State *lua);
-int lua_search_unicode(lua_State *lua);
-int lua_search_jisx0213(lua_State *lua);
-int lua_search_jisx0208(lua_State *lua);
-int lua_search_character_code(lua_State *lua);
-int lua_complement(lua_State *lua);
-int lua_reverse(lua_State *lua);
-int lua_add(lua_State *lua);
-int lua_delete(lua_State *lua);
-int lua_save(lua_State *lua);
+int lua_search_skk_dictionary(lua_State *L);
+int lua_search_user_dictionary(lua_State *L);
+int lua_search_skk_server(lua_State *L);
+int lua_search_skk_server_info(lua_State *L);
+int lua_search_unicode(lua_State *L);
+int lua_search_jisx0213(lua_State *L);
+int lua_search_jisx0208(lua_State *L);
+int lua_search_character_code(lua_State *L);
+int lua_complement(lua_State *L);
+int lua_reverse(lua_State *L);
+int lua_add(lua_State *L);
+int lua_delete(lua_State *L);
+int lua_save(lua_State *L);
 
 // SearchCharacter
 std::wstring SearchUnicode(const std::wstring &searchkey);

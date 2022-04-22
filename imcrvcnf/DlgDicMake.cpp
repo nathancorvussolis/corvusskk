@@ -578,20 +578,20 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 	{
 		while (true)
 		{
-			int len = gzread(gzf, buf, GZBUFSIZE);
+			int rlen = gzread(gzf, buf, GZBUFSIZE);
 
-			if (len == 0)
+			if (rlen == 0)
 			{
 				ret = S_OK;
 				break;
 			}
-			else if (len < 0)
+			else if (rlen < 0)
 			{
 				ret = E_MAKESKKDIC_UNGZIP;
 				break;
 			}
 
-			if (fwrite(buf, len, 1, fpo) != 1)
+			if (fwrite(buf, rlen, 1, fpo) != 1)
 			{
 				ret = E_MAKESKKDIC_UNGZIP;
 				break;
