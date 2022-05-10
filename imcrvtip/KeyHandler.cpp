@@ -7,21 +7,22 @@
 class CKeyHandlerEditSession : public CEditSessionBase
 {
 public:
-	CKeyHandlerEditSession(CTextService *pTextService, ITfContext *pContext, WPARAM wParam, BYTE bSf) : CEditSessionBase(pTextService, pContext)
+	CKeyHandlerEditSession(CTextService *pTextService, ITfContext *pContext, WPARAM wParam, BYTE bSf, WCHAR wCh) : CEditSessionBase(pTextService, pContext)
 	{
 		_wParam = wParam;
 		_bSf = bSf;
+		_wCh = wCh;
 	}
 
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
 #ifdef _DEBUG
-		_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf);
+		_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf, _wCh);
 #else
 		__try
 		{
-			_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf);
+			_pTextService->_HandleKey(ec, _pContext, _wParam, _bSf, _wCh);
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
 		{
@@ -35,17 +36,26 @@ public:
 private:
 	WPARAM _wParam;
 	BYTE _bSf;
+	WCHAR _wCh;
 };
 
 HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPARAM lParam, BYTE bSf)
 {
 	HRESULT hr = E_FAIL;
+	BYTE sf = bSf;
+	WCHAR ch = WCHAR_MAX;
+
+	if (bSf == SKK_NULL)
+	{
+		ch = _GetCh((BYTE)wParam);
+		sf = _GetSf((BYTE)wParam, ch);
+	}
 
 	try
 	{
 		CComPtr<ITfEditSession> pEditSession;
 		pEditSession.Attach(
-			new CKeyHandlerEditSession(this, pContext, wParam, bSf));
+			new CKeyHandlerEditSession(this, pContext, wParam, sf, ch));
 		pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_ASYNCDONTCARE | TF_ES_READWRITE, &hr);
 	}
 	catch (...)
@@ -55,22 +65,11 @@ HRESULT CTextService::_InvokeKeyHandler(ITfContext *pContext, WPARAM wParam, LPA
 	return hr;
 }
 
-HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf)
+HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM wParam, BYTE bSf, WCHAR wCh)
 {
-	BYTE sf;
-	WCHAR ch, chO = L'\0';
 	HRESULT hrc = E_ABORT;
-
-	if (bSf == SKK_NULL)
-	{
-		ch = _GetCh((BYTE)wParam);
-		sf = _GetSf((BYTE)wParam, ch);
-	}
-	else
-	{
-		ch = WCHAR_MAX;
-		sf = bSf;
-	}
+	BYTE sf = bSf;
+	WCHAR ch = wCh, chO = L'\0';
 
 	if (ch == L'\0' && sf == SKK_NULL)
 	{
@@ -525,9 +524,10 @@ BOOL CTextService::_IsKeyVoid(WCHAR ch, BYTE vk)
 {
 	if (vk < VKEYMAPNUM)
 	{
-		SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
-		SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
 		BYTE k = SKK_NULL;
+		BYTE vk_shift = keystate[VK_SHIFT] & 0x80;
+		BYTE vk_ctrl = keystate[VK_CONTROL] & 0x80;
+
 		if (vk_shift)
 		{
 			k = vkeymap_shift.keyvoid[vk];
@@ -540,6 +540,7 @@ BOOL CTextService::_IsKeyVoid(WCHAR ch, BYTE vk)
 		{
 			k = vkeymap.keyvoid[vk];
 		}
+
 		if (k == SKK_VOID)
 		{
 			return TRUE;

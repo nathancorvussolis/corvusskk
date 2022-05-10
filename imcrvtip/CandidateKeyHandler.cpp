@@ -5,7 +5,7 @@
 #include "CandidateWindow.h"
 #include "InputModeWindow.h"
 
-HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
+HRESULT CCandidateWindow::_OnKeyDown(WPARAM wParam)
 {
 	UINT i, page, index;
 	WCHAR ch;
@@ -13,17 +13,17 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 
 	if (_pCandidateWindow != nullptr && !_preEnd)
 	{
-		return _pCandidateWindow->_OnKeyDown(uVKey);
+		return _pCandidateWindow->_OnKeyDown(wParam);
 	}
 
 	//辞書登録モード
 	if (_regmode)
 	{
-		_OnKeyDownRegword(uVKey);
+		_OnKeyDownRegword(wParam);
 		return S_OK;
 	}
 
-	_GetChSf(uVKey, ch, sf);
+	_GetChSf(wParam, ch, sf);
 
 	//辞書削除
 	if (_mode == wm_delete)
@@ -40,7 +40,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 			break;
 		}
 
-		if (_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
+		if (_pTextService->_IsKeyVoid(ch, (BYTE)wParam))
 		{
 			if (sf == SKK_ENTER)
 			{
@@ -105,7 +105,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 			}
 			break;
 		default:
-			_InvokeKeyHandler(uVKey);
+			_InvokeKeyHandler(wParam);
 			break;
 		}
 
@@ -153,7 +153,7 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 		break;
 
 	default:
-		_GetChSf(uVKey, ch, sf, VK_KANA);
+		_GetChSf(wParam, ch, sf, VK_KANA);
 
 		for (i = 0; i < MAX_SELKEY_C; i++)
 		{
@@ -207,18 +207,18 @@ HRESULT CCandidateWindow::_OnKeyDown(UINT uVKey)
 	return S_OK;
 }
 
-void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
+void CCandidateWindow::_OnKeyDownRegword(WPARAM wParam)
 {
 	WCHAR ch;
 	BYTE sf;
 
-	_GetChSf(uVKey, ch, sf);
+	_GetChSf(wParam, ch, sf);
 
 	//確定していないとき
 	if (!_regfixed)
 	{
 		_pTextService->showcandlist = FALSE;	//候補一覧表示をループさせる
-		_HandleKey((WPARAM)uVKey, SKK_NULL);
+		_HandleKey(wParam, SKK_NULL);
 		_Update();
 
 		if (_pInputModeWindow != nullptr)
@@ -228,7 +228,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		return;
 	}
 
-	if (_pTextService->_IsKeyVoid(ch, (BYTE)uVKey))
+	if (_pTextService->_IsKeyVoid(ch, (BYTE)wParam))
 	{
 		_pTextService->_UpdateLanguageBar();
 
@@ -549,7 +549,7 @@ void CCandidateWindow::_OnKeyDownRegword(UINT uVKey)
 		break;
 
 	default:
-		_HandleKey((WPARAM)uVKey, SKK_NULL);
+		_HandleKey(wParam, SKK_NULL);
 
 		if (_pInputModeWindow != nullptr)
 		{
@@ -567,27 +567,35 @@ void CCandidateWindow::_InvokeSfHandler(BYTE sf)
 	}
 }
 
-void CCandidateWindow::_InvokeKeyHandler(UINT uVKey)
+void CCandidateWindow::_InvokeKeyHandler(WPARAM wParam)
 {
 	if (_pCandidateList != nullptr)
 	{
-		_pCandidateList->_InvokeKeyHandler(uVKey);
+		_pCandidateList->_InvokeKeyHandler(wParam);
 	}
 }
 
 void CCandidateWindow::_HandleKey(WPARAM wParam, BYTE bSf)
 {
+	BYTE sf = bSf;
+	WCHAR ch = WCHAR_MAX;
+
 	if (_pTextService != nullptr)
 	{
-		_pTextService->_HandleKey(0, nullptr, wParam, bSf);
+		if (bSf == SKK_NULL)
+		{
+			_GetChSf(wParam, ch, sf);
+		}
+
+		_pTextService->_HandleKey(0, nullptr, wParam, sf, ch);
 	}
 }
 
-void CCandidateWindow::_GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff)
+void CCandidateWindow::_GetChSf(WPARAM wParam, WCHAR &ch, BYTE &sf, BYTE vkoff)
 {
 	if (_pTextService != nullptr)
 	{
-		ch = _pTextService->_GetCh(uVKey, vkoff);
-		sf = _pTextService->_GetSf(uVKey, ch);
+		ch = _pTextService->_GetCh((BYTE)wParam, vkoff);
+		sf = _pTextService->_GetSf((BYTE)wParam, ch);
 	}
 }

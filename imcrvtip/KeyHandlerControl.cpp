@@ -471,7 +471,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 		{
 			if (complement)
 			{
-				return _HandleKey(ec, pContext, 0, SKK_NEXT_CAND);
+				return _HandleKey(ec, pContext, 0, SKK_NEXT_CAND, WCHAR_MAX);
 			}
 			return S_OK;
 		}

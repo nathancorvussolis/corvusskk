@@ -3,16 +3,23 @@
 #include "TextService.h"
 #include "CandidateList.h"
 
-WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
+BOOL CTextService::_GetKeyboardState()
 {
-	BYTE keystate[256] = {};
-	WCHAR ubuff;
-	WCHAR u = L'\0';
+	ZeroMemory(keystate, sizeof(keystate));
 
 	if (GetKeyboardState(keystate) == FALSE)
 	{
-		return u;
+		ZeroMemory(keystate, sizeof(keystate));
+
+		return FALSE;
 	}
+
+	return TRUE;
+}
+
+WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
+{
+	WCHAR u = L'\0';
 
 	switch (inputmode)
 	{
@@ -37,10 +44,10 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 		break;
 	}
 
-	int retu = ToUnicode(vk, 0, keystate, &ubuff, 1, 0);
-	if (retu == 1)
+	int retu = ToUnicode(vk, 0, keystate, &u, 1, 0);
+	if (retu != 1)
 	{
-		u = ubuff;
+		u = L'\0';
 	}
 
 	return u;
@@ -49,8 +56,8 @@ WCHAR CTextService::_GetCh(BYTE vk, BYTE vkoff)
 BYTE CTextService::_GetSf(BYTE vk, WCHAR ch)
 {
 	BYTE k = SKK_NULL;
-	SHORT vk_shift = GetKeyState(VK_SHIFT) & 0x8000;
-	SHORT vk_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
+	BYTE vk_shift = keystate[VK_SHIFT] & 0x80;
+	BYTE vk_ctrl = keystate[VK_CONTROL] & 0x80;
 
 	if (vk < VKEYMAPNUM)
 	{

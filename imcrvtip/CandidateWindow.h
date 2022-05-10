@@ -53,7 +53,7 @@ public:
 	void _UpdateComp();
 
 	//KeyHandler
-	HRESULT _OnKeyDown(UINT uVKey);
+	HRESULT _OnKeyDown(WPARAM wParam);
 
 private:
 	LONG _cRef;
@@ -74,11 +74,11 @@ private:
 	void _CreateNext(int mode);
 
 	//KeyHandler
-	void _OnKeyDownRegword(UINT uVKey);
+	void _OnKeyDownRegword(WPARAM wParam);
 	void _InvokeSfHandler(BYTE sf);
-	void _InvokeKeyHandler(UINT uVKey);
+	void _InvokeKeyHandler(WPARAM wParam);
 	void _HandleKey(WPARAM wParam, BYTE bSf);
-	void _GetChSf(UINT uVKey, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
+	void _GetChSf(WPARAM wParam, WCHAR &ch, BYTE &sf, BYTE vkoff = 0);
 
 	//Paint
 	void _WindowProcPaint(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

@@ -122,12 +122,15 @@ STDAPI CCandidateList::OnKeyDown(WPARAM wParam, LPARAM lParam, BOOL *pfEaten)
 	}
 
 	*pfEaten = TRUE;
+
+	_pTextService->_GetKeyboardState();
+
 #ifdef _DEBUG
-	_pCandidateWindow->_OnKeyDown((UINT)wParam);
+	_pCandidateWindow->_OnKeyDown(wParam);
 #else
 	__try
 	{
-		_pCandidateWindow->_OnKeyDown((UINT)wParam);
+		_pCandidateWindow->_OnKeyDown(wParam);
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
@@ -353,11 +356,11 @@ exit:
 	return hrRet;
 }
 
-void CCandidateList::_InvokeKeyHandler(WPARAM key)
+void CCandidateList::_InvokeKeyHandler(WPARAM wParam)
 {
 	if (_pTextService != nullptr && _pContextDocument != nullptr)
 	{
-		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)key, (LPARAM)0, 0);
+		_pTextService->_InvokeKeyHandler(_pContextDocument, wParam, 0, SKK_NULL);
 	}
 }
 
@@ -365,7 +368,7 @@ void CCandidateList::_InvokeSfHandler(BYTE sf)
 {
 	if (_pTextService != nullptr && _pContextDocument != nullptr)
 	{
-		_pTextService->_InvokeKeyHandler(_pContextDocument, (WPARAM)0, (LPARAM)0, sf);
+		_pTextService->_InvokeKeyHandler(_pContextDocument, 0, 0, sf);
 	}
 }
 
