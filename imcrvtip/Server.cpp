@@ -106,12 +106,14 @@ STDAPI CClassFactory::LockServer(BOOL fLock)
 	return S_OK;
 }
 
+__control_entrypoint(DllExport)
 STDAPI DllCanUnloadNow(void)
 {
 	return g_cRefDll <= 0 ? S_OK : S_FALSE;
 }
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID *ppvObj)
+_Check_return_
+STDAPI DllGetClassObject(_In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR *ppvObj)
 {
 	static CClassFactory factory;
 

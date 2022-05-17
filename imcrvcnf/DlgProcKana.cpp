@@ -16,12 +16,12 @@ void SaveKanaTxt(HWND hDlg, LPCWSTR path);
 INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	int index, count;
-	ROMAN_KANA_CONV rkc;
-	ROMAN_KANA_CONV rkcBak;
-	WCHAR soku[2];
+	ROMAN_KANA_CONV rkc = {};
+	ROMAN_KANA_CONV rkcBak = {};
+	WCHAR soku[2] = {};
 	LPNMLISTVIEW pListView;
 	OPENFILENAMEW ofn = {};
 	WCHAR path[MAX_PATH] = {};
@@ -331,7 +331,7 @@ void LoadConfigKanaTxt(LPCWSTR path)
 	wchar_t b[CONFKANALEN];
 	const wchar_t seps[] = L"\t\n\0";
 	size_t sidx, eidx;
-	WCHAR soku[2];
+	WCHAR soku[2] = {};
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();
@@ -413,8 +413,8 @@ void LoadConfigKanaTxt(LPCWSTR path)
 
 void LoadKanaTxt(HWND hDlg, LPCWSTR path)
 {
-	LVITEMW item;
-	WCHAR soku[2];
+	LVITEMW item = {};
+	WCHAR soku[2] = {};
 
 	LoadConfigKanaTxt(path);
 
@@ -452,8 +452,8 @@ void LoadKanaTxt(HWND hDlg, LPCWSTR path)
 
 void SaveKanaTxt(HWND hDlg, LPCWSTR path)
 {
-	ROMAN_KANA_CONV rkc;
-	WCHAR soku[2];
+	ROMAN_KANA_CONV rkc = {};
+	WCHAR soku[2] = {};
 	FILE *fp = nullptr;
 
 	roman_kana_conv.clear();
@@ -578,8 +578,8 @@ void LoadConfigKana()
 
 void LoadKana(HWND hDlg)
 {
-	LVITEMW item;
-	WCHAR soku[2];
+	LVITEMW item = {};
+	WCHAR soku[2] = {};
 
 	LoadConfigKana();
 
@@ -619,8 +619,8 @@ void SaveKana(IXmlWriter *pWriter, HWND hDlg)
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
 	APPDATAXMLATTR attr;
-	ROMAN_KANA_CONV rkc;
-	WCHAR soku[2];
+	ROMAN_KANA_CONV rkc = {};
+	WCHAR soku[2] = {};
 
 	roman_kana_conv.clear();
 	roman_kana_conv.shrink_to_fit();

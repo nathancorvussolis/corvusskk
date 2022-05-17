@@ -14,8 +14,8 @@ void LoadDictionary(HWND hDlg);
 INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	int	index, count;
 	OPENFILENAMEW ofn = {};
 	WCHAR path[MAX_PATH] = {};
@@ -303,7 +303,7 @@ INT_PTR CALLBACK DlgProcDictionary1(HWND hDlg, UINT message, WPARAM wParam, LPAR
 void LoadDictionary(HWND hDlg)
 {
 	APPDATAXMLLIST list;
-	LVITEMW item;
+	LVITEMW item = {};
 
 	HRESULT hr = ReadList(pathconfigxml, SectionDictionary, list);
 

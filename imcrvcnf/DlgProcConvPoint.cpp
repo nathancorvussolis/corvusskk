@@ -10,8 +10,8 @@ void LoadConvPoint(HWND hDlg);
 INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	int index, count;
 	WCHAR key[2] = {};
 	WCHAR keyBak[2] = {};
@@ -261,7 +261,7 @@ void LoadConfigConvPoint()
 
 void LoadConvPoint(HWND hDlg)
 {
-	LVITEMW item;
+	LVITEMW item = {};
 
 	LoadConfigConvPoint();
 

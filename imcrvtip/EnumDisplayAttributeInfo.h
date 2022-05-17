@@ -99,6 +99,16 @@ public:
 			return S_OK;
 		}
 
+		for (ULONG i = 0; i < ulCount; i++)
+		{
+			*(rgInfo + i) = nullptr;
+		}
+
+		if (pcFetched != nullptr)
+		{
+			*pcFetched = 0;
+		}
+
 		while(cFetched < ulCount)
 		{
 			if(_nIndex >= DISPLAYATTRIBUTE_INFO_NUM)
@@ -115,7 +125,12 @@ public:
 			{
 				for(ULONG i = 0; i < cFetched; i++)
 				{
-					delete *(rgInfo + i);
+					ITfDisplayAttributeInfo *pdai = *(rgInfo + i);
+					if (pdai != nullptr)
+					{
+						pdai->Release();
+						*(rgInfo + i) = nullptr;
+					}
 				}
 				return E_OUTOFMEMORY;
 			}

@@ -11,11 +11,11 @@ void LoadJLatin(HWND hDlg);
 INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	int index, count;
-	ASCII_JLATIN_CONV ajc;
-	ASCII_JLATIN_CONV ajcBak;
+	ASCII_JLATIN_CONV ajc = {};
+	ASCII_JLATIN_CONV ajcBak = {};
 	LPNMLISTVIEW pListView;
 	WCHAR text[16] = {};
 
@@ -228,7 +228,7 @@ void LoadConfigJLatin()
 
 void LoadJLatin(HWND hDlg)
 {
-	LVITEMW item;
+	LVITEMW item = {};
 
 	LoadConfigJLatin();
 
@@ -259,7 +259,7 @@ void SaveJLatin(IXmlWriter *pWriter, HWND hDlg)
 	APPDATAXMLLIST list;
 	APPDATAXMLROW row;
 	APPDATAXMLATTR attr;
-	ASCII_JLATIN_CONV ajc;
+	ASCII_JLATIN_CONV ajc = {};
 
 	HWND hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
 	int count = ListView_GetItemCount(hWndListView);

@@ -132,8 +132,8 @@ void ConnectSKKServer()
 	ADDRINFOW *paiwResult;
 	ADDRINFOW *paiw;
 	u_long mode;
-	timeval tv;
-	fd_set fdw, fde;
+	timeval tv = {};
+	fd_set fdw = {}, fde = {};
 
 	ADDRINFOW aiwHints = {};
 	aiwHints.ai_family = AF_UNSPEC;

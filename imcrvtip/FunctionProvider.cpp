@@ -297,29 +297,35 @@ public:
 	// ITfEditSession
 	STDMETHODIMP DoEditSession(TfEditCookie ec)
 	{
-		HRESULT hr;
-		WCHAR buf[16];
+		HRESULT hr = S_OK;
+		WCHAR buf[16] = {};
 		ULONG cch = _countof(buf) - 1;
 
 		_Text.clear();
 
-		while (cch == _countof(buf) - 1)
+		while (SUCCEEDED(hr))
 		{
 			ZeroMemory(buf, sizeof(buf));
 			cch = _countof(buf) - 1;
+
 			hr = _pRange->GetText(ec, TF_TF_MOVESTART, buf, cch, &cch);
+
 			if (SUCCEEDED(hr))
 			{
 				_Text.append(buf);
+
+				if (cch < _countof(buf) - 1)
+				{
+					break;
+				}
 			}
 			else
 			{
 				_Text.clear();
-				return hr;
 			}
 		}
 
-		return S_OK;
+		return hr;
 	}
 
 	std::wstring _GetText()

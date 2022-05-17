@@ -359,7 +359,7 @@ BOOL CommandDic(WCHAR command)
 {
 	BOOL ret = FALSE;
 
-	WCHAR pipebuf[4];
+	WCHAR pipebuf[4] = {};
 	DWORD bytesWrite, bytesRead;
 
 	ConnectDic();

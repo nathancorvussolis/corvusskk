@@ -22,7 +22,7 @@ HANDLE hThreadSrv;
 BOOL bSrvThreadExit;
 lua_State *lua;
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
 	MSG msg;
 	HWND hWnd;
@@ -77,6 +77,8 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 #endif
 	UpdateWindow(hWnd);
 
+#pragma warning(push)
+#pragma warning(disable:6387)
 	while (GetMessageW(&msg, nullptr, 0, 0))
 	{
 		if (!TranslateAcceleratorW(msg.hwnd, nullptr, &msg))
@@ -85,6 +87,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 			DispatchMessageW(&msg);
 		}
 	}
+#pragma warning(pop)
 
 	ReleaseMutex(hMutex);
 	CloseHandle(hMutex);
@@ -96,6 +99,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HANDLE hPipe;
 	WSADATA wsaData;
+	int wsa = -1;
 #ifdef _DEBUG
 	RECT r = {};
 	HDC hDC;
@@ -117,7 +121,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		SendMessageW(hWndEdit, WM_SETFONT, (WPARAM)hFont, 0);
 		ReleaseDC(nullptr, hDC);
 #endif
-		WSAStartup(WINSOCK_VERSION, &wsaData);
+		wsa = WSAStartup(WINSOCK_VERSION, &wsaData);
+		switch (wsa)
+		{
+		case 0:
+			//success
+			break;
+		case WSASYSNOTREADY:
+		case WSAVERNOTSUPPORTED:
+		case WSAEINPROGRESS:
+		case WSAEPROCLIM:
+		case WSAEFAULT:
+		default:
+			//error
+			break;
+		}
 
 		CreateConfigPath();
 		UpdateConfigPath();

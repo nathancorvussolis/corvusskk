@@ -9,8 +9,8 @@ static LPCWSTR listSelKey[MAX_SELKEY_C] =
 INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	LPNMLISTVIEW pListView;
 	int index;
 	WCHAR num[2 + 1] = {};

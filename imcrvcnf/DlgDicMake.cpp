@@ -1059,7 +1059,7 @@ void MakeSKKDicThread(void *p)
 
 	HANDLE hCancelEvent = OpenEventW(SYNCHRONIZE, FALSE, cnfcanceldiceventname);
 
-	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+	HRESULT hrI = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	SetTaskbarListMarquee(pdlg, TBPF_INDETERMINATE);
 

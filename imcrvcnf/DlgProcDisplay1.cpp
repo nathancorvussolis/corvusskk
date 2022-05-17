@@ -27,7 +27,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	HDC hdc;
 	PAINTSTRUCT ps;
 	WCHAR num[16] = {};
-	WCHAR fontname[LF_FACESIZE];
+	WCHAR fontname[LF_FACESIZE] = {};
 	INT fontpoint, fontweight, count;
 	BOOL fontitalic;
 	CHOOSEFONTW cf = {};
@@ -36,7 +36,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	LONG w;
 	std::wstring strxmlval;
 	CHOOSECOLORW cc = {};
-	static COLORREF customColor[16];
+	static COLORREF customColor[16] = {};
 
 	switch (message)
 	{
@@ -315,7 +315,7 @@ INT_PTR CALLBACK DlgProcDisplay1(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 void SaveFont(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR fontname[LF_FACESIZE];
+	WCHAR fontname[LF_FACESIZE] = {};
 	HFONT hFont;
 	LOGFONTW lf = {};
 	WCHAR num[16] = {};

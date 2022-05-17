@@ -32,6 +32,7 @@ public:
 
 	HRESULT _Update();
 	HRESULT _GetIcon(HICON *phIcon, INT size, BOOL bNT62);
+	HRESULT _AddMenuItem(ITfMenu *pMenu, UINT uId, DWORD dwFlags, LPCWSTR pch, ULONG cch);
 
 private:
 	LONG _cRef;

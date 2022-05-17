@@ -72,7 +72,7 @@ HRESULT CTextService::_HandleChar(TfEditCookie ec, ITfContext *pContext, WPARAM 
 							break;
 						}
 
-						ROMAN_KANA_CONV rkcn;
+						ROMAN_KANA_CONV rkcn = {};
 						wcsncpy_s(rkcn.roman, roman_conv.c_str(), _TRUNCATE);
 						ret = _ConvRomanKana(&rkcn);
 						switch (ret)

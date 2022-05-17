@@ -193,7 +193,7 @@ void LoadKeyMap(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName,
 
 void SaveKeyMap(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 {
-	WCHAR keyre[MAX_KEYRE];
+	WCHAR keyre[MAX_KEYRE] = {};
 
 	GetDlgItemTextW(hDlg, nIDDlgItem, keyre, _countof(keyre));
 	WriterKey(pWriter, lpKeyName, keyre);

@@ -70,7 +70,7 @@ BOOL CTextService::_InitThreadMgrEventSink()
 
 void CTextService::_UninitThreadMgrEventSink()
 {
-	HRESULT hr;
+	HRESULT hr = E_FAIL;
 
 	if (_dwThreadMgrEventSinkCookie != TF_INVALID_COOKIE)
 	{

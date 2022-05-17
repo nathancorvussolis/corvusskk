@@ -74,7 +74,7 @@ BOOL SetFileDacl(LPWSTR path)
 	BOOL bRet = FALSE;
 	WCHAR sddl[MAX_SECURITYDESC] = {};
 	PSECURITY_DESCRIPTOR psd = nullptr;
-	LPWSTR pszUserSid;
+	LPWSTR pszUserSid = nullptr;
 
 	if (GetUserSid(&pszUserSid))
 	{
@@ -168,7 +168,7 @@ void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKey
 
 void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName)
 {
-	WCHAR num[2];
+	WCHAR num[2] = {};
 
 	num[0] = L'0' + IsDlgButtonChecked(hDlg, nIDDlgItem);
 	num[1] = L'\0';

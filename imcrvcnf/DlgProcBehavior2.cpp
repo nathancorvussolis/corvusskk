@@ -6,7 +6,7 @@
 INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hwnd;
-	WCHAR num[2];
+	WCHAR num[2] = {};
 	std::wstring strxmlval;
 	int count;
 
@@ -74,7 +74,7 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 void SaveBehavior2(IXmlWriter *pWriter, HWND hDlg)
 {
-	WCHAR num[2];
+	WCHAR num[2] = {};
 
 	HWND hwnd = GetDlgItem(hDlg, IDC_COMBO_COMPMULTINUM);
 	int count = 1 + (int)SendMessageW(hwnd, CB_GETCURSEL, 0, 0);

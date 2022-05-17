@@ -19,8 +19,8 @@ void LoadPreservedKey(HWND hDlg);
 INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hWndListView;
-	LV_COLUMNW lvc;
-	LVITEMW item;
+	LV_COLUMNW lvc = {};
+	LVITEMW item = {};
 	int index, count;
 	WCHAR key[8] = {};
 	WCHAR keyBak[8] = {};
@@ -407,8 +407,8 @@ void LoadConfigPreservedKey()
 
 void LoadPreservedKey(HWND hDlg)
 {
-	LVITEMW item;
-	WCHAR num[16];
+	LVITEMW item = {};
+	WCHAR num[16] = {};
 
 	LoadConfigPreservedKey();
 

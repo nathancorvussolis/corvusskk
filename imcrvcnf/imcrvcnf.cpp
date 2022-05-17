@@ -7,9 +7,9 @@
 HINSTANCE hInst;
 HANDLE hMutex;
 
-int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-	INITCOMMONCONTROLSEX icex;
+	INITCOMMONCONTROLSEX icex = {};
 
 	_wsetlocale(LC_ALL, L"ja-JP");
 
@@ -28,7 +28,7 @@ int APIENTRY wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmd
 		return 0;
 	}
 
-	CoInitialize(nullptr);
+	HRESULT hrI = CoInitialize(nullptr);
 
 	icex.dwSize = sizeof(icex);
 	icex.dwICC = ICC_LISTVIEW_CLASSES | ICC_TAB_CLASSES | ICC_PROGRESS_CLASS;

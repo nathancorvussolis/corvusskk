@@ -21,7 +21,7 @@ size_t EucJPToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 	CONST CHAR ejd = (CHAR)0x80;
 	CONST CHAR ejs = 0x21;
 	CONST CHAR eje = 0x7E;
-	CHAR ej[2];
+	CHAR ej[2] = {};
 	size_t srcused = 0;
 
 	if (src == nullptr || srcsize == 0 || ucp1 == nullptr || ucp2 == nullptr)
@@ -137,9 +137,9 @@ size_t EucJPToUcp(LPCSTR src, size_t srcsize, PUCSCHAR ucp1, PUCSCHAR ucp2)
 BOOL EucJPToWideChar(LPCSTR src, size_t *srcsize, LPWSTR dst, size_t *dstsize)
 {
 	size_t si = 0, di = 0, ss = -1;
-	UCSCHAR ucp[2];
-	WCHAR utf16[2][2];
-	size_t utf16num[2];
+	UCSCHAR ucp[2] = {};
+	WCHAR utf16[2][2] = {};
+	size_t utf16num[2] = {};
 
 	if (dstsize == nullptr)
 	{

@@ -228,7 +228,7 @@ STDAPI CLangBarItemButton::OnClick(TfLBIClick click, POINT pt, const RECT *prcAr
 					HMENU hSubMenu = GetSubMenu(hMenu, 0);
 					if (hSubMenu)
 					{
-						TPMPARAMS tpm;
+						TPMPARAMS tpm = {};
 						TPMPARAMS *ptpm = nullptr;
 						if (prcArea != nullptr)
 						{
@@ -281,19 +281,19 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		switch (menuItems[i].id)
 		{
 		case IDM_CAPSLOCK:
-			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				(((GetKeyState(VK_CAPITAL) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
-				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			_AddMenuItem(pMenu, menuItems[i].id,
+				menuItems[i].flag | (((GetKeyState(VK_CAPITAL) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
+				menuItems[i].text, (ULONG)wcslen(menuItems[i].text));
 			break;
 		case IDM_KANALOCK:
-			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				(((GetKeyState(VK_KANA) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
-				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			_AddMenuItem(pMenu, menuItems[i].id,
+				menuItems[i].flag | (((GetKeyState(VK_KANA) & 1) == 1) ? TF_LBMENUF_CHECKED : 0),
+				menuItems[i].text, (ULONG)wcslen(menuItems[i].text));
 			break;
 		case IDM_PRIVATE:
-			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				(_pTextService->_IsPrivateMode() ? TF_LBMENUF_CHECKED : 0),
-				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			_AddMenuItem(pMenu, menuItems[i].id,
+				menuItems[i].flag | (_pTextService->_IsPrivateMode() ? TF_LBMENUF_CHECKED : 0),
+				menuItems[i].text, (ULONG)wcslen(menuItems[i].text));
 			break;
 		case IDM_HIRAGANA:
 		case IDM_KATAKANA:
@@ -302,9 +302,9 @@ STDAPI CLangBarItemButton::InitMenu(ITfMenu *pMenu)
 		case IDM_ASCII:
 		case IDM_DIRECT:
 		default:
-			pMenu->AddMenuItem(menuItems[i].id, menuItems[i].flag |
-				((_pTextService->inputmode == menuItems[i].inputmode) ? TF_LBMENUF_RADIOCHECKED : 0),
-				nullptr, nullptr, menuItems[i].text, (ULONG)wcslen(menuItems[i].text), nullptr);
+			_AddMenuItem(pMenu, menuItems[i].id,
+				menuItems[i].flag | ((_pTextService->inputmode == menuItems[i].inputmode) ? TF_LBMENUF_RADIOCHECKED : 0),
+				menuItems[i].text, (ULONG)wcslen(menuItems[i].text));
 			break;
 		}
 	}
@@ -580,6 +580,18 @@ HRESULT CLangBarItemButton::_GetIcon(HICON *phIcon, INT size, BOOL bNT62)
 	*phIcon = (HICON)LoadImageW(g_hInst, MAKEINTRESOURCEW(iconid), IMAGE_ICON, size, size, LR_SHARED);
 
 	return (*phIcon != nullptr) ? S_OK : E_FAIL;
+}
+
+HRESULT CLangBarItemButton::_AddMenuItem(ITfMenu *pMenu, UINT uId, DWORD dwFlags, LPCWSTR pch, ULONG cch)
+{
+	if (pMenu == nullptr)
+	{
+		return E_FAIL;
+	}
+#pragma warning(push)
+#pragma warning(disable:6387)
+	return pMenu->AddMenuItem(uId, dwFlags, nullptr, nullptr, pch, cch, nullptr);
+#pragma warning(pop)
 }
 
 BOOL CTextService::_InitLanguageBar()

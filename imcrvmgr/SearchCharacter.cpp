@@ -162,7 +162,7 @@ std::wstring SearchCharacterCode(const std::wstring &searchkey)
 	CONST CHAR ejs = 0x21;
 	CONST CHAR eje = 0x7E;
 	CONST CHAR base = 0x20;
-	CHAR ej[2];
+	CHAR ej[2] = {};
 	std::wstring e, u;
 	WCHAR b[16] = {};
 	size_t len;

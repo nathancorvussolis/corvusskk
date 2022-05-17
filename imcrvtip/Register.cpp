@@ -30,13 +30,12 @@ static const GUID c_guidCategory8[] =
 BOOL RegisterProfiles()
 {
 	HRESULT hr = E_FAIL;
-	WCHAR fileName[MAX_PATH];
+	WCHAR fileName[MAX_PATH] = {};
 
 	CComPtr<ITfInputProcessorProfileMgr> pInputProcessorProfileMgr;
 	hr = CoCreateInstance(CLSID_TF_InputProcessorProfiles, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&pInputProcessorProfileMgr));
 	if (SUCCEEDED(hr) && (pInputProcessorProfileMgr != nullptr))
 	{
-		ZeroMemory(fileName, sizeof(fileName));
 		GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
 		hr = pInputProcessorProfileMgr->RegisterProfile(c_clsidTextService, TEXTSERVICE_LANGID, c_guidProfile,
@@ -126,11 +125,11 @@ void UnregisterCategories()
 
 BOOL RegisterServer()
 {
-	WCHAR szInfoKey[_countof(c_szInfoKeyPrefix) + CLSID_STRLEN];
-	HKEY hKey;
-	HKEY hSubKey;
+	WCHAR szInfoKey[_countof(c_szInfoKeyPrefix) + CLSID_STRLEN] = {};
+	HKEY hKey = nullptr;
+	HKEY hSubKey = nullptr;
 	BOOL fRet = FALSE;
-	WCHAR fileName[MAX_PATH];
+	WCHAR fileName[MAX_PATH] = {};
 
 	if (StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
 	{
@@ -154,7 +153,6 @@ BOOL RegisterServer()
 		goto exit;
 	}
 
-	ZeroMemory(fileName, sizeof(fileName));
 	GetModuleFileNameW(g_hInst, fileName, _countof(fileName));
 
 	if (RegSetValueExW(hSubKey, nullptr, 0, REG_SZ, (CONST LPBYTE)fileName, (DWORD)(wcslen(fileName) + 1) * sizeof(WCHAR)) != ERROR_SUCCESS)
@@ -180,7 +178,7 @@ exit:
 
 void UnregisterServer()
 {
-	WCHAR szInfoKey[_countof(c_szInfoKeyPrefix) + CLSID_STRLEN];
+	WCHAR szInfoKey[_countof(c_szInfoKeyPrefix) + CLSID_STRLEN] = {};
 
 	if (StringFromGUID2(c_clsidTextService, szInfoKey + _countof(c_szInfoKeyPrefix) - 1, CLSID_STRLEN + 1) == 0)
 	{
@@ -194,9 +192,9 @@ void UnregisterServer()
 
 BOOL InstallLayoutOrTipProfileList(DWORD dwFlags)
 {
-	WCHAR clsid[CLSID_STRLEN + 1];
-	WCHAR guidprofile[CLSID_STRLEN + 1];
-	WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1];
+	WCHAR clsid[CLSID_STRLEN + 1] = {};
+	WCHAR guidprofile[CLSID_STRLEN + 1] = {};
+	WCHAR profilelist[7 + CLSID_STRLEN * 2 + 1] = {};
 
 	if (StringFromGUID2(c_clsidTextService, clsid, _countof(clsid)) == 0)
 	{

@@ -942,8 +942,8 @@ BOOL CTextService::_ConvN()
 
 void CTextService::_ConvKanaToKana(const std::wstring &src, int srcmode, std::wstring &dst, int dstmode)
 {
-	BOOL exist;
-	WCHAR srckana[3];
+	BOOL exist = FALSE;
+	WCHAR srckana[3] = {};
 	std::wstring dsttmp;
 
 	switch (srcmode)

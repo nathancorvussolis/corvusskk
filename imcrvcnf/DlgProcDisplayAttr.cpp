@@ -147,7 +147,7 @@ INT_PTR CALLBACK DlgProcDisplayAttr(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	PAINTSTRUCT ps;
 	HDC hdc;
 	CHOOSECOLORW cc = {};
-	static COLORREF customColor[16];
+	static COLORREF customColor[16] = {};
 
 	switch (message)
 	{
@@ -380,7 +380,7 @@ void LoadDisplayAttr(int no)
 {
 	std::wstring strxmlval;
 	BOOL se;
-	TF_DISPLAYATTRIBUTE da;
+	TF_DISPLAYATTRIBUTE da = {};
 
 	for (int i = 0; i < _countof(displayAttr[no]) && displayAttr[no][i].key != nullptr; i++)
 	{
@@ -400,7 +400,7 @@ void LoadDisplayAttr(int no)
 
 void SaveDisplayAttr(IXmlWriter *pWriter, HWND hDlg, int no)
 {
-	WCHAR num[64];
+	WCHAR num[64] = {};
 
 	for (int i = 0; i < _countof(displayAttr[no]); i++)
 	{
