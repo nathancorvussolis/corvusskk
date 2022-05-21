@@ -167,7 +167,7 @@ ULONG htonlc(ULONG h)
 	if (IsLittleEndian())
 	{
 		h = (h << 24) | ((h & 0x0000FF00) << 8) |
-			((h >> 8) & 0x0000FF00) | (h >> 24);
+			((h & 0x00FF0000) >> 8) | (h >> 24);
 	}
 	return h;
 }
@@ -194,7 +194,7 @@ USHORT ntohsc(USHORT n)
 BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 {
 	BOOL bRet = FALSE;
-	CONST LPCWSTR pszAlgId = BCRYPT_SHA1_ALGORITHM;
+	LPCWSTR pszAlgId = BCRYPT_SHA1_ALGORITHM;
 	CONST DWORD dwDigestLen = 20;
 	CONST USHORT maskVersion = 0x5000;
 	GUID lguid = rguid;
