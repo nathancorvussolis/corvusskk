@@ -932,7 +932,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.2.3
+Visual Studio Community 2022 17.2.6
 
 * Desktop development with C++
 
@@ -951,7 +951,7 @@ Visual Studio Community 2022 17.2.3
 
 WiX Toolset v3.11.2
 
-pandoc 2.18
+pandoc 2.19
 
 
 ### ビルド手順

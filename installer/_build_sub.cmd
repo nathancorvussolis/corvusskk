@@ -21,7 +21,8 @@ pandoc.exe ^
 -V title-prefix:"%DESCRIPTION%" ^
 -V pagetitle:"Manual" ^
 -V title:"%DESCRIPTION% Manual" ^
---self-contained ^
+--embed-resources ^
+--standalone ^
 -c "installer\resource-md\markdown.css" ^
 --toc ^
 -o "installer\%TARGETDIR%\README.html" ^
