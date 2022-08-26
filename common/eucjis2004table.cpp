@@ -6,7 +6,7 @@
 //
 //  http://x0213.org/codetable/euc-jis-2004-std.txt を元に生成
 //
-//  以下の２つの符号は、iconv 1.16 を参考にして Windows (CP932) mapping とした。
+//  以下の２つの符号は、iconv 1.17 を参考にして Windows (CP932) mapping とした。
 //
 //    0xA1B1	U+203E	# OVERLINE	Windows: U+FFE3
 //    0xA1EF	U+00A5	# YEN SIGN	Windows: U+FFE5

@@ -8,7 +8,7 @@
 //  https://unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS/JIS0212.TXT
 //  を元に生成
 //
-//  以下の符号は、iconv 1.16 では Windows (CP932) mapping となっているが、
+//  以下の符号は、iconv 1.17 では Windows (CP932) mapping となっているが、
 //  EUC-JIS-2004 と同様に U+2014 とした。
 //
 //    0xA1BD	U+2014	# EM DASH	Windows: U+2015
@@ -6751,38 +6751,38 @@ const EUCCMP eucjpcmp[CMPEUCJPNUM] =
 	// 0x216F	0xFFE5	# FULLWIDTH YEN SIGN
 	{0xA1EF, 0x00A5},
 
-	// iconv 1.16
-	// icu 69.1
+	// iconv 1.17
+	// icu 71.1
 	// 0xA1BD	U+2014	# EM DASH	Windows: U+2015
 	// 0x213D	0x2015	# HORIZONTAL BAR
 	{0xA1BD, 0x2015},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA1C1	U+301C	# WAVE DASH	Windows: U+FF5E
 	// 0x2141	0x301C	# WAVE DASH
 	{0xA1C1, 0xFF5E},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA1C2	U+2016	# DOUBLE VERTICAL LINE	Windows: U+2225
 	// 0x2142	0x2016	# DOUBLE VERTICAL LINE
 	{0xA1C2, 0x2225},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA1DD	U+2212	# MINUS SIGN	Windows: U+FF0D
 	// 0x215D	0x2212	# MINUS SIGN
 	{0xA1DD, 0xFF0D},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA1F1	U+00A2	# CENT SIGN	Windows: U+FFE0
 	// 0x2171	0x00A2	# CENT SIGN
 	{0xA1F1, 0xFFE0},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA1F2	U+00A3	# POUND SIGN	Windows: U+FFE1
 	// 0x2172	0x00A3	# POUND SIGN
 	{0xA1F2, 0xFFE1},
 
-	// icu 69.1
+	// icu 71.1
 	// 0xA2CC	U+00AC	# NOT SIGN	[1983]	Windows: U+FFE2
 	// 0x224C	0x00AC	# NOT SIGN
 	{0xA2CC, 0xFFE2}
