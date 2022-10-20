@@ -48,35 +48,43 @@ BOOL CTextService::_IsAppPrivateScope(TfEditCookie ec, ITfContext *pContext)
 		return FALSE;
 	}
 
-	if (_IsComposing())
+	TF_SELECTION tfSelection = {};
+	ULONG cFetched = 0;
+	if (FAILED(pContext->GetSelection(ec, TF_DEFAULT_SELECTION, 1, &tfSelection, &cFetched)))
 	{
-		CComPtr<ITfReadOnlyProperty> pReadOnlyProperty;
-		if (SUCCEEDED(pContext->GetAppProperty(GUID_PROP_INPUTSCOPE, &pReadOnlyProperty)) && (pReadOnlyProperty != nullptr))
+		return FALSE;
+	}
+
+	CComPtr<ITfRange> pRangeSelection;
+	pRangeSelection.Attach(tfSelection.range);
+
+	if (cFetched != 1)
+	{
+		return FALSE;
+	}
+
+	CComPtr<ITfReadOnlyProperty> pReadOnlyProperty;
+	if (SUCCEEDED(pContext->GetAppProperty(GUID_PROP_INPUTSCOPE, &pReadOnlyProperty)) && (pReadOnlyProperty != nullptr))
+	{
+		CComVariant var;
+		if (SUCCEEDED(pReadOnlyProperty->GetValue(ec, pRangeSelection, &var)) && (var.punkVal != nullptr))
 		{
-			CComPtr<ITfRange> pRange;
-			if (SUCCEEDED(_pComposition->GetRange(&pRange)) && (pRange != nullptr))
+			CComPtr<ITfInputScope> pInputScope;
+			if (SUCCEEDED(var.punkVal->QueryInterface(IID_PPV_ARGS(&pInputScope))) && (pInputScope != nullptr))
 			{
-				CComVariant var;
-				if (SUCCEEDED(pReadOnlyProperty->GetValue(ec, pRange, &var)) && (var.punkVal != nullptr))
+				InputScope *pInputScopes = nullptr;
+				UINT cCount = 0;
+				if (SUCCEEDED(pInputScope->GetInputScopes(&pInputScopes, &cCount)) && (pInputScopes != nullptr))
 				{
-					CComPtr<ITfInputScope> pInputScope;
-					if (SUCCEEDED(var.punkVal->QueryInterface(IID_PPV_ARGS(&pInputScope))) && (pInputScope != nullptr))
+					for (UINT i = 0; i < cCount; i++)
 					{
-						InputScope *pInputScopes = nullptr;
-						UINT cCount = 0;
-						if (SUCCEEDED(pInputScope->GetInputScopes(&pInputScopes, &cCount)) && (pInputScopes != nullptr))
+						if (pInputScopes[i] == InputScope::IS_PRIVATE)
 						{
-							for (UINT i = 0; i < cCount; i++)
-							{
-								if (pInputScopes[i] == IS_PRIVATE)
-								{
-									ret = TRUE;
-									break;
-								}
-							}
-							CoTaskMemFree(pInputScopes);
+							ret = TRUE;
+							break;
 						}
 					}
+					CoTaskMemFree(pInputScopes);
 				}
 			}
 		}
@@ -98,22 +106,7 @@ public:
 	{
 		if (_pIsPrivate != nullptr)
 		{
-			BOOL isComposing = _pTextService->_IsComposing();
-
-			if (!isComposing)
-			{
-				if (!_pTextService->_StartComposition(_pContext))
-				{
-					return E_FAIL;
-				}
-			}
-
 			*_pIsPrivate = _pTextService->_IsAppPrivateScope(ec, _pContext);
-
-			if (!isComposing)
-			{
-				_pTextService->_TerminateComposition(ec, _pContext);
-			}
 		}
 		return S_OK;
 	}
@@ -139,7 +132,7 @@ void CTextService::_GetAppPrivateMode()
 				CComPtr<ITfEditSession> pEditSession;
 				pEditSession.Attach(
 					new CGetAppPrivateModeEditSession(this, pContext, &isPrivate));
-				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READWRITE, &hr);
+				pContext->RequestEditSession(_ClientId, pEditSession, TF_ES_SYNC | TF_ES_READ, &hr);
 			}
 			catch (...)
 			{
