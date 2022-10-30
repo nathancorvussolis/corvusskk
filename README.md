@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.1.4
+# CorvusSKK ver. 3.1.5
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -932,7 +932,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.3.0
+Visual Studio Community 2022 17.3.6
 
 * Desktop development with C++
 
@@ -951,7 +951,7 @@ Visual Studio Community 2022 17.3.0
 
 WiX Toolset v3.11.2
 
-pandoc 2.19
+pandoc 2.19.2
 
 
 ### ビルド手順
