@@ -42,7 +42,7 @@
         <File Id="F_imcrvcnf_x64" Name="imcrvcnf.exe" Source="..\x64\Release\imcrvcnf.exe" KeyPath="yes">
           <!-- overwrite x86 shortcut -->
           <Shortcut Id="S_imcrvcnf_x64" Name="CONFIG" Directory="IMCRVSKK_MENU"
-            WorkingDirectory="IMCRVSKK_WIN" Show="normal" Advertise="yes" />
+            WorkingDirectory="IMCRVSKK_X64" Show="normal" Advertise="yes" />
         </File>
         <RemoveFolder Id="RF_imcrvcnf_x64" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
