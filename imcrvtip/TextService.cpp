@@ -209,7 +209,8 @@ STDAPI CTextService::ActivateEx(ITfThreadMgr *ptim, TfClientId tid, DWORD dwFlag
 
 	if (!_InitDisplayAttributeGuidAtom())
 	{
-		goto exit;
+		// some applications do not support ITfCategoryMgr interface.
+		//goto exit;
 	}
 
 	if (!_InitFunctionProvider())
