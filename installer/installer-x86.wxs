@@ -109,7 +109,7 @@
         Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
         Type="string" Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
       <!-- enabled autorun only on 32-bit Windows. -->
-      <Condition><![CDATA[NOT DISABLE_AUTORUN]]></Condition>
+      <Condition><![CDATA[ARCH_NAME = "x86"]]></Condition>
     </Component>
 
     <Feature Id="Default" Title="Main" Level="1">
