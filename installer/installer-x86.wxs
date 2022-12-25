@@ -144,7 +144,7 @@
     </InstallExecuteSequence>
 
     <Condition Message="This application does not support this version of Windows.">
-      <![CDATA[VersionNT >= 600]]>
+      <![CDATA[VersionNT >= 601]]>
     </Condition>
 
   </Product>
