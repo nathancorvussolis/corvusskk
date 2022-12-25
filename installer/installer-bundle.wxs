@@ -13,7 +13,7 @@
     Copyright="© 2011 nathancorvussolis"
     AboutUrl="https://nathancorvussolis.github.io/"
     DisableModify="button"
-    Condition="VersionNT >= v6.0">
+    Condition="VersionNT &gt;= v6.1">
 
     <BootstrapperApplicationRef
       Id="WixStandardBootstrapperApplication.RtfLargeLicense">
@@ -22,31 +22,6 @@
         LogoFile="theme-bundle\logo.png"
         SuppressOptionsUI="yes" />
     </BootstrapperApplicationRef>
-
-    <!-- v6.0 Service Pack 2 -->
-    <bal:Condition
-      Message="This application requires Service Pack 2 for Windows Vista / Server 2008.">
-      <![CDATA[NOT ((VersionNT = v6.0) AND (ServicePackLevel < 2))]]>
-    </bal:Condition>
-
-    <!-- d2d1.dll exists -->
-    <util:FileSearch
-      Id="D2D1.DLL"
-      Path="[WindowsFolder]System32\d2d1.dll"
-      Result="exists"
-      Variable="D2D1" />
-    <!-- DWrite.dll exists -->
-    <util:FileSearch
-      Id="DWRITE.DLL"
-      Path="[WindowsFolder]System32\DWrite.dll"
-      Result="exists"
-      Variable="DWRITE" />
-
-    <!-- v6.0 KB971644 or KB971512 -->
-    <bal:Condition
-      Message="This application requires KB971644 or KB971512 for Windows Vista / Server 2008.">
-      <![CDATA[NOT ((VersionNT = v6.0) AND (NOT D2D1 OR NOT DWRITE))]]>
-    </bal:Condition>
 
     <!-- v6.1 Service Pack 1 -->
     <bal:Condition
@@ -112,7 +87,7 @@
         DisplayName="x64 modules"
         ForcePerMachine="yes"
         Compressed="yes"
-        InstallCondition="(VersionNT64) AND (ARCH_NAME = &quot;AMD64&quot;)"
+        InstallCondition="VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
         After="X86_MSI" />
 
       <!-- arm modules -->

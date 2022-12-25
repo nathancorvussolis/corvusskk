@@ -10,11 +10,6 @@
 
 ### 対応OS
 
-* Windows Vista (32-bit / 64-bit)
-
-    * Service Pack 2
-    * プラットフォーム更新プログラム ( KB971644 または KB971512 )
-
 * Windows 7     (32-bit / 64-bit)
 
     * Service Pack 1
@@ -932,7 +927,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.3.6
+Visual Studio Community 2022 17.4.3
 
 * Desktop development with C++
 
