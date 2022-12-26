@@ -52,28 +52,35 @@
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843" Win64="yes">
-        <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe" Source="..\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
+        <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe"
+          Source="..\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
           <!-- overwrite x86 shortcut -->
-          <Shortcut Id="S_imcrvcnf_arm64" Name="CONFIG" Directory="IMCRVSKK_MENU"
-            WorkingDirectory="IMCRVSKK_ARM64" Show="normal" Advertise="yes" />
+          <Shortcut Id="S_imcrvcnf_arm64" Name="CONFIG"
+            Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_ARM64"
+            Show="normal" Advertise="yes" />
         </File>
         <RemoveFolder Id="RF_imcrvcnf_arm64" Directory="IMCRVSKK_MENU" On="uninstall" />
       </Component>
       <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779" Win64="yes">
-        <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe" Source="..\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
+        <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe"
+          Source="..\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5" Win64="yes">
         <!-- ARM64EC -->
-        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll" Source="..\ARM64EC\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
+        <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll"
+          Source="..\ARM64EC\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A" Win64="yes">
-        <File Id="F_luaexe_arm64" Name="lua.exe" Source="..\ARM64\Release\lua.exe" KeyPath="yes" />
+        <File Id="F_luaexe_arm64" Name="lua.exe"
+          Source="..\ARM64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86" Win64="yes">
-        <File Id="F_luadll_arm64" Name="lua54.dll" Source="..\ARM64\Release\lua54.dll" KeyPath="yes" />
+        <File Id="F_luadll_arm64" Name="lua54.dll"
+          Source="..\ARM64\Release\lua54.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508" Win64="yes">
-        <File Id="F_zlibdll_arm64" Name="zlib1.dll" Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
+        <File Id="F_zlibdll_arm64" Name="zlib1.dll"
+          Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -96,7 +103,8 @@
     <DirectoryRef Id="IMCRVSKK_ARM32">
       <Component Id="TIP_ARM32" Guid="26DEC436-067C-4629-AB3C-E15EEBF4349B">
         <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
-        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll" Source="..\ARM\Release\imcrvtip.dll" KeyPath="yes" />
+        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll"
+          Source="..\ARM\Release\imcrvtip.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -145,10 +153,6 @@
       <Custom Action="UNREGARM32DLL" Before="RemoveFiles">Installed</Custom>
       <Custom Action="REGARM32DLL" After="InstallFiles">NOT REMOVE</Custom>
     </InstallExecuteSequence>
-
-    <Condition Message="This application does not support this version of Windows.">
-      <![CDATA[VersionNT >= 603]]>
-    </Condition>
 
   </Product>
 
