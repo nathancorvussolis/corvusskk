@@ -286,7 +286,7 @@ IME ON/OFF のキーのみ、IME ON → OFF のときにも反映されます。
 
 ### 仮想キーコード
 
-仮想キーコードの詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
+仮想キーコードの詳細はこちらを参照してください。 https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
 
 設定ダイアログのタブ「[辞書２](#ユーザー辞書)」「[キー０](#キー設定onoff)」「[キー２](#キー設定文字キー設定仮想キー)」のそれぞれ右上にある「仮想ｷｰﾃｽﾄ」エディットボックスにフォーカスがある状態でキー入力すると仮想キーコードを表示します。
 
@@ -508,7 +508,7 @@ IME ON/OFF のキーをそれぞれ指定します。
 
 Visual C++ 2022 の 正規表現で、文法は ECMAScript を使用しています。
 
-正規表現の詳細はこちらを参照してください。 https://docs.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-170
+正規表現の詳細はこちらを参照してください。 https://learn.microsoft.com/en-us/cpp/standard-library/regular-expressions-cpp?view=msvc-170
 
 無効な正規表現で設定するとその機能は無効となります。警告等は表示されません。
 
@@ -586,7 +586,7 @@ Visual C++ 2022 の 正規表現で、文法は ECMAScript を使用していま
 | 補完と変換 |                               | 先頭の見出し語候補で辞書検索開始<br>skk-start-henkan-with-completion-char |
 | 絞り込み   |                               | 候補を絞り込む見出し語の入力開始<br>skk-hint-start-char |
 | 変換位置   |                               | 変換位置指定<br>skk-sticky-key |
-| 直接入力   |                               | 見出し語入力でローマ字仮名変換しない（不使用） |
+| 直接入力   |                               | 見出し語入力でローマ字仮名変換しない |
 | 確定       |                               |  |
 | 取消       |                               |  |
 | 後退       |                               |  |
@@ -802,7 +802,7 @@ skk-omikuji 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/in
 
 skk-strftime 辞書 https://github.com/nathancorvussolis/corvusskk/blob/master/installer/config-sample/skk-strftime.txt
 
-strftime 関数 https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-170
+strftime 関数 https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/strftime-wcsftime-strftime-l-wcsftime-l?view=msvc-170
 
 
 ### 数値変換
@@ -899,7 +899,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
     * 「;;セミコロン」と入力する。
 
 
-### Windows 8, 8.1, 10 のタッチキーボード
+### Windows 8, 8.1, 10, 11 のタッチキーボード
 
 タッチパネルを搭載したマシンでハードウェアキーボードに準拠したレイアウトを使用するには、以下の操作をおこなってください。
 
