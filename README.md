@@ -927,7 +927,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.4.3
+Visual Studio Community 2022 17.4.4
 
 * Desktop development with C++
 
@@ -973,7 +973,7 @@ pandoc 2.19.2
 
 ---
 
-Copyright (C) 2011-2022 SASAKI Nobuyuki
+Copyright (C) 2011-2023 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
