@@ -14,8 +14,6 @@
 
     * Service Pack 1
 
-* Windows 8     (32-bit / 64-bit)
-
 * Windows 8.1   (32-bit / 64-bit)
 
     * S14 Update ( KB2919355 )
@@ -68,7 +66,7 @@ Windows ストアアプリ、Microsoft Edge 等で使用するには、設定フ
 
 Windows 8 以降で動作する設定ダイアログでOKボタンを押して保存をおこなうとアクセス許可の付加が自動的におこなわれます。
 
-また、Windows 8 以前から Windows 8 以降へ Windows をアップグレードしたときは、CorvusSKK を一旦アンインストールした上でインストールし直してください。
+また、Windows 8 より前から Windows 8 以降へ Windows をアップグレードしたときは、CorvusSKK を一旦アンインストールした上でインストールし直してください。
 
 インストール時に、Windows ストアアプリ、Microsoft Edge 等で使用可能となるようにIMEの登録がおこなわれます。
 
