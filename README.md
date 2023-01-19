@@ -934,12 +934,10 @@ Visual Studio Community 2022 17.4.4
         * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
         * MSVC v143 - VS 2022 C++ ARM build tools (Latest)
         * MSVC v143 - VS 2022 C++ ARM64 build tools (Latest)
-        * MSVC v143 - VS 2022 C++ ARM64EC build tools (Latest)
     * SDKs, libraries, and frameworks
         * C++ ATL for latest v143 build tools (x86 & x64)
         * C++ ATL for latest v143 build tools (ARM)
         * C++ ATL for latest v143 build tools (ARM64)
-        * C++ ATL for latest v143 build tools (ARM64EC)
         * Windows 11 SDK (10.0.22621.0)
 
 WiX Toolset v3.11.2
