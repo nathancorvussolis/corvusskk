@@ -116,6 +116,11 @@ int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &
 		return 1;
 	}
 
+	if (s.find_last_of(L'\x20', ie) != std::string::npos)
+	{
+		return 1;
+	}
+
 	key = s.substr(0, ie + 1);
 
 	s = s.substr(is + 1);
