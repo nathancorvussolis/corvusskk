@@ -1,46 +1,37 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <?include installer-version.wxi ?>
 
-  <Product
-    Id="*"
+  <Package
     Name="CorvusSKK (x86)"
     Version="$(var.version)"
     Manufacturer="nathancorvussolis"
     Language="1033"
+    Scope="perMachine"
+    InstallerVersion="500"
     UpgradeCode="3F1244EC-9A5C-4041-9A33-E26B03C63C9B">
 
-    <Package
-      Id="*"
-      Compressed="yes"
-      Description="CorvusSKK (x86)"
-      Comments="ver. $(var.version)"
-      Platform="x86"
-      InstallerVersion="500"
-      InstallScope="perMachine"
-      InstallPrivileges="elevated" />
+    <SummaryInformation Description="CorvusSKK (x86)" />
 
     <Media Id="1" Cabinet="x86.cab" CompressionLevel="high" EmbedCab="yes" />
 
     <!-- disable advertised shortcuts -->
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
-    <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="SystemFolder" Name="System">
-        <Directory Id="IME_X86" Name="IME">
-          <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
-        </Directory>
+    <StandardDirectory Id="SystemFolder">
+      <Directory Id="IME_X86" Name="IME">
+        <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
       </Directory>
-      <Directory Id="WindowsFolder" Name="Windows">
-        <Directory Id="IME_WIN" Name="IME">
-          <Directory Id="IMCRVSKK_WIN" Name="IMCRVSKK" />
-        </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="WindowsFolder">
+      <Directory Id="IME_WIN" Name="IME">
+        <Directory Id="IMCRVSKK_WIN" Name="IMCRVSKK" />
       </Directory>
-      <Directory Id="ProgramMenuFolder">
-        <Directory Id="IMCRVSKK_MENU" Name="CorvusSKK" />
-      </Directory>
-    </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="IMCRVSKK_MENU" Name="CorvusSKK" />
+    </StandardDirectory>
 
     <DirectoryRef Id="IMCRVSKK_X86">
       <Component Id="CNF_X86" Guid="B3338B63-FB00-4206-8678-6352340F6685">
@@ -118,12 +109,12 @@
       </Component>
     </DirectoryRef>
 
-    <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR">
-      <RegistryValue Id="RV_run_x86" Action="write"
-        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-        Type="string" Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
+    <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR"
+      Condition="ARCH_NAME = &quot;x86&quot;">
       <!-- enabled autorun only on 32-bit Windows. -->
-      <Condition><![CDATA[ARCH_NAME = "x86"]]></Condition>
+      <RegistryValue Id="RV_run_x86" Action="write"
+        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
+        Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
     </Component>
 
     <Feature Id="Default" Title="Main" Level="1">
@@ -143,7 +134,7 @@
       <ComponentRef Id="REG_X86" />
     </Feature>
 
-    <UIRef Id="WixUI_Minimal" />
+    <ui:WixUI Id="WixUI_Minimal" />
     <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
     <WixVariable Id="WixUIBannerBmp" Value="theme-bundle\banner.bmp" />
     <WixVariable Id="WixUIDialogBmp" Value="theme-bundle\dialog.bmp" />
@@ -157,6 +148,6 @@
       <ScheduleReboot After="InstallFinalize" />
     </InstallExecuteSequence>
 
-  </Product>
+  </Package>
 
 </Wix>

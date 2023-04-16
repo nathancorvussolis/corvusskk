@@ -367,3 +367,6 @@ FodyWeavers.xsd
 # Backup files
 *.BAK
 *.bak
+
+# WiX Toolset extension cache
+.wix/

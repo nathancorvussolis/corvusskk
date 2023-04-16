@@ -9,31 +9,25 @@ call _version.cmd
 
 call _build_sub.cmd
 
-rem x86
+wix extension --nologo add WixToolset.UI.wixext
 
-"%WIX%bin\candle.exe" -nologo -arch x86 ^
-installer-x86.wxs -out "%TARGETDIR%\x86.wixobj"
+echo build x86.msi
 
-"%WIX%bin\light.exe" -nologo -ext WixUIExtension -sw1076 ^
-"%TARGETDIR%\x86.wixobj" -out "%TARGETDIR%\x86.msi"
+wix build --nologo -arch x86 ^
+-ext WixToolset.UI.wixext ^
+-src installer-x86.wxs -out "%TARGETDIR%\x86.msi"
 
-rem x64
+echo build x64.msi
 
-"%WIX%bin\candle.exe" -nologo -arch x64 ^
-installer-x64.wxs -out "%TARGETDIR%\x64.wixobj"
+wix build --nologo -arch x64 ^
+-ext WixToolset.UI.wixext ^
+-src installer-x64.wxs -out "%TARGETDIR%\x64.msi"
 
-"%WIX%bin\light.exe" -nologo -ext WixUIExtension -sw1076 ^
-"%TARGETDIR%\x64.wixobj" -out "%TARGETDIR%\x64.msi"
+echo build arm.msi
 
-rem ARM
-
-"%WIX%bin\candle.exe" -nologo -arch x64 ^
-installer-arm.wxs -out "%TARGETDIR%\arm.wixobj"
-
-"%WIX%bin\light.exe" -nologo -ext WixUIExtension -sw1076 ^
-"%TARGETDIR%\arm.wixobj" -out "%TARGETDIR%\arm.msi"
-
-msiinfo "%TARGETDIR%\arm.msi" /nologo /p Arm64;1033
+wix build --nologo -arch arm64 ^
+-ext WixToolset.UI.wixext ^
+-src installer-arm.wxs -out "%TARGETDIR%\arm.msi"
 
 popd
 

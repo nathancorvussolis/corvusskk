@@ -46,22 +46,26 @@ set SIGNCOMMAND=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH% /fd sha256 /t
 
 call _clean.cmd
 
+echo sign binary files
 %SIGNCOMMAND% %BINFILES%
 
 call _build_msi.cmd
 
+echo sign msi files
 %SIGNCOMMAND% %MSIFILES%
 
 call _build_bundle.cmd
 
-rem extract engine
-"%WIX%\bin\insignia.exe" -nologo -ib %BSFILE% -o %BEFILE%
+echo detach engine
+wix burn --nologo detach %BSFILE% -engine %BEFILE%
 
+echo sign engine
 %SIGNCOMMAND% %BEFILE%
 
-rem reattach engine
-"%WIX%\bin\insignia.exe" -nologo -ab %BEFILE% %BSFILE% -o %BSFILE%
+echo reattach engine
+wix burn --nologo reattach %BSFILE% -engine %BEFILE% -out %BSFILE%
 
+echo sign bundle
 %SIGNCOMMAND% %BSFILE%
 
 
