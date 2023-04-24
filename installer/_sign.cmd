@@ -38,6 +38,7 @@ set MSIFILES=%MSIFILES% "%TARGETDIR%\arm.msi"
 
 rem bundle
 set BEFILE="%TARGETDIR%\engine.exe"
+set BOFILE="%TARGETDIR%\original.exe"
 set BSFILE="%TARGETDIR%\corvusskk-%VERSION%.exe"
 
 set SIGNCOMMAND=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH% /fd sha256 /tr %TIMESTAMPSERVER% /td sha256
@@ -56,14 +57,16 @@ echo sign msi files
 
 call _build_bundle.cmd
 
+move %BSFILE% %BOFILE%
+
 echo detach engine
-wix burn --nologo detach %BSFILE% -engine %BEFILE%
+wix burn detach %BOFILE% -engine %BEFILE%
 
 echo sign engine
 %SIGNCOMMAND% %BEFILE%
 
 echo reattach engine
-wix burn --nologo reattach %BSFILE% -engine %BEFILE% -out %BSFILE%
+wix burn reattach %BOFILE% -engine %BEFILE% -out %BSFILE%
 
 echo sign bundle
 %SIGNCOMMAND% %BSFILE%

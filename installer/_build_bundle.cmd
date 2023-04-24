@@ -7,12 +7,12 @@ call _vsdev.cmd
 
 call _version.cmd
 
-wix extension --nologo add WixToolset.Bal.wixext
-wix extension --nologo add WixToolset.Util.wixext
+wix extension add WixToolset.Bal.wixext
+wix extension add WixToolset.Util.wixext
 
 echo build bundle
 
-wix build --nologo -arch x86 ^
+wix build -arch x86 ^
 -ext WixToolset.Bal.wixext -ext WixToolset.Util.wixext ^
 installer-bundle.wxs -out "%TARGETDIR%\corvusskk-%VERSION%.exe"
 
