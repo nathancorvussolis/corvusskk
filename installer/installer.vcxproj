@@ -73,6 +73,7 @@
     <None Include="_verify.cmd" />
     <None Include="_version.cmd" />
     <None Include="_vsdev.cmd" />
+    <None Include="_wix_install.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />

@@ -7,8 +7,7 @@ call _vsdev.cmd
 
 call _version.cmd
 
-wix extension add WixToolset.Bal.wixext
-wix extension add WixToolset.Util.wixext
+call _wix_install.cmd
 
 echo build bundle
 

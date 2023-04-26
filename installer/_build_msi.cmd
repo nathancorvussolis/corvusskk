@@ -9,7 +9,7 @@ call _version.cmd
 
 call _build_sub.cmd
 
-wix extension add WixToolset.UI.wixext
+call _wix_install.cmd
 
 echo build x86.msi
 
