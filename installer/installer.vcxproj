@@ -74,6 +74,7 @@
     <None Include="_version.cmd" />
     <None Include="_vsdev.cmd" />
     <None Include="_wix_install.cmd" />
+    <None Include="_wix_uninstall.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />
