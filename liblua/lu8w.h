@@ -2,7 +2,7 @@
   Lua with UTF-8 Wrapper for Windows
 
   Released under the MIT license
-  Copyright (C) 2014-2020 SASAKI Nobuyuki
+  Copyright (C) 2014-2023 SASAKI Nobuyuki
 */
 
 #ifndef U8W_H
@@ -60,5 +60,13 @@ size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *pt
 
 #endif /* LUA_U8W or LUA_CORE or LUA_LIB or lua_c or luac_c */
 #endif /* not lu8w_c */
+
+/* strftime function options for Visual Studio 2022 */
+#define LUA_STRFTIMEOPTIONS \
+    "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%" \
+    "||" "#a#A#b#B#g#G#h#n#p#t#u#w#X#z#Z#%" \
+      "#c" \
+      "#x" \
+      "#d#D#e#F#H#I#j#m#M#r#R#S#T#U#V#W#y#Y"
 
 #endif /* U8W_H */

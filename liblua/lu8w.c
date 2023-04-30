@@ -2,7 +2,7 @@
   Lua with UTF-8 Wrapper for Windows
 
   Released under the MIT license
-  Copyright (C) 2014-2020 SASAKI Nobuyuki
+  Copyright (C) 2014-2023 SASAKI Nobuyuki
 */
 
 #include "lprefix.h"
