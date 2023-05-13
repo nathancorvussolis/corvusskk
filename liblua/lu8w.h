@@ -17,6 +17,9 @@ wchar_t *u8stows(const char *s);	/* call free function to deallocate */
 /* from utf-16 to utf-8 */
 char *u8wstos(const wchar_t *s);	/* call free function to deallocate */
 
+char **make_u8argv(int argc, wchar_t **wargv);
+void free_u8argv(int argc, char **argv);
+
 DWORD u8GetModuleFileName(HMODULE hModule, LPSTR lpFilename, DWORD nSize);
 DWORD u8FormatMessage(DWORD dwFlags, LPCVOID lpSource, DWORD dwMessageId, DWORD dwLanguageId,
 	LPSTR lpBuffer, DWORD nSize, va_list *Arguments);
@@ -38,8 +41,8 @@ size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *pt
 
 #if !defined(lu8w_c)
 #if defined(LUA_U8W) || defined(LUA_CORE) || defined(LUA_LIB) || defined(lua_c) || defined(luac_c)
-#undef LoadString
 
+#undef LoadString
 #define GetModuleFileNameA u8GetModuleFileName
 #define FormatMessageA u8FormatMessage
 #define LoadLibraryExA u8LoadLibraryEx
@@ -58,15 +61,15 @@ size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *pt
 #define rename u8rename
 #define strftime u8strftime
 
-#endif /* LUA_U8W or LUA_CORE or LUA_LIB or lua_c or luac_c */
-#endif /* not lu8w_c */
-
-/* strftime function options for Visual Studio 2022 */
+/* strftime function options for Visual Studio 2015-2022 */
 #define LUA_STRFTIMEOPTIONS \
     "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%" \
     "||" "#a#A#b#B#g#G#h#n#p#t#u#w#X#z#Z#%" \
       "#c" \
       "#x" \
       "#d#D#e#F#H#I#j#m#M#r#R#S#T#U#V#W#y#Y"
+
+#endif /* LUA_U8W or LUA_CORE or LUA_LIB or lua_c or luac_c */
+#endif /* not lu8w_c */
 
 #endif /* U8W_H */
