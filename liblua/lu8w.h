@@ -61,6 +61,11 @@ size_t u8strftime(char *buf, size_t len, const char *format, const struct tm *pt
 #define rename u8rename
 #define strftime u8strftime
 
+/* in lauxlib.h */
+/* print a string */
+#define lua_writestring(s,l)   u8fprintf(stdout, "%s", s)
+
+/* in loslib.c */
 /* strftime function options for Visual Studio 2015-2022 */
 #define LUA_STRFTIMEOPTIONS \
     "aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZ%" \
