@@ -190,7 +190,7 @@ local skk_gadget_dayofweek_table = {
 local skk_gadget_unit_table_org = {
 	{"mile", {{"yard", 1760.0}, {"feet", 5280.0}, {"m", 1609.344}, {"km", 1.609344}}},
 	{"yard", {{"feet", 3.0}, {"inch", 36.0}, {"m", 0.9144}, {"cm", 91.44}, {"mm", 914.4}}},
-	{"feet", {{"inch", 12.0}, {"yard",  (1.0 / 3.0)}, {"m", 0.3048}, {"cm", 30.48}, {"mm", 304.8}}},
+	{"feet", {{"inch", 12.0}, {"yard", (1.0 / 3.0)}, {"m", 0.3048}, {"cm", 30.48}, {"mm", 304.8}}},
 	{"inch", {{"feet", (1.0 / 12.0)}, {"yard", (1.0 / 36.0)}, {"m", 0.0254}, {"cm", 2.54}, {"mm", 25.4}}},
 	{"pound", {{"g", 453.59237}, {"ounce", 16.0}, {"grain", 7000.0}}},
 	{"ounce", {{"g", 28.349523125}, {"pound", (1.0 / 16.0)}, {"grain", (7000.0 / 16.0)}}},
@@ -921,7 +921,9 @@ function convert_s_to_table(s)
 		if (q == 0) then
 			if (c == "(") then
 				if (ret ~= "") then
-					ret = ret .. ","
+					if (r ~= "{") then
+						ret = ret .. ","
+					end
 				end
 				ret = ret .. "{"
 			elseif (c == ")" or c == "\x20") then
@@ -1057,7 +1059,7 @@ local function skk_convert_gadget(key, candidate)
 	-- 乱数
 	math.randomseed(skk_gadget_time)
 
-	local f =  load("return " .. convert_s_to_table(candidate))
+	local f = load("return " .. convert_s_to_table(candidate))
 	if (not f) then
 		return candidate
 	end
@@ -1181,7 +1183,7 @@ function lua_skk_search(key, okuri)
 		end
 	end
 
-	local ret =  skk_search(key, okuri)
+	local ret = skk_search(key, okuri)
 
 	-- skk-ignore-dic-word
 	if (enable_skk_ignore_dic_word) then
