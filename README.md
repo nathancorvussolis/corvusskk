@@ -336,11 +336,9 @@ SKK辞書のダウンロード機能では HTTP, HTTPS が使用可能です。�
 
 同時に１つのみ使用可能です。IPv4、IPv6 に対応しています。
 
-通信に使用する文字コードは、EUC-JIS-2004、UTF-8 に対応しています。
+通信に使用する文字コードは、EUC-JIS-2004 / EUC-JP、UTF-8 に対応しています。
 
-通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 を使用してください。
-
-設定を EUC-JIS-2004 にしたとき、Unicode に変換できない場合は候補毎に EUC-JP にフォールバックします。
+通常のSKK辞書サーバーではデフォルトの EUC-JIS-2004 / EUC-JP を使用してください。
 
 サーバーコンプリーション機能は未実装です。
 
@@ -925,7 +923,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.5.4
+Visual Studio Community 2022 17.6.5
 
 * Desktop development with C++
 
@@ -940,9 +938,11 @@ Visual Studio Community 2022 17.5.4
         * C++ ATL for latest v143 build tools (ARM64)
         * Windows 11 SDK (10.0.22621.0)
 
-WiX Toolset v4.0.0
+WiX Toolset v4.0.1
 
-pandoc 3.1.2
+* 要 .NET SDK 6.0 またはそれ以降
+
+pandoc 3.1.6
 
 
 ### ビルド手順
