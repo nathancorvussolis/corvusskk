@@ -7,13 +7,13 @@ call _vsdev.cmd
 
 call _version.cmd
 
-call _wix_install.cmd
+"%WIX%bin\candle.exe" installer-bundle.wxs ^
+-nologo -out "%TARGETDIR%\corvusskk-%VERSION%.wixobj" ^
+-ext WixBalExtension -ext WixUtilExtension
 
-echo build bundle
-
-wix build -arch x86 ^
--ext WixToolset.Bal.wixext -ext WixToolset.Util.wixext ^
-installer-bundle.wxs -out "%TARGETDIR%\corvusskk-%VERSION%.exe"
+"%WIX%bin\light.exe" "%TARGETDIR%\corvusskk-%VERSION%.wixobj" ^
+-nologo -out "%TARGETDIR%\corvusskk-%VERSION%.exe" ^
+-ext WixBalExtension -ext WixUtilExtension
 
 popd
 

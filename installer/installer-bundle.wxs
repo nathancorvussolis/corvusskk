@@ -1,6 +1,7 @@
-﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
-  xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
-  xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+  xmlns:bal="http://schemas.microsoft.com/wix/BalExtension"
+  xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 
   <?include installer-version.wxi ?>
 
@@ -14,19 +15,19 @@
     DisableModify="button"
     Condition="VersionNT &gt;= v6.1">
 
-    <BootstrapperApplication>
+    <BootstrapperApplicationRef
+      Id="WixStandardBootstrapperApplication.RtfLargeLicense">
       <bal:WixStandardBootstrapperApplication
         LicenseFile="theme-bundle\license.rtf"
         LogoFile="theme-bundle\logo.png"
-        SuppressOptionsUI="yes"
-        ShowVersion="yes"
-        Theme="rtfLargeLicense" />
-    </BootstrapperApplication>
+        SuppressOptionsUI="yes" />
+    </BootstrapperApplicationRef>
 
     <!-- v6.1 Service Pack 1 -->
     <bal:Condition
-      Message="This application requires Service Pack 1 for Windows 7 / Server 2008 R2."
-      Condition="NOT ((VersionNT = v6.1) AND (ServicePackLevel &lt; 1))" />
+      Message="This application requires Service Pack 1 for Windows 7 / Server 2008 R2.">
+      <![CDATA[NOT ((VersionNT = v6.1) AND (ServicePackLevel < 1))]]>
+    </bal:Condition>
 
     <!-- v6.3 KB2919355 -->
     <util:FileSearch
@@ -36,8 +37,9 @@
       Variable="NT603HALVER"
       Condition="VersionNT = v6.3" />
     <bal:Condition
-      Message="This application requires S14 Update (KB2919355) for Windows 8.1 / Server 2012 R2."
-      Condition="NOT ((VersionNT = v6.3) AND (NT603HALVER &lt; v6.3.9600.17031))" />
+      Message="This application requires S14 Update (KB2919355) for Windows 8.1 / Server 2012 R2.">
+      <![CDATA[NOT ((VersionNT = v6.3) AND (NT603HALVER < v6.3.9600.17031))]]>
+    </bal:Condition>
 
     <!-- ucrtbase.dll version -->
     <util:FileSearch
@@ -69,10 +71,13 @@
         Id="X86_MSI"
         SourceFile="build\x86.msi"
         DisplayName="x86 modules"
+        ForcePerMachine="yes"
         Compressed="yes"
         InstallCondition="VersionNT">
         <!-- enabled autorun x86 imcrvmgr.exe only on 32-bit Windows. -->
-        <MsiProperty Name="ARCH_NAME" Value="[ARCH_NAME]" />
+        <MsiProperty
+          Name="ARCH_NAME"
+          Value="[ARCH_NAME]" />
       </MsiPackage>
 
       <!-- x64 modules -->
@@ -80,6 +85,7 @@
         Id="X64_MSI"
         SourceFile="build\x64.msi"
         DisplayName="x64 modules"
+        ForcePerMachine="yes"
         Compressed="yes"
         InstallCondition="VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
         After="X86_MSI" />
@@ -89,6 +95,7 @@
         Id="ARM_MSI"
         SourceFile="build\arm.msi"
         DisplayName="ARM modules"
+        ForcePerMachine="yes"
         Compressed="yes"
         InstallCondition="(ARCH_NAME = &quot;ARM64&quot;)"
         After="X64_MSI" />
