@@ -58,6 +58,7 @@
     <None Include="installer-x86.wxs" />
     <None Include="resource-md\markdown.css" />
     <None Include="theme-bundle\license.rtf" />
+    <None Include="theme-bundle\thm.wxl" />
     <None Include="_build.cmd" />
     <None Include="_build_bundle.cmd" />
     <None Include="_build_msi.cmd" />
@@ -73,6 +74,8 @@
     <None Include="_verify.cmd" />
     <None Include="_version.cmd" />
     <None Include="_vsdev.cmd" />
+    <None Include="_wix_install.cmd" />
+    <None Include="_wix_uninstall.cmd" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\LICENSE.TXT" />

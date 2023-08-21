@@ -66,6 +66,12 @@
     <None Include="_vsdev.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="_wix_install.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_wix_uninstall.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
     <None Include="config-lua\init.lua">
       <Filter>config-lua</Filter>
     </None>
@@ -107,6 +113,9 @@
     </None>
     <None Include="..\README.md" />
     <None Include="theme-bundle\license.rtf">
+      <Filter>theme-bundle</Filter>
+    </None>
+    <None Include="theme-bundle\thm.wxl">
       <Filter>theme-bundle</Filter>
     </None>
   </ItemGroup>

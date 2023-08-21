@@ -938,7 +938,9 @@ Visual Studio Community 2022 17.7.0
         * C++ ATL for latest v143 build tools (ARM64)
         * Windows 11 SDK (10.0.22621.0)
 
-WiX Toolset v3.11.2
+WiX Toolset v4.0.1
+
+* 要 .NET SDK 6.0 またはそれ以降
 
 pandoc 3.1.6.1
 
