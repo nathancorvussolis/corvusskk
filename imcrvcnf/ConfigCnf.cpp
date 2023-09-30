@@ -115,14 +115,14 @@ int GetDpi(HWND hwnd)
 	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
 	if (IsWindowsVersion100RS2OrLater())
 	{
-		// try delay load api-ms-win-shcore-scaling-l1-1-1.dll
+		// try delay load user32.dll
 		__try
 		{
-			HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-			UINT dpiX, dpiY;
-			if (SUCCEEDED(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY)))
+			// Windows 10 ver.1607 or later supported
+			UINT wdpi = GetDpiForWindow(hwnd);
+			if (wdpi != 0)
 			{
-				dpi = (int)dpiX;
+				dpi = (int)wdpi;
 			}
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)

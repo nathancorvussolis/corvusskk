@@ -923,7 +923,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.7.0
+Visual Studio Community 2022 17.7.4
 
 * Desktop development with C++
 
@@ -938,11 +938,11 @@ Visual Studio Community 2022 17.7.0
         * C++ ATL for latest v143 build tools (ARM64)
         * Windows 11 SDK (10.0.22621.0)
 
-WiX Toolset v4.0.1
+WiX Toolset v4.0.2
 
 * 要 .NET SDK 6.0 またはそれ以降
 
-pandoc 3.1.6.1
+pandoc 3.1.8
 
 
 ### ビルド手順
