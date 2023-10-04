@@ -28,15 +28,15 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"開始", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"代替", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"送り", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 
@@ -51,9 +51,9 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 	case WM_DPICHANGED_AFTERPARENT:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_CONVPOINT);
 
-		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSize(hDlg, 60));
 
 		return TRUE;
 

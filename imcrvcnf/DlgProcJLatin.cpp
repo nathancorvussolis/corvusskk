@@ -29,11 +29,11 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"ASCII", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"全英", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 
@@ -47,8 +47,8 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	case WM_DPICHANGED_AFTERPARENT:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_JLATTBL);
 
-		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSize(hDlg, 60));
 
 		return TRUE;
 

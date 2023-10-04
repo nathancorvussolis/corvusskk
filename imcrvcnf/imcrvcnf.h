@@ -9,7 +9,7 @@ int CALLBACK PropSheetProc(HWND hwndDlg, UINT uMsg, LPARAM lParam);
 void CreateConfigPath();
 void CreateIpcName();
 BOOL SetFileDacl(LPWSTR path);
-int GetScaledSizeX(HWND hwnd, int size);
+int GetScaledSize(HWND hwnd, int size);
 int GetFontHeight(HWND hwnd, int size);
 void DrawSelectColor(HWND hDlg, int id, COLORREF col);
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault = L"");

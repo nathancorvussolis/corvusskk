@@ -865,8 +865,8 @@ HRESULT LoadSKKDic(HANDLE hCancelEvent, HWND hDlg, SKKDIC &entries_a, SKKDIC &en
 	}
 
 	ListView_SetColumnWidth(hWndListView, 0, LVSCW_AUTOSIZE_USEHEADER);
-	ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 80));
-	ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 80));
+	ListView_SetColumnWidth(hWndListView, 1, GetScaledSize(hDlg, 80));
+	ListView_SetColumnWidth(hWndListView, 2, GetScaledSize(hDlg, 80));
 
 	for (int i = 0; i < count; i++)
 	{

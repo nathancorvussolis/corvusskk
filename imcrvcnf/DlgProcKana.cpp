@@ -37,23 +37,23 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 		lvc.pszText = text;
 
 		lvc.iSubItem = 0;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"ﾛｰﾏ字", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 0, &lvc);
 		lvc.iSubItem = 1;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"かな", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 1, &lvc);
 		lvc.iSubItem = 2;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"カナ", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 2, &lvc);
 		lvc.iSubItem = 3;
-		lvc.cx = GetScaledSizeX(hDlg, 60);
+		lvc.cx = GetScaledSize(hDlg, 60);
 		wcsncpy_s(text, L"ｶﾅ", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 3, &lvc);
 		lvc.iSubItem = 4;
-		lvc.cx = GetScaledSizeX(hDlg, 30);
+		lvc.cx = GetScaledSize(hDlg, 30);
 		wcsncpy_s(text, L"…", _TRUNCATE);
 		ListView_InsertColumn(hWndListView, 4, &lvc);
 
@@ -71,11 +71,11 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 	case WM_DPICHANGED_AFTERPARENT:
 		hWndListView = GetDlgItem(hDlg, IDC_LIST_KANATBL);
 
-		ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 3, GetScaledSizeX(hDlg, 60));
-		ListView_SetColumnWidth(hWndListView, 4, GetScaledSizeX(hDlg, 30));
+		ListView_SetColumnWidth(hWndListView, 0, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 1, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 2, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 3, GetScaledSize(hDlg, 60));
+		ListView_SetColumnWidth(hWndListView, 4, GetScaledSize(hDlg, 30));
 
 		return TRUE;
 

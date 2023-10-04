@@ -39,19 +39,19 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 			lvc.pszText = text;
 
 			lvc.iSubItem = 0;
-			lvc.cx = GetScaledSizeX(hDlg, 90);
+			lvc.cx = GetScaledSize(hDlg, 90);
 			wcsncpy_s(text, preservedkeyInfo[i].text, _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 0, &lvc);
 			lvc.iSubItem = 1;
-			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.cx = GetScaledSize(hDlg, 60);
 			wcsncpy_s(text, L"ALT", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 1, &lvc);
 			lvc.iSubItem = 2;
-			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.cx = GetScaledSize(hDlg, 60);
 			wcsncpy_s(text, L"CTRL", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 2, &lvc);
 			lvc.iSubItem = 3;
-			lvc.cx = GetScaledSizeX(hDlg, 60);
+			lvc.cx = GetScaledSize(hDlg, 60);
 			wcsncpy_s(text, L"SHIFT", _TRUNCATE);
 			ListView_InsertColumn(hWndListView, 3, &lvc);
 		}
@@ -71,10 +71,10 @@ INT_PTR CALLBACK DlgProcPreservedKey(HWND hDlg, UINT message, WPARAM wParam, LPA
 		{
 			hWndListView = GetDlgItem(hDlg, preservedkeyInfo[i].id);
 
-			ListView_SetColumnWidth(hWndListView, 0, GetScaledSizeX(hDlg, 90));
-			ListView_SetColumnWidth(hWndListView, 1, GetScaledSizeX(hDlg, 60));
-			ListView_SetColumnWidth(hWndListView, 2, GetScaledSizeX(hDlg, 60));
-			ListView_SetColumnWidth(hWndListView, 3, GetScaledSizeX(hDlg, 60));
+			ListView_SetColumnWidth(hWndListView, 0, GetScaledSize(hDlg, 90));
+			ListView_SetColumnWidth(hWndListView, 1, GetScaledSize(hDlg, 60));
+			ListView_SetColumnWidth(hWndListView, 2, GetScaledSize(hDlg, 60));
+			ListView_SetColumnWidth(hWndListView, 3, GetScaledSize(hDlg, 60));
 		}
 
 		return TRUE;

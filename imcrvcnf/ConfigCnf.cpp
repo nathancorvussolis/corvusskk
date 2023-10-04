@@ -109,7 +109,7 @@ BOOL SetFileDacl(LPWSTR path)
 int GetDpi(HWND hwnd)
 {
 	HDC hdc = GetDC(hwnd);
-	int dpi = GetDeviceCaps(hdc, LOGPIXELSX);
+	int dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 	ReleaseDC(hwnd, hdc);
 
 	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
@@ -133,7 +133,7 @@ int GetDpi(HWND hwnd)
 	return dpi;
 }
 
-int GetScaledSizeX(HWND hwnd, int size)
+int GetScaledSize(HWND hwnd, int size)
 {
 	return MulDiv(size, GetDpi(hwnd), C_USER_DEFAULT_SCREEN_DPI);
 }
