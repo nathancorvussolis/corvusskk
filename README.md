@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.2.1
+# CorvusSKK ver. 3.2.2
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -923,7 +923,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.7.4
+Visual Studio Community 2022 17.7.6
 
 * Desktop development with C++
 
@@ -935,14 +935,14 @@ Visual Studio Community 2022 17.7.4
     * SDKs, libraries, and frameworks
         * C++ ATL for latest v143 build tools (x86 & x64)
         * C++ ATL for latest v143 build tools (ARM)
-        * C++ ATL for latest v143 build tools (ARM64)
+        * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
         * Windows 11 SDK (10.0.22621.0)
 
 WiX Toolset v4.0.2
 
 * 要 .NET SDK 6.0 またはそれ以降
 
-pandoc 3.1.8
+pandoc 3.1.9
 
 
 ### ビルド手順
