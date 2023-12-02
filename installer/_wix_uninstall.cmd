@@ -3,11 +3,14 @@ setlocal
 
 pushd "%~dp0"
 
-wix extension remove --global WixToolset.UI.wixext
+set EXTENSIONS= ^
+WixToolset.Bal.wixext ^
+WixToolset.UI.wixext ^
+WixToolset.Util.wixext
 
-wix extension remove --global WixToolset.Bal.wixext
-
-wix extension remove --global WixToolset.Util.wixext
+for %%i in (%EXTENSIONS%) do (
+  wix extension remove --global %%i
+)
 
 dotnet tool uninstall --global wix
 

@@ -7,8 +7,6 @@ call _vsdev.cmd
 
 call _version.cmd
 
-call _wix_install.cmd
-
 echo build bundle
 
 wix build -arch x86 ^

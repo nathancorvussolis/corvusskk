@@ -9,8 +9,6 @@ call _version.cmd
 
 call _build_sub.cmd
 
-call _wix_install.cmd
-
 echo build x86.msi
 
 wix build -arch x86 ^
