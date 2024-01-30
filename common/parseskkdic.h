@@ -12,11 +12,8 @@ typedef std::vector< SKKDICCANDIDATE > SKKDICCANDIDATES;
 //送りありエントリのブロック
 typedef std::pair< std::wstring, SKKDICCANDIDATES > SKKDICOKURIBLOCK; //送り仮名、候補
 typedef std::vector< SKKDICOKURIBLOCK > SKKDICOKURIBLOCKS;
-struct OKURIBLOCKS { //avoid C4503
-	SKKDICOKURIBLOCKS o;
-};
-typedef std::pair< std::wstring, OKURIBLOCKS > USEROKURIENTRY; //見出し語、送りブロック
-typedef std::map< std::wstring, OKURIBLOCKS > USEROKURI;
+typedef std::pair< std::wstring, SKKDICOKURIBLOCKS > USEROKURIENTRY; //見出し語、送りブロック
+typedef std::map< std::wstring, SKKDICOKURIBLOCKS > USEROKURI;
 
 //見出し語順序
 typedef std::vector< std::wstring > KEYORDER;

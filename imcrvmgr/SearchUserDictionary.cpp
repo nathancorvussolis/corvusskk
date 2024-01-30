@@ -42,7 +42,7 @@ std::wstring SearchUserDic(const std::wstring &searchkey, const std::wstring &ok
 		auto userokuri_itr = userokuri.find(searchkey);
 		if (userokuri_itr != userokuri.end())
 		{
-			REVERSE_ITERATION_I(so_ritr, userokuri_itr->second.o)
+			REVERSE_ITERATION_I(so_ritr, userokuri_itr->second)
 			{
 				if (so_ritr->first == okuri)
 				{
@@ -294,13 +294,13 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 		{
 			okurics.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
 			userokurientry.first = searchkey;
-			userokurientry.second.o.push_back(std::make_pair(okuri, okurics));
+			userokurientry.second.push_back(std::make_pair(okuri, okurics));
 			userokuri.insert(userokurientry);
 		}
 		else
 		{
 			bool hit_okuri = false;
-			FORWARD_ITERATION_I(so_itr, userokuri_itr->second.o)
+			FORWARD_ITERATION_I(so_itr, userokuri_itr->second)
 			{
 				if (so_itr->first == okuri)
 				{
@@ -322,9 +322,9 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 					}
 
 					okurics = so_itr->second;
-					userokuri_itr->second.o.erase(so_itr);
-					userokuri_itr->second.o.push_back(std::make_pair(okuri, okurics));
-					so_itr = userokuri_itr->second.o.begin();
+					userokuri_itr->second.erase(so_itr);
+					userokuri_itr->second.push_back(std::make_pair(okuri, okurics));
+					so_itr = userokuri_itr->second.begin();
 					hit_okuri = true;
 					break;
 				}
@@ -332,7 +332,7 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 			if (!hit_okuri)
 			{
 				okurics.push_back(std::make_pair(candidate_esc, std::wstring(L"")));
-				userokuri_itr->second.o.push_back(std::make_pair(okuri, okurics));
+				userokuri_itr->second.push_back(std::make_pair(okuri, okurics));
 			}
 		}
 	}
@@ -384,7 +384,7 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	auto userokuri_itr = userokuri.find(searchkey);
 	if (userokuri_itr != userokuri.end())
 	{
-		FORWARD_ITERATION(so_itr, userokuri_itr->second.o)
+		FORWARD_ITERATION(so_itr, userokuri_itr->second)
 		{
 			FORWARD_ITERATION(sc_itr, so_itr->second)
 			{
@@ -399,14 +399,14 @@ void DelUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 			}
 			if (so_itr->second.empty())
 			{
-				so_itr = userokuri_itr->second.o.erase(so_itr);
+				so_itr = userokuri_itr->second.erase(so_itr);
 			}
 			else
 			{
 				++so_itr;
 			}
 		}
-		if (userokuri_itr->second.o.empty())
+		if (userokuri_itr->second.empty())
 		{
 			userokuri.erase(userokuri_itr);
 		}
@@ -572,7 +572,7 @@ BOOL LoadUserDic()
 				if (!so.empty())
 				{
 					userokurientry.first = key;
-					userokurientry.second.o = so;
+					userokurientry.second = so;
 					userokuri.insert(userokurientry);
 				}
 			}
@@ -653,7 +653,7 @@ void SaveUserDic(USERDATA *userdata)
 			auto userokuri_itr = userdata->userokuri.find(*keyorder_ritr);
 			if (userokuri_itr != userdata->userokuri.end())
 			{
-				so = userokuri_itr->second.o;
+				so = userokuri_itr->second;
 			}
 			WriteUserDicEntry(fp, userdic_itr->first, userdic_itr->second, so);
 		}
