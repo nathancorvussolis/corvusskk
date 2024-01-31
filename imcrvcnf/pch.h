@@ -23,7 +23,6 @@
 #include <CommCtrl.h>
 #include <CommDlg.h>
 #include <WinInet.h>
-#include <ShellScalingApi.h>
 #include <Shlwapi.h>
 #include <shellapi.h>
 
