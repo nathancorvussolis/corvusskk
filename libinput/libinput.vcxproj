@@ -227,7 +227,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>input.def</ModuleDefinitionFile>
-      <CETCompat>true</CETCompat>
     </Link>
     <PostBuildEvent>
       <Command>if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>
@@ -247,7 +246,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <ModuleDefinitionFile>input.def</ModuleDefinitionFile>
-      <CETCompat>true</CETCompat>
     </Link>
     <PostBuildEvent>
       <Command>if exist "$(OutDir)input.dll" del "$(OutDir)input.dll"</Command>

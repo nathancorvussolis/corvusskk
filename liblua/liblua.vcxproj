@@ -145,7 +145,6 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <CETCompat>true</CETCompat>
     </Link>
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
@@ -166,7 +165,6 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <CETCompat>true</CETCompat>
     </Link>
     <ResourceCompile>
       <AdditionalOptions>/c 65001</AdditionalOptions>
