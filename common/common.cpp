@@ -124,31 +124,20 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 	NTSTATUS status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, nullptr, 0);
 	if (BCRYPT_SUCCESS(status))
 	{
-		DWORD cbHashObject = 0;
-		ULONG cbResult = 0;
-		status = BCryptGetProperty(hAlg, BCRYPT_OBJECT_LENGTH, (PBYTE)&cbHashObject, sizeof(DWORD), &cbResult, 0);
+		BCRYPT_HASH_HANDLE hHash = nullptr;
+		status = BCryptCreateHash(hAlg, &hHash, nullptr, 0, nullptr, 0, 0);
 		if (BCRYPT_SUCCESS(status))
 		{
-			PBYTE pbHashObject = (PBYTE)LocalAlloc(LPTR, cbHashObject);
-			if (pbHashObject != nullptr)
+			status = BCryptHashData(hHash, data, datalen, 0);
+			if (BCRYPT_SUCCESS(status))
 			{
-				BCRYPT_HASH_HANDLE hHash = nullptr;
-				status = BCryptCreateHash(hAlg, &hHash, pbHashObject, cbHashObject, nullptr, 0, 0);
+				status = BCryptFinishHash(hHash, digest, digestlen, 0);
 				if (BCRYPT_SUCCESS(status))
 				{
-					status = BCryptHashData(hHash, data, datalen, 0);
-					if (BCRYPT_SUCCESS(status))
-					{
-						status = BCryptFinishHash(hHash, digest, digestlen, 0);
-						if (BCRYPT_SUCCESS(status))
-						{
-							bRet = TRUE;
-						}
-					}
-					BCryptDestroyHash(hHash);
+					bRet = TRUE;
 				}
-				LocalFree(pbHashObject);
 			}
+			BCryptDestroyHash(hHash);
 		}
 		BCryptCloseAlgorithmProvider(hAlg, 0);
 	}
