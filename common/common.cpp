@@ -113,7 +113,7 @@ BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, 
 {
 	BOOL bRet = FALSE;
 
-	if (digest == nullptr || data == nullptr)
+	if (data == nullptr || digest == nullptr)
 	{
 		return FALSE;
 	}
@@ -151,42 +151,24 @@ BOOL IsLittleEndian()
 	return (*(UCHAR *)&n == 1);
 }
 
-ULONG htonlc(ULONG h)
+ULONG bswap_l(ULONG l)
 {
-	if (IsLittleEndian())
-	{
-		h = (h << 24) | ((h & 0x0000FF00) << 8) |
-			((h & 0x00FF0000) >> 8) | (h >> 24);
-	}
-	return h;
+	return (IsLittleEndian() ? _byteswap_ulong(l) : l);
 }
 
-ULONG ntohlc(ULONG n)
+USHORT bswap_s(USHORT s)
 {
-	return htonlc(n);
-}
-
-USHORT htonsc(USHORT h)
-{
-	if (IsLittleEndian())
-	{
-		h = (h << 8) | (h >> 8);
-	}
-	return h;
-}
-
-USHORT ntohsc(USHORT n)
-{
-	return htonsc(n);
+	return (IsLittleEndian() ? _byteswap_ushort(s) : s);
 }
 
 BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 {
 	BOOL bRet = FALSE;
-	LPCWSTR pszAlgId = BCRYPT_SHA1_ALGORITHM;
-	CONST DWORD dwDigestLen = 20;
-	CONST USHORT maskVersion = 0x5000;
 	GUID lguid = rguid;
+
+	LPCWSTR ALGORITHM_ID = BCRYPT_SHA1_ALGORITHM;
+	CONST DWORD DIGEST_LENGTH = 20;
+	CONST USHORT MASK_VERSION = 0x5000;
 
 	if (name == nullptr || namelen == 0 || puuid == nullptr)
 	{
@@ -197,15 +179,15 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 	if (pMessage != nullptr)
 	{
 		//network byte order
-		lguid.Data1 = htonlc(lguid.Data1);
-		lguid.Data2 = htonsc(lguid.Data2);
-		lguid.Data3 = htonsc(lguid.Data3);
+		lguid.Data1 = bswap_l(lguid.Data1);
+		lguid.Data2 = bswap_s(lguid.Data2);
+		lguid.Data3 = bswap_s(lguid.Data3);
 
 		memcpy_s(pMessage, sizeof(lguid), &lguid, sizeof(lguid));
 		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
 
-		BYTE digest[dwDigestLen];
-		if (GetDigest(pszAlgId, pMessage, sizeof(lguid) + namelen, digest, dwDigestLen))
+		BYTE digest[DIGEST_LENGTH] = {};
+		if (GetDigest(ALGORITHM_ID, pMessage, (DWORD)LocalSize(pMessage), digest, (DWORD)sizeof(digest)))
 		{
 			GUID dguid = GUID_NULL;
 			dguid.Data1 = *(LONG *)&digest[0];
@@ -214,12 +196,12 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 			*(ULONGLONG *)dguid.Data4 = *(ULONGLONG *)&digest[8];
 
 			//local byte order
-			dguid.Data1 = ntohlc(dguid.Data1);
-			dguid.Data2 = ntohsc(dguid.Data2);
-			dguid.Data3 = ntohsc(dguid.Data3);
+			dguid.Data1 = bswap_l(dguid.Data1);
+			dguid.Data2 = bswap_s(dguid.Data2);
+			dguid.Data3 = bswap_s(dguid.Data3);
 			//version
 			dguid.Data3 &= 0x0FFF;
-			dguid.Data3 |= maskVersion;
+			dguid.Data3 |= MASK_VERSION;
 			//variant
 			dguid.Data4[0] &= 0x3F;
 			dguid.Data4[0] |= 0x80;
