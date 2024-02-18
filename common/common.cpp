@@ -190,7 +190,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		if (GetDigest(ALGORITHM_ID, pMessage, (DWORD)LocalSize(pMessage), digest, (DWORD)sizeof(digest)))
 		{
 			GUID dguid = GUID_NULL;
-			dguid.Data1 = *(LONG *)&digest[0];
+			dguid.Data1 = *(ULONG *)&digest[0];
 			dguid.Data2 = *(USHORT *)&digest[4];
 			dguid.Data3 = *(USHORT *)&digest[6];
 			*(ULONGLONG *)dguid.Data4 = *(ULONGLONG *)&digest[8];
