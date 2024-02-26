@@ -195,7 +195,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 			dguid.Data3 = *(USHORT *)&digest[6];
 			*(ULONGLONG *)dguid.Data4 = *(ULONGLONG *)&digest[8];
 
-			//local byte order
+			//host byte order
 			dguid.Data1 = bswap_l(dguid.Data1);
 			dguid.Data2 = bswap_s(dguid.Data2);
 			dguid.Data3 = bswap_s(dguid.Data3);
