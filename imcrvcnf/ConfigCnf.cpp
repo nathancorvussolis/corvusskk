@@ -1,5 +1,6 @@
 ﻿
 #include "configxml.h"
+#include "utf8.h"
 #include "imcrvcnf.h"
 #include "resource.h"
 
@@ -329,4 +330,9 @@ BOOL SaveConfigXml(HWND hPropSheetDlg)
 	}
 
 	return TRUE;
+}
+
+void ReplaceWellFormed(LPWSTR str, SIZE_T size)
+{
+	wcsncpy_s(str, size, TOWELLFORMED(str), _TRUNCATE);
 }

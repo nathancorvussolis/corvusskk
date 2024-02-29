@@ -574,6 +574,7 @@ if exist "$(OutDir)$(TargetName).exp" del "$(OutDir)$(TargetName).exp"
   <ItemGroup>
     <ClCompile Include="..\common\common.cpp" />
     <ClCompile Include="..\common\configxml.cpp" />
+    <ClCompile Include="..\common\utf8.cpp" />
     <ClCompile Include="CandidateKeyHandler.cpp" />
     <ClCompile Include="CandidateList.cpp" />
     <ClCompile Include="CandidatePaint.cpp" />

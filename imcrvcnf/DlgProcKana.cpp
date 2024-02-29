@@ -133,10 +133,17 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				GetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_KA, rkc.katakana_ank, _countof(rkc.katakana_ank));
 				IsDlgButtonChecked(hDlg, IDC_CHECKBOX_KANATBL_SOKU) == BST_CHECKED ? rkc.soku = TRUE : rkc.soku = FALSE;
 				IsDlgButtonChecked(hDlg, IDC_CHECKBOX_KANATBL_WAIT) == BST_CHECKED ? rkc.wait = TRUE : rkc.wait = FALSE;
+
+				REPLACE_WELLFORMED(rkc.roman);
+				REPLACE_WELLFORMED(rkc.hiragana);
+				REPLACE_WELLFORMED(rkc.katakana);
+				REPLACE_WELLFORMED(rkc.katakana_ank);
+
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_R, rkc.roman);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_H, rkc.hiragana);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_K, rkc.katakana);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_KA, rkc.katakana_ank);
+
 				ListView_SetItemText(hWndListView, index, 0, rkc.roman);
 				ListView_SetItemText(hWndListView, index, 1, rkc.hiragana);
 				ListView_SetItemText(hWndListView, index, 2, rkc.katakana);
@@ -155,10 +162,17 @@ INT_PTR CALLBACK DlgProcKana(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPar
 				GetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_KA, rkc.katakana_ank, _countof(rkc.katakana_ank));
 				IsDlgButtonChecked(hDlg, IDC_CHECKBOX_KANATBL_SOKU) == BST_CHECKED ? rkc.soku = TRUE : rkc.soku = FALSE;
 				IsDlgButtonChecked(hDlg, IDC_CHECKBOX_KANATBL_WAIT) == BST_CHECKED ? rkc.wait = TRUE : rkc.wait = FALSE;
+
+				REPLACE_WELLFORMED(rkc.roman);
+				REPLACE_WELLFORMED(rkc.hiragana);
+				REPLACE_WELLFORMED(rkc.katakana);
+				REPLACE_WELLFORMED(rkc.katakana_ank);
+
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_R, rkc.roman);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_H, rkc.hiragana);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_K, rkc.katakana);
 				SetDlgItemTextW(hDlg, IDC_EDIT_KANATBL_KA, rkc.katakana_ank);
+
 				item.mask = LVIF_TEXT;
 				item.pszText = rkc.roman;
 				item.iItem = count;

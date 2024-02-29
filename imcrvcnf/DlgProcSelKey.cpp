@@ -115,14 +115,19 @@ INT_PTR CALLBACK DlgProcSelKey(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				}
 				int sp = IS_SURROGATE_PAIR(num[0], num[1]) ? 1 : 0;
 				num[1 + sp] = L'\0';
+				REPLACE_WELLFORMED(num);
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_DISP, num);
 				ListView_SetItemText(hWndListView, index, 1, num);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num, _countof(num));
 				num[1] = L'\0';
+				REPLACE_WELLFORMED(num);
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE1, num);
 				ListView_SetItemText(hWndListView, index, 2, num);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num, _countof(num));
 				num[1] = L'\0';
+				REPLACE_WELLFORMED(num);
 				SetDlgItemTextW(hDlg, IDC_EDIT_SELKEY_SPARE2, num);
 				ListView_SetItemText(hWndListView, index, 3, num);
 

@@ -65,8 +65,13 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
 				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
+
+				REPLACE_WELLFORMED(ajc.ascii);
+				REPLACE_WELLFORMED(ajc.jlatin);
+
 				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
 				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
+
 				ListView_SetItemText(hWndListView, index, 0, ajc.ascii);
 				ListView_SetItemText(hWndListView, index, 1, ajc.jlatin);
 			}
@@ -76,8 +81,13 @@ INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii, _countof(ajc.ascii));
 				GetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin, _countof(ajc.jlatin));
+
+				REPLACE_WELLFORMED(ajc.ascii);
+				REPLACE_WELLFORMED(ajc.jlatin);
+
 				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_A, ajc.ascii);
 				SetDlgItemTextW(hDlg, IDC_EDIT_JLATTBL_J, ajc.jlatin);
+
 				item.mask = LVIF_TEXT;
 				item.pszText = ajc.ascii;
 				item.iItem = count;

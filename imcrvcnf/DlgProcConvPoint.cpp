@@ -69,12 +69,17 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key);
 				ListView_SetItemText(hWndListView, index, 0, key);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key);
 				ListView_SetItemText(hWndListView, index, 1, key);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				ListView_SetItemText(hWndListView, index, 2, key);
 			}
@@ -83,19 +88,25 @@ INT_PTR CALLBACK DlgProcConvPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 
 				item.mask = LVIF_TEXT;
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_ST, key);
 				item.pszText = key;
 				item.iItem = count;
 				item.iSubItem = 0;
 				ListView_InsertItem(hWndListView, &item);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_AL, key);
 				item.pszText = key;
 				item.iItem = count;
 				item.iSubItem = 1;
 				ListView_SetItem(hWndListView, &item);
+
 				GetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key, _countof(key));
+				REPLACE_WELLFORMED(key);
 				SetDlgItemTextW(hDlg, IDC_EDIT_CONVPOINT_OK, key);
 				item.pszText = key;
 				item.iItem = count;

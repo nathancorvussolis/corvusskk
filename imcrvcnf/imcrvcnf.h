@@ -15,6 +15,7 @@ void DrawSelectColor(HWND hDlg, int id, COLORREF col);
 void LoadCheckButton(HWND hDlg, int nIDDlgItem, LPCWSTR lpAppName, LPCWSTR lpKeyName, LPCWSTR lpDefault = L"");
 void SaveCheckButton(IXmlWriter *pWriter, HWND hDlg, int nIDDlgItem, LPCWSTR lpKeyName);
 BOOL SaveConfigXml(HWND hDlg);
+void ReplaceWellFormed(LPWSTR str, SIZE_T size);
 // DlgDicMake
 void MakeSKKDic(HWND hDlg);
 // DlgDicAddUrl
@@ -76,3 +77,5 @@ extern WCHAR pathskkdic[MAX_PATH];		//取込SKK辞書
 extern WCHAR urlskkdic[INTERNET_MAX_URL_LENGTH];	//URL
 
 #define PROPSHEET_IDTOHWND(hDlg, id) PropSheet_IndexToHwnd(hDlg, PropSheet_IdToIndex(hDlg, id))
+
+#define REPLACE_WELLFORMED(str) ReplaceWellFormed(str, _countof(str))
