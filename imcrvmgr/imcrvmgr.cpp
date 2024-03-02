@@ -48,7 +48,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	wc.style = CS_HREDRAW | CS_VREDRAW;
 	wc.lpfnWndProc = WndProc;
 	wc.hInstance = hInst;
-	wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+	wc.hCursor = LoadCursorW(nullptr, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wc.lpszClassName = DictionaryManagerClass;
 	RegisterClassExW(&wc);
@@ -77,17 +77,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 #endif
 	UpdateWindow(hWnd);
 
-#pragma warning(push)
-#pragma warning(disable:6387)
 	while (GetMessageW(&msg, nullptr, 0, 0))
 	{
-		if (!TranslateAcceleratorW(msg.hwnd, nullptr, &msg))
-		{
-			TranslateMessage(&msg);
-			DispatchMessageW(&msg);
-		}
+		TranslateMessage(&msg);
+		DispatchMessageW(&msg);
 	}
-#pragma warning(pop)
 
 	ReleaseMutex(hMutex);
 	CloseHandle(hMutex);
