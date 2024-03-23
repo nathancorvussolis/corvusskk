@@ -3,14 +3,14 @@ setlocal
 
 pushd "%~dp0"
 
-set WIX_VERSION=4.0.4
+set WIXTOOLSET_VERSION=4.0.5
 
-dotnet tool update --global --version %WIX_VERSION% wix
+dotnet tool update wix --global --version %WIXTOOLSET_VERSION%
 
 echo [Tool]
 wix --version
 
-set EXTENSIONS= ^
+set WIXTOOLSET_EXTENSIONS= ^
 WixToolset.Bal.wixext ^
 WixToolset.ComPlus.wixext ^
 WixToolset.Dependency.wixext ^
@@ -27,12 +27,9 @@ WixToolset.UI.wixext ^
 WixToolset.Util.wixext ^
 WixToolset.VisualStudio.wixext
 
-for %%i in (%EXTENSIONS%) do (
+for %%i in (%WIXTOOLSET_EXTENSIONS%) do (
   wix extension remove --global %%i
-)
-
-for %%i in (%EXTENSIONS%) do (
-  wix extension add --global %%i/%WIX_VERSION%
+  wix extension add --global %%i/%WIXTOOLSET_VERSION%
 )
 
 echo [Extensions]

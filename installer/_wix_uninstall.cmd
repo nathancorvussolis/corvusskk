@@ -3,7 +3,7 @@ setlocal
 
 pushd "%~dp0"
 
-set EXTENSIONS= ^
+set WIXTOOLSET_EXTENSIONS= ^
 WixToolset.Bal.wixext ^
 WixToolset.ComPlus.wixext ^
 WixToolset.Dependency.wixext ^
@@ -20,11 +20,11 @@ WixToolset.UI.wixext ^
 WixToolset.Util.wixext ^
 WixToolset.VisualStudio.wixext
 
-for %%i in (%EXTENSIONS%) do (
+for %%i in (%WIXTOOLSET_EXTENSIONS%) do (
   wix extension remove --global %%i
 )
 
-dotnet tool uninstall --global wix
+dotnet tool uninstall wix --global
 
 popd
 
