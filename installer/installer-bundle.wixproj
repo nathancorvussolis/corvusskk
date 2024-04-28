@@ -1,0 +1,37 @@
+﻿<Project Sdk="WixToolset.Sdk/$(WIXTOOLSET_VERSION)">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <InstallerPlatform>x86</InstallerPlatform>
+    <Configuration>Release</Configuration>
+    <SuppressValidation>true</SuppressValidation>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <OutputName>corvusskk-$(VERSION)</OutputName>
+    <!--
+    <BaseIntermediateOutputPath />
+    <OutDir />
+    <SignOutput />
+    -->
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="installer-bundle.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" Version="$(WIXTOOLSET_VERSION)" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="$(WIXTOOLSET_VERSION)" />
+  </ItemGroup>
+  <Target Name="BeforeSigning">
+    <Message Importance="high" Text="BeforeSigning" />
+  </Target>
+  <Target Name="SignBundleEngine">
+    <Message Importance="high" Text="SignBundleEngine: @(SignBundleEngine)" />
+    <Exec Command="$(SIGNCOMMAND) &quot;%(SignBundleEngine.FullPath)&quot;" />
+  </Target>
+  <Target Name="SignBundle">
+    <Message Importance="high" Text="SignBundle: @(SignBundle)" />
+    <Exec Command="$(SIGNCOMMAND) &quot;%(SignBundle.FullPath)&quot;" />
+  </Target>
+  <Target Name="AfterSigning">
+    <Copy SourceFiles="%(SignBundleEngine.FullPath)" DestinationFolder="$(OutDir)"
+      UseHardlinksIfPossible="true" />
+  </Target>
+</Project>

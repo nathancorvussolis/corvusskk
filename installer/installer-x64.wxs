@@ -1,11 +1,9 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
   xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <?include installer-version.wxi ?>
-
   <Package
     Name="CorvusSKK (x64)"
-    Version="$(var.version)"
+    Version="$(env.VERSION)"
     Manufacturer="nathancorvussolis"
     Language="1033"
     Scope="perMachine"
@@ -31,7 +29,7 @@
     <DirectoryRef Id="IMCRVSKK_X64">
       <Component Id="CNF_X64" Guid="2DFD9121-84B7-48E3-9D4D-5A51103906CC">
         <File Id="F_imcrvcnf_x64" Name="imcrvcnf.exe"
-          Source="..\x64\Release\imcrvcnf.exe" KeyPath="yes">
+          Source="..\build\x64\Release\imcrvcnf.exe" KeyPath="yes">
           <!-- overwrite x86 shortcut -->
           <Shortcut Id="S_imcrvcnf_x64" Name="CONFIG"
             Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_X64"
@@ -41,23 +39,23 @@
       </Component>
       <Component Id="MGR_X64" Guid="3FE36409-BA38-46DC-ACE6-3EEF950807B1">
         <File Id="F_imcrvmgr_x64" Name="imcrvmgr.exe"
-          Source="..\x64\Release\imcrvmgr.exe" KeyPath="yes" />
+          Source="..\build\x64\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_X64" Guid="010DBC18-3C6C-491D-9236-C68B94905C81">
         <File Id="F_imcrvtip_x64" Name="imcrvtip.dll"
-          Source="..\x64\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
+          Source="..\build\x64\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_X64" Guid="603A9A91-D244-4AA7-A8AD-56B2563C0C25">
         <File Id="F_luaexe_x64" Name="lua.exe"
-          Source="..\x64\Release\lua.exe" KeyPath="yes" />
+          Source="..\build\x64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_X64" Guid="39B37C2E-8821-47E8-98FE-00503A54894C">
         <File Id="F_luadll_x64" Name="lua54.dll"
-          Source="..\x64\Release\lua54.dll" KeyPath="yes" />
+          Source="..\build\x64\Release\lua54.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_X64" Guid="796681FD-4DAE-4658-A7C1-B87E6F2CCE6C">
         <File Id="F_zlibdll_x64" Name="zlib1.dll"
-          Source="..\x64\Release\zlib1.dll" KeyPath="yes" />
+          Source="..\build\x64\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -76,11 +74,13 @@
       </Component>
     </DirectoryRef>
 
-    <Component Id="REG_X64" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC" Directory="TARGETDIR">
-      <RegistryValue Id="RV_run_x64" Action="write"
-        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
-        Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x64]&quot;" KeyPath="yes" />
-    </Component>
+    <DirectoryRef Id="IMCRVSKK_X64">
+      <Component Id="REG_X64" Guid="B3A8044A-CA52-4976-A2DA-76396BBBADAC">
+        <RegistryValue Id="RV_run_x64" Action="write"
+          Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
+          Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x64]&quot;" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
 
     <Feature Id="Default" Title="Main" Level="1">
       <ComponentRef Id="CNF_X64" />

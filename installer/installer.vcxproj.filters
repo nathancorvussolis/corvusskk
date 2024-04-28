@@ -21,57 +21,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="_build.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_build_bundle.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_build_msi.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_build_sub.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_clean.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_debug_reg.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_debug_unreg.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_sign.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_solution_build.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_solution_build_debug.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_solution_clean.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_solution_clean_debug.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_verify.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_version.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_vsdev.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_wix_install.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_wix_uninstall.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="config-lua\init.lua">
       <Filter>config-lua</Filter>
     </None>
@@ -102,9 +51,6 @@
     <None Include="installer-bundle-ucrt.wxi">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="installer-version.wxi">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="installer-x64.wxs">
       <Filter>Installer Files</Filter>
     </None>
@@ -117,6 +63,57 @@
     </None>
     <None Include="theme-bundle\thm.wxl">
       <Filter>theme-bundle</Filter>
+    </None>
+    <None Include="installer-bundle.wixproj">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="installer-msi.wixproj">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_bundle.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_msi.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_build_sub.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_clean.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_debug_reg.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_debug_unreg.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_env.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_sign.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_build.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_build_debug.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_clean.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_solution_clean_debug.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_verify.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_vsdev.cmd">
+      <Filter>Installer Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

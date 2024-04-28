@@ -1,11 +1,9 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
   xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <?include installer-version.wxi ?>
-
   <Package
     Name="CorvusSKK (ARM)"
-    Version="$(var.version)"
+    Version="$(env.VERSION)"
     Manufacturer="nathancorvussolis"
     Language="1033"
     Scope="perMachine"
@@ -42,7 +40,7 @@
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="CNF_ARM64" Guid="D323467E-FC02-4627-A2F7-13277AE8D843">
         <File Id="F_imcrvcnf_arm64" Name="imcrvcnf.exe"
-          Source="..\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
+          Source="..\build\ARM64\Release\imcrvcnf.exe" KeyPath="yes">
           <!-- overwrite x86 shortcut -->
           <Shortcut Id="S_imcrvcnf_arm64" Name="CONFIG"
             Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_ARM64"
@@ -52,24 +50,24 @@
       </Component>
       <Component Id="MGR_ARM64" Guid="09C025FA-27DC-486A-AD7E-5BA082F39779">
         <File Id="F_imcrvmgr_arm64" Name="imcrvmgr.exe"
-          Source="..\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
+          Source="..\build\ARM64\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_ARM64" Guid="AE889CAA-ADE4-47C8-80EE-D024264F93D5">
         <!-- ARM64EC -->
         <File Id="F_imcrvtip_arm64" Name="imcrvtip.dll"
-          Source="..\ARM64EC\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
+          Source="..\build\ARM64EC\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_ARM64" Guid="1A3572E7-942D-4F80-95B9-187681EA786A">
         <File Id="F_luaexe_arm64" Name="lua.exe"
-          Source="..\ARM64\Release\lua.exe" KeyPath="yes" />
+          Source="..\build\ARM64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86">
         <File Id="F_luadll_arm64" Name="lua54.dll"
-          Source="..\ARM64\Release\lua54.dll" KeyPath="yes" />
+          Source="..\build\ARM64\Release\lua54.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508">
         <File Id="F_zlibdll_arm64" Name="zlib1.dll"
-          Source="..\ARM64\Release\zlib1.dll" KeyPath="yes" />
+          Source="..\build\ARM64\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -93,15 +91,17 @@
       <Component Id="TIP_ARM32" Guid="26DEC436-067C-4629-AB3C-E15EEBF4349B" Bitness="always32">
         <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
         <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll"
-          Source="..\ARM\Release\imcrvtip.dll" KeyPath="yes" />
+          Source="..\build\ARM\Release\imcrvtip.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
-    <Component Id="REG_ARM64" Guid="5C935156-F6EC-4744-A5D5-3C2D1784C0D7" Directory="TARGETDIR">
-      <RegistryValue Id="RV_run_arm64" Action="write"
-        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
-        Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_arm64]&quot;" KeyPath="yes" />
-    </Component>
+    <DirectoryRef Id="IMCRVSKK_ARM64">
+      <Component Id="REG_ARM64" Guid="5C935156-F6EC-4744-A5D5-3C2D1784C0D7">
+        <RegistryValue Id="RV_run_arm64" Action="write"
+          Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
+          Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_arm64]&quot;" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
 
     <Feature Id="Default" Title="Main" Level="1">
       <ComponentRef Id="CNF_ARM64" />

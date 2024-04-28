@@ -1,32 +1,25 @@
 @echo off
 setlocal
-
 pushd "%~dp0"
 
 call _vsdev.cmd
 
-call _version.cmd
+call _env.cmd
 
 call _build_sub.cmd
 
-echo build x86.msi
+if not defined SIGNCOMMAND set SignOutput=false
 
-wix build -arch x86 ^
--ext WixToolset.UI.wixext ^
--src installer-x86.wxs -out "%TARGETDIR%\x86.msi"
+set BUILDCOMMAND=dotnet build installer-msi.wixproj -nologo -verbosity:normal -target:Build
+
+echo build x86.msi
+%BUILDCOMMAND% -property:InstallerPlatform=x86 -property:BaseIntermediateOutputPath=%OutDir%\x86\
 
 echo build x64.msi
-
-wix build -arch x64 ^
--ext WixToolset.UI.wixext ^
--src installer-x64.wxs -out "%TARGETDIR%\x64.msi"
+%BUILDCOMMAND% -property:InstallerPlatform=x64 -property:BaseIntermediateOutputPath=%OutDir%\x64\
 
 echo build arm.msi
-
-wix build -arch arm64 ^
--ext WixToolset.UI.wixext ^
--src installer-arm.wxs -out "%TARGETDIR%\arm.msi"
+%BUILDCOMMAND% -property:InstallerPlatform=arm64 -property:BaseIntermediateOutputPath=%OutDir%\arm\
 
 popd
-
 endlocal

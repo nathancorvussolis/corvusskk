@@ -923,7 +923,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.9.2
+Visual Studio Community 2022 17.9.6
 
 * Desktop development with C++
 
@@ -938,22 +938,14 @@ Visual Studio Community 2022 17.9.2
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
         * Windows 11 SDK (10.0.22621.0)
 
-WiX Toolset v4.0.4
+WiX Toolset v5.0.0
 
 * requires the .NET SDK, version 6 or later.
 
-pandoc 3.1.12.2
+pandoc 3.1.13
 
 
 ### ビルド手順
-
-WiX Toolset のインストール/アップデート
-
-    > installer\_wix_install.cmd
-
-WiX Toolset のアンインストール
-
-    > installer\_wix_uninstall.cmd
 
 ビルド
 

@@ -1,11 +1,9 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
   xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-  <?include installer-version.wxi ?>
-
   <Package
     Name="CorvusSKK (x86)"
-    Version="$(var.version)"
+    Version="$(env.VERSION)"
     Manufacturer="nathancorvussolis"
     Language="1033"
     Scope="perMachine"
@@ -36,7 +34,7 @@
     <DirectoryRef Id="IMCRVSKK_X86">
       <Component Id="CNF_X86" Guid="B3338B63-FB00-4206-8678-6352340F6685">
         <File Id="F_imcrvcnf_x86" Name="imcrvcnf.exe"
-          Source="..\Win32\Release\imcrvcnf.exe" KeyPath="yes">
+          Source="..\build\Win32\Release\imcrvcnf.exe" KeyPath="yes">
           <Shortcut Id="S_imcrvcnf_x86" Name="CONFIG"
             Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_X86"
             Show="normal" Advertise="yes" />
@@ -45,23 +43,23 @@
       </Component>
       <Component Id="MGR_X86" Guid="7AAEB314-5B77-4DEB-BA18-E7FD562990B7">
         <File Id="F_imcrvmgr_x86" Name="imcrvmgr.exe"
-          Source="..\Win32\Release\imcrvmgr.exe" KeyPath="yes" />
+          Source="..\build\Win32\Release\imcrvmgr.exe" KeyPath="yes" />
       </Component>
       <Component Id="TIP_X86" Guid="ACDB59A6-C6EE-4291-B2DE-EA808AB0241B">
         <File Id="F_imcrvtip_x86" Name="imcrvtip.dll"
-          Source="..\Win32\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
+          Source="..\build\Win32\Release\imcrvtip.dll" KeyPath="yes" SelfRegCost="1" />
       </Component>
       <Component Id="LUAEXE_X86" Guid="288FF289-0EAA-405B-87ED-4F367D40546F">
         <File Id="F_luaexe_x86" Name="lua.exe"
-          Source="..\Win32\Release\lua.exe" KeyPath="yes" />
+          Source="..\build\Win32\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_X86" Guid="84898511-4C96-4114-A7EE-8F32E260D28A">
         <File Id="F_luadll_x86" Name="lua54.dll"
-          Source="..\Win32\Release\lua54.dll" KeyPath="yes" />
+          Source="..\build\Win32\Release\lua54.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_X86" Guid="190D4F82-EFE6-4907-8DD6-B53E771D781E">
         <File Id="F_zlibdll_x86" Name="zlib1.dll"
-          Source="..\Win32\Release\zlib1.dll" KeyPath="yes" />
+          Source="..\build\Win32\Release\zlib1.dll" KeyPath="yes" />
       </Component>
     </DirectoryRef>
 
@@ -79,19 +77,19 @@
     <DirectoryRef Id="IMCRVSKK_WIN">
       <Component Id="CONFIG_XML" Guid="12FF814A-8F58-44C4-B653-23258B7F1705">
         <File Id="F_config_xml" Name="config.xml"
-          Source="build\config.xml" KeyPath="yes" />
+          Source="$(env.OutDir)\config.xml" KeyPath="yes" />
       </Component>
       <Component Id="INIT_LUA" Guid="6EE61E3E-BB06-4A30-9C67-8CD769B2AE09">
         <File Id="F_init_lua" Name="init.lua"
-          Source="build\init.lua" KeyPath="yes" />
+          Source="$(env.OutDir)\init.lua" KeyPath="yes" />
       </Component>
       <Component Id="SKKDICT_TXT" Guid="E2626079-9F1C-4B10-9A68-034B12D6DB73">
         <File Id="F_skkdict_txt" Name="skkdict.txt"
-          Source="build\skkdict.txt" KeyPath="yes" />
+          Source="$(env.OutDir)\skkdict.txt" KeyPath="yes" />
       </Component>
       <Component Id="README_HTML" Guid="C4067E27-5681-4FE1-89BE-38080A9C40E5">
         <File Id="F_readme_html" Name="README.html"
-          Source="build\README.html" KeyPath="yes">
+          Source="$(env.OutDir)\README.html" KeyPath="yes">
           <Shortcut Id="S_readme_html" Name="README.html"
             Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_WIN"
             Show="normal" Advertise="yes" />
@@ -100,7 +98,7 @@
       </Component>
       <Component Id="LICENSE_TXT" Guid="9C25E720-D44D-46E7-9FBF-041A00A825A8">
         <File Id="F_license_txt" Name="LICENSE.txt"
-          Source="build\LICENSE.txt" KeyPath="yes">
+          Source="$(env.OutDir)\LICENSE.txt" KeyPath="yes">
           <Shortcut Id="S_license_txt" Name="LICENSE.txt"
             Directory="IMCRVSKK_MENU" WorkingDirectory="IMCRVSKK_WIN"
             Show="normal" Advertise="yes" />
@@ -109,13 +107,15 @@
       </Component>
     </DirectoryRef>
 
-    <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608" Directory="TARGETDIR"
-      Condition="ARCH_NAME = &quot;x86&quot;">
-      <!-- enabled autorun only on 32-bit Windows. -->
-      <RegistryValue Id="RV_run_x86" Action="write"
-        Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
-        Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
-    </Component>
+    <DirectoryRef Id="IMCRVSKK_X86">
+      <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608"
+        Condition="ARCH_NAME = &quot;x86&quot;">
+        <!-- enabled autorun only on 32-bit Windows. -->
+        <RegistryValue Id="RV_run_x86" Action="write"
+          Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
+          Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
 
     <Feature Id="Default" Title="Main" Level="1">
       <ComponentRef Id="CNF_X86" />

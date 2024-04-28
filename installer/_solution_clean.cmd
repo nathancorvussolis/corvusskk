@@ -1,42 +1,28 @@
 @echo off
 setlocal
-
 pushd "%~dp0"
 
 call _vsdev.cmd
 
-call _version.cmd
+call _env.cmd
+
+set BUILDCOMMAND=msbuild "..\imcrvskk.sln" -nologo -maxcpucount -verbosity:normal
+set BUILDCOMMAND=%BUILDCOMMAND% -target:Clean -property:Configuration=Release
 
 rem x86
-
-msbuild "..\imcrvskk.sln" ^
-/nologo /maxcpucount /verbosity:normal /target:Clean ^
-/property:Configuration=Release,Platform=x86
+%BUILDCOMMAND% -property:Platform=x86
 
 rem x64
-
-msbuild "..\imcrvskk.sln" ^
-/nologo /maxcpucount /verbosity:normal /target:Clean ^
-/property:Configuration=Release,Platform=x64
+%BUILDCOMMAND% -property:Platform=x64
 
 rem ARM32
-
-msbuild "..\imcrvskk.sln" ^
-/nologo /maxcpucount /verbosity:normal /target:Clean ^
-/property:Configuration=Release,Platform=ARM
+%BUILDCOMMAND% -property:Platform=ARM
 
 rem ARM64
-
-msbuild "..\imcrvskk.sln" ^
-/nologo /maxcpucount /verbosity:normal /target:Clean ^
-/property:Configuration=Release,Platform=ARM64
+%BUILDCOMMAND% -property:Platform=ARM64
 
 rem ARM64EC
-
-msbuild "..\imcrvskk.sln" ^
-/nologo /maxcpucount /verbosity:normal /target:Clean ^
-/property:Configuration=Release,Platform=ARM64EC
+%BUILDCOMMAND% -property:Platform=ARM64EC
 
 popd
-
 endlocal

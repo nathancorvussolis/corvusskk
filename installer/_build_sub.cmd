@@ -1,11 +1,10 @@
 @echo off
 setlocal
-
 pushd "%~dp0"
 
-call _version.cmd
+call _env.cmd
 
-if not exist "%TARGETDIR%" mkdir "%TARGETDIR%"
+if not exist "%OutDir%" mkdir "%OutDir%"
 
 pushd ..
 
@@ -25,17 +24,17 @@ pandoc.exe ^
 --standalone ^
 -c "installer\resource-md\markdown.css" ^
 --toc ^
--o "installer\%TARGETDIR%\README.html" ^
+-o "installer\%OutDir%\README.html" ^
 README.md
 
 popd
 
-copy /y /b "..\LICENSE.TXT" "%TARGETDIR%\LICENSE.txt" > nul
-copy /y /b "config-lua\init.lua" "%TARGETDIR%\init.lua" > nul
-copy /y /b "config-share\config.xml" "%TARGETDIR%\config.xml" > nul
-copy /y /b "config-share\skkdict.txt" "%TARGETDIR%\skkdict.txt" > nul
+copy /y /b "..\LICENSE.TXT" "%OutDir%\LICENSE.txt" > nul
+copy /y /b "config-lua\init.lua" "%OutDir%\init.lua" > nul
+copy /y /b "config-share\config.xml" "%OutDir%\config.xml" > nul
+copy /y /b "config-share\skkdict.txt" "%OutDir%\skkdict.txt" > nul
 
-pushd "%TARGETDIR%"
+pushd "%OutDir%"
 
 copy /b LICENSE.txt + > nul
 copy /b init.lua + > nul
@@ -45,5 +44,4 @@ copy /b skkdict.txt + > nul
 popd
 
 popd
-
 endlocal
