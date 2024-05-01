@@ -62,8 +62,8 @@
     <None Include="theme-bundle\thm.wxl" />
     <None Include="_build.cmd" />
     <None Include="_build_bundle.cmd" />
+    <None Include="_build_doc.cmd" />
     <None Include="_build_msi.cmd" />
-    <None Include="_build_sub.cmd" />
     <None Include="_clean.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
@@ -72,7 +72,6 @@
     <None Include="_solution_build.cmd" />
     <None Include="_solution_build_debug.cmd" />
     <None Include="_solution_clean.cmd" />
-    <None Include="_solution_clean_debug.cmd" />
     <None Include="_verify.cmd" />
     <None Include="_vsdev.cmd" />
   </ItemGroup>

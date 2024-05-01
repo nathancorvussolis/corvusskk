@@ -6,7 +6,7 @@ call _vsdev.cmd
 
 call _env.cmd
 
-call _build_sub.cmd
+call _build_doc.cmd
 
 if not defined SIGNCOMMAND set SignOutput=false
 

@@ -2,6 +2,7 @@
   <PropertyGroup>
     <OutputType>Bundle</OutputType>
     <InstallerPlatform>x86</InstallerPlatform>
+    <DebugType>none</DebugType>
     <Configuration>Release</Configuration>
     <SuppressValidation>true</SuppressValidation>
     <EnableDefaultItems>false</EnableDefaultItems>

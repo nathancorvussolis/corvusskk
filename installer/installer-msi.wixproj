@@ -1,6 +1,7 @@
 ﻿<Project Sdk="WixToolset.Sdk/$(WIXTOOLSET_VERSION)">
   <PropertyGroup>
     <OutputType>Package</OutputType>
+    <DebugType>none</DebugType>
     <Configuration>Release</Configuration>
     <SuppressValidation>true</SuppressValidation>
     <EnableDefaultItems>false</EnableDefaultItems>

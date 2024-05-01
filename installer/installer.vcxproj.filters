@@ -76,10 +76,10 @@
     <None Include="_build_bundle.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_msi.cmd">
+    <None Include="_build_doc.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_sub.cmd">
+    <None Include="_build_msi.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_clean.cmd">
@@ -104,9 +104,6 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_solution_clean.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_solution_clean_debug.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_verify.cmd">

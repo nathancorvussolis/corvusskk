@@ -964,7 +964,19 @@ pandoc 3.1.13
 
     > installer\_verify.cmd
 
-クリア
+デバッグビルド
+
+    > installer\_solution_build_debug.cmd
+
+デバッグビルド IME の登録 (x86, x64)
+
+    > installer\_debug_reg.cmd
+
+デバッグビルド IME の登録解除 (x86, x64)
+
+    > installer\_debug_unreg.cmd
+
+クリーン
 
     > installer\_solution_clean.cmd
 
