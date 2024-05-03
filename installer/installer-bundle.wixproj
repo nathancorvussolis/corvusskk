@@ -32,6 +32,7 @@
     <Exec Command="$(SIGNCOMMAND) &quot;%(SignBundle.FullPath)&quot;" />
   </Target>
   <Target Name="AfterSigning">
+    <Message Importance="high" Text="AfterSigning" />
     <Copy SourceFiles="%(SignBundleEngine.FullPath)" DestinationFolder="$(OutDir)"
       UseHardlinksIfPossible="true" />
   </Target>
