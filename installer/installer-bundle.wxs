@@ -69,10 +69,7 @@
         SourceFile="$(env.OutDir)\x86.msi"
         DisplayName="x86 modules"
         Compressed="yes"
-        InstallCondition="VersionNT">
-        <!-- enabled autorun x86 imcrvmgr.exe only on 32-bit Windows. -->
-        <MsiProperty Name="ARCH_NAME" Value="[ARCH_NAME]" />
-      </MsiPackage>
+        InstallCondition="VersionNT" />
 
       <!-- x64 modules -->
       <MsiPackage
@@ -89,7 +86,7 @@
         SourceFile="$(env.OutDir)\arm.msi"
         DisplayName="ARM modules"
         Compressed="yes"
-        InstallCondition="(ARCH_NAME = &quot;ARM64&quot;)"
+        InstallCondition="VersionNT AND (ARCH_NAME = &quot;ARM64&quot;)"
         After="X64_MSI" />
 
     </Chain>

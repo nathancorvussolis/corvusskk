@@ -17,6 +17,15 @@
     <!-- disable advertised shortcuts -->
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
+    <!-- processor architecture -->
+    <Property Id="ARCH_NAME">
+      <RegistrySearch Id="REG_ARCH_X86"
+        Root="HKLM"
+        Key="SYSTEM\CurrentControlSet\Control\Session Manager\Environment"
+        Name="PROCESSOR_ARCHITECTURE"
+        Type="raw" />
+    </Property>
+
     <StandardDirectory Id="SystemFolder">
       <Directory Id="IME_X86" Name="IME">
         <Directory Id="IMCRVSKK_X86" Name="IMCRVSKK" />
@@ -111,7 +120,7 @@
       <Component Id="REG_X86" Guid="7518DACF-6FAB-4536-ABE7-6929C618B608"
         Condition="ARCH_NAME = &quot;x86&quot;">
         <!-- enabled autorun only on 32-bit Windows. -->
-        <RegistryValue Id="RV_run_x86" Action="write"
+        <RegistryValue Id="RV_RUN_X86" Action="write"
           Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
           Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_x86]&quot;" KeyPath="yes" />
       </Component>
