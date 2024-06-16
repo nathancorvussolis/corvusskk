@@ -17,20 +17,9 @@
     <!-- disable advertised shortcuts -->
     <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
 
-    <!-- system directory -->
-    <!-- ARM64 : %windir%\System32 -->
-    <!-- ARM32 : %windir%\SysArm32 -->
-    <!-- x86   : %windir%\SysWOW64 -->
     <StandardDirectory Id="System64Folder">
       <Directory Id="IME_ARM64" Name="IME">
         <Directory Id="IMCRVSKK_ARM64" Name="IMCRVSKK" />
-      </Directory>
-    </StandardDirectory>
-    <StandardDirectory Id="WindowsFolder">
-      <Directory Id="SYSTEMFOLDER_ARM32" Name="SysArm32">
-        <Directory Id="IME_ARM32" Name="IME">
-          <Directory Id="IMCRVSKK_ARM32" Name="IMCRVSKK" />
-        </Directory>
       </Directory>
     </StandardDirectory>
     <StandardDirectory Id="ProgramMenuFolder">
@@ -86,18 +75,9 @@
       </Component>
     </DirectoryRef>
 
-    <!-- TIP only for ARM32 -->
-    <DirectoryRef Id="IMCRVSKK_ARM32">
-      <Component Id="TIP_ARM32" Guid="26DEC436-067C-4629-AB3C-E15EEBF4349B" Bitness="always32">
-        <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
-        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll"
-          Source="..\build\ARM\Release\imcrvtip.dll" KeyPath="yes" />
-      </Component>
-    </DirectoryRef>
-
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="REG_ARM64" Guid="5C935156-F6EC-4744-A5D5-3C2D1784C0D7">
-        <RegistryValue Id="RV_run_arm64" Action="write"
+        <RegistryValue Id="RV_RUN_ARM64" Action="write"
           Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
           Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_arm64]&quot;" KeyPath="yes" />
       </Component>
@@ -113,7 +93,6 @@
       <ComponentRef Id="MSVCP140_ARM64" />
       <ComponentRef Id="VCRUNTIME140_ARM64" />
       <ComponentRef Id="VCRUNTIME140_1_ARM64" />
-      <ComponentRef Id="TIP_ARM32" />
       <ComponentRef Id="REG_ARM64" />
     </Feature>
 
@@ -127,20 +106,8 @@
 
     <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
 
-    <!-- Some processors do not support AArch32. The return code will not be checked. -->
-    <CustomAction Id="REGARM32DLL"
-      Directory="IMCRVSKK_ARM32"
-      Execute="deferred" Impersonate="no" Return="ignore"
-      ExeCommand="regsvr32 /s [#F_imcrvtip_arm32]" />
-    <CustomAction Id="UNREGARM32DLL"
-      Directory="IMCRVSKK_ARM32"
-      Execute="deferred" Impersonate="no" Return="ignore"
-      ExeCommand="regsvr32 /s /u [#F_imcrvtip_arm32]" />
-
     <InstallExecuteSequence>
       <ScheduleReboot After="InstallFinalize" />
-      <Custom Action="UNREGARM32DLL" Before="RemoveFiles" Condition="Installed" />
-      <Custom Action="REGARM32DLL" After="InstallFiles" Condition="NOT REMOVE" />
     </InstallExecuteSequence>
 
   </Package>

@@ -86,7 +86,7 @@
         SourceFile="$(env.OutDir)\arm.msi"
         DisplayName="ARM modules"
         Compressed="yes"
-        InstallCondition="VersionNT AND (ARCH_NAME = &quot;ARM64&quot;)"
+        InstallCondition="(ARCH_NAME = &quot;ARM64&quot;)"
         After="X64_MSI" />
 
     </Chain>

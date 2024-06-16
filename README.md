@@ -43,7 +43,6 @@ corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン�
 * ARM 版 Windows
 
     * %SystemRoot%\System32\IME\IMCRVSKK
-    * %SystemRoot%\SysArm32\IME\IMCRVSKK
     * %SystemRoot%\SysWOW64\IME\IMCRVSKK
 
 * 共通
@@ -923,20 +922,18 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.9.7
+Visual Studio Community 2022 17.10.2
 
 * Desktop development with C++
 
 * Indivisual components
     * Compilers, build tools, and runtimes
         * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
-        * MSVC v143 - VS 2022 C++ ARM build tools (Latest)
         * MSVC v143 - VS 2022 C++ ARM64/ARM64EC build tools (Latest)
     * SDKs, libraries, and frameworks
         * C++ ATL for latest v143 build tools (x86 & x64)
-        * C++ ATL for latest v143 build tools (ARM)
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
-        * Windows 11 SDK (10.0.22621.0)
+        * Windows 11 SDK (10.0.26100.0)
 
 WiX Toolset v5.0.0
 
