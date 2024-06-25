@@ -77,7 +77,7 @@
 
     <DirectoryRef Id="IMCRVSKK_ARM64">
       <Component Id="REG_ARM64" Guid="5C935156-F6EC-4744-A5D5-3C2D1784C0D7">
-        <RegistryValue Id="RV_RUN_ARM64" Action="write"
+        <RegistryValue Id="R_run_arm64" Action="write"
           Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Run" Type="string"
           Name="imcrvmgr" Value="&quot;[#F_imcrvmgr_arm64]&quot;" KeyPath="yes" />
       </Component>

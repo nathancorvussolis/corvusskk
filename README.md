@@ -22,6 +22,10 @@
 
 * Windows 11    (64-bit / ARM)
 
+> **ARM 版 Windows**
+>
+> * ARM32 (AArch32) のアプリケーションは不対応です。
+
 
 ### インストール
 
@@ -717,7 +721,7 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.4.6です。
+現在使用しているLuaのバージョンは5.4.7です。
 
 詳細はこちらを参照してください。https://www.lua.org/manual/5.4/manual.html
 
@@ -922,7 +926,7 @@ Windows 10 (Ver.1709 から)、Windows 11 の場合
 
 ### 開発環境
 
-Visual Studio Community 2022 17.10.2
+Visual Studio Community 2022 17.10.3
 
 * Desktop development with C++
 
@@ -941,7 +945,7 @@ WiX Toolset v5.0.0
 
 * ビルド用バッチファイル内の dotnet build コマンドによって暗黙的に復元
 
-pandoc 3.2
+pandoc 3.2.1
 
 
 ### ビルド手順
