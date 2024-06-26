@@ -529,7 +529,7 @@ static int read_line (lua_State *L, FILE *f, int chop) {
     l_lockfile(f);  /* no memory errors can happen inside the lock */
 #ifdef U8W_H
     if (f == stdin) {
-      char *pb = u8fgets(buff, LUAL_BUFFERSIZE, f);
+      char *pb = fgets(buff, LUAL_BUFFERSIZE, f);
       if (pb != NULL) {
         char *pbn = strchr(buff, '\n');
         if (pbn != NULL) {
