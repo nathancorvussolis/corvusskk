@@ -13,6 +13,8 @@ rem x86
 set BINFILES=%BINFILES% "..\build\Win32\Release\*.dll" "..\build\Win32\Release\*.exe"
 rem x64
 set BINFILES=%BINFILES% "..\build\x64\Release\*.dll" "..\build\x64\Release\*.exe"
+rem ARM32   TIP only
+set BINFILES=%BINFILES% "..\build\ARM\Release\*.dll"
 rem ARM64
 set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*.exe"
 rem ARM64EC   TIP only
@@ -23,8 +25,10 @@ rem x86
 set MSIFILES=%MSIFILES% "%OutDir%\x86.msi"
 rem x64
 set MSIFILES=%MSIFILES% "%OutDir%\x64.msi"
-rem ARM
-set MSIFILES=%MSIFILES% "%OutDir%\arm.msi"
+rem ARM32
+set MSIFILES=%MSIFILES% "%OutDir%\arm32.msi"
+rem ARM64
+set MSIFILES=%MSIFILES% "%OutDir%\arm64.msi"
 
 rem bundle
 set BEFILE="%OutDir%\corvusskk-%VERSION%-engine.exe"

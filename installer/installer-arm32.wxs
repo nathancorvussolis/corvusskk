@@ -1,0 +1,71 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+  xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package
+    Name="CorvusSKK (ARM32)"
+    Version="$(env.VERSION)"
+    Manufacturer="nathancorvussolis"
+    Language="1033"
+    Scope="perMachine"
+    InstallerVersion="500"
+    UpgradeCode="433B6232-BB5A-4C33-8B75-1994C5F2F27C">
+
+    <SummaryInformation Description="CorvusSKK (ARM32)" />
+
+    <Media Id="1" Cabinet="arm32.cab" CompressionLevel="high" EmbedCab="yes" />
+
+    <!-- disable advertised shortcuts -->
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+
+    <!-- system directory -->
+    <!-- ARM32 : %windir%\SysArm32 -->
+    <StandardDirectory Id="WindowsFolder">
+      <Directory Id="SYSTEMFOLDER_ARM32" Name="SysArm32">
+        <Directory Id="IME_ARM32" Name="IME">
+          <Directory Id="IMCRVSKK_ARM32" Name="IMCRVSKK" />
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <!-- TIP only for ARM32 -->
+    <DirectoryRef Id="IMCRVSKK_ARM32">
+      <Component Id="TIP_ARM32" Guid="221841EF-F207-4A1B-BFA6-DF5BBB4AEDE7" Bitness="always32">
+        <!-- self registration arm32 dll fails. use regsvr32 command in custom action. -->
+        <File Id="F_imcrvtip_arm32" Name="imcrvtip.dll"
+          Source="..\build\ARM\Release\imcrvtip.dll" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="Default" Title="Main" Level="1">
+      <ComponentRef Id="TIP_ARM32" />
+    </Feature>
+
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="theme-bundle\license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="theme-bundle\banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="theme-bundle\dialog.bmp" />
+
+    <Property Id="ARPPRODUCTICON" Value="IMCRVSKK_ICO" />
+    <Icon Id="IMCRVSKK_ICO" SourceFile="..\imcrvtip\Icon\imcrvskk.ico" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+
+    <!-- Some processors do not support AArch32. The return code will not be checked. -->
+    <CustomAction Id="REGARM32DLL"
+      Directory="IMCRVSKK_ARM32"
+      Execute="deferred" Impersonate="no" Return="ignore"
+      ExeCommand="regsvr32 /s [#F_imcrvtip_arm32]" />
+    <CustomAction Id="UNREGARM32DLL"
+      Directory="IMCRVSKK_ARM32"
+      Execute="deferred" Impersonate="no" Return="ignore"
+      ExeCommand="regsvr32 /s /u [#F_imcrvtip_arm32]" />
+
+    <InstallExecuteSequence>
+      <ScheduleReboot After="InstallFinalize" />
+      <Custom Action="UNREGARM32DLL" Before="RemoveFiles" Condition="Installed" />
+      <Custom Action="REGARM32DLL" After="InstallFiles" Condition="NOT REMOVE" />
+    </InstallExecuteSequence>
+
+  </Package>
+
+</Wix>

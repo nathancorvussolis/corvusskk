@@ -16,10 +16,6 @@
 
 * Windows 11    (64-bit / ARM)
 
-> **ARM 版 Windows**
->
-> * ARM32 (AArch32) のアプリケーションでの動作は非対応です。
-
 
 ### インストール
 
@@ -41,6 +37,7 @@ corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン�
 * ARM 版 Windows
 
     * %SystemRoot%\System32\IME\IMCRVSKK
+    * %SystemRoot%\SysArm32\IME\IMCRVSKK    ｟ Windows 11 ビルド 25905 より前 ｠
     * %SystemRoot%\SysWOW64\IME\IMCRVSKK
 
 * 共通
@@ -901,13 +898,16 @@ Visual Studio Community 2022 17.10.4
 * Indivisual components
     * Compilers, build tools, and runtimes
         * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
+        * MSVC v143 - VS 2022 C++ ARM build tools (Latest)
         * MSVC v143 - VS 2022 C++ ARM64/ARM64EC build tools (Latest)
     * SDKs, libraries, and frameworks
         * C++ ATL for latest v143 build tools (x86 & x64)
+        * C++ ATL for latest v143 build tools (ARM)
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
-        * Windows 11 SDK (10.0.26100.0)
+        * Windows 11 SDK (10.0.22621.0)    ｟ バージョン固定 , ARM32 用 ｠
+        * Windows 11 SDK (10.0.26100.0)    ｟ またはそれ以降 , x86/x64/ARM64/ARM64EC 用 ｠
 
-WiX Toolset v5.0.0
+WiX Toolset v5.0.1
 
 * 要 .NET SDK 6 以降
 

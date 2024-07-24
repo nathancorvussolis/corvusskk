@@ -12,23 +12,29 @@
     <SignOutput />
     -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(InstallerPlatform)'=='x86'">
+  <PropertyGroup Condition="'$(TargetPlatform)'=='x86'">
     <OutputName>x86</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(InstallerPlatform)'=='x64'">
+  <PropertyGroup Condition="'$(TargetPlatform)'=='x64'">
     <OutputName>x64</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(InstallerPlatform)'=='arm64'">
-    <OutputName>arm</OutputName>
+  <PropertyGroup Condition="'$(TargetPlatform)'=='arm32'">
+    <OutputName>arm32</OutputName>
   </PropertyGroup>
-  <ItemGroup Condition="'$(InstallerPlatform)'=='x86'">
+  <PropertyGroup Condition="'$(TargetPlatform)'=='arm64'">
+    <OutputName>arm64</OutputName>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetPlatform)'=='x86'">
     <Compile Include="installer-x86.wxs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(InstallerPlatform)'=='x64'">
+  <ItemGroup Condition="'$(TargetPlatform)'=='x64'">
     <Compile Include="installer-x64.wxs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(InstallerPlatform)'=='arm64'">
-    <Compile Include="installer-arm.wxs" />
+  <ItemGroup Condition="'$(TargetPlatform)'=='arm32'">
+    <Compile Include="installer-arm32.wxs" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetPlatform)'=='arm64'">
+    <Compile Include="installer-arm64.wxs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="WixToolset.UI.wixext" Version="$(WIXTOOLSET_VERSION)" />

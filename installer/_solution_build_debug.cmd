@@ -15,6 +15,9 @@ rem x86
 rem x64
 %BUILDCOMMAND% -property:Platform=x64
 
+rem ARM32
+%BUILDCOMMAND% -property:Platform=ARM
+
 rem ARM64
 %BUILDCOMMAND% -property:Platform=ARM64
 
