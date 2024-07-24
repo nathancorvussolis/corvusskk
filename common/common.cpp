@@ -109,42 +109,6 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 	return VerifyVersionInfoW(&osvi, VER_MAJORVERSION | VER_MINORVERSION | VER_BUILDNUMBER, mask);
 }
 
-BOOL GetDigest(LPCWSTR pszAlgId, CONST PBYTE data, DWORD datalen, PBYTE digest, DWORD digestlen)
-{
-	BOOL bRet = FALSE;
-
-	if (data == nullptr || digest == nullptr)
-	{
-		return FALSE;
-	}
-
-	ZeroMemory(digest, digestlen);
-
-	BCRYPT_ALG_HANDLE hAlg = nullptr;
-	NTSTATUS status = BCryptOpenAlgorithmProvider(&hAlg, pszAlgId, nullptr, 0);
-	if (BCRYPT_SUCCESS(status))
-	{
-		BCRYPT_HASH_HANDLE hHash = nullptr;
-		status = BCryptCreateHash(hAlg, &hHash, nullptr, 0, nullptr, 0, 0);
-		if (BCRYPT_SUCCESS(status))
-		{
-			status = BCryptHashData(hHash, data, datalen, 0);
-			if (BCRYPT_SUCCESS(status))
-			{
-				status = BCryptFinishHash(hHash, digest, digestlen, 0);
-				if (BCRYPT_SUCCESS(status))
-				{
-					bRet = TRUE;
-				}
-			}
-			BCryptDestroyHash(hHash);
-		}
-		BCryptCloseAlgorithmProvider(hAlg, 0);
-	}
-
-	return bRet;
-}
-
 BOOL IsLittleEndian()
 {
 	ULONG n = 1;
@@ -165,8 +129,7 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 {
 	BOOL bRet = FALSE;
 	GUID lguid = rguid;
-
-	LPCWSTR ALGORITHM_ID = BCRYPT_SHA1_ALGORITHM;
+	BCRYPT_ALG_HANDLE hAlgorithm = BCRYPT_SHA1_ALG_HANDLE;
 	CONST DWORD DIGEST_LENGTH = 20;
 	CONST USHORT MASK_VERSION = 0x5000;
 
@@ -187,7 +150,10 @@ BOOL GetUUID5(REFGUID rguid, CONST PBYTE name, DWORD namelen, LPGUID puuid)
 		memcpy_s(pMessage + sizeof(lguid), namelen, name, namelen);
 
 		BYTE digest[DIGEST_LENGTH] = {};
-		if (GetDigest(ALGORITHM_ID, pMessage, (DWORD)LocalSize(pMessage), digest, (DWORD)sizeof(digest)))
+		// Windows 10 or later supported
+		NTSTATUS status = BCryptHash(hAlgorithm, nullptr, 0,
+			pMessage, (ULONG)LocalSize(pMessage), digest, (ULONG)sizeof(digest));
+		if (BCRYPT_SUCCESS(status))
 		{
 			GUID dguid = GUID_NULL;
 			dguid.Data1 = *(ULONG *)&digest[0];

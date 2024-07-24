@@ -45,7 +45,6 @@
     <None Include="installer-arm.wxs" />
     <None Include="installer-bundle.wixproj" />
     <None Include="installer-bundle.wxs" />
-    <None Include="installer-bundle-ucrt.wxi" />
     <None Include="installer-msi.wixproj" />
     <None Include="installer-x64.wxs" />
     <None Include="installer-x86.wxs" />

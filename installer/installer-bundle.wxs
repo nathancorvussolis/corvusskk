@@ -10,7 +10,9 @@
     Copyright="© 2011 nathancorvussolis"
     AboutUrl="https://nathancorvussolis.github.io/"
     DisableModify="button"
-    Condition="VersionNT &gt;= v6.1">
+    Condition="(VersionNT = v10.0 AND WindowsBuildNumber &gt;= 14393) OR (VersionNT &gt; v10.0)">
+
+    <!-- Windows 10 version 1607 build 14393 or later -->
 
     <BootstrapperApplication>
       <bal:WixStandardBootstrapperApplication
@@ -22,34 +24,6 @@
         ShowVersion="yes" />
     </BootstrapperApplication>
 
-    <!-- v6.1 Service Pack 1 -->
-    <bal:Condition
-      Message="This application requires Service Pack 1 for Windows 7 / Server 2008 R2."
-      Condition="NOT ((VersionNT = v6.1) AND (ServicePackLevel &lt; 1))" />
-
-    <!-- v6.3 KB2919355 -->
-    <util:FileSearch
-      Id="HAL.DLL"
-      Path="[WindowsFolder]System32\hal.dll"
-      Result="version"
-      Variable="NT603HALVER"
-      Condition="VersionNT = v6.3" />
-    <bal:Condition
-      Message="This application requires S14 Update (KB2919355) for Windows 8.1 / Server 2012 R2."
-      Condition="NOT ((VersionNT = v6.3) AND (NT603HALVER &lt; v6.3.9600.17031))" />
-
-    <!-- ucrtbase.dll version -->
-    <util:FileSearch
-      Id="UCRTBASE.DLL"
-      Path="[WindowsFolder]System32\ucrtbase.dll"
-      Result="version"
-      Variable="UCRTBASEVER" />
-    <!-- universal crt version -->
-    <Variable
-      Name="UCRTVER"
-      Type="version"
-      Value="10.0.10240.0" />
-
     <!-- processor architecture -->
     <util:RegistrySearch
       Id="REG_ARCH"
@@ -60,8 +34,6 @@
       Variable="ARCH_NAME" />
 
     <Chain>
-
-      <?include installer-bundle-ucrt.wxi ?>
 
       <!-- x86 modules -->
       <MsiPackage

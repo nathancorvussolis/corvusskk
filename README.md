@@ -10,15 +10,9 @@
 
 ### 対応OS
 
-* Windows 7     (32-bit / 64-bit)
-
-    * Service Pack 1
-
-* Windows 8.1   (32-bit / 64-bit)
-
-    * S14 Update ( KB2919355 )
-
 * Windows 10    (32-bit / 64-bit / ARM)
+
+    * バージョン 1607 (Anniversary Update) ビルド 14393 以降
 
 * Windows 11    (64-bit / ARM)
 
@@ -898,35 +892,9 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
     * 「;;セミコロン」と入力する。
 
 
-### Windows 8, 8.1, 10, 11 のタッチキーボード
-
-タッチパネルを搭載したマシンでハードウェアキーボードに準拠したレイアウトを使用するには、以下の操作をおこなってください。
-
-* Windows 8 の場合
-    * 「PC設定」の画面 → 「全般」を選択 → 「タッチキーボード」の項目 → 「ハードウェアキーボードに準拠したレイアウトを使えるようにする」をオン
-
-* Windows 8.1 の場合
-    * 「PC設定」の画面 → 「PCとデバイス」の画面 → 「入力」を選択 → 「ハードウェアキーボードに準拠したレイアウトをタッチキーボードオプションとして追加する」をオン
-
-* Windows 10 (Ver.1703 まで) の場合
-    * 「デバイス」の画面 → 「入力」を選択 → 「ハードウェアキーボードに準拠したレイアウトをタッチキーボードオプションとして追加する」をオン
-
-タッチパネルを搭載していないマシンでハードウェアキーボードに準拠したレイアウトを使用するには、レジストリに以下の値を設定してください。
-
-Windows 10 (Ver.1703 まで) の場合
-
-    [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
-    "EnableCompatibilityKeyboard"=dword:00000001
-
-Windows 10 (Ver.1709 から)、Windows 11 の場合
-
-    [HKEY_CURRENT_USER\SOFTWARE\Microsoft\TabletTip\1.7]
-    "DisableNewKeyboardExperience"=dword:00000001
-
-
 ### 開発環境
 
-Visual Studio Community 2022 17.10.3
+Visual Studio Community 2022 17.10.4
 
 * Desktop development with C++
 

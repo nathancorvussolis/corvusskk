@@ -100,18 +100,11 @@ int GetDpi(HWND hwnd)
 	// Windows 10 ver.1703 supports Per-Monitor DPI Awareness V2
 	if (IsWindowsVersion100RS2OrLater())
 	{
-		// try delay load user32.dll
-		__try
+		// Windows 10 ver.1607 or later supported
+		UINT wdpi = GetDpiForWindow(hwnd);
+		if (wdpi != 0)
 		{
-			// Windows 10 ver.1607 or later supported
-			UINT wdpi = GetDpiForWindow(hwnd);
-			if (wdpi != 0)
-			{
-				dpi = (int)wdpi;
-			}
-		}
-		__except (EXCEPTION_EXECUTE_HANDLER)
-		{
+			dpi = (int)wdpi;
 		}
 	}
 
