@@ -12,28 +12,28 @@
     <SignOutput />
     -->
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetPlatform)'=='x86'">
+  <PropertyGroup Condition="'$(PackagePlatform)'=='x86'">
     <OutputName>x86</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetPlatform)'=='x64'">
+  <PropertyGroup Condition="'$(PackagePlatform)'=='x64'">
     <OutputName>x64</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetPlatform)'=='arm32'">
+  <PropertyGroup Condition="'$(PackagePlatform)'=='arm32'">
     <OutputName>arm32</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetPlatform)'=='arm64'">
+  <PropertyGroup Condition="'$(PackagePlatform)'=='arm64'">
     <OutputName>arm64</OutputName>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetPlatform)'=='x86'">
+  <ItemGroup Condition="'$(PackagePlatform)'=='x86'">
     <Compile Include="installer-x86.wxs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetPlatform)'=='x64'">
+  <ItemGroup Condition="'$(PackagePlatform)'=='x64'">
     <Compile Include="installer-x64.wxs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetPlatform)'=='arm32'">
+  <ItemGroup Condition="'$(PackagePlatform)'=='arm32'">
     <Compile Include="installer-arm32.wxs" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetPlatform)'=='arm64'">
+  <ItemGroup Condition="'$(PackagePlatform)'=='arm64'">
     <Compile Include="installer-arm64.wxs" />
   </ItemGroup>
   <ItemGroup>
