@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.2.3
+# CorvusSKK ver. 3.3.0
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -891,7 +891,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2022 17.10.4
+Visual Studio Community 2022 17.10.5
 
 * Desktop development with C++
 
@@ -913,7 +913,7 @@ WiX Toolset v5.0.1
 
 * ビルド用バッチファイル内の dotnet build コマンドによって暗黙的に復元
 
-pandoc 3.2.1
+pandoc 3.3
 
 
 ### ビルド手順

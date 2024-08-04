@@ -7,10 +7,10 @@
 #define TEXTSERVICE_DESC	TEXTSERVICE_NAME L"_DEBUG"
 #endif
 #define TEXTSERVICE_DIR		L"IMCRVSKK"
-#define TEXTSERVICE_VER		L"3.2.3"
+#define TEXTSERVICE_VER		L"3.3.0"
 
 //for resource
 #define RC_AUTHOR			"nathancorvussolis"
 #define RC_PRODUCT			"CorvusSKK"
-#define RC_VERSION			"3.2.3"
-#define RC_VERSION_D		3,2,3,0
+#define RC_VERSION			"3.3.0"
+#define RC_VERSION_D		3,3,0,0

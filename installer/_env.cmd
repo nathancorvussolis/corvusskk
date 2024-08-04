@@ -1,5 +1,5 @@
 
-set VERSION=3.2.3
+set VERSION=3.3.0
 
 set WIXTOOLSET_VERSION=5.0.1
 
