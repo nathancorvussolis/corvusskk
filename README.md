@@ -907,7 +907,7 @@ Visual Studio Community 2022 17.10.5
         * Windows 11 SDK (10.0.22621.0)    ｟ バージョン固定 , ARM32 用 ｠
         * Windows 11 SDK (10.0.26100.0)    ｟ またはそれ以降 , x86/x64/ARM64/ARM64EC 用 ｠
 
-WiX Toolset v5.0.1
+WiX Toolset v4.0.5
 
 * 要 .NET SDK 6 以降
 
