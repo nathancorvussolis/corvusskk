@@ -91,8 +91,7 @@ int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &
 
 	std::wstring s = wstrbuf;
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	s = std::regex_replace(s, rectrl, L"");
+	s = std::regex_replace(s, RegExp(L"[\\x00-\\x19]"), L"");
 
 	if (okuri == 1)
 	{
@@ -100,8 +99,7 @@ int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &
 		ParseSKKDicOkuriBlock(s, o);
 
 		//送りありエントリのブロックを除去
-		static const std::wregex reblock(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/");
-		s = std::regex_replace(s, reblock, L"");
+		s = std::regex_replace(s, RegExp(L"\\[[^\\[\\]]+?/[^\\[\\]]+?/\\]/"), L"");
 	}
 
 	size_t is = s.find(L"\x20/");
@@ -175,7 +173,7 @@ void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o)
 
 	so = s;
 
-	static const std::wregex reblock(L"\\[([^\\[\\]]+?)(/[^\\[\\]]+?/)\\]/");
+	const std::wregex &reblock = RegExp(L"\\[([^\\[\\]]+?)(/[^\\[\\]]+?/)\\]/");
 
 	while (std::regex_search(so, m, reblock))
 	{
@@ -200,44 +198,32 @@ std::wstring ParseConcat(const std::wstring &s)
 	LPCWSTR bsrep = L"\uF05C";
 
 	// (concat "*")
-	static const std::wregex reconcat(L"^\\(\\s*concat\\s+\"(.+)\"\\s*\\)$");
+	const std::wregex &reconcat = RegExp(L"^\\(\\s*concat\\s+\"(.+)\"\\s*\\)$");
 
 	if (std::regex_search(ret, reconcat))
 	{
-		std::wstring fmt, numstr, numtmpstr;
-		std::wregex re;
+		std::wstring numstr, numtmpstr;
 		std::wsmatch res;
 
-		fmt.assign(L"$1");
-		ret = std::regex_replace(ret, reconcat, fmt);
+		ret = std::regex_replace(ret, reconcat, L"$1");
 
-		re.assign(L"\"\\s+\"");
-		fmt.assign(L"");
-		ret = std::regex_replace(ret, re, fmt);
+		//concat
+		ret = std::regex_replace(ret, RegExp(L"\"\\s+\""), L"");
 
 		//バックスラッシュ
-		re.assign(L"\\\\\\\\");
-		fmt.assign(bsrep);
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"\\\\\\\\"), bsrep);
 
 		//二重引用符
-		re.assign(L"\\\\\\\"");
-		fmt.assign(L"\\\"");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"\\\\\\\""), L"\\\"");
 
 		//空白文字
-		re.assign(L"\\\\s");
-		fmt.assign(L"\x20");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"\\\\s"), L"\x20");
 
 		//制御文字など
-		re.assign(L"\\\\[abtnvfred ]");
-		fmt.assign(L"");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"\\\\[abtnvfred ]"), L"");
 
 		//8進数表記の文字
-		re.assign(L"\\\\[0-3][0-7]{2}");
-		while (std::regex_search(ret, res, re))
+		while (std::regex_search(ret, res, RegExp(L"\\\\[0-3][0-7]{2}")))
 		{
 			numstr += res.prefix();
 			numtmpstr = res.str();
@@ -252,14 +238,10 @@ std::wstring ParseConcat(const std::wstring &s)
 		ret = numstr + ret;
 
 		//意味なしエスケープ
-		re.assign(L"\\\\");
-		fmt.assign(L"");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"\\\\"), L"");
 
 		//バックスラッシュ
-		re.assign(bsrep);
-		fmt.assign(L"\\");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(bsrep), L"\\");
 	}
 
 	return ret;
@@ -270,27 +252,16 @@ std::wstring MakeConcat(const std::wstring &s)
 	std::wstring ret = s;
 
 	// '/' or ';'
-	static const std::wregex respcch(L"[/;]");
-
-	if (std::regex_search(ret, respcch))
+	if (std::regex_search(ret, RegExp(L"[/;]")))
 	{
-		std::wstring fmt;
-		std::wregex re;
-
 		// '"' -> "\"", '\' -> "\\"
-		re.assign(L"([\"\\\\])");
-		fmt.assign(L"\\$1");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"([\"\\\\])"), L"\\$1");
 
 		// '/' -> "\057"
-		re.assign(L"/");
-		fmt.assign(L"\\057");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L"/"), L"\\057");
 
 		// ';' -> "\073"
-		re.assign(L";");
-		fmt.assign(L"\\073");
-		ret = std::regex_replace(ret, re, fmt);
+		ret = std::regex_replace(ret, RegExp(L";"), L"\\073");
 
 		ret = L"(concat \"" + ret + L"\")";
 	}
@@ -304,40 +275,27 @@ std::wstring EscapeGadgetString(const std::wstring &s)
 	LPCWSTR bsrep = L"\uF05C";
 
 	//実行変換もどきの文字列パラメータをエスケープ
-	static const std::wregex regadget(L"^\\(.+\\)$");
-
-	if (std::regex_match(s, regadget))
+	if (std::regex_match(s, RegExp(L"^\\(.+\\)$")))
 	{
 		std::wstring esc, str;
 		std::wstring tmp = s;
 		std::wsmatch m;
 
-		std::wstring fmt;
-		std::wregex re;
-
 		// "\\" -> '\uF05C'
-		re.assign(L"\\\\\\\\");
-		fmt.assign(bsrep);
-		tmp = std::regex_replace(tmp, re, fmt);
+		tmp = std::regex_replace(tmp, RegExp(L"\\\\\\\\"), bsrep);
 
 		// <SPC>"..."   ignoring escaped quotation
-		static const std::wregex restring(L" (\"\"|\".*?[^\\\\]\")");
-
-		while (std::regex_search(tmp, m, restring))
+		while (std::regex_search(tmp, m, RegExp(L" (\"\"|\".*?[^\\\\]\")")))
 		{
 			esc += m.prefix().str();
 			str = m.str();
 			tmp = m.suffix().str();
 
 			// '/' -> "\057"
-			re.assign(L"/");
-			fmt.assign(L"\\057");
-			str = std::regex_replace(str, re, fmt);
+			str = std::regex_replace(str, RegExp(L"/"), L"\\057");
 
 			// ';' -> "\073"
-			re.assign(L";");
-			fmt.assign(L"\\073");
-			str = std::regex_replace(str, re, fmt);
+			str = std::regex_replace(str, RegExp(L";"), L"\\073");
 
 			esc += str;
 		}
@@ -345,9 +303,7 @@ std::wstring EscapeGadgetString(const std::wstring &s)
 		esc += tmp;
 
 		// '\uF05C' -> "\\"
-		re.assign(bsrep);
-		fmt.assign(L"\\\\");
-		esc = std::regex_replace(esc, re, fmt);
+		esc = std::regex_replace(esc, RegExp(bsrep), L"\\\\");
 
 		ret = esc;
 	}

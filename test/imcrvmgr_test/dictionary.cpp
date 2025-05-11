@@ -103,6 +103,8 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 	std::wstring s, se, scd, scr, sad, sar;
 	std::wsmatch m;
 
+	const std::wregex &re = RegExp(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+
 	candidates.clear();
 
 	_ConnectDic();
@@ -133,8 +135,6 @@ BOOL _SearchDic(WCHAR command, CANDIDATES &candidates, const std::wstring &searc
 	}
 
 	s.assign(pipebuf);
-
-	static const std::wregex re(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 
 	while (std::regex_search(s, m, re))
 	{

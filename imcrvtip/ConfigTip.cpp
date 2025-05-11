@@ -464,7 +464,6 @@ void CTextService::_LoadCKeyMap()
 	WCHAR key[2] = {};
 	WCHAR keyre[MAX_KEYRE] = {};
 	std::wstring s;
-	std::wregex re;
 	std::wstring strxmlval;
 
 	ckeymap = CKEYMAP{};
@@ -503,20 +502,12 @@ void CTextService::_LoadCKeyMap()
 				key[0] = ch;
 				s.assign(key);
 
-				try
+				if (std::regex_match(s, RegExp(keyre)))
 				{
-					re.assign(keyre);
-					if (std::regex_match(s, re))
+					if (ckeymap.keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
 					{
-						if (ckeymap.keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
-						{
-							ckeymap.keylatin[ch] = configkeymap[i].skkfunc;
-						}
+						ckeymap.keylatin[ch] = configkeymap[i].skkfunc;
 					}
-				}
-				catch (...)
-				{
-					break;
 				}
 			}
 			break;
@@ -536,17 +527,9 @@ void CTextService::_LoadCKeyMap()
 				key[0] = ch;
 				s.assign(key);
 
-				try
+				if (std::regex_match(s, RegExp(keyre)))
 				{
-					re.assign(keyre);
-					if (std::regex_match(s, re))
-					{
-						ckeymap.keyjmode[ch] = configkeymap[i].skkfunc;
-					}
-				}
-				catch (...)
-				{
-					break;
+					ckeymap.keyjmode[ch] = configkeymap[i].skkfunc;
 				}
 			}
 			break;
@@ -561,17 +544,9 @@ void CTextService::_LoadCKeyMap()
 				key[0] = ch;
 				s.assign(key);
 
-				try
+				if (std::regex_match(s, RegExp(keyre)))
 				{
-					re.assign(keyre);
-					if (std::regex_match(s, re))
-					{
-						ckeymap.keyvoid[ch] = configkeymap[i].skkfunc;
-					}
-				}
-				catch (...)
-				{
-					break;
+					ckeymap.keyvoid[ch] = configkeymap[i].skkfunc;
 				}
 			}
 			break;
@@ -586,7 +561,6 @@ void CTextService::_LoadVKeyMap()
 	WCHAR key[3] = {};
 	WCHAR keyre[MAX_KEYRE] = {};
 	std::wstring s;
-	std::wregex re;
 	std::wstring strxmlval;
 	VKEYMAP *pkeymaps[] = {&vkeymap, &vkeymap_shift, &vkeymap_ctrl};
 
@@ -646,20 +620,12 @@ void CTextService::_LoadVKeyMap()
 
 					s.assign(key);
 
-					try
+					if (std::regex_match(s, RegExp(keyre)))
 					{
-						re.assign(keyre);
-						if (std::regex_match(s, re))
+						if (pkeymaps[j]->keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
 						{
-							if (pkeymaps[j]->keylatin[ch] != SKK_JMODE)	//「ひらがな」が優先
-							{
-								pkeymaps[j]->keylatin[ch] = configkeymap[i].skkfunc;
-							}
+							pkeymaps[j]->keylatin[ch] = configkeymap[i].skkfunc;
 						}
-					}
-					catch (...)
-					{
-						break;
 					}
 				}
 			}
@@ -699,17 +665,9 @@ void CTextService::_LoadVKeyMap()
 
 					s.assign(key);
 
-					try
+					if (std::regex_match(s, RegExp(keyre)))
 					{
-						re.assign(keyre);
-						if (std::regex_match(s, re))
-						{
-							pkeymaps[j]->keyjmode[ch] = configkeymap[i].skkfunc;
-						}
-					}
-					catch (...)
-					{
-						break;
+						pkeymaps[j]->keyjmode[ch] = configkeymap[i].skkfunc;
 					}
 				}
 			}
@@ -744,17 +702,9 @@ void CTextService::_LoadVKeyMap()
 
 					s.assign(key);
 
-					try
+					if (std::regex_match(s, RegExp(keyre)))
 					{
-						re.assign(keyre);
-						if (std::regex_match(s, re))
-						{
-							pkeymaps[j]->keyvoid[ch] = configkeymap[i].skkfunc;
-						}
-					}
-					catch (...)
-					{
-						break;
+						pkeymaps[j]->keyvoid[ch] = configkeymap[i].skkfunc;
 					}
 				}
 			}
@@ -878,8 +828,7 @@ void CTextService::_LoadKana()
 
 				if (pszb != nullptr)
 				{
-					static const std::wregex rectrl(L"[\\x00-\\x19]");
-					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, rectrl, L"").c_str(), _TRUNCATE);
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, RegExp(L"[\\x00-\\x19]"), L"").c_str(), _TRUNCATE);
 				}
 			}
 
@@ -1028,8 +977,7 @@ void CTextService::_LoadJLatin()
 
 				if (pszb != nullptr)
 				{
-					static const std::wregex rectrl(L"[\\x00-\\x19]");
-					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, rectrl, L"").c_str(), _TRUNCATE);
+					wcsncpy_s(pszb, blen, std::regex_replace(r_itr->second, RegExp(L"[\\x00-\\x19]"), L"").c_str(), _TRUNCATE);
 				}
 			}
 

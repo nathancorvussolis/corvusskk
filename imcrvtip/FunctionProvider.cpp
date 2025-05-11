@@ -162,8 +162,7 @@ STDAPI CTextService::GetReconversion(ITfRange *pRange, ITfCandidateList **ppCand
 	std::wstring text;
 	hr = _GetRangeText(pRange, text);
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	text = std::regex_replace(text, rectrl, L"");
+	text = std::regex_replace(text, RegExp(L"[\\x00-\\x19]"), L"");
 
 	if (FAILED(hr) || text.empty())
 	{
@@ -219,8 +218,7 @@ STDAPI CTextService::Reconvert(ITfRange *pRange)
 	std::wstring text;
 	hr = _GetRangeText(pRange, text);
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	text = std::regex_replace(text, rectrl, L"");
+	text = std::regex_replace(text, RegExp(L"[\\x00-\\x19]"), L"");
 
 	if (FAILED(hr) || text.empty())
 	{

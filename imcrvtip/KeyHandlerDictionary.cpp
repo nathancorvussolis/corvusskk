@@ -41,6 +41,8 @@ void CTextService::_SearchDic(WCHAR command)
 	std::wstring s, se, scd, scr, sad, sar, okurikey;
 	std::wsmatch m;
 
+	const std::wregex &re = RegExp(L"(.*)\t(.*)\t(.*)\t(.*)\n");
+
 	candidates.clear();
 	candidates.shrink_to_fit();
 
@@ -87,8 +89,6 @@ void CTextService::_SearchDic(WCHAR command)
 	}
 
 	s.assign(&pipebuf[2]);
-
-	static const std::wregex re(L"(.*)\t(.*)\t(.*)\t(.*)\n");
 
 	while (std::regex_search(s, m, re))
 	{

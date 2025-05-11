@@ -100,11 +100,6 @@ BOOL IsWindowsVersionOrLater(DWORD dwMajorVersion, DWORD dwMinorVersion, DWORD d
 #define C_USER_DEFAULT_SCREEN_DPI	96
 #define C_FONT_LOGICAL_HEIGHT_PPI	72
 
-BOOL GetUserUUID(LPWSTR *ppszUUID);
-BOOL GetUserSid(LPWSTR *ppszUserSid);
-
-BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = nullptr);
-
 #define FORWARD_ITERATION_I(iterator, container) \
 	for (auto (iterator) = (container).begin(); (iterator) != (container).end(); ++(iterator))
 #define FORWARD_ITERATION(iterator, container) \
@@ -113,3 +108,10 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = n
 	for (auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); ++(reverse_iterator))
 #define REVERSE_ITERATION(reverse_iterator, container) \
 	for (auto (reverse_iterator) = (container).rbegin(); (reverse_iterator) != (container).rend(); )
+
+BOOL GetUserUUID(LPWSTR *ppszUUID);
+BOOL GetUserSid(LPWSTR *ppszUserSid);
+
+BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs = nullptr);
+
+const std::wregex &RegExp(const std::wstring &pattern);

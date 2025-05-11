@@ -135,8 +135,7 @@ void SearchComplementSearchCandidate(SKKDICCANDIDATES &sc, int max)
 	{
 		candidate = SearchUserDic(sc_itr->first, L"");
 
-		static const std::wregex rectrl(L"[\\x00-\\x19]");
-		candidate = std::regex_replace(candidate, rectrl, L"");
+		candidate = std::regex_replace(candidate, RegExp(L"[\\x00-\\x19]"), L"");
 
 		scc.clear();
 
@@ -286,8 +285,9 @@ void AddUserDic(WCHAR command, const std::wstring &searchkey, const std::wstring
 	}
 
 	//ユーザー辞書送りブロック
-	static const std::wregex reblock(L"[\\[\\]]"); //角括弧を含む候補を除外
-	if (command == REQ_USER_ADD_A && !okuri.empty() && !std::regex_search(candidate_esc, reblock))
+	//角括弧を含む候補を除外
+	if (command == REQ_USER_ADD_A && !okuri.empty() &&
+		!std::regex_search(candidate_esc, RegExp(L"[\\[\\]]")))
 	{
 		auto userokuri_itr = userokuri.find(searchkey);
 		if (userokuri_itr == userokuri.end())

@@ -1004,11 +1004,10 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 				HANDLE hCB = GetClipboardData(CF_UNICODETEXT);
 				if (hCB != nullptr)
 				{
-					PWCHAR pwCB = (PWCHAR)GlobalLock(hCB);
+					LPWSTR pwCB = (LPWSTR)GlobalLock(hCB);
 					if (pwCB != nullptr)
 					{
-						static const std::wregex rectrl(L"[\\x00-\\x19]");
-						std::wstring scb = std::regex_replace(std::wstring(pwCB), rectrl, L"");
+						std::wstring scb = std::regex_replace(pwCB, RegExp(L"[\\x00-\\x19]"), L"");
 						kana.insert(cursoridx, scb);
 						if (okuriidx != 0 && cursoridx <= okuriidx)
 						{

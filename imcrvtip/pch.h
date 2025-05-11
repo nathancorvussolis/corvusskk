@@ -10,6 +10,8 @@
 #include <vector>
 #include <map>
 #include <regex>
+#include <unordered_map>
+#include <mutex>
 
 #include <Windows.h>
 #include <sddl.h>

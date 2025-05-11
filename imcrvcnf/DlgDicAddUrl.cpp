@@ -24,8 +24,7 @@ INT_PTR CALLBACK DlgProcSKKDicAddUrl(HWND hDlg, UINT message, WPARAM wParam, LPA
 			GetDlgItemTextW(hDlg, IDC_EDIT_SKK_DIC_URL, urlskkdic, _countof(urlskkdic));
 			{
 				// trim
-				static const std::wregex retrim(L"^\\s+|\\s+$");
-				std::wstring strurl = std::regex_replace(std::wstring(urlskkdic), retrim, L"");
+				std::wstring strurl = std::regex_replace(urlskkdic, RegExp(L"^\\s+|\\s+$"), L"");
 				_snwprintf_s(urlskkdic, _TRUNCATE, L"%s", strurl.c_str());
 
 				if (urlskkdic[0] == L'\0')

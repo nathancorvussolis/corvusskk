@@ -891,7 +891,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2022 17.10.5
+Visual Studio Community 2022 17.13.6
 
 * Desktop development with C++
 
@@ -907,13 +907,13 @@ Visual Studio Community 2022 17.10.5
         * Windows 11 SDK (10.0.22621.0)    ｟ バージョン固定 , ARM32 用 ｠
         * Windows 11 SDK (10.0.26100.0)    ｟ またはそれ以降 , x86/x64/ARM64/ARM64EC 用 ｠
 
-WiX Toolset v5.0.2
+WiX Toolset v6.0.0
 
 * 要 .NET SDK 6 以降
 
 * ビルド用バッチファイル内の dotnet build コマンドによって暗黙的に復元
 
-pandoc 3.3
+pandoc 3.6.4
 
 
 ### ビルド手順

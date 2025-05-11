@@ -32,8 +32,7 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 
 		//skk-search-sagyo-henkaku (anything)
 		//「送りあり変換で送りなし候補も検索する」 → 送り仮名あり、送りローマ字なし
-		static const std::wregex reroman(L"^.+[a-z]$");
-		if (!okurik.empty() && !std::regex_match(searchkey, reroman))
+		if (!okurik.empty() && !std::regex_match(searchkey, RegExp(L"^.+[a-z]$")))
 		{
 			//送り仮名クリア
 			okurik.clear();
@@ -63,12 +62,10 @@ void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, 
 			candidate += SearchCharacterCode(searchkey.substr(1));
 		}
 
-		static const std::wregex resepdic(L"/\n/");
-		candidate = std::regex_replace(candidate, resepdic, L"/");
+		candidate = std::regex_replace(candidate, RegExp(L"/\n/"), L"/");
 	}
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	candidate = std::regex_replace(candidate, rectrl, L"");
+	candidate = std::regex_replace(candidate, RegExp(L"[\\x00-\\x19]"), L"");
 
 	ParseSKKDicCandiate(candidate, sc);
 
@@ -309,12 +306,10 @@ std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri
 		}
 
 		//数値変換
-		static const std::wregex renum(L"[0-9]+");
-		ret = std::regex_replace(searchkey, renum, L"#");
+		ret = std::regex_replace(searchkey, RegExp(L"[0-9]+"), L"#");
 	}
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	ret = std::regex_replace(ret, rectrl, L"");
+	ret = std::regex_replace(ret, RegExp(L"[\\x00-\\x19]"), L"");
 
 	return ret;
 }
@@ -345,8 +340,7 @@ std::wstring ConvertCandidate(const std::wstring &searchkey, const std::wstring 
 		ret = ParseConcat(candidate);
 	}
 
-	static const std::wregex rectrl(L"[\\x00-\\x19]");
-	ret = std::regex_replace(ret, rectrl, L"");
+	ret = std::regex_replace(ret, RegExp(L"[\\x00-\\x19]"), L"");
 
 	return ret;
 }

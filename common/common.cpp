@@ -373,3 +373,25 @@ BOOL StartProcess(HMODULE hCurrentModule, LPCWSTR lpFileName, LPCWSTR lpArgs)
 
 	return bRet;
 }
+
+const std::wregex &RegExp(const std::wstring &pattern)
+{
+	static std::mutex regex_cache_mutex;
+	std::lock_guard<std::mutex> regex_cache_lock(regex_cache_mutex);
+
+	static std::unordered_map<std::wstring, std::wregex> regex_cache;
+	auto it = regex_cache.find(pattern);
+	if (it == regex_cache.end())
+	{
+		std::wregex re;
+		try
+		{
+			re = std::wregex(pattern);
+		}
+		catch (const std::regex_error &)
+		{
+		}
+		it = regex_cache.emplace(pattern, re).first;
+	}
+	return it->second;
+}
