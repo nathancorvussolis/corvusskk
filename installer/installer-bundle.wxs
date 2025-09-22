@@ -52,16 +52,6 @@
         InstallCondition="VersionNT64 AND (ARCH_NAME = &quot;AMD64&quot;)"
         After="X86_MSI" />
 
-      <!-- arm32 modules -->
-      <!-- https://blogs.windows.com/windows-insider/2023/07/12/announcing-windows-11-insider-preview-build-25905/ -->
-      <MsiPackage
-        Id="ARM32_MSI"
-        SourceFile="$(env.OutDir)\arm32.msi"
-        DisplayName="ARM32 modules"
-        Compressed="yes"
-        InstallCondition="(ARCH_NAME = &quot;ARM64&quot;) AND (VersionNT = v10.0 AND WindowsBuildNumber &lt; 25905)"
-        After="X64_MSI" />
-
       <!-- arm64 modules -->
       <MsiPackage
         Id="ARM64_MSI"
@@ -69,7 +59,7 @@
         DisplayName="ARM64 modules"
         Compressed="yes"
         InstallCondition="(ARCH_NAME = &quot;ARM64&quot;)"
-        After="ARM32_MSI" />
+        After="X64_MSI" />
 
     </Chain>
 

@@ -18,9 +18,6 @@
   <PropertyGroup Condition="'$(PackagePlatform)'=='x64'">
     <OutputName>x64</OutputName>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(PackagePlatform)'=='arm32'">
-    <OutputName>arm32</OutputName>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(PackagePlatform)'=='arm64'">
     <OutputName>arm64</OutputName>
   </PropertyGroup>
@@ -29,9 +26,6 @@
   </ItemGroup>
   <ItemGroup Condition="'$(PackagePlatform)'=='x64'">
     <Compile Include="installer-x64.wxs" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(PackagePlatform)'=='arm32'">
-    <Compile Include="installer-arm32.wxs" />
   </ItemGroup>
   <ItemGroup Condition="'$(PackagePlatform)'=='arm64'">
     <Compile Include="installer-arm64.wxs" />

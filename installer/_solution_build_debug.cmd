@@ -15,9 +15,6 @@ rem x86
 rem x64
 %BUILDCOMMAND% -property:Platform=x64
 
-rem ARM32
-%BUILDCOMMAND% -property:Platform=ARM -property:WindowsTargetPlatformVersion=10.0.22621.0
-
 rem ARM64
 %BUILDCOMMAND% -property:Platform=ARM64
 

@@ -42,9 +42,6 @@
     <None Include="resource-md\markdown.css">
       <Filter>resource-md</Filter>
     </None>
-    <None Include="installer-arm32.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="installer-arm64.wxs">
       <Filter>Installer Files</Filter>
     </None>
