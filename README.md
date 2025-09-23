@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.3.0
+# CorvusSKK ver. 3.3.1
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -890,28 +890,25 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2022 17.13.6
+Visual Studio Community 2022 17.14.15
+
+* .NET desktop development
 
 * Desktop development with C++
 
 * Indivisual components
     * Compilers, build tools, and runtimes
         * MSVC v143 - VS 2022 C++ x64/x86 build tools (Latest)
-        * MSVC v143 - VS 2022 C++ ARM build tools (Latest)
         * MSVC v143 - VS 2022 C++ ARM64/ARM64EC build tools (Latest)
     * SDKs, libraries, and frameworks
         * C++ ATL for latest v143 build tools (x86 & x64)
-        * C++ ATL for latest v143 build tools (ARM)
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
-        * Windows 11 SDK (10.0.26100.0)
 
-WiX Toolset v6.0.0
-
-* 要 .NET SDK 6 以降
+WiX Toolset v6.0.2
 
 * ビルド用バッチファイル内の dotnet build コマンドによって暗黙的に復元
 
-pandoc 3.6.4
+pandoc 3.8
 
 
 ### ビルド手順
@@ -953,7 +950,7 @@ pandoc 3.6.4
 
 ---
 
-Copyright (C) 2011-2024 SASAKI Nobuyuki
+Copyright (C) 2011-2025 SASAKI Nobuyuki
 
 nathancorvussolis@gmail.com
 
