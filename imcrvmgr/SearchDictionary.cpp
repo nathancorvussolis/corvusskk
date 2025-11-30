@@ -7,6 +7,9 @@ typedef std::vector<long> POS;
 POS skkdicpos_a; //送りありエントリ
 POS skkdicpos_n; //送りなしエントリ
 
+//システム辞書 送りなし、補完あり
+KEYORDER system_keyorder_n;
+
 void SearchDictionary(const std::wstring &searchkey, const std::wstring &okuri, SKKDICCANDIDATES &sc)
 {
 	std::wstring candidate;
@@ -200,6 +203,9 @@ void MakeSKKDicPos()
 	skkdicpos_n.clear();
 	skkdicpos_n.shrink_to_fit();
 
+	system_keyorder_n.clear();
+	system_keyorder_n.shrink_to_fit();
+
 	_wfopen_s(&fp, pathskkdic, modeRB);
 	if (fp == nullptr)
 	{
@@ -275,7 +281,48 @@ void MakeSKKDicPos()
 
 	fclose(fp);
 
+	//送りありエントリは降順なので昇順へ
 	std::reverse(skkdicpos_a.begin(), skkdicpos_a.end());
+
+	std::wstring key;
+	okuri = -1;	//-1:header / 1:okuri-ari entries. / 0:okuri-nasi entries.
+
+	_wfopen_s(&fp, pathskkdic, modeRccsUTF8);	//UTF-8 or UTF-16LE(with BOM)
+	if (fp == nullptr)
+	{
+		return;
+	}
+
+	while (true)
+	{
+		int rl = ReadSKKDicLine(fp, okuri, key);
+		if (rl == -1)
+		{
+			//EOF
+			break;
+		}
+		else if (rl == 1)
+		{
+			//comment
+			continue;
+		}
+
+		switch (okuri)
+		{
+		case 0:
+			system_keyorder_n.push_back(key);
+			break;
+		case 1:
+			break;
+		default:
+			break;
+		}
+	}
+
+	fclose(fp);
+
+	//見出し語順序 末尾を最新とする
+	std::reverse(system_keyorder_n.begin(), system_keyorder_n.end());
 }
 
 std::wstring ConvertKey(const std::wstring &searchkey, const std::wstring &okuri)

@@ -37,6 +37,7 @@ enum SKKDICENCODING
 
 int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &key,
 	SKKDICCANDIDATES &c, SKKDICOKURIBLOCKS &o);
+int ReadSKKDicLine(FILE *fp, int &okuri, std::wstring &key);
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c);
 void ParseSKKDicOkuriBlock(const std::wstring &s, SKKDICOKURIBLOCKS &o);
 std::wstring ParseConcat(const std::wstring &s);

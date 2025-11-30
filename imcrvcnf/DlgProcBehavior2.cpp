@@ -33,6 +33,7 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		LoadCheckButton(hDlg, IDC_CHECKBOX_DYNCOMPMULTI, SectionBehavior, ValueDynCompMulti);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_COMPUSERDIC, SectionBehavior, ValueCompUserDic);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_COMPINCBACK, SectionBehavior, ValueCompIncBack);
+		LoadCheckButton(hDlg, IDC_CHECKBOX_COMPWITHALL, SectionBehavior, ValueCompWithAll);
 
 		return TRUE;
 
@@ -55,6 +56,7 @@ INT_PTR CALLBACK DlgProcBehavior2(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case IDC_CHECKBOX_DYNCOMPMULTI:
 		case IDC_CHECKBOX_COMPUSERDIC:
 		case IDC_CHECKBOX_COMPINCBACK:
+		case IDC_CHECKBOX_COMPWITHALL:
 
 			PropSheet_Changed(GetParent(hDlg), hDlg);
 
@@ -91,4 +93,5 @@ void SaveBehavior2(IXmlWriter *pWriter, HWND hDlg)
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DYNCOMPMULTI, ValueDynCompMulti);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_COMPUSERDIC, ValueCompUserDic);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_COMPINCBACK, ValueCompIncBack);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_COMPWITHALL, ValueCompWithAll);
 }

@@ -2,17 +2,17 @@
 
 #define WIN32_LEAN_AND_MEAN
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <process.h>
-#include <io.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include <string>
 #include <vector>
 #include <map>
 #include <regex>
 #include <algorithm>
+#include <thread>
+#include <atomic>
 
 #include <WinSock2.h>
 #include <WS2tcpip.h>

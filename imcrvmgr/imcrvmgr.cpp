@@ -3,6 +3,8 @@
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
+HINSTANCE hInst;
+HWND hWndMgr;
 CRITICAL_SECTION csUserDict;
 CRITICAL_SECTION csUserData;
 CRITICAL_SECTION csSaveUserDic;
@@ -10,17 +12,14 @@ CRITICAL_SECTION csSKKSocket;
 BOOL bUserDicChg;
 FILETIME ftConfig = {};
 FILETIME ftSKKDic = {};
-HWND hWndMgr;
+lua_State *lua;
 #ifdef _DEBUG
 CRITICAL_SECTION csEdit;
 HWND hWndEdit;
 HFONT hFont;
 #endif
-HINSTANCE hInst;
-HANDLE hMutex;
-HANDLE hThreadSrv;
-BOOL bSrvThreadExit;
-lua_State *lua;
+std::thread tSrvThr;
+std::atomic_bool bSrvExit(false);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -31,7 +30,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 	CreateIpcName();
 
-	hMutex = CreateMutexW(nullptr, FALSE, mgrmutexname);
+	HANDLE hMutex = CreateMutexW(nullptr, FALSE, mgrmutexname);
 	if (hMutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
 	{
 		if (hMutex != nullptr)
@@ -91,7 +90,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	HANDLE hPipe;
 	WSADATA wsaData;
 	int wsa = -1;
 #ifdef _DEBUG
@@ -131,9 +129,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 
-		CreateConfigPath();
-		UpdateConfigPath();
-
 		InitializeCriticalSection(&csUserDict);	// !
 		InitializeCriticalSection(&csUserData);	// !
 		InitializeCriticalSection(&csSaveUserDic);	// !
@@ -141,6 +136,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 #ifdef _DEBUG
 		InitializeCriticalSection(&csEdit);	// !
 #endif
+
+		CreateConfigPath();
+		UpdateConfigPath();
 
 		if (IsFileModified(pathconfigxml, &ftConfig))
 		{
@@ -157,9 +155,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		InitLua();
 
-		bSrvThreadExit = FALSE;
-		hThreadSrv = SrvStart();
-		if (hThreadSrv == nullptr)
+		try
+		{
+			tSrvThr = ServerStart();
+		}
+		catch (...)
 		{
 			DestroyWindow(hWnd);
 		}
@@ -205,16 +205,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_DESTROY:
 	case WM_ENDSESSION:
-		bSrvThreadExit = TRUE;
-		hPipe = CreateFileW(mgrpipename, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
-			nullptr, OPEN_EXISTING, SECURITY_SQOS_PRESENT | SECURITY_EFFECTIVE_ONLY | SECURITY_IDENTIFICATION, nullptr);
-		if (hPipe != INVALID_HANDLE_VALUE)
+		bSrvExit = true;
+		CancelSynchronousIo(tSrvThr.native_handle());
+		if (tSrvThr.joinable())
 		{
-			CloseHandle(hPipe);
-			WaitForSingleObject(hThreadSrv, INFINITE);
+			tSrvThr.join();
 		}
-
-		CloseHandle(hThreadSrv);
 
 		CleanUpSKKServer();
 

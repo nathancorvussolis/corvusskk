@@ -61,7 +61,7 @@ void CleanUpSKKServer();
 std::wstring GetSKKServerInfo(CHAR req);
 
 // Server
-HANDLE SrvStart();
+std::thread ServerStart();
 
 //client
 #define SKK_REQ		'1'
@@ -70,6 +70,8 @@ HANDLE SrvStart();
 //server
 #define SKK_HIT		'1'
 
+extern HINSTANCE hInst;
+extern HWND hWndMgr;
 extern CRITICAL_SECTION csUserDict;
 extern CRITICAL_SECTION csUserData;
 extern CRITICAL_SECTION csSaveUserDic;
@@ -77,18 +79,15 @@ extern CRITICAL_SECTION csSKKSocket;
 extern BOOL bUserDicChg;
 extern FILETIME ftConfig;
 extern FILETIME ftSKKDic;
-extern HWND hWndMgr;
+extern lua_State *lua;
 #ifdef _DEBUG
 #define WM_USER_SETTEXT (WM_USER + 1)
 extern CRITICAL_SECTION csEdit;
 extern HWND hWndEdit;
 extern HFONT hFont;
 #endif
-extern HINSTANCE hInst;
-extern HANDLE hMutex;
-extern HANDLE hThreadSrv;
-extern BOOL bSrvThreadExit;
-extern lua_State *lua;
+extern std::thread tSrvThr;
+extern std::atomic_bool bSrvExit;
 
 extern LPCWSTR TextServiceDesc;
 extern LPCWSTR DictionaryManagerClass;
@@ -122,3 +121,4 @@ extern INT generation;		//ユーザー辞書バックアップ世代数
 
 extern BOOL precedeokuri;	//送り仮名が一致した候補を優先する
 extern BOOL compincback;	//前方一致と後方一致で補完する
+extern BOOL compwithall;	//全ての辞書で補完する

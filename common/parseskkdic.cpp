@@ -128,6 +128,71 @@ int ReadSKKDicLine(FILE *fp, SKKDICENCODING encoding, int &okuri, std::wstring &
 	return 0;
 }
 
+int ReadSKKDicLine(FILE *fp, int &okuri, std::wstring &key)
+{
+	WCHAR wbuf[READBUFSIZE / sizeof(WCHAR)];
+	std::wstring wstrbuf;
+
+	while (fgetws(wbuf, _countof(wbuf), fp) != nullptr)
+	{
+		wstrbuf += wbuf;
+
+		if (!wstrbuf.empty() && wstrbuf.back() == L'\n')
+		{
+			break;
+		}
+	}
+
+	if (ferror(fp) != 0)
+	{
+		return -1;
+	}
+
+	if (wstrbuf.empty())
+	{
+		return -1;
+	}
+
+	if (wstrbuf.compare(EntriesAri) == 0)
+	{
+		okuri = 1;
+		return 1;
+	}
+	else if (wstrbuf.compare(EntriesNasi) == 0)
+	{
+		okuri = 0;
+		return 1;
+	}
+
+	if (okuri == -1)
+	{
+		return 1;
+	}
+
+	std::wstring s = wstrbuf;
+
+	size_t is = s.find(L"\x20/");
+	if (is == std::wstring::npos)
+	{
+		return 1;
+	}
+
+	size_t ie = s.find_last_not_of(L'\x20', is);
+	if (ie == std::wstring::npos)
+	{
+		return 1;
+	}
+
+	if (s.find_last_of(L'\x20', ie) != std::string::npos)
+	{
+		return 1;
+	}
+
+	key = s.substr(0, ie + 1);
+
+	return 0;
+}
+
 void ParseSKKDicCandiate(const std::wstring &s, SKKDICCANDIDATES &c)
 {
 	size_t i, is, ie, ia;

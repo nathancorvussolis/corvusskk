@@ -216,28 +216,26 @@ void CloseSKKServSocket()
 	}
 }
 
-unsigned __stdcall ConnectSKKServerThread(void *p)
-{
-	if (TryEnterCriticalSection(&csSKKSocket))	// !
-	{
-		CloseSKKServSocket();
-
-		ConnectSKKServer();
-
-		LeaveCriticalSection(&csSKKSocket);	// !
-	}
-
-	return 0;
-}
-
 void StartConnectSKKServer()
 {
-	HANDLE h = reinterpret_cast<HANDLE>(
-		_beginthreadex(nullptr, 0, ConnectSKKServerThread, nullptr, 0, nullptr));
-
-	if (h != nullptr)
+	try
 	{
-		CloseHandle(h);
+		std::thread connect_skkserver([]()
+			{
+				if (TryEnterCriticalSection(&csSKKSocket))	// !
+				{
+					CloseSKKServSocket();
+
+					ConnectSKKServer();
+
+					LeaveCriticalSection(&csSKKSocket);	// !
+				}
+			});
+
+		connect_skkserver.detach();
+	}
+	catch (...)
+	{
 	}
 }
 

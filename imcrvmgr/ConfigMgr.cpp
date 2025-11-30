@@ -35,6 +35,7 @@ INT generation = 0;		//ユーザー辞書バックアップ世代数
 
 BOOL precedeokuri = FALSE;	//送り仮名が一致した候補を優先する
 BOOL compincback = FALSE;	//前方一致と後方一致で補完する
+BOOL compwithall = FALSE;	//全ての辞書で補完する
 
 const luaL_Reg luaFuncs[] =
 {
@@ -309,6 +310,13 @@ void LoadConfig(BOOL sysexit)
 	if (compincback != TRUE && compincback != FALSE)
 	{
 		compincback = FALSE;
+	}
+
+	ReadValue(pathconfigxml, SectionBehavior, ValueCompWithAll, strxmlval);
+	compwithall = _wtoi(strxmlval.c_str());
+	if (compwithall != TRUE && compwithall != FALSE)
+	{
+		compwithall = FALSE;
 	}
 }
 

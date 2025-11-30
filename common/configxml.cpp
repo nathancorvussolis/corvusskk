@@ -92,6 +92,7 @@ LPCWSTR ValueDynamicComp = L"dynamiccomp";
 LPCWSTR ValueDynCompMulti = L"dyncompmulti";
 LPCWSTR ValueCompUserDic = L"compuserdic";
 LPCWSTR ValueCompIncBack = L"compincback";
+LPCWSTR ValueCompWithAll = L"compwithall";
 
 //font section
 

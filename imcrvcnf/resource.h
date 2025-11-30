@@ -86,6 +86,7 @@
 #define IDC_CHECKBOX_DYNCOMPMULTI               2104
 #define IDC_CHECKBOX_COMPUSERDIC                2105
 #define IDC_CHECKBOX_COMPINCBACK                2106
+#define IDC_CHECKBOX_COMPWITHALL                2107
 
 #define IDC_EDIT_FONTNAME                       3001
 #define IDC_EDIT_FONTPOINT                      3002
