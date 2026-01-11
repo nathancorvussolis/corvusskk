@@ -33,10 +33,14 @@ void ServerProc(WCHAR command, const std::wstring &argument, std::wstring &resul
 			result += L"\n";
 			FORWARD_ITERATION_I(sc_itr, sc)
 			{
-				result += ConvertCandidate(keyorg, sc_itr->first, okuri) + L"\t" +
+				conv = ConvertCandidate(keyorg, sc_itr->first, okuri) + L"\t" +
 					sc_itr->first + L"\t" +
 					ConvertCandidate(keyorg, sc_itr->second, okuri) + L"\t" +
 					sc_itr->second + L"\n";
+
+				if (PIPEBUFSIZE <= (result.size() + conv.size())) break;
+
+				result += conv;
 			}
 		}
 		else
