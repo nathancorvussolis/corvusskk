@@ -712,9 +712,9 @@ ASCII、全英文字の組み合せを指定します。最大で128行です。
 
 辞書管理プロセス (imcrvmgr.exe) の各機能の拡張、プログラム実行変換もどき、数値変換をLuaスクリプトで実装しています。
 
-現在使用しているLuaのバージョンは5.4.8です。
+現在使用しているLuaのバージョンは5.5.0です。
 
-詳細はこちらを参照してください。https://www.lua.org/manual/5.4/manual.html
+詳細はこちらを参照してください。https://www.lua.org/manual/5.5/manual.html
 
 Lua内部の文字コードをUTF-8に決め打ちして、Unicode版のWindowsAPIとCランタイム関数を呼ぶようにパッチを当てています。
 
