@@ -82,8 +82,6 @@ HRESULT CTextService::_HandleKey(TfEditCookie ec, ITfContext *pContext, WPARAM w
 		return S_FALSE;
 	}
 
-	_GetActiveFlags();
-
 	//補完
 	switch (sf)
 	{
@@ -661,17 +659,17 @@ private:
 
 void CTextService::_GetActiveFlags()
 {
-	_dwActiveFlags = 0;
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
 	_ShowInputMode = FALSE;
 
+	DWORD dwActiveFlags = 0;
 	BOOL bUIShow = TRUE;
 
 	CComPtr<ITfThreadMgrEx> pThreadMgrEx;
 	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx))) && (pThreadMgrEx != nullptr))
 	{
-		pThreadMgrEx->GetActiveFlags(&_dwActiveFlags);
+		pThreadMgrEx->GetActiveFlags(&dwActiveFlags);
 
 		CComPtr<ITfUIElementMgr> pUIElementMgr;
 		if (SUCCEEDED(pThreadMgrEx->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
@@ -689,12 +687,12 @@ void CTextService::_GetActiveFlags()
 		}
 	}
 
-	if ((_dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
+	if ((dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
 	{
 		_ImmersiveMode = TRUE;
 	}
 
-	if (((_dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0) && !bUIShow)
+	if (((dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0) && !bUIShow)
 	{
 		_UILessMode = TRUE;
 	}

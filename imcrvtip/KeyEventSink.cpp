@@ -151,7 +151,6 @@ STDAPI CTextService::OnTestKeyDown(ITfContext *pic, WPARAM wParam, LPARAM lParam
 		WCHAR ch = _GetCh((BYTE)wParam);
 		if (_IsKeyVoid(ch, (BYTE)wParam))
 		{
-			_GetActiveFlags();
 			_UpdateLanguageBar();
 		}
 	}

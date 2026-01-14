@@ -43,7 +43,6 @@ CTextService::CTextService()
 	_drawtext_option = D2D1_DRAW_TEXT_OPTIONS_NONE;
 	_pDWFactory = nullptr;
 
-	_dwActiveFlags = 0;
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
 	_ShowInputMode = FALSE;

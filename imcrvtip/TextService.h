@@ -328,7 +328,6 @@ public:
 	D2D1_DRAW_TEXT_OPTIONS _drawtext_option;
 	CComPtr<IDWriteFactory> _pDWFactory;
 
-	DWORD _dwActiveFlags;	//ITfThreadMgrEx::GetActiveFlags()
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
 	BOOL _ShowInputMode;	//InputModeWindow
