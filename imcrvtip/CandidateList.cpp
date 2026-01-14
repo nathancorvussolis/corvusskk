@@ -316,7 +316,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 			}
 		}
 
-		if (!_pCandidateWindow->_Create(hwnd, nullptr, 0, 0, mode))
+		if (!_pCandidateWindow->_Create(hwnd, nullptr, TF_INVALID_UIELEMENTID, 0, mode))
 		{
 			goto exit;
 		}

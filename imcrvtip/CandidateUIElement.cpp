@@ -24,7 +24,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_depth = 0;
 	_vertical = FALSE;
 
-	_dwUIElementId = 0;
+	_dwUIElementId = TF_INVALID_UIELEMENTID;
 	_bShow = FALSE;
 	_dwFlags = 0;
 	_uShowedCount = 0;
