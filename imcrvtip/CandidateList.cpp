@@ -307,7 +307,7 @@ HRESULT CCandidateList::_StartCandidateList(TfClientId tfClientId, ITfDocumentMg
 		CComPtr<ITfContextView> pContextView;
 		if (SUCCEEDED(pContext->GetActiveView(&pContextView)) && (pContextView != nullptr))
 		{
-			if (!_pTextService->_UILessMode && _pCandidateWindow->_CanShowUIElement())
+			if (!_pTextService->_UILessMode || _pCandidateWindow->_CanShowUIElement())
 			{
 				if (FAILED(pContextView->GetWnd(&hwnd)) || hwnd == nullptr)
 				{

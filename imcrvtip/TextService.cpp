@@ -45,7 +45,6 @@ CTextService::CTextService()
 
 	_ImmersiveMode = FALSE;
 	_UILessMode = FALSE;
-	_ShowInputMode = FALSE;
 	_AppPrivateMode = FALSE;
 	_UserPrivateMode = E_FAIL;
 

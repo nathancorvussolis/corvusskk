@@ -41,7 +41,7 @@ BOOL CCandidateWindow::_Create(HWND hwndParent, CCandidateWindow *pCandidateWind
 		_InitFont();
 	}
 
-	if (_hwnd != nullptr && _pTextService->_ShowInputMode)
+	if (_hwnd != nullptr && _pTextService->cx_showmodeinl)
 	{
 		try
 		{
@@ -258,10 +258,12 @@ void CCandidateWindow::_BeginUIElement()
 		CComPtr<ITfUIElementMgr> pUIElementMgr;
 		if (SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 		{
-			pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
-			if (!bShow)
+			if (SUCCEEDED(pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId)))
 			{
-				pUIElementMgr->UpdateUIElement(_dwUIElementId);
+				if (!bShow)
+				{
+					pUIElementMgr->UpdateUIElement(_dwUIElementId);
+				}
 			}
 		}
 	}
@@ -335,8 +337,10 @@ BOOL CCandidateWindow::_CanShowUIElement()
 	CComPtr<ITfUIElementMgr> pUIElementMgr;
 	if (SUCCEEDED(_pTextService->_GetThreadMgr()->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 	{
-		pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId);
-		pUIElementMgr->EndUIElement(_dwUIElementId);
+		if (SUCCEEDED(pUIElementMgr->BeginUIElement(this, &bShow, &_dwUIElementId)))
+		{
+			pUIElementMgr->EndUIElement(_dwUIElementId);
+		}
 	}
 
 	return bShow;

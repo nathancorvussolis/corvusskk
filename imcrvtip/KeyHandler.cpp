@@ -584,6 +584,29 @@ void CTextService::_ResetStatus()
 	cursoridx = 0;
 }
 
+void CTextService::_GetActiveFlags()
+{
+	_UILessMode = FALSE;
+
+	DWORD dwActiveFlags = 0;
+
+	CComPtr<ITfThreadMgrEx> pThreadMgrEx;
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx))) && (pThreadMgrEx != nullptr))
+	{
+		pThreadMgrEx->GetActiveFlags(&dwActiveFlags);
+	}
+
+	if ((dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
+	{
+		_ImmersiveMode = TRUE;
+	}
+
+	if ((dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0)
+	{
+		_UILessMode = TRUE;
+	}
+}
+
 class CGetShowUIElement : public ITfUIElement
 {
 public:
@@ -657,48 +680,24 @@ private:
 	LONG _cRef;
 };
 
-void CTextService::_GetActiveFlags()
+BOOL CTextService::_CanShowUIElement()
 {
-	_ImmersiveMode = FALSE;
-	_UILessMode = FALSE;
-	_ShowInputMode = FALSE;
-
-	DWORD dwActiveFlags = 0;
 	BOOL bUIShow = TRUE;
 
-	CComPtr<ITfThreadMgrEx> pThreadMgrEx;
-	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pThreadMgrEx))) && (pThreadMgrEx != nullptr))
+	CComPtr<ITfUIElementMgr> pUIElementMgr;
+	if (SUCCEEDED(_pThreadMgr->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
 	{
-		pThreadMgrEx->GetActiveFlags(&dwActiveFlags);
+		CComPtr<CGetShowUIElement> pUIElement;
+		pUIElement.Attach(new CGetShowUIElement());
 
-		CComPtr<ITfUIElementMgr> pUIElementMgr;
-		if (SUCCEEDED(pThreadMgrEx->QueryInterface(IID_PPV_ARGS(&pUIElementMgr))) && (pUIElementMgr != nullptr))
+		BOOL bShow = TRUE;
+		DWORD dwUIElementId = TF_INVALID_UIELEMENTID;
+		if (SUCCEEDED(pUIElementMgr->BeginUIElement(pUIElement, &bShow, &dwUIElementId)))
 		{
-			CComPtr<CGetShowUIElement> pUIElement;
-			pUIElement.Attach(new CGetShowUIElement());
-
-			BOOL bShow = TRUE;
-			DWORD dwUIElementId = TF_INVALID_UIELEMENTID;
-			if (SUCCEEDED(pUIElementMgr->BeginUIElement(pUIElement, &bShow, &dwUIElementId)))
-			{
-				bUIShow = bShow;
-				pUIElementMgr->EndUIElement(dwUIElementId);
-			}
+			bUIShow = bShow;
+			pUIElementMgr->EndUIElement(dwUIElementId);
 		}
 	}
 
-	if ((dwActiveFlags & TF_TMF_IMMERSIVEMODE) != 0)
-	{
-		_ImmersiveMode = TRUE;
-	}
-
-	if (((dwActiveFlags & TF_TMF_UIELEMENTENABLEDONLY) != 0) && !bUIShow)
-	{
-		_UILessMode = TRUE;
-	}
-
-	if (cx_showmodeinl && !_UILessMode)
-	{
-		_ShowInputMode = TRUE;
-	}
+	return bUIShow;
 }

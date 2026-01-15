@@ -680,7 +680,7 @@ void CTextService::_UpdateLanguageBar(BOOL showinputmode)
 		_pLangBarItemI->_Update();
 	}
 
-	if (showinputmode && _ShowInputMode && !_IsComposing())
+	if (showinputmode && cx_showmodeinl && !_IsComposing() && (!_UILessMode || _CanShowUIElement()))
 	{
 		_StartInputModeWindow();
 	}

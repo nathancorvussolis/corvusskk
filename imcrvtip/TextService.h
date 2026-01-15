@@ -148,6 +148,7 @@ public:
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
 	void _GetActiveFlags();
+	BOOL _CanShowUIElement();
 	void _InitD2D();
 	void _UninitD2D();
 
@@ -330,7 +331,6 @@ public:
 
 	BOOL _ImmersiveMode;	//Immersive Mode
 	BOOL _UILessMode;		//UILess Mode
-	BOOL _ShowInputMode;	//InputModeWindow
 	BOOL _AppPrivateMode;	//Private Mode by application
 	//Private Mode by user, E_FAIL:undefined / S_OK:enabled / S_FALSE:desabled
 	HRESULT _UserPrivateMode;

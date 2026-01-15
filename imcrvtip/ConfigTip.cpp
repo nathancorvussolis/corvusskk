@@ -1008,7 +1008,7 @@ void CTextService::_LoadJLatin()
 
 void CTextService::_InitD2D()
 {
-	if ((cx_drawapi == DRAW_API_D2D) && !_UILessMode && (_pD2DFactory == nullptr))
+	if ((cx_drawapi == DRAW_API_D2D) && (_pD2DFactory == nullptr))
 	{
 		//try delay load d2d1.dll and dwrite.dll
 		__try
