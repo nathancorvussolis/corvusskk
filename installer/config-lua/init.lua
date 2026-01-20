@@ -187,43 +187,48 @@ local skk_gadget_dayofweek_table = {
 }
 
 -- 単位テーブル
-local skk_gadget_unit_table_org = {
-	{"mile", {{"yard", 1760.0}, {"feet", 5280.0}, {"m", 1609.344}, {"km", 1.609344}}},
-	{"yard", {{"feet", 3.0}, {"inch", 36.0}, {"m", 0.9144}, {"cm", 91.44}, {"mm", 914.4}}},
-	{"feet", {{"inch", 12.0}, {"yard", (1.0 / 3.0)}, {"m", 0.3048}, {"cm", 30.48}, {"mm", 304.8}}},
-	{"inch", {{"feet", (1.0 / 12.0)}, {"yard", (1.0 / 36.0)}, {"m", 0.0254}, {"cm", 2.54}, {"mm", 25.4}}},
-	{"pound", {{"g", 453.59237}, {"ounce", 16.0}, {"grain", 7000.0}}},
-	{"ounce", {{"g", 28.349523125}, {"pound", (1.0 / 16.0)}, {"grain", (7000.0 / 16.0)}}},
-	{"grain", {{"mg", 64.79891}, {"g", 0.06479891}, {"pound", (1.0 / 7000.0)}, {"ounce", (16.0 / 7000.0)}}},
-	{"寸", {{"mm", (1000 / 33)}, {"cm", (100 / 33)}}},
-	{"尺", {{"mm", (10000 / 33)}, {"cm", (1000 / 33)}}},
-	{"坪", {{"㎡", (400 / 121)}}},
-	{"勺", {{"L", (2401 / 1331) / 100}, {"mL", (2401 / 1331) * 10}}},
-	{"合", {{"L", (2401 / 1331) / 10}, {"mL", (2401 / 1331) * 100}}},
-	{"升", {{"L", (2401 / 1331)}}},
-	{"斗", {{"L", (2401 / 1331) * 10}}},
+local skk_gadget_unit_table = {
+	["mile"] = {["yard"] = 1760, ["feet"] = 1760 * 3, ["inch"] = 1760 * 3 * 12, ["m"] = 1609.344, ["km"] = 1.609344},
+	["yard"] = {["feet"] = 3, ["inch"] = 3 * 12, ["mile"] = 1 / 1760, ["m"] = 0.9144, ["mm"] = 914.4},
+	["feet"] = {["inch"] = 12, ["yard"] = 1 / 3, ["mile"] = 1 / (3 * 1760), ["m"] = 0.3048, ["mm"] = 304.8},
+	["inch"] = {["feet"] = 1 / 12, ["yard"] = 1 / (12 * 3), ["mile"] = 1 / (12 * 3 * 1760), ["m"] = 0.0254, ["mm"] = 25.4},
+	["pound"] = {["ounce"] = 16, ["grain"] = 7000, ["kg"] = 0.45359237, ["g"] = 453.59237},
+	["ounce"] = {["pound"] = 1 / 16, ["grain"] = 7000 / 16, ["g"] = 28.349523125},
+	["grain"] = {["pound"] = 1 / 7000, ["ounce"] = 16 / 7000, ["g"] = 0.06479891, ["mg"] = 64.79891},
+	["毛"] = {["m"] = (10 / 33) / 10000, ["mm"] = (10 / 33) / 10000 * 1000,
+		["kg"] = 3.75 / 1000000, ["g"] = 3.75 / 1000000 * 1000, ["mg"] = 3.75 / 1000000 * 1000000},
+	["厘"] = {["m"] = (10 / 33) / 1000, ["mm"] = (10 / 33) / 1000 * 1000,
+		["kg"] = 3.75 / 100000, ["g"] = 3.75 / 100000 * 1000, ["mg"] = 3.75 / 100000 * 1000000},
+	["分"] = {["m"] = (10 / 33) / 100, ["mm"] = (10 / 33) / 100 * 1000,
+		["kg"] = 3.75 / 10000, ["g"] = 3.75 / 10000 * 1000, ["mg"] = 3.75 / 10000 * 1000000},
+	["寸"] = {["m"] = (10 / 33) / 10, ["mm"] = (10 / 33) / 10 * 1000},
+	["尺"] = {["m"] = (10 / 33), ["mm"] = (10 / 33) * 1000},
+	["丈"] = {["m"] = (10 / 33) * 10},
+	["間"] = {["m"] = (10 / 33) * 6},
+	["町"] = {["m"] = (10 / 33) * 360, ["㎡"] = (400 / 121) * 3000},
+	["里"] = {["m"] = (10 / 33) * 12960, ["km"] = (10 / 33) * 12960 / 1000},
+	["坪"] = {["㎡"] = (400 / 121)},
+	["歩"] = {["㎡"] = (400 / 121)},
+	["畝"] = {["㎡"] = (400 / 121) * 30},
+	["反"] = {["㎡"] = (400 / 121) * 300},
+	["勺"] = {["L"] = (2401 / 1331) / 100, ["mL"] = (2401 / 1331) / 100 * 1000, ["㎡"] = (400 / 121) / 100},
+	["合"] = {["L"] = (2401 / 1331) / 10, ["mL"] = (2401 / 1331) / 10 * 1000, ["㎡"] = (400 / 121) / 10},
+	["升"] = {["L"] = (2401 / 1331), ["mL"] = (2401 / 1331) * 1000},
+	["斗"] = {["L"] = (2401 / 1331) * 10, ["mL"] = (2401 / 1331) * 10 * 1000},
+	["石"] = {["L"] = (2401 / 1331) * 100, ["mL"] = (2401 / 1331) * 100 * 1000},
+	["匁"] = {["kg"] = 3.75 / 1000, ["g"] = 3.75 / 1000 * 1000},
+	["斤"] = {["kg"] = 3.75 * 0.16, ["g"] = 3.75 * 0.16 * 1000},
+	["貫"] = {["kg"] = 3.75, ["g"] = 3.75 * 1000},
 }
-local skk_gadget_unit_table = {}
-for i, v in ipairs(skk_gadget_unit_table_org) do
-	local unit_to_table = {}
-	for j, vv in ipairs(v[2]) do
-		unit_to_table[vv[1]] = vv[2]
-	end
-	skk_gadget_unit_table[v[1]] = unit_to_table
-end
 
 -- 変数テーブル
-local skk_gadget_variable_table_org = {
-	{"skk-henkan-key", function() return skk_henkan_key end},
-	{"skk-num-list", function() return skk_num_list end},
-	{"fill-column", "70"},
-	{"comment-start", "/*"},
-	{"comment-end", "*/"},
+local skk_gadget_variable_table = {
+	["skk-henkan-key"] = function() return skk_henkan_key end,
+	["skk-num-list"] = function() return skk_num_list end,
+	["fill-column"] = "70",
+	["comment-start"] = "/*",
+	["comment-end"] = "*/",
 }
-local skk_gadget_variable_table = {}
-for i, v in ipairs(skk_gadget_variable_table_org) do
-	skk_gadget_variable_table[v[1]] = v[2]
-end
 
 -- (window-width)
 local window_width_value = "80"
@@ -828,39 +833,35 @@ local function skk_strftime(t)
 end
 
 -- 関数テーブル
-local skk_gadget_func_table_org = {
-	{"concat", concat},
-	{"substring", substring},
-	{"make-string", make_string},
-	{"string-to-number", string_to_number},
-	{"string-to-char", string_to_char},
-	{"number-to-string", number_to_string},
-	{"window-width", window_width},
-	{"window-height", window_height},
-	{"current-time", current_time},
-	{"current-time-string", current_time_string},
-	{"format-time-string", format_time_string},
-	{"car", car},
-	{"cdr", cdr},
-	{"1+", plus_1},
-	{"1-", minus_1},
-	{"+", plus},
-	{"-", minus},
-	{"skk-version", skk_version},
-	{"skk-server-version", skk_server_version},
-	{"skk-ad-to-gengo", skk_ad_to_gengo},
-	{"skk-gengo-to-ad", skk_gengo_to_ad},
-	{"skk-default-current-date", skk_default_current_date},
-	{"skk-current-date", skk_current_date},
-	{"skk-relative-date", skk_relative_date},
-	{"skk-gadget-units-conversion", skk_gadget_units_conversion},
-	{"skk-omikuji", skk_omikuji},
-	{"skk-strftime", skk_strftime},
+local skk_gadget_func_table = {
+	["concat"] = concat,
+	["substring"] = substring,
+	["make-string"] = make_string,
+	["string-to-number"] = string_to_number,
+	["string-to-char"] = string_to_char,
+	["number-to-string"] = number_to_string,
+	["window-width"] = window_width,
+	["window-height"] = window_height,
+	["current-time"] = current_time,
+	["current-time-string"] = current_time_string,
+	["format-time-string"] = format_time_string,
+	["car"] = car,
+	["cdr"] = cdr,
+	["1+"] = plus_1,
+	["1-"] = minus_1,
+	["+"] = plus,
+	["-"] = minus,
+	["skk-version"] = skk_version,
+	["skk-server-version"] = skk_server_version,
+	["skk-ad-to-gengo"] = skk_ad_to_gengo,
+	["skk-gengo-to-ad"] = skk_gengo_to_ad,
+	["skk-default-current-date"] = skk_default_current_date,
+	["skk-current-date"] = skk_current_date,
+	["skk-relative-date"] = skk_relative_date,
+	["skk-gadget-units-conversion"] = skk_gadget_units_conversion,
+	["skk-omikuji"] = skk_omikuji,
+	["skk-strftime"] = skk_strftime,
 }
-local skk_gadget_func_table = {}
-for i, v in ipairs(skk_gadget_func_table_org) do
-	skk_gadget_func_table[v[1]] = v[2]
-end
 
 -- 文字列パース
 local function parse_string(s)
@@ -900,7 +901,7 @@ local function parse_string(s)
 end
 
 -- S式をテーブル表記に変換
-function convert_s_to_table(s)
+local function convert_s_to_table(s)
 	local ret = ""
 	local e = ""
 	local q = 0

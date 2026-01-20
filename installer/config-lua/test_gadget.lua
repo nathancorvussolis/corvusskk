@@ -6,6 +6,17 @@ require("init")
 
 
 
+function get_unit_candidate(from, to)
+	return string.format("(skk-gadget-units-conversion \"%s\" (string-to-number (car skk-num-list)) \"%s\")", from, to)
+end
+
+function test_unit_converted(n, unit)
+	if (math.tointeger(n)) then n = math.tointeger(n) end
+	return tostring(n) .. unit
+end
+
+
+
 el_test_gadget_table = {
 
 {"見出し語", "(concat skk-henkan-key)", "見出し語"},
@@ -70,76 +81,93 @@ end},
 	return s
 end},
 {"skk", "(skk-version)", "CorvusSKK X.Y.Z"},
-{"1feet", "(skk-gadget-units-conversion \"feet\" (string-to-number (car skk-num-list)) \"cm\")", function(s)
-	local n = 30.48 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "cm"
-end},
-{"1inch", "(skk-gadget-units-conversion \"inch\" (string-to-number (car skk-num-list)) \"cm\")", function(s)
-	local n = 2.54 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "cm"
-end},
-{"1inch", "(skk-gadget-units-conversion \"inch\" (string-to-number (car skk-num-list)) \"feet\")", function(s)
-	local n = (1.0 / 12.0) * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "feet"
-end},
-{"1mile", "(skk-gadget-units-conversion \"mile\" (string-to-number (car skk-num-list)) \"km\")", function(s)
-	local n = 1.609344 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "km"
-end},
-{"1mile", "(skk-gadget-units-conversion \"mile\" (string-to-number (car skk-num-list)) \"yard\")", function(s)
-	local n = 1760.0 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "yard"
-end},
-{"1yard", "(skk-gadget-units-conversion \"yard\" (string-to-number (car skk-num-list)) \"cm\")", function(s)
-	local n = 91.44 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "cm"
-end},
-{"1yard", "(skk-gadget-units-conversion \"yard\" (string-to-number (car skk-num-list)) \"feet\")", function(s)
-	local n = 3.0 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "feet"
-end},
-{"1すん", "(skk-gadget-units-conversion \"寸\" (string-to-number (car skk-num-list)) \"mm\")", function(s)
-	local n = (1000 / 33) * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "mm"
-end},
-{"1しゃく", "(skk-gadget-units-conversion \"尺\" (string-to-number (car skk-num-list)) \"cm\")", function(s)
-	local n = (1000 / 33) * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "cm"
-end},
-{"1しゃく", "(skk-gadget-units-conversion \"勺\" (string-to-number (car skk-num-list)) \"mL\")", function(s)
-	local n = (2401 / 1331) * 10 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "mL"
-end},
-{"1ごう", "(skk-gadget-units-conversion \"合\" (string-to-number (car skk-num-list)) \"mL\")", function(s)
-	local n = (2401 / 1331) * 100 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "mL"
-end},
-{"1しょう", "(skk-gadget-units-conversion \"升\" (string-to-number (car skk-num-list)) \"L\")", function(s)
-	local n = (2401 / 1331) * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "L"
-end},
-{"1と", "(skk-gadget-units-conversion \"斗\" (string-to-number (car skk-num-list)) \"L\")", function(s)
-	local n = (2401 / 1331) * 10 * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "L"
-end},
-{"1つぼ", "(skk-gadget-units-conversion \"坪\" (string-to-number (car skk-num-list)) \"㎡\")", function(s)
-	local n = (400 / 121) * 1
-	if (math.tointeger(n)) then n = math.tointeger(n) end
-	return tostring(n) .. "㎡"
-end},
+
+{"1mile", get_unit_candidate("mile", "yard"), test_unit_converted(1760, "yard")},
+{"1mile", get_unit_candidate("mile", "feet"), test_unit_converted(1760 * 3, "feet")},
+{"1mile", get_unit_candidate("mile", "inch"), test_unit_converted(1760 * 3 * 12, "inch")},
+{"1mile", get_unit_candidate("mile", "m"),    test_unit_converted(0.9144 * 1760, "m")},
+{"1mile", get_unit_candidate("mile", "km"),   test_unit_converted(0.9144 * 1760 / 1000, "km")},
+
+{"1yard", get_unit_candidate("yard", "mile"), test_unit_converted(1 / 1760, "mile")},
+{"1yard", get_unit_candidate("yard", "feet"), test_unit_converted(3, "feet")},
+{"1yard", get_unit_candidate("yard", "inch"), test_unit_converted(3 * 12, "inch")},
+{"1yard", get_unit_candidate("yard", "m"),    test_unit_converted(0.9144, "m")},
+{"1yard", get_unit_candidate("yard", "mm"),   test_unit_converted(0.9144 * 1000, "mm")},
+
+{"1feet", get_unit_candidate("feet", "mile"), test_unit_converted(1 / (1760 * 3), "mile")},
+{"1feet", get_unit_candidate("feet", "yard"), test_unit_converted(1 / 3, "yard")},
+{"1feet", get_unit_candidate("feet", "inch"), test_unit_converted(12, "inch")},
+{"1feet", get_unit_candidate("feet", "m"),    test_unit_converted(0.9144 / 3, "m")},
+{"1feet", get_unit_candidate("feet", "mm"),   test_unit_converted(0.9144 / 3 * 1000, "mm")},
+ 
+{"1inch", get_unit_candidate("inch", "mile"), test_unit_converted(1 / (1760 * 3 * 12), "mile")},
+{"1inch", get_unit_candidate("inch", "yard"), test_unit_converted(1 / (3 * 12), "yard")},
+{"1inch", get_unit_candidate("inch", "feet"), test_unit_converted(1 / 12, "feet")},
+{"1inch", get_unit_candidate("inch", "m"),    test_unit_converted(0.0254, "m")},
+{"1inch", get_unit_candidate("inch", "mm"),   test_unit_converted(25.4, "mm")},
+
+{"1pound", get_unit_candidate("pound", "ounce"), test_unit_converted(16, "ounce")},
+{"1pound", get_unit_candidate("pound", "grain"), test_unit_converted(7000, "grain")},
+{"1pound", get_unit_candidate("pound", "kg"),    test_unit_converted(0.45359237, "kg")},
+{"1pound", get_unit_candidate("pound", "g"),     test_unit_converted(0.45359237 * 1000, "g")},
+
+{"1ounce", get_unit_candidate("ounce", "pound"), test_unit_converted(1 / 16, "pound")},
+{"1ounce", get_unit_candidate("ounce", "grain"), test_unit_converted(7000 / 16, "grain")},
+{"1ounce", get_unit_candidate("ounce", "g"),     test_unit_converted(28.349523125, "g")},
+
+{"1grain", get_unit_candidate("grain", "pound"), test_unit_converted(1 / 7000, "pound")},
+{"1grain", get_unit_candidate("grain", "ounce"), test_unit_converted(16 / 7000, "ounce")},
+{"1grain", get_unit_candidate("grain", "g"),     test_unit_converted(0.06479891, "g")},
+{"1grain", get_unit_candidate("grain", "mg"),    test_unit_converted(0.06479891 * 1000, "mg")},
+
+{"1もう",   get_unit_candidate("毛", "m"),  test_unit_converted((10 / 33) / 10000, "m")},
+{"1もう",   get_unit_candidate("毛", "mm"), test_unit_converted((10 / 33) / 10000 * 1000, "mm")},
+{"1りん",   get_unit_candidate("厘", "m"),  test_unit_converted((10 / 33) / 1000, "m")},
+{"1りん",   get_unit_candidate("厘", "mm"), test_unit_converted((10 / 33) / 1000 * 1000, "mm")},
+{"1ぶ",     get_unit_candidate("分", "m"),  test_unit_converted((10 / 33) / 100, "m")},
+{"1ぶ",     get_unit_candidate("分", "mm"), test_unit_converted((10 / 33) / 100 * 1000, "mm")},
+{"1すん",   get_unit_candidate("寸", "m"),  test_unit_converted((10 / 33) / 10, "m")},
+{"1すん",   get_unit_candidate("寸", "mm"), test_unit_converted((10 / 33) / 10 * 1000, "mm")},
+{"1しゃく", get_unit_candidate("尺", "m"),  test_unit_converted((10 / 33), "m")},
+{"1しゃく", get_unit_candidate("尺", "mm"), test_unit_converted((10 / 33) * 1000, "mm")},
+{"1じょう", get_unit_candidate("丈", "m"),  test_unit_converted((10 / 33) * 10, "m")},
+{"1けん",   get_unit_candidate("間", "m"),  test_unit_converted((10 / 33) * 6, "m")},
+{"1ちょう", get_unit_candidate("町", "m"),  test_unit_converted((10 / 33) * 360, "m")},
+{"1り",     get_unit_candidate("里", "m"),  test_unit_converted((10 / 33) * 12960, "m")},
+{"1り",     get_unit_candidate("里", "km"), test_unit_converted((10 / 33) * 12960 / 1000, "km")},
+
+{"1しゃく", get_unit_candidate("勺", "㎡"), test_unit_converted((400 / 121) / 100, "㎡")},
+{"1ごう",   get_unit_candidate("合", "㎡"), test_unit_converted((400 / 121) / 10, "㎡")},
+{"1ぶ",     get_unit_candidate("歩", "㎡"), test_unit_converted((400 / 121), "㎡")},
+{"1つぼ",   get_unit_candidate("坪", "㎡"), test_unit_converted((400 / 121), "㎡")},
+{"1せ",     get_unit_candidate("畝", "㎡"), test_unit_converted((400 / 121) * 30, "㎡")},
+{"1たん",   get_unit_candidate("反", "㎡"), test_unit_converted((400 / 121) * 300, "㎡")},
+{"1ちょう", get_unit_candidate("町", "㎡"), test_unit_converted((400 / 121) * 3000, "㎡")},
+
+{"1しゃく", get_unit_candidate("勺", "L"),  test_unit_converted((2401 / 1331) / 100, "L")},
+{"1しゃく", get_unit_candidate("勺", "mL"), test_unit_converted((2401 / 1331) / 100 * 1000, "mL")},
+{"1ごう",   get_unit_candidate("合", "L"),  test_unit_converted((2401 / 1331) / 10, "L")},
+{"1ごう",   get_unit_candidate("合", "mL"), test_unit_converted((2401 / 1331) / 10 * 1000, "mL")},
+{"1しょう", get_unit_candidate("升", "L"),  test_unit_converted((2401 / 1331), "L")},
+{"1しょう", get_unit_candidate("升", "mL"), test_unit_converted((2401 / 1331) * 1000, "mL")},
+{"1と",     get_unit_candidate("斗", "L"),  test_unit_converted((2401 / 1331) * 10, "L")},
+{"1と",     get_unit_candidate("斗", "mL"), test_unit_converted((2401 / 1331) * 10 * 1000, "mL")},
+{"1こく",   get_unit_candidate("石", "L"),  test_unit_converted((2401 / 1331) * 100, "L")},
+{"1こく",   get_unit_candidate("石", "mL"), test_unit_converted((2401 / 1331) * 100 * 1000, "mL")},
+
+{"1もう",   get_unit_candidate("毛", "kg"), test_unit_converted(3.75 / 1000000, "kg")},
+{"1もう",   get_unit_candidate("毛", "g"),  test_unit_converted(3.75 / 1000000 * 1000, "g")},
+{"1りん",   get_unit_candidate("厘", "kg"), test_unit_converted(3.75 / 100000, "kg")},
+{"1りん",   get_unit_candidate("厘", "g"),  test_unit_converted(3.75 / 100000 * 1000, "g")},
+{"1ぶ",     get_unit_candidate("分", "kg"), test_unit_converted(3.75 / 10000, "kg")},
+{"1ぶ",     get_unit_candidate("分", "g"),  test_unit_converted(3.75 / 10000 * 1000, "g")},
+{"1もんめ", get_unit_candidate("匁", "kg"), test_unit_converted(3.75 / 1000, "kg")},
+{"1もんめ", get_unit_candidate("匁", "g"),  test_unit_converted(3.75 / 1000 * 1000, "g")},
+{"1きん",   get_unit_candidate("斤", "kg"), test_unit_converted(3.75 * 0.16, "kg")},
+{"1きん",   get_unit_candidate("斤", "g"),  test_unit_converted(3.75 * 0.16 * 1000, "g")},
+{"1かん",   get_unit_candidate("貫", "kg"), test_unit_converted(3.75, "kg")},
+{"1かん",   get_unit_candidate("貫", "g"),  test_unit_converted(3.75 * 1000, "g")},
+
 {"おみくじ", "(skk-omikuji)", function(s)
 	local omikuji_table = {"大吉", "吉", "中吉", "小吉", "末吉", "凶", "大凶"}
 	for i, v in ipairs(omikuji_table) do
