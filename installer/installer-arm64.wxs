@@ -51,8 +51,8 @@
           Source="..\build\ARM64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_ARM64" Guid="C20F192C-1DB0-47F5-AE91-0E07727DAB86">
-        <File Id="F_luadll_arm64" Name="lua54.dll"
-          Source="..\build\ARM64\Release\lua54.dll" KeyPath="yes" />
+        <File Id="F_luadll_arm64" Name="lua55.dll"
+          Source="..\build\ARM64\Release\lua55.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_ARM64" Guid="8B5418C2-ABB5-4907-A749-859856078508">
         <File Id="F_zlibdll_arm64" Name="zlib1.dll"
