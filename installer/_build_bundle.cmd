@@ -6,9 +6,7 @@ call _vsdev.cmd
 
 call _env.cmd
 
-if not defined SIGNCOMMAND set SignOutput=false
-
-set BUILDCOMMAND=dotnet build installer-bundle.wixproj -nologo -verbosity:normal -target:Build
+set BUILDCOMMAND=dotnet build installer-bundle.wixproj -nologo -verbosity normal
 
 echo build bundle
 %BUILDCOMMAND% -property:BaseIntermediateOutputPath=%OutDir%\bundle\

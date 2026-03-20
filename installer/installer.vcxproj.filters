@@ -109,6 +109,9 @@
     <None Include="_vsdev.cmd">
       <Filter>Installer Files</Filter>
     </None>
+    <None Include="dotnet-tools.json">
+      <Filter>Installer Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="config-sample\kanatable.txt">

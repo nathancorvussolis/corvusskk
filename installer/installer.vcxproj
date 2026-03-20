@@ -42,6 +42,7 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
+    <None Include="dotnet-tools.json" />
     <None Include="installer-arm64.wxs" />
     <None Include="installer-bundle.wixproj" />
     <None Include="installer-bundle.wxs" />

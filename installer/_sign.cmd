@@ -19,6 +19,8 @@ set TIMESTAMPSERVER=%2
 
 set SIGNCOMMAND=signtool sign /v /d %DESCRIPTION% /sha1 %SHA1HASH% /fd sha256 /tr %TIMESTAMPSERVER% /td sha256
 
+
+
 set BINFILES=
 rem x86
 set BINFILES=%BINFILES% "..\build\Win32\Release\*.dll" "..\build\Win32\Release\*.exe"
@@ -29,18 +31,45 @@ set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*
 rem ARM64EC   TIP only
 set BINFILES=%BINFILES% "..\build\ARM64EC\Release\*.dll"
 
+set MSIFILES=
+rem x86
+set MSIFILES=%MSIFILES% "%OutDir%\x86.msi"
+rem x64
+set MSIFILES=%MSIFILES% "%OutDir%\x64.msi"
+rem ARM64
+set MSIFILES=%MSIFILES% "%OutDir%\arm64.msi"
 
+rem bundle
+set BEFILE="%OutDir%\corvusskk-%VERSION%-engine.exe"
+set BSFILE="%OutDir%\corvusskk-%VERSION%.exe"
+
+
+
+dotnet tool restore
 
 call _clean.cmd
 
 echo sign binary files
 %SIGNCOMMAND% %BINFILES%
 
-set SignOutput=true
-
 call _build_msi.cmd
 
+echo sign msi files
+%SIGNCOMMAND% %MSIFILES%
+
 call _build_bundle.cmd
+
+echo detach engine
+dotnet wix burn -acceptEula %WIXTOOLSET_EULAID% detach %BSFILE% -engine %BEFILE%
+
+echo sign engine
+%SIGNCOMMAND% %BEFILE%
+
+echo reattach engine
+dotnet wix burn -acceptEula %WIXTOOLSET_EULAID% reattach %BSFILE% -engine %BEFILE%
+
+echo sign bundle
+%SIGNCOMMAND% %BSFILE%
 
 
 
