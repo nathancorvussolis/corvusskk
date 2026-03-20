@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -10,6 +10,7 @@
 #include <limits.h>
 #include <ctype.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 #include <io.h>
 #include <errno.h>
