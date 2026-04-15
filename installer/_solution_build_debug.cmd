@@ -15,11 +15,11 @@ rem x86
 rem x64
 %BUILDCOMMAND% -property:Platform=x64
 
-rem ARM64
-%BUILDCOMMAND% -property:Platform=ARM64
-
 rem ARM64EC
 %BUILDCOMMAND% -property:Platform=ARM64EC
+
+rem ARM64
+%BUILDCOMMAND% -property:Platform=ARM64
 
 popd
 endlocal

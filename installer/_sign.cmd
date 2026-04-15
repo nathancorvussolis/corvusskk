@@ -26,10 +26,10 @@ rem x86
 set BINFILES=%BINFILES% "..\build\Win32\Release\*.dll" "..\build\Win32\Release\*.exe"
 rem x64
 set BINFILES=%BINFILES% "..\build\x64\Release\*.dll" "..\build\x64\Release\*.exe"
-rem ARM64
-set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*.exe"
 rem ARM64EC   TIP only
 set BINFILES=%BINFILES% "..\build\ARM64EC\Release\*.dll"
+rem ARM64
+set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*.exe"
 
 set MSIFILES=
 rem x86
@@ -60,13 +60,13 @@ echo sign msi files
 call _build_bundle.cmd
 
 echo detach engine
-dotnet wix burn -acceptEula %WIXTOOLSET_EULAID% detach %BSFILE% -engine %BEFILE%
+dotnet wix burn detach %BSFILE% -engine %BEFILE%
 
 echo sign engine
 %SIGNCOMMAND% %BEFILE%
 
 echo reattach engine
-dotnet wix burn -acceptEula %WIXTOOLSET_EULAID% reattach %BSFILE% -engine %BEFILE%
+dotnet wix burn reattach %BSFILE% -engine %BEFILE%
 
 echo sign bundle
 %SIGNCOMMAND% %BSFILE%
