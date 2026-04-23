@@ -47,30 +47,30 @@
       </Component>
       <Component Id="LUAEXE_X64" Guid="603A9A91-D244-4AA7-A8AD-56B2563C0C25">
         <File Id="F_LUAEXE_X64" Name="lua.exe"
-          Source="..\build\x64\Release\lua.exe" KeyPath="yes" />
+          Source="..\build\x64\Release\lua.exe" CompanionFile="F_IMCRVMGR_X64" />
       </Component>
       <Component Id="LUADLL_X64" Guid="39B37C2E-8821-47E8-98FE-00503A54894C">
         <File Id="F_LUADLL_X64" Name="lua55.dll"
-          Source="..\build\x64\Release\lua55.dll" KeyPath="yes" />
+          Source="..\build\x64\Release\lua55.dll" CompanionFile="F_IMCRVMGR_X64" />
       </Component>
       <Component Id="ZLIBDLL_X64" Guid="796681FD-4DAE-4658-A7C1-B87E6F2CCE6C">
         <File Id="F_ZLIBDLL_X64" Name="zlib1.dll"
-          Source="..\build\x64\Release\zlib1.dll" KeyPath="yes" />
+          Source="..\build\x64\Release\zlib1.dll" CompanionFile="F_IMCRVCNF_X64" />
       </Component>
     </DirectoryRef>
 
     <DirectoryRef Id="IMCRVSKK_X64">
       <Component Id="MSVCP140_X64" Guid="DA3EBA0A-0AEB-4760-96D8-5CA03DFD6FE2">
         <File Id="F_MSVCP140_X64" Name="msvcp140.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\msvcp140.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\msvcp140.dll" CompanionFile="F_IMCRVCNF_X64" />
       </Component>
       <Component Id="VCRUNTIME140_X64" Guid="1C447C62-3036-4A44-BD66-649EAA2A31C8">
         <File Id="F_VCRUNTIME140_X64" Name="vcruntime140.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140.dll" CompanionFile="F_IMCRVCNF_X64" />
       </Component>
       <Component Id="VCRUNTIME140_1_X64" Guid="360E0C73-7555-413C-AE3D-2E943CF1A382">
         <File Id="F_VCRUNTIME140_1_X64" Name="vcruntime140_1.dll"
-          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140_1.dll" KeyPath="yes" />
+          Source="$(env.VCToolsRedistDir)x64\Microsoft.VC143.CRT\vcruntime140_1.dll" CompanionFile="F_IMCRVCNF_X64" />
       </Component>
     </DirectoryRef>
 
