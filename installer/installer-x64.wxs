@@ -47,11 +47,11 @@
       </Component>
       <Component Id="LUAEXE_X64" Guid="603A9A91-D244-4AA7-A8AD-56B2563C0C25">
         <File Id="F_LUAEXE_X64" Name="lua.exe"
-          Source="..\build\x64\Release\lua.exe" CompanionFile="F_IMCRVMGR_X64" />
+          Source="..\build\x64\Release\lua.exe" KeyPath="yes" />
       </Component>
       <Component Id="LUADLL_X64" Guid="39B37C2E-8821-47E8-98FE-00503A54894C">
         <File Id="F_LUADLL_X64" Name="lua55.dll"
-          Source="..\build\x64\Release\lua55.dll" CompanionFile="F_IMCRVMGR_X64" />
+          Source="..\build\x64\Release\lua55.dll" KeyPath="yes" />
       </Component>
       <Component Id="ZLIBDLL_X64" Guid="796681FD-4DAE-4658-A7C1-B87E6F2CCE6C">
         <File Id="F_ZLIBDLL_X64" Name="zlib1.dll"
