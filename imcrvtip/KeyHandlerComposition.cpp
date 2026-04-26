@@ -143,10 +143,7 @@ HRESULT CTextService::_Update(TfEditCookie ec, ITfContext *pContext, BOOL fixed,
 			{
 				if (!showmodemark)
 				{
-					if (kana.empty() && romandisp.empty())
-					{
-						comptext.append(markSP);
-					}
+					// markSP不要: kana/romanが空のときはコンポジションを開始しない
 				}
 				else
 				{
@@ -346,6 +343,10 @@ HRESULT CTextService::_SetText(TfEditCookie ec, ITfContext *pContext, const std:
 
 	if (!_IsComposing())
 	{
+		if (text.empty())
+		{
+			return S_OK;	// 空テキストで新規コンポジション開始不要
+		}
 		if (!_StartComposition(pContext))
 		{
 			return S_FALSE;

@@ -745,7 +745,7 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 			}
 		}
 
-		if (!inputkey && roman.empty() && kana.empty())
+		if (roman.empty() && kana.empty())
 		{
 			_HandleCharReturn(ec, pContext);
 		}
@@ -829,6 +829,11 @@ HRESULT CTextService::_HandleControl(TfEditCookie ec, ITfContext *pContext, BYTE
 
 			if (inputkey)
 			{
+				if (roman.empty() && kana.empty())
+				{
+					_HandleCharReturn(ec, pContext);
+					return S_OK;
+				}
 				_HandleCharShift(ec, pContext);
 			}
 			else
