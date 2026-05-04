@@ -25,6 +25,8 @@
 #define IDD_DIALOG_KANATBL                      151
 #define IDD_DIALOG_JLATTBL                      152
 
+#define IDD_DIALOG_VERSION                      160
+
 
 
 #define IDC_LIST_SKK_DIC                        1001
@@ -258,3 +260,9 @@
 #define IDC_BUTTON_JLATTBL_DOWN                 5205
 #define IDC_BUTTON_JLATTBL_W                    5206
 #define IDC_BUTTON_JLATTBL_D                    5207
+
+#define IDC_EDIT_CURRENT_VERSION                6001
+#define IDC_EDIT_LATEST_VERSION                 6002
+#define IDC_EDIT_RELEASE_NOTE                   6003
+#define IDC_BUTTON_CHECK_UPDATE                 6004
+#define IDC_BUTTON_OPEN_RELEASE_PAGE            6005

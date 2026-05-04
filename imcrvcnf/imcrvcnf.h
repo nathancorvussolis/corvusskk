@@ -66,6 +66,8 @@ void SaveKana(IXmlWriter *pWriter, HWND hDlg);
 // DlgProcJLatin
 INT_PTR CALLBACK DlgProcJLatin(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 void SaveJLatin(IXmlWriter *pWriter, HWND hDlg);
+// DlgProcVersion
+INT_PTR CALLBACK DlgProcVersion(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 extern LPCWSTR TextServiceDesc;
 extern HINSTANCE hInst;

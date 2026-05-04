@@ -86,6 +86,9 @@
     <ClCompile Include="DlgProcSelKey.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DlgProcVersion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="imcrvcnf.rc">
