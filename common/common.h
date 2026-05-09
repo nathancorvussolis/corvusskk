@@ -20,7 +20,7 @@
 #define PRESERVEDKEY_NUM	2		//キー設定ON/OFF
 #define MAX_PRESERVEDKEY	8		//キー設定ON/OFF最大数
 #define PRIVATEMODEKEY_NUM	2		//プライベートモードON/OFF
-#define MAX_KEYRE			256		//キー/キー (仮想) 読み込みバッファ
+#define MAX_KEYRE			256		//キー/仮想キー 読み込みバッファ
 #define MAX_CONV_POINT		256		//変換位置指定最大数
 #define DEF_BACKUPGENS		7		//ユーザー辞書バックアップ世代デフォルト
 #define MAX_BACKUPGENS		255		//ユーザー辞書バックアップ世代最大
