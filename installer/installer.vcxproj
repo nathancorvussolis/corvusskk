@@ -42,24 +42,16 @@
     <None Include="config-lua\test_num.lua" />
     <None Include="config-lua\test_search.lua" />
     <None Include="config-lua\test_time.lua" />
-    <None Include="dotnet-tools.json" />
-    <None Include="installer-arm64.wxs" />
-    <None Include="installer-bundle.wixproj" />
-    <None Include="installer-bundle.wxs" />
-    <None Include="installer-msi.wixproj" />
-    <None Include="installer-x64.wxs" />
-    <None Include="installer-x86.wxs" />
+    <None Include="installer.iss" />
+    <None Include="license.rtf" />
     <None Include="resource-md\markdown.css" />
-    <None Include="theme-bundle\license.rtf" />
-    <None Include="theme-bundle\thm.wxl" />
     <None Include="_build.cmd" />
-    <None Include="_build_bundle.cmd" />
     <None Include="_build_doc.cmd" />
-    <None Include="_build_msi.cmd" />
     <None Include="_clean.cmd" />
     <None Include="_debug_reg.cmd" />
     <None Include="_debug_unreg.cmd" />
     <None Include="_env.cmd" />
+    <None Include="_sigcheck.cmd" />
     <None Include="_sign.cmd" />
     <None Include="_solution_build.cmd" />
     <None Include="_solution_build_debug.cmd" />
@@ -123,9 +115,6 @@
     <Image Include="resource-md\205_convert_character_display.png" />
     <Image Include="resource-md\206_register_annotation.png" />
     <Image Include="resource-md\logo.png" />
-    <Image Include="theme-bundle\banner.bmp" />
-    <Image Include="theme-bundle\dialog.bmp" />
-    <Image Include="theme-bundle\logo.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C65505E2-5456-473C-91B1-C6D91B294DC3}</ProjectGuid>

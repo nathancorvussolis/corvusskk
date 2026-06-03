@@ -4,7 +4,7 @@ pushd "%~dp0"
 
 call _env.cmd
 
-if exist "%OutDir%" rd /s /q "%OutDir%"
+if exist "%OUTDIR%" rd /s /q "%OUTDIR%"
 
 popd
 endlocal

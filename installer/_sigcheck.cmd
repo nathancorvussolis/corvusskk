@@ -2,11 +2,18 @@
 setlocal
 pushd "%~dp0"
 
-call _vsdev.cmd
-
 call _env.cmd
 
 
+
+where /q sigcheck.exe
+if %ERRORLEVEL% equ 1 (
+  pushd "%OUTDIR%"
+  curl -O -R "https://live.sysinternals.com/sigcheck.exe"
+  popd
+)
+
+set PATH=%PATH%;%~dp0%OUTDIR%
 
 set BINFILES=
 rem x86
@@ -20,13 +27,7 @@ set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*
 rem Uninstaller, Installer
 set BINFILES=%BINFILES% "%OUTDIR%\uninst.e32.tmp" "%OUTDIR%\corvusskk-%VERSION%.exe"
 
-signtool verify /all /v /d /pa /tw %BINFILES%
-
-set SIGNCOUNT=0
-for %%i in (%BINFILES%) do set /a "SIGNCOUNT = SIGNCOUNT + 1"
-
-echo;
-echo     %SIGNCOUNT% signatures in all.
+for %%i in (%BINFILES%) do sigcheck.exe -vs %%i
 
 
 

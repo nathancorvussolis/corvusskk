@@ -4,7 +4,7 @@ pushd "%~dp0"
 
 call _env.cmd
 
-if not exist "%OutDir%" mkdir "%OutDir%"
+if not exist "%OUTDIR%" mkdir "%OUTDIR%"
 
 pushd ..
 
@@ -24,17 +24,17 @@ pandoc.exe ^
 --standalone ^
 -c "installer\resource-md\markdown.css" ^
 --toc ^
--o "installer\%OutDir%\README.html" ^
+-o "installer\%OUTDIR%\README.html" ^
 README.md
 
 popd
 
-copy /y /b "..\LICENSE.TXT" "%OutDir%\LICENSE.txt" > nul
-copy /y /b "config-lua\init.lua" "%OutDir%\init.lua" > nul
-copy /y /b "config-share\config.xml" "%OutDir%\config.xml" > nul
-copy /y /b "config-share\skkdict.txt" "%OutDir%\skkdict.txt" > nul
+copy /y /b "..\LICENSE.TXT" "%OUTDIR%\LICENSE.txt" > nul
+copy /y /b "config-lua\init.lua" "%OUTDIR%\init.lua" > nul
+copy /y /b "config-share\config.xml" "%OUTDIR%\config.xml" > nul
+copy /y /b "config-share\skkdict.txt" "%OUTDIR%\skkdict.txt" > nul
 
-pushd "%OutDir%"
+pushd "%OUTDIR%"
 
 copy /b LICENSE.txt + > nul
 copy /b init.lua + > nul

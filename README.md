@@ -21,7 +21,7 @@
 
 corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン番号)
 
-アップデートの後はOSを再起動しておくと安全です。
+インストールやアップデートの後はOSを再起動する必要があります。
 
 インストール先
 
@@ -46,11 +46,9 @@ corvusskk-X.Y.Z.exe を実行してください。 (X, Y, Z はバージョン�
 
 ### アンインストール
 
-コントロールパネルの「プログラムと機能」からアンインストールしてください。
+コントロールパネルや設定アプリからアンインストールしてください。
 
-または、インストールに使用した exe ファイルを再度実行し「Uninstall」を選択してください。
-
-アンインストールの後はOSを再起動しておくと安全です。
+アンインストールの後はOSを再起動する必要があります。
 
 
 ### Windows ストアアプリ、Microsoft Edge
@@ -891,7 +889,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2022 17.14.30
+Visual Studio Community 2022 17.14.33
 
 * .NET desktop development
 
@@ -905,9 +903,7 @@ Visual Studio Community 2022 17.14.30
         * C++ ATL for latest v143 build tools (x86 & x64)
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
 
-WiX Toolset v6.0.2
-
-* ビルド用バッチファイル内の dotnet build コマンドによって暗黙的に復元
+Inno Setup 6.7.3
 
 pandoc 3.9.0.2
 

@@ -13,9 +13,6 @@
     <Filter Include="resource-md">
       <UniqueIdentifier>{caab1f7f-f9ad-4ffc-8be3-7bbdcc5fa4bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="theme-bundle">
-      <UniqueIdentifier>{69d80344-cf91-428b-bd8c-5fb2f5ee9f0a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="config-share">
       <UniqueIdentifier>{29dc0f73-b251-4b3a-8423-decd81086516}</UniqueIdentifier>
     </Filter>
@@ -42,41 +39,11 @@
     <None Include="resource-md\markdown.css">
       <Filter>resource-md</Filter>
     </None>
-    <None Include="installer-arm64.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="installer-bundle.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="installer-x64.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="installer-x86.wxs">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="..\README.md" />
-    <None Include="theme-bundle\license.rtf">
-      <Filter>theme-bundle</Filter>
-    </None>
-    <None Include="theme-bundle\thm.wxl">
-      <Filter>theme-bundle</Filter>
-    </None>
-    <None Include="installer-bundle.wixproj">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="installer-msi.wixproj">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="_build.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="_build_bundle.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
     <None Include="_build_doc.cmd">
-      <Filter>Installer Files</Filter>
-    </None>
-    <None Include="_build_msi.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_clean.cmd">
@@ -89,6 +56,9 @@
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_env.cmd">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="_sigcheck.cmd">
       <Filter>Installer Files</Filter>
     </None>
     <None Include="_sign.cmd">
@@ -109,7 +79,10 @@
     <None Include="_vsdev.cmd">
       <Filter>Installer Files</Filter>
     </None>
-    <None Include="dotnet-tools.json">
+    <None Include="installer.iss">
+      <Filter>Installer Files</Filter>
+    </None>
+    <None Include="license.rtf">
       <Filter>Installer Files</Filter>
     </None>
   </ItemGroup>
@@ -161,15 +134,6 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="theme-bundle\logo.png">
-      <Filter>theme-bundle</Filter>
-    </Image>
-    <Image Include="theme-bundle\banner.bmp">
-      <Filter>theme-bundle</Filter>
-    </Image>
-    <Image Include="theme-bundle\dialog.bmp">
-      <Filter>theme-bundle</Filter>
-    </Image>
     <Image Include="resource-md\00_input_mode_ascii.png">
       <Filter>resource-md</Filter>
     </Image>
