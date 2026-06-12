@@ -1,4 +1,4 @@
-﻿#define MyAppName "CorvusSKK"
+#define MyAppName "CorvusSKK"
 #define MyAppVersion GetEnv('VERSION')
 #define MyAppPublisher "nathancorvussolis"
 #define MyAppURL "https://nathancorvussolis.github.io/"
@@ -111,51 +111,39 @@ Root: HKLM64; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType
 
 [Code]
 const
-  // Both the target bundle and itself are 32bit. This key is redirected to WOW6432Node on 64bit OS.
+  // The target bundle is 32bit.
   RegSubKeyUninstall = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
   // Bundle UpgradeCode
   TargetBundleUpgradeCode = '{F2664253-EAE9-4ED5-AD92-03229BD8F64F}';
 
-function MultiStringContains(const MultiStr: String; const TargetStr: String): Boolean;
-var
-  MultiStrArr: TArrayOfString;
-  I: Integer;
-begin
-  Result := False;
-  MultiStrArr := StringSplit(MultiStr, [#0], stExcludeEmpty);
-  for I := 0 to GetArrayLength(MultiStrArr) - 1 do
-  begin
-    if SameText(MultiStrArr[I], TargetStr) then
-    begin
-      Result := True;
-      Exit;
-    end;
-  end;
-end;
-
 function SearchBundleCachePath(const BundleUpgradeCode: String; var BundleCachePath: String): Boolean;
 var
-  SubKeys: TArrayOfString;
+  SubKeyNameArr: TArrayOfString;
   UpgradeCode: String;
+  UpgradeCodeArr: TArrayOfString;
   CachePath: String;
-  I: Integer;
+  I, J: Integer;
 begin
   Result := False;
-  if RegGetSubkeyNames(HKLM, RegSubKeyUninstall, SubKeys) then
+  if RegGetSubkeyNames(HKLM32, RegSubKeyUninstall, SubKeyNameArr) then
   begin
-    for I := 0 to GetArrayLength(SubKeys) - 1 do
+    for I := 0 to GetArrayLength(SubKeyNameArr) - 1 do
     begin
-      if RegQueryMultiStringValue(HKLM, RegSubKeyUninstall + '\' + SubKeys[I], 'BundleUpgradeCode', UpgradeCode) then
+      if RegQueryMultiStringValue(HKLM32, RegSubKeyUninstall + '\' + SubKeyNameArr[I], 'BundleUpgradeCode', UpgradeCode) then
       begin
-        if MultiStringContains(UpgradeCode, BundleUpgradeCode) then
+        UpgradeCodeArr := StringSplit(UpgradeCode, [#0], stExcludeEmpty);
+        for J := 0 to GetArrayLength(UpgradeCodeArr) - 1 do
         begin
-          if RegQueryStringValue(HKLM, RegSubKeyUninstall + '\' + SubKeys[I], 'BundleCachePath', CachePath) then
+          if SameText(UpgradeCodeArr[J], BundleUpgradeCode) then
           begin
-            if FileExists(CachePath) then
+            if RegQueryStringValue(HKLM32, RegSubKeyUninstall + '\' + SubKeyNameArr[I], 'BundleCachePath', CachePath) then
             begin
-              BundleCachePath := CachePath;
-              Result := True;
-              Exit;
+              if FileExists(CachePath) then
+              begin
+                BundleCachePath := CachePath;
+                Result := True;
+                Exit;
+              end;
             end;
           end;
         end;
@@ -191,3 +179,30 @@ begin
   UninstallBundle(TargetBundleUpgradeCode);
   Result := '';
 end;
+
+#if False
+procedure SearchBundleTest(const BundleUpgradeCode: String);
+var
+  CachePath: String;
+begin
+  if SearchBundleCachePath(BundleUpgradeCode, CachePath) then
+  begin
+    MsgBox('Bundle found.' + #13#10#13#10 +
+      'BundleUpgradeCode :' + #13#10 + BundleUpgradeCode + #13#10#13#10 +
+      'BundleCachePath :' + #13#10 + CachePath,
+      mbInformation, MB_OK)
+  end
+  else
+  begin
+    MsgBox('Bundle not found.' + #13#10#13#10 +
+      'BundleUpgradeCode :' + #13#10 + BundleUpgradeCode,
+      mbError, MB_OK)
+  end;
+end;
+
+function InitializeSetup: Boolean;
+begin
+  SearchBundleTest(TargetBundleUpgradeCode);
+  Result := False;
+end;
+#endif

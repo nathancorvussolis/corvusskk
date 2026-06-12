@@ -44,7 +44,11 @@ set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*
 
 
 
-"%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" /DSIGN /SMySignTool="%SIGNCOMMANDISS%" /SMyCopyTool="%COPYCOMMANDISS%" installer.iss
+set PATH=%PATH%;%ProgramFiles%\Inno Setup 7
+set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 7
+set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 6
+
+ISCC.exe /DSIGN /SMySignTool="%SIGNCOMMANDISS%" /SMyCopyTool="%COPYCOMMANDISS%" installer.iss
 
 copy /b /y "%OUTDIR%\tmp\uninst.e32.tmp" "%OUTDIR%"
 

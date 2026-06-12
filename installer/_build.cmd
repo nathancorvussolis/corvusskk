@@ -10,7 +10,11 @@ call _env.cmd
 
 call _build_doc.cmd
 
-"%ProgramFiles(x86)%\Inno Setup 6\ISCC.exe" installer.iss
+set PATH=%PATH%;%ProgramFiles%\Inno Setup 7
+set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 7
+set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 6
+
+ISCC.exe installer.iss
 
 popd
 endlocal
