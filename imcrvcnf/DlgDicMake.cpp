@@ -615,13 +615,13 @@ int TarParseOct(const char *p, int n)
 {
 	int i = 0;
 
-	while ((*p < '0' || *p > '7') && n > 0)
+	while (n > 0 && (*p < '0' || *p > '7'))
 	{
 		++p;
 		--n;
 	}
 
-	while (*p >= '0' && *p <= '7' && n > 0)
+	while (n > 0 && *p >= '0' && *p <= '7')
 	{
 		i *= 8;
 		i += *p - '0';
