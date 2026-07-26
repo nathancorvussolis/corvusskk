@@ -34,6 +34,8 @@
   <section name="behavior">
     <key name="defaultmode" value="0" />
     <key name="defmodeascii" value="0" />
+    <key name="kbdopenmode" value="0" />
+    <key name="kopmodeascii" value="0" />
     <key name="begincvokuri" value="1" />
     <key name="precedeokuri" value="0" />
     <key name="shiftnnokuri" value="1" />

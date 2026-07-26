@@ -145,6 +145,7 @@ public:
 	void _KeyboardOpenCloseChanged(BOOL showinputmode = TRUE);
 	void _KeyboardInputConversionChanged();
 	BOOL _KeyboardSetDefaultMode();
+	void _KeyboardSetOpenInputMode();
 	BOOL _IsKeyVoid(WCHAR ch, BYTE vk);
 	void _ResetStatus();
 	void _GetActiveFlags();
@@ -337,6 +338,7 @@ public:
 
 	//状態
 	INT inputmode;			//入力モード (無し/ひらがな/カタカナ/半角ｶﾀｶﾅ/全英/アスキー)
+	INT exinputmode;		//IME OFF 前の入力モード
 	BOOL inputkey;			//見出し入力▽モード
 	BOOL abbrevmode;		//abbrevモード
 	BOOL showentry;			//候補表示▼モード

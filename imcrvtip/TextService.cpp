@@ -51,6 +51,7 @@ CTextService::CTextService()
 	hPipe = INVALID_HANDLE_VALUE;
 
 	inputmode = im_direct;
+	exinputmode = inputmode;
 
 	ZeroMemory(preservedkey, sizeof(preservedkey));
 	ZeroMemory(&privatemodekey, sizeof(privatemodekey));

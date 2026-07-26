@@ -69,6 +69,8 @@ extern LPCWSTR SectionBehavior;
 
 extern LPCWSTR ValueDefaultMode;
 extern LPCWSTR ValueDefModeAscii;
+extern LPCWSTR ValueKbdOpenMode;
+extern LPCWSTR ValueKOpModeAscii;
 extern LPCWSTR ValueBeginCvOkuri;
 extern LPCWSTR ValuePrecedeOkuri;
 extern LPCWSTR ValueShiftNNOkuri;

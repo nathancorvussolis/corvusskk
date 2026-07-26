@@ -75,6 +75,8 @@ LPCWSTR SectionBehavior = L"behavior";
 
 LPCWSTR ValueDefaultMode = L"defaultmode";
 LPCWSTR ValueDefModeAscii = L"defmodeascii";
+LPCWSTR ValueKbdOpenMode = L"kbdopenmode";
+LPCWSTR ValueKOpModeAscii = L"kopmodeascii";
 LPCWSTR ValueBeginCvOkuri = L"begincvokuri";
 LPCWSTR ValuePrecedeOkuri = L"precedeokuri";
 LPCWSTR ValueShiftNNOkuri = L"shiftnnokuri";

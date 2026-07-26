@@ -14,6 +14,12 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		{
 			CheckDlgButton(hDlg, IDC_RADIO_DEFMODEHIRA, BST_CHECKED);
 		}
+		LoadCheckButton(hDlg, IDC_CHECKBOX_KBDOPENMODE, SectionBehavior, ValueKbdOpenMode);
+		LoadCheckButton(hDlg, IDC_RADIO_KOPMODEASCII, SectionBehavior, ValueKOpModeAscii);
+		if (!IsDlgButtonChecked(hDlg, IDC_RADIO_KOPMODEASCII))
+		{
+			CheckDlgButton(hDlg, IDC_RADIO_KOPMODERESTORE, BST_CHECKED);
+		}
 		LoadCheckButton(hDlg, IDC_CHECKBOX_BEGINCVOKURI, SectionBehavior, ValueBeginCvOkuri, L"1");
 		LoadCheckButton(hDlg, IDC_CHECKBOX_PRECEDEOKURI, SectionBehavior, ValuePrecedeOkuri);
 		LoadCheckButton(hDlg, IDC_CHECKBOX_SHIFTNNOKURI, SectionBehavior, ValueShiftNNOkuri, L"1");
@@ -33,6 +39,9 @@ INT_PTR CALLBACK DlgProcBehavior1(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 		case IDC_CHECKBOX_DEFAULTMODE:
 		case IDC_RADIO_DEFMODEHIRA:
 		case IDC_RADIO_DEFMODEASCII:
+		case IDC_CHECKBOX_KBDOPENMODE:
+		case IDC_RADIO_KOPMODERESTORE:
+		case IDC_RADIO_KOPMODEASCII:
 		case IDC_CHECKBOX_BEGINCVOKURI:
 		case IDC_CHECKBOX_PRECEDEOKURI:
 		case IDC_CHECKBOX_SHIFTNNOKURI:
@@ -64,6 +73,8 @@ void SaveBehavior1(IXmlWriter *pWriter, HWND hDlg)
 {
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_DEFAULTMODE, ValueDefaultMode);
 	SaveCheckButton(pWriter, hDlg, IDC_RADIO_DEFMODEASCII, ValueDefModeAscii);
+	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_KBDOPENMODE, ValueKbdOpenMode);
+	SaveCheckButton(pWriter, hDlg, IDC_RADIO_KOPMODEASCII, ValueKOpModeAscii);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_BEGINCVOKURI, ValueBeginCvOkuri);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_PRECEDEOKURI, ValuePrecedeOkuri);
 	SaveCheckButton(pWriter, hDlg, IDC_CHECKBOX_SHIFTNNOKURI, ValueShiftNNOkuri);
