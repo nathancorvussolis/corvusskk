@@ -45,8 +45,9 @@ set BINFILES=%BINFILES% "..\build\ARM64\Release\*.dll" "..\build\ARM64\Release\*
 
 
 set PATH=%PATH%;%ProgramFiles%\Inno Setup 7
+set PATH=%PATH%;%LocalAppData%\Programs\Inno Setup 7
 set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 7
-set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 6
+set PATH=%PATH%;%LocalAppData%\Programs\Inno Setup 7 (32-bit)
 
 ISCC.exe /DSIGN /SMySignTool="%SIGNCOMMANDISS%" /SMyCopyTool="%COPYCOMMANDISS%" installer.iss
 

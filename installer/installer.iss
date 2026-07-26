@@ -19,7 +19,7 @@ AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppCopyright=© 2011 {#MyAppPublisher}
-VersionInfoVersion={#MyAppVersion}.0
+VersionInfoVersion={#MyAppVersion}
 OutputDir={#MyOutDir}
 OutputBaseFilename=corvusskk-{#MyAppVersion}
 SetupIconFile=compiler:SetupClassicIcon.ico
@@ -57,7 +57,7 @@ DefaultGroupName={#MyAppName}
 UninstallDisplayIcon="{sys}\{#MyAppDir}\imcrvtip.dll",-100
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "en"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 Source: ".\build\README.html";                       DestDir: "{win}\{#MyAppDir}"; Flags: {#CommonFileFlags}
@@ -104,10 +104,12 @@ Name: "{group}\README";  Filename: "{win}\{#MyAppDir}\README.html"
 Name: "{group}\LICENSE"; Filename: "{win}\{#MyAppDir}\LICENSE.txt"
 
 [Registry]
-Root: HKLM32; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; \
-  ValueName: "imcrvmgr"; ValueData: """{sys}\{#MyAppDir}\imcrvmgr.exe"""; Check: IsX86OS; Flags: uninsdeletevalue
-Root: HKLM64; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; \
-  ValueName: "imcrvmgr"; ValueData: """{sys}\{#MyAppDir}\imcrvmgr.exe"""; Check: IsWin64; Flags: uninsdeletevalue
+Root: HKLM32; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; \
+  ValueType: string; ValueName: "imcrvmgr"; ValueData: """{sys}\{#MyAppDir}\imcrvmgr.exe"""; \
+  Flags: uninsdeletevalue; Check: IsX86OS
+Root: HKLM64; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; \
+  ValueType: string; ValueName: "imcrvmgr"; ValueData: """{sys}\{#MyAppDir}\imcrvmgr.exe"""; \
+  Flags: uninsdeletevalue; Check: IsX64OS or IsArm64
 
 [Code]
 const

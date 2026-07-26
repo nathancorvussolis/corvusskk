@@ -11,8 +11,9 @@ call _env.cmd
 call _build_doc.cmd
 
 set PATH=%PATH%;%ProgramFiles%\Inno Setup 7
+set PATH=%PATH%;%LocalAppData%\Programs\Inno Setup 7
 set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 7
-set PATH=%PATH%;%ProgramFiles(x86)%\Inno Setup 6
+set PATH=%PATH%;%LocalAppData%\Programs\Inno Setup 7 (32-bit)
 
 ISCC.exe installer.iss
 
