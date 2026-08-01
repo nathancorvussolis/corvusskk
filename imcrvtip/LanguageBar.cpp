@@ -367,7 +367,7 @@ STDAPI CLangBarItemButton::OnMenuSelect(UINT wID)
 		{
 			_pTextService->_ClearComposition();
 
-			_pTextService->inputmode = im_direct;
+			//_pTextService->inputmode = im_direct;
 			_pTextService->_SetKeyboardOpen(FALSE);
 		}
 		break;
