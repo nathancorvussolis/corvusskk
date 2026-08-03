@@ -408,7 +408,14 @@ void CTextService::_KeyboardOpenCloseChanged(BOOL showinputmode)
 		switch (inputmode)
 		{
 		case im_direct:
-			exinputmode = im_hiragana;
+			switch (exinputmode)
+			{
+			case im_direct:
+				exinputmode = im_hiragana;
+				break;
+			default:
+				break;
+			}
 			break;
 		default:
 			exinputmode = inputmode;
