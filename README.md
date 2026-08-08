@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.3.2
+# CorvusSKK ver. 3.3.3
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -892,8 +892,6 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 Visual Studio Community 2022 17.14.37
 
-* .NET desktop development
-
 * Desktop development with C++
 
 * Indivisual components
@@ -927,6 +925,10 @@ pandoc 3.10.1
         * <URL> : RFC-3161 timestamp server
 
     > installer\_verify.cmd
+
+VirusTotalによる検査
+
+    > installer\_sigcheck.cmd
 
 デバッグビルド
 
