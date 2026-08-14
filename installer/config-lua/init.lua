@@ -119,6 +119,28 @@
 
 
 
+-- 無効化
+dofile = nil
+local safe_load = load
+load = nil
+loadfile = nil
+require = nil
+collectgarbage = nil
+setmetatable = nil
+getmetatable = nil
+coroutine = nil
+debug = nil
+io = nil
+local tmp_os = {
+	date = os.date,
+	time = os.time
+}
+os = tmp_os
+package = nil
+string.dump = nil
+
+
+
 -- 数値変換
 enable_skk_convert_num = true
 -- 実行変換
@@ -1060,7 +1082,8 @@ local function skk_convert_gadget(key, candidate)
 	-- 乱数
 	math.randomseed(skk_gadget_time)
 
-	local f = load("return " .. convert_s_to_table(candidate))
+	local env = {}
+	local f = safe_load("return " .. convert_s_to_table(candidate), "chunk_skk_convert_gadget", "t", env)
 	if (not f) then
 		return candidate
 	end
