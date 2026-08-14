@@ -1,5 +1,5 @@
 
-# CorvusSKK ver. 3.3.3
+# CorvusSKK ver. 3.3.4
 
 ![](installer/resource-md/logo.png) Windowsで動作するSKK風のIMEです。
 
@@ -890,7 +890,7 @@ ASCII, JIS X 0201, JIS X 0213に変換できない文字が含まれていた場
 
 ### 開発環境
 
-Visual Studio Community 2022 17.14.37
+Visual Studio Community 2022 17.14.38
 
 * Desktop development with C++
 
@@ -902,9 +902,9 @@ Visual Studio Community 2022 17.14.37
         * C++ ATL for latest v143 build tools (x86 & x64)
         * C++ ATL for latest v143 build tools (ARM64/ARM64EC)
 
-Inno Setup 7.0.2
+Inno Setup 7.1.0
 
-pandoc 3.10.1
+pandoc 3.10.2
 
 
 ### ビルド手順
