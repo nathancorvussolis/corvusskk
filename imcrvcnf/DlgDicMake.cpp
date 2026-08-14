@@ -611,9 +611,9 @@ HRESULT UnGzip(LPCWSTR gzpath, LPWSTR path, size_t len)
 	return ret;
 }
 
-int TarParseOct(const char *p, int n)
+UINT64 TarParseOct(const char *p, int n)
 {
-	int i = 0;
+	UINT64 i = 0;
 
 	while (n > 0 && (*p < '0' || *p > '7'))
 	{
@@ -661,7 +661,7 @@ bool TarVerify(const char *p)
 		}
 	}
 
-	return (u == TarParseOct(p + 148, 8));
+	return (u == (int)TarParseOct(p + 148, 8));
 }
 
 HRESULT UnTar(LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &entries_a, SKKDIC &entries_n)
@@ -694,7 +694,7 @@ HRESULT UnTar(LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &en
 	char buff[TARBLOCKSIZE];
 	FILE *fpo = nullptr;
 	size_t bytes_read;
-	int filesize;
+	UINT64 filesize;
 
 	for (;;)
 	{
@@ -717,6 +717,13 @@ HRESULT UnTar(LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &en
 		}
 
 		filesize = TarParseOct(buff + 124, 12);
+		// tarのファイルサイズとしては8GiB未満だが、
+		// 辞書検索で符号あり32ビットの制限がある。
+		if (filesize >= 0x8000'0000ui64)
+		{
+			fclose(fpi);
+			return E_MAKESKKDIC_UNTAR;
+		}
 
 		switch (buff[156]) {
 		case '1':
@@ -813,7 +820,7 @@ HRESULT UnTar(LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &en
 
 			if (filesize < TARBLOCKSIZE)
 			{
-				bytes_read = filesize;
+				bytes_read = (size_t)filesize;
 			}
 
 			if (fpo != nullptr)
@@ -826,7 +833,7 @@ HRESULT UnTar(LPCWSTR tarpath, size_t &count_key, size_t &count_cand, SKKDIC &en
 				}
 			}
 
-			filesize -= (int)bytes_read;
+			filesize -= (UINT64)bytes_read;
 		}
 
 		if (fpo != nullptr)
