@@ -443,6 +443,9 @@ local function skk_convert_num_type(num, type)
 	return ret
 end
 
+-- テーブル評価 (後で再定義)
+local eval_table = nil
+
 -- concat
 local function concat(t)
 	local ret = ""
@@ -550,7 +553,7 @@ end
 local function plus_1(t)
 	local n1 = tonumber(t[1])
 
-	if (not n1) then
+	if (n1 == nil) then
 		return ""
 	end
 	return float_to_integer(n1 + 1)
@@ -560,7 +563,7 @@ end
 local function minus_1(t)
 	local n1 = tonumber(t[1])
 
-	if (not n1) then
+	if (n1 == nil) then
 		return ""
 	end
 	return float_to_integer(n1 - 1)
@@ -572,7 +575,7 @@ local function plus(t)
 
 	for i, v in ipairs(t) do
 		local n1 = tonumber(v)
-		if (not n1) then
+		if (n1 == nil) then
 			return ""
 		end
 		n = n + n1
@@ -587,14 +590,14 @@ local function minus(t)
 
 	if (#t == 1) then
 		local n1 = tonumber(t[1])
-		if (not n1) then
+		if (n1 == nil) then
 			return ""
 		end
 		n = -n1
 	else
 		for i, v in ipairs(t) do
 			local n1 = tonumber(v)
-			if (not n1) then
+			if (n1 == nil) then
 				return ""
 			end
 			if (i == 1) then
@@ -981,7 +984,7 @@ local function convert_s_to_table(s)
 end
 
 -- テーブル評価
-function eval_table(x)
+eval_table = function(x, depth)
 	local argtype = type(x)
 	if (argtype == "table" and #x > 0) then
 		if (x[1] == "lambda") then
@@ -992,6 +995,13 @@ function eval_table(x)
 			end
 		end
 
+		-- 再帰深さ初期値1
+		depth = depth or 1
+		-- 再帰深さ, 関数+引数の個数
+		if (depth > 8 or #x > 32) then
+			return ""
+		end
+
 		local func = skk_gadget_func_table[x[1]]
 		if (func) then
 			local arg = {table.unpack(x, 2)}
@@ -1000,7 +1010,7 @@ function eval_table(x)
 				if (vv) then
 					v = vv
 				end
-				arg[i] = eval_table(v)
+				arg[i] = eval_table(v, depth + 1)
 			end
 
 			return func(arg)
@@ -1084,7 +1094,7 @@ local function skk_convert_gadget(key, candidate)
 
 	local env = {}
 	local f = safe_load("return " .. convert_s_to_table(candidate), "chunk_skk_convert_gadget", "t", env)
-	if (not f) then
+	if (f == nil) then
 		return candidate
 	end
 	return eval_table(f())
