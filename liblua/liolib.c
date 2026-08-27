@@ -696,7 +696,17 @@ static int g_write (lua_State *L, FILE *f, int arg) {
     }
     else  /* must be a string */
       s = luaL_checklstring(L, arg, &len);
+#ifdef U8W_H
+    if (f == stdout || f == stderr) {
+      numbytes = 0;
+      if (fprintf(f, "%s", s) >= 0) numbytes = len;
+    }
+    else {
+      numbytes = fwrite(s, sizeof(char), len, f);
+    }
+#else
     numbytes = fwrite(s, sizeof(char), len, f);
+#endif
     totalbytes += numbytes;
     if (numbytes < len) {  /* write error? */
       int n = luaL_fileresult(L, 0, NULL);
