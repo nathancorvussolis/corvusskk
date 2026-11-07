@@ -51,6 +51,7 @@ public:
 	void _PreEnd();
 	void _End();
 	void _UpdateComp();
+	void _SetLayout(BOOL layout);
 
 	//KeyHandler
 	HRESULT _OnKeyDown(WPARAM wParam);
@@ -116,6 +117,7 @@ private:
 	RECT _rect;			//親の位置
 	UINT _depth;		//深さ
 	BOOL _vertical;		//縦書き
+	BOOL _layout;		//テキスト範囲取得済み
 
 	//候補一覧、辞書登録のウィンドウ
 	std::wstring disptext;		//表示文字列

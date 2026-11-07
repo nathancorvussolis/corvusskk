@@ -23,6 +23,7 @@ CCandidateWindow::CCandidateWindow(CTextService *pTextService, CCandidateList *p
 	_rect = {0, 0, 0, 0};
 	_depth = 0;
 	_vertical = FALSE;
+	_layout = FALSE;
 
 	_dwUIElementId = TF_INVALID_UIELEMENTID;
 	_bShow = FALSE;
@@ -177,14 +178,13 @@ STDAPI CCandidateWindow::Show(BOOL bShow)
 			if (_hwnd != nullptr)
 			{
 				SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+					SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (_layout ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
 
 				if (_depth == 0)
 				{
 					NotifyWinEvent(EVENT_OBJECT_IME_SHOW, _hwnd, OBJID_CLIENT, CHILDID_SELF);
 				}
 			}
-
 		}
 		else
 		{

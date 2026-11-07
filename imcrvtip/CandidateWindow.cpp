@@ -282,7 +282,7 @@ void CCandidateWindow::_BeginUIElement()
 		if (_hwnd != nullptr)
 		{
 			SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+				SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (_layout ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
 
 			if (_mode == wm_register)
 			{
@@ -411,7 +411,7 @@ void CCandidateWindow::_End()
 	if (_hwnd != nullptr)
 	{
 		SetWindowPos(_hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+			SWP_NOACTIVATE | SWP_NOSIZE | SWP_NOMOVE | (_layout ? SWP_SHOWWINDOW : SWP_HIDEWINDOW));
 	}
 	if (_pInputModeWindow != nullptr)
 	{
@@ -444,6 +444,11 @@ void CCandidateWindow::_UpdateComp()
 	_InitList();
 	_Update();
 	_UpdateUIElement();
+}
+
+void CCandidateWindow::_SetLayout(BOOL layout)
+{
+	_layout = layout;
 }
 
 void CCandidateWindow::_InitList()

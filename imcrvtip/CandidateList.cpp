@@ -31,6 +31,13 @@ public:
 		if (SUCCEEDED(_pContextView->GetTextExt(ec, _pRangeComposition, &rc, &fClipped)))
 		{
 			_pCandidateWindow->_Move(&rc, ec, _pContext);
+
+			BOOL bShow = TRUE;
+			if (SUCCEEDED(_pCandidateWindow->IsShown(&bShow)) && (bShow == FALSE))
+			{
+				_pCandidateWindow->_SetLayout(TRUE);
+				_pCandidateWindow->Show(TRUE);
+			}
 		}
 
 		return S_OK;
