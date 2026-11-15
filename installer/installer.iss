@@ -68,7 +68,7 @@ Source: ".\build\skkdict.txt";                       DestDir: "{win}\{#MyAppDir}
 
 Source: "..\build\Win32\Release\imcrvcnf.exe";       DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
 Source: "..\build\Win32\Release\imcrvmgr.exe";       DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
-Source: "..\build\Win32\Release\imcrvtip.dll";       DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit regserver
+Source: "..\build\Win32\Release\imcrvtip.dll";       DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
 Source: "..\build\Win32\Release\lua.exe";            DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
 Source: "..\build\Win32\Release\lua55.dll";          DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
 Source: "..\build\Win32\Release\zlib1.dll";          DestDir: "{sys}\{#MyAppDir}"; Flags: {#CommonFileFlags} 32bit
@@ -78,7 +78,7 @@ Source: "{#VCDir}x86\{#VCCRT}\vcruntime140.dll";     DestDir: "{sys}\{#MyAppDir}
 
 Source: "..\build\x64\Release\imcrvcnf.exe";         DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\x64\Release\imcrvmgr.exe";         DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
-Source: "..\build\x64\Release\imcrvtip.dll";         DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit regserver
+Source: "..\build\x64\Release\imcrvtip.dll";         DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\x64\Release\lua.exe";              DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\x64\Release\lua55.dll";            DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\x64\Release\zlib1.dll";            DestDir: "{sys}\{#MyAppDir}"; Check: IsX64OS; Flags: {#CommonFileFlags} 64bit
@@ -89,7 +89,7 @@ Source: "{#VCDir}x64\{#VCCRT}\vcruntime140_1.dll";   DestDir: "{sys}\{#MyAppDir}
 
 Source: "..\build\ARM64\Release\imcrvcnf.exe";       DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\ARM64\Release\imcrvmgr.exe";       DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
-Source: "..\build\ARM64EC\Release\imcrvtip.dll";     DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit regserver
+Source: "..\build\ARM64EC\Release\imcrvtip.dll";     DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\ARM64\Release\lua.exe";            DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\ARM64\Release\lua55.dll";          DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
 Source: "..\build\ARM64\Release\zlib1.dll";          DestDir: "{sys}\{#MyAppDir}"; Check: IsArm64; Flags: {#CommonFileFlags} 64bit
@@ -111,13 +111,91 @@ Root: HKLM64; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; \
   ValueType: string; ValueName: "imcrvmgr"; ValueData: """{sys}\{#MyAppDir}\imcrvmgr.exe"""; \
   Flags: uninsdeletevalue; Check: IsX64OS or IsArm64
 
+; regserverフラグの代替処理
+;
+; ・インストール/アップグレード
+;   1) PrepareToInstallイベントで旧DLLを登録解除, リネーム, 再起動後の削除を予約
+;   2) [Files]で新DLLをインストール
+;   3) [Run]で新DLLを登録
+;   4) 再起動後に旧DLLが削除
+;
+; ・アンインストール
+;   1) [UninstallRun]で登録解除
+;   2) 再起動後にuninsrestartdeleteで削除
+
+[Run]
+; 登録
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s ""{sys}\{#MyAppDir}\imcrvtip.dll"""; \
+  Flags: runhidden 32bit
+Filename: "{sys}\regsvr32.exe"; Parameters: "/s ""{sys}\{#MyAppDir}\imcrvtip.dll"""; \
+  Flags: runhidden 64bit; Check: IsX64OS or IsArm64
+
+[UninstallRun]
+; 登録解除
+Filename: "{sys}\regsvr32.exe"; Parameters: "/u /s ""{sys}\{#MyAppDir}\imcrvtip.dll"""; \
+  RunOnceId: "unreg32"; Flags: runhidden 32bit
+Filename: "{sys}\regsvr32.exe"; Parameters: "/u /s ""{sys}\{#MyAppDir}\imcrvtip.dll"""; \
+  RunOnceId: "unreg64"; Flags: runhidden 64bit; Check: IsX64OS or IsArm64
+
 [Code]
+// TIP DLL
+const
+  TipFilePath = '{sys}\{#MyAppDir}\imcrvtip.dll';
+
+// 旧バージョンのDLLを登録解除, リネーム, 再起動後の削除を予約
+function UninstallExistingServerDLL(const Is64Bit: Boolean; const FilePath: String): String;
+var
+  RedirFilePath: String;
+  TempFilePath: String;
+begin
+  Result := ''
+  RedirFilePath := ApplyPathRedirRulesForCurrentProcess(Is64Bit, FilePath);
+  TempFilePath := GenerateUniqueName(ExtractFileDir(RedirFilePath), '.dll.tmp');
+
+  if not FileExists(RedirFilePath) then
+  begin
+    Log('Server DLL not found. ' + RedirFilePath);
+    Exit;
+  end;
+  Log('Server DLL found. ' + RedirFilePath);
+
+  // 登録解除
+  if UnregisterServer(Is64Bit, RedirFilePath, False) then
+  begin
+    Log('Successfully unregistered server DLL. ' + RedirFilePath);
+  end else begin
+    Log('Failed to unregister server DLL. ' + RedirFilePath);
+    Result := 'Failed to unregister server DLL. ' + RedirFilePath;
+    Exit;
+  end;
+  // リネーム
+  if RenameFile(RedirFilePath, TempFilePath) then
+  begin
+    Log('Successfully renamed server DLL. ' + TempFilePath);
+  end else begin
+    Log('Failed to rename server DLL. ' + TempFilePath);
+    Result := 'Failed to rename server DLL. ' + TempFilePath;
+    Exit;
+  end;
+  // 再起動後の削除を予約
+  try
+    RestartReplace(TempFilePath, '');
+    Log('Successfully scheduled deletion server DLL. ' + TempFilePath);
+  except
+    Log('Failed to schedule deletion server DLL. ' + TempFilePath);
+    Result := 'Failed to schedule deletion server DLL. ' + TempFilePath;
+    Exit;
+  end;
+end;
+
+// WiXToolsetの旧バージョンインストーラーの情報
 const
   // The target bundle is 32bit.
   RegSubKeyUninstall = 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall';
   // Bundle UpgradeCode
   TargetBundleUpgradeCode = '{F2664253-EAE9-4ED5-AD92-03229BD8F64F}';
 
+// WiXToolsetの旧バージョンインストーラーを検索
 function SearchBundleCachePath(const BundleUpgradeCode: String; var BundleCachePath: String): Boolean;
 var
   SubKeyNameArr: TArrayOfString;
@@ -154,6 +232,7 @@ begin
   end;
 end;
 
+// WiXToolsetの旧バージョンインストーラーをアンインストール
 procedure UninstallBundle(const BundleUpgradeCode: String);
 var
   CachePath: String;
@@ -165,23 +244,37 @@ begin
     Log('Bundle found. BundleCachePath : ' + CachePath);
     Log('Uninstalling Bundle.');
     if Exec(CachePath, '/uninstall /quiet /norestart', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
-      Log('Succeded to uninstall Bundle. Code=' + IntToStr(ResultCode))
-    else
+    begin
+      Log('Successfully uninstalled Bundle. Code=' + IntToStr(ResultCode));
+    end else begin
       Log('Failed to uninstall Bundle. Code=' + IntToStr(ResultCode));
-  end
-  else
-  begin
+    end;
+  end else begin
     Log('Bundle not found.');
   end;
 end;
 
+// イベント
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
+  Result := '';
+
   // Uninstall previous versions of bundle
   UninstallBundle(TargetBundleUpgradeCode);
-  Result := '';
+
+  // Uninstall existing 32bit DLL
+  Result := UninstallExistingServerDLL(False, ExpandConstant(TipFilePath));
+  if Result <> '' then Exit;
+
+  // Uninstall existing 64bit DLL
+  if IsX64OS or IsArm64 then
+  begin
+    Result := UninstallExistingServerDLL(True, ExpandConstant(TipFilePath));
+    if Result <> '' then Exit;
+  end;
 end;
 
+// WiXToolsetの旧バージョンインストーラーの検索結果をテスト用に表示
 #if False
 procedure SearchBundleTest(const BundleUpgradeCode: String);
 var
@@ -192,19 +285,18 @@ begin
     MsgBox('Bundle found.' + #13#10#13#10 +
       'BundleUpgradeCode :' + #13#10 + BundleUpgradeCode + #13#10#13#10 +
       'BundleCachePath :' + #13#10 + CachePath,
-      mbInformation, MB_OK)
-  end
-  else
-  begin
+      mbInformation, MB_OK);
+  end else begin
     MsgBox('Bundle not found.' + #13#10#13#10 +
       'BundleUpgradeCode :' + #13#10 + BundleUpgradeCode,
-      mbError, MB_OK)
+      mbError, MB_OK);
   end;
 end;
 
+// イベント
 function InitializeSetup: Boolean;
 begin
-  SearchBundleTest(TargetBundleUpgradeCode);
   Result := False;
+  SearchBundleTest(TargetBundleUpgradeCode);
 end;
 #endif
